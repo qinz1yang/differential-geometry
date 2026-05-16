@@ -3,7 +3,17 @@ import RicciFlower.RicciFlow.Evolution.ScalarGradient
 set_option autoImplicit false
 set_option linter.style.longLine false
 
-/-! # MSM110 Chapter 6.6: Gradient Estimate for Scalar Curvature -/
+/-!
+# MSM110 Chapter 6.6: Gradient Estimate for Scalar Curvature
+
+Exact LaTeX labels represented here:
+`GradientEstimateForScalarIn3d`, `PinchingEstimateYetAgain`,
+`EstimateGradientOfScalar`, `grad R norm sqr evolution`,
+`GradRoverR-evolution`, `EvolutionEquationOfScalarSquared`,
+`EvolutionOfNormSquaredOfRicci`, `GradScalarPartial1`,
+`GradScalarPartial2`, `GradRicciEstimate`, `GradScalarPartial3`,
+`CS-EstimateForGradR`, `VforGradR1`, `VforGradR2`.
+-/
 
 namespace BK
 namespace MSM110
@@ -37,6 +47,24 @@ theorem eq_scalar_and_ricci_norm_squared_evolution
       scalar ricciNormSq scalarSqRhs ricciNormSqRhs :=
   h
 
+theorem eq_pinching_estimate_yet_again
+    (tracefreeRmRatio decay : Real -> M -> Real) (C : Real)
+    (h : PinchingEstimateYetAgainOn tracefreeRmRatio decay C) :
+    PinchingEstimateYetAgainOn tracefreeRmRatio decay C :=
+  h
+
+theorem eq_evolution_equation_of_scalar_squared
+    (scalar scalarSqRhs : Real -> M -> Real)
+    (h : ScalarSquaredEvolutionOn scalar scalarSqRhs) :
+    ScalarSquaredEvolutionOn scalar scalarSqRhs :=
+  h
+
+theorem eq_evolution_of_norm_squared_of_ricci
+    (ricciNormSq ricciNormSqRhs : Real -> M -> Real)
+    (h : RicciNormSquaredEvolutionOn ricciNormSq ricciNormSqRhs) :
+    RicciNormSquaredEvolutionOn ricciNormSq ricciNormSqRhs :=
+  h
+
 theorem cor_grad_scalar_partial_one
     (tracefreeRicciNormSq scalar ricciNormSq rhs : Real -> M -> Real)
     (h : TracefreeRicciEvolutionInequalityOn
@@ -49,6 +77,21 @@ theorem lem_grad_scalar_partial_two
     (gradRicciNormSq gradScalarNormSq : Real -> M -> Real)
     (h : GradRicciControlsGradScalarOn gradRicciNormSq gradScalarNormSq) :
     GradRicciControlsGradScalarOn gradRicciNormSq gradScalarNormSq :=
+  h
+
+theorem eq_grad_ricci_estimate
+    (gradRicciNormSq gradScalarNormSq : Real -> M -> Real)
+    (h : GradRicciControlsGradScalarOn gradRicciNormSq gradScalarNormSq) :
+    GradRicciControlsGradScalarOn gradRicciNormSq gradScalarNormSq :=
+  h
+
+theorem eq_cs_estimate_for_grad_r
+    (gradScalarNormSq hessianScalarNormSq gradRicciNormSq : Real -> M -> Real)
+    (C : Real)
+    (h : CauchySchwarzEstimateForGradScalarOn
+      gradScalarNormSq hessianScalarNormSq gradRicciNormSq C) :
+    CauchySchwarzEstimateForGradScalarOn
+      gradScalarNormSq hessianScalarNormSq gradRicciNormSq C :=
   h
 
 theorem cor_grad_scalar_partial_three

@@ -7,6 +7,13 @@ set_option linter.style.longLine false
 # Higher Derivative Estimates and Long-Time Existence
 
 MSM110 Chapter 6.7 statement interfaces.
+
+LaTeX labels covered here include `LongTimeExistSection`, `CurvatureBlowup`,
+`Chapter5CurvatureDerivativeBoundsAssumed`,
+`Chapter5CurvatureDerivativeBoundsUsed`, `MetricDerivativeBounds`,
+`ContinuousLimitMetric`, `UniformEquivalenceOfMetrics`,
+`OneTimeOneSpaceDerivative`, `BoundGamma`, `BoundDerivativesOfRicciInChart`,
+`TermsToBoundForDGamma`, and `RicciDerivativeBounds`.
 -/
 
 noncomputable section
@@ -59,6 +66,31 @@ def RicciDerivativeBoundsOn
     (ricciDerivNorm : Nat -> Real -> M -> Real) (T : Real) : Prop :=
   ∀ m : Nat, ∃ C : Real, ∀ t x, 0 ≤ t -> t < T ->
     ricciDerivNorm m t x ≤ C
+
+/-- Display `OneTimeOneSpaceDerivative`, a mixed time/space derivative bound
+for metric components in one background chart. -/
+def OneTimeOneSpaceDerivativeEstimateOn
+    (mixedMetricDerivNorm : Real -> M -> Real) (T C : Real) : Prop :=
+  ∀ (t : Real) (x : M), 0 ≤ t -> t < T -> mixedMetricDerivNorm t x ≤ C
+
+/-- Display `BoundGamma`, the local Christoffel-coordinate bound used in the
+long-time existence chart argument. -/
+def ChristoffelCoordBoundOn
+    (gammaNorm : Real -> M -> Real) (T C : Real) : Prop :=
+  ∀ (t : Real) (x : M), 0 ≤ t -> t < T -> gammaNorm t x ≤ C
+
+/-- Display `BoundDerivativesOfRicciInChart`, bounds on coordinate derivatives
+of Ricci in a fixed chart. -/
+def RicciChartDerivativeBoundsOn
+    (ricciChartDerivNorm : Nat -> Real -> M -> Real) (T : Real) : Prop :=
+  ∀ m : Nat, ∃ C : Real, ∀ t x, 0 ≤ t -> t < T ->
+    ricciChartDerivNorm m t x ≤ C
+
+/-- Display `TermsToBoundForDGamma`, the collection of product-rule terms that
+must be bounded to control `d Gamma`. -/
+def DGammaTermsToBoundOn
+    (termNorm : Nat -> Real -> M -> Real) (T : Real) : Prop :=
+  ∀ m : Nat, ∃ C : Real, ∀ t x, 0 ≤ t -> t < T -> termNorm m t x ≤ C
 
 /-- Maximal finite-time curvature blowup conclusion. -/
 def CurvatureBlowupAtMaximalTime

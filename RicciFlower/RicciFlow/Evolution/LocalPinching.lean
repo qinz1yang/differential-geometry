@@ -8,6 +8,13 @@ set_option linter.unusedVariables false
 # Local Pinching Estimates
 
 MSM110 Chapter 6.5 statement interfaces.
+
+LaTeX labels covered here include `PinchingFor3Manifolds`,
+`Ricci-pinching-preserved`, `ricci pinching preserved ineq`,
+`d/dt ln (lambda/mu+nu)`, `RicciLowerBound`,
+`ricci pinching improves theorem`, `PinchingEstimate-HamiltonForm`,
+`f pinching improves evolution`, `DefineP`, `Palpha over Qbeta`,
+`f-pinching-evolution`, and `R evolution lambda mu nu`.
 -/
 
 noncomputable section
@@ -28,6 +35,11 @@ def RicciPinchingPreservedOn
     (lambda mu nu : Real -> M -> Real) (C : Real) : Prop :=
   ∀ (t : Real) (x : M), lambda t x ≤ C * (nu t x + mu t x)
 
+/-- Display `ricci pinching preserved ineq`: `lambda <= C (nu + mu)`. -/
+def RicciPinchingPreservedInequalityOn
+    (lambda mu nu : Real -> M -> Real) (C : Real) : Prop :=
+  RicciPinchingPreservedOn lambda mu nu C
+
 /-- The logarithmic derivative calculation
 `d/dt log(lambda/(mu+nu)) <= 0`. -/
 def LogPinchingDerivativeNonpositiveOn
@@ -37,6 +49,12 @@ def LogPinchingDerivativeNonpositiveOn
       (mu t x ^ 2 * (nu t x - lambda t x) +
         nu t x ^ 2 * (mu t x - lambda t x)) /
           (lambda t x * (nu t x + mu t x)) ≤ 0
+
+/-- Display `d/dt ln (lambda/mu+nu)`, recorded as the corresponding
+nonpositive logarithmic derivative calculation. -/
+def LogLambdaOverMuPlusNuDerivativeFormulaOn
+    (lambda mu nu : Real -> M -> Real) : Prop :=
+  LogPinchingDerivativeNonpositiveOn lambda mu nu
 
 /-- Global Ricci lower bound from preserved pinching:
 `Rc >= 2 beta^2 R g`. -/
@@ -56,6 +74,12 @@ def RicciPinchingImprovesOn
   ∀ (t : Real) (x : M),
     (lambda t x - nu t x) / (nu t x + mu t x) ≤
       C * weight t x
+
+/-- Display `f pinching improves evolution`, the differential inequality for
+Hamilton's improving pinching quantity before it is repackaged. -/
+def PinchingImprovesFunctionEvolutionOn
+    (f rhs : Real -> M -> Real) : Prop :=
+  ∀ (t : Real) (x : M), f t x ≤ rhs t x
 
 /-- Hamilton's equivalent trace-free pinching estimate. -/
 def HamiltonTracefreePinchingEstimateOn
@@ -86,6 +110,15 @@ def TracefreeRmPinchingEvolutionInequalityOn
     (f scalar Q : Real -> M -> Real) (epsilon : Real) : Prop :=
   ∀ (t : Real) (x : M),
     0 < scalar t x -> f t x ≤ Q t x + epsilon * scalar t x
+
+/-- Display `R evolution lambda mu nu`, the scalar evolution written in the
+curvature-operator eigenvalues. -/
+def ScalarEvolutionEigenvalueFormulaOn
+    (scalar lambda mu nu rhs : Real -> M -> Real) : Prop :=
+  ∀ (t : Real) (x : M),
+    rhs t x =
+      scalar t x ^ 2 +
+        2 * (lambda t x * mu t x + lambda t x * nu t x + mu t x * nu t x)
 
 theorem ricci_pinching_preserved
     (lambda mu nu : Real -> M -> Real) (C : Real)

@@ -249,7 +249,7 @@ private theorem derivWithin_add_eps_mul_time
   rw [hderiv_linear]
 
 /-- Strict-barrier form of the scalar weak maximum principle. -/
-theorem strict_barrier_nonnegative
+theorem strict_barrier_nonnegative_of_positive_time
     [I.Boundaryless]
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -266,7 +266,7 @@ theorem strict_barrier_nonnegative
     (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
       forall x : M, MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (w t) y) x)
-    (hnegative : forall t : Real, t ∈ Set.Icc 0 T ->
+    (hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
       forall x : M, w t x < 0 ->
         0 <= parabolicOperatorWithDrift (I := I) G T X w t x) :
     forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x := by
@@ -342,7 +342,7 @@ theorem strict_barrier_nonnegative
         parabolicOperatorWithDrift (I := I) G T X w t0 x0 < 0 := by
       unfold parabolicOperatorWithDrift
       linarith
-    exact not_lt_of_ge (hnegative t0 hp0_time x0 hw_t0_neg) hP_neg
+    exact not_lt_of_ge (hnegative t0 hp0_time ht0_pos x0 hw_t0_neg) hP_neg
   intro t ht x
   by_contra hnot
   have hw_neg : w t x < 0 := lt_of_not_ge hnot
@@ -360,6 +360,32 @@ theorem strict_barrier_nonnegative
       rw [hε_mul]
       linarith
     exact not_lt_of_ge hbarrier hbarrier_neg
+
+/-- Strict-barrier form of the scalar weak maximum principle. -/
+theorem strict_barrier_nonnegative
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (w : Real -> M -> Real)
+    (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
+    (hw0 : forall x : M, 0 <= w 0 x)
+    (hw_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, DifferentiableWithinAt Real (fun s : Real => w s x) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real) (w t) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (w t) y) x)
+    (hnegative : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
+  strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
+    hw_cont hw0 hw_time hw_mdiff hw_grad
+    (fun t ht _htpos x hwneg => hnegative t ht x hwneg)
 
 /-! ## Hamilton Theorem 7.1, first realized core -/
 
@@ -448,6 +474,102 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
   have hw_nonneg :
       forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
     strict_barrier_nonnegative (I := I) G T hT X w
+      (by simpa [w, v] using hw_cont) hw0
+      (by simpa [w, v] using hw_time)
+      (by simpa [w, v] using hw_mdiff) (by simpa [w, v] using hw_grad)
+      hnegative
+  intro t ht x
+  have hvnonneg : 0 <= v t x := by
+    by_contra hneg'
+    have hvneg : v t x < 0 := lt_of_not_ge hneg'
+    have hprodneg : w t x < 0 := by
+      exact mul_neg_of_pos_of_neg (Real.exp_pos _) hvneg
+    exact not_lt_of_ge (hw_nonneg t ht x) hprodneg
+  exact sub_nonneg.mp (by simpa [v] using hvnonneg)
+
+/-- Hamilton Theorem 7.1 core with the supersolution inequality required only
+at positive times.  The strict-barrier proof never uses the inequality at the
+initial time. -/
+theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_positive_time
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (c : Real -> Real)
+    (F : Real -> Real -> Real) (L : Real)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => Real.exp (-L * p.1) * (u p.1 p.2 - c p.1))
+      (spacetimeSlab (M := M) T))
+    (hw_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => Real.exp (-L * s) * (u s x - c s)) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => Real.exp (-L * t) * (u t y - c t)) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => Real.exp (-L * t) * (u t z - c t)) y) x)
+    (hsuper : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
+      F (u t x) t <= parabolicOperatorWithDrift (I := I) G T X u t x)
+    (hode : forall t : Real, t ∈ Set.Icc 0 T ->
+      derivWithin c (Set.Icc 0 T) t = F (c t) t)
+    (hinit : forall x : M, c 0 <= u 0 x)
+    (hlip : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      |F (u t x) t - F (c t) t| <= L * |u t x - c t|)
+    (hsubCalc : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      parabolicOperatorWithDrift (I := I) G T X
+          (fun s y => u s y - c s) t x =
+        parabolicOperatorWithDrift (I := I) G T X u t x -
+          derivWithin c (Set.Icc 0 T) t)
+    (hexpCalc : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      parabolicOperatorWithDrift (I := I) G T X
+          (fun s y => Real.exp (-L * s) * (u s y - c s)) t x =
+        Real.exp (-L * t) *
+          (parabolicOperatorWithDrift (I := I) G T X
+              (fun s y => u s y - c s) t x - L * (u t x - c t))) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
+  let v : Real -> M -> Real := fun t x => u t x - c t
+  let w : Real -> M -> Real := fun t x => Real.exp (-L * t) * v t x
+  have hw0 : forall x : M, 0 <= w 0 x := by
+    intro x
+    have hv0 : 0 <= v 0 x := by
+      exact sub_nonneg.mpr (hinit x)
+    simpa [w, v] using hv0
+  have hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x := by
+    intro t ht htpos x hwneg
+    have hexppos : 0 < Real.exp (-L * t) := Real.exp_pos _
+    have hvneg : v t x < 0 := by
+      by_contra hnonneg
+      have hvnonneg : 0 <= v t x := le_of_not_gt hnonneg
+      have hprod : 0 <= Real.exp (-L * t) * v t x :=
+        mul_nonneg (le_of_lt hexppos) hvnonneg
+      exact not_le_of_gt (by simpa [w] using hwneg) hprod
+    have hPvLower :
+        L * (u t x - c t) <=
+          parabolicOperatorWithDrift (I := I) G T X v t x := by
+      exact negative_region_parabolic_lower_bound
+        (hsuper t ht htpos x)
+        (hode t ht)
+        (by simpa [v] using hsubCalc t ht x)
+        (hlip t ht x)
+        (by simpa [v] using hvneg)
+    have hregion :
+        0 <= parabolicOperatorWithDrift (I := I) G T X v t x - L * v t x := by
+      exact sub_nonneg.mpr (by simpa [v] using hPvLower)
+    calc
+      0 <= Real.exp (-L * t) *
+          (parabolicOperatorWithDrift (I := I) G T X v t x - L * v t x) := by
+        exact mul_nonneg (le_of_lt hexppos) hregion
+      _ = parabolicOperatorWithDrift (I := I) G T X w t x := by
+        rw [← hexpCalc t ht x]
+  have hw_nonneg :
+      forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
+    strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
       (by simpa [w, v] using hw_cont) hw0
       (by simpa [w, v] using hw_time)
       (by simpa [w, v] using hw_mdiff) (by simpa [w, v] using hw_grad)
@@ -840,6 +962,95 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
       exact le_antisymm htle ht.1
     simpa [ht0] using hinit x
 
+/-- Hamilton Theorem 7.1 regular wrapper with the supersolution inequality
+required only at positive times. -/
+theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_time
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (c : Real -> Real)
+    (F : Real -> Real -> Real) (L : Real)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => Real.exp (-L * p.1) * (u p.1 p.2 - c p.1))
+      (spacetimeSlab (M := M) T))
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => Real.exp (-L * t) * (u t y - c t)) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => Real.exp (-L * t) * (u t z - c t)) y) x)
+    (hu_time : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      DifferentiableWithinAt Real (fun s : Real => u s x) (Set.Icc 0 T) t)
+    (hc_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      DifferentiableWithinAt Real c (Set.Icc 0 T) t)
+    (hu_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real) (u t) y)
+    (hv_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun z : M => u t z - c t) y)
+    (hv_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (fun z : M => u t z - c t) y) x)
+    (hsuper : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
+      F (u t x) t <= parabolicOperatorWithDrift (I := I) G T X u t x)
+    (hode : forall t : Real, t ∈ Set.Icc 0 T ->
+      derivWithin c (Set.Icc 0 T) t = F (c t) t)
+    (hinit : forall x : M, c 0 <= u 0 x)
+    (hlip : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      |F (u t x) t - F (c t) t| <= L * |u t x - c t|) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
+  by_cases hTpos : 0 < T
+  · refine scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_positive_time
+      (I := I) G T hT X u c F L hw_cont ?_ hw_mdiff hw_grad
+      hsuper hode hinit hlip ?_ ?_
+    · intro t ht x
+      have hv_time :
+          DifferentiableWithinAt Real (fun s : Real => u s x - c s)
+            (Set.Icc 0 T) t :=
+        (hu_time t ht x).sub (hc_time t ht)
+      have hscale :
+          DifferentiableWithinAt Real (fun s : Real => Real.exp (-L * s))
+            (Set.Icc 0 T) t := by
+        have hlinear :
+            DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
+          simpa using
+            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+        exact hlinear.exp
+      exact hscale.mul hv_time
+    · intro t ht x
+      exact parabolic_sub_time_curve_identity (I := I) G T X u c t ht
+        (hu_space t ht) x (hu_time t ht x) (hc_time t ht)
+    · intro t ht x
+      have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
+        uniqueDiffOn_Icc hTpos t ht
+      have hv_time :
+          DifferentiableWithinAt Real (fun s : Real => u s x - c s)
+            (Set.Icc 0 T) t :=
+        (hu_time t ht x).sub (hc_time t ht)
+      have hscale :
+          DifferentiableWithinAt Real (fun s : Real => Real.exp (-L * s))
+            (Set.Icc 0 T) t := by
+        have hlinear :
+            DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
+          simpa using
+            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+        exact hlinear.exp
+      exact parabolic_exp_rescale_identity (I := I) G T L X
+        (fun s y => u s y - c s) t ht huniq (hv_space t ht) x
+        (hv_grad t ht x) hv_time hscale
+  · have hTle : T <= 0 := le_of_not_gt hTpos
+    have hT0 : T = 0 := le_antisymm hTle hT
+    intro t ht x
+    have ht0 : t = 0 := by
+      have htle : t <= 0 := by
+        simpa [hT0] using ht.2
+      exact le_antisymm htle ht.1
+    simpa [ht0] using hinit x
+
 /-! ## Slice-local Lipschitz extraction -/
 
 /-- The scalar values seen by the comparison pair at one time slice. -/
@@ -1032,6 +1243,54 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
     hsuper hode hinit
     (scalarWMP_lipschitz_on_valueSet_bound (M := M) T u c F K hF_lip)
 
+/-- Hamilton Theorem 7.1 with a uniform Lipschitz constant and with the
+supersolution inequality required only at positive times. -/
+theorem scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular_positive_time
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (c : Real -> Real)
+    (F : Real -> Real -> Real) (K : NNReal)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => Real.exp (-(K : Real) * p.1) * (u p.1 p.2 - c p.1))
+      (spacetimeSlab (M := M) T))
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => Real.exp (-(K : Real) * t) * (u t y - c t)) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => Real.exp (-(K : Real) * t) * (u t z - c t)) y) x)
+    (hu_time : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      DifferentiableWithinAt Real (fun s : Real => u s x) (Set.Icc 0 T) t)
+    (hc_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      DifferentiableWithinAt Real c (Set.Icc 0 T) t)
+    (hu_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real) (u t) y)
+    (hv_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun z : M => u t z - c t) y)
+    (hv_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (fun z : M => u t z - c t) y) x)
+    (hsuper : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
+      F (u t x) t <= parabolicOperatorWithDrift (I := I) G T X u t x)
+    (hode : forall t : Real, t ∈ Set.Icc 0 T ->
+      derivWithin c (Set.Icc 0 T) t = F (c t) t)
+    (hinit : forall x : M, c 0 <= u 0 x)
+    (hF_lip : forall t : Real, t ∈ Set.Icc 0 T ->
+      LipschitzOnWith K (fun a : Real => F a t)
+        (scalarWMPValueSet (M := M) T u c)) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, c t <= u t x := by
+  exact scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_time
+    (I := I) G T hT X u c F (K : Real)
+    hw_cont hw_mdiff hw_grad hu_time hc_time hu_space hv_space hv_grad
+    hsuper hode hinit
+    (scalarWMP_lipschitz_on_valueSet_bound (M := M) T u c F K hF_lip)
+
 /-- LaTeX Theorem 7.1, label `thm:scalar-wmp-super`.
 
 This is the native compact-value-set Lipschitz formulation of Hamilton's scalar
@@ -1083,6 +1342,78 @@ theorem scalar_wmp_super_theorem_7_1
   scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular
     (I := I) G T hT X u c F K hw_cont hw_mdiff hw_grad hu_time hc_time
     hu_space hv_space hv_grad hsuper hode hinit hF_lip
+
+/-- LaTeX Theorem 7.2, label `thm:scalar-wmp-sub`.
+
+The scalar subsolution weak maximum principle is the supersolution theorem
+applied to the sign-changed data `-u`, `-c`, and `fun a t => -F (-a) t`.  The
+regularity and operator inequality hypotheses are stated for these
+sign-changed functions, so this wrapper only performs the logical
+sign-change and delegates the maximum-principle argument to Theorem 7.1. -/
+theorem scalar_wmp_sub_theorem_7_2
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (c : Real -> Real)
+    (F : Real -> Real -> Real) (K : NNReal)
+    (hF_mono : forall t : Real, t ∈ Set.Icc 0 T -> Monotone (fun a : Real => F a t))
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => Real.exp (-(K : Real) * p.1) *
+        ((-u p.1 p.2) - (-c p.1)))
+      (spacetimeSlab (M := M) T))
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => Real.exp (-(K : Real) * t) *
+          ((-u t y) - (-c t))) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => Real.exp (-(K : Real) * t) *
+            ((-u t z) - (-c t))) y) x)
+    (hneg_u_time : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      DifferentiableWithinAt Real (fun s : Real => -u s x) (Set.Icc 0 T) t)
+    (hneg_c_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      DifferentiableWithinAt Real (fun s : Real => -c s) (Set.Icc 0 T) t)
+    (hneg_u_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun z : M => -u t z) y)
+    (hneg_v_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun z : M => (-u t z) - (-c t)) y)
+    (hneg_v_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => (-u t z) - (-c t)) y) x)
+    (hsub_as_super : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      (fun a : Real => -F (-a) t) (-u t x) <=
+        parabolicOperatorWithDrift (I := I) G T X
+          (fun s y => -u s y) t x)
+    (hode_neg : forall t : Real, t ∈ Set.Icc 0 T ->
+      derivWithin (fun s : Real => -c s) (Set.Icc 0 T) t =
+        (fun a : Real => -F (-a) t) (-c t))
+    (hinit : forall x : M, u 0 x <= c 0)
+    (hF_lip_neg : forall t : Real, t ∈ Set.Icc 0 T ->
+      LipschitzOnWith K (fun a : Real => -F (-a) t)
+        (scalarWMPValueSet (M := M) T
+          (fun t x => -u t x) (fun t => -c t))) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, u t x <= c t := by
+  have hG_mono : forall t : Real, t ∈ Set.Icc 0 T ->
+      Monotone (fun a : Real => -F (-a) t) := by
+    intro t ht a b hab
+    exact neg_le_neg (hF_mono t ht (neg_le_neg hab))
+  have hneg :
+      forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, -c t <= -u t x :=
+    scalar_wmp_super_theorem_7_1
+      (I := I) G T hT X (fun t x => -u t x) (fun t => -c t)
+      (fun a t => -F (-a) t) K hG_mono
+      hw_cont hw_mdiff hw_grad hneg_u_time hneg_c_time
+      hneg_u_space hneg_v_space hneg_v_grad hsub_as_super hode_neg
+      (fun x => by linarith [hinit x]) hF_lip_neg
+  intro t ht x
+  linarith [hneg t ht x]
 
 /-- MSM110, Chapter 4, label `thm:scalar_maximum_principle_ode`.
 

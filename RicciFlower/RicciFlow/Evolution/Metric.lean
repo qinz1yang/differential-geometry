@@ -580,7 +580,7 @@ private theorem metric_localFrame_mdiffAt
     MDiffAt (T% (frame i)) x :=
   (hframe.contMDiffAt hu hx i).mdifferentiableAt one_ne_zero
 
-private theorem metricCompInFrame_extDerivFun_eq_christoffel
+theorem metricCompInFrame_extDerivFun_eq_christoffel
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -623,7 +623,7 @@ private theorem metricCompInFrame_extDerivFun_eq_christoffel
   rw [covariantDerivative_eq_sum_christoffel (I := I) cov frame hframe hx d b]
   simp [metricCompInFrame, map_sum]
 
-private theorem metric_mdiffAt_finset_sum
+theorem metric_mdiffAt_finset_sum
     {ι : Type*} (t : Finset ι) (f : ι -> M -> Real) {x : M}
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
     MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := by
@@ -641,7 +641,7 @@ private theorem metric_mdiffAt_finset_sum
       have hadd : MDifferentiableAt I 𝓘(Real, Real) (f i + t.sum f) x := hfi.add hsum
       simpa [Finset.sum_insert, hit] using hadd
 
-private theorem metric_extDerivFun_finset_sum
+theorem metric_extDerivFun_finset_sum
     {ι : Type*} (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
@@ -672,7 +672,7 @@ private theorem metric_extDerivFun_finset_sum
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
-private theorem metric_extDerivFun_mul
+theorem metric_extDerivFun_mul
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
@@ -750,7 +750,7 @@ private theorem inverseMetric_derivative_row_eq
   have h0 := hconst.derivWithin (hunique t)
   exact h1.symm.trans h0
 
-private theorem inverseMetric_derivative_solve
+theorem inverseMetric_derivative_solve
     [DecidableEq Idx]
     (metric ric gInv gInvDt : Idx -> Idx -> Real)
     (i : Idx)

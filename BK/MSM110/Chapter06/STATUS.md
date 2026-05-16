@@ -1,7 +1,15 @@
 # MSM110 Chapter 6 Status
 
-Source: `C:/Users/liao9/Downloads/MSM110_clean01.tex`, Chapter 6,
-Sections 1-3.
+Source: `RicciFlow/RicciFlowBooksLatex/MSM110/tex/MSM110/chapters/chapter6.tex`.
+
+Full-label inventory: `BK/MSM110/Chapter06/LABEL_INVENTORY.md` records all
+114 Chapter 6 labels and classifies each as a proved wrapper, statement
+scaffold with intentional `sorry`, definition-only placeholder, or blocked by
+missing vocabulary.
+
+Missing-definition report:
+`BK/MSM110/Chapter06/MISSING_DEFINITIONS.md` records the smallest vocabulary
+frontiers for labels that cannot yet be typed cleanly as theorem statements.
 
 ## Section 6.1 Ricci-Flow Evolution Equations
 
@@ -9,7 +17,7 @@ Sections 1-3.
 | --- | --- | --- | --- |
 | Ricci-flow inverse metric specialization | `BK.MSM110.Chapter06.Section01.eq_inverse_metric_ricci_flow` | `RicciFlower.RicciFlow.evol_inverse_metric_inFrame` | Proved in fixed-frame component form from the inverse-metric component regularity package. |
 | `eq:christoffel_symbols_ricci_flow` | `BK.MSM110.Chapter06.Section01.eq_christoffel_symbols_ricci_flow` | `RicciFlower.RicciFlow.evol_christoffel_inFrame` | Proved in fixed-frame component form from spacetime-smooth metric components and the Ricci-flow metric equation. |
-| `eq:riemann_curvature_three_one_ricci_flow_one` | `BK.MSM110.Chapter06.Section01.eq_riemann_curvature_three_one_ricci_flow_one_local` | `RicciFlower.RicciFlow.riemann13VariationFormulaInFrameOnLocal_of_christoffelEvolution` | Covered as an arbitrary-point coordinate-frame component theorem, conditional on fixed-base mixed Christoffel regularity. The `partial Gamma + Gamma Gamma` calculation is coordinate-frame/bracket-zero, not an arbitrary-frame formula without bracket terms. |
+| `eq:riemann_curvature_three_one_ricci_flow_one` | status entry; old wrapper removed | coordinate-frame Christoffel/Ricci variation chain | The regular-time mixed-Christoffel predicate exists. The deleted chart-facing `eventually` route was the wrong surface; the next RicciFlower target is a pointwise coordinate-frame/Koszul producer reusing `coordinateFrameAt_bracket_zero_of_mem`. |
 | `eq:ricci_tensor_ricci_flow_one` | `BK.MSM110.Chapter06.Section01.eq_ricci_tensor_ricci_flow_one_local_from_christoffel` | `RicciFlower.RicciFlow.ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution` | Arbitrary-point coordinate-frame Ricci variation is composed from Christoffel evolution and the local Riemann trace, again conditional on the mixed-Christoffel input. |
 | `eq:ricci_tensor_ricci_flow_two` | `BK.MSM110.Chapter06.Section01.eq_ricci_tensor_ricci_flow_two_local` and `BK.MSM110.Chapter06.Section01.eq_ricci_tensor_ricci_flow_two` | `RicciFlower.RicciFlow.ricciEvolutionEquationInFrameOnLocal_of_variation_commutators` and `RicciFlower.RicciFlow.evol_ricci_inFrame_of_variation_commutators` | Proved in local and global fixed-frame component forms, assuming the Ricci variation formula and contracted commutator reduction. |
 | one-form Ricci identity support | no BK equation wrapper; recorded in progress notes | `RicciFlower.Connection.oneFormRicciIdentity_of_connection`, `RicciFlower.Connection.oneFormRicciIdentity_of_smooth_connection`, and `RicciFlower.Realized.oneForm_ricci_trace_comm_of_third_comm` | Proved as one-form commutator/trace infrastructure. It still leaves the Ricci-tensor contracted commutator package for Chapter 6.1 as a separate frontier. |
@@ -44,6 +52,24 @@ Sections 1-3.
 | `item:lie_square_of_riemann` | `BK.MSM110.Chapter06.Section03.item_lie_square_of_riemann` | `RicciFlower.RicciFlow.riemannLieSquareInFrame`, `RicciFlower.RicciFlow.RiemannLieSquareComponents` | Formula recorded. |
 | `thm:uhlenbeck_curvature_evolution_two` | `BK.MSM110.Chapter06.Section03.thm_uhlenbeck_curvature_evolution_two` | `RicciFlower.RicciFlow.uhlenbeckCurvatureEvolution_slick_of_btensor_identities` | Statement scaffold with intentional `sorry`; needs the `Rm^2` and `Rm#` identities in terms of the Uhlenbeck `B` tensor. |
 | `cor:pc_opreserved` | `BK.MSM110.Chapter06.Section03.cor_pc_opreserved_positive`, `BK.MSM110.Chapter06.Section03.cor_pc_opreserved_negative` | `RicciFlower.RicciFlow.positiveCurvatureOperator_preserved_of_slick_evolution`, `RicciFlower.RicciFlow.negativeCurvatureOperator_preserved_of_slick_evolution` | Statement scaffold with intentional `sorry`; this is the tensor maximum-principle application frontier. |
+
+## Sections 6.4-6.10 Statement Inventory
+
+Sections 6.4-6.10 now follow the same book-companion pattern: each section has
+one `RicciFlower.RicciFlow.Evolution.*` statement file and one thin
+`BK.MSM110.Chapter06.SectionNN` wrapper file.  Intermediate displayed
+equations are represented by small predicates where a full tensor or analytic
+definition is not yet available.
+
+| Range | BK module | Canonical RicciFlower file | Status |
+| --- | --- | --- | --- |
+| 6.4 | `BK.MSM110.Chapter06.Section04` | `RicciFlower.RicciFlow.Evolution.OdeReduction` | All labels recorded; algebra/ODE wrappers only. |
+| 6.5 | `BK.MSM110.Chapter06.Section05` | `RicciFlower.RicciFlow.Evolution.LocalPinching` | All labels recorded; pinching theorem producers intentionally scaffolded. |
+| 6.6 | `BK.MSM110.Chapter06.Section06` | `RicciFlower.RicciFlow.Evolution.ScalarGradient` | All labels recorded; Bochner/gradient-estimate producers intentionally scaffolded. |
+| 6.7 | `BK.MSM110.Chapter06.Section07` | `RicciFlower.RicciFlow.Evolution.LongTimeExistence` | All labels recorded; BBS and continuation inputs are explicit frontiers. |
+| 6.8 | `BK.MSM110.Chapter06.Section08` | `RicciFlower.RicciFlow.Evolution.FiniteTimeBlowup` | All labels recorded; finite-time singularity and convergence claims are scaffolds. |
+| 6.9 | `BK.MSM110.Chapter06.Section09` | `RicciFlower.RicciFlow.Evolution.NormalizedFlow` | All labels recorded; normalized-flow scaling and global comparison remain interfaces. |
+| 6.10 | `BK.MSM110.Chapter06.Section10` | `RicciFlower.RicciFlow.Evolution.ExponentialConvergence` | All labels recorded; exponential convergence remains a global analytic frontier. |
 
 ## Deferred Frontiers
 

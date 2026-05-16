@@ -319,6 +319,30 @@ Order:
 7. `|Ric|^2` and `|Ric^0|^2` evolution;
 8. quotient and pinching quantities.
 
+Hamilton Section 6 status on 2026-05-15:
+
+- The Ricci-flow equation itself is part of the solution interface.
+- Lemma 6.1 inverse-metric evolution is closed by
+  `RicciFlow.evol_inverse_metric_inFrame`.
+- Lemma 6.2 Christoffel evolution is closed by
+  `RicciFlow.evol_christoffel_inFrame`.
+- Lemma 6.3 Ricci evolution is closed in local coordinate-frame component form
+  by
+  `RicciFlow.evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators`.
+  Arbitrary-frame packaging is optional polish, not the next mathematical
+  blocker.
+- Lemma 6.6 scalar evolution is closed as a trace-route theorem in
+  `RicciFlow/Evolution/Scalar.lean`; a convenience wrapper can later feed the
+  coordinate-frame Lemma 6.3 producer directly into that theorem.
+- Corollary 6.5 Lichnerowicz presentation is closed in fixed-frame component
+  form by
+  `RicciFlow.ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm`;
+  the coordinate-frame exposure theorem is
+  `RicciFlow.evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators`.
+- The remaining Hamilton Section 6 work is Riemann evolution packaging,
+  Lemma 6.7 Ricci-norm evolution, the trace-free Ricci norm evolution, and
+  then the quotient/pinching quantities.
+
 Old reference files:
 
 - `DifferentialGeometry/Synthetic/Flow/RicciFlow/Evolution/Connection.lean`
@@ -329,11 +353,11 @@ Old reference files:
 
 RicciFlower target files:
 
-- future `RicciFlower/RicciFlow/Evolution/Metric.lean`
-- future `RicciFlower/RicciFlow/Evolution/Connection.lean`
+- `RicciFlower/RicciFlow/Evolution/Metric.lean`
+- `RicciFlower/RicciFlow/Evolution/Connection.lean`
 - future `RicciFlower/RicciFlow/Evolution/Riemann.lean`
-- future `RicciFlower/RicciFlow/Evolution/Ricci.lean`
-- future `RicciFlower/RicciFlow/Evolution/Scalar.lean`
+- `RicciFlower/RicciFlow/Evolution/Ricci.lean`
+- `RicciFlower/RicciFlow/Evolution/Scalar.lean`
 - future `RicciFlower/RicciFlow/Evolution/Norms.lean`
 
 ### G6. Maximum Principles

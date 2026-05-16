@@ -3,7 +3,18 @@ import RicciFlower.RicciFlow.Evolution.LongTimeExistence
 set_option autoImplicit false
 set_option linter.style.longLine false
 
-/-! # MSM110 Chapter 6.7: Higher Derivative Estimates and Long-Time Existence -/
+/-!
+# MSM110 Chapter 6.7: Higher Derivative Estimates and Long-Time Existence
+
+Exact LaTeX labels represented here:
+`LongTimeExistSection`, `CurvatureBlowup`,
+`Chapter5CurvatureDerivativeBoundsAssumed`,
+`Chapter5CurvatureDerivativeBoundsUsed`, `MetricDerivativeBounds`,
+`ContinuousLimitMetric`, `UniformEquivalenceOfMetrics`,
+`OneTimeOneSpaceDerivative`, `BoundGamma`,
+`BoundDerivativesOfRicciInChart`, `TermsToBoundForDGamma`,
+`RicciDerivativeBounds`.
+-/
 
 namespace BK
 namespace MSM110
@@ -64,6 +75,30 @@ theorem cor_ricci_derivative_bounds
     RicciDerivativeBoundsOn ricciDerivNorm T :=
   RicciFlower.RicciFlow.ricci_derivative_bounds
     ricciDerivNorm curvNorm K T hcurv
+
+theorem eq_one_time_one_space_derivative
+    (mixedMetricDerivNorm : Real -> M -> Real) (T C : Real)
+    (h : OneTimeOneSpaceDerivativeEstimateOn mixedMetricDerivNorm T C) :
+    OneTimeOneSpaceDerivativeEstimateOn mixedMetricDerivNorm T C :=
+  h
+
+theorem eq_bound_gamma
+    (gammaNorm : Real -> M -> Real) (T C : Real)
+    (h : ChristoffelCoordBoundOn gammaNorm T C) :
+    ChristoffelCoordBoundOn gammaNorm T C :=
+  h
+
+theorem eq_bound_derivatives_of_ricci_in_chart
+    (ricciChartDerivNorm : Nat -> Real -> M -> Real) (T : Real)
+    (h : RicciChartDerivativeBoundsOn ricciChartDerivNorm T) :
+    RicciChartDerivativeBoundsOn ricciChartDerivNorm T :=
+  h
+
+theorem eq_terms_to_bound_for_dgamma
+    (termNorm : Nat -> Real -> M -> Real) (T : Real)
+    (h : DGammaTermsToBoundOn termNorm T) :
+    DGammaTermsToBoundOn termNorm T :=
+  h
 
 theorem thm_curvature_blowup
     (curvSup : Real -> Real) (T : Real)

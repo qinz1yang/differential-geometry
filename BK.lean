@@ -6,9 +6,10 @@ Authors: RicciFlower contributors
 
 import BK.MSM110.Chapter04
 import BK.MSM110.Chapter06
+import BK.MSM135.Chapter06
 
 /-!
-# MSM110 Book Companion
+# Book Companion
 
 Thin companion index mapping book statements to the canonical formalizations in
 `RicciFlower`.

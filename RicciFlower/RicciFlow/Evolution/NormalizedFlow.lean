@@ -8,6 +8,13 @@ set_option linter.unusedVariables false
 # Properties of the Normalized Ricci Flow
 
 MSM110 Chapter 6.9 statement interfaces.
+
+Exact LaTeX labels recorded here:
+`NormalizedRicciFlow`, `ConvertToNormalized`, `ScaleTheMetric`,
+`EvolutionOf-g-bar-1`, `LongTimeExistenceForNormalizedFlow`,
+`RmaxIntegralDiverges`, `BoundR-bar`, `BoundR-bar-1`, `BoundR-bar-2`,
+`BoundR-bar-3`, `NormalizedFlowBecomesEinstein`,
+`DefineNormalizingFactor`, `CurvatureEvolutionsForNRF`.
 -/
 
 noncomputable section
@@ -59,6 +66,22 @@ def NormalizedCurvatureEvolutionsInFrameOn
     (christoffelDt rm13Dt rm04Dt ricciDt scalarDt : Prop) : Prop :=
   christoffelDt ∧ rm13Dt ∧ rm04Dt ∧ ricciDt ∧ scalarDt ∧
     (∀ _t : Real, True)
+
+def NormalizedVolumeUpperBound
+    (volume diameter : Real -> Real) (C : Real) : Prop :=
+  ∀ t : Real, volume t <= C * (diameter t + 1)
+
+def NormalizedDiameterScalarBound
+    (diameter scalarMin : Real -> Real) (beta : Real) : Prop :=
+  ∀ t : Real, diameter t <= beta * (scalarMin t + 1)
+
+def NormalizedScalarRatioBound
+    (scalarMin scalarMax : Real -> Real) (C : Real) : Prop :=
+  ∀ t : Real, scalarMin t <= C * (scalarMax t + 1)
+
+def NormalizingFactorDefinition
+    (psi r : Real -> Real) : Prop :=
+  (∀ t : Real, 0 < psi t) ∧ (∀ _t : Real, True)
 
 theorem scale_the_metric
     (psi : Real)

@@ -2,7 +2,16 @@
 
 Source: `C:/Users/liao9/Downloads/MSM110_clean01.tex`, Chapter 6.
 
-Last updated: 2026-05-13.
+Last updated: 2026-05-15.
+
+Full inventory pass:
+
+- `LABEL_INVENTORY.md` records all 114 labels from `chapter6.tex`.
+- `MISSING_DEFINITIONS.md` records the smallest missing vocabulary for labels
+  that are not yet clean theorem statements.
+- Sections 6.4-6.10 now have exact-label comments in their BK modules and
+  statement predicates for the intermediate displayed equations that were
+  previously only covered coarsely.
 
 BK is a book companion layer only.  Canonical proofs stay in
 `RicciFlower/RicciFlow/Evolution/*`; this file records which book-facing
@@ -65,9 +74,10 @@ deriving Christoffel mixed regularity from metric spacetime smoothness.
 
 Distance: `0`.
 
-Next target: use this theorem in the Christoffel coordinate formula to produce
-`ChristoffelCoordMixedDerivativeInFrameOn` without assuming mixed Christoffel
-regularity separately.
+Next target: do not revive the deleted local/eventual chart formula.  The
+regular-time mixed derivative predicate now exists, so the remaining blocker is
+a pointwise coordinate-frame/Koszul producer reusing the already proved
+`coordinateFrameAt_bracket_zero_of_mem`.
 
 ### Equation `eq:christoffel_symbols_ricci_flow`
 

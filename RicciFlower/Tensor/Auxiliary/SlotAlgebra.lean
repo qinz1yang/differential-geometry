@@ -1,5 +1,8 @@
-import Mathlib.Algebra.BigOperators.Group.Finset
-import Mathlib.Data.Fin.Basic
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
+import Mathlib.Data.Fin.Tuple.Basic
+import Mathlib.Tactic.Abel
 
 /-!
 # Slot algebra for tensor calculations
@@ -31,7 +34,7 @@ lemma update_update_ne_comm
     · simp [Function.update, hrp, hrq]
 
 lemma double_sum_sub_eq_diag_sub_diag_of_offdiag_swap
-    {ι A : Type*} [Fintype ι] [DecidableEq ι] [AddCommGroup A]
+    {ι A : Type*} [Fintype ι] [AddCommGroup A]
     (F G : ι → ι → A)
     (h : ∀ q p, q ≠ p → F q p = G p q) :
     (∑ q, ∑ p, F q p) - (∑ q, ∑ p, G q p) =

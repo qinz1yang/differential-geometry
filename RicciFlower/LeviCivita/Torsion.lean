@@ -72,7 +72,7 @@ theorem torsion_free_family_apply
 
 /-! ## Coordinate proof for the Koszul connection -/
 
-private theorem coordinate_basis_coord_eq_sum_inv_metric_inner
+theorem coordinate_basis_coord_eq_sum_inv_metric_inner
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -106,7 +106,42 @@ private theorem coordinate_basis_coord_eq_sum_inv_metric_inner
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [(hinv a j).1]
     _ = basis.coord a V := by
-          simp
+      simp
+
+theorem koszulScalar_coordinateFrame_eq_metric_derivs_of_mem
+    (g : SmoothRiemannianMetric I M)
+    (x0 : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x0)
+    (i j l : CoordinateIdx (𝕜 := Real) E) :
+    koszulScalar (I := I) g
+        (coordinateFrameAt (I := I) x0 i)
+        (coordinateFrameAt (I := I) x0 j)
+        (coordinateFrameAt (I := I) x0 l) x =
+      directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 i)
+        (fun y : M =>
+          g.inner y (coordinateFrameAt (I := I) x0 j y)
+            (coordinateFrameAt (I := I) x0 l y)) x +
+      directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 j)
+        (fun y : M =>
+          g.inner y (coordinateFrameAt (I := I) x0 i y)
+            (coordinateFrameAt (I := I) x0 l y)) x -
+      directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 l)
+        (fun y : M =>
+          g.inner y (coordinateFrameAt (I := I) x0 i y)
+            (coordinateFrameAt (I := I) x0 j y)) x := by
+  unfold koszulScalar
+  rw [show
+      (fun y : M =>
+        g.inner y (coordinateFrameAt (I := I) x0 l y)
+          (coordinateFrameAt (I := I) x0 i y)) =
+      (fun y : M =>
+        g.inner y (coordinateFrameAt (I := I) x0 i y)
+          (coordinateFrameAt (I := I) x0 l y)) by
+        funext y
+        exact g.symm y (coordinateFrameAt (I := I) x0 l y)
+          (coordinateFrameAt (I := I) x0 i y)]
+  simp [coordinateFrameAt_bracket_zero_of_mem (I := I) hx i j,
+    coordinateFrameAt_bracket_zero_of_mem (I := I) hx j l,
+    coordinateFrameAt_bracket_zero_of_mem (I := I) hx l i]
 
 private theorem koszulScalar_coordinateFrame_eq_metric_derivs
     (g : SmoothRiemannianMetric I M)
@@ -126,21 +161,9 @@ private theorem koszulScalar_coordinateFrame_eq_metric_derivs
       directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 l)
         (fun y : M =>
           g.inner y (coordinateFrameAt (I := I) x0 i y)
-            (coordinateFrameAt (I := I) x0 j y)) x0 := by
-  unfold koszulScalar
-  rw [show
-      (fun y : M =>
-        g.inner y (coordinateFrameAt (I := I) x0 l y)
-          (coordinateFrameAt (I := I) x0 i y)) =
-      (fun y : M =>
-        g.inner y (coordinateFrameAt (I := I) x0 i y)
-          (coordinateFrameAt (I := I) x0 l y)) by
-        funext y
-        exact g.symm y (coordinateFrameAt (I := I) x0 l y)
-          (coordinateFrameAt (I := I) x0 i y)]
-  simp [coordinateFrameAt_bracket_zero (I := I) x0 i j,
-    coordinateFrameAt_bracket_zero (I := I) x0 j l,
-    coordinateFrameAt_bracket_zero (I := I) x0 l i]
+            (coordinateFrameAt (I := I) x0 j y)) x0 :=
+  koszulScalar_coordinateFrame_eq_metric_derivs_of_mem
+    (I := I) g x0 (coordinateFrameAt_mem (I := I) x0) i j l
 
 /-- The Koszul scalar is symmetric in coordinate-frame directions at the
 coordinate base point. -/

@@ -1,4 +1,9 @@
 import RicciFlower.Tensor.RSTensor.CotangentRiemannian
+import RicciFlower.Connection.MetricCompatibility
+import RicciFlower.Coordinates.MetricCompatibility
+import RicciFlower.Coordinates.NablaComponents.TwoTensor
+import RicciFlower.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import RicciFlower.VectorBundle.PartialMfderiv
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
@@ -1385,6 +1390,609 @@ theorem inner0S_two_eq_coord
             B (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
   exact inner0S_two_eq_coord_direct (I := I) g x basis gInv hinv A B
 
+private theorem sum5_swap_first_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F a j k l i) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.2 x.1.1.1.2 x.1.1.2 x.1.2 x.1.1.1.1) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.2, p.1.1.1.2), p.1.1.2), p.1.2), p.1.1.1.1)
+            invFun := fun p => ((((p.2, p.1.1.1.2), p.1.1.2), p.1.2), p.1.1.1.1)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.2 p.1.1.1.2 p.1.1.2 p.1.2 p.1.1.1.1)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+private theorem sum5_swap_second_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i a k l j) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.2 x.1.1.2 x.1.2 x.1.1.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.2), p.1.1.2), p.1.2), p.1.1.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.2), p.1.1.2), p.1.2), p.1.1.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.2 p.1.1.2 p.1.2 p.1.1.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+private theorem sum5_swap_third_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j a l k) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.2 x.1.2 x.1.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.2), p.1.2), p.1.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.2), p.1.2), p.1.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.2 p.1.2 p.1.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+private theorem sum5_swap_fourth_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k a l) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.2 x.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.1.1.2), p.2), p.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.1.1.2), p.2), p.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.2 p.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+private theorem inner0S_two_metricCompatible_coord_corrA1
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * ((Γ i a * A a j) * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [Finset.sum_mul]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U a k * U j l * ((Γ a i * A i j) * B k l) := by
+          simpa using sum5_swap_first_last (fun i j k l a : Idx =>
+            U i k * U j l * ((Γ i a * A a j) * B k l))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U a k * U j l * (Γ a i * A i j * B k l))
+                = (∑ a : Idx, Γ a i * U a k) * (U j l * A i j * B k l) := by
+                  rw [Finset.sum_mul]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l := by
+                  ring
+
+private theorem inner0S_two_metricCompatible_coord_corrA2
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * ((Γ j a * A i a) * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [Finset.sum_mul]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U a l * ((Γ a j * A i j) * B k l) := by
+          simpa using sum5_swap_second_last (fun i j k l a : Idx =>
+            U i k * U j l * ((Γ j a * A i a) * B k l))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i k * U a l * (Γ a j * A i j * B k l))
+                = U i k * (∑ a : Idx, Γ a j * U a l * (A i j * B k l)) := by
+                  rw [Finset.mul_sum]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = U i k * ((∑ a : Idx, Γ a j * U a l) * (A i j * B k l)) := by
+                  rw [Finset.sum_mul]
+            _ = U i k * (∑ a : Idx, Γ a j * U a l) * (A i j * B k l) := by
+                  ring
+            _ = U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l := by
+                  ring
+
+private theorem inner0S_two_metricCompatible_coord_corrB1
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l)))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * (A i j * (Γ k a * B a l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [← Finset.mul_sum]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i a * U j l * (A i j * (Γ a k * B k l)) := by
+          simpa using sum5_swap_third_last (fun i j k l a : Idx =>
+            U i k * U j l * (A i j * (Γ k a * B a l)))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i a * U j l * (A i j * (Γ a k * B k l)))
+                = (∑ a : Idx, Γ a k * U i a) * (U j l * A i j * B k l) := by
+                  rw [Finset.sum_mul]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l := by
+                  ring
+
+private theorem inner0S_two_metricCompatible_coord_corrB2
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a)))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * (A i j * (Γ l a * B k a)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [← Finset.mul_sum]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j a * (A i j * (Γ a l * B k l)) := by
+          simpa using sum5_swap_fourth_last (fun i j k l a : Idx =>
+            U i k * U j l * (A i j * (Γ l a * B k a)))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i k * U j a * (A i j * (Γ a l * B k l)))
+                = U i k * (∑ a : Idx, Γ a l * U j a * (A i j * B k l)) := by
+                  rw [Finset.mul_sum]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = U i k * ((∑ a : Idx, Γ a l * U j a) * (A i j * B k l)) := by
+                  rw [Finset.sum_mul]
+            _ = U i k * (∑ a : Idx, Γ a l * U j a) * (A i j * B k l) := by
+                  ring
+            _ = U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l := by
+                  ring
+
+private theorem inner0S_two_metricCompatible_coord_DU_first
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a))) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      DU i k * U j l * A i j * B k l) =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) := by
+  classical
+  have hA1 := inner0S_two_metricCompatible_coord_corrA1 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB1 := inner0S_two_metricCompatible_coord_corrB1 (U := U) (Γ := Γ) (A := A) (B := B)
+  rw [hA1, hB1]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      DU i k * U j l * A i j * B k l)
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (-(∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l -
+          (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hDU i k]
+          ring
+    _ =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+
+private theorem inner0S_two_metricCompatible_coord_DU_second
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a))) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * DU j l * A i j * B k l) =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+  classical
+  have hA2 := inner0S_two_metricCompatible_coord_corrA2 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB2 := inner0S_two_metricCompatible_coord_corrB2 (U := U) (Γ := Γ) (A := A) (B := B)
+  rw [hA2, hB2]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * DU j l * A i j * B k l)
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (-(U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) -
+          U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hDU j l]
+          ring
+    _ =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+
+private theorem inner0S_two_metricCompatible_coord_NA_sum
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DA NA : Idx -> Idx -> Real)
+    (hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * A a q) -
+          (∑ a : Idx, Γ q a * A p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (NA i j * B k l)) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (DA i j * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (NA i j * B k l))
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (U i k * U j l * (DA i j * B k l) -
+          U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l) -
+          U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hNA i j]
+          ring
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (DA i j * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+          simp [Finset.sum_sub_distrib]
+
+private theorem inner0S_two_metricCompatible_coord_NB_sum
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DB NB : Idx -> Idx -> Real)
+    (hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * B a q) -
+          (∑ a : Idx, Γ q a * B p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * NB k l)) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * DB k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * NB k l))
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (U i k * U j l * (A i j * DB k l) -
+          U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l)) -
+          U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hNB k l]
+          ring
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * DB k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+          simp [Finset.sum_sub_distrib]
+
+private theorem inner0S_two_metricCompatible_scalar_sum_algebra
+    (P Q A1 A2 B1 B2 : Real) :
+    (-A1 - B1) + (-A2 - B2) + P + Q =
+      (P - A1 - A2) + (Q - B1 - B2) := by
+  ring
+
+private theorem inner0S_two_metricCompatible_coord_algebra
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DA DB NA NB DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a)))
+    (hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * A a q) -
+          (∑ a : Idx, Γ q a * A p a))
+    (hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * B a q) -
+          (∑ a : Idx, Γ q a * B p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+        U i k * U j l * (DA i j * B k l + A i j * DB k l))) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) := by
+  classical
+  let P : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (DA i j * B k l)
+  let Q : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * DB k l)
+  let A1 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)
+  let A2 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)
+  let B1 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))
+  let B2 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))
+  have hDU1 :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        DU i k * U j l * A i j * B k l) = -A1 - B1 := by
+    simpa [A1, B1] using
+      inner0S_two_metricCompatible_coord_DU_first
+        (U := U) (Γ := Γ) (A := A) (B := B) (DU := DU) hDU
+  have hDU2 :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * DU j l * A i j * B k l) = -A2 - B2 := by
+    simpa [A2, B2] using
+      inner0S_two_metricCompatible_coord_DU_second
+        (U := U) (Γ := Γ) (A := A) (B := B) (DU := DU) hDU
+  have hNA_sum :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l)) = P - A1 - A2 := by
+    simpa [P, A1, A2] using
+      inner0S_two_metricCompatible_coord_NA_sum
+        (U := U) (Γ := Γ) (A := A) (B := B) (DA := DA) (NA := NA) hNA
+  have hNB_sum :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * NB k l)) = Q - B1 - B2 := by
+    simpa [Q, B1, B2] using
+      inner0S_two_metricCompatible_coord_NB_sum
+        (U := U) (Γ := Γ) (A := A) (B := B) (DB := DB) (NB := NB) hNB
+  have hleft :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+          U i k * U j l * (DA i j * B k l + A i j * DB k l))) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+          U i k * U j l * (DA i j * B k l + A i j * DB k l)))
+          =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (DU i k * U j l * A i j * B k l +
+            U i k * DU j l * A i j * B k l +
+            U i k * U j l * (DA i j * B k l) +
+            U i k * U j l * (A i j * DB k l)) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            refine Finset.sum_congr rfl fun j _ => ?_
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            ring
+      _ =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := by
+            simp [P, Q, Finset.sum_add_distrib, add_assoc]
+  have hright :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l))
+          =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (U i k * U j l * (NA i j * B k l) +
+            U i k * U j l * (A i j * NB k l)) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            refine Finset.sum_congr rfl fun j _ => ?_
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            ring
+      _ =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+            simp [Finset.sum_add_distrib]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+        U i k * U j l * (DA i j * B k l + A i j * DB k l)))
+        =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := hleft
+    _ = (-A1 - B1) + (-A2 - B2) + P + Q := by
+          rw [hDU1, hDU2]
+    _ = (P - A1 - A2) + (Q - B1 - B2) := by
+          exact inner0S_two_metricCompatible_scalar_sum_algebra P Q A1 A2 B1 B2
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+          rw [hNA_sum, hNB_sum]
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) := hright.symm
+
 /-- Coordinate squared norms are independent of the chosen frame realization,
 because both coordinate sums equal the intrinsic norm. -/
 theorem coord_normSq0S_eq_coord
@@ -1402,6 +2010,257 @@ theorem coord_normSq0S_eq_coord
       coordInner0S (I := I) (x := x) s gInv₂ A A basis₂ := by
   rw [← normSq0S_eq_coord (I := I) g x s basis₁ gInv₁ hinv₁ A,
     ← normSq0S_eq_coord (I := I) g x s basis₂ gInv₂ hinv₂ A]
+
+private theorem totalNabla0SRealizes_eval_point_vector_smooth_slots
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    {s : Nat} {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    {nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s + 1)}
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov A nablaA)
+    {x : M} (W : TangentSpace I x)
+    (V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _)) :
+    nablaA x (Fin.cons W (fun q : Fin s => V q x)) =
+      extDerivFun (I := I)
+        (fun y : M => A y (fun q : Fin s => V q y)) x W -
+      ∑ q : Fin s,
+        A x
+          (Function.update (fun r : Fin s => V r x) q
+            ((cov (fun y : M => V q y) x) W)) := by
+  obtain ⟨Wsec, hWsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
+  have h0 := TotalNabla0SRealizes.eval_smooth_slots
+    (I := I) hA Wsec V x
+  simpa [hWsec] using h0
+
+private theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (alpha : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (nablaAlpha : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (hAlpha : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov alpha nablaAlpha)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M)
+    (hSharp : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x) :
+    cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x) =
+      cotangentSharp (I := I) g x
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+          (nablaAlpha x) (X x)) := by
+  classical
+  let Ysharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (alpha y)
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x)))
+      Real (TangentSpace I x) := Module.finBasis Real (TangentSpace I x)
+  apply eq_of_inner_basis_eq (I := I) g x basis
+  intro i
+  obtain ⟨Zsec, hZsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)
+  have hX : MDiffAt (T% (fun y : M => X y)) x :=
+    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hZ : MDiffAt (T% (fun y : M => Zsec y)) x :=
+    Zsec.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hmc_apply :=
+    RicciFlower.Connection.metric_compatible_apply (I := I) hmc
+      (fun y : M => X y) Ysharp (fun y : M => Zsec y) hX hSharp hZ
+  have hpair_fun :
+      (fun y : M => g.inner y (Ysharp y) (Zsec y)) =
+        fun y : M => alpha y (fun _ : Fin 1 => Zsec y) := by
+    funext y
+    simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]
+  have hderiv_pair :
+      mfderiv I 𝓘(Real, Real)
+          (fun y : M => g.inner y (Ysharp y) (Zsec y)) x (X x) =
+        extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) := by
+    rw [hpair_fun]
+    exact (RicciFlower.extDerivFun_real_eq_mfderiv (I := I)
+      (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x)).symm
+  have hnabla_eval :=
+    totalNabla0SRealizes_eval_point_vector_smooth_slots (I := I)
+      hAlpha (X x) (fun _ : Fin 1 => Zsec)
+  have hnabla_pair :
+      g.inner x
+          (cotangentSharp (I := I) g x
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (Zsec x) =
+        extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+          alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) := by
+    rw [cotangentSharp_inner, cotangentToDual_apply]
+    rw [tensor0S_curry_apply_cons]
+    have hupdate :
+        Function.update (fun r : Fin 1 => Zsec x) 0
+            ((cov (fun y : M => Zsec y) x) (X x)) =
+          fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x) := by
+      funext q
+      fin_cases q
+      simp
+    simpa [hupdate] using hnabla_eval
+  calc
+    g.inner x
+        (cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x))
+        (basis i)
+        = g.inner x
+            (cov Ysharp x (X x)) (Zsec x) := by
+          simp [Ysharp, hZsec]
+    _ = extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+          alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) := by
+          have hpair_cov :
+              g.inner x (cov Ysharp x (X x)) (Zsec x) =
+                extDerivFun (I := I)
+                  (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+                  g.inner x (Ysharp x)
+                    ((cov (fun y : M => Zsec y) x) (X x)) := by
+            let a := g.inner x (cov Ysharp x (X x)) (Zsec x)
+            let b := g.inner x (Ysharp x)
+              ((cov (fun y : M => Zsec y) x) (X x))
+            let d := mfderiv I 𝓘(Real, Real)
+              (fun y : M => g.inner y (Ysharp y) (Zsec y)) x (X x)
+            let e := extDerivFun (I := I)
+              (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x)
+            change a = e - b
+            have hs : d = a + b := by
+              simpa [a, b, d] using hmc_apply
+            have hd : d = e := by
+              simpa [d, e] using hderiv_pair
+            have hsum_eq : a + b = e := hs.symm.trans hd
+            calc
+              a = a + b - b := by ring
+              _ = e - b := by rw [hsum_eq]
+          rw [hpair_cov]
+          rw [show
+            g.inner x (Ysharp x) ((cov (fun y : M => Zsec y) x) (X x)) =
+              alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) by
+                simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]]
+    _ = g.inner x
+          (cotangentSharp (I := I) g x
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (Zsec x) := by
+          exact hnabla_pair.symm
+    _ = g.inner x
+          (cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (basis i) := by
+          simp [hZsec]
+
+private theorem cotangentInner_metricCompatible_extDerivFun_of_sharp_mdiffAt
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (alpha beta : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1)
+    (nablaAlpha nablaBeta :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 2)
+    (hAlpha : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov alpha nablaAlpha)
+    (hBeta : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov beta nablaBeta)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M)
+    (hSharpAlpha : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x)
+    (hSharpBeta : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (beta y))) x) :
+    extDerivFun (I := I)
+        (fun y : M => cotangentInner (I := I) g y (alpha y) (beta y))
+        x (X x) =
+      cotangentInner (I := I) g x
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+          (nablaAlpha x) (X x)) (beta x) +
+        cotangentInner (I := I) g x (alpha x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaBeta x) (X x)) := by
+  let Asharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (alpha y)
+  let Bsharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (beta y)
+  have hX : MDiffAt (T% (fun y : M => X y)) x :=
+    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hmc_apply :=
+    RicciFlower.Connection.metric_compatible_apply (I := I) hmc
+      (fun y : M => X y) Asharp Bsharp hX (by simpa [Asharp] using hSharpAlpha)
+      (by simpa [Bsharp] using hSharpBeta)
+  have hcovA :
+      cov Asharp x (X x) =
+        cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaAlpha x) (X x)) := by
+    simpa [Asharp] using
+      cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
+        cov g hmc alpha nablaAlpha hAlpha X x hSharpAlpha
+  have hcovB :
+      cov Bsharp x (X x) =
+        cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaBeta x) (X x)) := by
+    simpa [Bsharp] using
+      cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
+        cov g hmc beta nablaBeta hBeta X x hSharpBeta
+  rw [RicciFlower.extDerivFun_real_eq_mfderiv]
+  change
+    mfderiv I 𝓘(Real, Real)
+        (fun y : M => g.inner y (Asharp y) (Bsharp y)) x (X x) =
+      _
+  rw [hmc_apply]
+  rw [hcovA, hcovB]
+  rfl
+
+/-- Metric compatibility lifted to the induced inner product on `(0,2)`
+covariant tensor fibers.
+
+This is the tensor-metric API bridge needed by Bochner product rules.  The
+base assumption `Connection.IsMetricCompatible` only differentiates tangent
+inner products; this theorem is the induced compatibility statement for
+`inner0S g x 2` and the total covariant derivative on `(0,2)` tensors.
+
+The remaining lower frontier is the component-to-invariant assembly: in a
+coordinate-frame neighborhood, rewrite `inner0S g y 2 (A y) (B y)` as the
+four-index inverse-metric contraction, differentiate that local expression,
+use localized `nabla gInv = 0`, then invoke
+`inner0S_two_metricCompatible_coord_algebra`. -/
+theorem inner0S_two_metricCompatible_extDerivFun
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (nablaA nablaB :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov A nablaA)
+    (hB : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov B nablaB)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    extDerivFun (I := I)
+        (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+      inner0S (I := I) g x 2
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaA x) (X x)) (B x) +
+        inner0S (I := I) g x 2 (A x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaB x) (X x)) := by
+  -- Frontier: assemble the checked coordinate algebra with a localized
+  -- fixed-chart inverse-metric realization on the coordinate-frame base set.
+  sorry
 
 end
 

@@ -161,6 +161,58 @@ private theorem extDerivFun_congr_eventually
   unfold extDerivFun
   rw [hmf, hx]
 
+private theorem coordinateFrameAt_basis_continuousLinearMapAt
+    (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (i : CoordinateIdx (𝕜 := 𝕜) E) :
+    (trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
+        𝕜 x ((coordinateFrameAt_basis (I := I) x₀ hx) i) =
+      (Module.finBasis 𝕜 E) i := by
+  let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+  have hxE : x ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
+  have hx_src : x ∈ (chartAt H x₀).source := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt, e] using hx
+  have hframe :
+      (coordinateFrameAt_basis (I := I) x₀ hx) i =
+        e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
+    rw [coordinateFrameAt_basis_apply]
+    rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rfl
+  rw [hframe]
+  exact e.continuousLinearMapAt_symmL (R := 𝕜) hxE ((Module.finBasis 𝕜 E) i)
+
+private theorem coordinateFrameAt_basis_repr_eq_trivializationAt
+    (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (v : TangentSpace I x) :
+    (coordinateFrameAt_basis (I := I) x₀ hx).repr v =
+      (Module.finBasis 𝕜 E).repr
+        ((trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
+          𝕜 x v) := by
+  classical
+  let b := coordinateFrameAt_basis (I := I) x₀ hx
+  let e := Module.finBasis 𝕜 E
+  let L := (trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
+    𝕜 x
+  have hLbasis : ∀ i, L (b i) = e i := by
+    intro i
+    exact coordinateFrameAt_basis_continuousLinearMapAt
+      (I := I) x₀ hx i
+  have hLv : L v = ∑ i, (b.repr v i) • e i := by
+    calc
+      L v = L (∑ i, (b.repr v i) • b i) := by
+          exact congrArg L (b.sum_repr v).symm
+      _ = ∑ i, L ((b.repr v i) • b i) := by
+          rw [map_sum]
+      _ = ∑ i, (b.repr v i) • L (b i) := by
+          simp
+      _ = ∑ i, (b.repr v i) • e i := by
+          simp [hLbasis]
+  rw [hLv]
+  ext i
+  exact (congrFun (e.repr_sum_self (fun i => b.repr v i)) i).symm
+
+set_option backward.isDefEq.respectTransparency false in
 /-- On the coordinate-frame domain, the fixed tensor-bundle basis section
 `Tensor0SSpace.constInChart` is the basis tensor of the coordinate local frame.
 
@@ -174,7 +226,19 @@ theorem constInChart_basisTensor0S_coordFrame {r : ℕ}
         ((continuousMultilinearMap_basis
           (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x =
       basisTensor0S (I := I) (coordinateFrameAt_basis (I := I) x₀ hx) upper := by
-  sorry
+  classical
+  let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+  have hxE : x ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
+  rw [Tensor0SSpace.constInChart]
+  rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
+    (F := E) (E := TangentSpace I) x₀ x hxE]
+  ext v
+  simp [basisTensor0S, tensor0SBasis, continuousMultilinearMapBasis_apply,
+    continuousMultilinearMapBasisElem, continuousMultilinearMap_basis,
+    continuousMultilinearMap_basisElem, coframeOfBasis,
+    ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    coordinateFrameAt_basis_repr_eq_trivializationAt]
 
 /-- Coordinate-frame expansion of evaluating a mixed tensor field on a
 covariant input field.

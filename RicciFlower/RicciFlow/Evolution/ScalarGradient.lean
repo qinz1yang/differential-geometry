@@ -12,6 +12,13 @@ This file records the quantities and hypotheses used by the scalar-curvature
 gradient estimate.  The geometric producer facts are not proved here: they
 should be supplied by scalar/Ricci evolution, Bochner, pinching, and maximum
 principle layers.
+
+LaTeX labels covered here include `GradientEstimateForScalarIn3d`,
+`PinchingEstimateYetAgain`, `EstimateGradientOfScalar`,
+`grad R norm sqr evolution`, `GradRoverR-evolution`,
+`EvolutionEquationOfScalarSquared`, `EvolutionOfNormSquaredOfRicci`,
+`GradScalarPartial1`, `GradScalarPartial2`, `GradRicciEstimate`,
+`GradScalarPartial3`, `CS-EstimateForGradR`, `VforGradR1`, and `VforGradR2`.
 -/
 
 noncomputable section
@@ -27,6 +34,12 @@ def ScalarGradientEstimateOn
   ∀ (t : Real) (x : M),
     gradScalarNormSq t x / scalar t x ^ 3 ≤
       beta * decayHalf t x + C * decayCubic t x
+
+/-- Display `PinchingEstimateYetAgain`, the pinching estimate used as input for
+the scalar-gradient argument. -/
+def PinchingEstimateYetAgainOn
+    (tracefreeRmRatio decay : Real -> M -> Real) (C : Real) : Prop :=
+  ∀ (t : Real) (x : M), tracefreeRmRatio t x ≤ C * decay t x
 
 def GradScalarNormEvolutionOn
     (gradScalarNormSq hessianScalarNormSq gradRicciNormSq : Real -> M -> Real) :
@@ -44,6 +57,16 @@ def ScalarAndRicciNormSquaredEvolutionOn
   ∀ (t : Real) (x : M),
     scalar t x ^ 2 = scalarSqRhs t x ∧ ricciNormSq t x = ricciNormSqRhs t x
 
+/-- Display `EvolutionEquationOfScalarSquared`. -/
+def ScalarSquaredEvolutionOn
+    (scalar scalarSqRhs : Real -> M -> Real) : Prop :=
+  ∀ (t : Real) (x : M), scalar t x ^ 2 = scalarSqRhs t x
+
+/-- Display `EvolutionOfNormSquaredOfRicci`. -/
+def RicciNormSquaredEvolutionOn
+    (ricciNormSq ricciNormSqRhs : Real -> M -> Real) : Prop :=
+  ∀ (t : Real) (x : M), ricciNormSq t x = ricciNormSqRhs t x
+
 def tracefreeRicciNormSqOf
     (scalar ricciNormSq : Real -> M -> Real) (t : Real) (x : M) : Real :=
   ricciNormSq t x - scalar t x ^ 2 / 3
@@ -60,6 +83,15 @@ def GradRicciControlsGradScalarOn
     gradScalarNormSq t x / 3 ≤ gradRicciNormSq t x ∧
       (1 / 37 : Real) * gradRicciNormSq t x ≤
         gradRicciNormSq t x - gradScalarNormSq t x / 3
+
+/-- Display `CS-EstimateForGradR`, the Cauchy-Schwarz estimate applied to the
+gradient of scalar curvature. -/
+def CauchySchwarzEstimateForGradScalarOn
+    (gradScalarNormSq hessianScalarNormSq gradRicciNormSq : Real -> M -> Real)
+    (C : Real) : Prop :=
+  ∀ (t : Real) (x : M),
+    gradScalarNormSq t x ≤
+      C * hessianScalarNormSq t x * gradRicciNormSq t x
 
 def scalarGradientV
     (gradScalarNormSq scalar tracefreeRicciNormSq : Real -> M -> Real)

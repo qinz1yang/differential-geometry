@@ -4,7 +4,17 @@ set_option autoImplicit false
 set_option linter.style.longLine false
 set_option linter.unusedVariables false
 
-/-! # MSM110 Chapter 6.5: Local Pinching Estimates -/
+/-!
+# MSM110 Chapter 6.5: Local Pinching Estimates
+
+Exact LaTeX labels represented here:
+`PinchingFor3Manifolds`, `Ricci-pinching-preserved`,
+`ricci pinching preserved ineq`, `d/dt ln (lambda/mu+nu)`,
+`RicciLowerBound`, `ricci pinching improves theorem`,
+`PinchingEstimate-HamiltonForm`, `f pinching improves evolution`,
+`DefineP`, `Palpha over Qbeta`, `f-pinching-evolution`,
+`R evolution lambda mu nu`.
+-/
 
 namespace BK
 namespace MSM110
@@ -70,6 +80,30 @@ theorem lem_f_pinching_evolution
     (hpq : Prop) :
     TracefreeRmPinchingEvolutionInequalityOn f scalar Q epsilon :=
   RicciFlower.RicciFlow.tracefree_rm_pinching_evolution f scalar Q epsilon hpq
+
+theorem eq_ricci_pinching_preserved_ineq
+    (lambda mu nu : Real -> M -> Real) (C : Real)
+    (h : RicciPinchingPreservedInequalityOn lambda mu nu C) :
+    RicciPinchingPreservedInequalityOn lambda mu nu C :=
+  h
+
+theorem eq_d_dt_ln_lambda_mu_nu
+    (lambda mu nu : Real -> M -> Real)
+    (h : LogLambdaOverMuPlusNuDerivativeFormulaOn lambda mu nu) :
+    LogLambdaOverMuPlusNuDerivativeFormulaOn lambda mu nu :=
+  h
+
+theorem eq_f_pinching_improves_evolution
+    (f rhs : Real -> M -> Real)
+    (h : PinchingImprovesFunctionEvolutionOn f rhs) :
+    PinchingImprovesFunctionEvolutionOn f rhs :=
+  h
+
+theorem eq_r_evolution_lambda_mu_nu
+    (scalar lambda mu nu rhs : Real -> M -> Real)
+    (h : ScalarEvolutionEigenvalueFormulaOn scalar lambda mu nu rhs) :
+    ScalarEvolutionEigenvalueFormulaOn scalar lambda mu nu rhs :=
+  h
 
 end
 

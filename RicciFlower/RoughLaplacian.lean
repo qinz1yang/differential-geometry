@@ -399,6 +399,121 @@ theorem metricTracePair0SAt_eq_sum_basis
           intro l _
           congr 1
 
+/-- The metric tensor has squared norm equal to the dimension, expressed via
+any basis and inverse metric components. -/
+theorem normSq0S_metricTensor0S_eq_card
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv) :
+    normSq0S (I := I) g x 2 (metricTensor0S (I := I) g x) =
+      (Fintype.card Idx : Real) := by
+  classical
+  rw [normSq0S_eq_inner]
+  change metricTracePair0SAt (I := I) g (metricTensor0S (I := I) g x) =
+    (Fintype.card Idx : Real)
+  rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis gInv hinv]
+  calc
+    (∑ i : Idx, ∑ j : Idx,
+        gInv i j * metricTensor0S (I := I) g x (vec2 (I := I) (basis i) (basis j)))
+        =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * g.inner x (basis j) (basis i) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          simp [metricTensor0S_apply, vec2, RicciFlower.Curvature.vec2,
+            g.symm x (basis i) (basis j)]
+    _ = ∑ i : Idx, (if i = i then (1 : Real) else 0) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          exact (hinv i i).1
+    _ = (Fintype.card Idx : Real) := by
+          simp
+
+/-- Intrinsic trace/norm Cauchy-Schwarz for covariant two-tensors:
+`(tr_g A)^2 <= n |A|^2`. -/
+theorem metricTracePair0SAt_sq_le_card_mul_normSq0S
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
+    (metricTracePair0SAt (I := I) g A) ^ 2 <=
+      (Fintype.card Idx : Real) * normSq0S (I := I) g x 2 A := by
+  let D := tensor0SMetricData (I := I) g x 2
+  letI : PreInnerProductSpace.Core Real
+      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
+    D.toCore.toCore
+  letI : Inner Real
+      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
+    D.toCore.toCore.toInner
+  have hcs :=
+    InnerProductSpace.Core.inner_mul_inner_self_le
+      (𝕜 := Real)
+      (F := Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+      (metricTensor0S (I := I) g x) A
+  have hmetric :
+      Inner.inner Real (metricTensor0S (I := I) g x)
+          (metricTensor0S (I := I) g x) =
+        (Fintype.card Idx : Real) := by
+    change D.inner (metricTensor0S (I := I) g x)
+        (metricTensor0S (I := I) g x) = (Fintype.card Idx : Real)
+    exact normSq0S_metricTensor0S_eq_card (I := I) g basis gInv hinv
+  have hA :
+      Inner.inner Real A A = normSq0S (I := I) g x 2 A := by
+    change D.inner A A = normSq0S (I := I) g x 2 A
+    rfl
+  have htrace :
+      Inner.inner Real (metricTensor0S (I := I) g x) A =
+        metricTracePair0SAt (I := I) g A := by
+    change D.inner (metricTensor0S (I := I) g x) A =
+      metricTracePair0SAt (I := I) g A
+    rfl
+  have htrace_comm :
+      Inner.inner Real A (metricTensor0S (I := I) g x) =
+        metricTracePair0SAt (I := I) g A := by
+    change D.inner A (metricTensor0S (I := I) g x) =
+      metricTracePair0SAt (I := I) g A
+    rw [D.inner_comm]
+    rfl
+  have habs :
+      ‖Inner.inner Real (metricTensor0S (I := I) g x) A‖ *
+          ‖Inner.inner Real A (metricTensor0S (I := I) g x)‖ =
+        (metricTracePair0SAt (I := I) g A) ^ 2 := by
+    rw [htrace, htrace_comm]
+    simp [Real.norm_eq_abs, pow_two]
+  rw [habs, hmetric, hA] at hcs
+  exact hcs
+
+/-- Divided form of the intrinsic trace/norm Cauchy-Schwarz inequality. -/
+theorem metricTracePair0SAt_sq_div_rank_le_normSq0S
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
+    (1 / (Fintype.card Idx : Real)) *
+        (metricTracePair0SAt (I := I) g A) ^ 2 <=
+      normSq0S (I := I) g x 2 A := by
+  classical
+  have hcard : 0 < (Fintype.card Idx : Real) := by
+    exact Nat.cast_pos.mpr Fintype.card_pos
+  have h :=
+    metricTracePair0SAt_sq_le_card_mul_normSq0S
+      (I := I) g basis gInv hinv A
+  have hdiv :
+      (metricTracePair0SAt (I := I) g A) ^ 2 /
+          (Fintype.card Idx : Real) <=
+        normSq0S (I := I) g x 2 A := by
+    rw [div_le_iff₀ hcard]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using h
+  simpa [div_eq_mul_inv, one_div, mul_comm, mul_left_comm, mul_assoc] using hdiv
+
 /-- Coordinate formula for the intrinsic trace of the first two slots. -/
 theorem metricTraceFirstTwo0SAt_eq_sum_basis
     (g : SmoothRiemannianMetric I M)

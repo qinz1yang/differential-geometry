@@ -3,6 +3,8 @@ import RicciFlower.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 /-!
 # Regularity of mixed tensor nabla
 -/
+set_option linter.unusedSectionVars false
+
 namespace Tensor0SBundle
 
 open Bundle Set TensorLieDeriv

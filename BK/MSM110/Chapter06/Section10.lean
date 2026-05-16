@@ -3,7 +3,13 @@ import RicciFlower.RicciFlow.Evolution.ExponentialConvergence
 set_option autoImplicit false
 set_option linter.style.longLine false
 
-/-! # MSM110 Chapter 6.10: Exponential Convergence -/
+/-!
+# MSM110 Chapter 6.10: Exponential Convergence
+
+Exact LaTeX labels represented here:
+`ExponentialConvergenceToEinstein`, `BoundScalarAbove-1`,
+`BoundScalarAbove-2`, `PinchingPreservedForNRF`, `ScalarStaysPositive`.
+-/
 
 namespace BK
 namespace MSM110
@@ -28,6 +34,18 @@ theorem lem_scalar_stays_positive
     (hpositiveInitial : Prop) :
     ∃ eps : Real, NormalizedScalarStaysPositive scalar eps :=
   RicciFlower.RicciFlow.scalar_stays_positive scalar hpositiveInitial
+
+theorem eq_bound_scalar_above_one
+    (scalar : Real -> M -> Real) (A : Real)
+    (h : NormalizedScalarUpperBoundOn scalar A) :
+    NormalizedScalarUpperBoundOn scalar A :=
+  h
+
+theorem eq_bound_scalar_above_two
+    (avgScalar volume : Real -> Real) (A : Real)
+    (h : NormalizedAverageScalarUpperBoundOn avgScalar volume A) :
+    NormalizedAverageScalarUpperBoundOn avgScalar volume A :=
+  h
 
 theorem prop_exponential_eigenvalue_pinching
     (lambda mu nu decay : Real -> M -> Real)

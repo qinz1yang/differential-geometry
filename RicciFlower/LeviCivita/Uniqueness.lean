@@ -21,6 +21,8 @@ namespace LeviCivita
 
 open Bundle
 open Realized
+open Coordinates
+open Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -87,6 +89,115 @@ theorem leviCivita_inner_eq_half_koszul
   rw [g.symm x (Y x) (cov Z x (X x))]
   rw [← g.symm x (cov Y x (X x)) (Z x)]
   ring
+
+/-- Fixed-coordinate-frame Christoffel formula for any connection satisfying
+the Levi-Civita predicates.
+
+The chart center `x₀` is fixed while the evaluation point `x` ranges over the
+coordinate-frame domain. This is the pointwise local formula needed before
+passing to model-coordinate eventual equalities. -/
+theorem coordinateFrame_christoffel_formula_point_of_isLeviCivita
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    (g : SmoothRiemannianMetric I M)
+    (hLC : IsLeviCivita (I := I) cov g)
+    (x0 : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x0)
+    (gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x
+      (coordinateFrameAt_basis (I := I) x0 hx) gInv)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    christoffelSymbolInFrame cov
+        (coordinateFrameAt (I := I) x0)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x0) x i j k =
+      (1 / 2 : Real) *
+        ∑ l : CoordinateIdx (𝕜 := Real) E,
+          gInv k l *
+            (directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 i)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 j y)
+                    (coordinateFrameAt (I := I) x0 l y)) x +
+              directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 j)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 i y)
+                    (coordinateFrameAt (I := I) x0 l y)) x -
+              directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 l)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 i y)
+                    (coordinateFrameAt (I := I) x0 j y)) x) := by
+  classical
+  let frame := coordinateFrameAt (I := I) x0
+  let hframe := coordinateFrameAt_isLocalFrame_one (I := I) x0
+  let basis := coordinateFrameAt_basis (I := I) x0 hx
+  let A : TangentSpace I x := (cov (frame j) x) (frame i x)
+  have hdiff :
+      ∀ a : CoordinateIdx (𝕜 := Real) E, MDiffAt (T% (frame a)) x := by
+    intro a
+    exact (((coordinateFrameAt_isLocalFrame (I := I) x0).contMDiffAt
+      (coordinateFrameSet_open (I := I) x0) hx a).mdifferentiableAt
+        (by simp))
+  have hcoeff :
+      christoffelSymbolInFrame cov frame hframe x i j k = basis.coord k A := by
+    unfold christoffelSymbolInFrame A
+    have hbasis :
+        hframe.toBasisAt hx = basis := by
+      ext a
+      rw [IsLocalFrameOn.toBasisAt_coe]
+      rw [coordinateFrameAt_basis_apply]
+    unfold IsLocalFrameOn.coeff
+    rw [dif_pos hx, hbasis]
+  have hcoord :
+      basis.coord k A =
+        ∑ l : CoordinateIdx (𝕜 := Real) E, gInv k l * g.inner x (basis l) A :=
+    coordinate_basis_coord_eq_sum_inv_metric_inner
+      (I := I) g basis gInv hinv k A
+  have hinner :
+      ∀ l : CoordinateIdx (𝕜 := Real) E,
+        g.inner x (basis l) A =
+          (1 / 2 : Real) *
+            koszulScalar (I := I) g (frame i) (frame j) (frame l) x := by
+    intro l
+    have hKos := leviCivita_inner_eq_half_koszul
+      (I := I) (cov := cov) (g := g) hLC
+      (X := frame i) (Y := frame j) (Z := frame l)
+      (x := x) (hdiff i) (hdiff j) (hdiff l)
+    calc
+      g.inner x (basis l) A = g.inner x A (basis l) := by
+        exact g.symm x (basis l) A
+      _ = (1 / 2 : Real) *
+            koszulScalar (I := I) g (frame i) (frame j) (frame l) x := by
+        simpa [A, basis, frame] using hKos
+  rw [hcoeff, hcoord]
+  calc
+    (∑ l : CoordinateIdx (𝕜 := Real) E, gInv k l * g.inner x (basis l) A)
+        = ∑ l : CoordinateIdx (𝕜 := Real) E,
+            gInv k l * ((1 / 2 : Real) *
+              koszulScalar (I := I) g (frame i) (frame j) (frame l) x) := by
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hinner l]
+    _ = (1 / 2 : Real) *
+        ∑ l : CoordinateIdx (𝕜 := Real) E,
+          gInv k l * koszulScalar (I := I) g (frame i) (frame j) (frame l) x := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+    _ = (1 / 2 : Real) *
+        ∑ l : CoordinateIdx (𝕜 := Real) E,
+          gInv k l *
+            (directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 i)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 j y)
+                    (coordinateFrameAt (I := I) x0 l y)) x +
+              directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 j)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 i y)
+                    (coordinateFrameAt (I := I) x0 l y)) x -
+              directionalDeriv (I := I) (coordinateFrameAt (I := I) x0 l)
+                (fun y : M =>
+                  g.inner y (coordinateFrameAt (I := I) x0 i y)
+                    (coordinateFrameAt (I := I) x0 j y)) x) := by
+          congr 1
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [koszulScalar_coordinateFrame_eq_metric_derivs_of_mem
+            (I := I) g x0 hx i j l]
 
 /-- Two smooth Levi-Civita connections agree on differentiable vector-field
 inputs.  The smoothness hypotheses are part of the geometric uniqueness API;

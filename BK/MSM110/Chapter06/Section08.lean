@@ -3,7 +3,15 @@ import RicciFlower.RicciFlow.Evolution.FiniteTimeBlowup
 set_option autoImplicit false
 set_option linter.style.longLine false
 
-/-! # MSM110 Chapter 6.8: Finite-Time Blowup -/
+/-!
+# MSM110 Chapter 6.8: Finite-Time Blowup
+
+Exact LaTeX labels represented here:
+`FiniteTimeBlowup`, `FiniteTimeSingularity`, `CurvatureBlowup-2`,
+`PositiveSectionalPinching`, `RCblowup-lim`, `GlobalPinching-1`,
+`GlobalPinching-2`, `SectionalPointwisePinching`,
+`UniformConvergenceToEinstein`.
+-/
 
 namespace BK
 namespace MSM110
@@ -47,6 +55,30 @@ theorem cor_uniform_convergence_to_einstein
     UniformConvergenceToEinsteinConclusion tracefreeRicciRatio T :=
   RicciFlower.RicciFlow.uniform_convergence_to_einstein
     tracefreeRicciRatio T hpinching hhamiltonPinching
+
+theorem eq_rcblowup_lim
+    (ricciMin scalarMax : Real -> Real) (T : Real)
+    (h : RicciCurvatureBlowupLimitOn ricciMin scalarMax T) :
+    RicciCurvatureBlowupLimitOn ricciMin scalarMax T :=
+  h
+
+theorem eq_global_pinching_one
+    (scalarMin scalarMax decay : Real -> Real) (C : Real)
+    (h : GlobalPinchingLowerEstimateOn scalarMin scalarMax decay C) :
+    GlobalPinchingLowerEstimateOn scalarMin scalarMax decay C :=
+  h
+
+theorem eq_global_pinching_two
+    (scalar scalarMax : Real -> Real) (eps : Real)
+    (h : GlobalPinchingScalarEstimateOn scalar scalarMax eps) :
+    GlobalPinchingScalarEstimateOn scalar scalarMax eps :=
+  h
+
+theorem eq_sectional_pointwise_pinching
+    (sectionalMin sectionalMax : Real -> Real) (eps : Real)
+    (h : SectionalPointwisePinchingOn sectionalMin sectionalMax eps) :
+    SectionalPointwisePinchingOn sectionalMin sectionalMax eps :=
+  h
 
 end
 

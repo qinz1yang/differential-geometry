@@ -2,6 +2,7 @@ import RicciFlower.ScalarBochner
 import RicciFlower.Realized.CurvatureTensor
 import RicciFlower.Coordinates.Tensor
 import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian
+import RicciFlower.Tensor.Multilinear.BundleSmoothEval
 set_option autoImplicit false
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
@@ -23,6 +24,7 @@ namespace Realized
 
 noncomputable section
 
+open Bundle Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -407,6 +409,561 @@ def nablaRicciNormSqInFrame
           nablaRic t x a i j * nablaRic t x b k l := by
   rfl
 
+/-! ## `(0,2)` tensor norm product-rule layer -/
+
+section Tensor02Product
+
+variable [FiniteDimensional Real E]
+
+private theorem tensor0S_curry_apply_cons_local
+    {x : M} (s : ℕ)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 1) x)
+    (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
+    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+      A (Fin.cons X tail) := by
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin (s + 1) => E) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        X)
+        tail) =
+      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (Fin.cons X tail)
+  rw [continuousMultilinearCurryLeftEquiv_apply]
+
+private theorem fin_cons_vec2_eq_vec3
+    {x : M} (X Y Z : TangentSpace I x) :
+    Fin.cons X (vec2 (I := I) Y Z) =
+      vec3 (I := I) X Y Z := by
+  funext a
+  fin_cases a <;> rfl
+
+private theorem fin_cons_vec3_eq_vec4
+    {x : M} (X Y Z W : TangentSpace I x) :
+    Fin.cons X (vec3 (I := I) Y Z W) =
+      vec4 (I := I) X Y Z W := by
+  funext a
+  fin_cases a <;> rfl
+
+private theorem metricTraceInput_vec2_eq_vec4
+    {x : M} (X Y Z W : TangentSpace I x) :
+    metricTraceInput (I := I) X Y (vec2 (I := I) Z W) =
+      vec4 (I := I) X Y Z W := by
+  funext a
+  fin_cases a <;> rfl
+
+private theorem sum_six_rotate_two
+    {Idx A : Type*} [Fintype Idx] [AddCommMonoid A]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Idx -> A) :
+    (∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, ∑ b : Idx,
+        F a b i j k l := by
+  calc
+    (∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l)
+        =
+      ∑ a : Idx, ∑ i : Idx, ∑ b : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro a _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ a : Idx, ∑ b : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ a : Idx, ∑ j : Idx, ∑ b : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro a _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ a : Idx, ∑ b : Idx, ∑ k : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ a : Idx, ∑ k : Idx, ∑ b : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro a _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ a : Idx, ∑ b : Idx, ∑ l : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ a : Idx, ∑ l : Idx, ∑ b : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          apply Finset.sum_congr rfl
+          intro a _
+          rw [Finset.sum_comm]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, ∑ b : Idx,
+        F a b i j k l := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [Finset.sum_comm]
+
+private theorem sum_trace_tensor02_rough
+    {Idx : Type*} [Fintype Idx]
+    (G A : Idx -> Idx -> Real)
+    (B : Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ a : Idx, ∑ b : Idx,
+        G a b *
+          (∑ i : Idx, ∑ j : Idx,
+            B a b i j *
+              (∑ k : Idx, ∑ l : Idx, G i k * G j l * A k l))) =
+      ∑ i : Idx, ∑ j : Idx,
+        (∑ a : Idx, ∑ b : Idx, G a b * B a b i j) *
+          (∑ k : Idx, ∑ l : Idx, G i k * G j l * A k l) := by
+  simp_rw [Finset.mul_sum, Finset.sum_mul]
+  rw [sum_six_rotate_two]
+  simp [mul_left_comm, mul_comm]
+
+private theorem sum_trace_tensor02_nabla
+    {Idx : Type*} [Fintype Idx]
+    (G : Idx -> Idx -> Real)
+    (B : Idx -> Idx -> Idx -> Real) :
+    (∑ a : Idx, ∑ b : Idx,
+        G a b *
+          (∑ i : Idx, ∑ j : Idx,
+            B a i j *
+              (∑ k : Idx, ∑ l : Idx, G i k * G j l * B b k l))) =
+      ∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        G a b * G i k * G j l * B a i j * B b k l := by
+  simp_rw [Finset.mul_sum]
+  simp [mul_left_comm, mul_comm]
+
+/-- Coordinate expression for `<roughDelta A, A>` for a `(0,2)` tensor. -/
+def tensor02RoughInnerCoord
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (A roughA : Tensor02At (I := I) x) : Real :=
+  ∑ i : Idx, ∑ j : Idx,
+    roughA (vec2 (I := I) (basis i) (basis j)) *
+      (∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (vec2 (I := I) (basis k) (basis l)))
+
+/-- Coordinate expression for `|nabla A|^2` for a `(0,2)` tensor. -/
+def tensor02NablaNormCoord
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Real :=
+  ∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+    gInv a b * gInv i k * gInv j l *
+      nablaA (vec3 (I := I) (basis a) (basis i) (basis j)) *
+        nablaA (vec3 (I := I) (basis b) (basis k) (basis l))
+
+/-- Freeze the derivative slot of a `(0,3)` tensor, leaving a `(0,2)` tensor. -/
+def tensor02FreezeNabla
+    {x : M}
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (X : TangentSpace I x) : Tensor02At (I := I) x :=
+  freezeLastTwo0S3 (I := I) nablaA X
+
+@[simp] theorem tensor02FreezeNabla_apply
+    {x : M}
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (X Y Z : TangentSpace I x) :
+    tensor02FreezeNabla (I := I) nablaA X (vec2 (I := I) Y Z) =
+      nablaA (vec3 (I := I) X Y Z) := by
+  exact freezeLastTwo0S3_apply (I := I) nablaA X Y Z
+
+private theorem tensor02FreezeNabla_eq_curry
+    {x : M}
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (X : TangentSpace I x) :
+    tensor02FreezeNabla (I := I) nablaA X =
+      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x nablaA X := by
+  ext v
+  have hv : v = vec2 (I := I) (v 0) (v 1) := by
+    funext a
+    fin_cases a <;> rfl
+  rw [hv, tensor02FreezeNabla_apply, tensor0S_curry_apply_cons_local]
+  congr 1
+  exact (fin_cons_vec2_eq_vec3 (I := I) X (v 0) (v 1)).symm
+
+/-- Metric compatibility lifted to the induced inner product on `(0,2)` tensor
+fibers.
+
+This is the invariant producer needed for the `(0,2)` Bochner product rule.
+The currently exposed metric-compatibility API applies to tangent-vector slots;
+this theorem records the missing bridge to the induced tensor metric. -/
+theorem tensor02_inner_extDerivFun_eq_inner_nabla
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (nablaA nablaB :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) 2 cov A nablaA)
+    (hB : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) 2 cov B nablaB)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    extDerivFun (I := I)
+      (fun y : M => inner02 (I := I) g y (A y) (B y)) x (X x) =
+      inner02 (I := I) g x
+        (tensor02FreezeNabla (I := I) (nablaA x) (X x)) (B x) +
+        inner02 (I := I) g x (A x)
+          (tensor02FreezeNabla (I := I) (nablaB x) (X x)) := by
+  have h :=
+    Tensor0SBundle.inner0S_two_metricCompatible_extDerivFun (I := I)
+      cov g hmc A B nablaA nablaB hA hB X x
+  have hfreezeA :
+      tensor02FreezeNabla (I := I) (nablaA x) (X x) =
+        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaA x) (X x) :=
+    tensor02FreezeNabla_eq_curry (I := I) (nablaA x) (X x)
+  have hfreezeB :
+      tensor02FreezeNabla (I := I) (nablaB x) (X x) =
+        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaB x) (X x) :=
+    tensor02FreezeNabla_eq_curry (I := I) (nablaB x) (X x)
+  simpa [inner02, hfreezeA, hfreezeB] using h
+
+/-- Freeze the two derivative slots of a `(0,4)` tensor, leaving a `(0,2)` tensor. -/
+def tensor02FreezeNabla2
+    {x : M}
+    (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
+    (X Y : TangentSpace I x) : Tensor02At (I := I) x :=
+  freezeLastTwo0S3 (I := I)
+    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X) Y
+
+@[simp] theorem tensor02FreezeNabla2_apply
+    {x : M}
+    (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
+    (X Y Z W : TangentSpace I x) :
+    tensor02FreezeNabla2 (I := I) nabla2A X Y (vec2 (I := I) Z W) =
+      nabla2A (vec4 (I := I) X Y Z W) := by
+  unfold tensor02FreezeNabla2
+  rw [freezeLastTwo0S3_apply]
+  change Tensor0SSpace.toModel
+      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X)
+      (vec3 (I := I) Y Z W) =
+    Tensor0SSpace.toModel nabla2A (vec4 (I := I) X Y Z W)
+  rw [TensorMultilinear.tensor0S_curry_apply_eval]
+  congr 1
+  exact fin_cons_vec3_eq_vec4 (I := I) X Y Z W
+
+/-- Pointwise Hessian product rule for the norm square of a `(0,2)` tensor,
+evaluated on a basis. -/
+def Tensor02NormHessianProductInBasis
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (A : Tensor02At (I := I) x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
+    (normSecond : Tensor02At (I := I) x) : Prop :=
+  ∀ i j : Idx,
+    normSecond (vec2 (I := I) (basis i) (basis j)) =
+      (2 : Real) *
+        (tensor02RoughInnerCoord (I := I) basis gInv A
+            (tensor02FreezeNabla2 (I := I) nabla2A (basis i) (basis j)) +
+          tensor02RoughInnerCoord (I := I) basis gInv
+            (tensor02FreezeNabla (I := I) nablaA (basis j))
+            (tensor02FreezeNabla (I := I) nablaA (basis i)))
+
+/-- The traced second-product rule for the norm of a `(0,2)` tensor.
+
+This is the precise tensor Bochner product-rule frontier:
+`tr_g Hess |A|^2 = 2 <roughDelta A, A> + 2 |nabla A|^2`. -/
+def Tensor02NormSecondProductInBasis
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (A roughA : Tensor02At (I := I) x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (normSecond : Tensor02At (I := I) x) : Prop :=
+  metricTrace0S2InBasis (I := I) basis gInv normSecond Fin.elim0 =
+    (2 : Real) *
+      (tensor02RoughInnerCoord (I := I) basis gInv A roughA +
+        tensor02NablaNormCoord (I := I) basis gInv nablaA)
+
+set_option maxHeartbeats 800000 in
+/-- Trace the pointwise `(0,2)` norm Hessian product rule. -/
+theorem Tensor02NormSecondProductInBasis.of_hessian_product
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (A roughA : Tensor02At (I := I) x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
+    (normSecond : Tensor02At (I := I) x)
+    (hprod : Tensor02NormHessianProductInBasis (I := I) basis gInv A nablaA
+      nabla2A normSecond)
+    (hrough : RoughLap0SRealizesMetricTraceInBasis (I := I) basis gInv
+      (s := 2) roughA nabla2A) :
+    Tensor02NormSecondProductInBasis (I := I) basis gInv A roughA nablaA
+      normSecond := by
+  classical
+  unfold Tensor02NormSecondProductInBasis metricTrace0S2InBasis
+  calc
+    (∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          normSecond (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0))
+        =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * normSecond (vec2 (I := I) (basis i) (basis j)) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          have hinput :
+              metricTraceInput (I := I) (basis i) (basis j) Fin.elim0 =
+                vec2 (I := I) (basis i) (basis j) := by
+            funext a
+            fin_cases a
+            · simp [metricTraceInput, vec2, RicciFlower.Curvature.vec2]
+            · rfl
+          rw [hinput]
+    _ =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * ((2 : Real) *
+          (tensor02RoughInnerCoord (I := I) basis gInv A
+              (tensor02FreezeNabla2 (I := I) nabla2A (basis i) (basis j)) +
+            tensor02RoughInnerCoord (I := I) basis gInv
+              (tensor02FreezeNabla (I := I) nablaA (basis j))
+              (tensor02FreezeNabla (I := I) nablaA (basis i)))) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [hprod i j]
+    _ =
+      (2 : Real) *
+        (tensor02RoughInnerCoord (I := I) basis gInv A roughA +
+          tensor02NablaNormCoord (I := I) basis gInv nablaA) := by
+          have hrough_eval : ∀ p q : Idx,
+              roughA (vec2 (I := I) (basis p) (basis q)) =
+                ∑ i : Idx, ∑ j : Idx,
+                  gInv i j *
+                    tensor02FreezeNabla2 (I := I) nabla2A (basis i) (basis j)
+                      (vec2 (I := I) (basis p) (basis q)) := by
+            intro p q
+            rw [hrough (vec2 (I := I) (basis p) (basis q))]
+            unfold roughLap0SAt metricTrace0S2InBasis
+            apply Finset.sum_congr rfl
+            intro i _
+            apply Finset.sum_congr rfl
+            intro j _
+            congr 1
+            rw [tensor02FreezeNabla2_apply]
+            congr 1
+            exact metricTraceInput_vec2_eq_vec4 (I := I)
+              (basis i) (basis j) (basis p) (basis q)
+          let R : Real :=
+            ∑ i : Idx, ∑ j : Idx,
+              gInv i j *
+                tensor02RoughInnerCoord (I := I) basis gInv A
+                  (tensor02FreezeNabla2 (I := I) nabla2A (basis i) (basis j))
+          let N : Real :=
+            ∑ i : Idx, ∑ j : Idx,
+              gInv i j *
+                tensor02RoughInnerCoord (I := I) basis gInv
+                  (tensor02FreezeNabla (I := I) nablaA (basis j))
+                  (tensor02FreezeNabla (I := I) nablaA (basis i))
+          have hR :
+              R = tensor02RoughInnerCoord (I := I) basis gInv A roughA := by
+            unfold R tensor02RoughInnerCoord
+            simpa [hrough_eval] using
+              (sum_trace_tensor02_rough
+                (G := gInv)
+                (A := fun k l => A (vec2 (I := I) (basis k) (basis l)))
+                (B := fun a b i j =>
+                  tensor02FreezeNabla2 (I := I) nabla2A (basis a) (basis b)
+                    (vec2 (I := I) (basis i) (basis j))))
+          have hN :
+              N = tensor02NablaNormCoord (I := I) basis gInv nablaA := by
+            unfold N tensor02RoughInnerCoord tensor02NablaNormCoord
+            simpa [tensor02FreezeNabla_apply] using
+              (sum_trace_tensor02_nabla
+                (G := gInv)
+                (B := fun a i j =>
+                  nablaA (vec3 (I := I) (basis a) (basis i) (basis j))))
+          calc
+            (∑ i : Idx, ∑ j : Idx,
+                gInv i j *
+                  (2 *
+                    (tensor02RoughInnerCoord (I := I) basis gInv A
+                        (tensor02FreezeNabla2 (I := I) nabla2A (basis i) (basis j)) +
+                      tensor02RoughInnerCoord (I := I) basis gInv
+                        (tensor02FreezeNabla (I := I) nablaA (basis j))
+                        (tensor02FreezeNabla (I := I) nablaA (basis i)))))
+                = (2 : Real) * (R + N) := by
+                  unfold R N
+                  simp_rw [mul_add, Finset.sum_add_distrib]
+                  simp [Finset.mul_sum, mul_left_comm]
+            _ = (2 : Real) *
+                (tensor02RoughInnerCoord (I := I) basis gInv A roughA +
+                  tensor02NablaNormCoord (I := I) basis gInv nablaA) := by
+                  rw [hR, hN]
+
+/-- Product-rule conclusion for the scalar Laplacian of a `(0,2)` tensor norm. -/
+def Tensor02NormProductRuleInBasis
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (lapNormSq : Real)
+    (A roughA : Tensor02At (I := I) x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Prop :=
+  lapNormSq =
+    2 * tensor02RoughInnerCoord (I := I) basis gInv A roughA +
+      2 * tensor02NablaNormCoord (I := I) basis gInv nablaA
+
+/-- The scalar trace realization and the traced second-product rule imply the
+coordinate product-rule conclusion for a `(0,2)` tensor norm. -/
+theorem tensor02_norm_product_rule_of_second_product
+    {Idx : Type*} [Fintype Idx]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (f : M -> Real)
+    (A roughA : Tensor02At (I := I) x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (normSecond : Tensor02At (I := I) x)
+    (hlap : ScalarLaplacianRealizesTraceAtInBasis (I := I) cov g basis gInv f normSecond)
+    (hsecond : Tensor02NormSecondProductInBasis (I := I) basis gInv A roughA
+      nablaA normSecond) :
+    Tensor02NormProductRuleInBasis (I := I) basis gInv
+      (laplacian (I := I) cov g f x) A roughA nablaA := by
+  unfold Tensor02NormProductRuleInBasis Tensor02NormSecondProductInBasis
+    ScalarLaplacianRealizesTraceAtInBasis at *
+  rw [hlap, hsecond]
+  ring
+
+end Tensor02Product
+
+/-- Exact coordinate expansion of the scalar Laplacian of `|Ric|^2`.
+
+This is the geometric Bochner product-rule input for Lemma 6.7.  It is kept as
+the single explicit frontier: proving it should come from metric compatibility
+and the tensor norm product rule, not from Christoffel expansion. -/
+def RicciNormScalarLaplacianExpansionInFrame
+    (ricciNormLap : Time -> M -> Real)
+    (roughLapRic : Time -> M -> Idx -> Idx -> Real)
+    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (gInv : Time -> InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
+  forall (t : Time) (x : M),
+    ricciNormLap t x =
+      2 * (∑ i : Idx, ∑ j : Idx,
+        roughLapRic t x i j *
+          raisedRicciComponentsInFrame (I := I) Ric gInv frame t x i j) +
+        2 * (∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx,
+          ∑ k : Idx, ∑ l : Idx,
+            gInv t x a b * gInv t x i k * gInv t x j l *
+              nablaRic t x a i j * nablaRic t x b k l)
+
+section Tensor02ProductProducer
+
+variable [FiniteDimensional Real E]
+
+/-- Produce the Ricci-norm scalar-Laplacian expansion from a `(0,2)` tensor
+norm product rule and component identifications.
+
+The tensor field `A` is the bundled `(0,2)` realization of the Ricci tensor in
+the chosen frame; `roughA` and `nablaA` realize the rough Laplacian and first
+covariant derivative components used by the formula. -/
+theorem ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule
+    (ricciNormLap : Time -> M -> Real)
+    (roughLapRic : Time -> M -> Idx -> Idx -> Real)
+    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (gInv : Time -> InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (A roughA : Tensor02Field (I := I) (M := M) Time)
+    (nablaA : Time -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (normSecond : Tensor02Field (I := I) (M := M) Time)
+    (hframe : forall x i, basis x i = frame i x)
+    (hlapTrace : forall t x,
+      ricciNormLap t x =
+        metricTrace0S2InBasis (I := I) (basis x) (gInv t x)
+          (normSecond t x) Fin.elim0)
+    (hsecond : forall t x,
+      Tensor02NormSecondProductInBasis (I := I) (basis x) (gInv t x)
+        (A t x) (roughA t x) (nablaA t x) (normSecond t x))
+    (hAComp : forall t x i j,
+      A t x (vec2 (I := I) (frame i x) (frame j x)) =
+        Ric t x (frame i x) (frame j x))
+    (hroughComp : forall t x i j,
+      roughA t x (vec2 (I := I) (frame i x) (frame j x)) =
+        roughLapRic t x i j)
+    (hnablaComp : forall t x a i j,
+      nablaA t x (vec3 (I := I) (frame a x) (frame i x) (frame j x)) =
+        nablaRic t x a i j) :
+    RicciNormScalarLaplacianExpansionInFrame
+      (I := I) ricciNormLap roughLapRic Ric gInv frame nablaRic := by
+  classical
+  intro t x
+  have hprod :
+      ricciNormLap t x =
+        2 * tensor02RoughInnerCoord (I := I) (basis x) (gInv t x)
+            (A t x) (roughA t x) +
+          2 * tensor02NablaNormCoord (I := I) (basis x) (gInv t x)
+            (nablaA t x) := by
+    rw [hlapTrace t x]
+    rw [hsecond t x]
+    ring
+  have hrough :
+      tensor02RoughInnerCoord (I := I) (basis x) (gInv t x)
+          (A t x) (roughA t x) =
+        ∑ i : Idx, ∑ j : Idx,
+          roughLapRic t x i j *
+            raisedRicciComponentsInFrame (I := I) Ric gInv frame t x i j := by
+    unfold tensor02RoughInnerCoord raisedRicciComponentsInFrame
+    simp_rw [hframe]
+    simp_rw [hAComp]
+    simp_rw [hroughComp]
+  have hnabla :
+      tensor02NablaNormCoord (I := I) (basis x) (gInv t x) (nablaA t x) =
+        ∑ a : Idx, ∑ b : Idx, ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv t x a b * gInv t x i k * gInv t x j l *
+            nablaRic t x a i j * nablaRic t x b k l := by
+    unfold tensor02NablaNormCoord
+    simp_rw [hframe]
+    simp_rw [hnablaComp]
+  rw [hprod, hrough, hnabla]
+
+end Tensor02ProductProducer
+
 /-- The cubic curvature-Ricci-Ricci reaction
 `R_ikjl Ric^{ij} Ric^{kl}` in the frame convention fixed in
 `Curvature.lean`. -/
@@ -446,6 +1003,27 @@ def RicciNormLaplacianComponentsInFrame
     (ricciNormLap roughLapInner nablaRicNormSq : Time -> M -> Real) : Prop :=
   forall (t : Time) (x : M),
     ricciNormLap t x = 2 * roughLapInner t x + 2 * nablaRicNormSq t x
+
+/-- Ricci-specific Bochner producer from the exact scalar-Laplacian expansion.
+
+The conclusion is the reusable component form
+`Δ |Ric|² = 2 <Δ Ric, Ric> + 2 |∇ Ric|²`. -/
+theorem ricciNormLaplacianComponentsInFrame_of_normSq_laplacian_expansion
+    (ricciNormLap : Time -> M -> Real)
+    (roughLapRic : Time -> M -> Idx -> Idx -> Real)
+    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (gInv : Time -> InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)
+    (h_lap : RicciNormScalarLaplacianExpansionInFrame
+      (I := I) ricciNormLap roughLapRic Ric gInv frame nablaRic) :
+    RicciNormLaplacianComponentsInFrame
+      ricciNormLap
+      (roughLapRicciInnerInFrame (I := I) roughLapRic Ric gInv frame)
+      (nablaRicciNormSqInFrame (M := M) nablaRic gInv) := by
+  intro t x
+  rw [h_lap t x]
+  rfl
 
 /-- Lemma 6.7 in coordinate-component form:
 `(partial_t - Delta)|Ric|^2 = -2 |nabla Ric|^2 + 4 R_ikjl Ric^ij Ric^kl`. -/

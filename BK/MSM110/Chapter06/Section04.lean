@@ -16,6 +16,10 @@ set_option linter.unusedDecidableInType false
 # MSM110 Chapter 6.4
 
 Book companion for `sec:reduction_to_ode_system`.
+
+Exact LaTeX labels represented here:
+`ODEsystemFor3Manifolds`, `Lie-algebra-square`, `identify-Rm-M`,
+`dM/DT`, `Rm-ev-eqn-3d`, `Ricci-matrix`, `trace-free-Rm-Rc`.
 -/
 
 namespace BK

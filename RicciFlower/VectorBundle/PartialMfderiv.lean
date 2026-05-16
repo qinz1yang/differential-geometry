@@ -749,8 +749,28 @@ def FixedBaseExtDerivTimeDerivativeOn
       HasDerivWithinAt
         (fun s : ℝ => extDerivFun (I := I) (F s) x V)
         (extDerivFun (I := I) (Ft t) x V)
-        timeSet
-        t
+      timeSet
+      t
+
+/-- Regular-time version of `FixedBaseExtDerivTimeDerivativeOn`.
+
+This is the version suited to Ricci-flow intervals: the derivative is still
+within the full time carrier, but it is required only at regular evolution
+times. -/
+def FixedBaseExtDerivTimeDerivativeOnRegular
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    (timeSet regularSet : Set ℝ) (u : Set M)
+    (F Ft : ℝ -> M -> ℝ) : Prop :=
+  forall (t : ℝ), t ∈ regularSet ->
+    forall (x : M), x ∈ u ->
+      forall V : TangentSpace I x,
+        HasDerivWithinAt
+          (fun s : ℝ => extDerivFun (I := I) (F s) x V)
+          (extDerivFun (I := I) (Ft t) x V)
+          timeSet
+          t
 
 theorem fixedBaseExtDerivTimeDerivativeOn_apply
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -766,6 +786,38 @@ theorem fixedBaseExtDerivTimeDerivativeOn_apply
       timeSet
       t :=
   h t x hx V
+
+/-- Pointwise use of the regular-time fixed-base mixed derivative predicate. -/
+theorem fixedBaseExtDerivTimeDerivativeOnRegular_apply
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {timeSet regularSet : Set ℝ} {u : Set M}
+    {F Ft : ℝ -> M -> ℝ}
+    (h :
+      FixedBaseExtDerivTimeDerivativeOnRegular
+        (I := I) timeSet regularSet u F Ft)
+    {t : ℝ} (ht : t ∈ regularSet) {x : M} (hx : x ∈ u)
+    (V : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : ℝ => extDerivFun (I := I) (F s) x V)
+      (extDerivFun (I := I) (Ft t) x V)
+      timeSet
+      t :=
+  h t ht x hx V
+
+/-- The all-times predicate immediately implies the regular-time predicate. -/
+theorem FixedBaseExtDerivTimeDerivativeOn.toRegular
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {timeSet regularSet : Set ℝ} {u : Set M}
+    {F Ft : ℝ -> M -> ℝ}
+    (h : FixedBaseExtDerivTimeDerivativeOn (I := I) timeSet u F Ft) :
+    FixedBaseExtDerivTimeDerivativeOnRegular
+      (I := I) timeSet regularSet u F Ft := by
+  intro t _ht x hx V
+  exact h t x hx V
 
 /-- Chart-level constructor for fixed-base mixed derivatives on a singleton.
 
@@ -828,5 +880,102 @@ theorem fixedBaseExtDerivTimeDerivativeOn_singleton_of_chart_contDiff
     (hmodel.congr
       (fun s _hs => hleft s)
       (hleft t)).congr_deriv hright.symm
+
+/-- Chart-level constructor for regular-time fixed-base mixed derivatives on a
+singleton.  This currently reuses the all-times chart constructor and then
+restricts it to regular times. -/
+theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiff
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {timeSet regularSet : Set Real} {x₀ : M}
+    {F Ft : Real -> M -> Real} {Φ : Real -> E -> Real}
+    (hΦ : ContDiff Real 2 (fun p : Real × E => Φ p.1 p.2))
+    (hFdiff :
+      ∀ s : Real, MDifferentiableAt I 𝓘(Real, Real) (F s) x₀)
+    (hFchart :
+      ∀ s : Real,
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ (F s)
+          =ᶠ[nhds (extChartAt I x₀ x₀)] Φ s)
+    (hFtdiff :
+      ∀ t : Real, MDifferentiableAt I 𝓘(Real, Real) (Ft t) x₀)
+    (hFtchart :
+      ∀ t : Real,
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ (Ft t)
+          =ᶠ[nhds (extChartAt I x₀ x₀)]
+            fun y : E =>
+              (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0)) :
+    FixedBaseExtDerivTimeDerivativeOnRegular
+      (I := I) timeSet regularSet ({x₀} : Set M) F Ft := by
+  exact
+    (fixedBaseExtDerivTimeDerivativeOn_singleton_of_chart_contDiff
+      (I := I) (timeSet := timeSet) (x₀ := x₀)
+      (F := F) (Ft := Ft) (Φ := Φ)
+      hΦ hFdiff hFchart hFtdiff hFtchart).toRegular
+      (I := I) (regularSet := regularSet)
+
+/-- Chart-level constructor for regular-time fixed-base mixed derivatives on a
+singleton, with chart equalities required only on the time carrier and regular
+times. -/
+theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiffOnTime
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {timeSet regularSet : Set Real} {x₀ : M}
+    {F Ft : Real -> M -> Real} {Φ : Real -> E -> Real}
+    (hregular_subset : regularSet ⊆ timeSet)
+    (hΦ : ContDiff Real 2 (fun p : Real × E => Φ p.1 p.2))
+    (hFdiff :
+      ∀ s : Real, s ∈ timeSet ->
+        MDifferentiableAt I 𝓘(Real, Real) (F s) x₀)
+    (hFchart :
+      ∀ s : Real, s ∈ timeSet ->
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ (F s)
+          =ᶠ[nhds (extChartAt I x₀ x₀)] Φ s)
+    (hFtdiff :
+      ∀ t : Real, t ∈ regularSet ->
+        MDifferentiableAt I 𝓘(Real, Real) (Ft t) x₀)
+    (hFtchart :
+      ∀ t : Real, t ∈ regularSet ->
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ (Ft t)
+          =ᶠ[nhds (extChartAt I x₀ x₀)]
+            fun y : E =>
+              (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0)) :
+    FixedBaseExtDerivTimeDerivativeOnRegular
+      (I := I) timeSet regularSet ({x₀} : Set M) F Ft := by
+  intro t ht x hx V
+  rw [Set.mem_singleton_iff] at hx
+  subst x
+  let z₀ : E := extChartAt I x₀ x₀
+  have hmodel :=
+    fixedBaseFDerivTimeDerivativeWithinAt_of_contDiff
+      (E := E) Φ hΦ (timeSet := timeSet) (t := t) z₀ V
+  have hleft :
+      ∀ s : Real, s ∈ timeSet ->
+        extDerivFun (I := I) (F s) x₀ V =
+          fderiv Real (Φ s) z₀ V := by
+    intro s hs
+    exact
+      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+        (I := I) (x := x₀) (f := F s) (φ := Φ s)
+        (hFdiff s hs) (hFchart s hs) V
+  have hright :
+      extDerivFun (I := I) (Ft t) x₀ V =
+        fderiv Real
+          (fun y : E =>
+            (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
+          z₀ V := by
+    exact
+      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+        (I := I) (x := x₀) (f := Ft t)
+        (φ := fun y : E =>
+          (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
+      (hFtdiff t ht) (hFtchart t ht) V
+  exact
+    (hmodel.congr
+      (fun s hs => hleft s hs)
+      (hleft t (hregular_subset ht))).congr_deriv hright.symm
 
 end RicciFlower

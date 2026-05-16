@@ -1,5 +1,5 @@
 import RicciFlower.Coordinates.Basic
-import RicciFlower.Tensor.RSTensor.Defs
+import RicciFlower.Tensor.RSTensor.Components
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -9,10 +9,10 @@ set_option linter.unusedSectionVars false
 # RicciFlower Local-Frame Tensor Components
 
 This file evaluates realized tensor fibers against mathlib local frames.  The
-core direct component API is for covariant `(0,s)` tensors.  Mixed `(r,s)`
-tensors in the vendored `RSTensor` model are represented as maps from a
-covariant `r`-tensor input to a covariant `s`-tensor output, so mixed components
-are exposed only after that covariant input is supplied explicitly.
+legacy component API evaluates directly on frame fields.  The preferred
+domain-aware API below evaluates through the pointwise basis
+`hframe.toBasisAt hx`, using the standard `component0S` and `componentRS`
+wrappers from the tensor layer.
 -/
 
 namespace RicciFlower
@@ -74,6 +74,31 @@ def tensor0SComponentInFrame {s : Nat}
       T x (fun a => frame (vectorSlots a) x) := by
   rfl
 
+/-- Component of a realized `(0,s)` tensor field in a local frame at a point in
+the frame domain.
+
+Prefer this domain-aware wrapper in new coordinate proofs.  It uses the
+pointwise basis supplied by `hframe.toBasisAt hx`, so downstream proofs do not
+need to unfold the local-frame implementation. -/
+def tensor0SComponentInFrameAt {s : Nat} [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensor0SField (I := I) (M := M) s)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u)
+    (slots : Fin s -> Idx) : 𝕜 :=
+  Tensor0SBundle.component0S (I := I) (hframe.toBasisAt hx) (T x) slots
+
+@[simp] theorem tensor0SComponentInFrameAt_eval {s : Nat}
+    [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensor0SField (I := I) (M := M) s)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u)
+    (slots : Fin s -> Idx) :
+    tensor0SComponentInFrameAt T frame hframe x hx slots =
+      T x (fun a => hframe.toBasisAt hx (slots a)) := by
+  rfl
+
 /-- Component of a realized mixed tensor after supplying its covariant input. -/
 def tensorRSComponentFromCovariantInputInFrame {r s : Nat}
     (T : FrameTensorRSField (I := I) (M := M) r s)
@@ -94,6 +119,151 @@ def tensorRSComponentFromCovariantInputInFrame {r s : Nat}
     tensorRSComponentFromCovariantInputInFrame T input frame hframe x vectorSlots =
       (T x (input x)) (fun a => frame (vectorSlots a) x) := by
   rfl
+
+/-- Component of a realized mixed `(r,s)` tensor field in a local frame at a
+point in the frame domain.
+
+The upper indices are handled by the standard tensor-layer `componentRS` API.
+This keeps the Hom implementation and `basisTensor0S` hidden from downstream
+coordinate proofs. -/
+def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensorRSField (I := I) (M := M) r s)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u)
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
+  Tensor0SBundle.componentRS (I := I) (hframe.toBasisAt hx) (T x) upper lower
+
+@[simp] theorem tensorRSComponentInFrame_eval {r s : Nat}
+    [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensorRSField (I := I) (M := M) r s)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u)
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
+    tensorRSComponentInFrame T frame hframe x hx upper lower =
+      Tensor0SBundle.componentRS (I := I) (hframe.toBasisAt hx) (T x) upper lower := by
+  rfl
+
+/-- Two lower component slots. -/
+def slots2 (i j : Idx) : Fin 2 -> Idx :=
+  fun q => if q = 0 then i else j
+
+/-- Three lower component slots. -/
+def slots3 (i j k : Idx) : Fin 3 -> Idx :=
+  fun q => if q = 0 then i else if q = 1 then j else k
+
+/-- Four lower component slots. -/
+def slots4 (i j k l : Idx) : Fin 4 -> Idx :=
+  fun q => if q = 0 then i else if q = 1 then j else if q = 2 then k else l
+
+@[simp] theorem slots2_zero (i j : Idx) :
+    slots2 i j 0 = i := by
+  simp [slots2]
+
+@[simp] theorem slots2_one (i j : Idx) :
+    slots2 i j 1 = j := by
+  simp [slots2]
+
+@[simp] theorem slots3_zero (i j k : Idx) :
+    slots3 i j k 0 = i := by
+  simp [slots3]
+
+@[simp] theorem slots3_one (i j k : Idx) :
+    slots3 i j k 1 = j := by
+  simp [slots3]
+
+@[simp] theorem slots3_two (i j k : Idx) :
+    slots3 i j k 2 = k := by
+  simp [slots3]
+
+@[simp] theorem slots4_zero (i j k l : Idx) :
+    slots4 i j k l 0 = i := by
+  simp [slots4]
+
+@[simp] theorem slots4_one (i j k l : Idx) :
+    slots4 i j k l 1 = j := by
+  simp [slots4]
+
+@[simp] theorem slots4_two (i j k l : Idx) :
+    slots4 i j k l 2 = k := by
+  simp [slots4]
+
+@[simp] theorem slots4_three (i j k l : Idx) :
+    slots4 i j k l 3 = l := by
+  simp [slots4]
+
+/-- Single upper component index. -/
+def upperIdx1 (k : Idx) : Fin 1 -> Idx :=
+  fun _ => k
+
+/-- Two lower component indices. -/
+def lowerIdx2 (i j : Idx) : Fin 2 -> Idx :=
+  slots2 i j
+
+@[simp] theorem upperIdx1_apply (k : Idx) (q : Fin 1) :
+    upperIdx1 k q = k := by
+  rfl
+
+@[simp] theorem lowerIdx2_zero (i j : Idx) :
+    lowerIdx2 i j 0 = i := by
+  simp [lowerIdx2]
+
+@[simp] theorem lowerIdx2_one (i j : Idx) :
+    lowerIdx2 i j 1 = j := by
+  simp [lowerIdx2]
+
+@[simp] theorem Function_update_upperIdx1
+    (k m : Idx) (a : Fin 1) :
+    Function.update (upperIdx1 k) a m = upperIdx1 m := by
+  fin_cases a
+  funext q
+  fin_cases q
+  simp [upperIdx1]
+
+@[simp] theorem Function_update_lowerIdx2_zero
+    (i j m : Idx) :
+    Function.update (lowerIdx2 i j) 0 m = lowerIdx2 m j := by
+  funext q
+  fin_cases q <;> simp [lowerIdx2]
+
+@[simp] theorem Function_update_lowerIdx2_one
+    (i j m : Idx) :
+    Function.update (lowerIdx2 i j) 1 m = lowerIdx2 i m := by
+  funext q
+  fin_cases q <;> simp [lowerIdx2]
+
+/-- `(0,2)` tensor component in a local frame. -/
+def tensor02CompInFrame [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensor0SField (I := I) (M := M) 2)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u) (i j : Idx) : 𝕜 :=
+  tensor0SComponentInFrameAt T frame hframe x hx (slots2 i j)
+
+/-- `(0,4)` tensor component in a local frame. -/
+def tensor04CompInFrame [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensor0SField (I := I) (M := M) 4)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u) (i j k l : Idx) : 𝕜 :=
+  tensor0SComponentInFrameAt T frame hframe x hx (slots4 i j k l)
+
+/-- `(1,2)` tensor component in a local frame. -/
+def tensor12CompInFrame [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensorRSField (I := I) (M := M) 1 2)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u) (k i j : Idx) : 𝕜 :=
+  tensorRSComponentInFrame T frame hframe x hx (upperIdx1 k) (lowerIdx2 i j)
+
+/-- `(1,3)` tensor component in a local frame. -/
+def tensor13CompInFrame [Fintype Idx] [DecidableEq Idx]
+    (T : FrameTensorRSField (I := I) (M := M) 1 3)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (hx : x ∈ u) (a i j k : Idx) : 𝕜 :=
+  tensorRSComponentInFrame T frame hframe x hx (upperIdx1 a) (slots3 i j k)
 
 end
 

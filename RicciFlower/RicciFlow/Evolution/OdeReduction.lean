@@ -13,6 +13,10 @@ set_option linter.unusedDecidableInType false
 # Reduction to the Associated ODE System
 
 MSM110 Chapter 6.4, component-level statement interfaces.
+
+LaTeX labels covered here:
+`ODEsystemFor3Manifolds`, `Lie-algebra-square`, `identify-Rm-M`, `dM/DT`,
+`Rm-ev-eqn-3d`, `Ricci-matrix`, and `trace-free-Rm-Rc`.
 -/
 
 noncomputable section

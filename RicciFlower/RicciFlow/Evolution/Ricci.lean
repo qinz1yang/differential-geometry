@@ -1,5 +1,7 @@
 import RicciFlower.RicciFlow.Evolution.Connection
+import RicciFlower.Coordinates.CoordinateFrame
 import RicciFlower.VectorBundle.PartialMfderiv
+import RicciFlower.Curvature.Contractions
 import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
@@ -24,6 +26,7 @@ namespace RicciFlower
 namespace RicciFlow
 
 open Bundle Tensor0SBundle
+open RicciFlower.Coordinates
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -50,6 +53,32 @@ def RicciTensorRealizesRm04TraceInFrameOn
     Realized.RicciTensorRealizesRm04TraceInFrame
       (I := I) (S.ricci t) (Rm04 t) (gInv t) frame
 
+/-- A time-indexed Ricci tensor realizes the convention-correct lowered Riemann
+first trace in a fixed frame at every time:
+`Ric_ij = g^{kl} Rm04(e_k,e_l,e_i,e_j)`. -/
+def RicciTensorRealizesRm04FirstTraceInFrameOn
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
+  forall t : Real,
+    Realized.RicciTensorRealizesRm04FirstTraceInFrame
+      (I := I) (S.ricci t) (Rm04 t) (gInv t) frame
+
+/-- Regular-time version of the convention-correct lowered Riemann first
+trace.  Lemma 6.3 only differentiates at regular times, so this is the natural
+producer target for Ricci evolution. -/
+def RicciTensorRealizesRm04FirstTraceInFrameOnRegular
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
+  forall t : Realized.RealTimeInterval.RegularTime D,
+    Realized.RicciTensorRealizesRm04FirstTraceInFrame
+      (I := I) (S.ricci (t : Real)) (Rm04 (t : Real)) (gInv (t : Real)) frame
+
 theorem ricciCompInFrame_eq_rm04_trace
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -66,6 +95,67 @@ theorem ricciCompInFrame_eq_rm04_trace
   simpa [ricciCompInFrame] using
     Realized.ricciComp_eq_trace (I := I)
       (S.ricci t) (Rm04 t) (gInv t) frame (htrace t) x i j
+
+/-- A local frame turns the Ricci-flow inverse-component predicate into the
+basis-level inverse predicate used by pointwise tensor contraction lemmas. -/
+private theorem metricInverseInBasis_of_solution_frame
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (t : Real) {x : M} (hx : x ∈ u) :
+    Tensor0SBundle.MetricInverseInBasis
+      (I := I) (M := M) (S.family.metric t) x
+      (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
+  intro i j
+  constructor
+  · simpa [metricCompInFrame, IsLocalFrameOn.toBasisAt_coe] using
+      (hinv t x i j).1
+  · simpa [metricCompInFrame, IsLocalFrameOn.toBasisAt_coe] using
+      (hinv t x i j).2
+
+/-- Produce the convention-correct lowered Riemann first-trace realization of
+the bundled Ricci tensor from the intrinsic `(1,3)` Ricci trace and lowering.
+
+This is the separate trace-realization bridge used by the Ricci-evolution
+commutator proof. -/
+theorem ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hRicTrace13 : forall t : Realized.RealTimeInterval.RegularTime D,
+      Realized.RicciTensorRealizesRm13Trace (I := I)
+        (S.ricci (t : Real)) (Rm13 (t : Real)))
+    (hLower : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
+      Realized.Rm04LowersRm13At (I := I) (S.family.metric (t : Real)) x
+        (Rm13 (t : Real) x) (Rm04 (t : Real) x))
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv) :
+    RicciTensorRealizesRm04FirstTraceInFrameOnRegular
+      (I := I) S Rm04 gInv frame := by
+  intro t x i j
+  have hx : x ∈ (Set.univ : Set M) := Set.mem_univ x
+  have hinvAt :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) (M := M) (S.family.metric (t : Real)) x
+        (hframe.toBasisAt hx)
+        (fun a b : Idx => gInv (t : Real) x a b) :=
+    metricInverseInBasis_of_solution_frame
+      (I := I) S gInv frame hframe hinv (t : Real) hx
+  have hAt :=
+    Realized.ricciFirstTraceAt_of_rm13_section
+      (I := I) (S.family.metric (t : Real)) (hframe.toBasisAt hx)
+      (fun a b : Idx => gInv (t : Real) x a b) hinvAt
+      (S.ricci (t : Real)) (Rm13 (t : Real)) (Rm04 (t : Real))
+      (hRicTrace13 t) (hLower t x) (hInv (t : Real) x)
+  simpa [Realized.RicciTensorRealizesRm04FirstTraceInFrame,
+    IsLocalFrameOn.toBasisAt_coe] using hAt i j
 
 /-- Component form of a lowered Riemann evolution equation.  The future
 producer is the realized analogue of synthetic `RiemannVariation.lean` plus
@@ -205,6 +295,45 @@ private def covDInv
   dG k l +
     (∑ a : ι, Γ k a * G a l) +
     (∑ a : ι, Γ l a * G k a)
+
+private def covDChristoffelVariation
+    (Γ : ι -> ι -> ι -> Real) (A : ι -> ι -> ι -> Real)
+    (dA : ι -> ι -> ι -> ι -> Real)
+    (dir k i j : ι) : Real :=
+  dA dir i j k +
+    (∑ a : ι, Γ dir a k * A i j a) -
+    (∑ a : ι, Γ dir i a * A a j k) -
+    (∑ a : ι, Γ dir j a * A i a k)
+
+private theorem christoffel_curv_variation_algebra
+    (Γ : ι -> ι -> ι -> Real) (A : ι -> ι -> ι -> Real)
+    (dA : ι -> ι -> ι -> ι -> Real)
+    (hΓsymm : ∀ a b c : ι, Γ a b c = Γ b a c)
+    (i k j m : ι) :
+    dA i k j m - dA k i j m +
+        (∑ a : ι, (A k j a * Γ i a m + Γ k j a * A i a m)) -
+        (∑ a : ι, (A i j a * Γ k a m + Γ i j a * A k a m)) =
+      covDChristoffelVariation Γ A dA i m k j -
+        covDChristoffelVariation Γ A dA k m i j := by
+  classical
+  unfold covDChristoffelVariation
+  have hmid :
+      (∑ a : ι, Γ i k a * A a j m) =
+        ∑ a : ι, Γ k i a * A a j m := by
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hΓsymm i k a]
+  have hleft :
+      (∑ a : ι, A k j a * Γ i a m) =
+        ∑ a : ι, Γ i a m * A k j a := by
+    refine Finset.sum_congr rfl fun a _ => ?_
+    ring
+  have hright :
+      (∑ a : ι, A i j a * Γ k a m) =
+        ∑ a : ι, Γ k a m * A i j a := by
+    refine Finset.sum_congr rfl fun a _ => ?_
+    ring
+  rw [Finset.sum_add_distrib, Finset.sum_add_distrib, hleft, hright, hmid]
+  ring
 
 private theorem sum_swap_inverse_metric_third_slot
     (Γ G : ι -> ι -> Real) (B : ι -> ι -> ι -> Real)
@@ -997,6 +1126,321 @@ def christoffelVariationCovDerivCoordAt
       Realized.christoffelCoordAt (I := I) cov x₀ dir j a *
         gammaDt t x₀ i a k)
 
+/-- Torsion-freeness of a Ricci-flow solution makes coordinate Christoffel
+symbols symmetric in the two lower slots at regular times. -/
+private theorem christoffelCoordAt_symm_of_isSolutionOn
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (t : Realized.RealTimeInterval.RegularTime D) (x₀ : M)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real)) x₀ i j k =
+      Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real)) x₀ j i k := by
+  have htf : RicciFlower.LeviCivita.IsTorsionFree (I := I)
+      (S.family.connection (t : Real)) := by
+    simpa [Realized.RealizedMetricFamilyOn.connectionAt] using
+      hS.leviCivita.2 (Realized.RealTimeInterval.regularToFlow t)
+  have hzero :
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff k x₀
+          ((S.family.connection (t : Real)).torsion x₀
+            (coordinateFrameAt (I := I) x₀ i x₀)
+            (coordinateFrameAt (I := I) x₀ j x₀)) = 0 := by
+    rw [htf x₀]
+    simp
+  have hskew := RicciFlower.LeviCivita.coordinate_torsion_coeff_eq_christoffel_skew
+    (I := I) (S.family.connection (t : Real)) x₀ i j k
+  rw [hzero] at hskew
+  exact sub_eq_zero.mp hskew.symm
+
+/-- Time derivative of a spatial coordinate derivative of a Christoffel
+component, supplied by the mixed derivative regularity predicate. -/
+private theorem christoffelCoordDerivAt_hasDerivWithinAt_of_christoffelVariation
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (rhs :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hmix : ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (dir i j k : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        Realized.christoffelCoordDerivAt (I := I) (S.family.connection s)
+          x₀ dir i j k)
+      (extDerivFun (I := I) (fun y : M => rhs (t : Real) y i j k) x₀
+        (coordinateFrameAt (I := I) x₀ dir x₀))
+      D.carrier
+      (t : Real) := by
+  have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
+    coordinateFrameAt_mem (I := I) x₀
+  simpa [Realized.christoffelCoordDerivAt, Realized.christoffelCoordFun] using
+    fixedBaseExtDerivTimeDerivativeOn_apply (I := I) (h := hmix i j k)
+      (x := x₀) hx₀ (coordinateFrameAt (I := I) x₀ dir x₀)
+
+/-- Time derivative of a coordinate Christoffel coefficient from a supplied
+Christoffel variation formula. -/
+private theorem christoffelCoordAt_hasDerivWithinAt_of_christoffelVariation
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (rhs :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hvar : ChristoffelVariationEquationInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        Realized.christoffelCoordAt (I := I) (S.family.connection s) x₀ i j k)
+      (rhs (t : Real) x₀ i j k)
+      D.carrier
+      (t : Real) := by
+  have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
+    coordinateFrameAt_mem (I := I) x₀
+  simpa [Realized.christoffelCoordAt] using hvar t x₀ hx₀ i j k
+
+/-- Differentiate the coordinate Christoffel curvature coefficient in time.
+
+This is the full-coordinate version of the usual calculation
+`∂ₜ R = ∇(∂ₜ Γ) - ∇(∂ₜ Γ)`: the `Γ A` product terms are kept and then
+regrouped into the covariant derivative of the Christoffel variation tensor. -/
+theorem christoffelCurvCoeffAt_hasDerivWithinAt_of_christoffelVariation
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (rhs :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hvar : ChristoffelVariationEquationInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (hmix : ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (i k j m : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        Realized.christoffelCurvCoeffAt (I := I) (S.family.connection s)
+          x₀ i k j m)
+      (christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection (t : Real)) rhs (t : Real) x₀ i m k j -
+        christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection (t : Real)) rhs (t : Real) x₀ k m i j)
+      D.carrier
+      (t : Real) := by
+  classical
+  have hD_i := christoffelCoordDerivAt_hasDerivWithinAt_of_christoffelVariation
+    (I := I) S rhs x₀ hmix t i k j m
+  have hD_k := christoffelCoordDerivAt_hasDerivWithinAt_of_christoffelVariation
+    (I := I) S rhs x₀ hmix t k i j m
+  have hΓ :
+      ∀ a b c : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt
+          (fun s : Real =>
+            Realized.christoffelCoordAt (I := I) (S.family.connection s)
+              x₀ a b c)
+          (rhs (t : Real) x₀ a b c) D.carrier (t : Real) := by
+    intro a b c
+    exact christoffelCoordAt_hasDerivWithinAt_of_christoffelVariation
+      (I := I) S rhs x₀ hvar t a b c
+  have hprod_left :
+      HasDerivWithinAt
+        (fun s : Real =>
+          ∑ a : CoordinateIdx (𝕜 := Real) E,
+            Realized.christoffelCoordAt (I := I) (S.family.connection s)
+              x₀ k j a *
+            Realized.christoffelCoordAt (I := I) (S.family.connection s)
+              x₀ i a m)
+        (∑ a : CoordinateIdx (𝕜 := Real) E,
+          (rhs (t : Real) x₀ k j a *
+            Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real))
+              x₀ i a m +
+          Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real))
+              x₀ k j a *
+            rhs (t : Real) x₀ i a m))
+        D.carrier
+        (t : Real) := by
+    simpa [Finset.sum_add_distrib] using
+      (HasDerivWithinAt.fun_sum
+        (fun a _ => (hΓ k j a).mul (hΓ i a m)))
+  have hprod_right :
+      HasDerivWithinAt
+        (fun s : Real =>
+          ∑ a : CoordinateIdx (𝕜 := Real) E,
+            Realized.christoffelCoordAt (I := I) (S.family.connection s)
+              x₀ i j a *
+            Realized.christoffelCoordAt (I := I) (S.family.connection s)
+              x₀ k a m)
+        (∑ a : CoordinateIdx (𝕜 := Real) E,
+          (rhs (t : Real) x₀ i j a *
+            Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real))
+              x₀ k a m +
+          Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real))
+              x₀ i j a *
+            rhs (t : Real) x₀ k a m))
+        D.carrier
+        (t : Real) := by
+    simpa [Finset.sum_add_distrib] using
+      (HasDerivWithinAt.fun_sum
+        (fun a _ => (hΓ i j a).mul (hΓ k a m)))
+  have hraw :
+      HasDerivWithinAt
+        (fun s : Real =>
+          Realized.christoffelCurvCoeffAt (I := I) (S.family.connection s)
+            x₀ i k j m)
+        ((extDerivFun (I := I) (fun y : M => rhs (t : Real) y k j m) x₀
+            (coordinateFrameAt (I := I) x₀ i x₀) -
+          extDerivFun (I := I) (fun y : M => rhs (t : Real) y i j m) x₀
+            (coordinateFrameAt (I := I) x₀ k x₀)) +
+          (∑ a : CoordinateIdx (𝕜 := Real) E,
+            (rhs (t : Real) x₀ k j a *
+              Realized.christoffelCoordAt (I := I)
+                (S.family.connection (t : Real)) x₀ i a m +
+            Realized.christoffelCoordAt (I := I)
+                (S.family.connection (t : Real)) x₀ k j a *
+              rhs (t : Real) x₀ i a m)) -
+          (∑ a : CoordinateIdx (𝕜 := Real) E,
+            (rhs (t : Real) x₀ i j a *
+              Realized.christoffelCoordAt (I := I)
+                (S.family.connection (t : Real)) x₀ k a m +
+            Realized.christoffelCoordAt (I := I)
+                (S.family.connection (t : Real)) x₀ i j a *
+              rhs (t : Real) x₀ k a m)))
+        D.carrier
+        (t : Real) := by
+    simpa [Realized.christoffelCurvCoeffAt, sub_eq_add_neg, add_assoc,
+      Finset.sum_add_distrib] using
+      (((hD_i.sub hD_k).add hprod_left).sub hprod_right)
+  refine hraw.congr_deriv ?_
+  have hsymm :
+      ∀ a b c : CoordinateIdx (𝕜 := Real) E,
+        Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real)) x₀ a b c =
+          Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real)) x₀ b a c := by
+    intro a b c
+    exact christoffelCoordAt_symm_of_isSolutionOn (I := I) S hS t x₀ a b c
+  let Γ : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+      CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun a b c =>
+      Realized.christoffelCoordAt (I := I) (S.family.connection (t : Real)) x₀ a b c
+  let A : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+      CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun a b c => rhs (t : Real) x₀ a b c
+  let dA : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+      CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun dir a b c =>
+      extDerivFun (I := I) (fun y : M => rhs (t : Real) y a b c) x₀
+        (coordinateFrameAt (I := I) x₀ dir x₀)
+  have hΓsymm : ∀ a b c : CoordinateIdx (𝕜 := Real) E, Γ a b c = Γ b a c := by
+    intro a b c
+    exact hsymm a b c
+  simpa [Γ, A, dA, christoffelVariationCovDerivCoordAt,
+    covDChristoffelVariation] using
+    (christoffel_curv_variation_algebra Γ A dA hΓsymm i k j m)
+
+/-- Differentiate the coordinate Christoffel trace formula for Ricci in time. -/
+theorem christoffelRicciCoeffAt_hasDerivWithinAt_of_christoffelVariation
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (rhs :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hvar : ChristoffelVariationEquationInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (hmix : ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (i j : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        Realized.christoffelRicciCoeffAt (I := I) (S.family.connection s)
+          x₀ i j)
+      (ricciVariationFromConnectionRHSInFrame (M := M)
+        (fun τ x d k i j =>
+          christoffelVariationCovDerivCoordAt (I := I)
+            (S.family.connection τ) rhs τ x d k i j)
+        (t : Real) x₀ i j)
+      D.carrier
+      (t : Real) := by
+  classical
+  have hsum :
+      HasDerivWithinAt
+        (fun s : Real =>
+          ∑ k : CoordinateIdx (𝕜 := Real) E,
+            Realized.christoffelCurvCoeffAt (I := I)
+              (S.family.connection s) x₀ k i j k)
+        (∑ k : CoordinateIdx (𝕜 := Real) E,
+          (christoffelVariationCovDerivCoordAt (I := I)
+              (S.family.connection (t : Real)) rhs (t : Real) x₀ k k i j -
+            christoffelVariationCovDerivCoordAt (I := I)
+              (S.family.connection (t : Real)) rhs (t : Real) x₀ i k k j))
+        D.carrier
+        (t : Real) := by
+    exact HasDerivWithinAt.fun_sum fun k _ =>
+      christoffelCurvCoeffAt_hasDerivWithinAt_of_christoffelVariation
+        (I := I) S hS rhs x₀ hvar hmix t k i j k
+  refine hsum.congr_deriv ?_
+  simp [ricciVariationFromConnectionRHSInFrame, Finset.sum_sub_distrib]
+
+/-- Coordinate-frame Ricci variation formula from differentiating the
+Christoffel Ricci trace formula. -/
+theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
+    [IsManifold I (∞ + 1) M]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (rhs :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (x₀ : M)
+    (hRicTrace : ∀ s : Real,
+      Realized.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
+    (hRm : ∀ s : Real,
+      Realized.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
+    (hcurv : ∀ s : Real,
+      Realized.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
+    (hvar : ChristoffelVariationEquationInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs)
+    (hmix : ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+      (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs) :
+    RicciVariationFormulaInFrameOnLocal (I := I) S
+      (coordinateFrameAt (I := I) x₀) ({x₀} : Set M)
+      (fun τ x d k i j =>
+        christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection τ) rhs τ x d k i j) := by
+  intro t x hx i j
+  have hx_eq : x = x₀ := by
+    simpa using hx
+  subst x
+  have hderiv :=
+    christoffelRicciCoeffAt_hasDerivWithinAt_of_christoffelVariation
+      (I := I) S hS rhs x₀ hvar hmix t i j
+  have hricci :
+      ∀ s : Real,
+        ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) s x₀ i j =
+          Realized.christoffelRicciCoeffAt (I := I) (S.family.connection s) x₀ i j := by
+    intro s
+    unfold ricciCompInFrame
+    rw [hRicTrace s x₀]
+    exact Realized.ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
+      (I := I) (S.family.connection s) (Rm13 s) x₀ (hRm s) (hcurv s) i j
+  exact hderiv.congr
+    (fun s _hs => hricci s)
+    (hricci (t : Real))
+
 /-- Covariantly differentiating the Ricci-flow Christoffel variation and using
 `nabla g^{-1} = 0` turns the actual Christoffel-variation tensor into the
 book expression with second Ricci derivatives.
@@ -1240,6 +1684,133 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
   refine Finset.sum_congr rfl fun l _hl => ?_
   rw [hnabla2_at d i j l, hnabla2_at d j i l, hnabla2_at d l i j]
 
+/-- Ricci-flow specialization of the coordinate-frame Ricci variation formula:
+differentiate the Christoffel Ricci trace formula, use the Ricci-flow
+Christoffel evolution, then substitute `nabla A = nabla^2 Ric`.  The only
+regularity input left explicit is the honest mixed derivative
+`partial_t partial_x Gamma = partial_x partial_t Gamma`. -/
+theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
+    [IsManifold I (∞ + 1) M]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (gInv :
+      Real -> Realized.InverseMetricComponents M (CoordinateIdx (𝕜 := Real) E))
+    (gInvDt :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (nablaRic :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (nabla2Ric :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (x₀ : M)
+    (hmetricReg :
+      MetricFrameSpacetimeRegularityInFrameOnLocal
+        (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀))
+    (hnablaReg :
+      Nabla2RicciComponentsRegularInFrameOnLocal
+        (I := I) S (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
+    (hRicTrace : ∀ s : Real,
+      Realized.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
+    (hRm : ∀ s : Real,
+      Realized.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
+    (hcurv : ∀ s : Real,
+      Realized.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
+    (hmix :
+      ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+        (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)) :
+    RicciVariationFormulaInFrameOnLocal (I := I) S
+      (coordinateFrameAt (I := I) x₀) ({x₀} : Set M)
+      (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric) := by
+  classical
+  have hvar :
+      ChristoffelVariationEquationInFrameOn (I := I) S
+        (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic) := by
+    have hGamma :
+        ChristoffelEvolutionEquationInFrameOn (I := I) S gInv
+          (coordinateFrameAt (I := I) x₀)
+          (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic :=
+      christoffelEvolution_of_spacetimeSmoothMetric
+        (I := I) S hS gInv gInvDt (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (coordinateFrameSet_open (I := I) x₀) nablaRic hmetricReg
+        hnablaReg.first.realizes
+    simpa [ChristoffelVariationEquationInFrameOn,
+      ChristoffelEvolutionEquationInFrameOn] using hGamma
+  have hlocal :=
+    ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
+      (I := I) S hS (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+      Rm13 x₀ hRicTrace hRm hcurv hvar hmix
+  intro t x hx i j
+  have hx_eq : x = x₀ := by
+    simpa using hx
+  subst x
+  have hbase := hlocal t x₀ (by simp) i j
+  have hsum₁ :
+      (∑ a : CoordinateIdx (𝕜 := Real) E,
+        christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection (t : Real))
+          (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+          (t : Real) x₀ a a i j) =
+      ∑ a : CoordinateIdx (𝕜 := Real) E,
+        nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
+          (t : Real) x₀ a a i j := by
+    refine Finset.sum_congr rfl fun a _ha => ?_
+    exact christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
+      (I := I) S gInv nablaRic nabla2Ric x₀ gInvDt hmetricReg hnablaReg t a a i j
+  have hsum₂ :
+      (∑ a : CoordinateIdx (𝕜 := Real) E,
+        christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection (t : Real))
+          (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+          (t : Real) x₀ i a a j) =
+      ∑ a : CoordinateIdx (𝕜 := Real) E,
+        nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
+          (t : Real) x₀ i a a j := by
+    refine Finset.sum_congr rfl fun a _ha => ?_
+    exact christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
+      (I := I) S gInv nablaRic nabla2Ric x₀ gInvDt hmetricReg hnablaReg t i a a j
+  have hEq :
+      ricciVariationFromConnectionRHSInFrame (M := M)
+          (fun τ x d k i j =>
+            christoffelVariationCovDerivCoordAt (I := I)
+              (S.family.connection τ)
+              (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+              τ x d k i j)
+          (t : Real) x₀ i j =
+        ricciVariationFromConnectionRHSInFrame (M := M)
+          (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric)
+          (t : Real) x₀ i j := by
+    unfold ricciVariationFromConnectionRHSInFrame
+    change
+      (∑ a : CoordinateIdx (𝕜 := Real) E,
+        christoffelVariationCovDerivCoordAt (I := I)
+          (S.family.connection (t : Real))
+          (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+          (t : Real) x₀ a a i j) -
+        (∑ a : CoordinateIdx (𝕜 := Real) E,
+          christoffelVariationCovDerivCoordAt (I := I)
+            (S.family.connection (t : Real))
+            (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+            (t : Real) x₀ i a a j) =
+      (∑ a : CoordinateIdx (𝕜 := Real) E,
+        nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
+          (t : Real) x₀ a a i j) -
+        (∑ a : CoordinateIdx (𝕜 := Real) E,
+          nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
+            (t : Real) x₀ i a a j)
+    rw [hsum₁, hsum₂]
+  exact hbase.congr_deriv hEq
+
 end CoordinateConnectionVariation
 
 /-- The rough Laplacian component `g^{ab} (nabla_a nabla_b Ric)_ij`. -/
@@ -1301,7 +1872,8 @@ theorem ricciVariationFromConnectionRHSInFrame_nablaGammaDtFromNabla2Ric
 This is exactly the textbook contracted-Bianchi plus covariant-derivative
 commutator calculation: the gauge/scalar-Hessian terms cancel, and the
 remaining commutator terms become
-`2 R_ikjl Ric^kl - 2 Ric_i^k Ric_kj`. -/
+`-2 * rmRicciContractionCompInFrame - 2 Ric_i^k Ric_kj` in the project
+lowered-curvature convention. -/
 def RicciVariationExpandedRHS_eq_evolutionRHS
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1357,6 +1929,15 @@ def contractedNabla2RicTraceBInFrame
   ∑ k : Idx, ∑ l : Idx,
     gInv t x k l * nabla2Ric t x i l k j
 
+/-- The natural right trace produced directly by commuting
+`∇^k ∇_j Ric_il` with the Ricci identity: `∇_j ∇^k Ric_ik`. -/
+def contractedNabla2RicTraceRightNaturalInFrame
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
+    (t : Real) (x : M) (i j : Idx) : Real :=
+  ∑ k : Idx, ∑ l : Idx,
+    gInv t x k l * nabla2Ric t x j k i l
+
 /-- Pointwise contracted Bianchi in the two trace orientations used by the
 differentiated Lemma 6.3 calculation.
 
@@ -1398,8 +1979,53 @@ def DifferentiatedContractedBianchiInFrame
     contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
         (t : Real) x i j =
       (1 / 2 : Real) *
-        scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
+          scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j
+
+/-- Symmetry of the scalar Hessian represented by `nabla2Ric`.  This is the
+trace-level scalar Hessian symmetry needed to compare the natural right trace
+with the `traceB` orientation. -/
+def ScalarHessianFromNabla2RicSymmetricInFrame
+    {D : Realized.RealTimeInterval}
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real) : Prop :=
+  forall (t : Realized.RealTimeInterval.RegularTime D) (x : M) (i j : Idx),
+    scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
+        (t : Real) x i j =
+      scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
+        (t : Real) x j i
+
+/-- Differentiated contracted Bianchi plus scalar-Hessian symmetry converts the
+natural right trace to the `traceB` orientation used in the expanded Ricci
+variation formula. -/
+theorem contractedNabla2RicTraceRightNatural_eq_traceB
+    {D : Realized.RealTimeInterval}
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
+    (hbianchi : DifferentiatedContractedBianchiInFrame
+      (D := D) (M := M) gInv nabla2Ric)
+    (hHessSymm : ScalarHessianFromNabla2RicSymmetricInFrame
+      (D := D) (M := M) gInv nabla2Ric)
+    (t : Realized.RealTimeInterval.RegularTime D) (x : M) (i j : Idx) :
+    contractedNabla2RicTraceRightNaturalInFrame (M := M) gInv nabla2Ric
+        (t : Real) x i j =
+      contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
+        (t : Real) x i j := by
+  have hA := (hbianchi t x j i).1
+  have hB := (hbianchi t x i j).2
+  calc
+    contractedNabla2RicTraceRightNaturalInFrame (M := M) gInv nabla2Ric
+        (t : Real) x i j
+        = contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
+            (t : Real) x j i := rfl
+    _ = (1 / 2 : Real) *
+          scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
+            (t : Real) x j i := hA
+    _ = (1 / 2 : Real) *
+          scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
+            (t : Real) x i j := by rw [← hHessSymm t x i j]
+    _ = contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j := hB.symm
 
 /-- Local differentiated contracted Bianchi, for use with local frames. -/
 def DifferentiatedContractedBianchiInFrameOnLocal
@@ -1696,14 +2322,14 @@ def RicciSecondDerivativeCommutatorsInFrame
   forall (t : Realized.RealTimeInterval.RegularTime D) (x : M) (i j : Idx),
     contractedNabla2RicLeftInFrame (M := M) gInv nabla2Ric (t : Real) x i j =
         contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
-          (t : Real) x i j -
+          (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j ∧
       contractedNabla2RicRightInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j =
-        contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
-          (t : Real) x i j -
+        contractedNabla2RicTraceRightNaturalInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j
@@ -1721,7 +2347,7 @@ def RicciCurvatureCommutatorsInFrame
     contractedNabla2RicLeftInFrame (M := M) gInv nabla2Ric (t : Real) x i j =
         (1 / 2 : Real) *
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
-            (t : Real) x i j -
+            (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j ∧
@@ -1729,7 +2355,7 @@ def RicciCurvatureCommutatorsInFrame
           (t : Real) x i j =
         (1 / 2 : Real) *
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
-          (t : Real) x i j -
+          (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j
@@ -1746,6 +2372,8 @@ theorem RicciCurvatureCommutatorsInFrame_of_differentiatedBianchi_and_secondComm
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (hbianchi : DifferentiatedContractedBianchiInFrame
       (D := D) (M := M) gInv nabla2Ric)
+    (hHessSymm : ScalarHessianFromNabla2RicSymmetricInFrame
+      (D := D) (M := M) gInv nabla2Ric)
     (hsecond : RicciSecondDerivativeCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric) :
     RicciCurvatureCommutatorsInFrame
@@ -1754,15 +2382,178 @@ theorem RicciCurvatureCommutatorsInFrame_of_differentiatedBianchi_and_secondComm
   have hleft := (hsecond t x i j).1
   have hright := (hsecond t x i j).2
   have hA := (hbianchi t x i j).1
-  have hB := (hbianchi t x i j).2
+  have hB := contractedNabla2RicTraceRightNatural_eq_traceB
+    (M := M) gInv nabla2Ric hbianchi hHessSymm t x i j
+  have hB' := (hbianchi t x i j).2
   constructor
   · rw [hleft, hA]
-  · rw [hright, hB]
+  · rw [hright, hB, hB']
+
+/-- Curvature action on a two-tensor, expanded into the two affected slots.
+This keeps the Ricci-evolution contraction proof from unfolding the general
+slot-sum definition repeatedly. -/
+private theorem curvatureAction0SAt_vec2_eq
+    (Rm13 : Realized.Tensor13Section (I := I) (M := M))
+    {x : M}
+    (Ric : Realized.Tensor02At (I := I) (M := M) x)
+    (X Y U V : TangentSpace I x) :
+    Realized.curvatureAction0SAt (I := I) Rm13 Ric X Y
+        (Realized.vec2 U V) =
+      - (Rm13 x
+            (Realized.oneFormAtSlot0S (I := I) Ric (Realized.vec2 U V) 0)
+            (Realized.vec3 X Y U) +
+          Rm13 x
+            (Realized.oneFormAtSlot0S (I := I) Ric (Realized.vec2 U V) 1)
+            (Realized.vec3 X Y V)) := by
+  rw [Realized.curvatureAction0SAt]
+  simp [Fin.sum_univ_two, Realized.vec2, RicciFlower.Curvature.vec2]
+
+/-- Contract the first curvature-action identity obtained from the `(0,2)`
+Ricci identity.  This is the convention-correct finite-index curvature algebra
+`R_ikjl Ric^kl + Ric_i^k Ric_kj` for `Rm04(W,X,Y,Z)=g(W,R(X,Y)Z)`. -/
+private theorem contractedCurvatureAction_left_eq
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInvAt : Idx -> Idx -> Real)
+    (hinvAt :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) (M := M) g x basis gInvAt)
+    (t : Real) (i j : Idx)
+    (hLower : Realized.Rm04LowersRm13At (I := I) g x (Rm13 t x) (Rm04 t x))
+    (hTraceAt : Realized.RicciRealizesRm04FirstTraceAt (I := I)
+      (S.ricci t x) (Rm04 t x) gInvAt basis)
+    (hPair : forall W X Y Z : TangentSpace I x,
+      Rm04 t x (Realized.vec4 W X Y Z) =
+        Rm04 t x (Realized.vec4 Y Z W X))
+    (hOutput : Realized.Rm04OutputSkewAt (I := I) (Rm04 t x))
+    (hFirst : Realized.FirstBianchiAt (I := I) (Rm04 t x))
+    (hRic : forall t x i j,
+      ricciCompInFrame (I := I) S frame t x i j =
+        ricciCompInFrame (I := I) S frame t x j i)
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hgInvAt : forall a b : Idx, gInvAt a b = gInv t x a b)
+    (hbasis : forall a : Idx, basis a = frame a x) :
+    (∑ k : Idx, ∑ l : Idx,
+        gInv t x k l *
+          Realized.curvatureAction0SAt (I := I) (Rm13 t)
+            (S.ricci t x) (frame k x) (frame i x)
+            (Realized.vec2 (frame j x) (frame l x))) =
+      rmRicciContractionCompInFrame (I := I) S
+        Rm04 gInv frame t x i j +
+        ricciQuadraticCompInFrame (I := I) S gInv frame t x i j := by
+  have hRicAt :
+      forall a b : Idx,
+        (S.ricci t x) (Realized.vec2 (basis a) (basis b)) =
+          (S.ricci t x) (Realized.vec2 (basis b) (basis a)) := by
+    intro a b
+    simpa [hbasis] using hRic t x a b
+  have hInvAt : forall a b : Idx, gInvAt a b = gInvAt b a := by
+    intro a b
+    rw [hgInvAt a b, hgInvAt b a]
+    exact hInv t x a b
+  have hmain :=
+    Realized.contracted_curvatureAction0SAt_vec2_eq
+      (I := I) g basis gInvAt hinvAt (Rm13 t) (Rm04 t x) (S.ricci t x)
+      hLower hTraceAt hPair hOutput hFirst hRicAt hInvAt i j
+  simpa [Realized.rm04RicciContractionAt, Realized.raised02CompAt,
+    Realized.ricciQuadraticAt, Realized.oneUp02CompAt,
+    rmRicciContractionCompInFrame, raisedRicciCompInFrame, ricciOneUpCompInFrame,
+    ricciQuadraticCompInFrame, Realized.rm04Comp, RicciFlower.Curvature.rm04Comp,
+    hgInvAt, hbasis] using hmain
+
+/-- Contract the natural right curvature-action identity obtained from the
+`(0,2)` Ricci identity. -/
+private theorem contractedCurvatureAction_right_eq
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInvAt : Idx -> Idx -> Real)
+    (hinvAt :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) (M := M) g x basis gInvAt)
+    (t : Real) (i j : Idx)
+    (hLower : Realized.Rm04LowersRm13At (I := I) g x (Rm13 t x) (Rm04 t x))
+    (hTraceAt : Realized.RicciRealizesRm04FirstTraceAt (I := I)
+      (S.ricci t x) (Rm04 t x) gInvAt basis)
+    (hPair : forall W X Y Z : TangentSpace I x,
+      Rm04 t x (Realized.vec4 W X Y Z) =
+        Rm04 t x (Realized.vec4 Y Z W X))
+    (hOutput : Realized.Rm04OutputSkewAt (I := I) (Rm04 t x))
+    (hFirst : Realized.FirstBianchiAt (I := I) (Rm04 t x))
+    (hRic : forall t x i j,
+      ricciCompInFrame (I := I) S frame t x i j =
+        ricciCompInFrame (I := I) S frame t x j i)
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hgInvAt : forall a b : Idx, gInvAt a b = gInv t x a b)
+    (hbasis : forall a : Idx, basis a = frame a x) :
+    (∑ k : Idx, ∑ l : Idx,
+        gInv t x k l *
+          Realized.curvatureAction0SAt (I := I) (Rm13 t)
+            (S.ricci t x) (frame k x) (frame j x)
+            (Realized.vec2 (frame i x) (frame l x))) =
+      rmRicciContractionCompInFrame (I := I) S
+        Rm04 gInv frame t x i j +
+        ricciQuadraticCompInFrame (I := I) S gInv frame t x i j := by
+  have hRicAt :
+      forall a b : Idx,
+        (S.ricci t x) (Realized.vec2 (basis a) (basis b)) =
+          (S.ricci t x) (Realized.vec2 (basis b) (basis a)) := by
+    intro a b
+    simpa [hbasis] using hRic t x a b
+  have hInvAt : forall a b : Idx, gInvAt a b = gInvAt b a := by
+    intro a b
+    rw [hgInvAt a b, hgInvAt b a]
+    exact hInv t x a b
+  have hmain :=
+    Realized.contracted_curvatureAction0SAt_vec2_eq
+      (I := I) g basis gInvAt hinvAt (Rm13 t) (Rm04 t x) (S.ricci t x)
+      hLower hTraceAt hPair hOutput hFirst hRicAt hInvAt j i
+  have hsym :=
+    Realized.curvature_ricci_rhs_symm
+      (I := I) basis (Rm04 t x) gInvAt (S.ricci t x)
+      hPair hRicAt hInvAt j i
+  calc
+    (∑ k : Idx, ∑ l : Idx,
+        gInv t x k l *
+          Realized.curvatureAction0SAt (I := I) (Rm13 t)
+            (S.ricci t x) (frame k x) (frame j x)
+            (Realized.vec2 (frame i x) (frame l x)))
+        =
+          Realized.rm04RicciContractionAt (I := I) basis (Rm04 t x) gInvAt
+              (S.ricci t x) j i +
+            Realized.ricciQuadraticAt (I := I) basis gInvAt
+              (S.ricci t x) j i := by
+          simpa [hgInvAt, hbasis] using hmain
+    _ =
+          Realized.rm04RicciContractionAt (I := I) basis (Rm04 t x) gInvAt
+              (S.ricci t x) i j +
+            Realized.ricciQuadraticAt (I := I) basis gInvAt
+              (S.ricci t x) i j := hsym
+    _ =
+      rmRicciContractionCompInFrame (I := I) S
+        Rm04 gInv frame t x i j +
+        ricciQuadraticCompInFrame (I := I) S gInv frame t x i j := by
+          simp [Realized.rm04RicciContractionAt, Realized.raised02CompAt,
+            Realized.ricciQuadraticAt, Realized.oneUp02CompAt,
+            rmRicciContractionCompInFrame, raisedRicciCompInFrame, ricciOneUpCompInFrame,
+            ricciQuadraticCompInFrame, Realized.rm04Comp, RicciFlower.Curvature.rm04Comp,
+            hgInvAt, hbasis]
 
 /-- Produce the raw second-derivative commutator identities from the invariant
 `(0,2)` tensor Ricci identity.  The curvature-action contraction is the only
 nontrivial finite-index algebra left here: it converts the two slot actions on
-`Ric` into `- R_ikjl Ric^kl + Ric_i^k Ric_kj`. -/
+`Ric` into `R_ikjl Ric^kl + Ric_i^k Ric_kj` in the project curvature convention. -/
 theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1770,6 +2561,8 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
     (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (nabla2RicTensor : Real -> Realized.Tensor04Section (I := I) (M := M))
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (hNabla2 : Nabla2RicciTensorComponentsInFrameOn
@@ -1777,17 +2570,20 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
     (hRicciId : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Tensor0SRicciIdentityAt (I := I) (Rm13 (t : Real))
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
+    (hRicTrace13 : forall t : Realized.RealTimeInterval.RegularTime D,
+      Realized.RicciTensorRealizesRm13Trace (I := I)
+        (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Rm04LowersRm13At (I := I) (S.family.metric (t : Real)) x
         (Rm13 (t : Real) x) (Rm04 (t : Real) x))
-    (hTrace : RicciTensorRealizesRm04TraceInFrameOn
-      (I := I) S Rm04 gInv frame)
     (hPair : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       forall W X Y Z : TangentSpace I x,
         Rm04 (t : Real) x (Realized.vec4 W X Y Z) =
           Rm04 (t : Real) x (Realized.vec4 Y Z W X))
     (hOutput : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
+    (hFirst : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
+      Realized.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (hRic : forall t x i j,
       ricciCompInFrame (I := I) S frame t x i j =
         ricciCompInFrame (I := I) S frame t x j i)
@@ -1796,15 +2592,233 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
       (I := I) S Rm04 gInv frame nabla2Ric := by
   classical
   intro t x i j
-  -- This is the real component calculation still to close: evaluate
-  -- `Tensor0SRicciIdentityAt` on the two frame slots, contract by `gInv`, and
-  -- use lowering, Ricci trace, pair/output symmetries, Ricci symmetry, and
-  -- inverse-metric symmetry to normalize the curvature action.
-  sorry
+  have hinvAt :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) (M := M) (S.family.metric (t : Real)) x
+        (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M)))
+        (fun a b : Idx => gInv (t : Real) x a b) :=
+    metricInverseInBasis_of_solution_frame
+      (I := I) S gInv frame hframe hinv (t : Real) (by simp)
+  have hTraceReg :
+      RicciTensorRealizesRm04FirstTraceInFrameOnRegular
+        (I := I) S Rm04 gInv frame :=
+    ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
+      (I := I) S Rm13 Rm04 gInv frame hframe hinv hRicTrace13 hLower hInv
+  have hTraceFrame := hTraceReg t
+  have hTraceAt :
+      Realized.RicciRealizesRm04FirstTraceAt (I := I)
+        (S.ricci (t : Real) x) (Rm04 (t : Real) x)
+        (fun a b : Idx => gInv (t : Real) x a b)
+        (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M))) := by
+    intro a b
+    have h := hTraceFrame x a b
+    simpa [Realized.RicciTensorRealizesRm04FirstTraceInFrame,
+      IsLocalFrameOn.toBasisAt_coe] using h
+  have hIdComp :
+      forall k l : Idx,
+        nabla2Ric (t : Real) x k i j l -
+            nabla2Ric (t : Real) x i k j l =
+          Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+            (S.ricci (t : Real) x)
+            (frame k x) (frame i x)
+            (Realized.vec2 (frame j x) (frame l x)) := by
+    intro k l
+    have h := hRicciId t x (frame k x) (frame i x)
+      (Realized.vec2 (frame j x) (frame l x))
+    have hinput₁ :
+        Realized.metricTraceInput (I := I) (frame k x) (frame i x)
+            (Realized.vec2 (frame j x) (frame l x)) =
+          Realized.vec4 (frame k x) (frame i x) (frame j x) (frame l x) := by
+      funext q
+      fin_cases q <;> rfl
+    have hinput₂ :
+        Realized.metricTraceInput (I := I) (frame i x) (frame k x)
+            (Realized.vec2 (frame j x) (frame l x)) =
+          Realized.vec4 (frame i x) (frame k x) (frame j x) (frame l x) := by
+      funext q
+      fin_cases q <;> rfl
+    rw [hinput₁, hinput₂] at h
+    rw [hNabla2 (t : Real) x k i j l, hNabla2 (t : Real) x i k j l]
+    simpa [Realized.rm04Comp, RicciFlower.Curvature.rm04Comp] using h
+  have hIdCompRight :
+      forall k l : Idx,
+        nabla2Ric (t : Real) x k j i l -
+            nabla2Ric (t : Real) x j k i l =
+          Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+            (S.ricci (t : Real) x)
+            (frame k x) (frame j x)
+            (Realized.vec2 (frame i x) (frame l x)) := by
+    intro k l
+    have h := hRicciId t x (frame k x) (frame j x)
+      (Realized.vec2 (frame i x) (frame l x))
+    have hinput₁ :
+        Realized.metricTraceInput (I := I) (frame k x) (frame j x)
+            (Realized.vec2 (frame i x) (frame l x)) =
+          Realized.vec4 (frame k x) (frame j x) (frame i x) (frame l x) := by
+      funext q
+      fin_cases q <;> rfl
+    have hinput₂ :
+        Realized.metricTraceInput (I := I) (frame j x) (frame k x)
+            (Realized.vec2 (frame i x) (frame l x)) =
+          Realized.vec4 (frame j x) (frame k x) (frame i x) (frame l x) := by
+      funext q
+      fin_cases q <;> rfl
+    rw [hinput₁, hinput₂] at h
+    rw [hNabla2 (t : Real) x k j i l, hNabla2 (t : Real) x j k i l]
+    simpa [Realized.rm04Comp, RicciFlower.Curvature.rm04Comp] using h
+  have hleftCurv :
+      contractedNabla2RicLeftInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j =
+        contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
+        (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+              (S.ricci (t : Real) x)
+              (frame k x) (frame i x)
+              (Realized.vec2 (frame j x) (frame l x))) := by
+    unfold contractedNabla2RicLeftInFrame contractedNabla2RicTraceAInFrame
+    calc
+      (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l * nabla2Ric (t : Real) x k i j l)
+          =
+        ∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            (nabla2Ric (t : Real) x i k j l +
+              Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+                (S.ricci (t : Real) x)
+                (frame k x) (frame i x)
+                (Realized.vec2 (frame j x) (frame l x))) := by
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            have h := hIdComp k l
+            rw [sub_eq_iff_eq_add] at h
+            rw [h]
+            ring
+      _ =
+        (∑ k : Idx, ∑ l : Idx,
+            gInv (t : Real) x k l * nabla2Ric (t : Real) x i k j l) +
+          (∑ k : Idx, ∑ l : Idx,
+            gInv (t : Real) x k l *
+              Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+                (S.ricci (t : Real) x)
+                (frame k x) (frame i x)
+                (Realized.vec2 (frame j x) (frame l x))) := by
+            simp [mul_add, Finset.sum_add_distrib]
+  have hrightCurvNatural :
+      contractedNabla2RicRightInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j =
+        (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l * nabla2Ric (t : Real) x j k i l) +
+        (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+              (S.ricci (t : Real) x)
+              (frame k x) (frame j x)
+              (Realized.vec2 (frame i x) (frame l x))) := by
+    unfold contractedNabla2RicRightInFrame
+    calc
+      (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l * nabla2Ric (t : Real) x k j i l)
+          =
+        ∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            (nabla2Ric (t : Real) x j k i l +
+              Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+                (S.ricci (t : Real) x)
+                (frame k x) (frame j x)
+                (Realized.vec2 (frame i x) (frame l x))) := by
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            have h := hIdCompRight k l
+            rw [sub_eq_iff_eq_add] at h
+            rw [h]
+            ring
+      _ =
+        (∑ k : Idx, ∑ l : Idx,
+            gInv (t : Real) x k l * nabla2Ric (t : Real) x j k i l) +
+          (∑ k : Idx, ∑ l : Idx,
+            gInv (t : Real) x k l *
+              Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+                (S.ricci (t : Real) x)
+                (frame k x) (frame j x)
+                (Realized.vec2 (frame i x) (frame l x))) := by
+            simp [mul_add, Finset.sum_add_distrib]
+  have hgInvAt :
+      forall a b : Idx,
+        (fun a b : Idx => gInv (t : Real) x a b) a b =
+          gInv (t : Real) x a b := by
+    intro a b
+    rfl
+  have hbasis :
+      forall a : Idx,
+        hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M)) a =
+          frame a x := by
+    intro a
+    simp [IsLocalFrameOn.toBasisAt_coe]
+  have hleftAction :=
+    contractedCurvatureAction_left_eq
+      (I := I) S Rm13 Rm04 gInv frame
+      (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M)))
+      (fun a b : Idx => gInv (t : Real) x a b) hinvAt
+      (t : Real) i j
+      (hLower t x) hTraceAt (hPair t x) (hOutput t x) (hFirst t x) hRic hInv
+      hgInvAt hbasis
+  have hrightAction :=
+    contractedCurvatureAction_right_eq
+      (I := I) S Rm13 Rm04 gInv frame
+      (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M)))
+      (fun a b : Idx => gInv (t : Real) x a b) hinvAt
+      (t : Real) i j
+      (hLower t x) hTraceAt (hPair t x) (hOutput t x) (hFirst t x) hRic hInv
+      hgInvAt hbasis
+  constructor
+  · calc
+      contractedNabla2RicLeftInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j
+          =
+        contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
+        (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+              (S.ricci (t : Real) x)
+              (frame k x) (frame i x)
+              (Realized.vec2 (frame j x) (frame l x))) := hleftCurv
+      _ =
+        contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
+        rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
+          (t : Real) x i j +
+        ricciQuadraticCompInFrame (I := I) S gInv frame
+          (t : Real) x i j := by
+            rw [hleftAction]
+            ring
+  · calc
+      contractedNabla2RicRightInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j
+          =
+        contractedNabla2RicTraceRightNaturalInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
+        (∑ k : Idx, ∑ l : Idx,
+          gInv (t : Real) x k l *
+            Realized.curvatureAction0SAt (I := I) (Rm13 (t : Real))
+              (S.ricci (t : Real) x)
+              (frame k x) (frame j x)
+              (Realized.vec2 (frame i x) (frame l x))) := hrightCurvNatural
+      _ =
+        contractedNabla2RicTraceRightNaturalInFrame (M := M) gInv nabla2Ric
+          (t : Real) x i j +
+        rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
+          (t : Real) x i j +
+        ricciQuadraticCompInFrame (I := I) S gInv frame
+          (t : Real) x i j := by
+            rw [hrightAction]
+            ring
 
 /-- The two contracted commutator identities used in Lemma 6.3:
 both second-derivative contractions equal
-`1/2 Hess R - R_ikjl Ric^kl + Ric_i^k Ric_kj`, and the two divergence trace
+`1/2 Hess R + R_ikjl Ric^kl + Ric_i^k Ric_kj`, and the two divergence trace
 terms in `∇_i A^k_kj` cancel for a symmetric Ricci tensor. -/
 def RicciContractedCommutatorsInFrame
     {D : Realized.RealTimeInterval}
@@ -1817,7 +2831,7 @@ def RicciContractedCommutatorsInFrame
     contractedNabla2RicLeftInFrame (M := M) gInv nabla2Ric (t : Real) x i j =
         (1 / 2 : Real) *
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
-            (t : Real) x i j -
+            (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j ∧
@@ -1825,7 +2839,7 @@ def RicciContractedCommutatorsInFrame
           (t : Real) x i j =
         (1 / 2 : Real) *
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
-            (t : Real) x i j -
+            (t : Real) x i j +
         rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j ∧
@@ -1876,26 +2890,33 @@ theorem RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_tensor0S_
     (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (nabla2RicTensor : Real -> Realized.Tensor04Section (I := I) (M := M))
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (hbianchi : DifferentiatedContractedBianchiInFrame
+      (D := D) (M := M) gInv nabla2Ric)
+    (hHessSymm : ScalarHessianFromNabla2RicSymmetricInFrame
       (D := D) (M := M) gInv nabla2Ric)
     (hNabla2 : Nabla2RicciTensorComponentsInFrameOn
       (I := I) frame nabla2RicTensor nabla2Ric)
     (hRicciId : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Tensor0SRicciIdentityAt (I := I) (Rm13 (t : Real))
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
+    (hRicTrace13 : forall t : Realized.RealTimeInterval.RegularTime D,
+      Realized.RicciTensorRealizesRm13Trace (I := I)
+        (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Rm04LowersRm13At (I := I) (S.family.metric (t : Real)) x
         (Rm13 (t : Real) x) (Rm04 (t : Real) x))
-    (hTrace : RicciTensorRealizesRm04TraceInFrameOn
-      (I := I) S Rm04 gInv frame)
     (hPair : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       forall W X Y Z : TangentSpace I x,
         Rm04 (t : Real) x (Realized.vec4 W X Y Z) =
           Rm04 (t : Real) x (Realized.vec4 Y Z W X))
     (hOutput : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
       Realized.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
+    (hFirst : forall (t : Realized.RealTimeInterval.RegularTime D) (x : M),
+      Realized.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
     (hRic : forall t x i j,
       ricciCompInFrame (I := I) S frame t x i j =
         ricciCompInFrame (I := I) S frame t x j i)
@@ -1905,10 +2926,11 @@ theorem RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_tensor0S_
   RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_commutators
     (I := I) S Rm04 gInv frame nabla2Ric hbianchi
     (RicciCurvatureCommutatorsInFrame_of_differentiatedBianchi_and_secondCommutators
-      (I := I) S Rm04 gInv frame nabla2Ric hbianchi
+      (I := I) S Rm04 gInv frame nabla2Ric hbianchi hHessSymm
       (ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
-        (I := I) S Rm13 Rm04 gInv frame nabla2RicTensor nabla2Ric
-        hNabla2 hRicciId hLower hTrace hPair hOutput hRic hInv))
+        (I := I) S Rm13 Rm04 gInv frame hframe hinv
+        nabla2RicTensor nabla2Ric
+        hNabla2 hRicciId hRicTrace13 hLower hPair hOutput hFirst hRic hInv))
 
 private theorem ricciVariationExpandedRHSInFrame_eq_decomposed
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
@@ -2050,7 +3072,8 @@ def ricciVariationGaugeTerms_cancel
 
 /-- Curvature commutator reduction in Lemma 6.3:
 the remaining commutator terms are exactly
-`2 R_ikjℓ Ric^{kℓ} - 2 Ric_i^k Ric_kj`. -/
+`-2 * rmRicciContractionCompInFrame - 2 Ric_i^k Ric_kj` in the project
+lowered-curvature convention. -/
 def ricciCurvatureTerms_eq
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -2152,6 +3175,133 @@ theorem ricciEvolutionEquationInFrameOnLocal_of_variation_commutators
     (ricciVariationExpandedRHS_eq_evolutionRHS_of_commutators
       (I := I) S Rm04 gInv frame nabla2Ric hInv hcomm)
 
+section CoordinateFrameRicciEvolution
+
+open RicciFlower.Coordinates
+
+/-- Local coordinate-frame Lemma 6.3 producer.
+
+This is the current closed coordinate version of Lemma 6.3: it differentiates
+the Christoffel Ricci trace formula, substitutes the Ricci-flow Christoffel
+variation and `nabla A = nabla^2 Ric`, then applies the contracted commutator
+reduction.  The result is local at the coordinate center because the coordinate
+frame is only a local frame. -/
+theorem ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_commutators
+    [IsManifold I (∞ + 1) M]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv :
+      Real -> Realized.InverseMetricComponents M (CoordinateIdx (𝕜 := Real) E))
+    (gInvDt :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (nablaRic :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (nabla2Ric :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hmetricReg :
+      MetricFrameSpacetimeRegularityInFrameOnLocal
+        (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀))
+    (hnablaReg :
+      Nabla2RicciComponentsRegularInFrameOnLocal
+        (I := I) S (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
+    (hRicTrace : ∀ s : Real,
+      Realized.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
+    (hRm : ∀ s : Real,
+      Realized.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
+    (hcurv : ∀ s : Real,
+      Realized.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
+    (hmix :
+      ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+        (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic))
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hcomm : RicciContractedCommutatorsInFrame
+      (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) nabla2Ric) :
+    RicciEvolutionEquationInFrameOnLocal (I := I) S Rm04 gInv
+      (coordinateFrameAt (I := I) x₀) ({x₀} : Set M)
+      (roughLapRicInFrame (M := M) gInv nabla2Ric) :=
+  ricciEvolutionEquationInFrameOnLocal_of_variation_commutators
+    (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) ({x₀} : Set M)
+    nabla2Ric hInv
+    (ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
+      (I := I) S hS gInv gInvDt nablaRic nabla2Ric Rm13 x₀ hmetricReg
+      hnablaReg hRicTrace hRm hcurv hmix)
+    hcomm
+
+/-- LaTeX Lemma 6.3, `lem:evol-ricci`, in the local coordinate-frame display
+form at a coordinate center. -/
+theorem evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
+    [IsManifold I (∞ + 1) M]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv :
+      Real -> Realized.InverseMetricComponents M (CoordinateIdx (𝕜 := Real) E))
+    (gInvDt :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (nablaRic :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (nabla2Ric :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hmetricReg :
+      MetricFrameSpacetimeRegularityInFrameOnLocal
+        (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀))
+    (hnablaReg :
+      Nabla2RicciComponentsRegularInFrameOnLocal
+        (I := I) S (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
+    (hRicTrace : ∀ s : Real,
+      Realized.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
+    (hRm : ∀ s : Real,
+      Realized.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
+    (hcurv : ∀ s : Real,
+      Realized.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
+    (hmix :
+      ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+        (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic))
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hcomm : RicciContractedCommutatorsInFrame
+      (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) nabla2Ric)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (i j : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) s x₀ i j)
+      (roughLapRicInFrame (M := M) gInv nabla2Ric (t : Real) x₀ i j -
+        2 * rmRicciContractionCompInFrame (I := I) S Rm04 gInv
+          (coordinateFrameAt (I := I) x₀) (t : Real) x₀ i j -
+        2 * ricciQuadraticCompInFrame (I := I) S gInv
+          (coordinateFrameAt (I := I) x₀) (t : Real) x₀ i j)
+      D.carrier
+      (t : Real) := by
+  have h :=
+    ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_commutators
+      (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg
+      hnablaReg hRicTrace hRm hcurv hmix hInv hcomm
+  have hAt := h t x₀ (by simp) i j
+  simpa [ricciEvolutionRHSInFrame] using hAt
+
+end CoordinateFrameRicciEvolution
+
 /-- LaTeX Lemma 6.3, `lem:evol-ricci`, in fixed-frame component display form,
 assuming the Ricci variation formula and the contracted commutator reduction. -/
 theorem evol_ricci_inFrame_of_variation_commutators
@@ -2169,7 +3319,7 @@ theorem evol_ricci_inFrame_of_variation_commutators
     (t : Realized.RealTimeInterval.RegularTime D) (x : M) (i j : Idx) :
     HasDerivWithinAt
       (fun s : Real => ricciCompInFrame (I := I) S frame s x i j)
-      (roughLapRicInFrame (M := M) gInv nabla2Ric (t : Real) x i j +
+      (roughLapRicInFrame (M := M) gInv nabla2Ric (t : Real) x i j -
         2 * rmRicciContractionCompInFrame (I := I) S Rm04 gInv frame
           (t : Real) x i j -
         2 * ricciQuadraticCompInFrame (I := I) S gInv frame
@@ -2326,9 +3476,11 @@ def ricciRightActionCompInFrame
       h t x k i
 
 /-- Ricci-specialized Lichnerowicz RHS in fixed-frame components:
-`Δ h_ij + 2 R_ikjℓ h^{kℓ} - Ric_i^k h_kj - Ric_j^k h_ki`.
+`Delta h_ij - 2 * curvature-action contraction - Ric_i^k h_kj - Ric_j^k h_ki`.
 
 For Corollary 6.5, `h` is the Ricci tensor. -/
+-- Convention note: this uses the same curvature-action contraction sign as
+-- `ricciEvolutionRHSInFrame`.
 def lichnerowiczRHSInFrame
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -2337,7 +3489,7 @@ def lichnerowiczRHSInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapH h hRaised : Real -> M -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
-  roughLapH t x i j +
+  roughLapH t x i j -
     2 * (∑ k : Idx, ∑ l : Idx,
       Realized.rm04Comp (I := I) (Rm04 t) frame x i k j l *
         hRaised t x k l) -
@@ -2542,6 +3694,78 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
     (I := I) S Rm04 gInv frame roughLapRic h_ricci
     (ricciLichnerowiczSpecializesInFrame_of_symm
       (I := I) S Rm04 gInv frame roughLapRic hRic hInv)
+
+/-- Corollary 6.5 in the coordinate-frame display form used by the native
+Lemma 6.3 producer.  This is only an exposure wrapper: the Ricci evolution
+calculation comes from `evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators`,
+and the Lichnerowicz rewrite comes from
+`ricciLichnerowiczSpecializesInFrame_of_symm`. -/
+theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
+    [IsManifold I (∞ + 1) M]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (Rm13 : Real -> Realized.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
+    (gInv :
+      Real -> Realized.InverseMetricComponents M (CoordinateIdx (𝕜 := Real) E))
+    (gInvDt :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (nablaRic :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (nabla2Ric :
+      Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (x₀ : M)
+    (hmetricReg :
+      MetricFrameSpacetimeRegularityInFrameOnLocal
+        (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀))
+    (hnablaReg :
+      Nabla2RicciComponentsRegularInFrameOnLocal
+        (I := I) S (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameSet (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
+    (hRicTrace : ∀ s : Real,
+      Realized.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
+    (hRm : ∀ s : Real,
+      Realized.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
+    (hcurv : ∀ s : Real,
+      Realized.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
+    (hmix :
+      ChristoffelVariationMixedDerivativeInFrameOn (I := I) S
+        (coordinateFrameAt (I := I) x₀)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+        (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic))
+    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
+    (hcomm : RicciContractedCommutatorsInFrame
+      (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) nabla2Ric)
+    (hRic : RicciSymmetricInFrameOn (I := I) S (coordinateFrameAt (I := I) x₀))
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (i j : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) s x₀ i j)
+      (lichnerowiczRHSInFrame (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀)
+        (roughLapRicInFrame (M := M) gInv nabla2Ric)
+        (ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀))
+        (raisedRicciCompInFrame (I := I) S gInv (coordinateFrameAt (I := I) x₀))
+        (t : Real) x₀ i j)
+      D.carrier
+      (t : Real) := by
+  have hRicci :=
+    evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
+      (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg
+      hnablaReg hRicTrace hRm hcurv hmix hInv hcomm t i j
+  have hSpec :
+      RicciLichnerowiczSpecializesInFrame
+        (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀)
+        (roughLapRicInFrame (M := M) gInv nabla2Ric) :=
+    ricciLichnerowiczSpecializesInFrame_of_symm
+      (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀)
+      (roughLapRicInFrame (M := M) gInv nabla2Ric) hRic hInv
+  exact hRicci.congr_deriv (hSpec t x₀ i j).symm
 
 end Components
 

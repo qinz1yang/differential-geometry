@@ -7,6 +7,12 @@ set_option linter.style.longLine false
 # Finite-Time Blowup
 
 MSM110 Chapter 6.8 statement interfaces.
+
+Exact LaTeX labels recorded here:
+`FiniteTimeBlowup`, `FiniteTimeSingularity`, `CurvatureBlowup-2`,
+`PositiveSectionalPinching`, `RCblowup-lim`, `GlobalPinching-1`,
+`GlobalPinching-2`, `SectionalPointwisePinching`,
+`UniformConvergenceToEinstein`.
 -/
 
 noncomputable section
@@ -37,6 +43,23 @@ def UniformConvergenceToEinsteinConclusion
     (tracefreeRicciRatio : Real -> Real) (T : Real) : Prop :=
   ∀ eps : Real, 0 < eps -> ∃ tau : Real, tau < T ∧
     ∀ t : Real, tau ≤ t -> t < T -> tracefreeRicciRatio t ≤ eps
+
+def RicciCurvatureBlowupLimitOn
+    (ricciMin scalarMax : Real -> Real) (T : Real) : Prop :=
+  ∀ eps : Real, 0 < eps -> ∃ tau : Real, tau < T ∧
+    ∀ t : Real, tau <= t -> t < T -> (1 - eps) * scalarMax t <= ricciMin t
+
+def GlobalPinchingLowerEstimateOn
+    (scalarMin scalarMax decay : Real -> Real) (C : Real) : Prop :=
+  ∀ t : Real, scalarMin t / scalarMax t >= 1 - C * decay t
+
+def GlobalPinchingScalarEstimateOn
+    (scalar scalarMax : Real -> Real) (eps : Real) : Prop :=
+  ∀ t : Real, (1 - eps) * scalarMax t <= scalar t
+
+def SectionalPointwisePinchingOn
+    (sectionalMin sectionalMax : Real -> Real) (eps : Real) : Prop :=
+  ∀ t : Real, (1 - eps) * sectionalMax t <= sectionalMin t
 
 theorem finite_time_singularity
     (T t0 rho : Real)

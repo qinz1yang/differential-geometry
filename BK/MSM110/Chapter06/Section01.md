@@ -74,3 +74,29 @@ New scaffold covers:
   Riemann evolution formula in terms of `B`.
 
 Verification passed with the expected scaffold `sorry` warnings.
+
+## 2026-05-14 scalar trace route wrapper
+
+Added `eq_scalar_curv_evolu_of_ricci_evolution`, a book-facing wrapper for the
+new trace route in `RicciFlower.RicciFlow.Evolution.Scalar`.
+
+The old pre-Bianchi wrapper remains for compatibility.  The new wrapper exposes
+the preferred route from inverse-metric evolution plus Lemma 6.3.
+
+Verification passed.
+
+The wrapper now uses the canonical scalar trace and canonical traced
+rough-Ricci Laplacian.  It no longer takes separate `hScalar`, `h_lap`, or
+`ScalarRmRicciTraceInFrame` assumptions; the curvature-trace convention input
+is generated in the scalar evolution layer from the `Rm04` first-trace,
+output-skew, first-Bianchi, and symmetry facts.
+
+## 2026-05-14 coordinate-frame Lemma 6.3 wrapper
+
+Added `eq_ricci_tensor_ricci_flow_two_coordFrame`, the Chapter 6.1 wrapper for
+the checked local coordinate-frame Lemma 6.3 endpoint.  This wrapper no longer
+takes a separate Ricci variation formula input; it delegates to the
+Christoffel-coordinate variation producer in `RicciFlow/Evolution/Ricci.lean`.
+
+Verification passed.  Existing later scaffold declarations in this companion
+file still contain their planned `sorry`s; they are unrelated to Lemma 6.3.

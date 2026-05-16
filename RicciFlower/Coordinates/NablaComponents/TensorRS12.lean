@@ -1,3 +1,4 @@
+import RicciFlower.Coordinates.Tensor
 import RicciFlower.Coordinates.NablaComponents.TensorRS
 
 set_option autoImplicit false
@@ -29,51 +30,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 variable [IsManifold I (∞ : WithTop ℕ∞) M]
 variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 
-/-- One upper coordinate index, packaged as a `Fin 1` family. -/
-def upperIdx1 (k : CoordinateIdx (𝕜 := 𝕜) E) :
-    Fin 1 -> CoordinateIdx (𝕜 := 𝕜) E :=
-  fun _ => k
-
-/-- Two lower coordinate indices, packaged as a `Fin 2` family. -/
-def lowerIdx2 (i j : CoordinateIdx (𝕜 := 𝕜) E) :
-    Fin 2 -> CoordinateIdx (𝕜 := 𝕜) E :=
-  fun q => if q = 0 then i else j
-
-@[simp] theorem upperIdx1_apply (k : CoordinateIdx (𝕜 := 𝕜) E) (q : Fin 1) :
-    upperIdx1 (E := E) k q = k := rfl
-
-@[simp] theorem lowerIdx2_zero
-    (i j : CoordinateIdx (𝕜 := 𝕜) E) :
-    lowerIdx2 (E := E) i j 0 = i := by
-  simp [lowerIdx2]
-
-@[simp] theorem lowerIdx2_one
-    (i j : CoordinateIdx (𝕜 := 𝕜) E) :
-    lowerIdx2 (E := E) i j 1 = j := by
-  simp [lowerIdx2]
-
-@[simp] theorem Function_update_upperIdx1
-    (k m : CoordinateIdx (𝕜 := 𝕜) E) (a : Fin 1) :
-    Function.update (upperIdx1 (E := E) k) a m = upperIdx1 (E := E) m := by
-  funext q
-  fin_cases q
-  fin_cases a
-  simp [upperIdx1]
-
-@[simp] theorem Function_update_lowerIdx2_zero
-    (i j m : CoordinateIdx (𝕜 := 𝕜) E) :
-    Function.update (lowerIdx2 (E := E) i j) 0 m =
-      lowerIdx2 (E := E) m j := by
-  funext q
-  fin_cases q <;> simp [lowerIdx2]
-
-@[simp] theorem Function_update_lowerIdx2_one
-    (i j m : CoordinateIdx (𝕜 := 𝕜) E) :
-    Function.update (lowerIdx2 (E := E) i j) 1 m =
-      lowerIdx2 (E := E) i m := by
-  funext q
-  fin_cases q <;> simp [lowerIdx2]
-
 /-- Coordinate-frame formula for the covariant derivative of a `(1,2)` mixed
 tensor:
 `(∇_X A)^k_ij = X(A^k_ij) + Γ^k_m A^m_ij - Γ^m_i A^k_mj - Γ^m_j A^k_im`. -/
@@ -87,12 +43,12 @@ theorem nablaRS_coordFrame_1_2_of_smooth
     coordComponentRSAt (I := I)
       (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         1 2 cov X A x₀)
-      (upperIdx1 (E := E) k)
-      (lowerIdx2 (E := E) i j)
+      (upperIdx1 k)
+      (lowerIdx2 i j)
     =
       coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => A x)
-        (upperIdx1 (E := E) k)
-        (lowerIdx2 (E := E) i j)
+        (upperIdx1 k)
+        (lowerIdx2 i j)
       +
       ∑ m : CoordinateIdx (𝕜 := 𝕜) E,
         christoffelAlongInFrame cov
@@ -102,8 +58,8 @@ theorem nablaRS_coordFrame_1_2_of_smooth
         *
         coordComponentRSAt (I := I)
           (A x₀)
-          (upperIdx1 (E := E) m)
-          (lowerIdx2 (E := E) i j)
+          (upperIdx1 m)
+          (lowerIdx2 i j)
       -
       ∑ m : CoordinateIdx (𝕜 := 𝕜) E,
         christoffelAlongInFrame cov
@@ -113,8 +69,8 @@ theorem nablaRS_coordFrame_1_2_of_smooth
         *
         coordComponentRSAt (I := I)
           (A x₀)
-          (upperIdx1 (E := E) k)
-          (lowerIdx2 (E := E) m j)
+          (upperIdx1 k)
+          (lowerIdx2 m j)
       -
       ∑ m : CoordinateIdx (𝕜 := 𝕜) E,
         christoffelAlongInFrame cov
@@ -124,11 +80,11 @@ theorem nablaRS_coordFrame_1_2_of_smooth
         *
         coordComponentRSAt (I := I)
           (A x₀)
-          (upperIdx1 (E := E) k)
-          (lowerIdx2 (E := E) i m) := by
+          (upperIdx1 k)
+          (lowerIdx2 i m) := by
   classical
   have h := nablaRS_coordFrame_slots_of_smooth
-    (I := I) cov X A x₀ (upperIdx1 (E := E) k) (lowerIdx2 (E := E) i j)
+    (I := I) cov X A x₀ (upperIdx1 k) (lowerIdx2 i j)
   rw [h]
   simp only [Fin.sum_univ_one, Fin.sum_univ_two, upperIdx1_apply,
     lowerIdx2_zero, lowerIdx2_one, Function_update_upperIdx1,

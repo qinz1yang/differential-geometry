@@ -65,6 +65,32 @@ def heatOperatorWithDrift
     (f : M -> Real) (x : M) : Real :=
   laplacianAt (I := I) G t f x + driftTerm (I := I) G t X f x
 
+/-- The driftless scalar heat operator `Delta_g f`. -/
+def heatOperator
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) (f : M -> Real) (x : M) : Real :=
+  laplacianAt (I := I) G t f x
+
+@[simp] theorem driftTerm_zero_drift
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) (f : M -> Real) (x : M) :
+    driftTerm (I := I) G t (fun y : M => (0 : TangentSpace I y)) f x = 0 := by
+  simp [driftTerm]
+
+@[simp] theorem heatOperator_eq_laplacianAt
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) (f : M -> Real) (x : M) :
+    heatOperator (I := I) G t f x = laplacianAt (I := I) G t f x := by
+  rfl
+
+theorem heatOperatorWithDrift_zero_drift
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) (f : M -> Real) (x : M) :
+    heatOperatorWithDrift (I := I) G t
+        (fun y : M => (0 : TangentSpace I y)) f x =
+      heatOperator (I := I) G t f x := by
+  simp [heatOperatorWithDrift, heatOperator]
+
 section FamilyAlgebraicRules
 
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]

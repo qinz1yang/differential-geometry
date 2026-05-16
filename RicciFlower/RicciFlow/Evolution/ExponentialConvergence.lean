@@ -8,6 +8,10 @@ set_option linter.unusedVariables false
 # Exponential Convergence
 
 MSM110 Chapter 6.10 statement interfaces.
+
+Exact LaTeX labels recorded here:
+`ExponentialConvergenceToEinstein`, `BoundScalarAbove-1`,
+`BoundScalarAbove-2`, `PinchingPreservedForNRF`, `ScalarStaysPositive`.
 -/
 
 noncomputable section
@@ -46,6 +50,14 @@ def ExponentialConvergenceToEinstein
     (metricDistanceToLimit : Nat -> Real -> Real) (decay : Real -> Real) : Prop :=
   ∀ m : Nat, ∃ B beta : Real, 0 < B ∧ 0 < beta ∧
     ∀ t : Real, metricDistanceToLimit m t ≤ B * decay t
+
+def NormalizedScalarUpperBoundOn
+    (scalar : Real -> M -> Real) (A : Real) : Prop :=
+  ∀ t x, 0 < scalar t x ∧ scalar t x <= A
+
+def NormalizedAverageScalarUpperBoundOn
+    (avgScalar volume : Real -> Real) (A : Real) : Prop :=
+  ∀ t : Real, 0 < avgScalar t ∧ avgScalar t <= A * volume t
 
 theorem normalized_pinching_preserved
     (lambda mu nu : Real -> M -> Real)
