@@ -222,7 +222,7 @@ def curryFinRight
         map_smul' := fun c f => by rw [curryFin_smul]; rfl }
       ‖x‖
       (fun f => by
-        show ‖curryFin f x‖ ≤ ‖x‖ * ‖f‖
+        change ‖curryFin f x‖ ≤ ‖x‖ * ‖f‖
         calc ‖curryFin f x‖
             ≤ ‖curryFin f‖ * ‖x‖ := (curryFin f).le_opNorm x
           _ ≤ ‖f‖ * ‖x‖ := by
@@ -234,7 +234,7 @@ def curryFinRight
     (F : E [⋀^Fin (m + 1)]→L[𝕜] E [⋀^Fin (n + 1)]→L[𝕜] G)
     (x : E) (v : Fin (m + 1) → E) (w : Fin n → E) :
     curryFinRight F x v w = F v (Fin.cons x w) := by
-  show curryFin (F v) x w = F v (Fin.cons x w)
+  change curryFin (F v) x w = F v (Fin.cons x w)
   rw [curryFin_apply]
 
 variable [DecidableEq ι] [DecidableEq ι']
@@ -334,8 +334,7 @@ theorem uncurrySum.summand_eq_zero_of_smul_invariant (f : E [⋀^ι]→L[𝕜] E
     ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply,
     uncurrySum.summand]
   intro hσ
-  -- TODO: Remove use of `cases'` tactic
-  cases' hi : σ⁻¹ i with val val <;> cases' hj : σ⁻¹ j with val_1 val_1 <;>
+  rcases hi : σ⁻¹ i with val | val <;> rcases hj : σ⁻¹ j with val_1 | val_1 <;>
     rw [Equiv.Perm.inv_eq_iff_eq] at hi hj <;> substs hi hj <;> revert val val_1
   -- the term pairs with and cancels another term
   case inl.inr =>
@@ -426,8 +425,8 @@ theorem lift_comp_domCoprod_eq_uncurrySum
   simp only [AlternatingMap.domCoprod.summand_mk'', uncurrySum.summand_mk'',
     MultilinearMap.smul_apply, MultilinearMap.domDomCongr_apply, MultilinearMap.domCoprod_apply,
     ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.uncurrySum_apply, TensorProduct.smul_tmul', hφ,
-    Function.comp_def, f.map_smul_of_tower, ContinuousLinearMap.smul_apply]
+    ContinuousMultilinearMap.uncurrySum_apply,
+    Function.comp_def]
   simp only [ContinuousMultilinearMap.flipMultilinear_apply,
     coe_toContinuousMultilinearMap, ContinuousMultilinearMap.flipAlternating_apply,
     ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
@@ -460,7 +459,7 @@ theorem summand_left_match
       Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1))) =
       Quotient.mk'' (shuffleLeftFwd σ hσ) := by
     rw [hσ']
-    show Quotient.mk'' (shuffleLeftFwd (Quotient.out (Quotient.mk'' σ)) _) =
+    change Quotient.mk'' (shuffleLeftFwd (Quotient.out (Quotient.mk'' σ)) _) =
       Quotient.mk'' (shuffleLeftFwd σ hσ)
     apply Quotient.sound'
     apply shuffleLeftFwd_wd
@@ -476,10 +475,10 @@ theorem summand_left_match
   -- Step 2: Sign computation: sign σ_can = sign σ * sign (swap 0 k).
   have h_sign : Equiv.Perm.sign σ_can =
       Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap 0 k) := by
-    show Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _
+    change Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _
     unfold shuffleLeftFwd
     rw [restrictComplement_sign]
-    show Equiv.Perm.sign (normalizeLeft σ k hk) = _
+    change Equiv.Perm.sign (normalizeLeft σ k hk) = _
     unfold normalizeLeft
     rw [Equiv.Perm.sign_mul]
     congr 1
@@ -495,13 +494,13 @@ theorem summand_left_match
   have hw'_inl : ∀ j : Fin m, (w ∘ Sum.map Fin.succ id) (σ_can (Sum.inl j)) =
       w (ν (Sum.inl j.succ)) := by
     intro j
-    show w (Sum.map Fin.succ id (σ_can (Sum.inl j))) = w (ν (Sum.inl j.succ))
+    change w (Sum.map Fin.succ id (σ_can (Sum.inl j))) = w (ν (Sum.inl j.succ))
     rw [hσ_can_eq, restrictComplement_lift ν hν_fix (Sum.inl j)]
     rfl
   have hw'_inr : ∀ b : Fin (n + 1), (w ∘ Sum.map Fin.succ id) (σ_can (Sum.inr b)) =
       w (ν (Sum.inr b)) := by
     intro b
-    show w (Sum.map Fin.succ id (σ_can (Sum.inr b))) = w (ν (Sum.inr b))
+    change w (Sum.map Fin.succ id (σ_can (Sum.inr b))) = w (ν (Sum.inr b))
     rw [hσ_can_eq, restrictComplement_lift ν hν_fix (Sum.inr b)]
     rfl
   have h_inr_eq : (fun i => w (σ (Sum.inr i))) =
@@ -556,7 +555,7 @@ theorem summand_right_match
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) =
       Quotient.mk'' (shuffleRightFwd σ hσ) := by
     rw [hσ']
-    show Quotient.mk'' (shuffleRightFwd (Quotient.out (Quotient.mk'' σ)) _) =
+    change Quotient.mk'' (shuffleRightFwd (Quotient.out (Quotient.mk'' σ)) _) =
       Quotient.mk'' (shuffleRightFwd σ hσ)
     apply Quotient.sound'
     apply shuffleRightFwd_wd
@@ -571,10 +570,10 @@ theorem summand_right_match
   set σ_can := shuffleRightFwd σ hσ
   have h_sign : Equiv.Perm.sign σ_can =
       -Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap (0 : Fin (n + 1)) k) := by
-    show Equiv.Perm.sign (shuffleRightFwd σ hσ) = _
+    change Equiv.Perm.sign (shuffleRightFwd σ hσ) = _
     unfold shuffleRightFwd
     rw [restrictComplementRight_sign]
-    show Equiv.Perm.sign (normalizeRight σ k hk) = _
+    change Equiv.Perm.sign (normalizeRight σ k hk) = _
     unfold normalizeRight
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_sumCongr,
       Equiv.Perm.sign_swap (show (Sum.inl (0 : Fin (m + 1)) : Fin (m + 1) ⊕ Fin (n + 1)) ≠
@@ -598,7 +597,7 @@ theorem summand_right_match
       w (σ (Sum.inl j)) := by
     intro j
     rw [hσ_can_eq, restrictComplementRight_lift ν hν_fix (Sum.inl j)]
-    show w (Equiv.swap _ _ (ν (Sum.inl j))) = _
+    change w (Equiv.swap _ _ (ν (Sum.inl j))) = _
     rw [hν_inl, Equiv.swap_apply_self]
   have hw_R_inr : ∀ j : Fin n,
       w (Equiv.swap (Sum.inl (0 : Fin (m + 1))) (Sum.inr 0)
@@ -606,7 +605,7 @@ theorem summand_right_match
       w (σ (Sum.inr ((Equiv.swap (0 : Fin (n + 1)) k) j.succ))) := by
     intro j
     rw [hσ_can_eq, restrictComplementRight_lift ν hν_fix (Sum.inr j)]
-    show w (Equiv.swap _ _ (ν (Sum.inr j.succ))) = _
+    change w (Equiv.swap _ _ (ν (Sum.inr j.succ))) = _
     rw [hν_inr, Equiv.swap_apply_self]
   rw [uncurrySum_summand_eval, uncurrySum_summand_eval]
   have h_first_eq : (fun i => w (σ (Sum.inl i))) =
@@ -633,7 +632,7 @@ theorem summand_right_match
       (fun i => w (σ (Sum.inr i))) (Equiv.swap (0 : Fin (n + 1)) k)
     simp only [ContinuousAlternatingMap.coe_toAlternatingMap] at this
     exact this
-  show Equiv.Perm.sign σ • F _ _ = -(Equiv.Perm.sign σ_can • _)
+  change Equiv.Perm.sign σ • F _ _ = -(Equiv.Perm.sign σ_can • _)
   rw [show ((curryFinRight F x)
       (fun i => w (Equiv.swap (Sum.inl (0 : Fin (m + 1))) (Sum.inr 0)
         (Sum.map id Fin.succ (σ_can (Sum.inl i)))) :

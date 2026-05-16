@@ -122,5 +122,4 @@ theorem superPowerCutoffFwd_tsupport_subset
     tsupport (superPowerCutoffFwd (d := d) η u p) ⊆ Metric.ball (0 : E) s :=
   (tsupport_mul_subset_left
     (f := η) (g := fun x => |u x| ^ (p / 2))).trans hη_sub_ball
-
 end DeGiorgi

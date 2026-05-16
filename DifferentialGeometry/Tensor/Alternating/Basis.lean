@@ -212,6 +212,7 @@ section ElementaryCovectorBasis
 variable
   [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E]
 
+omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 /-- The elementary covectors indexed by strictly increasing
 multi-indices are linearly independent. -/
 theorem elementaryCovector_linearIndependent
@@ -246,6 +247,7 @@ theorem elementaryCovector_linearIndependent
     ite_true] at heval
   rwa [smul_eq_mul, mul_one] at heval
 
+omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 /-- Every continuous alternating map is in the span of the
 elementary covectors. -/
 theorem elementaryCovector_span

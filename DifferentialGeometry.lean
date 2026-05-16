@@ -14,6 +14,14 @@ import DifferentialGeometry.Coordinates.Christoffel
 import DifferentialGeometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Coordinates.Tensor
 import DifferentialGeometry.Coordinates.NablaComponents
+import DifferentialGeometry.Coordinates.ConnectionCoefficients
+import DifferentialGeometry.Coordinates.MetricCompatibility
+import DifferentialGeometry.Coordinates.NablaComponents.Basic
+import DifferentialGeometry.Coordinates.NablaComponents.OneForm
+import DifferentialGeometry.Coordinates.NablaComponents.Tensor0S
+import DifferentialGeometry.Coordinates.NablaComponents.TensorRS
+import DifferentialGeometry.Coordinates.NablaComponents.TensorRS12
+import DifferentialGeometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Realized.TimeInterval
 import DifferentialGeometry.Realized.MetricFamily
 import DifferentialGeometry.Realized.Connection
@@ -33,50 +41,16 @@ import DifferentialGeometry.Realized.Bochner
 import DifferentialGeometry.Realized.Bianchi
 
 -- Synthetic Algebra
-import DifferentialGeometry.Synthetic.Algebra.VectorFieldAlgebra
-import DifferentialGeometry.Synthetic.Algebra.TensorAlgebra
-import DifferentialGeometry.Synthetic.Algebra.Metric
 
 -- Synthetic Analysis
-import DifferentialGeometry.Synthetic.Analysis.NablaOnTensors
-import DifferentialGeometry.Synthetic.Analysis.TimeOnTensors
-import DifferentialGeometry.Synthetic.Analysis.NablaTimeInteraction
 
 -- Synthetic Geometry
-import DifferentialGeometry.Synthetic.Geometry.Connection
-import DifferentialGeometry.Synthetic.Geometry.ConnectionExtended
 
 -- Synthetic Operators
-import DifferentialGeometry.Synthetic.Operator.Bochner
-import DifferentialGeometry.Synthetic.Operator.CovariantDerivative
-import DifferentialGeometry.Synthetic.Operator.Divergence
-import DifferentialGeometry.Synthetic.Operator.Gradient
-import DifferentialGeometry.Synthetic.Operator.Hessian
-import DifferentialGeometry.Synthetic.Operator.Laplacian
-import DifferentialGeometry.Synthetic.Operator.LieDerivative
-import DifferentialGeometry.Synthetic.Operator.SecondCovariantDerivative
-import DifferentialGeometry.Synthetic.Operator.SpatialConstant
-import DifferentialGeometry.Synthetic.Operator.Variation
 
 -- Axiom Interface
-import DifferentialGeometry.Synthetic.Assembly
 
 -- Realization: Concrete Ricci flow solution analysis
-import DifferentialGeometry.Synthetic.Realization.Basic
-import DifferentialGeometry.Synthetic.Realization.Embedding
-import DifferentialGeometry.Synthetic.Realization.SmoothSections
-import DifferentialGeometry.Synthetic.Realization.Connection
-import DifferentialGeometry.Synthetic.Realization.Trace
-import DifferentialGeometry.Synthetic.Realization.Metric
-import DifferentialGeometry.Synthetic.Realization.LeviCivita
-import DifferentialGeometry.Synthetic.Realization.KoszulGerm
-import DifferentialGeometry.Synthetic.Realization.SmoothExtension
-import DifferentialGeometry.Synthetic.Realization.SmoothExtensionMDiff
-import DifferentialGeometry.Synthetic.Realization.KoszulCov
-import DifferentialGeometry.Synthetic.Realization.TensorNabla
-import DifferentialGeometry.Synthetic.Realization.NablaComm
-import DifferentialGeometry.Synthetic.Realization.HomNabla
-import DifferentialGeometry.Synthetic.Realization.Tensor0SBridge
 import DifferentialGeometry.Integral.Connection.Tensor0SNabla
 import DifferentialGeometry.Integral.Connection.Tensor0SPartialEval
 import DifferentialGeometry.Integral.Connection.Tensor0SChartChristoffel
@@ -95,39 +69,11 @@ import DifferentialGeometry.Integral.Connection.TensorRSNabla
 import DifferentialGeometry.Integral.Connection.ChartTensorRSCovariantDerivative
 import DifferentialGeometry.Integral.Connection.ChartTensorRSCurryFactor
 import DifferentialGeometry.Integral.Connection.ChartTensorRSCovariantDerivativeAgreement
-import DifferentialGeometry.Synthetic.Realization.TensorContract
-import DifferentialGeometry.Synthetic.Realization.NablaContractSynthetic
-import DifferentialGeometry.Synthetic.Realization.TimeDeriv
-import DifferentialGeometry.Synthetic.Realization.SpatialTemporalCommOn
-import DifferentialGeometry.Synthetic.Realization.TimeNabla
-import DifferentialGeometry.Synthetic.Realization.TimeTrace
-import DifferentialGeometry.Synthetic.Realization.TimeJointSmoothness
-import DifferentialGeometry.Synthetic.Realization.RicciFlow
-import DifferentialGeometry.Synthetic.Realization.SmoothRicciFlow
-import DifferentialGeometry.Synthetic.Realization.RicciFlowOn
-import DifferentialGeometry.Synthetic.Realization.SmoothRicciFlowOn
 import DifferentialGeometry.Integral.Connection.LocalFrame
-import DifferentialGeometry.Synthetic.Realization.Coordinates.Christoffel
 
 -- Non-Ricci flows (plug-in demonstrations of flow-agnostic abstraction)
-import DifferentialGeometry.Synthetic.Flow.Heat.Basic
-import DifferentialGeometry.Synthetic.Flow.GradientFlow.Basic
-import DifferentialGeometry.Synthetic.Flow.ReactionDiffusion.Basic
-import DifferentialGeometry.Synthetic.Flow.HamiltonJacobi.Basic
-import DifferentialGeometry.Synthetic.Flow.Yamabe.Basic
 
 -- Ricci Flow
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Basic
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Calculus
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.Connection
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.Gradient
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.Laplacian
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.ScalarCurvature
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.Ricci
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.RiemannVariation
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.RiemannLaplacian
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Evolution.RiemannEvolution
-import DifferentialGeometry.Synthetic.Flow.RicciFlow.Calculus
 
 import DifferentialGeometry.VectorBundle.Dual
 import DifferentialGeometry.VectorBundle.Equiv
@@ -209,6 +155,41 @@ import DifferentialGeometry.Integral.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Integral.L2.SmoothSections.Integrability
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 import DifferentialGeometry.Tensor.Multilinear.MetricLowering
+import DifferentialGeometry.Tensor.Auxiliary.DerivationAlgebra
+import DifferentialGeometry.Tensor.Auxiliary.ShuffleDeriv
+import DifferentialGeometry.Tensor.Auxiliary.SlotAlgebra
+import DifferentialGeometry.Tensor.Mixed.Naturality
+import DifferentialGeometry.Tensor.Mixed.SectionTensorEquiv
+import DifferentialGeometry.Tensor.RicciIdentity
+import DifferentialGeometry.Tensor.RicciIdentity.MixedComponents
+import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Convention
+import DifferentialGeometry.Tensor.RSTensor.CurvatureAction
+import DifferentialGeometry.Tensor.RSTensor.LocalFrameRegularity
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Endomorphism
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Models
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Nabla0S
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.Christoffel
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.Smoothness
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.Tensor0S
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.TensorRS
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Raw
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.Bundled
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.MCovariant
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Derivation
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TensorRS
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Smooth
+import DifferentialGeometry.Tensor.RSTensor.Tensoriality
+import DifferentialGeometry.Tensor.Section12Interface
 
 import DifferentialGeometry.Integral.Measure.BorelManifold.Defs
 import DifferentialGeometry.Integral.Measure.BorelManifold.Derived

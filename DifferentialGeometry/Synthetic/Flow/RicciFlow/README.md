@@ -1,1 +1,0 @@
-Here we study a smooth solution to Ricci Flow equation. 

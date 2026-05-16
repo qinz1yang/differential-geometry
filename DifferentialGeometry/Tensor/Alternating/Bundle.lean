@@ -271,6 +271,7 @@ theorem continuousAlternatingMap_symm_apply' {b : B} (hb : b ∈ e₁.baseSet �
   · rfl
   exact hb
 
+omit [Fintype ι] in
 /-- The coordinate change function agrees with applying the pretrivialization `e₁' e₂'` to the
 image of `b, L` under the inverse pretrivialization `e₁ e₂`. This shows that
 `continuousAlternatingMapCoordChange` encodes the transition between the two local frames. -/

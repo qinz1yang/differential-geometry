@@ -1362,7 +1362,6 @@ theorem smooth_input_unitBallExtension_smoothing
   refine (Filter.tendsto_congr fun n => eLpNorm_congr_ae ?_).mpr h
   filter_upwards with x; simp [hwExt]
 
-
 omit [NeZero d] in
 set_option linter.style.setOption false in
 set_option maxHeartbeats 800000 in -- elaboration budget for component-vs-norm lintegral bound

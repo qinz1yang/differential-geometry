@@ -1,6 +1,9 @@
 import DifferentialGeometry.Coordinates.NablaComponents.Basic
+import DifferentialGeometry.Coordinates.NablaComponents.Tensor0S
 import DifferentialGeometry.Coordinates.NablaComponents.OneForm
 import DifferentialGeometry.Coordinates.NablaComponents.TwoTensor
+import DifferentialGeometry.Coordinates.NablaComponents.TensorRS
+import DifferentialGeometry.Coordinates.NablaComponents.TensorRS12
 
 /-!
 # Compatibility import for coordinate covariant-derivative components

@@ -798,7 +798,7 @@ theorem multilinearTensorFiberwiseEquiv_smooth :
     ] with p hp
     exact triv_fwdEquiv_eq s q p₀.proj p.proj hp p.snd
 
-set_option maxHeartbeats 400000 in
+set_option maxHeartbeats 250000 in
 set_option linter.unusedSectionVars false in
 /-- The total-space map induced by the inverse of `multilinearTensorFiberwiseEquiv` is `C^n`.
 In local trivializations, the map reduces to the constant continuous linear map

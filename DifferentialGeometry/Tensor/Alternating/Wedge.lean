@@ -451,7 +451,6 @@ private theorem uncurrySum_summand_uncurryFin_left_expand_mk
   refine Finset.sum_congr rfl fun j _ => ?_
   simp [L, uncurryFinLeftExpandedSummand]
 
-set_option linter.flexible false in
 private theorem derivShuffleLeft_expanded_summand_eq
     (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N')
@@ -535,7 +534,7 @@ private theorem derivShuffleLeft_expanded_summand_eq
 The fully general vector-valued precomposition identities for `wedge_productL` are
 intentionally not stated here. A direct quotient-shuffle proof would have to transport
 individual summands through `Equiv.Perm.ModSumCongr`, but those summands depend on
-representatives. For the RicciFlower tensor-calculus use case we instead use the
+representatives. For the DifferentialGeometry tensor-calculus use case we instead use the
 finite-rank route above: expand form-valued linear maps into elementary covectors and
 reduce the computation to determinant identities such as
 `uncurryFin_smulRight_elementaryCovector`.
@@ -544,12 +543,12 @@ reduce the computation to determinant identities such as
 private theorem zero_wedge' (h : M [⋀^Fin n]→L[𝕜] 𝕜) :
     wedge_product (0 : M [⋀^Fin m]→L[𝕜] 𝕜) h (ContinuousLinearMap.mul 𝕜 𝕜) = 0 := by
   have := add_wedge (0 : M [⋀^Fin m]→L[𝕜] 𝕜) 0 h (ContinuousLinearMap.mul 𝕜 𝕜)
-  simpa using this
+  simp at this; exact this
 
 private theorem wedge_zero' (g : M [⋀^Fin m]→L[𝕜] 𝕜) :
     wedge_product g (0 : M [⋀^Fin n]→L[𝕜] 𝕜) (ContinuousLinearMap.mul 𝕜 𝕜) = 0 := by
   have := wedge_add g (0 : M [⋀^Fin n]→L[𝕜] 𝕜) 0 (ContinuousLinearMap.mul 𝕜 𝕜)
-  simpa using this
+  simp at this; exact this
 
 private theorem sum_wedge_left {ι : Type*} (s : Finset ι)
     (g : ι → M [⋀^Fin m]→L[𝕜] 𝕜) (h : M [⋀^Fin n]→L[𝕜] 𝕜) :
@@ -603,7 +602,7 @@ private theorem elementaryCovector_assoc {d : ℕ} [FiniteDimensional 𝕜 M] [C
       elementaryCovector_wedge b I J, elementaryCovector_wedge b (Fin.addCases I J) K]
   obtain ⟨B, dual⟩ := exists_predual_basis b
   apply toAlternatingMap_injective; apply B.ext_alternating; intro v hv
-  change domDomCongr Fin.finAssoc.symm
+  show domDomCongr Fin.finAssoc.symm
     (elementaryCovector b (Fin.addCases I (Fin.addCases J K))) (B ∘ v) =
     elementaryCovector b (Fin.addCases (Fin.addCases I J) K) (B ∘ v)
   rw [domDomCongr_apply,
@@ -863,7 +862,6 @@ variable {M : Type*} [NormedAddCommGroup M] [NormedSpace ℝ M] [FiniteDimension
 open Fin
 
 -- UNUSED functionality
-omit [FiniteDimensional ℝ M] in
 lemma domDomCongr_finAddFlip_wedge_self (g : M [⋀^Fin m]→L[ℝ] ℝ) :
     domDomCongr finAddFlip (g∧[ℝ]g) = (g∧[ℝ]g) := by
   ext x

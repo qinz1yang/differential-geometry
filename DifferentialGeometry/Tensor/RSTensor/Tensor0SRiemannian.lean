@@ -1,2299 +1,2267 @@
-import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.RSTensor.TangentRiemannian
-import DifferentialGeometry.Integral.L2.PointwiseInner.Defs
-import DifferentialGeometry.Integral.L2.PointwiseInner.Algebra
-import DifferentialGeometry.Integral.L2.PointwiseInner.DualMetric
-import DifferentialGeometry.Integral.Measure.ChartDensity
-import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
-import Mathlib.Topology.VectorBundle.Riemannian
-import Mathlib.Analysis.LocallyConvex.Bounded
-import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.Analysis.Normed.Operator.NormedSpace
-import Mathlib.Analysis.Normed.Module.Multilinear.Curry
-import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+import DifferentialGeometry.Connection.MetricCompatibility
+import DifferentialGeometry.Coordinates.MetricCompatibility
+import DifferentialGeometry.Coordinates.NablaComponents.TwoTensor
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.VectorBundle.PartialMfderiv
+import Mathlib.Analysis.InnerProductSpace.Adjoint
+import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.LinearAlgebra.Trace
+import Mathlib.Topology.Algebra.Module.FiniteDimension
+import Mathlib.Topology.Algebra.Module.LinearMap
+
+set_option autoImplicit false
+set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
 
 /-!
-# Smooth Riemannian metric on the (0,s)-tensor bundle
+# Riemannian Metrics on Covariant Tensor Fibers
 
-Given a smooth Riemannian metric `g` on a manifold `M` (encoded as a
-`SmoothRiemannianMetric I M`, i.e. a
-`Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I)`), and an inner-product
-structure on the model fibre `E`, we equip the (0,s)-tensor bundle with a
-`Bundle.ContMDiffRiemannianMetric I ∞ (Tensor0SModel s ℝ E) (Tensor0SSpace s I)`
-whose pointwise inner product agrees with `tensorInnerPointwise_0s s g b`.
-
-After installing the resulting Riemannian-bundle structure on the (0,s)-tensor
-bundle, Mathlib's automatic instance machinery yields
-`IsContMDiffRiemannianBundle` (and `IsContinuousRiemannianBundle`) on the
-(0,s)-tensor bundle.
-
-The diamond between the project's project-level normed structure on
-`Tensor0SSpace s I b` and Mathlib's scoped priority-80 normed structure coming
-from `RiemannianBundle` is handled in the same way as in
-`TangentRiemannian.lean`: a private auxiliary lemma locally removes the
-project's preferred instances, installs the `RiemannianBundle` structure built
-from the metric we construct here, and exposes only scalar-valued conclusions
-from inside the diamond-handling scope.
+The metric on `T_x M` induces metrics on all covariant tensor powers.  The
+construction is intrinsic on the fiber `Tensor0SSpace s I x`; coordinate
+formulas are evaluation theorems for local frames.
 -/
+
+namespace Tensor0SBundle
 
 noncomputable section
 
-open Bundle Set IsManifold ContinuousLinearMap Bornology
-open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
+open scoped Manifold ContDiff BigOperators
 
-namespace DifferentialGeometry
-namespace Tensor
-namespace Tensor0SRiemannian
-
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
-open Tensor0SBundle
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [Module.Finite ℝ E] [FiniteDimensional ℝ E]
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-/-- File-local instance: install the strong topology on `Tensor0SSpace s I b →L[ℝ] ℝ`.
-The standard `ContinuousLinearMap.topologicalSpace` instance is not picked up
-automatically through Lean's typeclass synthesis on the bundle topology of
-`Tensor0SSpace s I b`; we register it explicitly here at file scope. -/
-private instance bundleDualTopologicalSpace (s : ℕ) (b : M) :
-    TopologicalSpace (Tensor0SSpace s I b →L[ℝ] ℝ) :=
-  ContinuousLinearMap.topologicalSpace
-    (𝕜₁ := ℝ) (𝕜₂ := ℝ) (σ := RingHom.id ℝ)
-    (E := Tensor0SSpace s I b) (F := ℝ)
+namespace MetricFiberData
 
-/-! ## The pointwise (0,s) inner product on the model fibre as a CLM
+variable {V W : Type*}
 
-The pointwise inner product `tensorInnerPointwise_0s` is defined on the model
-fibres `Tensor0SModel s ℝ E = Tensor0SModel s ℝ E`.
-It is bilinear (proved in `PointwiseInner.Algebra`) and the model fibre is a
-finite-dimensional normed space, so the bilinear map is automatically a
-continuous bilinear map. We package it as a `→L[ℝ] · →L[ℝ] ·` CLM. -/
+private def realFlatLinear : Real →ₗ[Real] Module.Dual Real Real where
+  toFun := fun a =>
+    { toFun := fun b => a * b
+      map_add' := by
+        intro b c
+        ring
+      map_smul' := by
+        intro c b
+        simp [smul_eq_mul, mul_left_comm] }
+  map_add' := by
+    intro a b
+    ext
+    simp
+  map_smul' := by
+    intro c a
+    ext
+    simp [smul_eq_mul]
 
-/-- Underlying bilinear (`LinearMap`-valued) pairing on the model fibre. -/
-private def innerModelBilin
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    Tensor0SModel s ℝ E →ₗ[ℝ] Tensor0SModel s ℝ E →ₗ[ℝ] ℝ :=
-  LinearMap.mk₂ ℝ
-    (fun T S => tensorInnerPointwise_0s (I := I) (M := M) s g b T S)
-    (fun T₁ T₂ S =>
-      tensorInnerPointwise_0s_add_left (I := I) (M := M) g b s T₁ T₂ S)
-    (fun c T S =>
-      tensorInnerPointwise_0s_smul_left (I := I) (M := M) g b s c T S)
-    (fun T S₁ S₂ =>
-      tensorInnerPointwise_0s_add_right (I := I) (M := M) g b s T S₁ S₂)
-    (fun c T S =>
-      tensorInnerPointwise_0s_smul_right (I := I) (M := M) g b s c T S)
+/-- The standard metric on the real scalar fiber. -/
+def real : MetricFiberData Real :=
+  MetricFiberData.ofFlat realFlatLinear
+    (by
+      intro a b h
+      have h1 := congrArg (fun φ : Module.Dual Real Real => φ 1) h
+      simpa [realFlatLinear] using h1)
+    (by
+      intro a b
+      change a * b = b * a
+      ring)
+    (by
+      intro a
+      change 0 <= a * a
+      nlinarith [sq_nonneg a])
 
-@[simp] private lemma innerModelBilin_apply
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
-    (T S : Tensor0SModel s ℝ E) :
-    innerModelBilin (I := I) (M := M) g s b T S =
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T S := rfl
-
-/-- The "outer" linear map: for each `T`, the inner-argument `S ↦ inner T S` is
-linear and (since the model fibre is finite-dimensional) continuous. We package
-this as a CLM. -/
-private def innerModelLinearOuter
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    Tensor0SModel s ℝ E →ₗ[ℝ] (Tensor0SModel s ℝ E →L[ℝ] ℝ) where
-  toFun := fun T =>
-    LinearMap.toContinuousLinearMap
-      (innerModelBilin (I := I) (M := M) g s b T)
-  map_add' := fun T₁ T₂ => by
-    refine ContinuousLinearMap.ext ?_
-    intro S
-    change tensorInnerPointwise_0s (I := I) (M := M) s g b (T₁ + T₂) S =
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T₁ S +
-        tensorInnerPointwise_0s (I := I) (M := M) s g b T₂ S
-    exact tensorInnerPointwise_0s_add_left (I := I) (M := M) g b s T₁ T₂ S
-  map_smul' := fun c T => by
-    refine ContinuousLinearMap.ext ?_
-    intro S
-    change tensorInnerPointwise_0s (I := I) (M := M) s g b (c • T) S =
-      c • tensorInnerPointwise_0s (I := I) (M := M) s g b T S
-    rw [tensorInnerPointwise_0s_smul_left]
-    rfl
-
-/-- The pointwise `(0, s)` inner product as a continuous bilinear pairing on
-the model fibre. -/
-def innerModelCLM
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    Tensor0SModel s ℝ E →L[ℝ] Tensor0SModel s ℝ E →L[ℝ] ℝ :=
-  LinearMap.toContinuousLinearMap
-    (innerModelLinearOuter (I := I) (M := M) g s b)
-
-@[simp] lemma innerModelCLM_apply
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
-    (T S : Tensor0SModel s ℝ E) :
-    innerModelCLM (I := I) (M := M) g s b T S =
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T S := rfl
-
-/-! ## Transferring the inner CLM to the bundle fibre
-
-The bundle fibre `Tensor0SSpace s I b` shares the same underlying type as the
-model fibre, but with the bundle topology. We have a CLE
-`tensor0SSpace_continuousLinearEquiv` between them. To define the bundle-level
-inner CLM `Tensor0SSpace s I b →L[ℝ] Tensor0SSpace s I b →L[ℝ] ℝ`, we precompose
-the model-level CLM `innerModelCLM` with this CLE on each argument. -/
-
-/-- Shorthand for the CLE between the bundle fibre and the model fibre. -/
-private def bundleCLE (s : ℕ) (b : M) :
-    Tensor0SSpace s I b ≃L[ℝ]
-      Tensor0SModel s ℝ E :=
-  Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M) s b
-
-/-- The forward CLM of `bundleCLE`. -/
-private def bundleToModelCLM (s : ℕ) (b : M) :
-    Tensor0SSpace s I b →L[ℝ]
-      Tensor0SModel s ℝ E :=
-  (bundleCLE (I := I) (M := M) (E := E) s b).toContinuousLinearMap
-
-@[simp] private lemma bundleToModelCLM_apply (s : ℕ) (b : M)
-    (T : Tensor0SSpace s I b) :
-    bundleToModelCLM (I := I) (M := M) (E := E) s b T =
-      Tensor0SBundle.Tensor0SSpace.toModel
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T := rfl
-
-/-- The inverse CLM of `bundleCLE`. -/
-private def modelToBundleCLM (s : ℕ) (b : M) :
-    Tensor0SModel s ℝ E →L[ℝ]
-      Tensor0SSpace s I b :=
-  (bundleCLE (I := I) (M := M) (E := E) s b).symm.toContinuousLinearMap
-
-/-- The "pre-compose into bundle" CLM, post-composing a model-fibre CLM
-`Tensor0SModel s ℝ E →L[ℝ] ℝ` with `bundleToModelCLM`. We define this via
-`arrowCongr`, which avoids metric-topology requirements: `arrowCongr` requires
-only `IsTopologicalAddGroup` on its codomains, which `ℝ` and the bundle fibre
-both satisfy. -/
-private def precompBundleCLM (s : ℕ) (b : M) :
-    (Tensor0SModel s ℝ E →L[ℝ] ℝ) →L[ℝ]
-      (Tensor0SSpace s I b →L[ℝ] ℝ) :=
-  -- `(bundleCLE.symm).arrowCongr (refl ℝ ℝ) :
-  --     (Tensor0SModel s ℝ E →L[ℝ] ℝ) ≃L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ)`.
-  ((bundleCLE (I := I) (M := M) (E := E) s b).symm.arrowCongr
-    (ContinuousLinearEquiv.refl ℝ ℝ)).toContinuousLinearMap
-
-@[simp] private lemma precompBundleCLM_apply (s : ℕ) (b : M)
-    (f : Tensor0SModel s ℝ E →L[ℝ] ℝ) (T : Tensor0SSpace s I b) :
-    precompBundleCLM (I := I) (M := M) (E := E) s b f T =
-      f (Tensor0SBundle.Tensor0SSpace.toModel
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T) :=
-  rfl
-
-/-- The `(0, s)` pointwise inner product packaged as a continuous bilinear
-pairing on the bundle fibre `Tensor0SSpace s I b`.
-
-We construct it by composing the model-fibre CLM with `precompBundleCLM` on
-the codomain side (transferring the inner-CLM domain through the CLE) and then
-with `bundleToModelCLM` on the source side. -/
-def innerBundleCLM
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    Tensor0SSpace s I b →L[ℝ]
-      Tensor0SSpace s I b →L[ℝ] ℝ :=
-  -- Step A: Post-compose the model-fibre CLM with `precompBundleCLM`.
-  -- `precompBundleCLM ∘L innerModelCLM : Tensor0SModel s ℝ E →L[ℝ]
-  --   (Tensor0SSpace s I b →L[ℝ] ℝ)`.
-  let stepA : Tensor0SModel s ℝ E →L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ) :=
-    (precompBundleCLM (I := I) (M := M) (E := E) s b).comp
-      (innerModelCLM (I := I) (M := M) g s b)
-  -- Step B: Pre-compose `stepA` with `bundleToModelCLM` on the first slot.
-  stepA.comp (bundleToModelCLM (I := I) (M := M) (E := E) s b)
-
-@[simp] lemma innerBundleCLM_apply
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
-    (T S : Tensor0SSpace s I b) :
-    innerBundleCLM (I := I) (M := M) g s b T S =
-      tensorInnerPointwise_0s (I := I) (M := M) s g b
-        (Tensor0SBundle.Tensor0SSpace.toModel (I := I) (M := M)
-          (𝕜 := ℝ) (E := E) (s := s) (x := b) T)
-        (Tensor0SBundle.Tensor0SSpace.toModel (I := I) (M := M)
-          (𝕜 := ℝ) (E := E) (s := s) (x := b) S) := by
-  rfl
-
-/-! ## Algebraic properties
-
-The `symm` and `pos` properties of `innerBundleCLM` follow from the
-corresponding properties of `tensorInnerPointwise_0s` together with
-linearity of the CLE `bundleCLE`. -/
-
-/-- Symmetry of the bundle inner product: `inner b T S = inner b S T`. -/
-lemma innerBundleCLM_symm
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
-    (T S : Tensor0SSpace s I b) :
-    innerBundleCLM (I := I) (M := M) g s b T S =
-      innerBundleCLM (I := I) (M := M) g s b S T := by
-  rw [innerBundleCLM_apply, innerBundleCLM_apply]
-  exact tensorInnerPointwise_0s_symm (I := I) (M := M) g b s _ _
-
-/-- Positive-definiteness on the diagonal: `inner b T T > 0` for `T ≠ 0`. -/
-lemma innerBundleCLM_pos
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
-    (T : Tensor0SSpace s I b) (hT : T ≠ 0) :
-    0 < innerBundleCLM (I := I) (M := M) g s b T T := by
-  rw [innerBundleCLM_apply]
-  -- `T ≠ 0 ⟹ toModel T ≠ 0` via injectivity of the CLE.
-  have hTm :
-      Tensor0SBundle.Tensor0SSpace.toModel
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T ≠ 0 := by
-    intro h
-    apply hT
-    have hinj :=
-      Tensor0SBundle.Tensor0SSpace.toModel_injective
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-    have hzero :
-        Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (0 : Tensor0SSpace s I b) = 0 :=
-      Tensor0SBundle.Tensor0SSpace.toModel_zero
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-    exact hinj (h.trans hzero.symm)
-  have hnn :
-      0 ≤ tensorInnerPointwise_0s (I := I) (M := M) s g b
-          (Tensor0SBundle.Tensor0SSpace.toModel
-            (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T)
-          (Tensor0SBundle.Tensor0SSpace.toModel
-            (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T) :=
-    tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b s _
-  rcases lt_or_eq_of_le hnn with hlt | heq
-  · exact hlt
-  · exfalso
-    apply hTm
-    exact (tensorInnerPointwise_0s_eq_zero_iff
-      (I := I) (M := M) g b s _).mp heq.symm
-
-/-! ## von-Neumann boundedness of the unit ball
-
-The set `{T : Tensor0SSpace s I b | inner b T T < 1}` is von-Neumann bounded.
-Since `Tensor0SSpace s I b` is a finite-dimensional normed-like space (its
-topology is induced via the trivialization from a finite-dimensional model
-fibre), and the inner product is a positive-definite continuous quadratic
-form, the unit ball of the metric-induced norm is contained in a multiple of
-the standard unit ball, hence is bounded.
-
-We prove this by transferring the unit ball to the model fibre via the CLE
-`bundleCLE` and using the equivalence of norms on a finite-dimensional space:
-on `Tensor0SModel s ℝ E`, the inner product `tensorInnerPointwise_0s` and the
-operator norm both induce equivalent norms (since both are positive-definite
-quadratic forms on a finite-dimensional space). -/
-
--- Helper: a continuous symmetric positive-definite bilinear form on a
--- finite-dim normed space has a sublevel set {v | B(v,v) < 1} that is bounded.
--- We prove this for any abstract such bilinear form, working purely in the
--- model fibre and using the standard `ContinuousMultilinearMap` instances.
-
-/-- A general finite-dim positive-definite bilinear form has a bounded unit ball. -/
-lemma posDef_bilin_unit_ball_isBounded
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [FiniteDimensional ℝ F] [Nontrivial F]
-    (B : F →L[ℝ] F →L[ℝ] ℝ)
-    (hPD : ∀ v : F, v ≠ 0 → 0 < B v v)
-    (hNN : ∀ v : F, 0 ≤ B v v)
-    (hBilin_smul_left : ∀ (c : ℝ) (v w : F), B (c • v) w = c * B v w)
-    (hBilin_smul_right : ∀ (c : ℝ) (v w : F), B v (c • w) = c * B v w) :
-    Bornology.IsBounded {v : F | B v v < 1} := by
-  haveI : ProperSpace F := FiniteDimensional.proper ℝ _
-  classical
-  set Q : F → ℝ := fun v => B v v with hQ_def
-  have hQ_cont : Continuous Q :=
-    Continuous.clm_apply B.continuous continuous_id
-  have hsphere_compact : IsCompact (Metric.sphere (0 : F) 1) :=
-    isCompact_sphere _ _
-  have hsphere_nonempty : (Metric.sphere (0 : F) 1).Nonempty := by
-    rcases exists_ne (0 : F) with ⟨v₀, hv₀⟩
-    refine ⟨‖v₀‖⁻¹ • v₀, ?_⟩
-    rw [Metric.mem_sphere, dist_zero_right]
-    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
-    have hv₀_norm_ne : ‖v₀‖ ≠ 0 := norm_ne_zero_iff.mpr hv₀
-    exact inv_mul_cancel₀ hv₀_norm_ne
-  obtain ⟨v_min, hv_min_mem, hv_min⟩ :=
-    hsphere_compact.exists_isMinOn hsphere_nonempty hQ_cont.continuousOn
-  set c := Q v_min with hc_def
-  have hv_min_ne : v_min ≠ 0 := by
-    intro h
-    rw [Metric.mem_sphere, dist_zero_right, h, norm_zero] at hv_min_mem
-    exact one_ne_zero hv_min_mem.symm
-  have hc_pos : 0 < c := hPD v_min hv_min_ne
-  have hQ_lower : ∀ v : F, c * ‖v‖ ^ 2 ≤ Q v := by
+/-- Pull a metric back along a linear equivalence. -/
+def pullback [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (e : V ≃ₗ[Real] W) (D : MetricFiberData W) : MetricFiberData V where
+  flat := e.trans (D.flat.trans e.dualMap)
+  symm := by
+    intro v w
+    change D.flat (e v) (e w) = D.flat (e w) (e v)
+    exact D.symm (e v) (e w)
+  nonneg := by
     intro v
-    by_cases hv_zero : v = 0
-    · subst hv_zero
-      simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-        zero_pow, mul_zero]
-      exact hNN 0
-    · have hv_norm_pos : 0 < ‖v‖ := norm_pos_iff.mpr hv_zero
-      have hv_norm_ne : ‖v‖ ≠ 0 := ne_of_gt hv_norm_pos
-      set u := ‖v‖⁻¹ • v with hu_def
-      have hu_norm : ‖u‖ = 1 := by
-        rw [hu_def, norm_smul]
-        rw [norm_inv, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
-        exact inv_mul_cancel₀ hv_norm_ne
-      have hu_sphere : u ∈ Metric.sphere (0 : F) 1 := by
-        rw [Metric.mem_sphere, dist_zero_right]; exact hu_norm
-      have hQu : c ≤ Q u := hv_min hu_sphere
-      have hQu_eq : Q u = ‖v‖⁻¹ * ‖v‖⁻¹ * Q v := by
-        change B u u = ‖v‖⁻¹ * ‖v‖⁻¹ * B v v
-        rw [hu_def, hBilin_smul_left, hBilin_smul_right]
-        ring
-      rw [hQu_eq] at hQu
-      have hT_sq_pos : 0 < ‖v‖ ^ 2 := pow_pos hv_norm_pos 2
-      have hineq : c * ‖v‖ ^ 2 ≤ (‖v‖⁻¹ * ‖v‖⁻¹ * Q v) * ‖v‖ ^ 2 := by gcongr
-      have hsimp : (‖v‖⁻¹ * ‖v‖⁻¹ * Q v) * ‖v‖ ^ 2 = Q v := by field_simp
-      rw [hsimp] at hineq
-      exact hineq
-  refine (Metric.isBounded_iff_subset_ball 0).mpr ?_
-  refine ⟨1 / Real.sqrt c + 1, fun v hv => ?_⟩
-  rw [Set.mem_setOf_eq] at hv
-  have h1 : c * ‖v‖ ^ 2 < 1 := lt_of_le_of_lt (hQ_lower v) hv
-  have h2 : ‖v‖ ^ 2 < c⁻¹ := by
-    have hh : ‖v‖ ^ 2 < 1 / c := by rwa [lt_div_iff₀ hc_pos, mul_comm]
-    rwa [show (1 : ℝ) / c = c⁻¹ from one_div _] at hh
-  have h3 : ‖v‖ < Real.sqrt (c⁻¹) := by
-    rw [show ‖v‖ = Real.sqrt (‖v‖ ^ 2) from (Real.sqrt_sq (norm_nonneg _)).symm]
-    exact Real.sqrt_lt_sqrt (by positivity) h2
-  have hsqrt_eq : Real.sqrt (c⁻¹) = 1 / Real.sqrt c := by
-    rw [Real.sqrt_inv, one_div]
-  rw [hsqrt_eq] at h3
-  rw [Metric.mem_ball, dist_zero_right]
-  linarith
+    change 0 <= D.flat (e v) (e v)
+    exact D.nonneg (e v)
 
-/-! ## Bundle smoothness of the inner-product section
+/-- The Hilbert-Schmidt flat map on a finite-dimensional algebraic Hom fiber.
 
-We assemble `innerBundleCLM g s` into a smooth section of the Hom bundle
-`Hom(Tensor0S(s), Hom(Tensor0S(s), ℝ))` on `M`. The argument proceeds by
-chart-localising and using the fact that the inner product, viewed in
-trivialised coordinates, is a polynomial expression in the entries of the
-chart-local Gram matrix and its inverse — both of which are smooth. The
-chart-local representation of the inner-product section is constructed
-by induction on `s` and then transferred to the bundle level.
+Expected construction: the flat map sends `A` to the functional
+`B ↦ tr(A† ∘ B)`, where `A†` is the metric adjoint built from `DV` and `DW`.
+The proof obligation is that this flat map is symmetric and positive
+semidefinite, hence gives genuine metric data on `V →ₗ[Real] W`.
 
-The chart-local approach: in the trivialisation at `α : M`, the bilinear form
-`innerBundleCLM g s b` (acting on bundle-fibre tensors) corresponds to a
-bilinear form on the model fibre `Tensor0SModel s ℝ E`. The dependence on
-`b ∈ chartAt(α).source` is smooth because the chart-local Gram matrix
-`chartGramMatrix g α b` and its determinant inverse are smooth.
--/
-
-open DifferentialGeometry.Integral.Measure (chartGramMatrix
-  chartGramMatrix_apply chartGramMatrix_isHermitian
-  chartGramMatrix_posDef chartGramMatrix_det_pos
-  chartGramMatrix_entry_contMDiffOn chartGramMatrix_det_contMDiffOn
-  chartBasisVecFiber chartBasisVec)
-
-variable {n : ℕ}
-
-/-! ### Smoothness of the inverse Gram matrix entries
-
-The chart-local Gram matrix `chartGramMatrix g α b` is symmetric
-positive-definite with strictly positive determinant on `chartAt(α).source`,
-hence invertible. Its inverse is given by `(det)⁻¹ • adjugate`, both factors
-being smooth in `b`. We expose entrywise smoothness, which is what the
-inductive step of the bilinear-form smoothness proof needs. -/
-
-/-- The adjugate matrix entries are smooth on the trivialisation base set.
-We expand via `adjugate_apply` (giving a determinant of a row-update matrix)
-and then via the permutation-sum formula for `det`, after which each
-summand is a finite product of either constants (the `Pi.single` entry) or
-smooth Gram-matrix entries. -/
-private lemma chartGramMatrix_adjugate_entry_contMDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => (chartGramMatrix g α b).adjugate i j)
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  classical
-  -- `adjugate A i j = det (A.updateRow j (Pi.single i 1))` (Mathlib).
-  have hexp :
-      (fun b : M => (chartGramMatrix g α b).adjugate i j)
-        = (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)).det) := by
-    funext b
-    rw [Matrix.adjugate_apply]
-  rw [hexp]
-  -- Expand the determinant via the permutation-sum formula.
-  have hexp2 :
-      (fun b : M =>
-          ((chartGramMatrix g α b).updateRow j (Pi.single i 1)).det)
-        = (fun b : M =>
-            ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
-              (Equiv.Perm.sign σ : ℝ) *
-                ∏ k,
-                  ((chartGramMatrix g α b).updateRow j (Pi.single i 1))
-                    (σ k) k) := by
-    funext b
-    rw [Matrix.det_apply]
-    simp [Units.smul_def]
-  rw [hexp2]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
-  refine ContMDiffOn.mul (contMDiffOn_const) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
-  -- For each `(σ, k)`, the entry `updateRow A j v (σ k) k = if σ k = j then
-  -- v k else A (σ k) k`.
-  by_cases hσkj : σ k = j
-  · -- Row replaced: entry is `(Pi.single i 1) k`, a constant in `b`.
-    have heq :
-        (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
-          = (fun _ : M => (Pi.single i 1 : Fin (Module.finrank ℝ E) → ℝ) k) := by
-      funext b
-      rw [hσkj, Matrix.updateRow_self]
-    rw [heq]
-    exact contMDiffOn_const
-  · -- Row not replaced: entry is `A (σ k) k`, smooth in `b`.
-    have heq :
-        (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
-          = (fun b : M => chartGramMatrix g α b (σ k) k) := by
-      funext b
-      rw [Matrix.updateRow_ne hσkj]
-    rw [heq]
-    exact chartGramMatrix_entry_contMDiffOn (I := I) g α (σ k) k
-
-/-- The inverse Gram matrix entries are smooth on the trivialisation base
-set. The inverse formula is `A⁻¹ = (det A)⁻¹ • adjugate A`, valid because the
-determinant is strictly positive (hence nonzero) on the chart base set. -/
-lemma chartGramMatrix_inv_entry_contMDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- Expand: `A⁻¹ = (det A)⁻¹ • adjugate A`, hence
-  -- `A⁻¹ i j = (det A)⁻¹ * adjugate A i j`.
-  have hexp :
-      (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
-        = (fun b : M => (chartGramMatrix g α b).det⁻¹ *
-              (chartGramMatrix g α b).adjugate i j) := by
-    funext b
-    rw [Matrix.inv_def]
-    simp [Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
-  rw [hexp]
-  -- Both factors smooth on the chart base set.
-  intro b hb
-  have hdet := chartGramMatrix_det_contMDiffOn (I := I) g α b hb
-  have hadj := chartGramMatrix_adjugate_entry_contMDiffOn (I := I) g α i j b hb
-  have hpos : 0 < (chartGramMatrix g α b).det :=
-    chartGramMatrix_det_pos (I := I) g α hb
-  have hpos_ne : (chartGramMatrix g α b).det ≠ 0 := ne_of_gt hpos
-  have hinv : ContMDiffWithinAt I 𝓘(ℝ) ∞
-      (fun b' : M => (chartGramMatrix g α b').det⁻¹)
-      (trivializationAt E (TangentSpace I) α).baseSet b :=
-    ContMDiffWithinAt.inv₀ hdet hpos_ne
-  exact hinv.mul hadj
-
-/-! ### From `chartGramMatrix` to a chart-local replacement for the inner
-product
-
-The pointwise inner product `tensorInnerPointwise_0s s g b S T` is defined
-via the canonical-basis Gram matrix `gramMatrixAt g b`, whose smoothness in
-`b` is not immediately accessible through Mathlib's standard tools (the
-canonical model-fibre basis vectors do not yield smooth tangent-bundle
-sections in general). To bypass this we replace `gramMatrixAt g b` by the
-chart-local Gram matrix `chartGramMatrix g α b`, whose entries are smooth on
-`chartAt(α).source`. The two are related by the change-of-basis matrix
-coming from the trivialisation, and we will see below that the resulting
-chart-local inner product, after suitable change-of-coordinates, equals the
-bundle-trivialised form of `innerBundleCLM g s b`. -/
-
-/-- A chart-local replacement for `tensorInnerPointwise_0s`, defined using
-`chartGramMatrix g α b` in place of `gramMatrixAt g b`. -/
-noncomputable def chartTensorInnerPointwise_0s :
-    (s : ℕ) → SmoothRiemannianMetric I M → (α : M) → (b : M) →
-      Tensor0SModel s ℝ E →
-      Tensor0SModel s ℝ E → ℝ
-  | 0, _g, _α, _b, S, T =>
-      S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i)
-  | s + 1, g, α, b, S, T =>
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerPointwise_0s s g α b
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j))
-
-lemma chartTensorInnerPointwise_0s_zero
-    (g : SmoothRiemannianMetric I M) (α b : M)
-    (S T : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b S T =
-      S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i) := rfl
-
-lemma chartTensorInnerPointwise_0s_succ
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b S T =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j)) := rfl
-
-/-! ### Smoothness of the chart-local inner product
-
-The chart-local inner product is smooth in `b` on the chart base set. The
-proof is by induction on `s`. The base case is constant; the inductive step
-uses smoothness of the inverse Gram matrix and the inductive hypothesis. -/
-
-lemma chartTensorInnerPointwise_0s_contMDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ∀ (s : ℕ) (S T : Tensor0SModel s ℝ E),
-      ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T)
-        (trivializationAt E (TangentSpace I) α).baseSet := by
-  intro s
-  induction s with
-  | zero =>
-      intro S T
-      -- The arity-zero inner product is the constant `S(Fin.elim0) * T(Fin.elim0)`.
-      have heq :
-          (fun b : M =>
-              chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b S T)
-            = fun _ : M =>
-              S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_zero]
-      rw [heq]
-      exact contMDiffOn_const
-  | succ s ih =>
-      intro S T
-      have heq :
-          (fun b : M =>
-              chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b S T)
-            = fun b : M =>
-              ∑ i : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-                      (S.curryLeft ((chartModelBasis E) i))
-                      (T.curryLeft ((chartModelBasis E) j)) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_succ]
-      rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
-      refine ContMDiffOn.mul ?_ ?_
-      · exact chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
-      · exact ih
-          (S.curryLeft ((chartModelBasis E) i))
-          (T.curryLeft ((chartModelBasis E) j))
-
-/-! ### Bilinearity of `chartTensorInnerPointwise_0s`
-
-The chart-local inner product is bilinear in the two tensor arguments. We
-prove the four bilinearity properties by induction on `s` (mirroring the
-proofs of `tensorInnerPointwise_0s_*` in the project's `PointwiseInner`
-files). -/
-
-lemma chartTensorInnerPointwise_0s_add_left
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (S₁ S₂ T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (S₁ + S₂) T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₁ T +
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₂ T := by
-  induction s with
-  | zero =>
-      change (S₁ + S₂) _ * T _ = S₁ _ * T _ + S₂ _ * T _
-      rw [ContinuousMultilinearMap.add_apply]; ring
-  | succ s ih =>
-      rw [chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ]
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      have hcurry :
-          (S₁ + S₂).curryLeft ((chartModelBasis E) i) =
-            S₁.curryLeft ((chartModelBasis E) i) +
-              S₂.curryLeft ((chartModelBasis E) i) := by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
-      rw [hcurry, ih]
-      ring
-
-lemma chartTensorInnerPointwise_0s_smul_left
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (c : ℝ) (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (c • S) T =
-      c * chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := by
-  induction s with
-  | zero =>
-      change (c • S) _ * T _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]; ring
-  | succ s ih =>
-      rw [chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ,
-          Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      have hcurry :
-          (c • S).curryLeft ((chartModelBasis E) i) =
-            c • S.curryLeft ((chartModelBasis E) i) := by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
-      rw [hcurry, ih]
-      ring
-
-lemma chartTensorInnerPointwise_0s_add_right
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (S T₁ T₂ : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S (T₁ + T₂) =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T₁ +
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T₂ := by
-  induction s with
-  | zero =>
-      change S _ * (T₁ + T₂) _ = S _ * T₁ _ + S _ * T₂ _
-      rw [ContinuousMultilinearMap.add_apply]; ring
-  | succ s ih =>
-      rw [chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ]
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      have hcurry :
-          (T₁ + T₂).curryLeft ((chartModelBasis E) j) =
-            T₁.curryLeft ((chartModelBasis E) j) +
-              T₂.curryLeft ((chartModelBasis E) j) := by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
-      rw [hcurry, ih]
-      ring
-
-lemma chartTensorInnerPointwise_0s_smul_right
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (c : ℝ) (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S (c • T) =
-      c * chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := by
-  induction s with
-  | zero =>
-      change S _ * (c • T) _ = c * (S _ * T _)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]; ring
-  | succ s ih =>
-      rw [chartTensorInnerPointwise_0s_succ,
-          chartTensorInnerPointwise_0s_succ,
-          Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      have hcurry :
-          (c • T).curryLeft ((chartModelBasis E) j) =
-            c • T.curryLeft ((chartModelBasis E) j) := by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply]
-      rw [hcurry, ih]
-      ring
-
-/-! ### CLM-valued chart-local inner product
-
-We package the chart-local inner product as a `MLF →L MLF →L ℝ`-valued
-function of `b`, and prove it is smooth as a map into the fixed normed
-space `MLF →L MLF →L ℝ`. This is the form needed by the
-trivialisation-section iff lemma. -/
-
-/-- The bilinear `LinearMap` underlying `chartTensorInnerPointwise_0s`. -/
-def chartTensorInnerPointwise_0sBilin
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
-    Tensor0SModel s ℝ E →ₗ[ℝ]
-      Tensor0SModel s ℝ E →ₗ[ℝ] ℝ :=
-  LinearMap.mk₂ ℝ
-    (fun S T => chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T)
-    (fun S₁ S₂ T =>
-      chartTensorInnerPointwise_0s_add_left (I := I) (M := M) g α b s S₁ S₂ T)
-    (fun c S T =>
-      chartTensorInnerPointwise_0s_smul_left (I := I) (M := M) g α b s c S T)
-    (fun S T₁ T₂ =>
-      chartTensorInnerPointwise_0s_add_right (I := I) (M := M) g α b s S T₁ T₂)
-    (fun c S T =>
-      chartTensorInnerPointwise_0s_smul_right (I := I) (M := M) g α b s c S T)
-
-@[simp] lemma chartTensorInnerPointwise_0sBilin_apply
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M)
-    (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0sBilin (I := I) (M := M) g s α b S T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := rfl
-
-/-- CLM-valued chart-local inner product as a continuous bilinear pairing
-on the model fibre, indexed by `b : M`. We use that the model fibre is
-finite-dimensional, so any bilinear LinearMap is automatically continuous. -/
-noncomputable def chartTensorInnerPointwise_0sCLM
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
-    Tensor0SModel s ℝ E →L[ℝ]
-      Tensor0SModel s ℝ E →L[ℝ] ℝ :=
-  let bilin := chartTensorInnerPointwise_0sBilin (I := I) (M := M) g s α b
-  LinearMap.toContinuousLinearMap
-    { toFun := fun S => LinearMap.toContinuousLinearMap (bilin S)
-      map_add' := fun S₁ S₂ => by
-        refine ContinuousLinearMap.ext ?_
-        intro T
-        change chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (S₁ + S₂) T =
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₁ T +
-            chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₂ T
-        exact chartTensorInnerPointwise_0s_add_left
-          (I := I) (M := M) g α b s S₁ S₂ T
-      map_smul' := fun c S => by
-        refine ContinuousLinearMap.ext ?_
-        intro T
-        change chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (c • S) T =
-          c • chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T
-        rw [chartTensorInnerPointwise_0s_smul_left]
-        rfl }
-
-@[simp] lemma chartTensorInnerPointwise_0sCLM_apply
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M)
-    (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0sCLM (I := I) (M := M) g s α b S T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := rfl
-
-/-! ### Explicit recursion structure for the CLM-valued chart-local inner
-product
-
-We rewrite `chartTensorInnerPointwise_0sCLM g (s+1) α b` as an explicit
-finite-sum of `((chartGramMatrix g α b)⁻¹ i j) • (constant CLM ∘ s-step CLM)`,
-where the constant CLM is the "compose with `curryLeft eᵢ`" map, used to
-slot the inductive `s`-step into the recursive formula. This factorisation is
-what enables the smoothness induction. -/
-
-/-- The `S ↦ S.curryLeft v` map as a CLM `MLF (s+1) →L MLF s`. We bound the
-norm directly using the CMLM operator-norm formula: for any tuple
-`m : Fin s → E`, `(S.curryLeft v) m = S (cons v m)` and
-`‖S (cons v m)‖ ≤ ‖S‖ * ‖v‖ * ∏ ‖m i‖` by `S.norm_map_cons_le`. -/
-private noncomputable def curryLeftAtCLM (s : ℕ) (v : E) :
-    ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ]
-      Tensor0SModel s ℝ E :=
-  LinearMap.mkContinuous
-    { toFun := fun S => S.curryLeft v
-      map_add' := fun S₁ S₂ => by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
-      map_smul' := fun c S => by
-        ext m
-        simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply] }
-    ‖v‖
-    (fun S => by
-      change ‖S.curryLeft v‖ ≤ _
-      -- `S.curryLeft v : MLF s` has operator norm bounded by `‖S‖ * ‖v‖`.
-      -- Use `ContinuousMultilinearMap.opNorm_le_bound`: norm bound from a
-      -- pointwise inequality on tuples.
-      refine (ContinuousMultilinearMap.opNorm_le_bound
-        (M := ‖S‖ * ‖v‖) ?_ ?_).trans (by ring_nf; rfl)
-      · exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
-      · intro m
-        rw [ContinuousMultilinearMap.curryLeft_apply]
-        have := S.norm_map_cons_le v m
-        calc ‖S (Fin.cons v m)‖
-            ≤ ‖S‖ * ‖v‖ * ∏ i, ‖m i‖ := this
-          _ = ‖S‖ * ‖v‖ * ∏ i, ‖m i‖ := rfl)
-
-private lemma curryLeftAtCLM_apply (s : ℕ) (v : E)
-    (S : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    curryLeftAtCLM (E := E) s v S = S.curryLeft v := rfl
-
-/-- Pre-composition of a CLM `MLF s →L MLF s →L ℝ` with `curryLeftAtCLM s eᵢ`
-on the source side, and `curryLeftAtCLM s eⱼ` on the second argument. This
-gives a CLM `MLF (s+1) →L MLF (s+1) →L ℝ`.
-
-The construction: `composeCurryAtIJ B S T = B (S.curryLeft eᵢ) (T.curryLeft eⱼ)`.
-We use `compL.flip CLj` (post-compose with `CLj`) on the inner CLM, and
-`B.comp CLi` (pre-compose with `CLi`) on the outer. -/
-private noncomputable def composeCurryAtIJ (s : ℕ)
-    (i j : Fin (Module.finrank ℝ E))
-    (B : Tensor0SModel s ℝ E →L[ℝ]
-      Tensor0SModel s ℝ E →L[ℝ] ℝ) :
-    ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ :=
-  let CLi := curryLeftAtCLM (E := E) s ((chartModelBasis E) i)
-  let CLj := curryLeftAtCLM (E := E) s ((chartModelBasis E) j)
-  -- For fixed `g` (here `CLj`), `f ↦ f.comp g` is a CLM `(F →L G) →L (E →L G)`.
-  -- This is `(compL).flip g`.
-  let postCompCLj :
-      (Tensor0SModel s ℝ E →L[ℝ] ℝ) →L[ℝ]
-        (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ) :=
-    (ContinuousLinearMap.compL ℝ
-      (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
-      (Tensor0SModel s ℝ E) ℝ).flip CLj
-  postCompCLj.comp (B.comp CLi)
-
-@[simp] private lemma composeCurryAtIJ_apply (s : ℕ)
-    (i j : Fin (Module.finrank ℝ E))
-    (B : Tensor0SModel s ℝ E →L[ℝ]
-      Tensor0SModel s ℝ E →L[ℝ] ℝ)
-    (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    composeCurryAtIJ (E := E) s i j B S T =
-      B (S.curryLeft ((chartModelBasis E) i))
-        (T.curryLeft ((chartModelBasis E) j)) := by
-  rfl
-
-/-- The factorisation of `chartTensorInnerPointwise_0sCLM g (s+1) α b` as a
-`Finset.sum` of `smul`s of `composeCurryAtIJ`-transformed s-step CLMs. This
-identity is the basis for the smoothness induction. -/
-private lemma chartTensorInnerPointwise_0sCLM_succ_eq
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
-    chartTensorInnerPointwise_0sCLM (I := I) (M := M) g (s + 1) α b
-      = ∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
-            (chartGramMatrix g α b)⁻¹ i j •
-              composeCurryAtIJ (E := E) s i j
-                (chartTensorInnerPointwise_0sCLM (I := I) (M := M) g s α b) := by
-  refine ContinuousLinearMap.ext ?_
-  intro S
-  refine ContinuousLinearMap.ext ?_
-  intro T
-  rw [chartTensorInnerPointwise_0sCLM_apply, chartTensorInnerPointwise_0s_succ]
-  -- RHS: evaluate the finite-sum CLM.
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
-  refine Finset.sum_congr rfl ?_
-  intro i _
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
-  refine Finset.sum_congr rfl ?_
-  intro j _
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
-    composeCurryAtIJ_apply, smul_eq_mul,
-    chartTensorInnerPointwise_0sCLM_apply]
-
-/-! ### Smoothness of the CLM-valued chart-local inner product
-
-Using the explicit factorisation, we prove smoothness of
-`chartTensorInnerPointwise_0sCLM g s α b` as a function of `b ∈ chartAt α`,
-viewed as a map into the fixed normed space `MLF →L MLF →L ℝ`. The induction
-is on `s`, with the inductive step using `ContMDiffOn.smul` and the bilinear
-"compose with constant" maps (which act on smooth-in-`b` CLMs via continuous
-linear pre/post-composition). -/
-
-/-! ### Continuity of the inner product on smooth tensor sections
-
-We deliver the public continuity theorem `Tensor0SBundle.continuous_inner_of_smooth_sections`
-via the following strategy:
-
-1. Define `chartTensorInnerPointwise_0s` as a chart-local version of the
-   pointwise inner product, using `chartGramMatrix g α b` (smooth in `b`)
-   in place of `gramMatrixAt g b`.
-2. Establish a basis-invariance identity relating the two pointwise inner
-   products: `tensorInnerPointwise_0s s g b S T = chartTensorInnerPointwise_0s s g α b S_α(b) T_α(b)`
-   where `S_α(b) = S.compContinuousLinearMap (fun _ => (triv α).symmL b)`.
-3. From this, on each chart, the inner product on smooth sections becomes
-   a continuous function of `b` because:
-   - The chart-local Gram matrix and its inverse are smooth in `b`.
-   - The trivialised tensor sections are smooth (continuous) in `b`.
-4. Glue via chart cover for global continuity. -/
-
-/-! ### Auxiliary CLMs and their relations
-
-We package the chart-Jacobian and its inverse as CLMs and establish the
-basic identities (round-trip, basis-vector image, Gram-matrix expansion). -/
-
-/-- The chart-Jacobian on the fibre at `b`: the forward map of the tangent
-trivialisation centred at `α`. -/
-noncomputable def chartJ (α : M) (b : M) : E →L[ℝ] E :=
-  (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b
-
-/-- The chart-Jacobian inverse on the fibre at `b`: the backward map of the
-tangent trivialisation centred at `α`. -/
-noncomputable def chartJinv (α : M) (b : M) : E →L[ℝ] E :=
-  (trivializationAt E (TangentSpace I) α).symmL ℝ b
-
-lemma chartJinv_apply (α : M) (b : M) (v : E) :
-    chartJinv (I := I) (M := M) α b v =
-      (trivializationAt E (TangentSpace I) α).symmL ℝ b v := rfl
-
-lemma chartJ_apply (α : M) (b : M) (v : E) :
-    chartJ (I := I) (M := M) α b v =
-      (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b v := rfl
-
-/-- `chartJinv α b` images the model basis vector `(chartModelBasis E) i` to the
-chart-α basis vector `chartBasisVecFiber α i b`. -/
-private lemma chartJinv_basis (α : M) (b : M)
-    (i : Fin (Module.finrank ℝ E)) :
-    chartJinv (I := I) (M := M) α b ((chartModelBasis E) i) =
-      chartBasisVecFiber (I := I) α i b := by
-  unfold chartBasisVecFiber chartJinv
-  rfl
-
-/-- For `b` in the chart's base set, `chartJ α b ∘ chartJinv α b = id`. -/
-lemma chartJ_chartJinv (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v : E) :
-    chartJ (I := I) (M := M) α b
-        (chartJinv (I := I) (M := M) α b v) = v := by
-  unfold chartJ chartJinv
-  exact (trivializationAt E (TangentSpace I) α).continuousLinearMapAt_symmL hb v
-
-/-- For `b` in the chart's base set, `chartJinv α b ∘ chartJ α b = id` on `TangentSpace I b`. -/
-lemma chartJinv_chartJ (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v : TangentSpace I b) :
-    chartJinv (I := I) (M := M) α b
-        (chartJ (I := I) (M := M) α b v) = v := by
-  unfold chartJ chartJinv
-  exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt hb v
-
-/-- Alias for `chartJinv_chartJ`: useful as a rewrite target when the
-type-synonym `TangentSpace I b = E` needs to be matched against `E` directly
-in downstream files. -/
-lemma chartJinv_chartJ_self (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v : E) :
-    chartJinv (I := I) (M := M) α b
-        (chartJ (I := I) (M := M) α b v) = v :=
-  chartJinv_chartJ (I := I) (M := M) α hb v
-
-/-! ### Gram matrix relationship
-
-The chart-α Gram matrix is the Gram matrix of the metric on the
-chart-α basis vectors `chartBasisVecFiber α i b = chartJinv α b ((chartModelBasis E) i)`.
-This is equivalent to evaluating `g.inner b` on the corresponding model-basis
-vectors after applying `chartJinv α b`. -/
-
-/-- The chart-α Gram matrix entry expressed via `chartJinv α b`. -/
-lemma chartGramMatrix_eq_innerJinv
-    (g : SmoothRiemannianMetric I M) (α b : M)
-    (i j : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix g α b i j =
-      g.inner b
-        (chartJinv (I := I) (M := M) α b ((chartModelBasis E) i))
-        (chartJinv (I := I) (M := M) α b ((chartModelBasis E) j)) := by
-  rw [chartGramMatrix_apply]
-  rw [chartJinv_basis (I := I) (M := M), chartJinv_basis (I := I) (M := M)]
-
-/-! ### Linearity of `curryLeft` in its argument
-
-The curryLeft slot map satisfies `T.curryLeft (∑ a c_a v_a) = ∑ a c_a (T.curryLeft v_a)`. -/
-
-private lemma curryLeft_sum {n : ℕ} {s : ℕ}
-    (T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
-    (c : Fin n → ℝ) (v : Fin n → E) :
-    T.curryLeft (∑ k : Fin n, c k • v k) =
-      ∑ k : Fin n, c k • T.curryLeft (v k) := by
-  rw [map_sum]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [map_smul]
-
-/-! ### Composition lemma for `compContinuousLinearMap` and `curryLeft`
-
-Lemma: `(T \circ_ML L).curryLeft w = (T.curryLeft (L w)) \circ_ML L`. -/
-
-private lemma compContinuousLinearMap_curryLeft {s : ℕ}
-    (T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
-    (L : E →L[ℝ] E) (w : E) :
-    (T.compContinuousLinearMap (fun _ : Fin (s + 1) => L)).curryLeft w =
-      (T.curryLeft (L w)).compContinuousLinearMap (fun _ : Fin s => L) := by
-  ext m
-  simp only [ContinuousMultilinearMap.curryLeft_apply,
-    ContinuousMultilinearMap.compContinuousLinearMap_apply]
-  -- LHS: T (fun i => L ((Fin.cons w m) i))
-  -- RHS: T (Fin.cons (L w) (fun i => L (m i)))
-  -- Show the two argument-tuples are equal by funext and Fin.cases.
-  have hcons_eq : (fun i : Fin (s + 1) => L ((Fin.cons w m : Fin (s + 1) → E) i)) =
-      (Fin.cons (L w) (fun i' : Fin s => L (m i')) : Fin (s + 1) → E) := by
-    funext i
-    refine Fin.cases ?_ ?_ i
-    · simp
-    · intro i'
+We use algebraic Hom here because the metric is fiberwise. Continuous Hom
+models are connected to this one by finite-dimensional continuity equivalences
+at the tensor-curry boundary. -/
+private def homFlatLinear [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W) :
+    (V →ₗ[Real] W) →ₗ[Real] Module.Dual Real (V →ₗ[Real] W) where
+  toFun A :=
+    { toFun := fun B =>
+        LinearMap.trace Real V
+          ((MetricFiberData.adjoint DV DW A).comp B)
+      map_add' := by
+        intro B C
+        simp [LinearMap.comp_add, map_add]
+      map_smul' := by
+        intro c B
+        simp [LinearMap.comp_smul, map_smul] }
+  map_add' := by
+    intro A B
+    ext C
+    have hdual :
+        (A + B).dualMap = A.dualMap + B.dualMap := by
+      ext φ x
       simp
-  rw [hcons_eq]
+    change
+      LinearMap.trace Real V
+          ((DV.flat.symm.toLinearMap.comp
+            (((A + B).dualMap).comp DW.flat.toLinearMap)).comp C) =
+        LinearMap.trace Real V
+          ((DV.flat.symm.toLinearMap.comp
+            (A.dualMap.comp DW.flat.toLinearMap)).comp C) +
+          LinearMap.trace Real V
+            ((DV.flat.symm.toLinearMap.comp
+              (B.dualMap.comp DW.flat.toLinearMap)).comp C)
+    rw [hdual]
+    simp [LinearMap.add_comp, LinearMap.comp_add, map_add]
+  map_smul' := by
+    intro c A
+    ext B
+    have hdual :
+        (c • A).dualMap = c • A.dualMap := by
+      ext φ x
+      simp
+    change
+      LinearMap.trace Real V
+          ((DV.flat.symm.toLinearMap.comp
+            (((c • A).dualMap).comp DW.flat.toLinearMap)).comp B) =
+        c *
+          LinearMap.trace Real V
+            ((DV.flat.symm.toLinearMap.comp
+              (A.dualMap.comp DW.flat.toLinearMap)).comp B)
+    rw [hdual]
+    simp [LinearMap.smul_comp, LinearMap.comp_smul, map_smul]
 
-/-! ### Bilinearity of `tensorInnerPointwise_0s` over a finite sum
+private theorem trace_adjoint_comp_eq_sum_inner
+    {V W : Type*}
+    [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
+    [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
+    (A B : V →ₗ[Real] W) :
+    LinearMap.trace Real V ((LinearMap.adjoint A).comp B) =
+      ∑ i : Fin (Module.finrank Real V),
+        Inner.inner Real (A (stdOrthonormalBasis Real V i))
+          (B (stdOrthonormalBasis Real V i)) := by
+  rw [LinearMap.trace_eq_matrix_trace Real
+    (stdOrthonormalBasis Real V).toBasis ((LinearMap.adjoint A).comp B)]
+  rw [Matrix.trace]
+  simp only [Matrix.diag_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [show
+      (LinearMap.toMatrix (stdOrthonormalBasis Real V).toBasis
+        (stdOrthonormalBasis Real V).toBasis
+        ((LinearMap.adjoint A).comp B)) i i =
+        (LinearMap.toMatrixOrthonormal (stdOrthonormalBasis Real V)
+          ((LinearMap.adjoint A).comp B)) i i from rfl]
+  rw [LinearMap.toMatrixOrthonormal_apply_apply]
+  exact LinearMap.adjoint_inner_right A
+    (stdOrthonormalBasis Real V i) (B (stdOrthonormalBasis Real V i))
 
-For sums `S = ∑ k c_k S_k`, `T = ∑ l d_l T_l`, the tensor inner product
-expands as `∑_{k,l} c_k d_l ⟨S_k, T_l⟩`. -/
+private theorem trace_adjoint_comp_nonneg
+    {V W : Type*}
+    [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
+    [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
+    (A : V →ₗ[Real] W) :
+    0 <= LinearMap.trace Real V ((LinearMap.adjoint A).comp A) := by
+  rw [trace_adjoint_comp_eq_sum_inner]
+  exact Finset.sum_nonneg fun _ _ => real_inner_self_nonneg
 
-private lemma tensorInnerPointwise_0s_sum_left
-    (g : SmoothRiemannianMetric I M) (b : M) (s : ℕ) {n : ℕ}
-    (c : Fin n → ℝ) (S : Fin n → Tensor0SModel s ℝ E)
-    (T : Tensor0SModel s ℝ E) :
-    tensorInnerPointwise_0s (I := I) (M := M) s g b
-        (∑ k : Fin n, c k • S k) T =
-      ∑ k : Fin n, c k *
-        tensorInnerPointwise_0s (I := I) (M := M) s g b (S k) T := by
+private theorem trace_adjoint_comp_eq_zero_iff
+    {V W : Type*}
+    [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
+    [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
+    (A : V →ₗ[Real] W) :
+    LinearMap.trace Real V ((LinearMap.adjoint A).comp A) = 0 ↔ A = 0 := by
+  constructor
+  · intro htrace
+    have hsum :
+        (∑ i : Fin (Module.finrank Real V),
+          Inner.inner Real (A (stdOrthonormalBasis Real V i))
+            (A (stdOrthonormalBasis Real V i))) = 0 := by
+      simpa [trace_adjoint_comp_eq_sum_inner] using htrace
+    have hzero :
+        forall i : Fin (Module.finrank Real V),
+          A (stdOrthonormalBasis Real V i) = 0 := by
+      intro i
+      have hi :
+          Inner.inner Real (A (stdOrthonormalBasis Real V i))
+            (A (stdOrthonormalBasis Real V i)) = 0 := by
+        have hs := (Finset.sum_eq_zero_iff_of_nonneg
+          (s := Finset.univ)
+          (f := fun i : Fin (Module.finrank Real V) =>
+            Inner.inner Real (A (stdOrthonormalBasis Real V i))
+              (A (stdOrthonormalBasis Real V i)))
+          (by intro _ _; exact real_inner_self_nonneg)).1 hsum
+        exact hs i (Finset.mem_univ i)
+      exact (inner_self_eq_zero).1 hi
+    apply (stdOrthonormalBasis Real V).toBasis.ext
+    intro i
+    simpa using hzero i
+  · intro hA
+    simp [hA]
+
+private theorem trace_adjoint_comp_comm
+    {V W : Type*}
+    [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
+    [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
+    (A B : V →ₗ[Real] W) :
+    LinearMap.trace Real V ((LinearMap.adjoint A).comp B) =
+      LinearMap.trace Real V ((LinearMap.adjoint B).comp A) := by
+  rw [trace_adjoint_comp_eq_sum_inner, trace_adjoint_comp_eq_sum_inner]
+  apply Finset.sum_congr rfl
+  intro i _
+  exact (real_inner_comm (A (stdOrthonormalBasis Real V i))
+    (B (stdOrthonormalBasis Real V i))).symm
+
+private theorem metric_adjoint_eq_adjoint
+    [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W) (A : V →ₗ[Real] W) :
+    letI : InnerProductSpace.Core Real V := DV.toCore
+    letI : NormedAddCommGroup V :=
+      @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
+    letI : InnerProductSpace Real V :=
+      @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
+    letI : InnerProductSpace.Core Real W := DW.toCore
+    letI : NormedAddCommGroup W :=
+      @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
+    letI : InnerProductSpace Real W :=
+      @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
+    MetricFiberData.adjoint DV DW A = LinearMap.adjoint A := by
+  letI : InnerProductSpace.Core Real V := DV.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
+  letI : InnerProductSpace.Core Real W := DW.toCore
+  letI : NormedAddCommGroup W :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
+  letI : InnerProductSpace Real W :=
+    @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
+  apply LinearMap.ext
+  intro y
+  apply ext_inner_right Real
+  intro x
+  change DV.inner (MetricFiberData.adjoint DV DW A y) x =
+    DV.inner (LinearMap.adjoint A y) x
+  rw [MetricFiberData.adjoint_inner]
+  rw [← DW.toCore_inner y (A x), ← DV.toCore_inner (LinearMap.adjoint A y) x]
+  exact (LinearMap.adjoint_inner_left A x y).symm
+
+private theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
+    [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
+    [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W)
+    (A B : V →ₗ[Real] W) :
+    homFlatLinear DV DW A B = homFlatLinear DV DW B A := by
+  letI : InnerProductSpace.Core Real V := DV.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
+  letI : InnerProductSpace.Core Real W := DW.toCore
+  letI : NormedAddCommGroup W :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
+  letI : InnerProductSpace Real W :=
+    @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
+  have hA := metric_adjoint_eq_adjoint DV DW A
+  have hB := metric_adjoint_eq_adjoint DV DW B
+  change LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp B) =
+    LinearMap.trace Real V ((MetricFiberData.adjoint DV DW B).comp A)
+  rw [hA, hB]
+  exact trace_adjoint_comp_comm A B
+
+private theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
+    [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
+    [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W)
+    (A : V →ₗ[Real] W) :
+    0 <= homFlatLinear DV DW A A := by
+  letI : InnerProductSpace.Core Real V := DV.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
+  letI : InnerProductSpace.Core Real W := DW.toCore
+  letI : NormedAddCommGroup W :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
+  letI : InnerProductSpace Real W :=
+    @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
+  have hA := metric_adjoint_eq_adjoint DV DW A
+  change 0 <= LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A)
+  rw [hA]
+  exact trace_adjoint_comp_nonneg A
+
+private theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
+    [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
+    [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W)
+    (A : V →ₗ[Real] W) :
+    homFlatLinear DV DW A A = 0 ↔ A = 0 := by
+  letI : InnerProductSpace.Core Real V := DV.toCore
+  letI : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
+  letI : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
+  letI : InnerProductSpace.Core Real W := DW.toCore
+  letI : NormedAddCommGroup W :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
+  letI : InnerProductSpace Real W :=
+    @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
+  have hA := metric_adjoint_eq_adjoint DV DW A
+  change LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A) = 0 ↔ A = 0
+  rw [hA]
+  exact trace_adjoint_comp_eq_zero_iff A
+
+private theorem hom_nonneg [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W) :
+    Function.Injective (homFlatLinear DV DW) ∧
+      (forall A B : V →ₗ[Real] W,
+        homFlatLinear DV DW A B = homFlatLinear DV DW B A) ∧
+      (forall A : V →ₗ[Real] W, 0 <= homFlatLinear DV DW A A) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro A B hAB
+    have hflat : homFlatLinear DV DW (A - B) = 0 := by
+      rw [map_sub, hAB, sub_self]
+    have hdiag : homFlatLinear DV DW (A - B) (A - B) = 0 := by
+      rw [hflat]
+      rfl
+    have hzero : A - B = 0 :=
+      (homFlatLinear_self_eq_zero_iff DV DW (A - B)).1 hdiag
+    exact sub_eq_zero.mp hzero
+  · exact homFlatLinear_comm DV DW
+  · exact homFlatLinear_nonneg DV DW
+
+def hom [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W) :
+    MetricFiberData (V →ₗ[Real] W) :=
+  MetricFiberData.ofFlat (homFlatLinear DV DW)
+    (hom_nonneg DV DW).1
+    (hom_nonneg DV DW).2.1
+    (hom_nonneg DV DW).2.2
+
+/-- The Hilbert-Schmidt metric on continuous Hom fibers, obtained by
+transporting the algebraic Hom metric across finite-dimensional automatic
+continuity. -/
+def homCLM [AddCommGroup V] [Module Real V] [TopologicalSpace V]
+    [IsTopologicalAddGroup V] [ContinuousSMul Real V] [T2Space V]
+    [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W] [TopologicalSpace W]
+    [IsTopologicalAddGroup W] [ContinuousSMul Real W] [FiniteDimensional Real W]
+    (DV : MetricFiberData V) (DW : MetricFiberData W) :
+    MetricFiberData (V →L[Real] W) :=
+  MetricFiberData.pullback
+    (LinearMap.toContinuousLinearMap (𝕜 := Real) (E := V) (F' := W)).symm
+    (MetricFiberData.hom DV DW)
+
+end MetricFiberData
+
+/-- The scalar metric on `(0,0)` tensor fibers. -/
+def scalarMetricData (_g : SmoothMetric I M) (x : M) :
+    MetricFiberData (Tensor0SSpace 0 I x) :=
+  MetricFiberData.pullback
+    ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x).toLinearEquiv.trans
+      (continuousMultilinearCurryFin0 Real (TangentSpace I x) Real).toLinearEquiv)
+    MetricFiberData.real
+
+/-- One recursive step for the metric on covariant tensor powers.
+
+Using `tensor0S_curry`, a `(0,s+1)` tensor is a continuous linear map
+`T_x M -> Tensor0SSpace s I x`. The metric is the Hilbert-Schmidt metric
+on that Hom fiber. -/
+def tensor0SMetricStep
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (D : MetricFiberData (Tensor0SSpace s I x)) :
+    MetricFiberData (Tensor0SSpace (s + 1) I x) :=
+  have hTopAdd0 : IsTopologicalAddGroup (Tensor0SSpace s I x) :=
+    Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
+      (𝕜 := Real) (F := E) (E := TangentSpace I) s x
+  letI : IsTopologicalAddGroup (Tensor0SSpace s I x) := hTopAdd0
+  have hContAdd0 : ContinuousAdd (Tensor0SSpace s I x) :=
+    IsTopologicalAddGroup.toContinuousAdd
+  letI : ContinuousAdd (Tensor0SSpace s I x) := hContAdd0
+  have hContSMul0 : ContinuousSMul Real (Tensor0SSpace s I x) :=
+    Bundle.continuousMultilinearMap.instContinuousSMul
+      (𝕜 := Real) (F := E) (E := TangentSpace I) s x
+  letI : ContinuousSMul Real (Tensor0SSpace s I x) := hContSMul0
+  letI : ContinuousConstSMul Real (Tensor0SSpace s I x) := inferInstance
+  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.topologicalSpace
+      Real Real inferInstance inferInstance (RingHom.id Real)
+      (TangentSpace I x) (Tensor0SSpace s I x)
+      inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance hTopAdd0
+  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.addCommGroup
+      Real inferInstance Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance
+      inferInstance inferInstance (RingHom.id Real) hTopAdd0
+  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.module
+      Real Real Real inferInstance inferInstance inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance
+      inferInstance inferInstance inferInstance inferInstance
+      (RingHom.id Real) hContAdd0
+  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    (@LinearMap.toContinuousLinearMap
+      Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance inferInstance hTopAdd0 hContSMul0
+      inferInstance inferInstance inferInstance).finiteDimensional
+  MetricFiberData.pullback
+    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x).toLinearEquiv
+    (@MetricFiberData.homCLM
+      (TangentSpace I x) (Tensor0SSpace s I x)
+      inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance inferInstance hTopAdd0 hContSMul0 inferInstance
+      (tangentMetricData (I := I) g x).metric D)
+
+/-- The Riemannian metric on covariant `s`-tensor fibers, constructed
+recursively from `g`. -/
+def tensor0SMetricData (g : SmoothMetric I M) (x : M) :
+    (s : Nat) -> MetricFiberData (Tensor0SSpace s I x)
+  | 0 => scalarMetricData (I := I) g x
+  | 1 => cotangentMetricData (I := I) g x
+  | s + 2 =>
+      tensor0SMetricStep (I := I) g x (s + 1) (tensor0SMetricData g x (s + 1))
+
+/-- Metric-induced inner product on covariant tensor fibers. -/
+def inner0S
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A B : Tensor0SSpace s I x) : Real :=
+  (tensor0SMetricData (I := I) g x s).inner A B
+
+/-- Metric flat map on covariant tensor fibers. -/
+def flat0S
+    (g : SmoothMetric I M) (x : M) (s : Nat) :
+    Tensor0SSpace s I x ≃ₗ[Real] Module.Dual Real (Tensor0SSpace s I x) :=
+  (tensor0SMetricData (I := I) g x s).flat
+
+/-- Squared norm of a covariant tensor. -/
+def normSq0S
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) : Real :=
+  inner0S (I := I) g x s A A
+
+@[simp] theorem normSq0S_eq_inner
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) :
+    normSq0S (I := I) g x s A = inner0S (I := I) g x s A A := by
+  rfl
+
+/-- The `(0,1)` tensor metric agrees with the cotangent metric. -/
+theorem inner0S_one_eq_cotangent
+    (g : SmoothMetric I M) (x : M)
+    (α β : Tensor0SSpace 1 I x) :
+    inner0S (I := I) g x 1 α β =
+      cotangentInner (I := I) g x α β := by
+  rfl
+
+/-- Component of a covariant tensor in a pointwise frame. -/
+def tensor0SComponent {Idx : Type*} {s : Nat} {x : M}
+    (A : Tensor0SSpace s I x)
+    (frame : Idx -> TangentSpace I x)
+    (slots : Fin s -> Idx) : Real :=
+  A (fun a => frame (slots a))
+
+@[simp] theorem tensor0SComponent_apply {Idx : Type*} {s : Nat} {x : M}
+    (A : Tensor0SSpace s I x)
+    (frame : Idx -> TangentSpace I x)
+    (slots : Fin s -> Idx) :
+    tensor0SComponent (I := I) A frame slots =
+      A (fun a => frame (slots a)) := by
+  rfl
+
+/-- Coordinate contraction for the covariant tensor metric. -/
+def coordInner0S
+    {Idx : Type*} [Fintype Idx] {x : M} (s : Nat)
+    (gInv : Idx -> Idx -> Real)
+    (A B : Tensor0SSpace s I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) : Real :=
+  ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
+    (∏ a : Fin s, gInv (I0 a) (J0 a)) *
+      tensor0SComponent (I := I) A (fun i => basis i) I0 *
+        tensor0SComponent (I := I) B (fun i => basis i) J0
+
+private theorem sum_fin_two_fun {Idx : Type*} [Fintype Idx]
+    {α : Type*} [AddCommMonoid α]
+    (F : (Fin 2 -> Idx) -> α) :
+    (∑ I0 : Fin 2 -> Idx, F I0) =
+      ∑ i : Idx, ∑ j : Idx, F (fun a : Fin 2 => if a = 0 then i else j) := by
   classical
-  induction n with
-  | zero =>
-      simp only [Finset.univ_eq_empty, Finset.sum_empty]
-      rw [show (0 : Tensor0SModel s ℝ E) =
-        (0 : ℝ) • (0 : Tensor0SModel s ℝ E) from
-        (zero_smul _ _).symm]
-      rw [tensorInnerPointwise_0s_smul_left, zero_mul]
-  | succ n ih =>
-      -- Specialize ih to (fun k => c k.succ) (fun k => S k.succ).
-      have ih_app := ih (fun k : Fin n => c k.succ) (fun k : Fin n => S k.succ)
-      rw [Fin.sum_univ_succ, Fin.sum_univ_succ]
-      rw [tensorInnerPointwise_0s_add_left, tensorInnerPointwise_0s_smul_left]
-      rw [ih_app]
+  rw [Fintype.sum_equiv (finTwoArrowEquiv Idx) F
+    (fun p : Idx × Idx => F (fun a : Fin 2 => if a = 0 then p.1 else p.2))]
+  · rw [Fintype.sum_prod_type]
+  · intro I0
+    congr
+    funext a
+    fin_cases a <;> simp [finTwoArrowEquiv]
 
-private lemma tensorInnerPointwise_0s_sum_right
-    (g : SmoothRiemannianMetric I M) (b : M) (s : ℕ) {n : ℕ}
-    (S : Tensor0SModel s ℝ E)
-    (d : Fin n → ℝ) (T : Fin n → Tensor0SModel s ℝ E) :
-    tensorInnerPointwise_0s (I := I) (M := M) s g b S
-        (∑ l : Fin n, d l • T l) =
-      ∑ l : Fin n, d l *
-        tensorInnerPointwise_0s (I := I) (M := M) s g b S (T l) := by
+private theorem sum_fin_succ_fun {Idx : Type*} [Fintype Idx]
+    {α : Type*} [AddCommMonoid α] (s : Nat)
+    (F : (Fin (s + 1) -> Idx) -> α) :
+    (∑ I0 : Fin (s + 1) -> Idx, F I0) =
+      ∑ i : Idx, ∑ tail : Fin s -> Idx, F (Fin.cons i tail) := by
   classical
-  induction n with
-  | zero =>
-      simp only [Finset.univ_eq_empty, Finset.sum_empty]
-      rw [show (0 : Tensor0SModel s ℝ E) =
-        (0 : ℝ) • (0 : Tensor0SModel s ℝ E) from
-        (zero_smul _ _).symm]
-      rw [tensorInnerPointwise_0s_smul_right, zero_mul]
-  | succ n ih =>
-      have ih_app := ih (fun l : Fin n => d l.succ) (fun l : Fin n => T l.succ)
-      rw [Fin.sum_univ_succ, Fin.sum_univ_succ]
-      rw [tensorInnerPointwise_0s_add_right, tensorInnerPointwise_0s_smul_right]
-      rw [ih_app]
+  rw [Fintype.sum_equiv
+    (Fin.consEquiv (fun _ : Fin (s + 1) => Idx)).symm
+    F (fun p : Idx × (Fin s -> Idx) => F (Fin.cons p.1 p.2))]
+  · rw [Fintype.sum_prod_type]
+  · intro I0
+    congr 1
+    exact (Fin.cons_self_tail I0).symm
 
-/-! ### Helper for the bridge identity: a generalised inner-product formula
+private theorem sum_fin_one_fun {Idx : Type*} [Fintype Idx]
+    {α : Type*} [AddCommMonoid α]
+    (F : (Fin 1 -> Idx) -> α) :
+    (∑ I0 : Fin 1 -> Idx, F I0) =
+      ∑ i : Idx, F (fun _ : Fin 1 => i) := by
+  classical
+  rw [Fintype.sum_equiv (Equiv.funUnique (Fin 1) Idx)
+    F (fun i : Idx => F (fun _ : Fin 1 => i))]
+  intro I0
+  congr 1
+  funext a
+  simpa [Equiv.funUnique] using congrArg I0 (Subsingleton.elim a (0 : Fin 1))
 
-To avoid the matrix-level basis-change argument, we define a generalised
-inner-product formula `tensorInnerOnFrame s b f Ginv T S`, parametric in
-the basis `f` and the matrix `Ginv`. This is the same recursion as
-`tensorInnerPointwise_0s` and `chartTensorInnerPointwise_0s` with the basis
-`f` and matrix `Ginv` factored out. We prove that:
-
-* `tensorInnerOnFrame s b (chartModelBasis E) (gramMatrixAt g b)⁻¹ T S =
-   tensorInnerPointwise_0s s g b T S`.
-* `tensorInnerOnFrame s b (chartBasisVecFiber α · b) (chartGramMatrix g α b)⁻¹ T S =
-   tensorInnerPointwise_0s s g b T S` (basis-invariance for the same metric).
-* The chart-α formula equals `chartTensorInnerPointwise_0s` precomposed with
-   the trivialization. -/
-
-/-- The generalised inner-product formula on a basis `f` with matrix `Ginv`. -/
-private noncomputable def tensorInnerOnFrame :
-    (s : ℕ) → (Fin (Module.finrank ℝ E) → E) →
-      Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ →
-      Tensor0SModel s ℝ E →
-      Tensor0SModel s ℝ E → ℝ
-  | 0, _, _, T, S => T (fun i => Fin.elim0 i) * S (fun i => Fin.elim0 i)
-  | s + 1, f, Ginv, T, S =>
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        Ginv i j *
-          tensorInnerOnFrame s f Ginv (T.curryLeft (f i)) (S.curryLeft (f j))
-
-private lemma tensorInnerOnFrame_zero
-    (f : Fin (Module.finrank ℝ E) → E)
-    (Ginv : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ)
-    (T S : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ) :
-    tensorInnerOnFrame (E := E) 0 f Ginv T S =
-      T (fun i => Fin.elim0 i) * S (fun i => Fin.elim0 i) := rfl
-
-private lemma tensorInnerOnFrame_succ (s : ℕ)
-    (f : Fin (Module.finrank ℝ E) → E)
-    (Ginv : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ)
-    (T S : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    tensorInnerOnFrame (E := E) (s + 1) f Ginv T S =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        Ginv i j *
-          tensorInnerOnFrame (E := E) s f Ginv (T.curryLeft (f i)) (S.curryLeft (f j)) := rfl
-
-/-- `tensorInnerPointwise_0s s g b T S` agrees with `tensorInnerOnFrame s e G⁻¹` on
-the model basis `e = chartModelBasis E` and `G = gramMatrixAt g b`. -/
-private lemma tensorInnerPointwise_0s_eq_tensorInnerOnFrame
-    (g : SmoothRiemannianMetric I M) (b : M) :
-    ∀ (s : ℕ) (T S : Tensor0SModel s ℝ E),
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T S =
-        tensorInnerOnFrame (E := E) s
-          (fun i : Fin (Module.finrank ℝ E) => (chartModelBasis E) i)
-          (gramMatrixAt (I := I) (M := M) g b)⁻¹ T S := by
-  intro s
-  induction s with
-  | zero => intro T S; rfl
-  | succ s ih =>
-      intro T S
-      rw [tensorInnerPointwise_0s_succ, tensorInnerOnFrame_succ]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [ih (T.curryLeft ((chartModelBasis E) i))
-          (S.curryLeft ((chartModelBasis E) j))]
-
-/-- `chartTensorInnerPointwise_0s g α s b T S` agrees with `tensorInnerOnFrame s e G⁻¹`
-on the model basis `e = chartModelBasis E` and `G = chartGramMatrix g α b`. -/
-private lemma chartTensorInnerPointwise_0s_eq_tensorInnerOnFrame
-    (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
-    ∀ (s : ℕ) (T S : Tensor0SModel s ℝ E),
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b T S =
-        tensorInnerOnFrame (E := E) s
-          (fun i : Fin (Module.finrank ℝ E) => (chartModelBasis E) i)
-          (chartGramMatrix g α b)⁻¹ T S := by
-  intro s
-  induction s with
-  | zero => intro T S; rfl
-  | succ s ih =>
-      intro T S
-      rw [chartTensorInnerPointwise_0s_succ, tensorInnerOnFrame_succ]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [ih (T.curryLeft ((chartModelBasis E) i))
-          (S.curryLeft ((chartModelBasis E) j))]
-
-/-! ### Basis-change for `tensorInnerOnFrame`
-
-The key fact: changing both the basis `f → h` and the matrix
-`Ginv → Hinv` consistently with the gram-matrix transformation
-preserves `tensorInnerOnFrame`. We don't formulate this in full
-generality; instead, we prove the specific change-of-basis result
-needed for the bridge identity. -/
-
-/-! ### Frame-change strategy
-
-For a basis `f`, an alternative basis `h_i = ∑_a A_{ai} f_a` expressed via a matrix `A`,
-and the corresponding gram matrices `G_f` (on `f`), `G_h` (on `h`) satisfying
-`G_h = Aᵀ G_f A`, we expect `tensorInnerOnFrame s h G_h⁻¹ T S = tensorInnerOnFrame s f G_f⁻¹ T S`.
-
-We work in the special case where `f = chartModelBasis E`, `h_i = chartJinv α b (e_i)`,
-`A = matrix of chartJinv`. Then `G_f = gramMatrixAt g b`, `G_h = chartGramMatrix g α b`.
-
-We don't prove the abstract change-of-basis at the matrix level. Instead, we prove
-the bridge identity DIRECTLY by induction on `s` using the recursion structure. -/
-
-/-! ### The bridge identity, by direct induction
-
-The bridge identity:
-`tensorInnerPointwise_0s s g b T S = chartTensorInnerPointwise_0s g α s b T_α S_α`
-where `T_α = T.compContinuousLinearMap (fun _ => chartJinv α b)`, on `b` in the chart
-base set.
-
-We prove this directly by induction on `s` using the basis-change argument:
-the chart-α basis `chartBasisVecFiber α i b = chartJinv α b ((chartModelBasis E) i)`,
-and the chart-α gram matrix `chartGramMatrix g α b` is the gram matrix of `g.inner b`
-on this basis.
-
-KEY OBSERVATION: An equivalent formulation is to prove the bridge in the form:
-`tensorInnerPointwise_0s s g b T S = chartTensorInnerOnChartBasis s g α b T S`
-where `chartTensorInnerOnChartBasis` uses the chart-α basis `chartBasisVecFiber` directly:
-this is the "true basis-change" form. Then we can connect to
-`chartTensorInnerPointwise_0s` (which uses the model basis) via the
-`compContinuousLinearMap` substitution.
-
-We follow this two-step path. -/
-
-/-- An auxiliary inner product on the chart-α basis: same recursion as
-`chartTensorInnerPointwise_0s` but using `chartBasisVecFiber α i b` (the chart-α basis)
-instead of the fixed model basis. -/
-private noncomputable def chartTensorInnerOnChartBasis :
-    (s : ℕ) → SmoothRiemannianMetric I M → (α : M) → (b : M) →
-      Tensor0SModel s ℝ E →
-      Tensor0SModel s ℝ E → ℝ
-  | 0, _g, _α, _b, T, S =>
-      T (fun i => Fin.elim0 i) * S (fun i => Fin.elim0 i)
-  | s + 1, g, α, b, T, S =>
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerOnChartBasis s g α b
-            (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-            (S.curryLeft (chartBasisVecFiber (I := I) α j b))
-
-private lemma chartTensorInnerOnChartBasis_zero
-    (g : SmoothRiemannianMetric I M) (α b : M)
-    (T S : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ) :
-    chartTensorInnerOnChartBasis (I := I) (M := M) 0 g α b T S =
-      T (fun i => Fin.elim0 i) * S (fun i => Fin.elim0 i) := rfl
-
-private lemma chartTensorInnerOnChartBasis_succ
-    (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
-    (T S : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    chartTensorInnerOnChartBasis (I := I) (M := M) (s + 1) g α b T S =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerOnChartBasis (I := I) (M := M) s g α b
-            (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-            (S.curryLeft (chartBasisVecFiber (I := I) α j b)) := rfl
-
-/-! ### Equality of the two chart-trivialised forms
-
-We show `chartTensorInnerOnChartBasis s g α b T S =
-   chartTensorInnerPointwise_0s g α s b T_α S_α`
-where `T_α = T \circ_ML chartJinv α b`.
-
-The proof uses the "compose-and-curry" identity
-`(T \circ L).curryLeft (L w) = (T.curryLeft w) \circ L` slot-by-slot. -/
-
-/-- The "compose-and-curry" relation, packaged for `chartJinv α b`:
-given an arity-(s+1) tensor `T`, currying `T` at `chartJinv α b ((chartModelBasis E) i)`
-in the slot, after composing with `chartJinv α b` in the remaining slots, equals the
-result of currying first then composing with `chartJinv α b` in remaining slots. -/
-private lemma chartJinv_compose_curry_chartBasis {s : ℕ} (α : M) (b : M)
-    (T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
-    (i : Fin (Module.finrank ℝ E)) :
-    (T.compContinuousLinearMap (fun _ : Fin (s + 1) =>
-        chartJinv (I := I) (M := M) α b)).curryLeft ((chartModelBasis E) i) =
-      (T.curryLeft (chartBasisVecFiber (I := I) α i b)).compContinuousLinearMap
-        (fun _ : Fin s => chartJinv (I := I) (M := M) α b) := by
-  rw [compContinuousLinearMap_curryLeft]
-  rw [chartJinv_basis (I := I) (M := M)]
-
-/-- Bridge B: `chartTensorInnerOnChartBasis` (using chart-α basis)
-equals `chartTensorInnerPointwise_0s` precomposed with `chartJinv α b`. -/
-private theorem chartTensorInnerOnChartBasis_eq_chartTensorInnerPointwise_compose
-    (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
-    ∀ (s : ℕ) (T S : Tensor0SModel s ℝ E),
-      chartTensorInnerOnChartBasis (I := I) (M := M) s g α b T S =
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-          (T.compContinuousLinearMap (fun _ : Fin s =>
-            chartJinv (I := I) (M := M) α b))
-          (S.compContinuousLinearMap (fun _ : Fin s =>
-            chartJinv (I := I) (M := M) α b)) := by
-  intro s
-  induction s with
-  | zero =>
-      intro T S
-      rw [chartTensorInnerOnChartBasis_zero, chartTensorInnerPointwise_0s_zero]
-      -- Both sides equal T(elim0) * S(elim0) since `compContinuousLinearMap` doesn't affect
-      -- the result on the empty tuple `elim0`.
-      simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-      congr 1 <;>
-        · congr 1
-          funext i
-          exact i.elim0
-  | succ s ih =>
-      intro T S
-      rw [chartTensorInnerOnChartBasis_succ, chartTensorInnerPointwise_0s_succ]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [chartJinv_compose_curry_chartBasis (I := I) (M := M) α b T i,
-          chartJinv_compose_curry_chartBasis (I := I) (M := M) α b S j]
-      rw [ih (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-          (S.curryLeft (chartBasisVecFiber (I := I) α j b))]
-
-/-! ### Bridge A: `tensorInnerPointwise_0s s g b T S = chartTensorInnerOnChartBasis s g α b T S`
-
-This is the basis-invariance fact. The proof uses the matrix identity
-`(chartGramMatrix)⁻¹ = (chartJinvMatrix) (gramMatrixAt)⁻¹ (chartJinvMatrix)ᵀ` (applied to `b` on chart base set), where `chartJinvMatrix` is the matrix of `chartJinv α b` in
-the model basis.
-
-We approach this in stages, building up the matrix identities. -/
-
-/-- The matrix of `chartJinv α b` in the model basis: `(JinvMat α b)_{ai}`
-is the `a`-th coordinate of `chartJinv α b ((chartModelBasis E) i)` in the basis. -/
-private noncomputable def chartJinvMatrix (α : M) (b : M) :
-    Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun a i =>
-    ((chartModelBasis E).repr
-      (chartJinv (I := I) (M := M) α b ((chartModelBasis E) i))) a
-
-@[simp] private lemma chartJinvMatrix_apply (α : M) (b : M)
-    (a i : Fin (Module.finrank ℝ E)) :
-    chartJinvMatrix (I := I) (M := M) α b a i =
-      ((chartModelBasis E).repr
-        (chartJinv (I := I) (M := M) α b ((chartModelBasis E) i))) a := rfl
-
-/-- The chart-α basis vector `chartBasisVecFiber α i b` decomposes via `chartJinvMatrix`
-in the model basis. -/
-private lemma chartBasisVecFiber_eq_sum (α : M) (b : M)
-    (i : Fin (Module.finrank ℝ E)) :
-    chartBasisVecFiber (I := I) α i b =
-      ∑ a : Fin (Module.finrank ℝ E),
-        chartJinvMatrix (I := I) (M := M) α b a i • (chartModelBasis E) a := by
-  rw [← chartJinv_basis (I := I) (M := M) α b i]
-  exact ((chartModelBasis E).sum_repr
-    (chartJinv (I := I) (M := M) α b ((chartModelBasis E) i))).symm
-
-/-- The matrix of `chartJ α b` in the model basis. -/
-private noncomputable def chartJMatrix (α : M) (b : M) :
-    Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun a i =>
-    ((chartModelBasis E).repr
-      (chartJ (I := I) (M := M) α b ((chartModelBasis E) i))) a
-
-@[simp] private lemma chartJMatrix_apply (α : M) (b : M)
-    (a i : Fin (Module.finrank ℝ E)) :
-    chartJMatrix (I := I) (M := M) α b a i =
-      ((chartModelBasis E).repr
-        (chartJ (I := I) (M := M) α b ((chartModelBasis E) i))) a := rfl
-
-/-- For any `v : E`, `(chartJ α b v)_a = ∑_k (chartJMatrix)_{a,k} (v decomposed in basis)_k`. -/
-private lemma chartJ_apply_repr (α : M) (b : M) (v : E)
-    (a : Fin (Module.finrank ℝ E)) :
-    ((chartModelBasis E).repr (chartJ (I := I) (M := M) α b v)) a =
-      ∑ k : Fin (Module.finrank ℝ E),
-        chartJMatrix (I := I) (M := M) α b a k *
-          ((chartModelBasis E).repr v) k := by
-  -- v = ∑ k v_k e_k ⟹ chartJ v = ∑ k v_k (chartJ e_k) ⟹ repr_a (chartJ v) = ∑ k v_k * (chartJMatrix)_{a,k}
-  have hv : v = ∑ k : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr v) k • (chartModelBasis E) k :=
-    ((chartModelBasis E).sum_repr v).symm
-  conv_lhs => rw [hv]
-  rw [map_sum, map_sum]
-  rw [Finsupp.coe_finset_sum, Finset.sum_apply]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [map_smul, map_smul]
-  rw [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, chartJMatrix_apply]
-  ring
-
-/-- Similarly, `(chartJinv α b v)_a = ∑_k (chartJinvMatrix)_{a,k} (v decomposed)_k`. -/
-private lemma chartJinv_apply_repr (α : M) (b : M) (v : E)
-    (a : Fin (Module.finrank ℝ E)) :
-    ((chartModelBasis E).repr (chartJinv (I := I) (M := M) α b v)) a =
-      ∑ k : Fin (Module.finrank ℝ E),
-        chartJinvMatrix (I := I) (M := M) α b a k *
-          ((chartModelBasis E).repr v) k := by
-  have hv : v = ∑ k : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr v) k • (chartModelBasis E) k :=
-    ((chartModelBasis E).sum_repr v).symm
-  conv_lhs => rw [hv]
-  rw [map_sum, map_sum]
-  rw [Finsupp.coe_finset_sum, Finset.sum_apply]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [map_smul, map_smul]
-  rw [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, chartJinvMatrix_apply]
-  ring
-
-/-- The Gram matrix relationship at the matrix level:
-`chartGramMatrix g α b = (chartJinvMatrix α b)ᵀ * gramMatrixAt g b * chartJinvMatrix α b`. -/
-private lemma chartGramMatrix_eq_matrix_form
-    (g : SmoothRiemannianMetric I M) (α b : M) :
-    chartGramMatrix g α b =
-      (chartJinvMatrix (I := I) (M := M) α b)ᵀ *
-        gramMatrixAt (I := I) (M := M) g b *
-        chartJinvMatrix (I := I) (M := M) α b := by
-  ext i j
-  -- LHS = chartGramMatrix_{i,j} = g.inner b (chartJinv e_i) (chartJinv e_j) (chartGramMatrix_eq_innerJinv).
-  rw [chartGramMatrix_eq_innerJinv]
-  -- Expand chartJinv e_i and chartJinv e_j as ∑ J_{a,i} e_a, ∑ J_{b',j} e_{b'}.
-  have hi : chartJinv (I := I) (M := M) α b ((chartModelBasis E) i) =
-      ∑ a, chartJinvMatrix (I := I) (M := M) α b a i • (chartModelBasis E) a := by
-    rw [chartJinv_basis (I := I) (M := M) α b i]
-    exact chartBasisVecFiber_eq_sum (I := I) (M := M) α b i
-  have hj : chartJinv (I := I) (M := M) α b ((chartModelBasis E) j) =
-      ∑ b', chartJinvMatrix (I := I) (M := M) α b b' j • (chartModelBasis E) b' := by
-    rw [chartJinv_basis (I := I) (M := M) α b j]
-    exact chartBasisVecFiber_eq_sum (I := I) (M := M) α b j
-  rw [hi, hj]
-  -- Bilinear expansion of g.inner b on the sums.
-  -- LHS: g.inner b (∑ a J_{ai} • e_a) (∑ b' J_{b'j} • e_{b'}).
-  -- We compute: g.inner b X = ∑_a J_{ai} g.inner b e_a (after smul/sum).
-  --             g.inner b (∑a J_{ai} • e_a) (∑b' J_{b'j} • e_{b'})
-  --           = ∑a ∑b' J_{ai} J_{b'j} g.inner b e_a e_{b'}.
-  -- RHS: (J^T G J)_{i,j} = ∑a ∑b' J_{ai} G_{a,b'} J_{b'j} = same sum (since G_{a,b'} = g.inner b e_a e_{b'}).
-  -- We prove LHS = RHS by showing both equal the same double sum.
-  have hLHS_eq :
-      (g.inner b (∑ a : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b a i • (chartModelBasis E) a))
-        (∑ b' : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b b' j • (chartModelBasis E) b') =
-      ∑ a : Fin (Module.finrank ℝ E),
-        ∑ b' : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b a i *
-            chartJinvMatrix (I := I) (M := M) α b b' j *
-            g.inner b ((chartModelBasis E) a) ((chartModelBasis E) b') := by
-    -- Linearity of g.inner b on the first arg (sum + smul).
-    have hL : g.inner b (∑ a : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b a i • (chartModelBasis E) a) =
-        ∑ a : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b a i •
-            g.inner b ((chartModelBasis E) a) := by
+private theorem basis_repr_eq_sum_inv_inner
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (Z : TangentSpace I x) (i : Idx) :
+    basis.repr Z i =
+      ∑ j : Idx, gInv i j * g.inner x Z (basis j) := by
+  classical
+  let Z' : TangentSpace I x :=
+    ∑ i : Idx, (∑ j : Idx, gInv i j * g.inner x Z (basis j)) • basis i
+  have hZ : Z = Z' := by
+    apply eq_of_inner_basis_eq (I := I) g x basis
+    intro l
+    calc
+      g.inner x Z (basis l)
+          = ∑ j : Idx, (if l = j then 1 else 0) *
+              g.inner x Z (basis j) := by
+            simp
+      _ = ∑ j : Idx,
+            (∑ i : Idx, g.inner x (basis l) (basis i) * gInv i j) *
+              g.inner x Z (basis j) := by
+            apply Finset.sum_congr rfl
+            intro j _
+            rw [(hinv l j).2]
+      _ = ∑ i : Idx,
+            (∑ j : Idx, gInv i j * g.inner x Z (basis j)) *
+              g.inner x (basis i) (basis l) := by
+            calc
+              (∑ j : Idx,
+                  (∑ i : Idx, g.inner x (basis l) (basis i) * gInv i j) *
+                    g.inner x Z (basis j))
+                  = ∑ j : Idx, ∑ i : Idx,
+                      (g.inner x (basis l) (basis i) * gInv i j) *
+                        g.inner x Z (basis j) := by
+                      apply Finset.sum_congr rfl
+                      intro j _
+                      rw [Finset.sum_mul]
+              _ = ∑ i : Idx, ∑ j : Idx,
+                      (g.inner x (basis l) (basis i) * gInv i j) *
+                        g.inner x Z (basis j) := by
+                      rw [Finset.sum_comm]
+              _ = ∑ i : Idx,
+                    (∑ j : Idx, gInv i j * g.inner x Z (basis j)) *
+                      g.inner x (basis i) (basis l) := by
+                      apply Finset.sum_congr rfl
+                      intro i _
+                      rw [Finset.sum_mul]
+                      apply Finset.sum_congr rfl
+                      intro j _
+                      rw [g.symm x (basis l) (basis i)]
+                      ring
+      _ = g.inner x Z' (basis l) := by
+            simp [Z', map_sum]
+  calc
+    basis.repr Z i = basis.repr Z' i := by rw [hZ]
+    _ = ∑ j : Idx, gInv i j * g.inner x Z (basis j) := by
+      change
+        basis.repr
+            (∑ i : Idx, (∑ j : Idx, gInv i j * g.inner x Z (basis j)) • basis i) i =
+          ∑ j : Idx, gInv i j * g.inner x Z (basis j)
       rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro a _
-      exact ContinuousLinearMap.map_smul (g.inner b) _ _
-    rw [hL, ContinuousLinearMap.sum_apply]
-    refine Finset.sum_congr rfl ?_
-    intro a _
-    rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
-    -- (J_{ai}) * (g.inner b e_a) (∑ b' J_{b'j} • e_{b'}) = ∑ b' J_{ai} J_{b'j} (g.inner b e_a e_{b'}).
-    rw [show (g.inner b ((chartModelBasis E) a))
-        (∑ b' : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b b' j • (chartModelBasis E) b') =
-        ∑ b' : Fin (Module.finrank ℝ E),
-          chartJinvMatrix (I := I) (M := M) α b b' j *
-            g.inner b ((chartModelBasis E) a) ((chartModelBasis E) b') from ?_]
-    · rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro b' _
-      ring
-    · rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro b' _
-      rw [show ((g.inner b) ((chartModelBasis E) a))
-          (chartJinvMatrix (I := I) (M := M) α b b' j • (chartModelBasis E) b') =
-          chartJinvMatrix (I := I) (M := M) α b b' j •
-            ((g.inner b) ((chartModelBasis E) a)) ((chartModelBasis E) b') from ?_]
-      · rw [smul_eq_mul]
-      · exact ContinuousLinearMap.map_smul ((g.inner b) ((chartModelBasis E) a)) _ _
-  refine hLHS_eq.trans ?_
-  -- RHS: (J^T G J)_{i,j} = ∑ b' (J^T G)_{i,b'} J_{b',j}, and (J^T G)_{i,b'} = ∑ a J_{a,i} G_{a,b'}.
-  rw [Matrix.mul_apply]
-  rw [show ∑ b' : Fin (Module.finrank ℝ E),
-      ((chartJinvMatrix (I := I) (M := M) α b)ᵀ *
-          gramMatrixAt (I := I) (M := M) g b) i b' *
-        chartJinvMatrix (I := I) (M := M) α b b' j =
-        ∑ b' : Fin (Module.finrank ℝ E),
-          (∑ a : Fin (Module.finrank ℝ E),
-            chartJinvMatrix (I := I) (M := M) α b a i *
-              gramMatrixAt (I := I) (M := M) g b a b') *
-            chartJinvMatrix (I := I) (M := M) α b b' j from ?_]
-  · -- ∑ b' (∑ a J_{a,i} G_{a,b'}) * J_{b',j} = ∑ a ∑ b' J_{a,i} G_{a,b'} J_{b',j}.
-    simp only [Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl ?_
-    intro a _
-    refine Finset.sum_congr rfl ?_
-    intro b' _
-    rw [gramMatrixAt_apply]
-    ring
-  · refine Finset.sum_congr rfl ?_
-    intro b' _
-    rw [Matrix.mul_apply]
-    -- (J^T)_{i,a} = J_{a,i} via Matrix.transpose_apply.
-    refine congr_arg (· * chartJinvMatrix (I := I) (M := M) α b b' j) ?_
-    refine Finset.sum_congr rfl ?_
-    intro a _
-    rw [Matrix.transpose_apply]
+      rw [show
+          (∑ x_1 : Idx,
+              basis.repr
+                ((∑ j : Idx, gInv x_1 j * g.inner x Z (basis j)) • basis x_1)) i =
+          ∑ x_1 : Idx,
+              (basis.repr
+                ((∑ j : Idx, gInv x_1 j * g.inner x Z (basis j)) • basis x_1)) i by
+        simp]
+      simp only [map_smul]
+      rw [Finset.sum_eq_single i]
+      · simp
+      · intro b _ hb
+        simp [hb]
+      · intro hi
+        simp at hi
 
-/-- `chartJinvMatrix α b` is invertible on the chart base set, with inverse `chartJMatrix α b`. -/
-private lemma chartJinvMatrix_mul_chartJMatrix (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartJinvMatrix (I := I) (M := M) α b *
-        chartJMatrix (I := I) (M := M) α b = 1 := by
-  ext a c
-  rw [Matrix.mul_apply]
-  -- JMat_{k,c} = repr_k (chartJ e_c) definitionally; sum = repr_a (chartJinv (chartJ e_c)).
-  have hsum_eq : ∑ k, chartJinvMatrix (I := I) (M := M) α b a k *
-      chartJMatrix (I := I) (M := M) α b k c =
-    ((chartModelBasis E).repr (chartJinv (I := I) (M := M) α b
-      (chartJ (I := I) (M := M) α b ((chartModelBasis E) c)))) a := by
-    rw [chartJinv_apply_repr (I := I) (M := M) α b
-      (chartJ (I := I) (M := M) α b ((chartModelBasis E) c)) a]
-    rfl
-  rw [hsum_eq]
-  rw [chartJinv_chartJ (I := I) (M := M) α hb]
-  rw [Module.Basis.repr_self]
-  rw [Finsupp.single_apply]
-  rw [Matrix.one_apply]
-  by_cases hac : c = a
-  · rw [if_pos hac]
-    rw [if_pos hac.symm]
-  · rw [if_neg hac]
-    have : ¬ a = c := fun h => hac h.symm
-    rw [if_neg this]
+/-- Coordinate trace formula for an endomorphism in a basis with inverse metric
+components. -/
+theorem linearMap_trace_eq_sum_inv_inner_apply
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A : TangentSpace I x →ₗ[Real] TangentSpace I x) :
+    LinearMap.trace Real (TangentSpace I x) A =
+      ∑ i : Idx, ∑ j : Idx, gInv i j * g.inner x (A (basis i)) (basis j) := by
+  classical
+  rw [LinearMap.trace_eq_matrix_trace Real basis A]
+  rw [Matrix.trace]
+  simp only [Matrix.diag_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [LinearMap.toMatrix_apply]
+  exact basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv (A (basis i)) i
 
-/-- The other direction: `chartJMatrix α b * chartJinvMatrix α b = 1`. -/
-private lemma chartJMatrix_mul_chartJinvMatrix (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartJMatrix (I := I) (M := M) α b *
-        chartJinvMatrix (I := I) (M := M) α b = 1 := by
-  ext a c
-  rw [Matrix.mul_apply]
-  -- Rewrite each summand: JinvMat_{k,c} = repr_k (chartJinv e_c) (definitionally rfl).
-  -- Then the sum equals repr_a (chartJ (chartJinv e_c)) by chartJ_apply_repr.
-  have hsum_eq : ∑ k, chartJMatrix (I := I) (M := M) α b a k *
-      chartJinvMatrix (I := I) (M := M) α b k c =
-    ((chartModelBasis E).repr (chartJ (I := I) (M := M) α b
-      (chartJinv (I := I) (M := M) α b ((chartModelBasis E) c)))) a := by
-    rw [chartJ_apply_repr (I := I) (M := M) α b
-      (chartJinv (I := I) (M := M) α b ((chartModelBasis E) c)) a]
-    rfl
-  rw [hsum_eq]
-  rw [chartJ_chartJinv (I := I) (M := M) α hb]
-  rw [Module.Basis.repr_self]
-  rw [Finsupp.single_apply]
-  rw [Matrix.one_apply]
-  by_cases hac : c = a
-  · rw [if_pos hac]
-    rw [if_pos hac.symm]
-  · rw [if_neg hac]
-    have : ¬ a = c := fun h => hac h.symm
-    rw [if_neg this]
+/-- Positivity of the trace of a tangent endomorphism from positivity of its
+metric quadratic form. -/
+theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
+    (g : SmoothMetric I M) (x : M)
+    (A : TangentSpace I x →ₗ[Real] TangentSpace I x)
+    (hA : ∀ v : TangentSpace I x, 0 <= g.inner x (A v) v) :
+    0 <= LinearMap.trace Real (TangentSpace I x) A := by
+  classical
+  let D := (tangentMetricData (I := I) g x).metric
+  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  letI : NormedAddCommGroup (TangentSpace I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
+  letI : InnerProductSpace Real (TangentSpace I x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  rw [LinearMap.trace_eq_sum_inner A
+    (stdOrthonormalBasis Real (TangentSpace I x))]
+  exact Finset.sum_nonneg fun i _ => by
+    have hi := hA (stdOrthonormalBasis Real (TangentSpace I x) i)
+    have hinner :
+        Inner.inner Real
+            (A (stdOrthonormalBasis Real (TangentSpace I x) i))
+            (stdOrthonormalBasis Real (TangentSpace I x) i) =
+          g.inner x
+            (A (stdOrthonormalBasis Real (TangentSpace I x) i))
+            (stdOrthonormalBasis Real (TangentSpace I x) i) := by
+      change D.inner
+          (A (stdOrthonormalBasis Real (TangentSpace I x) i))
+          (stdOrthonormalBasis Real (TangentSpace I x) i) =
+        g.inner x
+          (A (stdOrthonormalBasis Real (TangentSpace I x) i))
+          (stdOrthonormalBasis Real (TangentSpace I x) i)
+      rfl
+    rw [real_inner_comm, hinner]
+    exact hi
 
-/-- `chartJinvMatrix α b` is invertible on the chart base set, with inverse `chartJMatrix α b`. -/
-private lemma chartJinvMatrix_inv (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    (chartJinvMatrix (I := I) (M := M) α b)⁻¹ =
-      chartJMatrix (I := I) (M := M) α b := by
-  apply Matrix.inv_eq_left_inv
-  exact chartJMatrix_mul_chartJinvMatrix (I := I) (M := M) α hb
+private theorem hom_normSq_eq_basis
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (D : MetricFiberData W)
+    (A : TangentSpace I x →ₗ[Real] W) :
+    MetricFiberData.homFlatLinear (tangentMetricData (I := I) g x).metric D A A =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * D.inner (A (basis i)) (A (basis j)) := by
+  change LinearMap.trace Real (TangentSpace I x)
+      ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A).comp A) =
+    ∑ i : Idx, ∑ j : Idx,
+      gInv i j * D.inner (A (basis i)) (A (basis j))
+  classical
+  rw [LinearMap.trace_eq_matrix_trace Real basis
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A).comp A)]
+  rw [Matrix.trace]
+  simp only [Matrix.diag_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [LinearMap.toMatrix_apply]
+  rw [basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv]
+  apply Finset.sum_congr rfl
+  intro j _
+  congr 1
+  change
+    g.inner x
+        ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A)
+          (A (basis i)))
+        (basis j) =
+      D.inner (A (basis i)) (A (basis j))
+  rw [← TangentMetricData.inner_eq (I := I)
+    (tangentMetricData (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D A)
+      (A (basis i)))
+    (basis j)]
+  exact MetricFiberData.adjoint_inner
+    (tangentMetricData (I := I) g x).metric D A (A (basis i)) (basis j)
 
-/-- The Gram matrix `chartGramMatrix` is invertible on the chart base set: its determinant
-is positive (hence nonzero). -/
-private lemma chartGramMatrix_isUnit_det
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    IsUnit (chartGramMatrix g α b).det :=
-  (chartGramMatrix_det_pos (I := I) g α hb).ne'.isUnit
+private theorem hom_inner_eq_basis
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (D : MetricFiberData W)
+    (A B : TangentSpace I x →ₗ[Real] W) :
+    MetricFiberData.homFlatLinear (tangentMetricData (I := I) g x).metric D A B =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * D.inner (A (basis i)) (B (basis j)) := by
+  rw [MetricFiberData.homFlatLinear_comm
+    (tangentMetricData (I := I) g x).metric D A B]
+  change LinearMap.trace Real (TangentSpace I x)
+      ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B).comp A) =
+    ∑ i : Idx, ∑ j : Idx,
+      gInv i j * D.inner (A (basis i)) (B (basis j))
+  classical
+  rw [LinearMap.trace_eq_matrix_trace Real basis
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B).comp A)]
+  rw [Matrix.trace]
+  simp only [Matrix.diag_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [LinearMap.toMatrix_apply]
+  rw [basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv]
+  apply Finset.sum_congr rfl
+  intro j _
+  congr 1
+  change
+    g.inner x
+        ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B)
+          (A (basis i)))
+        (basis j) =
+      D.inner (A (basis i)) (B (basis j))
+  rw [← TangentMetricData.inner_eq (I := I)
+    (tangentMetricData (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricData (I := I) g x).metric D B)
+      (A (basis i)))
+    (basis j)]
+  exact MetricFiberData.adjoint_inner
+    (tangentMetricData (I := I) g x).metric D B (A (basis i)) (basis j)
 
-private lemma chartGramMatrix_isUnit
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    IsUnit (chartGramMatrix g α b) :=
-  (Matrix.isUnit_iff_isUnit_det _).mpr
-    (chartGramMatrix_isUnit_det (I := I) (M := M) g α hb)
+private theorem homCLM_normSq_eq_basis
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
+    (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
+    [FiniteDimensional Real W]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (D : MetricFiberData W)
+    (A : TangentSpace I x →L[Real] W) :
+    (@MetricFiberData.homCLM
+      (TangentSpace I x) W
+      inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
+      (tangentMetricData (I := I) g x).metric D).flat A A =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * D.inner (A (basis i)) (A (basis j)) := by
+  exact hom_normSq_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap
 
-private lemma chartGramMatrix_inv_mul_self_at
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    (chartGramMatrix g α b)⁻¹ *
-        chartGramMatrix g α b = 1 :=
-  Matrix.nonsing_inv_mul _
-    ((Matrix.isUnit_iff_isUnit_det _).mp
-      (chartGramMatrix_isUnit (I := I) (M := M) g α hb))
+private theorem homCLM_inner_eq_basis
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
+    (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
+    [FiniteDimensional Real W]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (D : MetricFiberData W)
+    (A B : TangentSpace I x →L[Real] W) :
+    (@MetricFiberData.homCLM
+      (TangentSpace I x) W
+      inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
+      (tangentMetricData (I := I) g x).metric D).flat A B =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * D.inner (A (basis i)) (B (basis j)) := by
+  exact hom_inner_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap B.toLinearMap
 
-private lemma chartGramMatrix_self_mul_inv_at
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartGramMatrix g α b *
-        (chartGramMatrix g α b)⁻¹ = 1 :=
-  Matrix.mul_nonsing_inv _
-    ((Matrix.isUnit_iff_isUnit_det _).mp
-      (chartGramMatrix_isUnit (I := I) (M := M) g α hb))
+private theorem tensor0S_curry_one_apply
+    {x : M} (A : Tensor0SSpace 2 I x)
+    (X Y : TangentSpace I x) :
+    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A X)
+        (fun _ : Fin 1 => Y) =
+      A (fun a : Fin 2 => if a = 0 then X else Y) := by
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin (1 + 1) => E) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+        X)
+        (fun _ : Fin 1 => Y)) =
+      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+        (fun a : Fin 2 => if a = 0 then X else Y)
+  rw [continuousMultilinearCurryLeftEquiv_apply]
+  congr 1
+  funext a
+  fin_cases a <;> simp [Fin.cons_zero]
 
-/-- The key matrix identity expressed in entry form.
-`∑ ij (chartGramMatrix)⁻¹_{ij} (chartJinvMatrix)_{ai} (chartJinvMatrix)_{b'j} = (gramMatrixAt)⁻¹_{ab'}`.
+private theorem tensor0S_curry_apply_cons
+    {x : M} (s : Nat) (A : Tensor0SSpace (s + 1) I x)
+    (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
+    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+      A (Fin.cons X tail) := by
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin (s + 1) => E) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        X)
+        tail) =
+      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (Fin.cons X tail)
+  rw [continuousMultilinearCurryLeftEquiv_apply]
 
-This follows from `chartGramMatrix = chartJinvMatrixᵀ * gramMatrixAt * chartJinvMatrix`,
-inverted to `chartGramMatrix⁻¹ = chartJinvMatrix⁻¹ * gramMatrixAt⁻¹ * (chartJinvMatrixᵀ)⁻¹`,
-multiplied by `chartJinvMatrix * (·) * chartJinvMatrixᵀ` and using
-`chartJinvMatrix * chartJinvMatrix⁻¹ = 1`. -/
-private lemma chartJinv_chartGramInv_chartJinvT_eq_gramInv_entry
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
-    (a c : Fin (Module.finrank ℝ E)) :
-    ∑ i : Fin (Module.finrank ℝ E),
-      ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
-          (chartJinvMatrix (I := I) (M := M) α b a i *
-            chartJinvMatrix (I := I) (M := M) α b c j) =
-      (gramMatrixAt (I := I) (M := M) g b)⁻¹ a c := by
-  -- Express the LHS as a matrix product (J * G⁻¹ * J^T)_{a,c}.
-  have hLHS_form :
-      (∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
-          (chartGramMatrix g α b)⁻¹ i j *
-            (chartJinvMatrix (I := I) (M := M) α b a i *
-              chartJinvMatrix (I := I) (M := M) α b c j)) =
-      (chartJinvMatrix (I := I) (M := M) α b *
-        (chartGramMatrix g α b)⁻¹ *
-        (chartJinvMatrix (I := I) (M := M) α b)ᵀ) a c := by
-    -- (J * G⁻¹ * J^T)_{a,c} = ∑ j (J * G⁻¹)_{a,j} * J_{c,j}
-    --                       = ∑ j (∑ i J_{a,i} G⁻¹_{i,j}) * J_{c,j}.
-    rw [Matrix.mul_apply]
-    -- After mul_apply: goal RHS is ∑ j (J*G⁻¹)_{a,j} * (J^T)_{j,c}.
-    -- Use sum_congr to rewrite each term.
-    rw [show ∑ j : Fin (Module.finrank ℝ E),
-        (chartJinvMatrix (I := I) (M := M) α b *
-          (chartGramMatrix g α b)⁻¹) a j *
-          (chartJinvMatrix (I := I) (M := M) α b)ᵀ j c =
-        ∑ j : Fin (Module.finrank ℝ E),
-          (∑ i : Fin (Module.finrank ℝ E),
-            chartJinvMatrix (I := I) (M := M) α b a i *
-            (chartGramMatrix g α b)⁻¹ i j) *
-          chartJinvMatrix (I := I) (M := M) α b c j from ?_]
-    · -- Now: LHS double sum = ∑ j (∑ i J_{a,i} G⁻¹_{i,j}) * J_{c,j}.
-      simp only [Finset.sum_mul]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      ring
-    · refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [Matrix.mul_apply, Matrix.transpose_apply]
-  rw [hLHS_form]
-  -- Now we want to prove the matrix identity at the matrix level.
-  -- Strategy: show `chartJinvMatrix * (chartGramMatrix)⁻¹ * (chartJinvMatrix)ᵀ * gramMatrixAt = 1`.
-  -- Equivalent to `((LHS)⁻¹)_{a,c} = (gramMatrixAt)⁻¹_{a,c}`, i.e., `LHS = gramMatrixAt`.
-  -- But that's not what we want...
-  -- Actually, we want LHS_a,c = (G⁻¹)_a,c, which is equivalent to showing LHS * G = 1.
-  --
-  -- LHS * G = JinvMat * chartGram⁻¹ * JinvMatᵀ * G.
-  -- We have chartGram = JinvMatᵀ * G * JinvMat, so chartGram * JinvMat⁻¹ = JinvMatᵀ * G,
-  -- hence JinvMatᵀ * G = chartGram * JinvMat⁻¹.
-  -- Multiply LHS * G = JinvMat * chartGram⁻¹ * (JinvMatᵀ * G) = JinvMat * chartGram⁻¹ * chartGram * JinvMat⁻¹ = JinvMat * 1 * JinvMat⁻¹ = 1.
-  have hJinvMat_inv := chartJinvMatrix_inv (I := I) (M := M) α hb
-  -- Use `Matrix.eq_inv_of_mul_eq_one_right`: if `A * B = 1`, then `B = A⁻¹`.
-  have hrhs : (chartJinvMatrix (I := I) (M := M) α b *
-      (chartGramMatrix g α b)⁻¹ *
-      (chartJinvMatrix (I := I) (M := M) α b)ᵀ) *
-      gramMatrixAt (I := I) (M := M) g b = 1 := by
-    -- Use chartGramMatrix = JinvMatᵀ * G * JinvMat.
-    have hGramEq := chartGramMatrix_eq_matrix_form (I := I) (M := M) g α b
-    -- hGramEq: chartGramMatrix = JinvMatᵀ * gramMatrixAt * JinvMat
-    -- i.e., chartGramMatrix * JinvMat⁻¹ = JinvMatᵀ * gramMatrixAt (right multiply)
-    -- Substitute (JinvMatᵀ * G) = chartGram * JinvMat⁻¹ in the goal.
-    have hJinvMatT_mul_G :
-        (chartJinvMatrix (I := I) (M := M) α b)ᵀ *
-            gramMatrixAt (I := I) (M := M) g b =
-          chartGramMatrix g α b *
-            (chartJinvMatrix (I := I) (M := M) α b)⁻¹ := by
-      -- From hGramEq: chartGram = JinvMatᵀ * G * JinvMat.
-      -- Right-multiply both sides by JinvMat⁻¹:
-      -- chartGram * JinvMat⁻¹ = JinvMatᵀ * G * (JinvMat * JinvMat⁻¹) = JinvMatᵀ * G * 1.
-      rw [hGramEq, hJinvMat_inv]
-      rw [Matrix.mul_assoc, Matrix.mul_assoc]
-      rw [chartJinvMatrix_mul_chartJMatrix (I := I) (M := M) α hb]
-      rw [Matrix.mul_one]
-    -- Now compute (JinvMat * chartGram⁻¹ * JinvMatᵀ) * G:
-    rw [Matrix.mul_assoc, Matrix.mul_assoc,
-      hJinvMatT_mul_G,
-      ← Matrix.mul_assoc (chartGramMatrix g α b)⁻¹,
-      chartGramMatrix_inv_mul_self_at (I := I) (M := M) g α hb,
-      Matrix.one_mul,
-      hJinvMat_inv,
-      chartJinvMatrix_mul_chartJMatrix (I := I) (M := M) α hb]
-  -- From hrhs: (JinvMat * chartGram⁻¹ * JinvMatᵀ) * G = 1.
-  -- Hence JinvMat * chartGram⁻¹ * JinvMatᵀ = G⁻¹ (right-inverse uniqueness).
-  have hMain : chartJinvMatrix (I := I) (M := M) α b *
-      (chartGramMatrix g α b)⁻¹ *
-      (chartJinvMatrix (I := I) (M := M) α b)ᵀ =
-      (gramMatrixAt (I := I) (M := M) g b)⁻¹ := by
-    -- hrhs: X * G = 1. Hence G⁻¹ = X by Matrix.inv_eq_left_inv.
-    exact (Matrix.inv_eq_left_inv hrhs).symm
-  rw [hMain]
+/-- Direct coordinate squared-norm formula for `(0,2)` covariant tensors.
 
-/-! ### Bridge A: `tensorInnerPointwise_0s s g b T S = chartTensorInnerOnChartBasis s g α b T S`
+This is the no-`sorry` bridge used by the Bochner layer while the fully general
+`inner0S_eq_coord` induction remains open. -/
+theorem normSq0S_two_eq_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A : Tensor0SSpace 2 I x) :
+    normSq0S (I := I) g x 2 A =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            A (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
+  classical
+  have hTopAdd1 : IsTopologicalAddGroup (Tensor0SSpace 1 I x) :=
+    Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
+      (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
+  haveI : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
+  have hContSMul1 : ContinuousSMul Real (Tensor0SSpace 1 I x) :=
+    Bundle.continuousMultilinearMap.instContinuousSMul
+      (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
+  haveI : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
+  have hContAdd1 : ContinuousAdd (Tensor0SSpace 1 I x) :=
+    IsTopologicalAddGroup.toContinuousAdd
+  haveI : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
+  haveI : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
+  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.topologicalSpace
+      Real Real inferInstance inferInstance (RingHom.id Real)
+      (TangentSpace I x) (Tensor0SSpace 1 I x)
+      inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance hTopAdd1
+  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.addCommGroup
+      Real inferInstance Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance
+      inferInstance inferInstance (RingHom.id Real) hTopAdd1
+  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.module
+      Real Real Real inferInstance inferInstance inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance
+      inferInstance inferInstance inferInstance inferInstance
+      (RingHom.id Real) hContAdd1
+  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    (@LinearMap.toContinuousLinearMap
+      Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance inferInstance hTopAdd1 hContSMul1
+      inferInstance inferInstance inferInstance).finiteDimensional
+  unfold normSq0S inner0S MetricFiberData.inner
+  change
+    (tensor0SMetricStep (I := I) g x 1 (cotangentMetricData (I := I) g x)).flat A A =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            A (fun a : Fin 2 => if a = 0 then basis k else basis l)
+  unfold tensor0SMetricStep MetricFiberData.pullback MetricFiberData.homCLM
+    MetricFiberData.hom
+  change
+    MetricFiberData.homFlatLinear
+      (tangentMetricData (I := I) g x).metric
+      (cotangentMetricData (I := I) g x)
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            A (fun a : Fin 2 => if a = 0 then basis k else basis l)
+  rw [hom_normSq_eq_basis (I := I) g x basis gInv hinv
+    (cotangentMetricData (I := I) g x)
+    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)]
+  calc
+    (∑ i : Idx, ∑ k : Idx,
+        gInv i k *
+          (cotangentMetricData (I := I) g x).inner
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis k)))
+        = ∑ i : Idx, ∑ k : Idx, ∑ j : Idx, ∑ l : Idx,
+            gInv i k *
+              (gInv j l *
+                A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+                  A (fun a : Fin 2 => if a = 0 then basis k else basis l)) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [cotangentMetricData_inner_eq_coord (I := I) g x basis gInv hinv]
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro l _
+          rw [cotangentToDual_apply, cotangentToDual_apply]
+          rw [tensor0S_curry_one_apply, tensor0S_curry_one_apply]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            A (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          rw [Finset.sum_comm]
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          apply Finset.sum_congr rfl
+          intro l _
+          ring
 
-This is the basis-invariance fact. We prove it by induction on `s`. -/
+/-- Direct coordinate inner-product formula for `(0,2)` covariant tensors.
 
-private theorem tensorInnerPointwise_0s_eq_chartTensorInnerOnChartBasis
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ∀ (s : ℕ) {b : M},
-      b ∈ (trivializationAt E (TangentSpace I) α).baseSet →
-      ∀ (T S : Tensor0SModel s ℝ E),
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T S =
-        chartTensorInnerOnChartBasis (I := I) (M := M) s g α b T S := by
-  intro s
+This is the bilinear analogue of `normSq0S_two_eq_coord`; it avoids the
+currently open general tensor-power coordinate theorem. -/
+theorem inner0S_two_eq_coord_direct
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A B : Tensor0SSpace 2 I x) :
+    inner0S (I := I) g x 2 A B =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            B (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
+  classical
+  have hTopAdd1 : IsTopologicalAddGroup (Tensor0SSpace 1 I x) :=
+    Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
+      (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
+  haveI : IsTopologicalAddGroup (Tensor0SSpace 1 I x) := hTopAdd1
+  have hContSMul1 : ContinuousSMul Real (Tensor0SSpace 1 I x) :=
+    Bundle.continuousMultilinearMap.instContinuousSMul
+      (𝕜 := Real) (F := E) (E := TangentSpace I) 1 x
+  haveI : ContinuousSMul Real (Tensor0SSpace 1 I x) := hContSMul1
+  have hContAdd1 : ContinuousAdd (Tensor0SSpace 1 I x) :=
+    IsTopologicalAddGroup.toContinuousAdd
+  haveI : ContinuousAdd (Tensor0SSpace 1 I x) := hContAdd1
+  haveI : ContinuousConstSMul Real (Tensor0SSpace 1 I x) := inferInstance
+  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.topologicalSpace
+      Real Real inferInstance inferInstance (RingHom.id Real)
+      (TangentSpace I x) (Tensor0SSpace 1 I x)
+      inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance hTopAdd1
+  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.addCommGroup
+      Real inferInstance Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance
+      inferInstance inferInstance (RingHom.id Real) hTopAdd1
+  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    @ContinuousLinearMap.module
+      Real Real Real inferInstance inferInstance inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance
+      inferInstance inferInstance inferInstance inferInstance
+      (RingHom.id Real) hContAdd1
+  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace 1 I x) :=
+    (@LinearMap.toContinuousLinearMap
+      Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
+      (Tensor0SSpace 1 I x) inferInstance inferInstance inferInstance hTopAdd1 hContSMul1
+      inferInstance inferInstance inferInstance).finiteDimensional
+  unfold inner0S MetricFiberData.inner
+  change
+    (tensor0SMetricStep (I := I) g x 1 (cotangentMetricData (I := I) g x)).flat A B =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            B (fun a : Fin 2 => if a = 0 then basis k else basis l)
+  unfold tensor0SMetricStep MetricFiberData.pullback MetricFiberData.homCLM
+    MetricFiberData.hom
+  change
+    MetricFiberData.homFlatLinear
+      (tangentMetricData (I := I) g x).metric
+      (cotangentMetricData (I := I) g x)
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            B (fun a : Fin 2 => if a = 0 then basis k else basis l)
+  rw [hom_inner_eq_basis (I := I) g x basis gInv hinv
+    (cotangentMetricData (I := I) g x)
+    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap)]
+  calc
+    (∑ i : Idx, ∑ k : Idx,
+        gInv i k *
+          (cotangentMetricData (I := I) g x).inner
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B) (basis k)))
+        = ∑ i : Idx, ∑ k : Idx, ∑ j : Idx, ∑ l : Idx,
+            gInv i k *
+              (gInv j l *
+                A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+                  B (fun a : Fin 2 => if a = 0 then basis k else basis l)) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [cotangentMetricData_inner_eq_coord (I := I) g x basis gInv hinv]
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro l _
+          rw [cotangentToDual_apply, cotangentToDual_apply]
+          rw [tensor0S_curry_one_apply, tensor0S_curry_one_apply]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            B (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          rw [Finset.sum_comm]
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          apply Finset.sum_congr rfl
+          intro l _
+          ring
+
+private theorem inner0S_zero_eq
+    (g : SmoothMetric I M) (x : M)
+    (A B : Tensor0SSpace 0 I x) :
+    inner0S (I := I) g x 0 A B = A Fin.elim0 * B Fin.elim0 := by
+  unfold inner0S tensor0SMetricData scalarMetricData MetricFiberData.inner
+    MetricFiberData.pullback MetricFiberData.real MetricFiberData.ofFlat
+    MetricFiberData.realFlatLinear
+  change
+    ((continuousMultilinearCurryFin0 Real (TangentSpace I x) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x) A)) *
+      ((continuousMultilinearCurryFin0 Real (TangentSpace I x) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x) B)) =
+      A Fin.elim0 * B Fin.elim0
+  simp [tensor0SSpace_continuousLinearEquiv]
+  congr
+
+private theorem coordInner0S_zero_eq
+    {Idx : Type*} [Fintype Idx] {x : M}
+    (gInv : Idx -> Idx -> Real)
+    (A B : Tensor0SSpace 0 I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) :
+    coordInner0S (I := I) (x := x) 0 gInv A B basis =
+      A Fin.elim0 * B Fin.elim0 := by
+  classical
+  unfold coordInner0S tensor0SComponent
+  simp only [Finset.univ_unique, Finset.univ_eq_empty, Finset.prod_empty, one_mul,
+    Finset.sum_singleton]
+  congr <;> funext a <;> exact Fin.elim0 a
+
+private theorem coordInner0S_one_eq
+    {Idx : Type*} [Fintype Idx] {x : M}
+    (gInv : Idx -> Idx -> Real)
+    (α β : Tensor0SSpace 1 I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) :
+    coordInner0S (I := I) (x := x) 1 gInv α β basis =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * cotangentToDual (I := I) α (basis i) *
+          cotangentToDual (I := I) β (basis j) := by
+  classical
+  unfold coordInner0S tensor0SComponent
+  rw [sum_fin_one_fun]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [sum_fin_one_fun]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp [cotangentToDual_apply]
+
+private theorem tensor0SMetricStep_inner_eq_coordStep
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (D : MetricFiberData (Tensor0SSpace s I x))
+    (A B : Tensor0SSpace (s + 1) I x) :
+    (tensor0SMetricStep (I := I) g x s D).inner A B =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          D.inner
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j)) := by
+  classical
+  have hTopAdd0 : IsTopologicalAddGroup (Tensor0SSpace s I x) :=
+    Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
+      (𝕜 := Real) (F := E) (E := TangentSpace I) s x
+  haveI : IsTopologicalAddGroup (Tensor0SSpace s I x) := hTopAdd0
+  have hContSMul0 : ContinuousSMul Real (Tensor0SSpace s I x) :=
+    Bundle.continuousMultilinearMap.instContinuousSMul
+      (𝕜 := Real) (F := E) (E := TangentSpace I) s x
+  haveI : ContinuousSMul Real (Tensor0SSpace s I x) := hContSMul0
+  have hContAdd0 : ContinuousAdd (Tensor0SSpace s I x) :=
+    IsTopologicalAddGroup.toContinuousAdd
+  haveI : ContinuousAdd (Tensor0SSpace s I x) := hContAdd0
+  haveI : ContinuousConstSMul Real (Tensor0SSpace s I x) := inferInstance
+  letI : TopologicalSpace (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.topologicalSpace
+      Real Real inferInstance inferInstance (RingHom.id Real)
+      (TangentSpace I x) (Tensor0SSpace s I x)
+      inferInstance inferInstance inferInstance inferInstance
+      inferInstance inferInstance hTopAdd0
+  letI : AddCommGroup (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.addCommGroup
+      Real inferInstance Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance
+      inferInstance inferInstance (RingHom.id Real) hTopAdd0
+  letI : Module Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    @ContinuousLinearMap.module
+      Real Real Real inferInstance inferInstance inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance
+      inferInstance inferInstance inferInstance inferInstance
+      (RingHom.id Real) hContAdd0
+  letI : FiniteDimensional Real (TangentSpace I x →L[Real] Tensor0SSpace s I x) :=
+    (@LinearMap.toContinuousLinearMap
+      Real inferInstance
+      (TangentSpace I x) inferInstance inferInstance inferInstance inferInstance inferInstance
+      (Tensor0SSpace s I x) inferInstance inferInstance inferInstance hTopAdd0 hContSMul0
+      inferInstance inferInstance inferInstance).finiteDimensional
+  unfold MetricFiberData.inner tensor0SMetricStep MetricFiberData.pullback
+    MetricFiberData.homCLM MetricFiberData.hom
+  change
+    MetricFiberData.homFlatLinear
+      (tangentMetricData (I := I) g x).metric D
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
+      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap) =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          D.inner
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+  rw [hom_inner_eq_basis (I := I) g x basis gInv hinv D
+    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
+    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap)]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rfl
+
+private theorem coordInner0S_succ_summand_eq
+    {Idx : Type*}  {x : M} (s : Nat)
+    (gInv : Idx -> Idx -> Real)
+    (A B : Tensor0SSpace (s + 1) I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (i j : Idx) (tailI tailJ : Fin s -> Idx) :
+    ((∏ a : Fin (s + 1),
+        gInv (((Fin.cons i tailI : Fin (s + 1) -> Idx) a))
+          (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) *
+        A (fun a : Fin (s + 1) =>
+          basis (((Fin.cons i tailI : Fin (s + 1) -> Idx) a)))) *
+      B (fun a : Fin (s + 1) =>
+        basis (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) =
+      (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
+          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            (fun a : Fin s => basis (tailI a))) *
+        ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+          (fun a : Fin s => basis (tailJ a)) := by
+  rw [Fin.prod_univ_succ]
+  rw [tensor0S_curry_apply_cons, tensor0S_curry_apply_cons]
+  have hA :
+      (fun a : Fin (s + 1) =>
+          basis (((Fin.cons i tailI : Fin (s + 1) -> Idx) a))) =
+        Fin.cons (basis i) (fun a : Fin s => basis (tailI a)) := by
+    funext a
+    cases a using Fin.cases <;> simp
+  have hB :
+      (fun a : Fin (s + 1) =>
+          basis (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) =
+        Fin.cons (basis j) (fun a : Fin s => basis (tailJ a)) := by
+    funext a
+    cases a using Fin.cases <;> simp
+  rw [hA, hB]
+  simp [Fin.cons_zero, Fin.cons_succ]
+
+private theorem coordInner0S_succ_eq
+    {Idx : Type*} [Fintype Idx] {x : M} (s : Nat)
+    (gInv : Idx -> Idx -> Real)
+    (A B : Tensor0SSpace (s + 1) I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) :
+    coordInner0S (I := I) (x := x) (s + 1) gInv A B basis =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          coordInner0S (I := I) (x := x) s gInv
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            basis := by
+  classical
+  unfold coordInner0S tensor0SComponent
+  rw [sum_fin_succ_fun s]
+  apply Finset.sum_congr rfl
+  intro i _
+  calc
+    (∑ tailI : Fin s -> Idx,
+        ∑ J0 : Fin (s + 1) -> Idx,
+          ((∏ a : Fin (s + 1),
+              gInv (((Fin.cons i tailI : Fin (s + 1) -> Idx) a)) (J0 a)) *
+              A (fun a : Fin (s + 1) =>
+                basis (((Fin.cons i tailI : Fin (s + 1) -> Idx) a)))) *
+            B (fun a : Fin (s + 1) => basis (J0 a)))
+        =
+        ∑ tailI : Fin s -> Idx, ∑ j : Idx, ∑ tailJ : Fin s -> Idx,
+          ((∏ a : Fin (s + 1),
+              gInv (((Fin.cons i tailI : Fin (s + 1) -> Idx) a))
+                (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) *
+              A (fun a : Fin (s + 1) =>
+                basis (((Fin.cons i tailI : Fin (s + 1) -> Idx) a)))) *
+            B (fun a : Fin (s + 1) =>
+              basis (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) := by
+          apply Finset.sum_congr rfl
+          intro tailI _
+          rw [sum_fin_succ_fun s]
+    _ =
+        ∑ tailI : Fin s -> Idx, ∑ j : Idx, ∑ tailJ : Fin s -> Idx,
+          (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
+              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+                (fun a : Fin s => basis (tailI a))) *
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+              (fun a : Fin s => basis (tailJ a)) := by
+          apply Finset.sum_congr rfl
+          intro tailI _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro tailJ _
+          exact coordInner0S_succ_summand_eq (I := I) s gInv A B basis i j tailI tailJ
+    _ =
+        ∑ j : Idx, ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
+          (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
+              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+                (fun a : Fin s => basis (tailI a))) *
+            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+              (fun a : Fin s => basis (tailJ a)) := by
+          rw [Finset.sum_comm]
+    _ =
+        ∑ j : Idx,
+          gInv i j *
+            ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
+              (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
+                ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+                  (fun a : Fin s => basis (tailI a)) *
+                  ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+                    (fun a : Fin s => basis (tailJ a)) := by
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro tailI _
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro tailJ _
+          ring
+
+/-- Coordinate formula for the covariant tensor metric in a basis.
+
+This is the general tensor-power contraction theorem. The `s = 1` theorem is
+proved in `CotangentRiemannian`; the `s = 2` form used by Bochner is exposed
+below. The remaining proof is finite-dimensional tensor-basis induction. -/
+theorem inner0S_eq_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A B : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s A B =
+      coordInner0S (I := I) (x := x) s gInv A B basis := by
   induction s with
   | zero =>
-      intro b _ T S
-      rw [tensorInnerPointwise_0s_zero_arity, chartTensorInnerOnChartBasis_zero]
+      rw [inner0S_zero_eq (I := I) g x A B,
+        coordInner0S_zero_eq (I := I) gInv A B basis]
   | succ s ih =>
-      intro b hb T S
-      rw [tensorInnerPointwise_0s_succ, chartTensorInnerOnChartBasis_succ]
-      -- The strategy:
-      -- LHS = ∑ ij G⁻¹_{ij} tensorInner s g b (T.curryLeft e_i) (S.curryLeft e_j)
-      -- RHS = ∑ ij chartGram⁻¹_{ij} chartTensorInnerOnChartBasis s g α b
-      --                              (T.curryLeft (chartBasisVecFiber α i b)) ...
-      -- By IH, replace chartTensorInnerOnChartBasis by tensorInnerPointwise_0s in RHS.
-      -- Then expand chartBasisVecFiber via JinvMat-decomposition, use bilinearity, then
-      -- apply the matrix identity.
-      --
-      -- Step 1: Replace chartTensorInnerOnChartBasis by tensorInnerPointwise_0s in RHS.
-      have step1 :
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              (chartGramMatrix g α b)⁻¹ i j *
-                chartTensorInnerOnChartBasis (I := I) (M := M) s g α b
-                  (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-                  (S.curryLeft (chartBasisVecFiber (I := I) α j b)) =
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              (chartGramMatrix g α b)⁻¹ i j *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-                  (S.curryLeft (chartBasisVecFiber (I := I) α j b)) := by
-        refine Finset.sum_congr rfl ?_
-        intro i _
-        refine Finset.sum_congr rfl ?_
-        intro j _
-        rw [← ih hb _ _]
-      rw [step1]
-      -- Step 2: Expand each chartBasisVecFiber-based curryLeft via JinvMat-decomposition.
-      have step2_T : ∀ i : Fin (Module.finrank ℝ E),
-          T.curryLeft (chartBasisVecFiber (I := I) α i b) =
-            ∑ a : Fin (Module.finrank ℝ E),
-              chartJinvMatrix (I := I) (M := M) α b a i •
-                T.curryLeft ((chartModelBasis E) a) := by
-        intro i
-        rw [chartBasisVecFiber_eq_sum (I := I) (M := M) α b i]
-        exact curryLeft_sum (E := E) (s := s) T _ _
-      have step2_S : ∀ j : Fin (Module.finrank ℝ E),
-          S.curryLeft (chartBasisVecFiber (I := I) α j b) =
-            ∑ b' : Fin (Module.finrank ℝ E),
-              chartJinvMatrix (I := I) (M := M) α b b' j •
-                S.curryLeft ((chartModelBasis E) b') := by
-        intro j
-        rw [chartBasisVecFiber_eq_sum (I := I) (M := M) α b j]
-        exact curryLeft_sum (E := E) (s := s) S _ _
-      -- Step 3: Use bilinearity to expand the inner pointwise inner-product.
-      have step3 : ∀ i j : Fin (Module.finrank ℝ E),
-          tensorInnerPointwise_0s (I := I) (M := M) s g b
-              (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-              (S.curryLeft (chartBasisVecFiber (I := I) α j b)) =
-            ∑ a : Fin (Module.finrank ℝ E),
-              ∑ b' : Fin (Module.finrank ℝ E),
-                chartJinvMatrix (I := I) (M := M) α b a i *
-                  chartJinvMatrix (I := I) (M := M) α b b' j *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft ((chartModelBasis E) a))
-                  (S.curryLeft ((chartModelBasis E) b')) := by
-        intro i j
-        rw [step2_T i, step2_S j]
-        rw [tensorInnerPointwise_0s_sum_left]
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        rw [tensorInnerPointwise_0s_sum_right]
-        rw [Finset.mul_sum]
-        refine Finset.sum_congr rfl ?_
-        intro b' _
-        ring
-      -- Step 4: Substitute into the sum.
-      have step4 :
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              (chartGramMatrix g α b)⁻¹ i j *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft (chartBasisVecFiber (I := I) α i b))
-                  (S.curryLeft (chartBasisVecFiber (I := I) α j b)) =
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              ∑ a : Fin (Module.finrank ℝ E),
-                ∑ b' : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) := by
-        refine Finset.sum_congr rfl ?_
-        intro i _
-        refine Finset.sum_congr rfl ?_
-        intro j _
-        rw [step3 i j]
-        rw [Finset.mul_sum]
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        rw [Finset.mul_sum]
-        refine Finset.sum_congr rfl ?_
-        intro b' _
-        ring
-      rw [step4]
-      -- Step 5: Reorder sums from (∑i ∑j ∑a ∑b') to (∑a ∑b' ∑i ∑j).
-      -- Use Finset.sum_comm 3 times.
-      have step5_0 :
-          ∀ (i : Fin (Module.finrank ℝ E)),
-            ∑ j : Fin (Module.finrank ℝ E),
-              ∑ a : Fin (Module.finrank ℝ E),
-                ∑ b' : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) =
-            ∑ a : Fin (Module.finrank ℝ E),
-              ∑ b' : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) := by
-        intro i
-        -- Step a: swap j,a: ∑j ∑a → ∑a ∑j.
-        rw [Finset.sum_comm (γ := Fin (Module.finrank ℝ E))]
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        -- Step b: swap j,b': ∑j ∑b' → ∑b' ∑j.
-        rw [Finset.sum_comm (γ := Fin (Module.finrank ℝ E))]
-      have step5_1 :
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              ∑ a : Fin (Module.finrank ℝ E),
-                ∑ b' : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) =
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ a : Fin (Module.finrank ℝ E),
-              ∑ b' : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) := by
-        refine Finset.sum_congr rfl ?_
-        intro i _
-        exact step5_0 i
-      have step5 :
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              ∑ a : Fin (Module.finrank ℝ E),
-                ∑ b' : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) =
-          ∑ a : Fin (Module.finrank ℝ E),
-            ∑ b' : Fin (Module.finrank ℝ E),
-              ∑ i : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) := by
-        rw [step5_1]
-        -- Now: ∑i ∑a ∑b' ∑j → ∑a ∑i ∑b' ∑j → ∑a ∑b' ∑i ∑j.
-        rw [Finset.sum_comm (γ := Fin (Module.finrank ℝ E))]
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        rw [Finset.sum_comm (γ := Fin (Module.finrank ℝ E))]
-      rw [step5]
-      -- Step 6: Factor out tensorInnerPointwise_0s from inner sums.
-      have step6 :
-          ∑ a : Fin (Module.finrank ℝ E),
-            ∑ b' : Fin (Module.finrank ℝ E),
-              ∑ i : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j) *
-                    tensorInnerPointwise_0s (I := I) (M := M) s g b
-                      (T.curryLeft ((chartModelBasis E) a))
-                      (S.curryLeft ((chartModelBasis E) b')) =
-          ∑ a : Fin (Module.finrank ℝ E),
-            ∑ b' : Fin (Module.finrank ℝ E),
-              (∑ i : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j)) *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft ((chartModelBasis E) a))
-                  (S.curryLeft ((chartModelBasis E) b')) := by
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        refine Finset.sum_congr rfl ?_
-        intro b' _
-        -- (∑ i ∑ j (X i j) * Y) = (∑ i ∑ j X i j) * Y
-        rw [Finset.sum_mul]
-        refine Finset.sum_congr rfl ?_
-        intro i _
-        rw [Finset.sum_mul]
-      rw [step6]
-      -- Step 7: Apply matrix identity.
-      have step7 : ∀ (a c : Fin (Module.finrank ℝ E)),
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              (chartGramMatrix g α b)⁻¹ i j *
-                (chartJinvMatrix (I := I) (M := M) α b a i *
-                  chartJinvMatrix (I := I) (M := M) α b c j) =
-            (gramMatrixAt (I := I) (M := M) g b)⁻¹ a c := fun a c =>
-        chartJinv_chartGramInv_chartJinvT_eq_gramInv_entry
-          (I := I) (M := M) g α hb a c
-      have step8 :
-          ∑ a : Fin (Module.finrank ℝ E),
-            ∑ b' : Fin (Module.finrank ℝ E),
-              (∑ i : Fin (Module.finrank ℝ E),
-                ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
-                    (chartJinvMatrix (I := I) (M := M) α b a i *
-                      chartJinvMatrix (I := I) (M := M) α b b' j)) *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft ((chartModelBasis E) a))
-                  (S.curryLeft ((chartModelBasis E) b')) =
-          ∑ a : Fin (Module.finrank ℝ E),
-            ∑ b' : Fin (Module.finrank ℝ E),
-              (gramMatrixAt (I := I) (M := M) g b)⁻¹ a b' *
-                tensorInnerPointwise_0s (I := I) (M := M) s g b
-                  (T.curryLeft ((chartModelBasis E) a))
-                  (S.curryLeft ((chartModelBasis E) b')) := by
-        refine Finset.sum_congr rfl ?_
-        intro a _
-        refine Finset.sum_congr rfl ?_
-        intro b' _
-        rw [step7 a b']
-      -- Now goal: LHS = step8's RHS, which is the LHS form. So we should have equality with LHS now.
-      symm
-      exact step8
+      cases s with
+      | zero =>
+          rw [inner0S_one_eq_cotangent (I := I) g x A B,
+            cotangentInner_eq_coord (I := I) g x basis gInv hinv A B,
+            coordInner0S_one_eq (I := I) gInv A B basis]
+      | succ s =>
+          rw [coordInner0S_succ_eq (I := I) (s + 1) gInv A B basis]
+          unfold inner0S
+          change
+            (tensor0SMetricStep (I := I) g x (s + 1)
+              (tensor0SMetricData (I := I) g x (s + 1))).inner A B =
+              ∑ i : Idx, ∑ j : Idx,
+                gInv i j *
+                  coordInner0S (I := I) (x := x) (s + 1) gInv
+                    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                      (basis i))
+                    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                      (basis j))
+                    basis
+          rw [tensor0SMetricStep_inner_eq_coordStep (I := I) g x (s + 1)
+            basis gInv hinv (tensor0SMetricData (I := I) g x (s + 1)) A B]
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          change
+            gInv i j *
+                inner0S (I := I) g x (s + 1)
+                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                    (basis i)))
+                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                    (basis j))) =
+              gInv i j *
+                coordInner0S (I := I) (x := x) (s + 1) gInv
+                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                    (basis i)))
+                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                    (basis j)))
+                  basis
+          rw [ih]
 
-/-! ### Combining bridges: the main bridge identity -/
+/-- Coordinate formula for the covariant tensor squared norm. -/
+theorem normSq0S_eq_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A : Tensor0SSpace s I x) :
+    normSq0S (I := I) g x s A =
+      coordInner0S (I := I) (x := x) s gInv A A basis := by
+  rw [normSq0S_eq_inner, inner0S_eq_coord (I := I) g x s basis gInv hinv]
 
-/-- **The bridge identity**, formal version.
+/-- The `(0,2)` coordinate formula in the nested-index form used by Ricci
+calculations. -/
+theorem inner0S_two_eq_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (A B : Tensor0SSpace 2 I x) :
+    inner0S (I := I) g x 2 A B =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i k * gInv j l *
+          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
+            B (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
+  exact inner0S_two_eq_coord_direct (I := I) g x basis gInv hinv A B
 
-For any tensors `T, S : MLF s`, on `b ∈ (chartAt H α).source` (= the trivialisation base set):
-$$\text{tensorInnerPointwise\_0s s g b T S = chartTensorInnerPointwise\_0s g α s b T_α S_α}$$
-where $T_α = T \circ_\text{ML} \text{chartJinv α b}$ and similarly for $S_α$. -/
-theorem tensorInnerPointwise_0s_bridge_identity
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ∀ (s : ℕ) {b : M},
-      b ∈ (trivializationAt E (TangentSpace I) α).baseSet →
-      ∀ (T S : Tensor0SModel s ℝ E),
-      tensorInnerPointwise_0s (I := I) (M := M) s g b T S =
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-          (T.compContinuousLinearMap (fun _ : Fin s =>
-            chartJinv (I := I) (M := M) α b))
-          (S.compContinuousLinearMap (fun _ : Fin s =>
-            chartJinv (I := I) (M := M) α b)) := by
-  intro s b hb T S
-  rw [tensorInnerPointwise_0s_eq_chartTensorInnerOnChartBasis
-      (I := I) (M := M) g α s hb T S]
-  rw [chartTensorInnerOnChartBasis_eq_chartTensorInnerPointwise_compose
-      (I := I) (M := M) g α b s T S]
+private theorem sum5_swap_first_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F a j k l i) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.2 x.1.1.1.2 x.1.1.2 x.1.2 x.1.1.1.1) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.2, p.1.1.1.2), p.1.1.2), p.1.2), p.1.1.1.1)
+            invFun := fun p => ((((p.2, p.1.1.1.2), p.1.1.2), p.1.2), p.1.1.1.1)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.2 p.1.1.1.2 p.1.1.2 p.1.2 p.1.1.1.1)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
 
-/-! ### Continuity of `chartTensorInnerPointwise_0s` with smooth tensor arguments
+private theorem sum5_swap_second_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i a k l j) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.2 x.1.1.2 x.1.2 x.1.1.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.2), p.1.1.2), p.1.2), p.1.1.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.2), p.1.1.2), p.1.2), p.1.1.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.2 p.1.1.2 p.1.2 p.1.1.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
 
-We extend the smoothness lemma `chartTensorInnerPointwise_0s_contMDiffOn` (for fixed
-tensor args) to the case where the tensor arguments themselves are smooth functions
-of `b` on the chart base set. The proof is by induction on `s`. -/
+private theorem sum5_swap_third_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j a l k) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.2 x.1.2 x.1.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.2), p.1.2), p.1.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.2), p.1.2), p.1.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.2 p.1.2 p.1.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
 
--- File-local instance to ensure typeclass resolution finds NormedSpace on Tensor0SModel.
-private instance tensor0SModelNormedSpace_local {s : ℕ} :
-    NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace s
+private theorem sum5_swap_fourth_last
+    {Idx : Type*} [Fintype Idx]
+    (F : Idx -> Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k l a) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx, F i j k a l) := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.1.2 x.2) =
+      (∑ x : ((((Idx × Idx) × Idx) × Idx) × Idx),
+        F x.1.1.1.1 x.1.1.1.2 x.1.1.2 x.2 x.1.2) by
+        let e : ((((Idx × Idx) × Idx) × Idx) × Idx) ≃
+            ((((Idx × Idx) × Idx) × Idx) × Idx) :=
+          { toFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.1.1.2), p.2), p.1.2)
+            invFun := fun p => ((((p.1.1.1.1, p.1.1.1.2), p.1.1.2), p.2), p.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨⟨i, j⟩, k⟩, l⟩, a⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.1.2 p.2)
+            (fun p => F p.1.1.1.1 p.1.1.1.2 p.1.1.2 p.2 p.1.2)
+            (by intro p; rfl))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
 
--- File-local instance for NormedAddCommGroup on Tensor0SModel.
-private instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
-    NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
+private theorem inner0S_two_metricCompatible_coord_corrA1
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * ((Γ i a * A a j) * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [Finset.sum_mul]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U a k * U j l * ((Γ a i * A i j) * B k l) := by
+          simpa using sum5_swap_first_last (fun i j k l a : Idx =>
+            U i k * U j l * ((Γ i a * A a j) * B k l))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U a k * U j l * (Γ a i * A i j * B k l))
+                = (∑ a : Idx, Γ a i * U a k) * (U j l * A i j * B k l) := by
+                  rw [Finset.sum_mul]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l := by
+                  ring
 
+private theorem inner0S_two_metricCompatible_coord_corrA2
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * ((Γ j a * A i a) * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [Finset.sum_mul]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U a l * ((Γ a j * A i j) * B k l) := by
+          simpa using sum5_swap_second_last (fun i j k l a : Idx =>
+            U i k * U j l * ((Γ j a * A i a) * B k l))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i k * U a l * (Γ a j * A i j * B k l))
+                = U i k * (∑ a : Idx, Γ a j * U a l * (A i j * B k l)) := by
+                  rw [Finset.mul_sum]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = U i k * ((∑ a : Idx, Γ a j * U a l) * (A i j * B k l)) := by
+                  rw [Finset.sum_mul]
+            _ = U i k * (∑ a : Idx, Γ a j * U a l) * (A i j * B k l) := by
+                  ring
+            _ = U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l := by
+                  ring
 
-/-! ### Continuity of `chartTensorInnerPointwise_0s` with smooth tensor arguments
+private theorem inner0S_two_metricCompatible_coord_corrB1
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l)))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * (A i j * (Γ k a * B a l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [← Finset.mul_sum]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i a * U j l * (A i j * (Γ a k * B k l)) := by
+          simpa using sum5_swap_third_last (fun i j k l a : Idx =>
+            U i k * U j l * (A i j * (Γ k a * B a l)))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i a * U j l * (A i j * (Γ a k * B k l)))
+                = (∑ a : Idx, Γ a k * U i a) * (U j l * A i j * B k l) := by
+                  rw [Finset.sum_mul]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l := by
+                  ring
 
-We extend the smoothness lemma `chartTensorInnerPointwise_0s_contMDiffOn` (for fixed
-tensor args) to the case where the tensor arguments themselves are smooth functions
-of `b` on the chart base set. The proof is by induction on `s`, using
-`curryLeftAtCLM` (a CLM, avoiding curryEquiv normed-instance issues) to extract the
-arguments at each induction step. -/
+private theorem inner0S_two_metricCompatible_coord_corrB2
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B : Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) =
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a)))
+        = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j l * (A i j * (Γ l a * B k a)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [← Finset.mul_sum]
+          rw [Finset.mul_sum]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, ∑ a : Idx,
+            U i k * U j a * (A i j * (Γ a l * B k l)) := by
+          simpa using sum5_swap_fourth_last (fun i j k l a : Idx =>
+            U i k * U j l * (A i j * (Γ l a * B k a)))
+    _ = (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          calc
+            (∑ a : Idx, U i k * U j a * (A i j * (Γ a l * B k l)))
+                = U i k * (∑ a : Idx, Γ a l * U j a * (A i j * B k l)) := by
+                  rw [Finset.mul_sum]
+                  refine Finset.sum_congr rfl fun a _ => ?_
+                  ring
+            _ = U i k * ((∑ a : Idx, Γ a l * U j a) * (A i j * B k l)) := by
+                  rw [Finset.sum_mul]
+            _ = U i k * (∑ a : Idx, Γ a l * U j a) * (A i j * B k l) := by
+                  ring
+            _ = U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l := by
+                  ring
 
-/-- The chart-local inner product is continuous in `b` on the chart base set
-when the tensor arguments are continuous functions of `b`. -/
-lemma chartTensorInnerPointwise_0s_continuousOn_smooth_args
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ∀ (s : ℕ)
-    (T S : M → ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
-    (_hT : ContinuousOn T (trivializationAt E (TangentSpace I) α).baseSet)
-    (_hS : ContinuousOn S (trivializationAt E (TangentSpace I) α).baseSet),
-      ContinuousOn (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (T b) (S b))
-        (trivializationAt E (TangentSpace I) α).baseSet := by
-  intro s
-  induction s with
-  | zero =>
-      intro T S hT hS
-      have heval0 : Continuous
-          (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ =>
-            T (fun i => Fin.elim0 i)) :=
-        continuous_id.eval_const _
-      have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b (T b) (S b)) =
-          fun b : M =>
-            ((T b) (fun i => Fin.elim0 i)) * ((S b) (fun i => Fin.elim0 i)) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_zero]
-      rw [heq]
-      exact (heval0.comp_continuousOn hT).mul (heval0.comp_continuousOn hS)
-  | succ s ih =>
-      intro T S hT hS
-      have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
-          fun b : M =>
-            ∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                (chartGramMatrix g α b)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-                    ((T b).curryLeft ((chartModelBasis E) i))
-                    ((S b).curryLeft ((chartModelBasis E) j)) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_succ]
-      rw [heq]
-      refine continuousOn_finset_sum _ (fun i _ => ?_)
-      refine continuousOn_finset_sum _ (fun j _ => ?_)
-      refine ContinuousOn.mul ?_ ?_
-      · exact (chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j).continuousOn
-      · -- Apply ih: need continuity of the curryLeft-applied tensors as functions of b.
-        -- Use the existing `curryLeftAtCLM` (a CLM) for continuity.
-        have hT_curry : ContinuousOn
-            (fun b : M => (T b).curryLeft ((chartModelBasis E) i))
-            (trivializationAt E (TangentSpace I) α).baseSet := by
-          have hheq : (fun b : M => (T b).curryLeft ((chartModelBasis E) i)) =
-              fun b : M => curryLeftAtCLM (E := E) s ((chartModelBasis E) i) (T b) := by
-            funext b
-            rw [curryLeftAtCLM_apply]
-          rw [hheq]
-          exact (curryLeftAtCLM (E := E) s ((chartModelBasis E) i)).continuous.comp_continuousOn hT
-        have hS_curry : ContinuousOn
-            (fun b : M => (S b).curryLeft ((chartModelBasis E) j))
-            (trivializationAt E (TangentSpace I) α).baseSet := by
-          have hheq : (fun b : M => (S b).curryLeft ((chartModelBasis E) j)) =
-              fun b : M => curryLeftAtCLM (E := E) s ((chartModelBasis E) j) (S b) := by
-            funext b
-            rw [curryLeftAtCLM_apply]
-          rw [hheq]
-          exact (curryLeftAtCLM (E := E) s ((chartModelBasis E) j)).continuous.comp_continuousOn hS
-        exact ih _ _ hT_curry hS_curry
+private theorem inner0S_two_metricCompatible_coord_DU_first
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a))) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      DU i k * U j l * A i j * B k l) =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) := by
+  classical
+  have hA1 := inner0S_two_metricCompatible_coord_corrA1 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB1 := inner0S_two_metricCompatible_coord_corrB1 (U := U) (Γ := Γ) (A := A) (B := B)
+  rw [hA1, hB1]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      DU i k * U j l * A i j * B k l)
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (-(∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l -
+          (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hDU i k]
+          ring
+    _ =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l) := by
+          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
 
-/-- The chart-local inner product is smooth in `b` on the chart base set when
-each basis-tuple evaluation of the two tensor arguments is a smooth scalar
-function of `b`. This is the smoothness analog of
-`chartTensorInnerPointwise_0s_continuousOn_smooth_args`. The hypothesis form
-(scalar smoothness of every basis-tuple evaluation) is used directly because
-the diamond between `ContinuousMultilinearMap.instModule` and
-`NormedSpace.toModule` on `Tensor0SModel` makes a direct `ContMDiffOn`
-hypothesis on a `Tensor0SModel`-valued function awkward. The proof is by
-induction on `s`. -/
-lemma chartTensorInnerPointwise_0s_contMDiffOn_smooth_args
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ∀ (s : ℕ)
-    (T S : M → ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
-    (_hT : ∀ φ : Fin s → Fin (Module.finrank ℝ E),
-      ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => (T b) (fun k : Fin s => (chartModelBasis E) (φ k)))
-        (trivializationAt E (TangentSpace I) α).baseSet)
-    (_hS : ∀ φ : Fin s → Fin (Module.finrank ℝ E),
-      ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => (S b) (fun k : Fin s => (chartModelBasis E) (φ k)))
-        (trivializationAt E (TangentSpace I) α).baseSet),
-      ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (T b) (S b))
-        (trivializationAt E (TangentSpace I) α).baseSet := by
-  intro s
-  induction s with
-  | zero =>
-      intro T S hT hS
-      have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b (T b) (S b)) =
-          fun b : M =>
-            ((T b) (fun i => Fin.elim0 i)) * ((S b) (fun i => Fin.elim0 i)) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_zero]
-      rw [heq]
-      have hT0 := hT (fun i : Fin 0 => Fin.elim0 i)
-      have hS0 := hS (fun i : Fin 0 => Fin.elim0 i)
-      -- The two-tuple shapes `fun i => Fin.elim0 i` and the one used by `hT0`
-      -- agree as functions on `Fin 0`.
-      have hempty :
-          (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))
-            = (fun i : Fin 0 => (Fin.elim0 i : E)) := by
-        funext i
-        exact Fin.elim0 i
-      have hT_smooth :
-          ContMDiffOn I 𝓘(ℝ) ∞
-            (fun b : M => (T b) (fun i => Fin.elim0 i))
-            (trivializationAt E (TangentSpace I) α).baseSet := by
-        have : (fun b : M => (T b) (fun i : Fin 0 => Fin.elim0 i)) =
-            (fun b : M => (T b)
-              (fun k : Fin 0 =>
-                (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
-          funext b
-          congr 1
-          rw [hempty]
-        rw [this]
-        exact hT0
-      have hS_smooth :
-          ContMDiffOn I 𝓘(ℝ) ∞
-            (fun b : M => (S b) (fun i => Fin.elim0 i))
-            (trivializationAt E (TangentSpace I) α).baseSet := by
-        have : (fun b : M => (S b) (fun i : Fin 0 => Fin.elim0 i)) =
-            (fun b : M => (S b)
-              (fun k : Fin 0 =>
-                (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
-          funext b
-          congr 1
-          rw [hempty]
-        rw [this]
-        exact hS0
-      exact hT_smooth.mul hS_smooth
-  | succ s ih =>
-      intro T S hT hS
-      have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
-          fun b : M =>
-            ∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                (chartGramMatrix g α b)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-                    ((T b).curryLeft ((chartModelBasis E) i))
-                    ((S b).curryLeft ((chartModelBasis E) j)) := by
-        funext b
-        rw [chartTensorInnerPointwise_0s_succ]
-      rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
-      refine ContMDiffOn.mul ?_ ?_
-      · exact chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
-      · -- Apply the inductive hypothesis to the curryLeft-applied tensors.
-        -- Each basis evaluation of the curryLeft tensor unfolds to a basis
-        -- evaluation of the original tensor on the extended `Fin.cons`-tuple.
-        refine ih
-            (fun b : M => (T b).curryLeft ((chartModelBasis E) i))
-            (fun b : M => (S b).curryLeft ((chartModelBasis E) j))
-            ?_ ?_
-        · intro ψ
-          -- The cons-extended index tuple at the basis level.
-          set ψ' : Fin (s + 1) → Fin (Module.finrank ℝ E) :=
-            Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) i ψ with hψ'
-          have hψ'_zero : ψ' 0 = i := by
-            simp [hψ']
-          have hψ'_succ : ∀ k : Fin s, ψ' k.succ = ψ k := by
-            intro k
-            simp [hψ']
-          have heq' :
-              (fun b : M => ((T b).curryLeft ((chartModelBasis E) i))
-                  (fun k : Fin s => (chartModelBasis E) (ψ k)))
-                = fun b : M =>
-                    (T b) (fun k : Fin (s + 1) =>
-                      (chartModelBasis E) (ψ' k)) := by
-            funext b
-            rw [ContinuousMultilinearMap.curryLeft_apply]
-            congr 1
-            funext k
-            refine Fin.cases ?_ ?_ k
-            · -- At k = 0: cons is i; on the LHS, this is i (since Fin.cons at 0)
-              rw [hψ'_zero]
-              -- The LHS at 0 is `Fin.cons ((chartModelBasis E) i) (fun k =>
-              -- (chartModelBasis E) (ψ k)) 0 = (chartModelBasis E) i`.
-              simp
-            · intro k'
-              rw [hψ'_succ k']
-              simp
-          rw [heq']
-          exact hT ψ'
-        · intro ψ
-          set ψ' : Fin (s + 1) → Fin (Module.finrank ℝ E) :=
-            Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) j ψ with hψ'
-          have hψ'_zero : ψ' 0 = j := by
-            simp [hψ']
-          have hψ'_succ : ∀ k : Fin s, ψ' k.succ = ψ k := by
-            intro k
-            simp [hψ']
-          have heq' :
-              (fun b : M => ((S b).curryLeft ((chartModelBasis E) j))
-                  (fun k : Fin s => (chartModelBasis E) (ψ k)))
-                = fun b : M =>
-                    (S b) (fun k : Fin (s + 1) =>
-                      (chartModelBasis E) (ψ' k)) := by
-            funext b
-            rw [ContinuousMultilinearMap.curryLeft_apply]
-            congr 1
-            funext k
-            refine Fin.cases ?_ ?_ k
-            · rw [hψ'_zero]; simp
-            · intro k'
-              rw [hψ'_succ k']; simp
-          rw [heq']
-          exact hS ψ'
+private theorem inner0S_two_metricCompatible_coord_DU_second
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a))) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * DU j l * A i j * B k l) =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+  classical
+  have hA2 := inner0S_two_metricCompatible_coord_corrA2 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB2 := inner0S_two_metricCompatible_coord_corrB2 (U := U) (Γ := Γ) (A := A) (B := B)
+  rw [hA2, hB2]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * DU j l * A i j * B k l)
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (-(U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) -
+          U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hDU j l]
+          ring
+    _ =
+      - (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l) -
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * (∑ a : Idx, Γ a l * U j a) * A i j * B k l) := by
+          simp [Finset.sum_sub_distrib, Finset.sum_neg_distrib]
 
-/-! ### Public continuity theorem on each chart
+private theorem inner0S_two_metricCompatible_coord_NA_sum
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DA NA : Idx -> Idx -> Real)
+    (hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * A a q) -
+          (∑ a : Idx, Γ q a * A p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (NA i j * B k l)) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (DA i j * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (NA i j * B k l))
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (U i k * U j l * (DA i j * B k l) -
+          U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l) -
+          U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hNA i j]
+          ring
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (DA i j * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)) := by
+          simp [Finset.sum_sub_distrib]
 
-Given the bridge identity and the chart-local smoothness, we obtain
-chart-local continuity of the inner product on smooth tensor sections. The
-caller supplies the continuity hypothesis on the chart-trivialised projection. -/
+private theorem inner0S_two_metricCompatible_coord_NB_sum
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DB NB : Idx -> Idx -> Real)
+    (hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * B a q) -
+          (∑ a : Idx, Γ q a * B p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * NB k l)) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * DB k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * NB k l))
+        =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (U i k * U j l * (A i j * DB k l) -
+          U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l)) -
+          U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hNB k l]
+          ring
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * DB k l)) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) -
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
+          simp [Finset.sum_sub_distrib]
 
-/-- On each chart α, given continuity of the chart-α-trivialised projections of
-the tensor sections, the pointwise inner product is continuous in `b` on the
-chart's base set. -/
-theorem chartLocal_continuous_inner_of_smooth_sections
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (T S : ∀ y : M, Tensor0SSpace s I y) (α : M)
-    (hTα : ContinuousOn
-      (fun b : M => (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (T b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b))
-      (trivializationAt E (TangentSpace I) α).baseSet)
-    (hSα : ContinuousOn
-      (fun b : M => (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (S b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b))
-      (trivializationAt E (TangentSpace I) α).baseSet) :
-    ContinuousOn
-      (fun b : M =>
-        tensorInnerPointwise_0s (I := I) (M := M) s g b
-          (Tensor0SBundle.Tensor0SSpace.toModel
-            (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (T b))
-          (Tensor0SBundle.Tensor0SSpace.toModel
-            (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (S b)))
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- Apply the bridge identity to convert the LHS to chartTensorInnerPointwise_0s,
-  -- then apply the chart-local smoothness lemma.
-  have hbridge : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
-      tensorInnerPointwise_0s (I := I) (M := M) s g b
-        (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (T b))
-        (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (S b)) =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
-        ((Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (T b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b))
-        ((Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (S b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b)) := by
-    intro b hb
-    exact tensorInnerPointwise_0s_bridge_identity (I := I) (M := M) g α s hb _ _
-  refine ContinuousOn.congr ?_ hbridge
-  exact chartTensorInnerPointwise_0s_continuousOn_smooth_args
-    (I := I) (M := M) g α s _ _ hTα hSα
+private theorem inner0S_two_metricCompatible_scalar_sum_algebra
+    (P Q A1 A2 B1 B2 : Real) :
+    (-A1 - B1) + (-A2 - B2) + P + Q =
+      (P - A1 - A2) + (Q - B1 - B2) := by
+  ring
 
-/-- Global continuity of the pointwise inner product on (0,s) tensor sections.
+private theorem inner0S_two_metricCompatible_coord_algebra
+    {Idx : Type*} [Fintype Idx]
+    (U Γ A B DA DB NA NB DU : Idx -> Idx -> Real)
+    (hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U a q) + (∑ a : Idx, Γ a q * U p a)))
+    (hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * A a q) -
+          (∑ a : Idx, Γ q a * A p a))
+    (hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * B a q) -
+          (∑ a : Idx, Γ q a * B p a)) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+        U i k * U j l * (DA i j * B k l + A i j * DB k l))) =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) := by
+  classical
+  let P : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (DA i j * B k l)
+  let Q : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * DB k l)
+  let A1 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ i a * A a j) * B k l)
+  let A2 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * ((∑ a : Idx, Γ j a * A i a) * B k l)
+  let B1 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))
+  let B2 : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))
+  have hDU1 :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        DU i k * U j l * A i j * B k l) = -A1 - B1 := by
+    simpa [A1, B1] using
+      inner0S_two_metricCompatible_coord_DU_first
+        (U := U) (Γ := Γ) (A := A) (B := B) (DU := DU) hDU
+  have hDU2 :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * DU j l * A i j * B k l) = -A2 - B2 := by
+    simpa [A2, B2] using
+      inner0S_two_metricCompatible_coord_DU_second
+        (U := U) (Γ := Γ) (A := A) (B := B) (DU := DU) hDU
+  have hNA_sum :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l)) = P - A1 - A2 := by
+    simpa [P, A1, A2] using
+      inner0S_two_metricCompatible_coord_NA_sum
+        (U := U) (Γ := Γ) (A := A) (B := B) (DA := DA) (NA := NA) hNA
+  have hNB_sum :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (A i j * NB k l)) = Q - B1 - B2 := by
+    simpa [Q, B1, B2] using
+      inner0S_two_metricCompatible_coord_NB_sum
+        (U := U) (Γ := Γ) (A := A) (B := B) (DB := DB) (NB := NB) hNB
+  have hleft :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+          U i k * U j l * (DA i j * B k l + A i j * DB k l))) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+          U i k * U j l * (DA i j * B k l + A i j * DB k l)))
+          =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (DU i k * U j l * A i j * B k l +
+            U i k * DU j l * A i j * B k l +
+            U i k * U j l * (DA i j * B k l) +
+            U i k * U j l * (A i j * DB k l)) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            refine Finset.sum_congr rfl fun j _ => ?_
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            ring
+      _ =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := by
+            simp [P, Q, Finset.sum_add_distrib, add_assoc]
+  have hright :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l))
+          =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (U i k * U j l * (NA i j * B k l) +
+            U i k * U j l * (A i j * NB k l)) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            refine Finset.sum_congr rfl fun j _ => ?_
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            ring
+      _ =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+            simp [Finset.sum_add_distrib]
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      ((DU i k * U j l + U i k * DU j l) * A i j * B k l +
+        U i k * U j l * (DA i j * B k l + A i j * DB k l)))
+        =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          DU i k * U j l * A i j * B k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * DU j l * A i j * B k l) + P + Q := hleft
+    _ = (-A1 - B1) + (-A2 - B2) + P + Q := by
+          rw [hDU1, hDU2]
+    _ = (P - A1 - A2) + (Q - B1 - B2) := by
+          exact inner0S_two_metricCompatible_scalar_sum_algebra P Q A1 A2 B1 B2
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (NA i j * B k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U i k * U j l * (A i j * NB k l)) := by
+          rw [hNA_sum, hNB_sum]
+    _ =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U i k * U j l * (NA i j * B k l + A i j * NB k l)) := hright.symm
 
-Given the chart-trivialised projection-continuity hypothesis at every point of
-`M` (one chart-α centred at each point), the inner product is globally
-continuous. The hypothesis says: for each `α ∈ M`, the chart-α-trivialised
-projection of each tensor section is continuous on the chart's base set. -/
-theorem _root_.Tensor0SBundle.continuous_inner_of_smooth_sections
-    (g : SmoothRiemannianMetric I M) (s : ℕ)
-    (T S : ∀ y : M, Tensor0SSpace s I y)
-    (hT_charts : ∀ α : M, ContinuousOn
-      (fun b : M => (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (T b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b))
-      (trivializationAt E (TangentSpace I) α).baseSet)
-    (hS_charts : ∀ α : M, ContinuousOn
-      (fun b : M => (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-          (S b)).compContinuousLinearMap
-          (fun _ : Fin s => chartJinv (I := I) (M := M) α b))
-      (trivializationAt E (TangentSpace I) α).baseSet) :
-    Continuous (fun b : M =>
-      tensorInnerPointwise_0s (I := I) (M := M) s g b
-        (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (T b))
-        (Tensor0SBundle.Tensor0SSpace.toModel
-          (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (S b))) := by
-  rw [continuous_iff_continuousAt]
-  intro b
-  have hb_base : b ∈ (trivializationAt E (TangentSpace I) b).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt _ _ b
-  have hOpen : IsOpen (trivializationAt E (TangentSpace I) b).baseSet :=
-    (trivializationAt E (TangentSpace I) b).open_baseSet
-  have hLocal := chartLocal_continuous_inner_of_smooth_sections
-    (I := I) (M := M) g s T S b (hT_charts b) (hS_charts b)
-  exact hLocal.continuousAt (hOpen.mem_nhds hb_base)
+/-- Coordinate squared norms are independent of the chosen frame realization,
+because both coordinate sums equal the intrinsic norm. -/
+theorem coord_normSq0S_eq_coord
+    {Idx₁ Idx₂ : Type*} [Fintype Idx₁] [DecidableEq Idx₁]
+    [Fintype Idx₂] [DecidableEq Idx₂]
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis₁ : Module.Basis Idx₁ Real (TangentSpace I x))
+    (gInv₁ : Idx₁ -> Idx₁ -> Real)
+    (hinv₁ : MetricInverseInBasis (I := I) g x basis₁ gInv₁)
+    (basis₂ : Module.Basis Idx₂ Real (TangentSpace I x))
+    (gInv₂ : Idx₂ -> Idx₂ -> Real)
+    (hinv₂ : MetricInverseInBasis (I := I) g x basis₂ gInv₂)
+    (A : Tensor0SSpace s I x) :
+    coordInner0S (I := I) (x := x) s gInv₁ A A basis₁ =
+      coordInner0S (I := I) (x := x) s gInv₂ A A basis₂ := by
+  rw [← normSq0S_eq_coord (I := I) g x s basis₁ gInv₁ hinv₁ A,
+    ← normSq0S_eq_coord (I := I) g x s basis₂ gInv₂ hinv₂ A]
 
-end Tensor0SRiemannian
-end Tensor
-end DifferentialGeometry
+private theorem totalNabla0SRealizes_eval_point_vector_smooth_slots
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    {s : Nat} {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    {nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s + 1)}
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov A nablaA)
+    {x : M} (W : TangentSpace I x)
+    (V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _)) :
+    nablaA x (Fin.cons W (fun q : Fin s => V q x)) =
+      extDerivFun (I := I)
+        (fun y : M => A y (fun q : Fin s => V q y)) x W -
+      ∑ q : Fin s,
+        A x
+          (Function.update (fun r : Fin s => V r x) q
+            ((cov (fun y : M => V q y) x) W)) := by
+  obtain ⟨Wsec, hWsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
+  have h0 := TotalNabla0SRealizes.eval_smooth_slots
+    (I := I) hA Wsec V x
+  simpa [hWsec] using h0
+
+private theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (hmc : DifferentialGeometry.Connection.IsMetricCompatible (I := I) cov g)
+    (alpha : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (nablaAlpha : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (hAlpha : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov alpha nablaAlpha)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M)
+    (hSharp : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x) :
+    cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x) =
+      cotangentSharp (I := I) g x
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+          (nablaAlpha x) (X x)) := by
+  classical
+  let Ysharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (alpha y)
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x)))
+      Real (TangentSpace I x) := Module.finBasis Real (TangentSpace I x)
+  apply eq_of_inner_basis_eq (I := I) g x basis
+  intro i
+  obtain ⟨Zsec, hZsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)
+  have hX : MDiffAt (T% (fun y : M => X y)) x :=
+    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hZ : MDiffAt (T% (fun y : M => Zsec y)) x :=
+    Zsec.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hmc_apply :=
+    DifferentialGeometry.Connection.metric_compatible_apply (I := I) hmc
+      (fun y : M => X y) Ysharp (fun y : M => Zsec y) hX hSharp hZ
+  have hpair_fun :
+      (fun y : M => g.inner y (Ysharp y) (Zsec y)) =
+        fun y : M => alpha y (fun _ : Fin 1 => Zsec y) := by
+    funext y
+    simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]
+  have hderiv_pair :
+      mfderiv I 𝓘(Real, Real)
+          (fun y : M => g.inner y (Ysharp y) (Zsec y)) x (X x) =
+        extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) := by
+    rw [hpair_fun]
+    exact (DifferentialGeometry.extDerivFun_real_eq_mfderiv (I := I)
+      (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x)).symm
+  have hnabla_eval :=
+    totalNabla0SRealizes_eval_point_vector_smooth_slots (I := I)
+      hAlpha (X x) (fun _ : Fin 1 => Zsec)
+  have hnabla_pair :
+      g.inner x
+          (cotangentSharp (I := I) g x
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (Zsec x) =
+        extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+          alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) := by
+    rw [cotangentSharp_inner, cotangentToDual_apply]
+    rw [tensor0S_curry_apply_cons]
+    have hupdate :
+        Function.update (fun r : Fin 1 => Zsec x) 0
+            ((cov (fun y : M => Zsec y) x) (X x)) =
+          fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x) := by
+      funext q
+      fin_cases q
+      simp
+    simpa [hupdate] using hnabla_eval
+  calc
+    g.inner x
+        (cov (fun y : M => cotangentSharp (I := I) g y (alpha y)) x (X x))
+        (basis i)
+        = g.inner x
+            (cov Ysharp x (X x)) (Zsec x) := by
+          simp [Ysharp, hZsec]
+    _ = extDerivFun (I := I)
+          (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+          alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) := by
+          have hpair_cov :
+              g.inner x (cov Ysharp x (X x)) (Zsec x) =
+                extDerivFun (I := I)
+                  (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x) -
+                  g.inner x (Ysharp x)
+                    ((cov (fun y : M => Zsec y) x) (X x)) := by
+            let a := g.inner x (cov Ysharp x (X x)) (Zsec x)
+            let b := g.inner x (Ysharp x)
+              ((cov (fun y : M => Zsec y) x) (X x))
+            let d := mfderiv I 𝓘(Real, Real)
+              (fun y : M => g.inner y (Ysharp y) (Zsec y)) x (X x)
+            let e := extDerivFun (I := I)
+              (fun y : M => alpha y (fun _ : Fin 1 => Zsec y)) x (X x)
+            change a = e - b
+            have hs : d = a + b := by
+              simpa [a, b, d] using hmc_apply
+            have hd : d = e := by
+              simpa [d, e] using hderiv_pair
+            have hsum_eq : a + b = e := hs.symm.trans hd
+            calc
+              a = a + b - b := by ring
+              _ = e - b := by rw [hsum_eq]
+          rw [hpair_cov]
+          rw [show
+            g.inner x (Ysharp x) ((cov (fun y : M => Zsec y) x) (X x)) =
+              alpha x (fun _ : Fin 1 => (cov (fun y : M => Zsec y) x) (X x)) by
+                simp [Ysharp, cotangentSharp_inner, cotangentToDual_apply]]
+    _ = g.inner x
+          (cotangentSharp (I := I) g x
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (Zsec x) := by
+          exact hnabla_pair.symm
+    _ = g.inner x
+          (cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+              (nablaAlpha x) (X x))) (basis i) := by
+          simp [hZsec]
+
+private theorem cotangentInner_metricCompatible_extDerivFun_of_sharp_mdiffAt
+    [T2Space M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (hmc : DifferentialGeometry.Connection.IsMetricCompatible (I := I) cov g)
+    (alpha beta : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1)
+    (nablaAlpha nablaBeta :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 2)
+    (hAlpha : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov alpha nablaAlpha)
+    (hBeta : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 1 cov beta nablaBeta)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M)
+    (hSharpAlpha : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (alpha y))) x)
+    (hSharpBeta : MDiffAt
+      (T% (fun y : M => cotangentSharp (I := I) g y (beta y))) x) :
+    extDerivFun (I := I)
+        (fun y : M => cotangentInner (I := I) g y (alpha y) (beta y))
+        x (X x) =
+      cotangentInner (I := I) g x
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+          (nablaAlpha x) (X x)) (beta x) +
+        cotangentInner (I := I) g x (alpha x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaBeta x) (X x)) := by
+  let Asharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (alpha y)
+  let Bsharp : (y : M) -> TangentSpace I y :=
+    fun y => cotangentSharp (I := I) g y (beta y)
+  have hX : MDiffAt (T% (fun y : M => X y)) x :=
+    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hmc_apply :=
+    DifferentialGeometry.Connection.metric_compatible_apply (I := I) hmc
+      (fun y : M => X y) Asharp Bsharp hX (by simpa [Asharp] using hSharpAlpha)
+      (by simpa [Bsharp] using hSharpBeta)
+  have hcovA :
+      cov Asharp x (X x) =
+        cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaAlpha x) (X x)) := by
+    simpa [Asharp] using
+      cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
+        cov g hmc alpha nablaAlpha hAlpha X x hSharpAlpha
+  have hcovB :
+      cov Bsharp x (X x) =
+        cotangentSharp (I := I) g x
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+            (nablaBeta x) (X x)) := by
+    simpa [Bsharp] using
+      cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
+        cov g hmc beta nablaBeta hBeta X x hSharpBeta
+  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv]
+  change
+    mfderiv I 𝓘(Real, Real)
+        (fun y : M => g.inner y (Asharp y) (Bsharp y)) x (X x) =
+      _
+  rw [hmc_apply]
+  rw [hcovA, hcovB]
+  rfl
+
+/-- Metric compatibility lifted to the induced inner product on `(0,2)`
+covariant tensor fibers.
+
+This is the tensor-metric API bridge needed by Bochner product rules.  The
+base assumption `Connection.IsMetricCompatible` only differentiates tangent
+inner products; this theorem is the induced compatibility statement for
+`inner0S g x 2` and the total covariant derivative on `(0,2)` tensors.
+
+The remaining lower frontier is the component-to-invariant assembly: in a
+coordinate-frame neighborhood, rewrite `inner0S g y 2 (A y) (B y)` as the
+four-index inverse-metric contraction, differentiate that local expression,
+use localized `nabla gInv = 0`, then invoke
+`inner0S_two_metricCompatible_coord_algebra`. -/
+theorem inner0S_two_metricCompatible_extDerivFun
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (hmc : DifferentialGeometry.Connection.IsMetricCompatible (I := I) cov g)
+    (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (nablaA nablaB :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov A nablaA)
+    (hB : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov B nablaB)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    extDerivFun (I := I)
+        (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+      inner0S (I := I) g x 2
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaA x) (X x)) (B x) +
+        inner0S (I := I) g x 2 (A x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaB x) (X x)) := by
+  -- Frontier: assemble the checked coordinate algebra with a localized
+  -- fixed-chart inverse-metric realization on the coordinate-frame base set.
+  sorry
 
 end
+
+end Tensor0SBundle

@@ -773,11 +773,11 @@ theorem contract_trace_trivialization_eq
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : TensorRSSpace (1 + r) (s + 1) I x) :
     (trivializationAt (TensorRSModel r s 𝕜 E)
-      (TensorRSSpace r s I) x₀
+      (fun y => TensorRSSpace r s I y) x₀
       ⟨x, contract_trace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x T⟩).2 =
     model_contract_trace (𝕜 := 𝕜) (E := E) r s
       ((trivializationAt (TensorRSModel (1 + r) (s + 1) 𝕜 E)
-        (TensorRSSpace (1 + r) (s + 1) I) x₀
+        (fun y => TensorRSSpace (1 + r) (s + 1) I y) x₀
         ⟨x, T⟩).2) := by
   let L : E →L[𝕜] E := (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x
   let Linv : E →L[𝕜] E :=
@@ -794,19 +794,19 @@ theorem contract_trace_trivialization_eq
       (R := 𝕜) hx z
   have h_cLMAt : ∀ (k : ℕ) (U : Tensor0SSpace k I x) (v : Fin k → E),
       (trivializationAt (Tensor0SModel k 𝕜 E)
-        (Tensor0SSpace k I) x₀).continuousLinearMapAt 𝕜 x U v =
+        (fun y => Tensor0SSpace k I y) x₀).continuousLinearMapAt 𝕜 x U v =
       U (fun i => L (v i)) := by
     intro k U v
     rw [Trivialization.continuousLinearMapAt_apply,
       show ⇑((trivializationAt (Tensor0SModel k 𝕜 E)
-        (Tensor0SSpace k I) x₀).linearMapAt 𝕜 x) =
+        (fun y => Tensor0SSpace k I y) x₀).linearMapAt 𝕜 x) =
         fun y => (trivializationAt (Tensor0SModel k 𝕜 E)
-          (Tensor0SSpace k I) x₀ ⟨x, y⟩).2 from
+          (fun y => Tensor0SSpace k I y) x₀ ⟨x, y⟩).2 from
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := 𝕜) hx]
     rfl
   have h_symmL : ∀ (k : ℕ) (U : Tensor0SModel k 𝕜 E) (u : Fin k → E),
       ((trivializationAt (Tensor0SModel k 𝕜 E)
-        (Tensor0SSpace k I) x₀).symmL 𝕜 x U) u =
+        (fun y => Tensor0SSpace k I y) x₀).symmL 𝕜 x U) u =
         U (fun i => Linv (u i)) := by
     intro k U u
     have h_inv : ∀ z : E, L (Linv z) = z := by
@@ -818,38 +818,38 @@ theorem contract_trace_trivialization_eq
       exact (h_inv (u i)).symm
     calc
       ((trivializationAt (Tensor0SModel k 𝕜 E)
-        (Tensor0SSpace k I) x₀).symmL 𝕜 x U) u
+        (fun y => Tensor0SSpace k I y) x₀).symmL 𝕜 x U) u
           = ((trivializationAt (Tensor0SModel k 𝕜 E)
-              (Tensor0SSpace k I) x₀).symmL 𝕜 x U)
+              (fun y => Tensor0SSpace k I y) x₀).symmL 𝕜 x U)
               (fun i => L (Linv (u i))) := by rw [← hu]
       _ = (trivializationAt (Tensor0SModel k 𝕜 E)
-            (Tensor0SSpace k I) x₀).continuousLinearMapAt 𝕜 x
+            (fun y => Tensor0SSpace k I y) x₀).continuousLinearMapAt 𝕜 x
             ((trivializationAt (Tensor0SModel k 𝕜 E)
-              (Tensor0SSpace k I) x₀).symmL 𝕜 x U)
+              (fun y => Tensor0SSpace k I y) x₀).symmL 𝕜 x U)
             (fun i => Linv (u i)) := (h_cLMAt k _ _).symm
       _ = U (fun i => Linv (u i)) := by
             rw [(trivializationAt (Tensor0SModel k 𝕜 E)
-              (Tensor0SSpace k I) x₀).continuousLinearMapAt_symmL
+              (fun y => Tensor0SSpace k I y) x₀).continuousLinearMapAt_symmL
               (R := 𝕜) hx]
   have h_input :
       ((trivializationAt (TensorRSModel (1 + r) (s + 1) 𝕜 E)
-        (TensorRSSpace (1 + r) (s + 1) I) x₀
+        (fun y => TensorRSSpace (1 + r) (s + 1) I y) x₀
         ⟨x, T⟩).2) =
       (model_covariantChange (𝕜 := 𝕜) (E := E) (s + 1) L).comp
         (Tx.comp (model_covariantChange (𝕜 := 𝕜) (E := E) (1 + r) Linv)) := by
     refine ContinuousLinearMap.ext fun β => ?_
     refine ContinuousMultilinearMap.ext fun v => ?_
     change (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
-        (Tensor0SSpace (s + 1) I) x₀).continuousLinearMapAt 𝕜 x
+        (fun y => Tensor0SSpace (s + 1) I y) x₀).continuousLinearMapAt 𝕜 x
         (T ((trivializationAt (Tensor0SModel (1 + r) 𝕜 E)
-          (Tensor0SSpace (1 + r) I) x₀).symmL 𝕜 x β)) v =
+          (fun y => Tensor0SSpace (1 + r) I y) x₀).symmL 𝕜 x β)) v =
       ((model_covariantChange (𝕜 := 𝕜) (E := E) (s + 1) L)
         (Tx ((model_covariantChange (𝕜 := 𝕜) (E := E) (1 + r) Linv) β))) v
     rw [h_cLMAt]
     rw [model_covariantChange_apply]
     have hβ :
         (trivializationAt (Tensor0SModel (1 + r) 𝕜 E)
-          (Tensor0SSpace (1 + r) I) x₀).symmL 𝕜 x β =
+          (fun y => Tensor0SSpace (1 + r) I y) x₀).symmL 𝕜 x β =
           (model_covariantChange (𝕜 := 𝕜) (E := E) (1 + r) Linv) β := by
       refine ContinuousMultilinearMap.ext fun u => ?_
       rw [h_symmL]
@@ -858,7 +858,7 @@ theorem contract_trace_trivialization_eq
     rfl
   have h_output :
       (trivializationAt (TensorRSModel r s 𝕜 E)
-        (TensorRSSpace r s I) x₀
+        (fun y => TensorRSSpace r s I y) x₀
         ⟨x, contract_trace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x T⟩).2 =
       (model_covariantChange (𝕜 := 𝕜) (E := E) s L).comp
         ((model_contract_trace (𝕜 := 𝕜) (E := E) r s Tx).comp
@@ -866,10 +866,10 @@ theorem contract_trace_trivialization_eq
     refine ContinuousLinearMap.ext fun β => ?_
     refine ContinuousMultilinearMap.ext fun v => ?_
     change (trivializationAt (Tensor0SModel s 𝕜 E)
-        (Tensor0SSpace s I) x₀).continuousLinearMapAt 𝕜 x
+        (fun y => Tensor0SSpace s I y) x₀).continuousLinearMapAt 𝕜 x
         ((contract_trace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x T)
           ((trivializationAt (Tensor0SModel r 𝕜 E)
-            (Tensor0SSpace r I) x₀).symmL 𝕜 x β)) v =
+            (fun y => Tensor0SSpace r I y) x₀).symmL 𝕜 x β)) v =
       ((model_covariantChange (𝕜 := 𝕜) (E := E) s L)
         ((model_contract_trace (𝕜 := 𝕜) (E := E) r s Tx)
           ((model_covariantChange (𝕜 := 𝕜) (E := E) r Linv) β))) v
@@ -878,7 +878,7 @@ theorem contract_trace_trivialization_eq
     rw [contract_trace_apply]
     have hβ :
         (trivializationAt (Tensor0SModel r 𝕜 E)
-          (Tensor0SSpace r I) x₀).symmL 𝕜 x β =
+          (fun y => Tensor0SSpace r I y) x₀).symmL 𝕜 x β =
           (model_covariantChange (𝕜 := 𝕜) (E := E) r Linv) β := by
       refine ContinuousMultilinearMap.ext fun u => ?_
       rw [h_symmL]
@@ -911,7 +911,7 @@ noncomputable def contract_covariantField_fun (r s : ℕ)
     (x : M) → TensorRSSpace r s I x :=
   fun x => contract_covariant r s x (X x) (α x)
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 400000 in
 -- The `change` reductions through the hom-bundle trivialization and id-equiv currying
 -- are heavy; we raise the heartbeat limit accordingly.
 /-- Contraction of a smooth (r, s+1)-tensor field with a smooth vector field, yielding
@@ -928,9 +928,6 @@ noncomputable def contract_covariantField (r s : ℕ)
     TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s := by
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r (s + 1)
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (s + 1)
   refine ⟨contract_covariantField_fun r s (fun x => α x) (fun x => X x), ?_⟩
   intro x₀
   rw [contMDiffAt_section]
@@ -994,20 +991,16 @@ noncomputable def contract_covariantField (r s : ℕ)
   -- `contract_covariant ... = mip ∘ ...` and `biop = compL ∘ mib`.
   change (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x
-      (model_interior_product s (X x : E)
-        ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde)) w =
+      (model_interior_product s (X x : E) ((α x) gtilde)) w =
     (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
-      (fun x => Tensor0SSpace (s + 1) I x) x₀).continuousLinearMapAt 𝕜 x
-      ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde)
+      (fun x => Tensor0SSpace (s + 1) I x) x₀).continuousLinearMapAt 𝕜 x ((α x) gtilde)
       (Fin.cons Xtilde w)
   rw [h_cLMAt_s, h_cLMAt_s1]
   -- After unfolding, both sides apply `(α x) gtilde` to a `Fin (s+1) → E` vector.
   -- LHS uses `Fin.cons (X x) (sL ∘ w)`, RHS uses `sL ∘ Fin.cons Xtilde w`.
-  change ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde :
-        Tensor0SModel (s + 1) 𝕜 E)
+  change ((α x) gtilde : Tensor0SModel (s + 1) 𝕜 E)
       (@Fin.cons s (fun _ => E) (X x : E) (fun i => sL (w i))) =
-    ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde)
-      (fun i => sL (@Fin.cons s (fun _ => E) Xtilde w i))
+    ((α x) gtilde) (fun i => sL (@Fin.cons s (fun _ => E) Xtilde w i))
   congr 1
   funext i
   refine Fin.cases ?_ ?_ i
@@ -1053,9 +1046,6 @@ noncomputable def contract_contravariantField (r s : ℕ)
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (r + 1) s
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (r + 1)
   refine ⟨contract_contravariantField_fun r s (fun x => α x) (fun x => φ x), ?_⟩
   intro x₀
   rw [contMDiffAt_section]
@@ -1171,14 +1161,12 @@ noncomputable def contract_contravariantField (r s : ℕ)
   -- `cLMAt_s ∘ (α x) ∘ symmL_{r+1}`.
   change (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x
-      ((show Tensor0SSpace (r + 1) I x →L[𝕜] Tensor0SSpace s I x from α x)
-        (model_tensorWithCovector r (Tensor0SSpace.toModel (φ x)) β_symm)) v =
+      ((α x) (model_tensorWithCovector r (Tensor0SSpace.toModel (φ x)) β_symm)) v =
     (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x
-      ((show Tensor0SSpace (r + 1) I x →L[𝕜] Tensor0SSpace s I x from α x)
-        ((trivializationAt (Tensor0SModel (r + 1) 𝕜 E)
-          (fun x => Tensor0SSpace (r + 1) I x) x₀).symmL 𝕜 x
-          (model_tensorWithCovector r atilde_x β))) v
+      ((α x) ((trivializationAt (Tensor0SModel (r + 1) 𝕜 E)
+        (fun x => Tensor0SSpace (r + 1) I x) x₀).symmL 𝕜 x
+        (model_tensorWithCovector r atilde_x β))) v
   rw [h_cLMAt_s, h_cLMAt_s]
   -- Both sides are now `(α x) Y_i (fun i => sL (v i))` for some `Y_i : Tensor0SSpace (r+1) I x`.
   -- Reduce to `Y_1 = Y_2` at the `(r+1)` level (peel off the `v`-application then the `α x`).

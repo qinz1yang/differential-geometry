@@ -700,7 +700,7 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
 
 /-! ### Total-space smoothness -/
 
-set_option maxHeartbeats 400000 in
+set_option maxHeartbeats 250000 in
 -- Smoothness proofs involving `ContMDiffWithinAtProp` on the total space of a hom/tensor
 -- bundle exceed default heartbeats due to the nested trivialization unfolding.
 /-- The total-space map induced by `multilinearHomTensorEquivAt_bundle` (forward direction)
@@ -757,7 +757,7 @@ theorem multilinearHomTensorEquivAt_bundle_smooth {r s : ℕ} :
     ] with p hp
     exact mixedToTensor_triv_eq_bundle p₀.proj p.proj hp p.snd
 
-set_option maxHeartbeats 400000 in
+set_option maxHeartbeats 250000 in
 -- Same reason as `multilinearHomTensorEquivAt_bundle_smooth` above.
 /-- The total-space map induced by the inverse of `multilinearHomTensorEquivAt_bundle`
 is `C^n`. -/

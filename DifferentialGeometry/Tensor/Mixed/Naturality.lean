@@ -102,7 +102,7 @@ theorem homEquivCDualTensor_symm_tmul
 
 /-! ### Combined naturality for `multilinearHomEquivDualMultilinearTensor` -/
 
-set_option maxHeartbeats 800000 in
+set_option maxHeartbeats 400000 in
 -- Elaboration through `homEquivCDualTensor` and the outer `TensorProduct.congr`
 -- (with a diamond on the tensor fiber's `AddCommMonoid` instance) exceeds default.
 /-- `multilinearHomEquivDualMultilinearTensor` intertwines conjugation by

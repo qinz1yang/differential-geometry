@@ -1,7 +1,7 @@
 name = "DifferentialGeometry"
 version = "1.2.1"
 keywords = ["math"]
-defaultTargets = ["DifferentialGeometry"]
+defaultTargets = ["DifferentialGeometry", "RicciFlower", "BK"]
 
 [leanOptions]
 pp.unicode.fun = true
@@ -22,3 +22,9 @@ rev = "v4.29.0"
 
 [[lean_lib]]
 name = "DifferentialGeometry"
+
+[[lean_lib]]
+name = "RicciFlower"
+
+[[lean_lib]]
+name = "BK"

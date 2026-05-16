@@ -4,6 +4,8 @@ import DifferentialGeometry.Tensor.Multilinear.Tensor
 set_option autoImplicit false
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
+set_option linter.unusedFintypeInType false
+set_option linter.unusedDecidableInType false
 
 /-!
 # Pointwise tensor components
@@ -19,9 +21,10 @@ namespace Tensor0SBundle
 open Bundle Module
 open scoped Manifold BigOperators
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E] [FiniteDimensional Real E]
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E]
 variable {H : Type*} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H}
+variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
@@ -29,7 +32,7 @@ variable {x : M}
 section Covariant
 
 variable {s q : Nat}
-variable (basis : Module.Basis Idx Real (TangentSpace I x))
+variable (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
 
 @[simp]
 theorem component0S_add
@@ -40,7 +43,7 @@ theorem component0S_add
 
 @[simp]
 theorem component0S_smul
-    (c : Real) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
+    (c : 𝕜) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (c • A) slots =
       c * component0S (I := I) basis A slots := by
   rfl
@@ -50,22 +53,18 @@ theorem component0S_product
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x)
     (slots : Fin (s + q) -> Idx) :
     component0S (I := I) basis
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I) A B) slots =
+        (Bundle.continuousMultilinearMap.product_fun A B) slots =
       component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
         component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by
-  have hP := Bundle.continuousMultilinearMap.product_fun_apply
-    (𝕜 := Real) (F := E) (E := TangentSpace I) A B
-    (fun a => basis (slots a))
-  simp only [component0S_apply]
-  exact hP
+  rw [component0S_apply, Bundle.continuousMultilinearMap.product_fun_apply]
+  rfl
 
 end Covariant
 
 section Mixed
 
 variable {r s : Nat}
-variable (basis : Module.Basis Idx Real (TangentSpace I x))
+variable (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
 
 /-- Conventional component of a mixed tensor in the Hom model.
 
@@ -73,7 +72,7 @@ The `upper` indices select the covariant basis tensor used as Hom input; the
 `lower` indices evaluate the covariant output on basis vectors. -/
 def componentRS
     (T : TensorRSSpace r s I x)
-    (upper : Fin r -> Idx) (lower : Fin s -> Idx) : Real :=
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
   component0S (I := I) basis (T (basisTensor0S (I := I) basis upper)) lower
 
 @[simp]
@@ -85,7 +84,9 @@ theorem componentRS_apply
         (fun a => basis (lower a)) :=
   rfl
 
-private theorem componentRS_expand_input
+/-- Expanding the Hom input of a mixed tensor in a basis gives the usual
+component contraction formula. -/
+theorem componentRS_apply_input_eq_sum
     (T : TensorRSSpace r s I x) (input : Tensor0SSpace r I x)
     (lower : Fin s -> Idx) :
     component0S (I := I) basis (T input) lower =
@@ -127,16 +128,14 @@ theorem extRS_basis
       componentRS (I := I) basis A upper lower =
         componentRS (I := I) basis B upper lower) :
     A = B := by
-  -- Show that A input = B input for every input via the basis decomposition
-  have key : ∀ input : Tensor0SSpace r I x, A input = B input := by
-    intro input
-    apply ext0S_basis (I := I) basis
-    intro lower
-    rw [componentRS_expand_input (I := I) basis A input lower,
-      componentRS_expand_input (I := I) basis B input lower]
-    refine Finset.sum_congr rfl fun upper _ => ?_
-    rw [h upper lower]
-  exact ContinuousLinearMap.ext (f := A) (g := B) key
+  apply ContinuousLinearMap.ext
+  intro input
+  apply ext0S_basis (I := I) basis
+  intro lower
+  rw [componentRS_apply_input_eq_sum (I := I) basis A input lower,
+    componentRS_apply_input_eq_sum (I := I) basis B input lower]
+  refine Finset.sum_congr rfl fun upper _ => ?_
+  rw [h upper lower]
 
 end Mixed
 
