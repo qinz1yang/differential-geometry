@@ -418,6 +418,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Existence
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.NonSmooth
