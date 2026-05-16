@@ -395,8 +395,7 @@ private lemma tendsto_indicator_diff_mul_zero_of_tendsto
   · have hg : g = 0 := hg0 hu0
     simp [hu0, hg]
   by_cases hu : 0 < u
-  ·
-    have hpos : ∀ᶠ n in atTop, 0 < a n := by
+  · have hpos : ∀ᶠ n in atTop, 0 < a n := by
       have hnhds : {y : ℝ | u / 2 < y} ∈ 𝓝 u := Ioi_mem_nhds (by linarith)
       filter_upwards [ha hnhds] with n hn
       have hu_half : 0 < u / 2 := by linarith
@@ -404,8 +403,7 @@ private lemma tendsto_indicator_diff_mul_zero_of_tendsto
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [hpos] with n hn
     simp [hn, hu]
-  ·
-    have hu_neg : u < 0 := by
+  · have hu_neg : u < 0 := by
       exact lt_of_le_of_ne (le_of_not_gt hu) (by simpa using hu0)
     have hneg : ∀ᶠ n in atTop, a n < u / 2 := by
       have hnhds : {y : ℝ | y < u / 2} ∈ 𝓝 u := Iio_mem_nhds (by linarith)
@@ -547,27 +545,23 @@ private lemma lineDeriv_positivePart_eq_of_contDiff
       if 0 < f x then fderiv ℝ f x v else 0 := by
   have hfdiff : Differentiable ℝ f := hf.differentiable one_ne_zero
   by_cases hx : 0 < f x
-  ·
-    have hEq : (fun y => max (f y) 0) =ᶠ[𝓝 x] f := by
+  · have hEq : (fun y => max (f y) 0) =ᶠ[𝓝 x] f := by
       have hpos : ∀ᶠ y in nhds x, 0 < f y :=
         (isOpen_lt continuous_const hf.continuous).mem_nhds hx
       filter_upwards [hpos] with y hy
       simp [max_eq_left hy.le]
     rw [hEq.lineDeriv_eq]
     simpa [hx] using (hfdiff x).lineDeriv_eq_fderiv (v := v)
-  ·
-    have hx_nonpos : f x ≤ 0 := le_of_not_gt hx
+  · have hx_nonpos : f x ≤ 0 := le_of_not_gt hx
     by_cases hx_zero : f x = 0
-    ·
-      have hmin : IsLocalMin (fun y => max (f y) 0) x := by
+    · have hmin : IsLocalMin (fun y => max (f y) 0) x := by
         change ∀ᶠ y in nhds x, max (f x) 0 ≤ max (f y) 0
         filter_upwards [] with y
         simp [hx_zero]
       have hzero : lineDeriv ℝ (fun y => max (f y) 0) x v = 0 := by
         simpa using congrFun hmin.lineDeriv_eq_zero v
       simp [hx, hzero]
-    ·
-      have hx_neg : f x < 0 := lt_of_le_of_ne hx_nonpos hx_zero
+    · have hx_neg : f x < 0 := lt_of_le_of_ne hx_nonpos hx_zero
       have hEq : (fun y => max (f y) 0) =ᶠ[nhds x] fun _ => (0 : ℝ) := by
         have hneg : ∀ᶠ y in nhds x, f y < 0 :=
           (isOpen_lt hf.continuous continuous_const).mem_nhds hx_neg
@@ -707,11 +701,9 @@ noncomputable def MemW1pWitness.posPart_of_aux
       weakGrad := fun x => if 0 < u x then hw.weakGrad x else 0
       weakGrad_component_memLp := ?_
       isWeakGrad := ?_ }
-  ·
-    intro i
+  · intro i
     simpa using posPartGrad_component_memLp hw i
-  ·
-    intro i
+  · intro i
     let μ : Measure E := volume.restrict Ω
     let g : E → ℝ := fun x => if 0 < u x then hw.weakGrad x i else 0
     let gψ : ℕ → E → ℝ := fun n x =>

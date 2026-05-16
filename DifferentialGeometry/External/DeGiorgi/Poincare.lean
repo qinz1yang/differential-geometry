@@ -254,7 +254,7 @@ private lemma indicator_integrable_on_sphere_prod
     funext ⟨z, hz⟩
     simp only [Function.comp_apply, homeomorphUnitSphereProd_apply_snd_coe,
       homeomorphUnitSphereProd_apply_fst_coe]
-    show G (‖z‖ • (‖z‖⁻¹ • z)) = G z
+    change G (‖z‖ • (‖z‖⁻¹ • z)) = G z
     rw [smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.mpr (Set.mem_compl_singleton_iff.mp hz)),
       one_smul]
   rw [hcomp, ← integrableOn_iff_comap_subtypeVal (measurableSet_singleton _).compl]
@@ -417,7 +417,7 @@ theorem norm_sub_le_integral_fderiv_along_segment
     simp only [Function.comp_apply, hγ0, hγ1] at this
     linarith
   have hω_norm : ‖ω‖ = 1 := by
-    show ‖‖x - y‖⁻¹ • (y - x)‖ = 1
+    change ‖‖x - y‖⁻¹ • (y - x)‖ = 1
     rw [norm_smul, norm_inv, norm_norm, norm_sub_rev y x,
       inv_mul_cancel₀ (norm_ne_zero_iff.mpr (sub_ne_zero.mpr hxy))]
   rw [norm_sub_rev]
@@ -858,7 +858,7 @@ theorem riesz_kernel_L1_bound
           rw [← hmp.integrableOn_comp_preimage hemb, hpre]
           exact (riesz_kernel_integrable h2R).congr
             (ae_of_all _ (fun z => by
-              show ‖z‖ ^ (1 - (d : ℝ)) = ‖x - (z + x)‖ ^ (1 - (d : ℝ))
+              change ‖z‖ ^ (1 - (d : ℝ)) = ‖x - (z + x)‖ ^ (1 - (d : ℝ))
               simp [norm_neg]))
         calc ∫ y in Metric.ball (0 : E) R, ‖x - y‖ ^ (1 - (d : ℝ)) ∂volume
             ≤ ∫ y in Metric.ball x (2 * R), ‖x - y‖ ^ (1 - (d : ℝ)) ∂volume := by
@@ -890,7 +890,7 @@ theorem representation_formula_smooth
     haveI : IsFiniteMeasure μ := ⟨by rw [Measure.restrict_apply_univ]; exact hB_fin.lt_top⟩
     haveI : NeZero μ := ⟨by rwa [ne_eq, Measure.restrict_eq_zero]⟩
     have havg_eq : u x - ubar = ⨍ y, (u x - u y) ∂μ := by
-      show u x - ⨍ y, u y ∂μ = ⨍ y, (u x - u y) ∂μ
+      change u x - ⨍ y, u y ∂μ = ⨍ y, (u x - u y) ∂μ
       rw [average_eq, average_eq,
         integral_sub (integrable_const (u x)) hu_int.integrable,
         integral_const, smul_sub]
@@ -899,7 +899,7 @@ theorem representation_formula_smooth
         exact ENNReal.toReal_ne_zero.mpr ⟨hB_ne, hB_fin⟩
       rw [inv_smul_smul₀ hne]
     rw [havg_eq]
-    show ‖⨍ y, (u x - u y) ∂μ‖ ≤ ⨍ y, ‖u x - u y‖ ∂μ
+    change ‖⨍ y, (u x - u y) ∂μ‖ ≤ ⨍ y, ‖u x - u y‖ ∂μ
     simp only [average_eq]
     calc ‖(μ.real Set.univ)⁻¹ • ∫ y, (u x - u y) ∂μ‖
         ≤ ‖(μ.real Set.univ)⁻¹‖ * ‖∫ y, (u x - u y) ∂μ‖ := norm_smul_le _ _
@@ -958,7 +958,7 @@ theorem representation_formula_smooth
     have h2R : (0 : ℝ) < 2 * R := by linarith
     exact (riesz_kernel_integrable (d := d) h2R).congr
       (ae_of_all _ (fun z => by
-        show ‖z‖ ^ (1 - (d : ℝ)) = ‖(z + x) - x‖ ^ (1 - (d : ℝ))
+        change ‖z‖ ^ (1 - (d : ℝ)) = ‖(z + x) - x‖ ^ (1 - (d : ℝ))
         abel_nf))
   have hk : IntegrableOn (fun y : E => ‖y - x‖ ^ (1 - (d : ℝ))) B volume :=
     hk_big.mono_set hBsub
@@ -1187,7 +1187,7 @@ theorem representation_formula_smooth
     ring
   have havg_unfold : ⨍ y in B, ‖u x - u y‖ ∂volume =
       volB⁻¹ * ∫ y in B, ‖u x - u y‖ ∂volume := by
-    show _ = (volume B).toReal⁻¹ * _
+    change _ = (volume B).toReal⁻¹ * _
     rw [average_eq, smul_eq_mul, measureReal_restrict_apply_univ, measureReal_def]
   rw [havg_unfold]
   calc volB⁻¹ * ∫ y in B, ‖u x - u y‖ ∂volume
@@ -1432,7 +1432,7 @@ theorem poincare_smooth_unitBall
         rw [← hmp.integrableOn_comp_preimage hemb, hpre]
         exact (riesz_kernel_integrable (by norm_num : (0 : ℝ) < 2)).congr
           (ae_of_all _ fun z => by
-            show ‖z‖ ^ (1 - (d : ℝ)) = K (x - (z + x))
+            change ‖z‖ ^ (1 - (d : ℝ)) = K (x - (z + x))
             simp [K, norm_neg])
       refine hball_int.mono_set ?_
       intro y hy

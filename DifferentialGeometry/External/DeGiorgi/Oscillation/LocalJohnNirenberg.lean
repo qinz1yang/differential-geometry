@@ -265,7 +265,7 @@ lemma abs_sub_const_bmo_le_two
     have hle_int2 : ∫ x in B, ‖w x - avg_w‖ ∂volume ≤
         2 * ∫ x in B, ‖u x - avg_u‖ ∂volume := by linarith [hosc_vol]
     -- Divide by volume.real B
-    show ⨍ x in B, ‖w x - avg_w‖ ∂volume ≤ osc_u + osc_u
+    change ⨍ x in B, ‖w x - avg_w‖ ∂volume ≤ osc_u + osc_u
     rw [hosc_u_def, setAverage_eq, setAverage_eq, smul_eq_mul, smul_eq_mul]
     calc (volume.real B)⁻¹ * ∫ x in B, ‖w x - avg_w‖ ∂volume
         ≤ (volume.real B)⁻¹ * (2 * ∫ x in B, ‖u x - avg_u‖ ∂volume) :=

@@ -309,6 +309,17 @@ theorem cotangentSharp_inner
       cotangentToDual (I := I) α X
   exact h
 
+/-- Fiberwise evaluation form of `cotangentSharp_inner`.
+
+This is the convenient rewrite for moving between the sharped tangent field and
+the original one-form slot evaluation. -/
+theorem cotangentSharp_inner_eval
+    (g : SmoothMetric I M) (x : M)
+    (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
+    g.inner x (cotangentSharp (I := I) g x α) X =
+      α (fun _ : Fin 1 => X) := by
+  rw [cotangentSharp_inner, cotangentToDual_apply]
+
 /-- Two tangent vectors are equal if they have the same metric pairing with a
 basis. -/
 theorem eq_of_inner_basis_eq

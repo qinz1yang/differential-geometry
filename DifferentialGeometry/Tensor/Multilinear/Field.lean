@@ -193,7 +193,7 @@ theorem fromScalarField_toScalarField
   apply ContMDiffSection.ext; intro x
   simp only [fromScalarField]
   apply Bundle.continuousMultilinearMap.ext; intro v
-  show (ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E x)
+  change (ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E x)
     (α.toFun x Fin.elim0)) v = α.toFun x v
   rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
   exact congrArg (α.toFun x) (Subsingleton.elim Fin.elim0 v)
@@ -217,7 +217,7 @@ theorem toScalarField_smulByFun
     (smulByFun n φ hφ α).toScalarField n = φ * α.toScalarField n := by
   ext x
   simp only [toScalarField, Pi.mul_apply]
-  show (φ x • α.toFun x) Fin.elim0 = φ x * α.toFun x Fin.elim0
+  change (φ x • α.toFun x) Fin.elim0 = φ x * α.toFun x Fin.elim0
   rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
 
 end MultilinearSection

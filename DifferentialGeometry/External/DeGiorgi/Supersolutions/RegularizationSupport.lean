@@ -19,7 +19,7 @@ variable {d : ℕ} [NeZero d]
 local notation "E" => AmbientSpace d
 local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 
-set_option maxHeartbeats 200000
+set_option maxHeartbeats 200000 in
 
 def superEpsSeq (n : ℕ) : ℝ := (((n : ℝ) + 1) : ℝ)⁻¹
 

@@ -48,8 +48,12 @@ variable
   {N : Type*} [NormedAddCommGroup N] [NormedSpace 𝕜 N]
   {N' : Type*} [NormedAddCommGroup N'] [NormedSpace 𝕜 N']
   {N'' : Type*} [NormedAddCommGroup N''] [NormedSpace 𝕜 N'']
-  {ι : Type*} [Fintype ι]
-  {ι' : Type*} [Fintype ι']
+  {ι : Type*}
+  {ι' : Type*}
+
+section Binary
+
+variable [Fintype ι] [Fintype ι']
 
 /-- Given a continuous bilinear map `f : N →L[𝕜] N' →L[𝕜] N''` and continuous alternating maps
 `g : M [⋀^ι]→L[𝕜] N` and `h : M' [⋀^ι']→L[𝕜] N'`, produce the alternating map
@@ -122,6 +126,8 @@ theorem compContinuousAlternatingMap₂_lsmul_apply
     (ContinuousLinearMap.lsmul 𝕜 𝕜).compContinuousAlternatingMap₂ g h m m' = (g m) • (h m') :=
   rfl
 
+end Binary
+
 /-- Post-composition with a semilinear isometry `f : F →ₛₗᵢ[σ₂₃] G` defines a semilinear
 isometry `(E →SL[σ₁₂] F) →ₛₗᵢ[σ₂₃] (E →SL[σ₁₃] G)`. The norm is preserved because `f` is
 norm-preserving. -/
@@ -136,12 +142,15 @@ noncomputable def _root_.LinearIsometry.compLeft {𝕜 : Type*} {𝕜₂ : Type*
   { ContinuousLinearMap.compSL _ _ _ _ _ f.toContinuousLinearMap with
     norm_map' := fun _ ↦ f.norm_toContinuousLinearMap_comp }
 
+variable [Finite ι]
+
 /-- Pre-composition with a continuous linear map `p : M →L[𝕜] M'` defines a continuous linear
 operator `(M' [⋀^ι]→L[𝕜] N) →L[𝕜] (M [⋀^ι]→L[𝕜] N)`, and the assignment `p ↦ (· ∘ p)` is
 itself continuous. The proof reduces to the multilinear case via the isometric embedding. -/
 theorem compContinuousAlternatingMapCLM_cont :
     Continuous (ContinuousAlternatingMap.compContinuousLinearMapCLM :
     (M →L[𝕜] M') → (M' [⋀^ι]→L[𝕜] N) →L[𝕜] (M [⋀^ι]→L[𝕜] N)) := by
+  letI := Fintype.ofFinite ι
   let φ : (M [⋀^ι]→L[𝕜] N) →ₗᵢ[𝕜] _ := ContinuousAlternatingMap.toContinuousMultilinearMapLI
   let Φ : ((M' [⋀^ι]→L[𝕜] N) →L[𝕜] (M [⋀^ι]→L[𝕜] N)) →ₗᵢ[𝕜] _ := φ.compLeft _ (RingHom.id _)
   rw [← Φ.comp_continuous_iff]
@@ -200,7 +209,7 @@ section Continuous
 
 variable
   (𝕜 : Type*) [NontriviallyNormedField 𝕜]
-  (ι : Type*) [Fintype ι]
+  (ι : Type*) [Finite ι]
   (F₁ F₂ : Type*) [NormedAddCommGroup F₁] [NormedSpace 𝕜 F₁]
   [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂] [ContinuousAdd F₁]
 
@@ -210,6 +219,7 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapL_continuous :
     Continuous (fun p : F₁ →L[𝕜] F₁ ↦
     (ContinuousAlternatingMap.compContinuousLinearMapCLM p :
     (F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂))) := by
+  letI := Fintype.ofFinite ι
   -- Composition with inclusion into multilinear maps
   let φ : (F₁ [⋀^ι]→L[𝕜] F₂) →ₗᵢ[𝕜] _ := ContinuousAlternatingMap.toContinuousMultilinearMapLI
   let Φ : ((F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂)) →ₗᵢ[𝕜] _ := φ.compLeft _ (RingHom.id _)

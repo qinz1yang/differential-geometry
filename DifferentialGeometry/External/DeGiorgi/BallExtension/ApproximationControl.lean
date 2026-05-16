@@ -992,8 +992,8 @@ lemma norm_sub_le_of_fderiv_bound_closedBall
   simpa [norm_sub_rev] using h
 
 -- Inner proof extracted to a standalone lemma to keep the proof context small.
-omit [NeZero d] in
 set_option maxHeartbeats 1600000 in
+omit [NeZero d] in
 lemma shellSubPsi_error_bound_at
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     {C : ℝ} (hC_nonneg : 0 ≤ C) (hC : ∀ x ∈ sphereOneControl (d := d),
@@ -1078,8 +1078,8 @@ theorem exists_shellFormula_error_bound
   rcases exists_shellFormula_fderiv_bound (d := d) hψ with ⟨C, hC_nonneg, hC⟩
   exact ⟨C, hC_nonneg, fun n x hx => shellFormula_error_bound_at (d := d) hψ hC_nonneg hC hx⟩
 
-omit [NeZero d] in
 set_option maxHeartbeats 800000 in
+omit [NeZero d] in
 theorem exists_fun_error_bound_badSet
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) :
     ∃ C : ℝ, 0 ≤ C ∧

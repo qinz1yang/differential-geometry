@@ -160,8 +160,8 @@ private theorem tendsto_eLpNorm_smoothUnitBallExtensionApprox_sub_unitBallExtens
   rw [hEq0] at hLpF0
   simpa [F] using hLpF0
 
-omit [NeZero d] in
 set_option maxHeartbeats 1600000 in
+omit [NeZero d] in
 private theorem exists_gradApply_error_bound_badAnnulusOne
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -349,8 +349,8 @@ private theorem exists_gradApply_error_bound_badAnnulusOne
             linarith
       _ ≤ Cder + Cerr * (↑Mst / 2) := product_bound_cancel_eps hε
 
-omit [NeZero d] in
 set_option maxHeartbeats 1600000 in
+omit [NeZero d] in
 private theorem exists_gradApply_error_bound_badAnnulusTwo
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -536,8 +536,8 @@ private theorem exists_gradApply_error_bound_badAnnulusTwo
             linarith
       _ ≤ Cder + Cerr * (↑Mst / 2) := product_bound_cancel_eps hε
 
-omit [NeZero d] in
 set_option maxHeartbeats 1600000 in
+omit [NeZero d] in
 private lemma fderiv_smoothUnitBallExtensionApprox_eq_exactUnitBallExtensionGradApply_of_not_mem_badSet
     {ψ : E → ℝ} {n : ℕ} {x : E} {i : Fin d}
     (hx1 : x ∉ Metric.sphere (0 : E) 1)
@@ -668,8 +668,8 @@ private lemma fderiv_smoothUnitBallExtensionApprox_eq_exactUnitBallExtensionGrad
         using congrArg (fun A => A (EuclideanSpace.single i 1)) hDer
 
 -- Standalone: pointwise gradient convergence at a point away from spheres.
-omit [NeZero d] in
 set_option maxHeartbeats 1600000 in
+omit [NeZero d] in
 private lemma tendsto_fderiv_sub_exactGrad_pointwise
     {ψ : E → ℝ} {x : E} {i : Fin d}
     (hx1 : x ∉ Metric.sphere (0 : E) 1) (hx2 : x ∉ Metric.sphere (0 : E) 2)
@@ -839,8 +839,8 @@ private theorem tendsto_eLpNorm_fderiv_smoothUnitBallExtensionApprox_sub_exactGr
   rw [hEq0] at hLpF0
   simpa [F] using hLpF0
 
-omit [NeZero d] in
 set_option maxHeartbeats 800000 in
+omit [NeZero d] in
 private theorem memLp_smoothUnitBallExtensionApprox_sub_unitBallExtension
     {p : ℝ} (_hp : 1 < p) {ψ : E → ℝ}
     (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (n : ℕ) :
@@ -1356,8 +1356,8 @@ theorem smooth_input_unitBallExtension_smoothing
   filter_upwards with x; simp [hwExt]
 
 
-omit [NeZero d] in
 set_option maxHeartbeats 800000 in
+omit [NeZero d] in
 /-- Lintegral component bound: ∫ |F · i|^p ≤ ∫ ‖F‖^p. Uses lintegral_mono. -/
 theorem lintegral_rpow_abs_component_le_lintegral_rpow_norm
     {p : ℝ} (hp : 0 < p) {F : E → E} (i : Fin d) {μ : Measure E} :

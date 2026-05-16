@@ -48,7 +48,7 @@ theorem le_essInf_real_of_ae_le
     intro a ha
     rw [Set.mem_setOf_eq] at ha
     by_contra hle
-    push_neg at hle
+    push Not at hle
     have hsubset : {x | u x ≤ (N : ℝ)} ⊆ {x | u x < a} := by
       intro x hx
       exact lt_of_le_of_lt hx hle

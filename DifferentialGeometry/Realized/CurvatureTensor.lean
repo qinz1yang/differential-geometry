@@ -332,4 +332,29 @@ theorem scalar_eq_trace
 end CurvatureTensorData
 
 end Realized
+
+namespace Curvature
+
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+/-- Compatibility alias for the static curvature namespace used by RicciFlower. -/
+def vec2 {x : M} (X Y : TangentSpace I x) : Fin 2 -> TangentSpace I x :=
+  fun i => if i = 0 then X else Y
+
+/-- Compatibility alias for the static curvature namespace used by RicciFlower. -/
+def vec3 {x : M} (X Y Z : TangentSpace I x) : Fin 3 -> TangentSpace I x :=
+  fun i => if i = 0 then X else if i = 1 then Y else Z
+
+/-- Compatibility alias for the static curvature namespace used by RicciFlower. -/
+def vec4 {x : M} (W X Y Z : TangentSpace I x) : Fin 4 -> TangentSpace I x :=
+  fun i => if i = 0 then W else if i = 1 then X else if i = 2 then Y else Z
+
+end Curvature
+
 end DifferentialGeometry

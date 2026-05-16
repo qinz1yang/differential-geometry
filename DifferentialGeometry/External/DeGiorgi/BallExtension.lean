@@ -100,7 +100,7 @@ theorem aestronglyMeasurable_unitBallExtension_of_memLp
     simp only [unitBallExtension]
     by_cases h2 : 2 ≤ ‖x‖
     · simp [unitBallCutoff_eq_zero_of_two_le_norm (d := d) h2]
-    · push_neg at h2
+    · push Not at h2
       rw [Metric.mem_sphere, dist_zero_right] at hx_sph
       rcases lt_or_gt_of_ne hx_sph with h1 | h1
       · -- ‖x‖ < 1: retraction = identity, x ∈ ball(0,1)

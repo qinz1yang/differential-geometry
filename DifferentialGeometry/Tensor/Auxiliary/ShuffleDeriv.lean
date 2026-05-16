@@ -95,7 +95,8 @@ private theorem decomposeFin_symm_zero_inv (e : Equiv.Perm (Fin (m + n))) :
   ext x; refine Fin.cases (by simp) (fun i => by simp [Equiv.swap_self]) x
 
 /-- Helper: `(permCongr e a)⁻¹ * (permCongr e b) = permCongr e (a⁻¹ * b)`. -/
-private theorem permCongr_inv_mul {α β : Type*} (e : α ≃ β) (a b : Equiv.Perm α) :
+private theorem permCongr_inv_mul {α β : Type*} [DecidableEq α] [DecidableEq β] [Fintype α]
+    [Fintype β] (e : α ≃ β) (a b : Equiv.Perm α) :
     (e.permCongr a)⁻¹ * (e.permCongr b) = e.permCongr (a⁻¹ * b) := by
   have hinv : e.permCongr a⁻¹ = (e.permCongr a)⁻¹ := by
     ext x; simp [Equiv.Perm.inv_def, Equiv.permCongr]; rfl
@@ -191,7 +192,7 @@ theorem derivShuffleJ_wd (k : Fin (m + n + 1))
   subst h_eq
   simp only [derivShuffleJ, Fin.mk.injEq]
   -- After substitution, the filter predicate for σ₁ * sumCongr becomes P ∘ τ_l
-  change (Finset.univ.filter (fun i =>
+  show (Finset.univ.filter (fun i =>
     (permFinOfSum σ₁ (Fin.castAdd n i)).val < k.val)).card =
     (Finset.univ.filter (fun i =>
     (permFinOfSum (σ₁ * Equiv.Perm.sumCongr τ_l τ_r) (Fin.castAdd n i)).val < k.val)).card
@@ -569,34 +570,11 @@ private theorem derivShuffleFwd_card :
     ((Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range)
   have hm1n := Subgroup.card_eq_card_quotient_mul_card_subgroup
     ((Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range)
-  have hmn' :
-      Nat.factorial (m + n) =
-        Fintype.card
-          (Equiv.Perm (Fin m ⊕ Fin n) ⧸
-            (Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range) *
-          (Nat.factorial m * Nat.factorial n) := by
-    simpa [Nat.card_eq_fintype_card, Fintype.card_perm, Fintype.card_fin,
-      modSumCongr_range_card_fin] using hmn
-  have hm1n' :
-      Nat.factorial (m + 1 + n) =
-        Fintype.card
-          (Equiv.Perm (Fin (m + 1) ⊕ Fin n) ⧸
-            (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range) *
-          (Nat.factorial (m + 1) * Nat.factorial n) := by
-    simpa [Nat.card_eq_fintype_card, Fintype.card_perm, Fintype.card_fin,
-      modSumCongr_range_card_fin] using hm1n
-  rw [Fintype.card_prod, Fintype.card_fin]
-  rw [Fintype.card_prod, Fintype.card_fin]
-  change (m + n + 1) *
-      Fintype.card
-        (Equiv.Perm (Fin m ⊕ Fin n) ⧸
-          (Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range) =
-    Fintype.card
-        (Equiv.Perm (Fin (m + 1) ⊕ Fin n) ⧸
-          (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range) *
-      (m + 1)
-  rw [show m + 1 + n = m + n + 1 by omega, Nat.factorial_succ] at hm1n'
-  rw [Nat.factorial_succ] at hm1n'
+  simp [Nat.card_eq_fintype_card, Fintype.card_perm, Fintype.card_fin,
+    modSumCongr_range_card_fin] at hmn hm1n
+  simp [Equiv.Perm.ModSumCongr, Fintype.card_fin]
+  rw [show m + 1 + n = m + n + 1 by omega, Nat.factorial_succ] at hm1n
+  rw [Nat.factorial_succ] at hm1n
   apply Nat.mul_right_cancel (show 0 < Nat.factorial m * Nat.factorial n by positivity)
   calc
     ((m + n + 1) *
@@ -604,12 +582,12 @@ private theorem derivShuffleFwd_card :
           (Equiv.Perm (Fin m ⊕ Fin n) ⧸ (Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range)) *
         (Nat.factorial m * Nat.factorial n)
         = (m + n + 1) * Nat.factorial (m + n) := by
-          nlinarith [hmn']
+          nlinarith [hmn]
     _ = Fintype.card
           (Equiv.Perm (Fin (m + 1) ⊕ Fin n) ⧸
             (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range) *
         ((m + 1) * (Nat.factorial m * Nat.factorial n)) := by
-          simpa [mul_assoc] using hm1n'
+          simpa [mul_assoc] using hm1n
     _ = (Fintype.card
           (Equiv.Perm (Fin (m + 1) ⊕ Fin n) ⧸
             (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range) * (m + 1)) *

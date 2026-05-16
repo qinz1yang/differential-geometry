@@ -380,7 +380,7 @@ theorem simple_iteration_lemma
       --   = (8/9)^(n+1) M + 144 A_iter - (8/9)^(n+1) * 144 A_iter
       --   = (8/9)^(n+1) M + (1 - (8/9)^(n+1)) * 144 A_iter = bound (n+1) ✓
       suffices 8 / 9 * bound n + 16 * A_iter = bound (n + 1) by linarith
-      show 8 / 9 * ((8 / 9) ^ n * M + (1 - (8 / 9) ^ n) * (144 * A_iter)) + 16 * A_iter =
+      change 8 / 9 * ((8 / 9) ^ n * M + (1 - (8 / 9) ^ n) * (144 * A_iter)) + 16 * A_iter =
         (8 / 9) ^ (n + 1) * M + (1 - (8 / 9) ^ (n + 1)) * (144 * A_iter)
       rw [pow_succ]
       ring
@@ -421,7 +421,7 @@ theorem simple_iteration_lemma
   have hN' : (8 / 9) ^ N * M < ε / 4 := hN N (le_refl _)
   -- bound N ≤ (8/9)^N * M + 144 * A_iter
   have hboundN : bound N ≤ (8 / 9) ^ N * M + 144 * A_iter := by
-    show (8 / 9) ^ N * M + (1 - (8 / 9) ^ N) * (144 * A_iter) ≤
+    change (8 / 9) ^ N * M + (1 - (8 / 9) ^ N) * (144 * A_iter) ≤
       (8 / 9) ^ N * M + 144 * A_iter
     nlinarith [pow_nonneg h89_nn N, hA_iter]
   calc ρ (1 / 2)

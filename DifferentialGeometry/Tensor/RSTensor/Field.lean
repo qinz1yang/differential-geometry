@@ -2,6 +2,7 @@
 Authors: Yuan Liao, Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.Product.Defs
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Tensor
@@ -59,6 +60,115 @@ abbrev Tensor0SField (s : ℕ) :=
     (Tensor0SModel s 𝕜 E)
     n
     (fun x : M => Tensor0SSpace s I x)
+
+section ApplyInput
+
+variable {r s : ℕ} [CompleteSpace 𝕜]
+
+/-- Model-level evaluation of a mixed tensor on a covariant tensor input,
+packaged as a continuous bilinear map. -/
+noncomputable def model_applyInput_bilinear (r s : ℕ) :
+    Tensor0SModel r 𝕜 E →L[𝕜]
+      (TensorRSModel r s 𝕜 E →L[𝕜] Tensor0SModel s 𝕜 E) :=
+  ContinuousLinearMap.flip
+    (ContinuousLinearMap.id 𝕜 (TensorRSModel r s 𝕜 E))
+
+@[simp]
+theorem model_applyInput_bilinear_apply (r s : ℕ)
+    (θ : Tensor0SModel r 𝕜 E) (T : TensorRSModel r s 𝕜 E) :
+    model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s θ T = T θ := rfl
+
+/-- Fixed-trivialization model identity for evaluating a mixed tensor on a
+covariant input. -/
+theorem tensor0SModelAt_applyInput_eq
+    (r s : ℕ) {x₀ x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
+    (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
+    (θ : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x) :
+    ((trivializationAt (Tensor0SModel s 𝕜 E)
+        (fun x => Tensor0SSpace s I x) x₀) ⟨x, T θ⟩).2 =
+      (((trivializationAt (TensorRSModel r s 𝕜 E)
+          (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2)
+        (((trivializationAt (Tensor0SModel r 𝕜 E)
+          (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ⟩).2) := by
+  ext v
+  rw [Tensor0SSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
+    (x₀ := x₀) (x := x) s hx]
+  rw [TensorRSSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
+    (x₀ := x₀) (x := x) r s hx]
+  have hθ :
+      (trivializationAt (Tensor0SModel r 𝕜 E)
+        (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x
+        (((trivializationAt (Tensor0SModel r 𝕜 E)
+          (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ⟩).2) = θ := by
+    have hcoord :
+        (trivializationAt (Tensor0SModel r 𝕜 E)
+          (fun x => Tensor0SSpace r I x) x₀).continuousLinearMapAt 𝕜 x θ =
+          ((trivializationAt (Tensor0SModel r 𝕜 E)
+            (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ⟩).2 := by
+      rw [Bundle.Trivialization.continuousLinearMapAt_apply]
+      exact congrFun ((trivializationAt (Tensor0SModel r 𝕜 E)
+        (fun x => Tensor0SSpace r I x) x₀).coe_linearMapAt_of_mem (R := 𝕜) hx) θ
+    rw [← hcoord]
+    exact (trivializationAt (Tensor0SModel r 𝕜 E)
+      (fun x => Tensor0SSpace r I x) x₀).symmL_continuousLinearMapAt
+        (R := 𝕜) hx θ
+  rw [hθ]
+
+/-- Pointwise evaluation of a mixed tensor field on a covariant tensor field. -/
+noncomputable def tensorRSField_applyInput_fun
+    (T : (x : M) ->
+      TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
+    (θ : (x : M) ->
+      Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x) :
+    (x : M) ->
+      Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x :=
+  fun x => T x (θ x)
+
+/-- Evaluating a smooth mixed tensor field on a smooth covariant tensor input
+gives a smooth covariant tensor field. -/
+noncomputable def tensorRSField_applyInput
+    (T : TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (θ : Tensor0SField n r (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  refine ⟨tensorRSField_applyInput_fun (𝕜 := 𝕜) (E := E) (H := H)
+    (I := I) (M := M) (r := r) (s := s) (fun x => T x) (fun x => θ x), ?_⟩
+  intro x₀
+  rw [contMDiffAt_section]
+  have hT := T.contMDiff x₀
+  rw [contMDiffAt_section] at hT
+  have hθ := θ.contMDiff x₀
+  rw [contMDiffAt_section] at hθ
+  have hcombine :
+      ContMDiffAt I 𝓘(𝕜, Tensor0SModel s 𝕜 E) n
+        (fun x : M =>
+          model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s
+            (((trivializationAt (Tensor0SModel r 𝕜 E)
+                (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ x⟩).2)
+            (((trivializationAt (TensorRSModel r s 𝕜 E)
+                (fun x => TensorRSSpace r s I x) x₀) ⟨x, T x⟩).2)) x₀ := by
+    exact ((contMDiffAt_const
+      (c := model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s)).clm_apply hθ).clm_apply hT
+  refine hcombine.congr_of_eventuallyEq ?_
+  filter_upwards
+    [(trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
+      (mem_baseSet_trivializationAt E (TangentSpace I) x₀)] with x hx
+  exact tensor0SModelAt_applyInput_eq (𝕜 := 𝕜) (E := E) (I := I)
+    (M := M) r s hx (T x) (θ x)
+
+@[simp]
+theorem tensorRSField_applyInput_apply
+    (T : TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (θ : Tensor0SField n r (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (x : M) :
+    tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) n T θ x = T x (θ x) := by
+  simp [tensorRSField_applyInput, tensorRSField_applyInput_fun]
+
+end ApplyInput
 
 /-!
 ## Manifold tensor fields: addition and smooth-function scalar multiplication
@@ -262,30 +372,22 @@ theorem Tensor0SField.toScalarField_smulByFun [CompleteSpace 𝕜]
     Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, Pi.mul_apply, smul_eq_mul]
 
 /-!
-## Embedding (0,s)-tensor fields as (0,s)-valued TensorRS fields
+## Embedding (0,s)-tensor fields as (0,s)-valued TensorRS fields  (DEAD CODE — no callers)
 
-A `Tensor0SSpace s I x` element `T` embeds into `TensorRSSpace 0 s I x` (= `Tensor0SSpace 0 I x
-→L[𝕜] Tensor0SSpace s I x`) by sending `c ↦ (toModel c Fin.elim0) • T`, i.e. extracting the
-scalar from the (0,0)-tensor `c` and scaling `T`.
+A `Tensor0SSpace s I x` element `T` embeds into `TensorRSSpace 0 s I x`
+(= `Tensor0SSpace 0 I x →L[𝕜] Tensor0SSpace s I x`) by sending
+`c ↦ (toModel c Fin.elim0) • T`, i.e. extracting the scalar from the
+(0,0)-tensor `c` and scaling `T`.
+
+This old specialized sketch is not kept as commented Lean code, because it is
+easy for stub audits to mistake it for an active obligation. The live general
+version is `MixedSection.fromMultilinearSection` in `DifferentialGeometry.Tensor.Mixed.Field`:
+it constructs the same fiberwise map
+`c ↦ (eval₀ x c) • T` and proves smoothness by trivializing both multilinear
+bundles, reducing the `0`-multilinear coordinate to evaluation at `Fin.elim0`,
+and applying a constant `ContinuousLinearMap.smulRightL` to the smooth
+multilinear section.
 -/
-
-omit n in
-/-- The continuous linear map that extracts the scalar value from a `Tensor0SSpace 0 I x`
-element: compose `toModelL` (the identity equiv) with evaluation at the empty tuple. -/
-noncomputable def tensor0SSpace_evalScalar (x : M) :
-    Tensor0SSpace 0 I x →L[𝕜] 𝕜 :=
-  (ContinuousMultilinearMap.apply 𝕜 (fun _ : Fin 0 => E) 𝕜 Fin.elim0).comp
-    (Tensor0SSpace.toModelL 0 x)
-
-/-- Embed a (0,s)-tensor into a (0,s)-valued (0,0→s) tensor: given `T : Tensor0SSpace s I x`,
-produce the continuous linear map `c ↦ (evalScalar c) • T`. -/
-noncomputable def Tensor0SField.toTensorRSField {s : ℕ} [CompleteSpace 𝕜]
-    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
-    TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0 s
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  ⟨fun x => ContinuousLinearMap.smulRight (tensor0SSpace_evalScalar x) (α x), by
-    sorry⟩
 
 end
 end Tensor0SBundle

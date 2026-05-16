@@ -122,7 +122,6 @@ theorem superPowerCutoffFwd_tsupport_subset
   (tsupport_mul_subset_left
     (f := η) (g := fun x => |u x| ^ (p / 2))).trans hη_sub_ball
 
-set_option maxHeartbeats 1000000
 
 
 end DeGiorgi

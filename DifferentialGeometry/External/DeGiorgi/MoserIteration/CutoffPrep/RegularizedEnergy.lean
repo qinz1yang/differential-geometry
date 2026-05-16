@@ -64,7 +64,6 @@ lemma moserRegPowerCutoffWitness_norm_sq_le
     have hcomp : (moserRegClippedPosPartWitness (d := d) (u := u) (p := p)
         hs hs1 hε hN hu1).weakGrad x i =
       deriv (moserRegPow ε N p) (min (max (u x) 0) N) * hwClip.weakGrad x i := by
-      set_option maxHeartbeats 400000 in
       simp only [moserRegClippedPosPartWitness, MemW1pWitness.comp_smooth_bounded]
       ring
     rw [hgi, hcomp]

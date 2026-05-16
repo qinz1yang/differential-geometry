@@ -188,8 +188,7 @@ lemma smoothUnitBallExtensionApprox_eq_of_mem_innerCore {ε : ℝ}
   · unfold smoothUnitBallExtensionApprox
     rw [sphereOneBlend_eq_zero_of_mem_ball (d := d) hε hx]
     ring
-  ·
-    rw [Metric.mem_ball, dist_zero_right] at hx ⊢
+  · rw [Metric.mem_ball, dist_zero_right] at hx ⊢
     linarith
 
 omit [NeZero d] in

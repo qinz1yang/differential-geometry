@@ -22,6 +22,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => AmbientSpace d
 
+set_option linter.style.setOption false
 set_option maxHeartbeats 800000
 set_option synthInstance.maxHeartbeats 100000
 

@@ -118,7 +118,7 @@ private lemma weakPartialDeriv_rescale_to_unitBall
     rwa [inv_mul_lt_iff₀ hR, mul_one] at h2
   have key := hg_weak ψ hψ_smooth hψ_supp hψ_tsub
   have hψ_at_T : ∀ z : E, ψ (x₀ + R • z) = φ z := fun z => by
-    show φ (R⁻¹ • ((x₀ + R • z) - x₀)) = φ z
+    change φ (R⁻¹ • ((x₀ + R • z) - x₀)) = φ z
     simp [smul_smul, inv_mul_cancel₀ hR.ne']
   have hfderiv_rel : ∀ z : E, (fderiv ℝ φ z) (EuclideanSpace.single i 1) =
       R * (fderiv ℝ ψ (x₀ + R • z)) (EuclideanSpace.single i 1) := by

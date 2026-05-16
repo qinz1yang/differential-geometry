@@ -61,7 +61,7 @@ private lemma smoothTransition_nnnorm_deriv_bounded :
     · by_cases hx1 : 1 < x
       · rw [st_deriv_zero_gt hx1, norm_zero]
         exact norm_nonneg _
-      · push_neg at hx0 hx1
+      · push Not at hx0 hx1
         exact Filter.eventually_principal.mp hM_max x (Set.mem_Icc.2 ⟨hx0, hx1⟩)
   refine ⟨⟨‖deriv smoothTransition M‖, norm_nonneg _⟩, fun x => ?_⟩
   rw [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]

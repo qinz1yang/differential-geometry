@@ -344,8 +344,7 @@ theorem MemW01p.add
     exact (hφu_compact n).add (hφv_compact n)
   · intro n
     exact (tsupport_add (φu n) (φv n)).trans <| union_subset (hφu_sub n) (hφv_sub n)
-  ·
-    have hupper :
+  · have hupper :
         ∀ n,
           eLpNorm (fun x => (φu n x + φv n x) - (u x + v x)) 2 (volume.restrict Ω) ≤
             eLpNorm (fun x => φu n x - u x) 2 (volume.restrict Ω) +
@@ -455,8 +454,7 @@ theorem MemW01p.smul
   · intro n
     simpa [Pi.smul_apply, smul_eq_mul] using
       (tsupport_smul_subset_right (fun _ : E => c) (φ n)).trans (hφ_sub n)
-  ·
-    have hscaled :
+  · have hscaled :
         Tendsto
           (fun n =>
             ‖c‖ₑ * eLpNorm (fun x => φ n x - u x) 2 (volume.restrict Ω))

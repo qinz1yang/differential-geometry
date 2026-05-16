@@ -506,8 +506,7 @@ private theorem MemW01p.transportFromUnitBall
     have hx' := hφ_sub n ((tsupport_comp_subset_preimage _ hcont) hx)
     have : x ∈ (fun x : E => R⁻¹ • (x - x₀)) ⁻¹' Metric.ball (0 : E) 1 := hx'
     simpa [inverse_affine_preimage_unitBall (d := d) (x₀ := x₀) hR] using this
-  ·
-    let C : ENNReal := ENNReal.ofReal (R ^ (d / (2 : ENNReal).toReal))
+  · let C : ENNReal := ENNReal.ofReal (R ^ (d / (2 : ENNReal).toReal))
     have hEq :
         (fun n =>
           eLpNorm (fun x => ψ n x -

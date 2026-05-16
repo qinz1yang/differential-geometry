@@ -609,7 +609,7 @@ theorem superExactShiftReg_deriv_bounded
       change (0 : ℝ) ≤ max ‖deriv (superExactShiftReg ε a) Mmid‖ (|a| * ε ^ (a - 1))
       exact le_trans (norm_nonneg _) (le_max_left _ _)
     exact hMnonneg
-  · push_neg at hlow
+  · push Not at hlow
     by_cases hnonpos : t ≤ 0
     · have hbound :
           ‖deriv (superExactShiftReg ε a) t‖ ≤ ‖deriv (superExactShiftReg ε a) Mmid‖ :=

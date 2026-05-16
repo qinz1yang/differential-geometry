@@ -198,7 +198,7 @@ private lemma euclidean_norm_le_sum_norms (v : EuclideanSpace ℝ (Fin d)) :
   rw [EuclideanSpace.norm_eq]
   let nv : Fin d → ℝ := fun i => ‖v i‖
   have hnv : ∀ i, 0 ≤ nv i := fun i => norm_nonneg (v i)
-  show √(∑ i : Fin d, nv i ^ 2) ≤ ∑ i : Fin d, nv i
+  change √(∑ i : Fin d, nv i ^ 2) ≤ ∑ i : Fin d, nv i
   calc √(∑ i : Fin d, nv i ^ 2)
       ≤ √((∑ i : Fin d, nv i) ^ 2) := by
         apply Real.sqrt_le_sqrt
@@ -391,7 +391,7 @@ private theorem poincare_unitBall_W1p
           (⨍ y in B, (ψ n y - u y) ∂volume)) := by
       have h_avg_sub : ⨍ y in B, (ψ n y - u y) ∂volume =
           ⨍ y in B, ψ n y ∂volume - ⨍ y in B, u y ∂volume := by
-        show ⨍ y, (ψ n y - u y) ∂μ = ⨍ y, ψ n y ∂μ - ⨍ y, u y ∂μ
+        change ⨍ y, (ψ n y - u y) ∂μ = ⨍ y, ψ n y ∂μ - ⨍ y, u y ∂μ
         simp only [average_eq, integral_sub (hψ_int n) hu_int, smul_sub]
       filter_upwards with x
       linarith [h_avg_sub]
@@ -521,13 +521,13 @@ private theorem extension_gradient_eLpNorm_bound
     fun x => by rw [Real.norm_eq_abs]
   have hpow : Gext ^ p ≤ Gv ^ p + Ce * (Fv ^ p + Gv ^ p) := by
     have hGext_eq : Gext ^ p = ∫⁻ x, (ENNReal.ofReal ‖hwExt.weakGrad x‖) ^ p ∂volume := by
-      show eLpNorm (fun x => ‖hwExt.weakGrad x‖) pp volume ^ p = _
+      change eLpNorm (fun x => ‖hwExt.weakGrad x‖) pp volume ^ p = _
       rw [eLpNorm_norm, ← lintegral_rpow_norm_eq_eLpNorm_pow hp0]
     have hGv_eq : Gv ^ p = ∫⁻ x in B, (ENNReal.ofReal ‖hwv.weakGrad x‖) ^ p ∂volume := by
-      show eLpNorm (fun x => ‖hwv.weakGrad x‖) pp μ ^ p = _
+      change eLpNorm (fun x => ‖hwv.weakGrad x‖) pp μ ^ p = _
       rw [eLpNorm_norm, ← lintegral_rpow_norm_eq_eLpNorm_pow hp0]
     have hFv_eq : Fv ^ p = ∫⁻ x in B, (ENNReal.ofReal |v x|) ^ p ∂volume := by
-      show eLpNorm v pp μ ^ p = _
+      change eLpNorm v pp μ ^ p = _
       have : (fun x => (ENNReal.ofReal ‖v x‖) ^ p) = (fun x => (ENNReal.ofReal |v x|) ^ p) :=
         funext fun x => by rw [Real.norm_eq_abs]
       rw [← lintegral_rpow_norm_eq_eLpNorm_pow hp0, this]
@@ -542,13 +542,13 @@ private theorem extension_gradient_eLpNorm_bound
       _ ≤ Gv ^ p + Ce * (Cp ^ p * Gv ^ p + Gv ^ p) := by gcongr
       _ = (1 + Ce * (Cp ^ p + 1)) * Gv ^ p := by ring
   have hCe1 : 1 ≤ Ce := by
-    show 1 ≤ ENNReal.ofReal ((2 : ℝ) ^ (2 * d)) * (2 : ℝ≥0∞) ^ (p - 1)
+    change 1 ≤ ENNReal.ofReal ((2 : ℝ) ^ (2 * d)) * (2 : ℝ≥0∞) ^ (p - 1)
     calc (1 : ℝ≥0∞) ≤ ENNReal.ofReal ((2 : ℝ) ^ (2 * d)) :=
             (ENNReal.one_le_ofReal).mpr (one_le_pow₀ (by norm_num : (1:ℝ) ≤ 2))
       _ ≤ _ := le_mul_of_one_le_right (by positivity)
             (ENNReal.one_le_rpow (by norm_num : (1:ℝ≥0∞) ≤ 2) (by linarith : 0 < p - 1))
   have hK : 1 + Ce * (Cp ^ p + 1) ≤ (C_extensionGrad d p) ^ p := by
-    show 1 + Ce * (Cp ^ p + 1) ≤ (1 + Ce * (Cp + 1)) ^ p
+    change 1 + Ce * (Cp ^ p + 1) ≤ (1 + Ce * (Cp + 1)) ^ p
     have hCep : Ce ≤ Ce ^ p := by
       conv_lhs => rw [show Ce = Ce ^ (1 : ℝ) from (ENNReal.rpow_one Ce).symm]
       exact ENNReal.rpow_le_rpow_of_exponent_le hCe1 hp1
@@ -765,7 +765,7 @@ theorem sobolev_poincare_smooth_unitBall
     exact hmain
   apply eLpNorm_congr_ae
   filter_upwards with x
-  show ‖WithLp.toLp 2 (fun i => (fderiv ℝ u x) (EuclideanSpace.single i 1))‖ =
+  change ‖WithLp.toLp 2 (fun i => (fderiv ℝ u x) (EuclideanSpace.single i 1))‖ =
     ‖fderiv ℝ u x‖
   exact norm_fderiv_eq_norm_partials_local (d := d).symm
 

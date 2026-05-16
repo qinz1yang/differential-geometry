@@ -19,7 +19,7 @@ variable {d : ℕ} [NeZero d]
 local notation "E" => AmbientSpace d
 local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 
-set_option maxHeartbeats 1000000
+set_option maxHeartbeats 1000000 in
 
 theorem superPowerCutoffFwd_energy_bound_reg
     (_hd : 2 < (d : ℝ))

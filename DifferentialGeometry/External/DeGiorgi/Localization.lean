@@ -136,8 +136,8 @@ private noncomputable def affineMeasurableEmbedding
   ((MeasurableEquiv.addLeft x₀).measurableEmbedding).comp
     ((Homeomorph.smulOfNeZero R hR.ne').toMeasurableEquiv.measurableEmbedding)
 
-omit [NeZero d] in
 set_option maxHeartbeats 5000000 in
+omit [NeZero d] in
 theorem essSup_rescale_halfBall
     {x₀ : E} {R : ℝ} (hR : 0 < R) {u : E → ℝ} :
     essSup (fun z : E => u (x₀ + R • z))
@@ -174,8 +174,8 @@ theorem essSup_rescale_halfBall
   ext a
   simpa [μsrc, μdst, T, ae_iff, not_le] using hiff a
 
-omit [NeZero d] in
 set_option maxHeartbeats 5000000 in
+omit [NeZero d] in
 theorem essInf_rescale_halfBall
     {x₀ : E} {R : ℝ} (hR : 0 < R) {u : E → ℝ} :
     essInf (fun z : E => u (x₀ + R • z))

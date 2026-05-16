@@ -32,7 +32,6 @@ local notation "E" => AmbientSpace d
 local notation "μ1" => volume.restrict (Metric.ball (0 : E) 1)
 local notation "μhalf" => volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))
 
-set_option maxHeartbeats 5000000
 
 set_option maxHeartbeats 5000000 in
 omit [NeZero d] in

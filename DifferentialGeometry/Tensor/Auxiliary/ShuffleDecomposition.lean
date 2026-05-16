@@ -149,7 +149,7 @@ theorem restrictComplement_sign
     Equiv.Perm.sign (restrictComplement σ hfix) = Equiv.Perm.sign σ := by
   unfold restrictComplement
   rw [ShuffleSplit.removeNone_sign, Equiv.Perm.sign_permCongr]
-  show finSuccSumOptionEquiv (σ (finSuccSumOptionEquiv.symm none)) = none
+  change finSuccSumOptionEquiv (σ (finSuccSumOptionEquiv.symm none)) = none
   rw [finSuccSumOptionEquiv_symm_none, hfix, finSuccSumOptionEquiv_inl_zero]
 
 /-- A block-permutation `sumCongr τ_l τ_r` with `τ_l 0 = 0` restricts (via
@@ -186,12 +186,12 @@ theorem restrictComplement_sumCongr_mem
   refine ⟨a', ?_⟩
   change (finSuccSumOptionEquiv (Equiv.Perm.sumCongr τ_l τ_r
     (finSuccSumOptionEquiv.symm (some (Sum.inl a))))) = some (Sum.inl a')
-  show ShuffleSplit.optionSumEquiv
+  change ShuffleSplit.optionSumEquiv
     (Sum.map (finSuccEquiv' 0) id
       (Sum.map τ_l τ_r
         (Sum.map (finSuccEquiv' 0).symm id
           (Sum.inl (some a))))) = some (Sum.inl a')
-  simp only [Sum.map_inl, id_eq]
+  simp only [Sum.map_inl]
   rw [show (finSuccEquiv' (0 : Fin (m + 1))).symm (some a) = Fin.succAbove 0 a from
     (finSuccEquiv'_succAbove 0 a ▸ (finSuccEquiv' 0).symm_apply_apply _).symm,
     ha']; rfl
@@ -228,7 +228,7 @@ theorem shuffleLeftFwd_wd
     obtain ⟨⟨τ_l, τ_r⟩, hτ⟩ := h_rel
     refine ⟨⟨(Equiv.swap 0 k₁)⁻¹ * τ_l * Equiv.swap 0 k₂, τ_r⟩, ?_⟩
     simp only [Equiv.Perm.sumCongrHom_apply]
-    show Equiv.Perm.sumCongr ((Equiv.swap 0 k₁)⁻¹ * τ_l * Equiv.swap 0 k₂)
+    change Equiv.Perm.sumCongr ((Equiv.swap 0 k₁)⁻¹ * τ_l * Equiv.swap 0 k₂)
       τ_r = n1⁻¹ * n2
     have hτ_eq : Equiv.Perm.sumCongr τ_l τ_r = σ₁⁻¹ * σ₂ := by
       change (Equiv.Perm.sumCongrHom _ _ (τ_l, τ_r) : Equiv.Perm _) = _; exact hτ
@@ -254,10 +254,10 @@ theorem shuffleLeftFwd_wd
     have : Equiv.Perm.sumCongr τ_l τ_r (Sum.inl 0) = Sum.inl 0 := hτ_eq ▸ hn12
     simpa using this
   have h_n1_none : Equiv.permCongr finSuccSumOptionEquiv n1 none = none := by
-    show finSuccSumOptionEquiv (n1 (finSuccSumOptionEquiv.symm none)) = none
+    change finSuccSumOptionEquiv (n1 (finSuccSumOptionEquiv.symm none)) = none
     rw [finSuccSumOptionEquiv_symm_none, hn1, finSuccSumOptionEquiv_inl_zero]
   have h_n2_none : Equiv.permCongr finSuccSumOptionEquiv n2 none = none := by
-    show finSuccSumOptionEquiv (n2 (finSuccSumOptionEquiv.symm none)) = none
+    change finSuccSumOptionEquiv (n2 (finSuccSumOptionEquiv.symm none)) = none
     rw [finSuccSumOptionEquiv_symm_none, hn2, finSuccSumOptionEquiv_inl_zero]
   have h_rc_mul : (restrictComplement n1 hn1)⁻¹ * restrictComplement n2 hn2 =
       restrictComplement (n1⁻¹ * n2) hn12 := by
@@ -341,7 +341,7 @@ theorem shuffleLeftBwd_wd
     apply finSuccSumOptionEquiv.injective
     simp only [Equiv.Perm.coe_mul, Function.comp_apply, Equiv.permCongr_apply,
       Equiv.apply_symm_apply, Equiv.optionCongr_apply]
-    show finSuccSumOptionEquiv
+    change finSuccSumOptionEquiv
       ((Equiv.permCongr finSuccSumOptionEquiv.symm s1.optionCongr)⁻¹
         (finSuccSumOptionEquiv.symm (Option.map s2 (finSuccSumOptionEquiv x)))) =
       Option.map (fun x => s1⁻¹ (s2 x)) (finSuccSumOptionEquiv x)
@@ -368,7 +368,7 @@ theorem shuffleLeftBwd_wd
   · simp only [shuffleLeftBwd, Equiv.permCongr_apply, Equiv.sumCongr_apply, Sum.map_inl,
       Equiv.optionCongr_apply, liftPermSucc]
     simp only [finSuccSumOptionEquiv, ShuffleSplit.optionSumEquiv,
-      Sum.map_inl, Equiv.symm_trans_apply]
+      Equiv.symm_trans_apply]
     rcases h : (finSuccEquiv' (0 : Fin (m + 1))) a with _ | a' <;> simp [h]
   · simp [shuffleLeftBwd, Equiv.permCongr_apply, Equiv.sumCongr_apply,
       Equiv.optionCongr_apply, finSuccSumOptionEquiv, ShuffleSplit.optionSumEquiv]
@@ -495,7 +495,7 @@ theorem restrictComplement_lift
   unfold restrictComplement
   set σ := Equiv.permCongr finSuccSumOptionEquiv ν with hσ_def
   have h_fix : σ none = none := by
-    show finSuccSumOptionEquiv (ν (finSuccSumOptionEquiv.symm none)) = none
+    change finSuccSumOptionEquiv (ν (finSuccSumOptionEquiv.symm none)) = none
     rw [finSuccSumOptionEquiv_symm_none, hν, finSuccSumOptionEquiv_inl_zero]
   have h_some_y : ∃ x, σ (some y) = some x := by
     rcases h : σ (some y) with _ | x
@@ -588,7 +588,7 @@ theorem restrictComplementRight_sign
     Equiv.Perm.sign (restrictComplementRight σ hfix) = Equiv.Perm.sign σ := by
   unfold restrictComplementRight
   rw [ShuffleSplit.removeNone_sign, Equiv.Perm.sign_permCongr]
-  show finSumSuccOptionEquiv (σ (finSumSuccOptionEquiv.symm none)) = none
+  change finSumSuccOptionEquiv (σ (finSumSuccOptionEquiv.symm none)) = none
   rw [finSumSuccOptionEquiv_symm_none, hfix, finSumSuccOptionEquiv_inr_zero]
 
 /-- Lift relation: for `ν` fixing `inr 0`, `restrictComplementRight ν` and `ν` agree
@@ -602,7 +602,7 @@ theorem restrictComplementRight_lift
   unfold restrictComplementRight
   set σ := Equiv.permCongr finSumSuccOptionEquiv ν with hσ_def
   have h_fix : σ none = none := by
-    show finSumSuccOptionEquiv (ν (finSumSuccOptionEquiv.symm none)) = none
+    change finSumSuccOptionEquiv (ν (finSumSuccOptionEquiv.symm none)) = none
     rw [finSumSuccOptionEquiv_symm_none, hν, finSumSuccOptionEquiv_inr_zero]
   have h_some_y : ∃ x, σ (some y) = some x := by
     rcases h : σ (some y) with _ | x
@@ -649,12 +649,12 @@ theorem shuffleRightBwd_isRight (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
   refine ⟨0, ?_⟩
   unfold shuffleRightBwd
   rw [mul_inv_rev]
-  show (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
+  change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
       ((Equiv.swap (Sum.inl 0) (Sum.inr 0))⁻¹ (Sum.inl 0)) = Sum.inr 0
   rw [Equiv.swap_inv, Equiv.swap_apply_left]
   change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr).symm
     (Sum.inr 0) = Sum.inr 0
-  show finSumSuccOptionEquiv.symm (σ'.optionCongr.symm
+  change finSumSuccOptionEquiv.symm (σ'.optionCongr.symm
     (finSumSuccOptionEquiv (Sum.inr 0))) = Sum.inr 0
   rw [finSumSuccOptionEquiv_inr_zero]
   rw [show σ'.optionCongr.symm none = (none : Option (Fin (m + 1) ⊕ Fin n)) from by
@@ -697,7 +697,7 @@ theorem restrictComplementRight_sumCongr_mem
       (Sum.inl (τ_l a)) = some (Sum.inl (τ_l a)) := by
     simp [finSumSuccOptionEquiv, Equiv.sumComm, finSuccSumOptionEquiv,
       ShuffleSplit.optionSumEquiv, Equiv.optionCongr_apply]
-  show (Equiv.permCongr finSumSuccOptionEquiv (Equiv.Perm.sumCongr τ_l τ_r))
+  change (Equiv.permCongr finSumSuccOptionEquiv (Equiv.Perm.sumCongr τ_l τ_r))
     (some (Sum.inl a)) = some (Sum.inl (τ_l a))
   rw [Equiv.permCongr_apply, h_bwd]
   simp only [Equiv.sumCongr_apply, Sum.map_inl]
@@ -726,7 +726,7 @@ theorem shuffleRightFwd_wd
     obtain ⟨⟨τ_l, τ_r⟩, hτ⟩ := h_rel
     refine ⟨⟨τ_l, (Equiv.swap 0 k₁)⁻¹ * τ_r * Equiv.swap 0 k₂⟩, ?_⟩
     simp only [Equiv.Perm.sumCongrHom_apply]
-    show Equiv.Perm.sumCongr τ_l
+    change Equiv.Perm.sumCongr τ_l
       ((Equiv.swap 0 k₁)⁻¹ * τ_r * Equiv.swap 0 k₂) = n1⁻¹ * n2
     have hτ_eq : Equiv.Perm.sumCongr τ_l τ_r = σ₁⁻¹ * σ₂ := by
       change (Equiv.Perm.sumCongrHom _ _ (τ_l, τ_r) : Equiv.Perm _) = _; exact hτ
@@ -758,10 +758,10 @@ theorem shuffleRightFwd_wd
     have : Equiv.Perm.sumCongr τ_l τ_r (Sum.inr 0) = Sum.inr 0 := hτ_eq ▸ hn12
     simpa using this
   have h_n1_none : Equiv.permCongr finSumSuccOptionEquiv n1 none = none := by
-    show finSumSuccOptionEquiv (n1 (finSumSuccOptionEquiv.symm none)) = none
+    change finSumSuccOptionEquiv (n1 (finSumSuccOptionEquiv.symm none)) = none
     rw [finSumSuccOptionEquiv_symm_none, hn1, finSumSuccOptionEquiv_inr_zero]
   have h_n2_none : Equiv.permCongr finSumSuccOptionEquiv n2 none = none := by
-    show finSumSuccOptionEquiv (n2 (finSumSuccOptionEquiv.symm none)) = none
+    change finSumSuccOptionEquiv (n2 (finSumSuccOptionEquiv.symm none)) = none
     rw [finSumSuccOptionEquiv_symm_none, hn2, finSumSuccOptionEquiv_inr_zero]
   have h_rc_mul : (restrictComplementRight n1 hn1)⁻¹ *
       restrictComplementRight n2 hn2 =
@@ -809,7 +809,7 @@ theorem shuffleRightBwd_wd
     apply finSumSuccOptionEquiv.injective
     simp only [Equiv.Perm.coe_mul, Function.comp_apply, Equiv.permCongr_apply,
       Equiv.apply_symm_apply, Equiv.optionCongr_apply]
-    show finSumSuccOptionEquiv
+    change finSumSuccOptionEquiv
       ((Equiv.permCongr finSumSuccOptionEquiv.symm σ₁'.optionCongr)⁻¹
         (finSumSuccOptionEquiv.symm (Option.map σ₂' (finSumSuccOptionEquiv x)))) =
       Option.map (fun x => σ₁'⁻¹ (σ₂' x)) (finSumSuccOptionEquiv x)
@@ -864,7 +864,7 @@ theorem shuffleRightBwd_wd
       have h1 : (finSuccEquiv' (0 : Fin (n + 1))) b'.succ = some b' :=
         finSuccEquiv'_above (Fin.zero_le _)
       rw [h1]
-      simp [Equiv.optionCongr_apply]
+      simp
 
 /-- `restrictComplementRight ∘ shuffleRightBwd` simplifies to a no-swap inverse. -/
 theorem restrictComplementRight_shuffleRightBwd
@@ -886,12 +886,12 @@ theorem shuffleRight_fwd_bwd_eq
   have h_inv_zero : (shuffleRightBwd σ')⁻¹ (Sum.inl 0) = Sum.inr 0 := by
     unfold shuffleRightBwd
     rw [mul_inv_rev]
-    show (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
+    change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)⁻¹
         ((Equiv.swap (Sum.inl 0) (Sum.inr 0))⁻¹ (Sum.inl 0)) = Sum.inr 0
     rw [Equiv.swap_inv, Equiv.swap_apply_left]
     change (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr).symm
       (Sum.inr 0) = Sum.inr 0
-    show finSumSuccOptionEquiv.symm (σ'.optionCongr.symm
+    change finSumSuccOptionEquiv.symm (σ'.optionCongr.symm
       (finSumSuccOptionEquiv (Sum.inr 0))) = Sum.inr 0
     rw [finSumSuccOptionEquiv_inr_zero]
     rw [show σ'.optionCongr.symm none = (none : Option (Fin (m + 1) ⊕ Fin n)) from by

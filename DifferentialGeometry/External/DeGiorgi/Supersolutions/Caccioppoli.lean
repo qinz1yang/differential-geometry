@@ -450,7 +450,7 @@ theorem weighted_caccioppoli_of_supersolution
     simpa [sq_abs, mul_assoc, mul_left_comm, mul_comm] using hsq
   -- Since `R` is defined using `‖∇φ‖²`, the upper ellipticity bound
   -- `⟨A∇φ, ∇φ⟩ ≤ Λ ‖∇φ‖²` contributes the factor `Λ` in the final estimate.
-  show absP ≤ 4 * A.1.Λ * R
+  change absP ≤ 4 * A.1.Λ * R
   by_cases habsP_zero : absP = 0
   · rw [habsP_zero]
     apply mul_nonneg (mul_nonneg (by positivity) A.1.Λ_nonneg)

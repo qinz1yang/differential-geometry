@@ -697,8 +697,8 @@ private theorem setIntegral_fderiv_eq_of_tsupport_subset
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero h1,
       setIntegral_eq_integral_of_forall_compl_eq_zero h2]
 
-omit [NeZero d] in
 set_option maxHeartbeats 3200000 in
+omit [NeZero d] in
 /-- Local-to-global for `HasWeakPartialDeriv'`: if the property holds on every
 ball `B(x, r) ⊆ Ω` (with `x ∈ Ω`), then it holds on `Ω`.
 
@@ -776,7 +776,7 @@ private theorem HasWeakPartialDeriv'_of_local
     intro x
     refine finsum_eq_sum_of_support_subset _ (fun k hk => ?_)
     rw [mem_support] at hk
-    show k ∈ S; rw [Finite.mem_toFinset]; show (support (ρ k : E → ℝ) ∩ K).Nonempty
+    change k ∈ S; rw [Finite.mem_toFinset]; change (support (ρ k : E → ℝ) ∩ K).Nonempty
     by_cases hx : x ∈ K
     · exact ⟨x, mem_support.mpr (left_ne_zero_of_mul hk), hx⟩
     · exact absurd (image_eq_zero_of_notMem_tsupport hx) (right_ne_zero_of_mul hk)
@@ -840,10 +840,10 @@ private noncomputable def MemW1p.toWitness
   memLp := hu.1
   weakGrad := fun x => (WithLp.toLp 2 fun j => (hu.2 j).choose x : E)
   weakGrad_component_memLp := fun j => by
-    show MemLp (fun x => (WithLp.toLp 2 fun j' => (hu.2 j').choose x : E) j) p _
+    change MemLp (fun x => (WithLp.toLp 2 fun j' => (hu.2 j').choose x : E) j) p _
     simpa using (hu.2 j).choose_spec.1
   isWeakGrad := fun j => by
-    show HasWeakPartialDeriv (d := d) j
+    change HasWeakPartialDeriv (d := d) j
       (fun x => (WithLp.toLp 2 fun j' => (hu.2 j').choose x : E) j) f Ω
     simpa using (hu.2 j).choose_spec.2
 

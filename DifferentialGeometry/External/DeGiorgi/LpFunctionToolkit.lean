@@ -293,7 +293,7 @@ theorem tendsto_eLpNorm_pi_component
       eLpNorm (fun x => G n x - Gext x) p μ := by
     intro n
     -- Rewrite LHS to match eLpNorm_pi_component_le's input
-    show eLpNorm (fun x => (G n - Gext) x i) p μ ≤ _
+    change eLpNorm (fun x => (G n - Gext) x i) p μ ≤ _
     exact eLpNorm_pi_component_le i
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hG_tendsto
     (fun _ => bot_le) hle
@@ -325,7 +325,7 @@ theorem exists_pi_limit_of_cauchy_eLpNorm
     intro i
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hG_cauchy
       (fun _ => bot_le) (fun nm => by
-        show eLpNorm ((G nm.1 - G nm.2) · i) p μ ≤
+        change eLpNorm ((G nm.1 - G nm.2) · i) p μ ≤
           eLpNorm (fun x => G nm.1 x - G nm.2 x) p μ
         exact eLpNorm_pi_component_le i)
   have hcomp_memLp : ∀ n i, MemLp (fun x => G n x i) p μ :=

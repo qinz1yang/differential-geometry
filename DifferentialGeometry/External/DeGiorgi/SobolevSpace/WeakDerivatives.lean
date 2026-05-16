@@ -84,12 +84,10 @@ theorem HasWeakPartialDeriv.ae_eq {Ω : Set E} (hΩ : IsOpen Ω)
     rw [integral_sub]
     · simp_rw [mul_comm (φ _)]
       linarith
-    ·
-      have : Integrable (fun x => φ x • g₁ x) (volume.restrict Ω) :=
+    · have : Integrable (fun x => φ x • g₁ x) (volume.restrict Ω) :=
         hg₁.integrable_smul_left_of_hasCompactSupport hφ.continuous hφ_supp
       simpa [smul_eq_mul] using this
-    ·
-      have : Integrable (fun x => φ x • g₂ x) (volume.restrict Ω) :=
+    · have : Integrable (fun x => φ x • g₂ x) (volume.restrict Ω) :=
         hg₂.integrable_smul_left_of_hasCompactSupport hφ.continuous hφ_supp
       simpa [smul_eq_mul] using this
 
@@ -114,21 +112,18 @@ theorem HasWeakPartialDeriv.of_contDiff {Ω : Set E} (hΩ : IsOpen Ω)
   have hφ_fderiv_supp : HasCompactSupport (fun x => (fderiv ℝ φ x) v) :=
     hφ_supp.fderiv_apply (𝕜 := ℝ) v
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_eq_integral_of_forall_compl_eq_zero]
-  ·
-    exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
+  · exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
       ((hfderiv_f_cont.mul hφ_cont).integrable_of_hasCompactSupport hφ_supp.mul_left)
       ((hf_cont.mul hfderiv_φ_cont).integrable_of_hasCompactSupport hφ_fderiv_supp.mul_left)
       ((hf_cont.mul hφ_cont).integrable_of_hasCompactSupport hφ_supp.mul_left)
       (fun x _ => hf_diff x) (fun x _ => hφ_diff x)
-  ·
-    intro x hx
+  · intro x hx
     have : x ∉ tsupport φ := fun h => hx (hφ_sub h)
     simp only [mul_eq_zero]
     right
     by_contra hf'
     exact this (subset_tsupport φ (mem_support.mpr hf'))
-  ·
-    intro x hx
+  · intro x hx
     have : x ∉ tsupport (fun x => (fderiv ℝ φ x) v) := fun h => hx (h_fderiv_supp h)
     simp only [mul_eq_zero]
     right
@@ -190,7 +185,7 @@ theorem HasWeakPartialDeriv.mul_smooth {Ω : Set E} (hΩ : IsOpen Ω)
     simp_rw [← mul_add] at key ⊢
     exact key
   rw [integral_add int_f_η_dφ int_f_φ_dη] at key2
-  show ∫ x in Ω, η x * f x * (fderiv ℝ φ x) ei =
+  change ∫ x in Ω, η x * f x * (fderiv ℝ φ x) ei =
     -∫ x in Ω, (η x * g x + (fderiv ℝ η x) ei * f x) * φ x
   have goal_rhs_conv :
       (fun x => (η x * g x + (fderiv ℝ η x) ei * f x) * φ x) =

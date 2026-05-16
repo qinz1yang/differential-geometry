@@ -215,7 +215,7 @@ private theorem exists_antideriv_of_zero_integral {a b : ℝ} (_hab : a < b)
     rw [intervalIntegral.integral_eq_integral_of_support_subset
       ((subset_tsupport η).trans (hη_supp.trans Ioo_subset_Ioc_self)), hη_int]
   have hφ_zero_ge_b : ∀ x, x ≥ b → φ x = 0 := by
-    intro x hx; show ∫ t in a..x, η t = 0
+    intro x hx; change ∫ t in a..x, η t = 0
     rw [← intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hη_cont.intervalIntegrable a b) (hη_cont.intervalIntegrable b x), hint_ab]
     rw [intervalIntegral.integral_congr (show EqOn η 0 (Set.uIcc b x) from fun t ht => by
@@ -225,10 +225,10 @@ private theorem exists_antideriv_of_zero_integral {a b : ℝ} (_hab : a < b)
     hη_cs.isCompact.exists_cthickening_subset_open isOpen_Ioo hη_supp
   have hη_supp_Icc : tsupport η ⊆ Icc (a + ε) (b - ε) := by
     intro x hx; have hx_Ioo := hη_supp hx; constructor
-    · by_contra h; push_neg at h
+    · by_contra h; push Not at h
       exact lt_irrefl a (hε_thick (Metric.mem_cthickening_of_dist_le a x ε _ hx
         (by rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hx_Ioo.1.le)]; linarith))).1
-    · by_contra h; push_neg at h
+    · by_contra h; push Not at h
       exact lt_irrefl b (hε_thick (Metric.mem_cthickening_of_dist_le b x ε _ hx
         (by rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr hx_Ioo.2.le)]; linarith))).2
   have hη_zero_lt : ∀ x, x < a + ε → η x = 0 := fun x hx => by
@@ -236,7 +236,7 @@ private theorem exists_antideriv_of_zero_integral {a b : ℝ} (_hab : a < b)
   have hη_zero_gt : ∀ x, x > b - ε → η x = 0 := fun x hx => by
     by_contra h; exact not_lt.mpr (hη_supp_Icc (subset_tsupport η (Function.mem_support.mpr h))).2 hx
   have hφ_zero_lt : ∀ x, x < a + ε → φ x = 0 := by
-    intro x hx; show ∫ t in a..x, η t = 0
+    intro x hx; change ∫ t in a..x, η t = 0
     rw [intervalIntegral.integral_congr (show EqOn η 0 (Set.uIcc a x) from fun t ht => by
       simp only [Pi.zero_apply]; apply hη_zero_lt
       rcases le_total a x with hax | hxa
@@ -244,7 +244,7 @@ private theorem exists_antideriv_of_zero_integral {a b : ℝ} (_hab : a < b)
       · rw [uIcc_of_ge hxa] at ht; linarith [ht.2])]
     exact intervalIntegral.integral_zero
   have hφ_zero_gt : ∀ x, x > b - ε → φ x = 0 := by
-    intro x hx; show ∫ t in a..x, η t = 0
+    intro x hx; change ∫ t in a..x, η t = 0
     rw [← intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hη_cont.intervalIntegrable a b) (hη_cont.intervalIntegrable b x), hint_ab]
     rw [intervalIntegral.integral_congr (show EqOn η 0 (Set.uIcc b x) from fun t ht => by
@@ -255,8 +255,8 @@ private theorem exists_antideriv_of_zero_integral {a b : ℝ} (_hab : a < b)
     simp
   have hφ_supp_Icc : Function.support φ ⊆ Icc (a + ε) (b - ε) := by
     intro x hx; constructor
-    · by_contra h; push_neg at h; exact Function.mem_support.mp hx (hφ_zero_lt x h)
-    · by_contra h; push_neg at h; exact Function.mem_support.mp hx (hφ_zero_gt x h)
+    · by_contra h; push Not at h; exact Function.mem_support.mp hx (hφ_zero_lt x h)
+    · by_contra h; push Not at h; exact Function.mem_support.mp hx (hφ_zero_gt x h)
   exact ⟨φ,
     contDiff_infty_iff_deriv.mpr ⟨hφ_diff, hderiv_eq ▸ hη⟩,
     IsCompact.of_isClosed_subset isCompact_Icc isClosed_closure
@@ -445,7 +445,7 @@ theorem w11_ae_eq_ac_representative
       apply integrableOn_Ioo_intervalIntegrable hab.le
       have hcont := (intervalIntegral.continuousOn_primitive (μ := volume)
         (integrableOn_Icc_of_Ioo hg)).congr
-        (fun x hx => by show ∫ t in a..x, g t = _; rw [intervalIntegral.integral_of_le hx.1])
+        (fun x hx => by change ∫ t in a..x, g t = _; rw [intervalIntegral.integral_of_le hx.1])
       exact (hcont.mul (hφ.continuous_deriv (by norm_cast)).continuousOn).integrableOn_compact
         isCompact_Icc |>.mono_set Ioo_subset_Icc_self
     rw [intervalIntegral.integral_sub hu_ii hF_ii,
@@ -552,7 +552,7 @@ private theorem exists_smooth_trunc (ε : ℝ) (hε : 0 < ε) :
   refine ⟨Φ, hΦ_smooth, hΦ_zero, fun s => ?_, fun s => ?_, fun s hs => ?_, hderiv_vanish⟩
   · by_cases h : |s| ≤ ε
     · exact le_trans (hΦ_abs_le s) h
-    · push_neg at h; cases le_or_gt 0 s with
+    · push Not at h; cases le_or_gt 0 s with
       | inl hs => rw [hΦ_const_pos s (by linarith [abs_of_nonneg hs])]; exact le_trans (hΦ_abs_le ε) (by rw [abs_of_pos hε])
       | inr hs => rw [hΦ_const_neg s (by linarith [abs_of_neg hs])]; exact le_trans (hΦ_abs_le (-ε)) (by rw [abs_neg, abs_of_pos hε])
   · rw [hderiv_eq, abs_le]; exact ⟨by linarith [β.nonneg' s], β.le_one⟩
@@ -711,7 +711,7 @@ private theorem weakGrad_integral_test_eq_zero
       exact this.of_ae_diff_eq_zero hΩ.measurableSet.nullMeasurableSet
         (ae_of_all _ fun x ⟨_, hx⟩ => by simp [image_eq_zero_of_notMem_tsupport hx])
     -- Apply dominated convergence
-    show Filter.Tendsto (fun n => ∫ x, (deriv (Φ n) (u x) * G x i) * ψ x ∂volume.restrict Ω)
+    change Filter.Tendsto (fun n => ∫ x, (deriv (Φ n) (u x) * G x i) * ψ x ∂volume.restrict Ω)
         Filter.atTop (nhds (∫ x, (if u x = 0 then G x i else 0) * ψ x ∂volume.restrict Ω))
     apply MeasureTheory.tendsto_integral_of_dominated_convergence
       (fun x => ‖G x i * ψ x‖)

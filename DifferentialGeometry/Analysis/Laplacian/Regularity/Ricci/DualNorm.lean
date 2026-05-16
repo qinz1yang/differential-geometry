@@ -574,7 +574,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
         if l = i then (1 : ℝ) else 0 := by
       rw [chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hb]
       rw [Matrix.one_apply]
-    show (∑ k, G l k * Ginv k i) =
+    change (∑ k, G l k * Ginv k i) =
         if l = i then (1 : ℝ) else 0
     rw [hG_def, hGinv_def]
     rw [← hid, Matrix.mul_apply]
