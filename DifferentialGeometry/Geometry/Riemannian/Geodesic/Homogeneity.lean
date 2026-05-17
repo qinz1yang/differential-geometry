@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.AffineReparam
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartInvariance
 import Mathlib.Geometry.Manifold.ChartedSpace
 import Mathlib.Topology.Connected.Clopen
 import Mathlib.Order.Interval.Set.OrdConnected
@@ -645,23 +646,326 @@ theorem mem_maximalGeodesicInterval_smul_iff
 
 end RescaledWitness
 
+/-! ## Local chart-basepoint switching for integral curves
+
+The chart-fixed geodesic vector field `gvfChart g α` is `C^∞` only on
+the preimage `geodesicChartDomain α` of the chart-α source under the
+bundle projection. Outside this set, it is identically zero (extension
+by zero through the trivialisation). For a propagation-style uniqueness
+argument on a witness interval that may exit `geodesicChartDomain p`,
+we switch the chart basepoint locally to a basepoint at which the
+vector field is smooth, using the unconditional chart-invariance
+theorem. -/
+
+section LocalChartSwitch
+
+variable [I.Boundaryless] [CompleteSpace E]
+variable [SigmaCompactSpace M] [T2Space M]
+
+/-- **Pointwise chart-switching identity.** On the overlap of two chart
+sources, the chart-fixed geodesic vector fields at the two basepoints
+agree. -/
+lemma geodesicVectorFieldChart_eq_of_proj_mem
+    (g : SmoothRiemannianMetric I M) (α β : M) {q : TangentBundle I M}
+    (hα : q.proj ∈ (chartAt H α).source)
+    (hβ : q.proj ∈ (chartAt H β).source) :
+    geodesicVectorFieldChart (I := I) g α q =
+      geodesicVectorFieldChart (I := I) g β q :=
+  geodesicVectorFieldChart_chart_invariance (I := I) (M := M) g α β hα hβ
+
+end LocalChartSwitch
+
+/-! ## Value-invariance on the safe set inside the chart-`p` source
+
+For any two `IsGeodesicOnWithInitial g γ J p v` witnesses with lifts
+`f₁, f₂` and intervals `J₁, J₂`, the set of times where both lifts agree
+is clopen inside the *safe set* — the intersection of `J₁ ∩ J₂` with the
+preimage of `(chartAt H p).source` under the projection of `f₁`. The
+safe set is itself open in `J₁ ∩ J₂` and contains `0` by the initial
+condition. -/
+
+section ValueInvarianceCore
+
+variable [I.Boundaryless] [CompleteSpace E]
+variable [SigmaCompactSpace M] [T2Space M]
+
+/-- **Openness of the lift-agreement set in the chart-`p` safe region.**
+At any time `τ` in the witness intersection inside the chart-`p` safe
+region where the two lifts agree, the agreement extends to an open
+neighbourhood of `τ` (still inside the safe region, by continuity of the
+projection). -/
+lemma lift_agreement_isOpen_in_safe
+    {g : SmoothRiemannianMetric I M} {p : M} {J₁ J₂ : Set ℝ}
+    (hJ₁ : IsOpen J₁) (hJ₂ : IsOpen J₂)
+    {f₁ f₂ : ℝ → TangentBundle I M}
+    (hf₁ : IsMIntegralCurveOn f₁ (geodesicVectorFieldChart (I := I) g p) J₁)
+    (hf₂ : IsMIntegralCurveOn f₂ (geodesicVectorFieldChart (I := I) g p) J₂) :
+    IsOpen {τ : ℝ | τ ∈ J₁ ∩ J₂ ∧ (f₁ τ).proj ∈ (chartAt H p).source ∧
+      f₁ τ = f₂ τ} := by
+  rw [isOpen_iff_mem_nhds]
+  rintro τ₀ ⟨⟨hτ₀_J₁, hτ₀_J₂⟩, hτ₀_chart, hτ₀_eq⟩
+  -- Local integral curves at `τ₀`.
+  have hf₁_at : IsMIntegralCurveAt f₁
+      (geodesicVectorFieldChart (I := I) g p) τ₀ :=
+    hf₁.isMIntegralCurveAt (hJ₁.mem_nhds hτ₀_J₁)
+  have hf₂_at : IsMIntegralCurveAt f₂
+      (geodesicVectorFieldChart (I := I) g p) τ₀ :=
+    hf₂.isMIntegralCurveAt (hJ₂.mem_nhds hτ₀_J₂)
+  -- Mathlib's uniqueness lemma applies (vector field smooth at `f₁ τ₀`).
+  have heq := isMIntegralCurveAt_geodesicVectorFieldChart_eventuallyEq
+    (I := I) (g := g) (α := p) (t₀ := τ₀)
+    (f₁ := f₁) (f₂ := f₂) hτ₀_chart hf₁_at hf₂_at hτ₀_eq
+  -- Continuity of `f₁` and openness of `(chartAt H p).source`: the chart-p
+  -- safe condition for `f₁` persists in a neighbourhood of τ₀.
+  have hcont₁ : ContinuousAt f₁ τ₀ := hf₁_at.continuousAt
+  have hcont₁_proj : ContinuousAt (fun t => (f₁ t).proj) τ₀ :=
+    (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp hcont₁
+  have hsource_open : IsOpen ((chartAt H p).source) :=
+    (chartAt H p).open_source
+  have hsafe_nhd : ∀ᶠ t in 𝓝 τ₀, (f₁ t).proj ∈ (chartAt H p).source :=
+    hcont₁_proj.tendsto.eventually (hsource_open.mem_nhds hτ₀_chart)
+  -- Combine all the eventually-properties.
+  filter_upwards [heq, hJ₁.mem_nhds hτ₀_J₁, hJ₂.mem_nhds hτ₀_J₂, hsafe_nhd]
+    with σ hσ_eq hσ_J₁ hσ_J₂ hσ_safe
+  exact ⟨⟨hσ_J₁, hσ_J₂⟩, hσ_safe, hσ_eq⟩
+
+/-- **Openness of the chart-`p` safe region within the witness
+intersection.** The set of times where `(f₁ τ).proj ∈ (chartAt H p).source`
+inside `J₁ ∩ J₂` is open. -/
+lemma safe_region_isOpen
+    {g : SmoothRiemannianMetric I M} {p : M}
+    {J₁ J₂ : Set ℝ} (hJ₁ : IsOpen J₁) (hJ₂ : IsOpen J₂)
+    {f₁ : ℝ → TangentBundle I M}
+    (hf₁ : IsMIntegralCurveOn f₁ (geodesicVectorFieldChart (I := I) g p) J₁) :
+    IsOpen {τ : ℝ | τ ∈ J₁ ∩ J₂ ∧ (f₁ τ).proj ∈ (chartAt H p).source} := by
+  rw [isOpen_iff_mem_nhds]
+  rintro τ₀ ⟨⟨hτ₀_J₁, hτ₀_J₂⟩, hτ₀_chart⟩
+  have hf₁_at : IsMIntegralCurveAt f₁
+      (geodesicVectorFieldChart (I := I) g p) τ₀ :=
+    hf₁.isMIntegralCurveAt (hJ₁.mem_nhds hτ₀_J₁)
+  have hcont₁ : ContinuousAt f₁ τ₀ := hf₁_at.continuousAt
+  have hcont₁_proj : ContinuousAt (fun t => (f₁ t).proj) τ₀ :=
+    (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp hcont₁
+  have hsource_open : IsOpen ((chartAt H p).source) :=
+    (chartAt H p).open_source
+  have hsafe_nhd : ∀ᶠ t in 𝓝 τ₀, (f₁ t).proj ∈ (chartAt H p).source :=
+    hcont₁_proj.tendsto.eventually (hsource_open.mem_nhds hτ₀_chart)
+  filter_upwards [hJ₁.mem_nhds hτ₀_J₁, hJ₂.mem_nhds hτ₀_J₂, hsafe_nhd]
+    with σ hσ_J₁ hσ_J₂ hσ_safe
+  exact ⟨⟨hσ_J₁, hσ_J₂⟩, hσ_safe⟩
+
+end ValueInvarianceCore
+
 /-! ## Headline: the maximal-geodesic scaling identity
 
-For the non-degenerate case `s ≠ 0`, the headline proof uses
-clopen-propagation of the canonical value via lift-uniqueness inside the
-chart-`p` source, combined with continuity-of-projection-and-T2
-propagation across the witness intersection's preconnected interval.
+For `s = 0`: reduces to `maximalGeodesic_zero_velocity_value`.
 
-The argument is the standard one: starting at `t = 0` (where both lifts
-are at `⟨p, s • v⟩` and projection is `p ∈ chart-p source`), local lift
-uniqueness extends agreement to a neighbourhood. Inside the chart-`p`
-source, this propagates clopen on the connected component of `0` of the
-safe region. T2 closure of the safe region extends agreement to the
-closure of the safe region inside the witness intersection. The witness
-intersection itself, being preconnected, equals the closure of the safe
-region by virtue of the safe region being open and dense in the witness
-intersection (a feature of integral curves of `gvfChart g p` whose
-initial value has projection `p` in chart-`p` source). -/
+For `s ≠ 0`: build the rescaled witness, then apply uniqueness of the
+maximal-geodesic value at time `t` for the initial datum `(p, s • v)`,
+together with the symmetric application at time `s · t` for the initial
+datum `(p, v)`. The uniqueness propagation is a clopen argument on the
+chart-`p` safe region inside the witness intersection. Inside this safe
+region, openness comes from Mathlib's local uniqueness for integral
+curves of the smooth-at-the-chart-`p`-source vector field; closedness
+comes from T2 + continuity of the lifts; preconnectedness comes from
+the OrdConnected structure of the safe region as an intersection of
+preconnected (= OrdConnected in ℝ) subsets restricted to the open
+preimage of a chart source.
+-/
+
+section MainHeadline
+
+variable [I.Boundaryless] [CompleteSpace E]
+variable [SigmaCompactSpace M] [T2Space M]
+
+/-- **Value-invariance, lift-level.** For two witnesses
+`(f_i, J_i)` of `IsGeodesicOnWithInitial g γ_i J_i p v` (initial value
+`⟨p, v⟩` shared at `τ = 0`), the lifts `f₁` and `f₂` agree at every
+time `τ ∈ J₁ ∩ J₂` such that the chart-`p` safe region of the witness
+intersection (containing `0` and `τ`) is preconnected. -/
+lemma lift_eq_of_isGeodesicOnWithInitial
+    {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p}
+    {J₁ J₂ : Set ℝ}
+    (hJ₁ : IsOpen J₁) (_hJ₁_conn : IsPreconnected J₁)
+    (hJ₂ : IsOpen J₂) (_hJ₂_conn : IsPreconnected J₂)
+    (h0_J₁ : (0 : ℝ) ∈ J₁) (h0_J₂ : (0 : ℝ) ∈ J₂)
+    {f₁ f₂ : ℝ → TangentBundle I M}
+    (hf₁_zero : f₁ 0 = (⟨p, v⟩ : TangentBundle I M))
+    (hf₂_zero : f₂ 0 = (⟨p, v⟩ : TangentBundle I M))
+    (hf₁ : IsMIntegralCurveOn f₁ (geodesicVectorFieldChart (I := I) g p) J₁)
+    (hf₂ : IsMIntegralCurveOn f₂ (geodesicVectorFieldChart (I := I) g p) J₂)
+    {τ : ℝ} (hτ_J₁ : τ ∈ J₁) (hτ_J₂ : τ ∈ J₂)
+    (hconn_safe : IsPreconnected
+      {σ : ℝ | σ ∈ J₁ ∩ J₂ ∧ (f₁ σ).proj ∈ (chartAt H p).source})
+    (hτ_safe : (f₁ τ).proj ∈ (chartAt H p).source) :
+    f₁ τ = f₂ τ := by
+  -- The "safe + agree" set inside J₁ ∩ J₂.
+  set S : Set ℝ := {σ : ℝ | σ ∈ J₁ ∩ J₂ ∧ (f₁ σ).proj ∈ (chartAt H p).source ∧
+      f₁ σ = f₂ σ} with hS_def
+  -- The safe set (without agreement) inside J₁ ∩ J₂.
+  set U : Set ℝ := {σ : ℝ | σ ∈ J₁ ∩ J₂ ∧ (f₁ σ).proj ∈ (chartAt H p).source}
+    with hU_def
+  have hU_open : IsOpen U := safe_region_isOpen (I := I) hJ₁ hJ₂ hf₁
+  have hS_open : IsOpen S := lift_agreement_isOpen_in_safe (I := I) hJ₁ hJ₂ hf₁ hf₂
+  -- `0 ∈ S` by initial condition.
+  have h0_chart : (f₁ 0).proj ∈ (chartAt H p).source := by
+    rw [hf₁_zero]
+    exact mem_chart_source H p
+  have h0_eq : f₁ 0 = f₂ 0 := by rw [hf₁_zero, hf₂_zero]
+  have h0_S : (0 : ℝ) ∈ S := ⟨⟨h0_J₁, h0_J₂⟩, h0_chart, h0_eq⟩
+  have h0_U : (0 : ℝ) ∈ U := ⟨⟨h0_J₁, h0_J₂⟩, h0_chart⟩
+  have hτ_U : τ ∈ U := ⟨⟨hτ_J₁, hτ_J₂⟩, hτ_safe⟩
+  -- Closedness of `S` in `U`: use the trivialization at `p` to push the
+  -- bundle equality into `M × E` (which is T2), avoiding the need for
+  -- T2 on `TangentBundle I M` itself.
+  have hS_closure_inter_U : closure S ∩ U ⊆ S := by
+    rintro σ ⟨hσ_cl, hσ_U⟩
+    refine ⟨hσ_U.1, hσ_U.2, ?_⟩
+    -- Both lifts continuous at σ.
+    have hf₁_at : IsMIntegralCurveAt f₁
+        (geodesicVectorFieldChart (I := I) g p) σ :=
+      hf₁.isMIntegralCurveAt (hJ₁.mem_nhds hσ_U.1.1)
+    have hf₂_at : IsMIntegralCurveAt f₂
+        (geodesicVectorFieldChart (I := I) g p) σ :=
+      hf₂.isMIntegralCurveAt (hJ₂.mem_nhds hσ_U.1.2)
+    have hcont₁ : ContinuousAt f₁ σ := hf₁_at.continuousAt
+    have hcont₂ : ContinuousAt f₂ σ := hf₂_at.continuousAt
+    -- Extract a sequence converging to σ from `closure S`.
+    obtain ⟨u, hu_S, hu_lim⟩ :=
+      (mem_closure_iff_seq_limit (s := S) (a := σ)).mp hσ_cl
+    have hu_eq : ∀ n, f₁ (u n) = f₂ (u n) := fun n => (hu_S n).2.2
+    -- Use T2 on M for the projections: continuous + identical sequences.
+    have hcont₁_proj : ContinuousAt (fun t => (f₁ t).proj) σ :=
+      (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp hcont₁
+    have hcont₂_proj : ContinuousAt (fun t => (f₂ t).proj) σ :=
+      (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp hcont₂
+    have hproj₁_seq : Filter.Tendsto
+        (fun n => (f₁ (u n)).proj) Filter.atTop (𝓝 (f₁ σ).proj) :=
+      hcont₁_proj.tendsto.comp hu_lim
+    have hproj₂_seq : Filter.Tendsto
+        (fun n => (f₂ (u n)).proj) Filter.atTop (𝓝 (f₂ σ).proj) :=
+      hcont₂_proj.tendsto.comp hu_lim
+    have hproj_seq_eq : ∀ n, (f₁ (u n)).proj = (f₂ (u n)).proj := fun n => by
+      rw [hu_eq n]
+    have hproj_eq : (f₁ σ).proj = (f₂ σ).proj := by
+      refine tendsto_nhds_unique hproj₁_seq ?_
+      have : (fun n => (f₁ (u n)).proj) = (fun n => (f₂ (u n)).proj) :=
+        funext hproj_seq_eq
+      rw [this]; exact hproj₂_seq
+    -- Now: both projections are equal AND lie in chart-p source.
+    -- Use the trivialization at p to identify the bundle points.
+    set e := trivializationAt E (TangentSpace I) p with he_def
+    have hf₁σ_base : (f₁ σ).proj ∈ e.baseSet := by
+      change (f₁ σ).proj ∈ (trivializationAt E (TangentSpace I) p).baseSet
+      rw [TangentBundle.trivializationAt_baseSet (I := I) (M := M) p]
+      exact hσ_U.2
+    have hf₂σ_base : (f₂ σ).proj ∈ e.baseSet := by
+      rw [hproj_eq] at hf₁σ_base; exact hf₁σ_base
+    have hf₁σ_src : f₁ σ ∈ e.source := by
+      rw [e.source_eq]; exact hf₁σ_base
+    have hf₂σ_src : f₂ σ ∈ e.source := by
+      rw [e.source_eq]; exact hf₂σ_base
+    -- The trivialization is a homeomorphism on its source.
+    -- e (f₁ σ).snd = e (f₂ σ).snd (by T2 on E and seq).
+    -- Continuity of e at the bundle points in source.
+    have he_cont_f₁σ : ContinuousAt (fun q : TangentBundle I M => e q) (f₁ σ) := by
+      have hOpen : IsOpen e.source := e.open_source
+      refine ContinuousOn.continuousAt e.continuousOn (hOpen.mem_nhds hf₁σ_src)
+    have he_cont_f₂σ : ContinuousAt (fun q : TangentBundle I M => e q) (f₂ σ) := by
+      have hOpen : IsOpen e.source := e.open_source
+      refine ContinuousOn.continuousAt e.continuousOn (hOpen.mem_nhds hf₂σ_src)
+    have he_seq₁ : Filter.Tendsto (fun n => e (f₁ (u n))) Filter.atTop
+        (𝓝 (e (f₁ σ))) :=
+      he_cont_f₁σ.tendsto.comp (hcont₁.tendsto.comp hu_lim)
+    have he_seq₂ : Filter.Tendsto (fun n => e (f₂ (u n))) Filter.atTop
+        (𝓝 (e (f₂ σ))) :=
+      he_cont_f₂σ.tendsto.comp (hcont₂.tendsto.comp hu_lim)
+    have he_seq_eq : ∀ n, e (f₁ (u n)) = e (f₂ (u n)) := fun n => by
+      rw [hu_eq n]
+    -- By T2 on `M × E`, the two limits in `M × E` are equal.
+    have he_eq : e (f₁ σ) = e (f₂ σ) := by
+      refine tendsto_nhds_unique he_seq₁ ?_
+      have : (fun n => e (f₁ (u n))) = (fun n => e (f₂ (u n))) :=
+        funext he_seq_eq
+      rw [this]; exact he_seq₂
+    -- The trivialization is injective on its source.
+    exact e.injOn hf₁σ_src hf₂σ_src he_eq
+  -- Clopen argument on the preconnected `U`.
+  have hsub : U ⊆ S :=
+    hconn_safe.subset_of_closure_inter_subset hS_open
+      ⟨0, h0_U, h0_S⟩ hS_closure_inter_U
+  exact (hsub hτ_U).2.2
+
+/-! ### Value-invariance, projection form
+
+For two witnesses with possibly different curves, the projected base
+curves agree at any common time inside the safe region. -/
+
+/-- **Base-curve value invariance on the safe region.** -/
+lemma proj_eq_of_isGeodesicOnWithInitial
+    {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p}
+    {J₁ J₂ : Set ℝ}
+    (hJ₁ : IsOpen J₁) (hJ₁_conn : IsPreconnected J₁)
+    (hJ₂ : IsOpen J₂) (hJ₂_conn : IsPreconnected J₂)
+    (h0_J₁ : (0 : ℝ) ∈ J₁) (h0_J₂ : (0 : ℝ) ∈ J₂)
+    {γ₁ γ₂ : ℝ → M} {f₁ f₂ : ℝ → TangentBundle I M}
+    (hproj₁ : ∀ t, (f₁ t).proj = γ₁ t)
+    (hproj₂ : ∀ t, (f₂ t).proj = γ₂ t)
+    (hf₁_zero : f₁ 0 = (⟨p, v⟩ : TangentBundle I M))
+    (hf₂_zero : f₂ 0 = (⟨p, v⟩ : TangentBundle I M))
+    (hf₁ : IsMIntegralCurveOn f₁ (geodesicVectorFieldChart (I := I) g p) J₁)
+    (hf₂ : IsMIntegralCurveOn f₂ (geodesicVectorFieldChart (I := I) g p) J₂)
+    {τ : ℝ} (hτ_J₁ : τ ∈ J₁) (hτ_J₂ : τ ∈ J₂)
+    (hconn_safe : IsPreconnected
+      {σ : ℝ | σ ∈ J₁ ∩ J₂ ∧ (f₁ σ).proj ∈ (chartAt H p).source})
+    (hτ_safe : (f₁ τ).proj ∈ (chartAt H p).source) :
+    γ₁ τ = γ₂ τ := by
+  have h := lift_eq_of_isGeodesicOnWithInitial (I := I) hJ₁ hJ₁_conn
+    hJ₂ hJ₂_conn h0_J₁ h0_J₂ hf₁_zero hf₂_zero hf₁ hf₂
+    hτ_J₁ hτ_J₂ hconn_safe hτ_safe
+  rw [← hproj₁ τ, ← hproj₂ τ, h]
+
+end MainHeadline
+
+/-! ## The headline: maximal-geodesic scaling identity
+
+The full headline is the identity
+
+    maximalGeodesic g p (s • v) t = maximalGeodesic g p v (s * t)
+
+whenever `s * t ∈ maximalGeodesicInterval g p v`. Case analysis on
+`t = 0` and `s = 0` reduces to existing results. The generic case
+`s, t ≠ 0` requires **value invariance** of the maximal-geodesic curve
+across different choices of local witness, which in the current
+chart-fixed integral-curve framework requires a chart-`p`-confined
+regime hypothesis on the witness intersection.
+-/
+
+section MaximalGeodesicSmulHeadline
+
+variable [I.Boundaryless] [CompleteSpace E]
+variable [SigmaCompactSpace M] [T2Space M]
+
+/-- **Headline scaling identity for `t = 0`.** -/
+theorem maximalGeodesic_smul_at_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) (s : ℝ) :
+    maximalGeodesic (I := I) g p (s • v) 0 =
+      maximalGeodesic (I := I) g p v (s * 0) := by
+  rw [mul_zero, maximalGeodesic_zero (I := I) g p v,
+    maximalGeodesic_zero (I := I) g p (s • v)]
+
+/-- **Headline scaling identity for `s = 0`.** -/
+theorem maximalGeodesic_smul_zero_s
+    (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) (t : ℝ) :
+    maximalGeodesic (I := I) g p ((0 : ℝ) • v) t =
+      maximalGeodesic (I := I) g p v ((0 : ℝ) * t) := by
+  rw [zero_mul, maximalGeodesic_zero (I := I) g p v]
+  have h0 : (0 : ℝ) • v = (0 : E) := zero_smul ℝ v
+  rw [h0]
+  exact maximalGeodesic_zero_velocity_value (I := I) g p t
+
+
+end MaximalGeodesicSmulHeadline
 
 end Geodesic
 end Riemannian
