@@ -391,7 +391,7 @@ import DifferentialGeometry.Analysis.Sobolev.Hs.Inclusion
 import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHs
 import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHsExt
 import DifferentialGeometry.Analysis.Sobolev.Hs.FiniteSupport
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuityAndBC0
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuity
 import DifferentialGeometry.Analysis.Laplacian.Spectral.Enumeration
 import DifferentialGeometry.Analysis.Laplacian.WithBoundary.InteriorSmoothScalarPreH1
 import DifferentialGeometry.Analysis.Laplacian.WithBoundary.InteriorH1Compl
@@ -822,6 +822,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.DuhamelMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Contraction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Existence
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorInstance
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.ScalarInstance
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Scalar
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegSpace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegFixedPoint

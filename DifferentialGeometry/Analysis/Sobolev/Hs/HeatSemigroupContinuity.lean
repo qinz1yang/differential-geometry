@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHsExt
 import DifferentialGeometry.Analysis.Sobolev.Hs.FiniteSupport
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.AbstractSemigroup
 
 /-!
 # Strong continuity of the scalar spectral heat semigroup on `[0, ∞)`
@@ -11,7 +10,8 @@ For a closed Riemannian manifold `(M, g)` and a spectral Sobolev exponent
 is strongly continuous on the non-negative half-line: for every
 `u : scalarHs g σ`, the map `t ↦ heatSemigroupHsExt g σ t u` is
 continuous on `Set.Ici 0`. This is the last structural property needed to
-package the semigroup as a `BoundedC0Semigroup (scalarHs g σ)`.
+package the semigroup as a `BoundedC0Semigroup` (the packaging itself
+lives in `…QuasiLinear.ScalarInstance`).
 
 ## Strategy
 
@@ -41,13 +41,10 @@ at `0` is proved by a three-term `ε/3` argument:
    `(exp(−λᵢ τ) − 1) · u'.coeff i` weighted by the spectral basis, each
    factor tending to `0` as `τ → 0`.
 
-## Main results
+## Main result
 
 * `heatSemigroupHsExt_continuousOn` — strong continuity of the heat
   semigroup on `[0, ∞)`.
-* `scalarHsBoundedC0Semigroup` — the heat semigroup packaged as a
-  `BoundedC0Semigroup (scalarHs g σ)`.
-* `hkScalarBoundedC0Semigroup g k` — the integer-exponent specialisation.
 -/
 
 noncomputable section
@@ -645,46 +642,6 @@ theorem heatSemigroupHsExt_continuousOn (g : SmoothRiemannianMetric I M)
     rw [h_at_zero]
     exact tendsto_heatSemigroupHsExt_at_zero
       (I := I) (M := M) g σ u
-
-/-! ## Packaging as a `BoundedC0Semigroup` -/
-
-/-- The scalar spectral heat semigroup `e^{t Δ_g}` on `scalarHs g σ`
-packaged as a bounded strongly continuous one-parameter contraction
-semigroup. -/
-noncomputable def scalarHsBoundedC0Semigroup
-    (g : SmoothRiemannianMetric I M) (σ : ℝ) :
-    DifferentialGeometry.Analysis.Parabolic.QuasiLinear.BoundedC0Semigroup
-      (scalarHs (I := I) (M := M) g σ) where
-  toFun := fun t => heatSemigroupHsExt (I := I) (M := M) g σ t
-  apply_zero := heatSemigroupHsExt_zero (I := I) (M := M) g σ
-  apply_add := fun _ _ ht hs =>
-    heatSemigroupHsExt_add (I := I) (M := M) (g := g) (σ := σ) ht hs
-  opNorm_le_one := fun _ ht =>
-    heatSemigroupHsExt_opNorm_le_one (I := I) (M := M)
-      (g := g) (σ := σ) ht
-  continuousOn_apply := fun u =>
-    heatSemigroupHsExt_continuousOn (I := I) (M := M) g σ u
-
-/-- The underlying one-parameter family of `scalarHsBoundedC0Semigroup`
-is the extended scalar heat semigroup. -/
-@[simp]
-theorem scalarHsBoundedC0Semigroup_apply
-    (g : SmoothRiemannianMetric I M) (σ : ℝ) (t : ℝ) :
-    scalarHsBoundedC0Semigroup (I := I) (M := M) g σ t =
-      heatSemigroupHsExt (I := I) (M := M) g σ t := rfl
-
-/-! ## Integer-exponent specialisation
-
-`HkScalar g k` is defined in `…Hs.SpectralDefs`. Here we record the
-corresponding `BoundedC0Semigroup` instance. -/
-
-/-- The scalar spectral heat semigroup on `HkScalar g k`, packaged as a
-bounded strongly continuous one-parameter contraction semigroup. -/
-noncomputable abbrev hkScalarBoundedC0Semigroup
-    (g : SmoothRiemannianMetric I M) (k : ℕ) :
-    DifferentialGeometry.Analysis.Parabolic.QuasiLinear.BoundedC0Semigroup
-      (HkScalar (I := I) (M := M) g k) :=
-  scalarHsBoundedC0Semigroup (I := I) (M := M) g (k : ℝ)
 
 end Hs
 end Sobolev

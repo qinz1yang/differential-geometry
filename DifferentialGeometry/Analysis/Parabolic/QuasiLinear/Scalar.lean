@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Existence
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuityAndBC0
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.ScalarInstance
 
 /-!
 # Quasi-linear scalar heat equation on the spectral Sobolev scale
