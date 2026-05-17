@@ -334,6 +334,62 @@ theorem length_sq_le_two_mul_diff_mul_energy [I.Boundaryless]
   rw [h_eq]
   exact h_CS
 
+/-! ### Energy of a constant-speed curve
+
+If the speed of `γ` is the constant `c ≥ 0` on every parameter `t`, then the
+energy over `[a, b]` (with `a ≤ b`) is `(1/2) · c² · (b - a)`. This is the
+energy analogue of `length_eq_speed_mul_of_constSpeed`. -/
+
+/-- For a `C¹` curve with constant speed `c ≥ 0`, the energy over `[a, b]` is
+`(1/2) · c² · (b - a)`. -/
+theorem energy_of_const_speed [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    {c : ℝ} (_hc : 0 ≤ c)
+    (hSpeed : ∀ t, speed (I := I) g γ t = c) (a b : ℝ) (_hab : a ≤ b) :
+    energy (I := I) g γ a b = (1 / 2) * c ^ 2 * (b - a) := by
+  -- Rewrite the energy in terms of the squared speed.
+  rw [energy_eq_half_integral_speed_sq (I := I) g γ a b]
+  -- Replace the integrand by the constant `c²` and evaluate.
+  have hcongr : ∫ t in a..b, (speed (I := I) g γ t) ^ 2 = ∫ _ in a..b, (c ^ 2 : ℝ) := by
+    refine intervalIntegral.integral_congr ?_
+    intro u _
+    change (speed (I := I) g γ u) ^ 2 = c ^ 2
+    rw [hSpeed u]
+  rw [hcongr, intervalIntegral.integral_const, smul_eq_mul]
+  -- `intervalIntegral.integral_const` gives `(b - a) * c²`; rearrange.
+  ring
+
+/-! ### Cauchy–Schwarz equality for constant-speed curves
+
+When `γ` has constant speed `c`, the Cauchy–Schwarz inequality
+`length² ≤ 2 (b - a) · energy` saturates: both sides equal `c² (b - a)²`. -/
+
+/-- **Cauchy–Schwarz equality at the constant-speed parametrisation.** For a
+`C¹` curve `γ` with constant speed `c ≥ 0` and any `a ≤ b`,
+
+```
+length² = 2 (b - a) · energy.
+```
+
+This is the equality case of `length_sq_le_two_mul_diff_mul_energy`,
+characterising constant-speed parametrisations as energy extremals. -/
+theorem length_sq_eq_two_mul_diff_mul_energy_of_const_speed [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    {c : ℝ} (hc : 0 ≤ c)
+    (hSpeed : ∀ t, speed (I := I) g γ t = c) {a b : ℝ} (hab : a ≤ b) :
+    (length (I := I) g γ a b) ^ 2 = 2 * (b - a) * energy (I := I) g γ a b := by
+  -- The length and energy each evaluate explicitly at constant speed.
+  have h_len :
+      length (I := I) g γ a b = c * (b - a) :=
+    length_eq_speed_mul_of_constSpeed (I := I) hγ hc hSpeed a b hab
+  have h_en :
+      energy (I := I) g γ a b = (1 / 2) * c ^ 2 * (b - a) :=
+    energy_of_const_speed (I := I) hγ hc hSpeed a b hab
+  rw [h_len, h_en]
+  ring
+
 /-! ### Sanity check: energy at a constant curve is zero, hence the
 Cauchy–Schwarz inequality reduces to `0 ≤ 0` for constant curves. -/
 
