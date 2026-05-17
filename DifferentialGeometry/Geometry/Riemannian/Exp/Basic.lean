@@ -170,13 +170,22 @@ theorem expDomain_nonempty
   ⟨(0 : TangentSpace I p), zero_mem_expDomain (I := I) g p⟩
 
 /-- Hypothesis-form of `expMap_zero`. Once the structural identity
-`maximalGeodesic g p (0 : E) 1 = p` ships (the pending propagation
-lemma in `Geodesic/Homogeneity.lean`), the headline `expMap g p 0 = p`
-follows in one line via this lemma. -/
+`maximalGeodesic g p (0 : E) 1 = p` ships (the propagation lemma in
+`Geodesic/Homogeneity.lean`), the headline `expMap g p 0 = p` follows
+in one line via this lemma. -/
 theorem expMap_zero_of_value
     {g : SmoothRiemannianMetric I M} {p : M}
     (h : maximalGeodesic (I := I) g p (0 : E) 1 = p) :
     expMap (I := I) g p (0 : TangentSpace I p) = p := h
+
+/-- **Unconditional headline.** `expMap g p 0 = p`. The exponential map
+of any smooth Riemannian metric `g` at any point `p`, applied to the
+zero tangent vector, returns the basepoint `p` itself. -/
+theorem expMap_zero
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    expMap (I := I) g p (0 : TangentSpace I p) = p :=
+  expMap_zero_of_value
+    (maximalGeodesic_zero_velocity_value (I := I) g p 1)
 
 end ZeroVector
 

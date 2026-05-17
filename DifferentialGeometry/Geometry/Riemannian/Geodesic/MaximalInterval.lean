@@ -123,14 +123,18 @@ predicate that records the initial datum at `t = 0`. -/
 
 /-- `γ` is a geodesic on `s` with initial datum `(p, v)` at time `0` if
 the velocity lift `f` produced by `IsGeodesicOn` can be chosen with
-`f 0 = ⟨p, v⟩`. -/
+`f 0 = ⟨p, v⟩` and the chart basepoint of the lift is `p` itself.
+Fixing the chart basepoint to be the initial point is geometrically
+natural (the initial point lies in its own chart source) and is what
+enables value-level propagation arguments via local uniqueness of
+integral curves in the chart at `p`. -/
 def IsGeodesicOnWithInitial
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (s : Set ℝ)
     (p : M) (v : TangentSpace I p) : Prop :=
-  ∃ (α : M) (f : ℝ → TangentBundle I M),
+  ∃ f : ℝ → TangentBundle I M,
     (∀ t, (f t).proj = γ t) ∧
     f 0 = (⟨p, v⟩ : TangentBundle I M) ∧
-    IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g α) s
+    IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g p) s
 
 /-- An initial-data geodesic on `s` is in particular a geodesic on `s`. -/
 lemma IsGeodesicOnWithInitial.isGeodesicOn
@@ -138,8 +142,8 @@ lemma IsGeodesicOnWithInitial.isGeodesicOn
     {p : M} {v : TangentSpace I p}
     (hγ : IsGeodesicOnWithInitial (I := I) g γ s p v) :
     IsGeodesicOn (I := I) g γ s := by
-  obtain ⟨α, f, hproj, _, hf⟩ := hγ
-  exact ⟨α, f, hproj, hf⟩
+  obtain ⟨f, hproj, _, hf⟩ := hγ
+  exact ⟨p, f, hproj, hf⟩
 
 /-- The starting point is forced: if `IsGeodesicOnWithInitial g γ s p v`
 holds and `0 ∈ s`, then `γ 0 = p`. -/
@@ -148,7 +152,7 @@ lemma IsGeodesicOnWithInitial.start_eq
     {p : M} {v : TangentSpace I p}
     (hγ : IsGeodesicOnWithInitial (I := I) g γ s p v) :
     γ 0 = p := by
-  obtain ⟨_, f, hproj, hf0, _⟩ := hγ
+  obtain ⟨f, hproj, hf0, _⟩ := hγ
   have h := hproj 0
   simp [hf0] at h
   exact h.symm
@@ -159,8 +163,8 @@ lemma IsGeodesicOnWithInitial.mono
     {p : M} {v : TangentSpace I p}
     (hγ : IsGeodesicOnWithInitial (I := I) g γ s p v) (hs : s' ⊆ s) :
     IsGeodesicOnWithInitial (I := I) g γ s' p v := by
-  obtain ⟨α, f, hproj, hf0, hf⟩ := hγ
-  exact ⟨α, f, hproj, hf0, hf.mono hs⟩
+  obtain ⟨f, hproj, hf0, hf⟩ := hγ
+  exact ⟨f, hproj, hf0, hf.mono hs⟩
 
 /-! ## The maximal interval
 
@@ -169,14 +173,22 @@ The maximal interval is the union over all *open* sets `J ⊆ ℝ` such that
 the union of opens gives an open set, automatically containing `0`. -/
 
 /-- The "membership witness" predicate for the maximal interval: at time
-`t`, there exists an open `J ∋ 0, t` and a geodesic with initial data
-`(p, v)` on `J`. This is packaged as a single-existential `Prop` so that
-`Classical.choose` works cleanly. -/
+`t`, there exists an open *preconnected* `J ∋ 0, t` (necessarily an open
+real interval, since open preconnected subsets of `ℝ` are open intervals)
+and a geodesic with initial data `(p, v)` on `J`. This is packaged as a
+single-existential `Prop` so that `Classical.choose` works cleanly.
+
+The preconnectedness requirement is mathematically essential: integral
+curves of the chart-fixed geodesic vector field with prescribed initial
+data at time `0` are uniquely determined only on the connected component
+of `0` in `J`. Forcing `J` to be preconnected (hence an interval
+containing both `0` and `t`) is what enables propagating value-level
+information about the curve from time `0` to time `t`. -/
 def MaximalGeodesicWitness
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     (t : ℝ) : Prop :=
   ∃ γ : ℝ → M, ∃ J : Set ℝ,
-    IsOpen J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
+    IsOpen J ∧ IsPreconnected J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
       IsGeodesicOnWithInitial (I := I) g γ J p v
 
 /-- The maximal interval of definition of a geodesic with initial data
@@ -205,11 +217,11 @@ theorem maximalGeodesicInterval_isOpen
     IsOpen (maximalGeodesicInterval (I := I) g p v) := by
   rw [isOpen_iff_mem_nhds]
   intro t ht
-  obtain ⟨γ, J, hJ, h0, ht_in, hγ⟩ := ht
+  obtain ⟨γ, J, hJ, hJ_conn, h0, ht_in, hγ⟩ := ht
   -- `J ⊆ maximalGeodesicInterval g p v` and `J ∈ 𝓝 t`.
   refine Filter.mem_of_superset (hJ.mem_nhds ht_in) ?_
   intro t' ht'
-  exact ⟨γ, J, hJ, h0, ht', hγ⟩
+  exact ⟨γ, J, hJ, hJ_conn, h0, ht', hγ⟩
 
 /-! ## Local existence on the maximal interval
 
@@ -233,9 +245,10 @@ lemma exists_maximalGeodesicWitness_zero
   rw [isMIntegralCurveAt_iff'] at hf
   obtain ⟨ε, hε, hf_on⟩ := hf
   refine ⟨projectCurve (I := I) f, Metric.ball (0 : ℝ) ε,
-    Metric.isOpen_ball, Metric.mem_ball_self hε, Metric.mem_ball_self hε, ?_⟩
+    Metric.isOpen_ball, (convex_ball (0 : ℝ) ε).isPreconnected,
+    Metric.mem_ball_self hε, Metric.mem_ball_self hε, ?_⟩
   -- Package as `IsGeodesicOnWithInitial`.
-  exact ⟨p, f, fun _ => rfl, hf0, hf_on⟩
+  exact ⟨f, fun _ => rfl, hf0, hf_on⟩
 
 /-- `0` belongs to the maximal interval. -/
 theorem zero_mem_maximalGeodesicInterval
@@ -279,7 +292,7 @@ def maximalGeodesicChosenCurve
 lemma maximalGeodesicChosenCurve_spec
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     {t : ℝ} (h : MaximalGeodesicWitness (I := I) g p v t) :
-    ∃ J : Set ℝ, IsOpen J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
+    ∃ J : Set ℝ, IsOpen J ∧ IsPreconnected J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
       IsGeodesicOnWithInitial (I := I) g
         (maximalGeodesicChosenCurve (I := I) g p v h) J p v :=
   Classical.choose_spec h
@@ -334,7 +347,7 @@ theorem maximalGeodesic_zero
     maximalGeodesic (I := I) g p v 0 = p := by
   have h0 := zero_mem_maximalGeodesicInterval (I := I) g p v
   rw [maximalGeodesic_of_mem (I := I) (g := g) (p := p) (v := v) h0]
-  obtain ⟨J, _hJ, _h0J, _h0J', hγ⟩ :=
+  obtain ⟨J, _hJ, _hJ_conn, _h0J, _h0J', hγ⟩ :=
     maximalGeodesicChosenCurve_spec (I := I) g p v h0
   -- `hγ : IsGeodesicOnWithInitial g (chosen) J p v`, so chosen 0 = p.
   exact hγ.start_eq
@@ -364,7 +377,7 @@ theorem exists_isGeodesicAt_of_mem_maximalGeodesicInterval
     ∃ (γ : ℝ → M) (J : Set ℝ), IsOpen J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
       IsGeodesicOnWithInitial (I := I) g γ J p v ∧
       IsGeodesicAt (I := I) g γ t := by
-  obtain ⟨γ, J, hJ, h0, ht, hγ⟩ := h
+  obtain ⟨γ, J, hJ, _hJ_conn, h0, ht, hγ⟩ := h
   refine ⟨γ, J, hJ, h0, ht, hγ, ?_⟩
   -- `IsGeodesicAt` from `IsGeodesicOn`: take `t` as interior point of `J`.
   exact hγ.isGeodesicOn.isGeodesicAt (hJ.mem_nhds ht)

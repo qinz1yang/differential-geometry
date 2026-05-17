@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.MaximalInterval
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
+import Mathlib.Geometry.Manifold.ChartedSpace
+import Mathlib.Topology.Connected.Clopen
 
 set_option linter.unusedSectionVars false
 
@@ -171,11 +174,11 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 /-- The constant curve `fun _ => p` is a geodesic on every set with
 initial data `(p, 0)`, witnessed by the constant lift
-`fun _ => ⟨p, 0⟩` and chart basepoint `p`. -/
+`fun _ => ⟨p, 0⟩` (with chart basepoint `p`, fixed by the definition). -/
 theorem isGeodesicOnWithInitial_const_zero
     (g : SmoothRiemannianMetric I M) (p : M) (J : Set ℝ) :
     IsGeodesicOnWithInitial (I := I) g (fun _ : ℝ => p) J p (0 : E) := by
-  refine ⟨p, fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M), ?_, ?_, ?_⟩
+  refine ⟨fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M), ?_, ?_, ?_⟩
   · intro _; rfl
   · rfl
   · intro t _
@@ -186,7 +189,8 @@ theorem isGeodesicOnWithInitial_const_zero
 theorem maximalGeodesicWitness_zero_velocity
     (g : SmoothRiemannianMetric I M) (p : M) (t : ℝ) :
     MaximalGeodesicWitness (I := I) g p (0 : E) t :=
-  ⟨fun _ : ℝ => p, Set.univ, isOpen_univ, Set.mem_univ _, Set.mem_univ _,
+  ⟨fun _ : ℝ => p, Set.univ, isOpen_univ, isPreconnected_univ,
+    Set.mem_univ _, Set.mem_univ _,
     isGeodesicOnWithInitial_const_zero (I := I) g p Set.univ⟩
 
 /-- The maximal interval at `(p, 0)` is the entire real line. -/
@@ -244,6 +248,187 @@ theorem maximalGeodesic_smul_zero_t
   exact maximalGeodesic_zero (I := I) g p (s • v)
 
 end HeadlineAtZero
+
+/-! ## Zero-velocity propagation: the value identity
+
+The headline `maximalGeodesic g p 0 t = p` for every `t : ℝ`. The proof
+proceeds by the following standard clopen propagation:
+
+* The chosen witness gives a lift `f : ℝ → TangentBundle I M`, an open
+  preconnected `J ⊆ ℝ` with `0, t ∈ J`, such that `f 0 = ⟨p, 0⟩` and `f`
+  is an integral curve of `geodesicVectorFieldChart g p` on `J`.
+
+* Define `S := { s ∈ J | f s = ⟨p, 0⟩ }`. By local uniqueness of integral
+  curves at zero-section points (and smoothness of the chart-fixed
+  geodesic vector field at every point of the trivialisation source at
+  `p`), `f` agrees with the constant lift `fun _ => ⟨p, 0⟩` on a
+  neighbourhood of every point of `S`. Hence `S` is *open in `ℝ`*.
+
+* The same local uniqueness shows that for every `s ∈ J` with `s` in the
+  closure of `S`, the curve `f` agrees with the constant lift on a
+  neighbourhood of `s` — extracted from a sequence approaching `s` and
+  lying in `S` — so `f s = ⟨p, 0⟩` and hence `s ∈ S`. In other words,
+  `closure S ∩ J ⊆ S`.
+
+* Apply `IsPreconnected.subset_of_closure_inter_subset` (with `s := J`,
+  `u := S`) using preconnectedness of `J` to conclude `J ⊆ S`. In
+  particular `t ∈ S`, so `f t = ⟨p, 0⟩`, and the chosen-curve value at
+  `t` is the projection `(f t).proj = p`.
+-/
+
+section ZeroVelocityValue
+
+variable [I.Boundaryless] [CompleteSpace E]
+
+/-- **Local zero-section uniqueness.** Suppose `f : ℝ → TangentBundle I M`
+is a (local) integral curve of `geodesicVectorFieldChart g p` at `t₀`
+with `f t₀ = ⟨p, 0⟩`. Then `f` agrees with the constant lift
+`fun _ => ⟨p, 0⟩` in a neighbourhood of `t₀`. -/
+theorem isMIntegralCurveAt_eventuallyEq_const_zero_section
+    (g : SmoothRiemannianMetric I M) (p : M) {t₀ : ℝ}
+    {f : ℝ → TangentBundle I M}
+    (hf : IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g p) t₀)
+    (h0 : f t₀ = (⟨p, (0 : E)⟩ : TangentBundle I M)) :
+    f =ᶠ[𝓝 t₀] fun _ => (⟨p, (0 : E)⟩ : TangentBundle I M) := by
+  -- The constant lift is a global integral curve of `gvfChart g p`.
+  have hconst : IsMIntegralCurve
+      (fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M))
+      (geodesicVectorFieldChart (I := I) g p) :=
+    isMIntegralCurve_const_zero_section (I := I) g p p
+  have hconst_at : IsMIntegralCurveAt
+      (fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M))
+      (geodesicVectorFieldChart (I := I) g p) t₀ :=
+    hconst.isMIntegralCurveAt t₀
+  -- Apply the uniqueness theorem at the lift level. The chart-source
+  -- condition is automatic since the chart basepoint is `p` itself.
+  have hα_src : (f t₀).proj ∈ (chartAt H p).source := by
+    rw [h0]
+    -- `(⟨p, 0⟩).proj = p` and `p ∈ (chartAt H p).source`.
+    exact mem_chart_source H p
+  have heq := isMIntegralCurveAt_geodesicVectorFieldChart_eventuallyEq
+    (I := I) (g := g) (α := p) (t₀ := t₀)
+    (f₁ := f) (f₂ := fun _ => (⟨p, (0 : E)⟩ : TangentBundle I M))
+    hα_src hf hconst_at h0
+  exact heq
+
+/-- **Zero-section invariance set, openness.** For an integral curve `f`
+of `geodesicVectorFieldChart g p` on the open set `J`, the set
+`S := {s ∈ J | f s = ⟨p, 0⟩}` is open in `ℝ`. -/
+theorem zero_section_invariance_isOpen
+    (g : SmoothRiemannianMetric I M) (p : M) {J : Set ℝ}
+    (hJ : IsOpen J) {f : ℝ → TangentBundle I M}
+    (hf : IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g p) J) :
+    IsOpen {s ∈ J | f s = (⟨p, (0 : E)⟩ : TangentBundle I M)} := by
+  rw [isOpen_iff_mem_nhds]
+  rintro s₀ ⟨hs₀_J, hs₀_eq⟩
+  -- `f` is an integral curve at `s₀` (since `J` open and `s₀ ∈ J`).
+  have hf_at : IsMIntegralCurveAt f
+      (geodesicVectorFieldChart (I := I) g p) s₀ :=
+    hf.isMIntegralCurveAt (hJ.mem_nhds hs₀_J)
+  -- `f =ᶠ[𝓝 s₀] (fun _ => ⟨p, 0⟩)` by local uniqueness.
+  have heq := isMIntegralCurveAt_eventuallyEq_const_zero_section
+    (I := I) g p hf_at hs₀_eq
+  -- Combine with the fact that `J` is a neighbourhood of `s₀`.
+  filter_upwards [heq, hJ.mem_nhds hs₀_J] with s hs hsJ
+  exact ⟨hsJ, hs⟩
+
+/-- **Zero-section invariance set, closure clause.** For an integral
+curve `f` of `geodesicVectorFieldChart g p` on the open set `J`, every
+limit point of `S := {s ∈ J | f s = ⟨p, 0⟩}` that lies in `J` is itself
+in `S`. The proof uses sequential closure (`ℝ` is metric, hence
+Fréchet-Urysohn) and continuity of `f` at `s` (integral curves are
+continuous). The limit-of-constant-sequence step needs the codomain
+`TangentBundle I M` to be T1 (which follows from `M` charted over `H`
+with `H` charted over a normed space, hence T1; and `TangentBundle I M`
+charted over the corresponding `ModelProd H E`). -/
+theorem zero_section_invariance_closure
+    (g : SmoothRiemannianMetric I M) (p : M) {J : Set ℝ}
+    (hJ : IsOpen J) {f : ℝ → TangentBundle I M}
+    (hf : IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g p) J) :
+    closure {s ∈ J | f s = (⟨p, (0 : E)⟩ : TangentBundle I M)} ∩ J ⊆
+      {s ∈ J | f s = (⟨p, (0 : E)⟩ : TangentBundle I M)} := by
+  rintro s ⟨hs_cl, hs_J⟩
+  refine ⟨hs_J, ?_⟩
+  -- `f` is an integral curve at `s`, hence continuous at `s`.
+  have hf_at : IsMIntegralCurveAt f
+      (geodesicVectorFieldChart (I := I) g p) s :=
+    hf.isMIntegralCurveAt (hJ.mem_nhds hs_J)
+  have hcont : ContinuousAt f s := hf_at.continuousAt
+  -- Extract a sequence `u → s` with each `u n ∈ S`.
+  have hseq :=
+    (mem_closure_iff_seq_limit (s := {s ∈ J |
+        f s = (⟨p, (0 : E)⟩ : TangentBundle I M)}) (a := s)).mp hs_cl
+  obtain ⟨u, hu_mem, hu_lim⟩ := hseq
+  -- `f ∘ u → f s` by continuity. Since `f (u n) = ⟨p, 0⟩` for all `n`,
+  -- the sequence `f ∘ u` is constant at `⟨p, 0⟩`, and any subsequence
+  -- converges to the same limit. In a T1 space, the limit of a constant
+  -- sequence is forced to equal that constant — the limit lies in the
+  -- closure of `{⟨p, 0⟩}`, which equals `{⟨p, 0⟩}` by T1.
+  have hfu_lim : Filter.Tendsto (fun n => f (u n)) Filter.atTop (𝓝 (f s)) :=
+    hcont.tendsto.comp hu_lim
+  have hfu_const : ∀ n, f (u n) = (⟨p, (0 : E)⟩ : TangentBundle I M) :=
+    fun n => (hu_mem n).2
+  -- `f s ∈ closure {⟨p, 0⟩}`. The image of the sequence is the constant
+  -- `{⟨p, 0⟩}` singleton, and limits of values lie in the set-closure.
+  haveI : T1Space (TangentBundle I M) := I.tangent.t1Space (TangentBundle I M)
+  have h_in_cl : f s ∈ closure ({(⟨p, (0 : E)⟩ : TangentBundle I M)}) := by
+    refine mem_closure_of_tendsto hfu_lim ?_
+    refine Filter.Eventually.of_forall ?_
+    intro n
+    simp [hfu_const n]
+  rwa [closure_singleton, Set.mem_singleton_iff] at h_in_cl
+
+/-- **Zero-section invariance set, equals the witness interval.** Under
+the hypotheses of the previous two lemmas, the zero-section invariance
+set `S := {s ∈ J | f s = ⟨p, 0⟩}` equals `J` provided `J` is
+preconnected and `0 ∈ J`, `f 0 = ⟨p, 0⟩`. -/
+theorem zero_section_invariance_eq
+    (g : SmoothRiemannianMetric I M) (p : M) {J : Set ℝ}
+    (hJ : IsOpen J) (hJ_conn : IsPreconnected J) (h0 : (0 : ℝ) ∈ J)
+    {f : ℝ → TangentBundle I M}
+    (hf : IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g p) J)
+    (hf0 : f 0 = (⟨p, (0 : E)⟩ : TangentBundle I M)) :
+    ∀ s ∈ J, f s = (⟨p, (0 : E)⟩ : TangentBundle I M) := by
+  set S : Set ℝ := {s ∈ J | f s = (⟨p, (0 : E)⟩ : TangentBundle I M)}
+  -- Apply preconnected propagation. We need `J ⊆ S`.
+  have hS_open : IsOpen S :=
+    zero_section_invariance_isOpen (I := I) g p hJ hf
+  have hS_closure : closure S ∩ J ⊆ S :=
+    zero_section_invariance_closure (I := I) g p hJ hf
+  have hS_nonempty : (J ∩ S).Nonempty := ⟨0, h0, h0, hf0⟩
+  have hsub : J ⊆ S :=
+    hJ_conn.subset_of_closure_inter_subset hS_open hS_nonempty hS_closure
+  intro s hs
+  exact (hsub hs).2
+
+/-- **Headline structural identity.** `maximalGeodesic g p 0 t = p` for
+every `p : M` and every `t : ℝ`. The proof routes through the
+zero-section invariance argument: any chosen witness lift `f` for the
+zero-velocity case stays on the zero section throughout the
+(preconnected) witness interval, so the chosen-curve projection equals
+the constant `p` at every member of the interval, including `t`. -/
+theorem maximalGeodesic_zero_velocity_value
+    (g : SmoothRiemannianMetric I M) (p : M) (t : ℝ) :
+    maximalGeodesic (I := I) g p (0 : TangentSpace I p) t = p := by
+  -- `0 : TangentSpace I p` is definitionally `0 : E`.
+  change maximalGeodesic (I := I) g p (0 : E) t = p
+  have ht : t ∈ maximalGeodesicInterval (I := I) g p (0 : E) := by
+    rw [maximalGeodesicInterval_zero_velocity (I := I) g p]
+    exact Set.mem_univ _
+  rw [maximalGeodesic_of_mem (I := I) (g := g) (p := p) (v := (0 : E)) ht]
+  -- Extract the chosen-witness data.
+  obtain ⟨J, hJ_open, hJ_conn, h0J, htJ, hγ⟩ :=
+    maximalGeodesicChosenCurve_spec (I := I) g p (0 : E) ht
+  obtain ⟨f, hproj, hf0, hf_on⟩ := hγ
+  -- By the propagation lemma, `f s = ⟨p, 0⟩` for every `s ∈ J`.
+  have hft : f t = (⟨p, (0 : E)⟩ : TangentBundle I M) :=
+    zero_section_invariance_eq (I := I) g p hJ_open hJ_conn h0J hf_on hf0 t htJ
+  -- The chosen-curve value at `t` is the projection of `f t`.
+  have hchosen : maximalGeodesicChosenCurve (I := I) g p (0 : E) ht t =
+      (f t).proj := (hproj t).symm
+  rw [hchosen, hft]
+
+end ZeroVelocityValue
 
 end Geodesic
 end Riemannian
