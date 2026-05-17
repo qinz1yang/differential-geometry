@@ -1,34 +1,48 @@
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHsExt
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Scalar
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
-# A-priori `Hˢ`-norm bound for continuous mild solutions
+# Energy estimates for the scalar quasi-linear heat equation
 
-For a closed Riemannian manifold `(M, g)`, a Sobolev exponent `σ`, an
-initial datum `u₀ : Hˢ`, and a Lipschitz nonlinearity
-`N : Hˢ → Hˢ`, any continuous map `u : [0, T] → Hˢ` that satisfies the
-Duhamel mild-solution formula
+For a closed Riemannian manifold `(M, g)` and a Sobolev exponent `σ`,
+this module proves two energy-type results for the quasi-linear scalar
+heat equation `∂_t u = Δ_g u + N(u)` on the spectral `Hˢ`-scale.
 
-  `u(t) = e^{t Δ} u₀ + ∫₀ᵗ e^{(t-τ) Δ} (N (u τ)) dτ`
+## `mild_solution_norm_le` — a-priori `Hˢ` bound
 
-is bounded in `Hˢ` by `(‖u₀‖ + ‖N 0‖ · t) · exp(L · t)`. The estimate is
-obtained by applying the affine integral Grönwall inequality to the norm
-function `f(t) := ‖u t‖`, after bounding the Duhamel integrand pointwise
-via the contractivity of the heat semigroup and the Lipschitz hypothesis
-on `N`.
+Any continuous mild solution `u : [0, T] → Hˢ` of the Duhamel form
+`u(t) = e^{t Δ} u₀ + ∫₀ᵗ e^{(t-τ) Δ}(N(u τ)) dτ` with a globally
+`L`-Lipschitz nonlinearity `N` is bounded by
+`‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ · t) · exp(L · t)`. The estimate is obtained by
+applying the affine integral Grönwall inequality to `f(t) := ‖u t‖`
+after bounding the Duhamel integrand pointwise via the contractivity of
+the heat semigroup and the Lipschitz hypothesis on `N`.
+
+## `scalar_quasilinear_local_existence_with_norm_bound` — bundled headline
+
+Combines `scalar_quasilinear_local_existence` (short-time existence of a
+continuous mild solution) with `mild_solution_norm_le` (the a-priori
+bound) into a single statement: there is a positive existence time `T`,
+a continuous mild solution on `[0, T]`, and the pointwise norm bound
+holds on `[0, T]`. The integer-exponent specialisation is a one-line `:=`
+at `σ = (k : ℝ)`.
 
 ## Main results
 
-* `mild_solution_norm_le` — the a-priori `Hˢ` bound for continuous mild
-  solutions to the scalar quasi-linear heat equation.
+* `mild_solution_norm_le` — a-priori `Hˢ`-norm bound for any continuous
+  mild solution.
+* `scalar_quasilinear_local_existence_with_norm_bound` — short-time
+  existence with the a-priori bound bundled in.
+* `scalar_quasilinear_local_existence_with_norm_bound_Hk` —
+  integer-exponent specialisation on `HkScalar g k`.
 -/
 
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
-open scoped Manifold Topology ContDiff BigOperators
+open scoped Manifold Topology ContDiff BigOperators NNReal
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -206,6 +220,59 @@ theorem mild_solution_norm_le
   intro t ht
   exact integral_gronwall_le_affine (T := T) (A := ‖u₀‖) (B := ‖N 0‖) (K := (L : ℝ))
     hT hu₀_nn hN0_nn hL_nn (f := f) hf_cont hf_nn hf_int t ht
+
+/-- **Short-time existence of a mild solution of the quasi-linear scalar
+heat equation on the spectral `Hˢ`-scale, with a-priori `Hˢ`-norm bound.**
+
+For a closed Riemannian manifold `(M, g)`, a Sobolev exponent `σ`, an
+initial datum `u₀ : scalarHs g σ`, and a globally Lipschitz nonlinearity
+`N : scalarHs g σ → scalarHs g σ`, there is a positive existence time
+`T` and a continuous path `u : [0, T] → scalarHs g σ` solving the
+Duhamel mild-form equation `u(t) = e^{t Δ_g} u₀ + ∫₀ᵗ e^{(t-τ) Δ_g}(N(u τ)) dτ`
+with `u(0) = u₀`, satisfying the pointwise norm bound
+`‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ · t) · exp(L · t)` on `[0, T]`. -/
+theorem scalar_quasilinear_local_existence_with_norm_bound
+    (g : SmoothRiemannianMetric I M) (σ : ℝ)
+    (u₀ : scalarHs (I := I) (M := M) g σ)
+    {N : scalarHs (I := I) (M := M) g σ → scalarHs (I := I) (M := M) g σ}
+    {L : ℝ≥0} (hN : LipschitzWith L N) :
+    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → scalarHs (I := I) (M := M) g σ,
+      ContinuousOn u (Set.Icc 0 T) ∧
+      u 0 = u₀ ∧
+      (∀ t ∈ Set.Icc (0:ℝ) T,
+        u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
+          ∫ τ in (0:ℝ)..t,
+            heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))) ∧
+      (∀ t ∈ Set.Icc (0:ℝ) T,
+        ‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ * t) * Real.exp ((L : ℝ) * t)) := by
+  obtain ⟨T, hT_pos, u, hu_cont, hu_zero, hu_eq⟩ :=
+    scalar_quasilinear_local_existence (I := I) (M := M) g σ u₀ hN
+  refine ⟨T, hT_pos, u, hu_cont, hu_zero, hu_eq, ?_⟩
+  exact mild_solution_norm_le (I := I) (M := M) (g := g) (σ := σ) u₀ hN
+    hT_pos.le hu_cont hu_eq
+
+/-- **Short-time existence of a mild solution of the quasi-linear scalar
+heat equation on the integer Sobolev scale `Hᵏ`, with a-priori
+`Hᵏ`-norm bound.**
+
+The integer-exponent specialisation of
+`scalar_quasilinear_local_existence_with_norm_bound`. -/
+theorem scalar_quasilinear_local_existence_with_Hk_bound
+    (g : SmoothRiemannianMetric I M) (k : ℕ)
+    (u₀ : HkScalar (I := I) (M := M) g k)
+    {N : HkScalar (I := I) (M := M) g k → HkScalar (I := I) (M := M) g k}
+    {L : ℝ≥0} (hN : LipschitzWith L N) :
+    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → HkScalar (I := I) (M := M) g k,
+      ContinuousOn u (Set.Icc 0 T) ∧
+      u 0 = u₀ ∧
+      (∀ t ∈ Set.Icc (0:ℝ) T,
+        u t = heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) t u₀ +
+          ∫ τ in (0:ℝ)..t,
+            heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) (t - τ) (N (u τ))) ∧
+      (∀ t ∈ Set.Icc (0:ℝ) T,
+        ‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ * t) * Real.exp ((L : ℝ) * t)) :=
+  scalar_quasilinear_local_existence_with_norm_bound (I := I) (M := M) g
+    (k : ℝ) u₀ hN
 
 end EnergyEstimates
 end QuasiLinear

@@ -826,8 +826,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.ScalarInstance
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Scalar
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegSpace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegFixedPoint
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.EnergyEstimates.MildSolutionBound
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.EnergyEstimates.HkHeadline
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.EnergyEstimates
 
 -- Public consumption-facing facade
 import DifferentialGeometry.Interface
