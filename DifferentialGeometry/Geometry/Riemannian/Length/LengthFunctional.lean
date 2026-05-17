@@ -1539,6 +1539,73 @@ lemma speed_double_shift_reparam
   rw [show (2 * t + (-1) : ℝ) = 2 * t - 1 by ring] at h
   exact h
 
+/-! ### Length of a constant-speed curve
+
+If the speed of `γ` is the constant `c ≥ 0` on every parameter `t`, then the
+length over `[a, b]` (with `a ≤ b`) is `c · (b - a)`. -/
+
+/-- For a `C¹` curve with constant speed `c ≥ 0`, the length over `[a, b]` is
+`c · (b - a)`. -/
+theorem length_eq_speed_mul_of_constSpeed [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    {c : ℝ} (_hc : 0 ≤ c)
+    (hSpeed : ∀ t, speed (I := I) g γ t = c) (a b : ℝ) (_hab : a ≤ b) :
+    length (I := I) g γ a b = c * (b - a) := by
+  unfold length
+  have hcongr : ∫ t in a..b, speed (I := I) g γ t = ∫ _ in a..b, (c : ℝ) := by
+    refine intervalIntegral.integral_congr ?_
+    intro u _
+    exact hSpeed u
+  rw [hcongr, intervalIntegral.integral_const, smul_eq_mul]
+  -- `intervalIntegral.integral_const` gives `(b - a) • c`; rearrange to `c * (b - a)`.
+  ring
+
+/-! ### Length subadditivity over an arbitrary midpoint
+
+Per `length_concat`, the length splits as an equality on `a ≤ b ≤ c`. The
+corresponding `≤` direction is recorded here for callers that only need the
+inequality. -/
+
+/-- For `a ≤ b ≤ c` and a `C¹` curve `γ`, the length over `[a, c]` is bounded
+above by the sum of the lengths over `[a, b]` and `[b, c]`. (In fact it is
+equal — see `length_concat` — but the `≤` form is convenient in optimisation
+arguments.) -/
+theorem length_le_concat_split [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) (a b c : ℝ) (hab : a ≤ b) (hbc : b ≤ c) :
+    length (I := I) g γ a c ≤
+      length (I := I) g γ a b + length (I := I) g γ b c := by
+  exact le_of_eq (length_concat (I := I) hγ a b c hab hbc)
+
+/-! ### Length is zero when velocity vanishes identically -/
+
+/-- If the intrinsic velocity of `γ` vanishes at every parameter, the length
+over any interval is zero. -/
+theorem length_of_velocity_zero [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    (h_zero : ∀ t, velocity (I := I) γ t = 0) (a b : ℝ) :
+    length (I := I) g γ a b = 0 := by
+  classical
+  unfold length
+  have hspeed_zero : ∀ t, speed (I := I) g γ t = 0 := by
+    intro t
+    unfold speed
+    have hv : velocity (I := I) γ t = 0 := h_zero t
+    have hmap : g.inner (γ t) (0 : TangentSpace I (γ t)) =
+        (0 : TangentSpace I (γ t) →L[ℝ] ℝ) := map_zero _
+    rw [hv, hmap]
+    -- The continuous linear map `0` evaluated at `0` is `0`; then `sqrt 0 = 0`.
+    change Real.sqrt ((0 : TangentSpace I (γ t) →L[ℝ] ℝ) 0) = 0
+    rw [ContinuousLinearMap.zero_apply, Real.sqrt_zero]
+  have hcongr : ∫ t in a..b, speed (I := I) g γ t = ∫ _ in a..b, (0 : ℝ) := by
+    refine intervalIntegral.integral_congr ?_
+    intro u _
+    exact hspeed_zero u
+  rw [hcongr]
+  simp [intervalIntegral.integral_zero]
+
 end Length
 end Riemannian
 end Geometry
