@@ -560,7 +560,7 @@ lemma tensorChartComponentRaw_contMDiffOn_chart_source
 /-! ## Compact-support / global smoothness of the POU-weighted scalar -/
 
 /-- The POU-weighted raw scalar component has support inside the chart source. -/
-private lemma tensorChartComponentPou_support_subset_chart_source
+lemma tensorChartComponentPou_support_subset_chart_source
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
