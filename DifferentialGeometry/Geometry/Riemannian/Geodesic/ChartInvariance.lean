@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Equation
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartTransitionTTM
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartChristoffelTransform
 import DifferentialGeometry.Integral.Connection.LeviCivita
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
@@ -356,6 +358,262 @@ theorem geodesicVectorFieldChart_self
     (g : SmoothRiemannianMetric I M) (α : M) (p : TangentBundle I M) :
     geodesicVectorFieldChart (I := I) g α p =
       geodesicVectorFieldChart (I := I) g α p := rfl
+
+/-! ### Chart-fibre coordinate transformation
+
+The chart-α fibre coordinate of a tangent-bundle point `p` differs from the
+chart-β fibre coordinate by the Jacobian of the base chart change
+`φ_αβ := extChartAt I α ∘ (extChartAt I β).symm`, evaluated at the β-chart
+image of `p.proj`.
+
+This is the first-component analogue of the tangent-bundle's chart change
+on `T(TM)`, projected to the fibre. -/
+
+/-- The chart-α fibre coordinate of `p` equals the base chart-change Jacobian
+applied to the chart-β fibre coordinate of `p`. -/
+theorem chartFiberCoord_chart_transform
+    (α β : M) {p : TangentBundle I M}
+    (hα : p.proj ∈ (chartAt H α).source)
+    (hβ : p.proj ∈ (chartAt H β).source) :
+    chartFiberCoord (I := I) α p =
+      fderiv ℝ (extChartAt I α ∘ (extChartAt I β).symm)
+          (extChartAt I β p.proj) (chartFiberCoord (I := I) β p) := by
+  classical
+  -- Abbreviations.
+  set y_β : E := extChartAt I β p.proj with hyβ_def
+  set v_β : E := chartFiberCoord (I := I) β p with hvβ_def
+  set y_α : E := extChartAt I α p.proj with hyα_def
+  set v_α : E := chartFiberCoord (I := I) α p with hvα_def
+  set φ_αβ : E → E := extChartAt I α ∘ (extChartAt I β).symm with hφ_def
+  -- Use `extChartAt_tangent_chart_change_apply` at `(y_β, v_β)`:
+  -- this gives
+  --   extChartAt I.tangent ⟨α, 0⟩ ((extChartAt I.tangent ⟨β, 0⟩).symm (y_β, v_β))
+  --     = (φ_αβ y_β, fderivWithin ℝ φ_αβ (range I) y_β v_β).
+  -- On the other hand, `extChartAt I.tangent ⟨β, 0⟩ p = (y_β, v_β)` by
+  -- `extChartAt_tangent_zeroSection_apply` and the definitions of `y_β`, `v_β`.
+  -- So the LHS equals `extChartAt I.tangent ⟨α, 0⟩ p = (y_α, v_α)`, again by
+  -- `extChartAt_tangent_zeroSection_apply`.
+  -- Comparing second components yields `v_α = fderivWithin ℝ φ_αβ (range I) y_β v_β`.
+  -- Then convert `fderivWithin (range I) = fderiv` via `[I.Boundaryless]`.
+  -- Membership hypotheses for `extChartAt_tangent_chart_change_apply`.
+  have hβ_ext : p.proj ∈ (extChartAt I β).source := by
+    rw [extChartAt_source I β]; exact hβ
+  have hyβ_target : y_β ∈ (extChartAt I β).target := by
+    change extChartAt I β p.proj ∈ (extChartAt I β).target
+    exact (extChartAt I β).map_source hβ_ext
+  have hsymm_yβ : (extChartAt I β).symm y_β = p.proj := by
+    change (extChartAt I β).symm (extChartAt I β p.proj) = p.proj
+    exact (extChartAt I β).left_inv hβ_ext
+  have hy_source : (extChartAt I β).symm y_β ∈ (chartAt H α).source := by
+    rw [hsymm_yβ]; exact hα
+  -- Apply the lemma at `(y_β, v_β)`.
+  have hgen :=
+    extChartAt_tangent_chart_change_apply (I := I) (α := α) (β := β)
+      (y := y_β) (w := v_β) hyβ_target hy_source
+  -- The argument `(extChartAt I.tangent ⟨β, 0⟩).symm (y_β, v_β)` simplifies
+  -- to `p`, because `(y_β, v_β) = extChartAt I.tangent ⟨β, 0⟩ p`, which lies in
+  -- the target of the extended chart on the tangent bundle.
+  have hp_chart_β : p ∈ (chartAt (ModelProd H E)
+      (⟨β, (0 : E)⟩ : TangentBundle I M)).source := by
+    rw [TangentBundle.mem_chart_source_iff (I := I) (M := M) p
+      (⟨β, (0 : E)⟩ : TangentBundle I M)]
+    exact hβ
+  have hp_β_source : p ∈ (extChartAt I.tangent
+      (⟨β, (0 : E)⟩ : TangentBundle I M)).source := by
+    rw [extChartAt_source (I := I.tangent) (⟨β, (0 : E)⟩ : TangentBundle I M)]
+    exact hp_chart_β
+  have hp_β_eval :
+      extChartAt I.tangent (⟨β, (0 : E)⟩ : TangentBundle I M) p = (y_β, v_β) :=
+    extChartAt_tangent_zeroSection_apply (I := I) (α := β) (q := p)
+  have hsymm_yβ_vβ :
+      (extChartAt I.tangent (⟨β, (0 : E)⟩ : TangentBundle I M)).symm (y_β, v_β)
+        = p := by
+    rw [← hp_β_eval]
+    exact (extChartAt I.tangent
+      (⟨β, (0 : E)⟩ : TangentBundle I M)).left_inv hp_β_source
+  -- Apply this to the LHS of `hgen`.
+  rw [hsymm_yβ_vβ] at hgen
+  -- Now `hgen : extChartAt I.tangent ⟨α, 0⟩ p
+  --     = (φ_αβ y_β, fderivWithin ℝ φ_αβ (range I) y_β v_β)`.
+  have hp_α_eval :
+      extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p = (y_α, v_α) :=
+    extChartAt_tangent_zeroSection_apply (I := I) (α := α) (q := p)
+  rw [hp_α_eval] at hgen
+  -- Equate second components.
+  have hsnd : v_α = fderivWithin ℝ φ_αβ (range I) y_β v_β :=
+    congrArg Prod.snd hgen
+  -- Convert `fderivWithin (range I) = fderiv` via boundarylessness.
+  have hrange : (range I : Set E) = Set.univ := ModelWithCorners.range_eq_univ I
+  have hfderivWithin_eq :
+      fderivWithin ℝ φ_αβ (range I) y_β = fderiv ℝ φ_αβ y_β := by
+    rw [hrange, fderivWithin_univ]
+  rw [hfderivWithin_eq] at hsnd
+  exact hsnd
+
+/-! ### Unconditional chart invariance
+
+We combine:
+
+* the iff `geodesicVectorFieldChart_eq_iff_mfderiv_eq` (reducing the headline
+  to an equality on the trivialised fibre);
+* the chart-transition formula `mfderiv_T_TM_chart_change_apply` on `T(TM)`
+  (giving the closed-form image of `geodesicVectorFieldChart g β p` under the
+  bundle-chart derivative);
+* the chart-fibre identity `chartFiberCoord_chart_transform` (matching the
+  first component to `geodesicVectorFieldChartFiber g α p`);
+* the chart-Christoffel transformation `chartChristoffelContraction_chart_transform`
+  (matching the second component).
+-/
+
+/-- **Unconditional headline.** The chart-fixed geodesic vector field
+`geodesicVectorFieldChart g α p` does not depend on the chart basepoint `α`,
+provided `p.proj` lies in both chart sources.
+
+This is the chart-invariance theorem for the geodesic spray. Combined with
+the gluing of integral curves under chart changes, it shows that the geodesic
+ODE is intrinsic to the manifold and the metric, independent of any choice
+of chart. -/
+theorem geodesicVectorFieldChart_chart_invariance
+    (g : SmoothRiemannianMetric I M) (α β : M) {p : TangentBundle I M}
+    (hα : p.proj ∈ (chartAt H α).source)
+    (hβ : p.proj ∈ (chartAt H β).source) :
+    geodesicVectorFieldChart (I := I) g α p =
+      geodesicVectorFieldChart (I := I) g β p := by
+  classical
+  -- Abbreviations.
+  set y_β : E := extChartAt I β p.proj with hyβ_def
+  set v_β : E := chartFiberCoord (I := I) β p with hvβ_def
+  set y_α : E := extChartAt I α p.proj with hyα_def
+  set v_α : E := chartFiberCoord (I := I) α p with hvα_def
+  set φ_αβ : E → E := extChartAt I α ∘ (extChartAt I β).symm with hφ_def
+  set J : E →L[ℝ] E := fderiv ℝ φ_αβ y_β with hJ_def
+  -- Step 1: First-component identity `v_α = J v_β`.
+  have hfst : v_α = J v_β :=
+    chartFiberCoord_chart_transform (I := I) α β hα hβ
+  -- Step 2: Reduce headline to mfderiv equality via the iff.
+  refine (geodesicVectorFieldChart_eq_iff_mfderiv_eq (I := I) g α β hα).mpr ?_
+  -- Step 3: LHS image: `mfderiv (extChartAt I.tangent ⟨α, 0⟩) p
+  --           (geodesicVectorFieldChart g α p) = geodesicVectorFieldChartFiber g α p`.
+  rw [mfderiv_extChartAt_T_TM_eq_chartFiber (I := I) g α hα]
+  -- Goal now:
+  --   geodesicVectorFieldChartFiber g α p
+  --   = mfderiv I.tangent 𝓘(ℝ, E × E) (extChartAt I.tangent ⟨α, 0⟩) p
+  --       (geodesicVectorFieldChart g β p).
+  -- Step 4: Convert mfderiv to `(triv-α).clm p`.
+  -- For this we need `p ∈ (chartAt (ModelProd H E) ⟨α, 0⟩).source`.
+  have hp_chart_α : p ∈ (chartAt (ModelProd H E)
+      (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
+    rw [TangentBundle.mem_chart_source_iff (I := I) (M := M) p
+      (⟨α, (0 : E)⟩ : TangentBundle I M)]
+    exact hα
+  have hmfd_eq_α :=
+    TangentBundle.continuousLinearMapAt_trivializationAt
+      (I := I.tangent) (M := TangentBundle I M)
+      (x₀ := (⟨α, (0 : E)⟩ : TangentBundle I M)) (x := p) hp_chart_α
+  -- `hmfd_eq_α : (triv-α-on-T(TM)).continuousLinearMapAt p = mfderiv (extChartAt ...) p`.
+  rw [← hmfd_eq_α]
+  -- Step 5: Unfold `geodesicVectorFieldChart g β p`.
+  -- `geodesicVectorFieldChart g β p = (triv-β-on-T(TM)).symm p (Q_β)`,
+  -- with `Q_β := geodesicVectorFieldChartFiber g β p`.
+  set Q_β : E × E := geodesicVectorFieldChartFiber (I := I) g β p with hQβ_def
+  -- For trivialization on the base set, `e.symm p X = e.symmL ℝ p X`.
+  have hp_chart_β : p ∈ (chartAt (ModelProd H E)
+      (⟨β, (0 : E)⟩ : TangentBundle I M)).source := by
+    rw [TangentBundle.mem_chart_source_iff (I := I) (M := M) p
+      (⟨β, (0 : E)⟩ : TangentBundle I M)]
+    exact hβ
+  have hp_β_baseSet :
+      p ∈ (trivializationAt (E × E) (TangentSpace I.tangent)
+        (⟨β, (0 : E)⟩ : TangentBundle I M)).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet (I := I.tangent)
+        (M := TangentBundle I M) (⟨β, (0 : E)⟩ : TangentBundle I M)]
+    exact hp_chart_β
+  -- Identify `geodesicVectorFieldChart g β p = (triv-β).symmL ℝ p Q_β` on the base set.
+  -- This uses that `e.symm p = e.symmL ℝ p` is the underlying map on the base set
+  -- (the `symm` defaults to a default value off the base set; on it, agrees with `symmL`).
+  set e_β := trivializationAt (E × E) (TangentSpace I.tangent)
+      (⟨β, (0 : E)⟩ : TangentBundle I M)
+  have hgvf_eq : geodesicVectorFieldChart (I := I) g β p = e_β.symmL ℝ p Q_β := by
+    change e_β.symm p Q_β = e_β.symmL ℝ p Q_β
+    rfl
+  rw [hgvf_eq]
+  -- Unfold the `e_β` abbreviation so the goal matches `htransition`.
+  change geodesicVectorFieldChartFiber (I := I) g α p =
+      (trivializationAt (E × E) (TangentSpace I.tangent)
+        (⟨α, (0 : E)⟩ : TangentBundle I M)).continuousLinearMapAt ℝ p
+        ((trivializationAt (E × E) (TangentSpace I.tangent)
+          (⟨β, (0 : E)⟩ : TangentBundle I M)).symmL ℝ p Q_β)
+  -- Step 6: Apply `mfderiv_T_TM_chart_change_apply` with Q = Q_β.
+  have htransition :=
+    mfderiv_T_TM_chart_change_apply (I := I) (α := α) (β := β) (p := p)
+      hα hβ Q_β
+  -- `htransition` (after let unfolding) reads:
+  --   (triv-α-on-T(TM)).clm p ((triv-β-on-T(TM)).symmL p Q_β)
+  --   = (fderiv φ_αβ y_β Q_β.1, fderiv φ_αβ y_β Q_β.2 + D²φ_αβ(Q_β.1) v_β).
+  simp only at htransition
+  rw [htransition]
+  -- Step 7: Unfold Q_β components and simplify.
+  -- Q_β = (v_β, -Γ_β(v_β, v_β)(y_β)), so Q_β.1 = v_β, Q_β.2 = -Γ_β(v_β, v_β)(y_β).
+  -- And the chart-α fibre = (v_α, -Γ_α(v_α, v_α)(y_α)).
+  -- Need: (v_α, -Γ_α(v_α, v_α)(y_α)) = (J v_β, J(-Γ_β(v_β,v_β)(y_β)) + D²φ v_β v_β).
+  -- First component: v_α = J v_β — by `hfst`.
+  -- Second component: -Γ_α(v_α, v_α)(y_α)
+  --                 = -J(Γ_β(v_β, v_β)(y_β)) + D²φ v_β v_β
+  -- by `chartChristoffelContraction_chart_transform` and `hfst`.
+  have hQβ_fst : Q_β.1 = v_β := rfl
+  have hQβ_snd : Q_β.2 =
+      - chartChristoffelContraction (I := I) g β v_β v_β y_β := rfl
+  rw [hQβ_fst, hQβ_snd]
+  -- Apply the chart-Christoffel transformation law.
+  have hΓ_trans :=
+    chartChristoffelContraction_chart_transform (I := I) g α β (x := p.proj)
+      hα hβ v_β
+  -- `hΓ_trans` (with the local `J` and `y_β`, `y_α` matching ours):
+  --   Γ_α(J v_β, J v_β)(y_α) = J(Γ_β(v_β, v_β)(y_β))
+  --                           - fderiv (y ↦ fderiv φ_αβ y v_β) y_β v_β.
+  simp only at hΓ_trans
+  -- The let-bindings in `hΓ_trans` unfold to ours: `extChartAt I α x = y_α`, etc.
+  -- We need to rewrite to match. Note `hΓ_trans` uses
+  --   `fderiv ℝ (extChartAt I α ∘ (extChartAt I β).symm) (extChartAt I β p.proj) = J`,
+  --   `extChartAt I α p.proj = y_α`, `extChartAt I β p.proj = y_β`.
+  -- These are all definitionally / by `set`-binding equal to ours.
+  -- Construct the second-component equation explicitly.
+  -- Goal:
+  -- geodesicVectorFieldChartFiber g α p
+  --   = (J v_β,
+  --      J (-Γ_β(v_β, v_β)(y_β))
+  --        + fderiv (y ↦ fderiv φ_αβ y v_β) y_β v_β).
+  -- LHS by def: (v_α, -Γ_α(v_α, v_α)(y_α)).
+  change geodesicVectorFieldChartFiber (I := I) g α p =
+      (J v_β, J (- chartChristoffelContraction (I := I) g β v_β v_β y_β)
+        + fderiv ℝ (fun y => fderiv ℝ φ_αβ y v_β) y_β v_β)
+  rw [geodesicVectorFieldChartFiber_def (I := I) g α p]
+  -- After unfolding, LHS = (v_α, -Γ_α(v_α, v_α)(y_α)).
+  -- Show product equality componentwise.
+  refine Prod.ext ?_ ?_
+  · -- First component: `v_α = J v_β`.
+    change v_α = J v_β
+    exact hfst
+  · -- Second component:
+    --   -Γ_α(v_α, v_α)(y_α) = J(-Γ_β(v_β, v_β)(y_β)) + D²φ_αβ(v_β) v_β.
+    change - chartChristoffelContraction (I := I) g α v_α v_α y_α =
+      J (- chartChristoffelContraction (I := I) g β v_β v_β y_β)
+        + fderiv ℝ (fun y => fderiv ℝ φ_αβ y v_β) y_β v_β
+    -- Substitute `v_α = J v_β` on the LHS.
+    rw [hfst]
+    -- Now LHS = -Γ_α(J v_β, J v_β)(y_α).
+    -- By hΓ_trans:
+    --   Γ_α(J v_β, J v_β)(y_α) = J(Γ_β(v_β, v_β)(y_β)) - D²φ_αβ(v_β) v_β.
+    -- So -Γ_α(J v_β, J v_β)(y_α) = -J(Γ_β(v_β, v_β)(y_β)) + D²φ_αβ(v_β) v_β.
+    rw [hΓ_trans]
+    -- Goal:
+    -- -(J(Γ_β(v_β, v_β)(y_β)) - D²φ_αβ(v_β) v_β)
+    --   = J(-Γ_β(v_β, v_β)(y_β)) + D²φ_αβ(v_β) v_β.
+    -- Use linearity of J: J(-x) = -J(x), and rearrange signs.
+    rw [map_neg J]
+    -- Goal: -(J(Γ_β v_β v_β y_β) - D²φ v_β v_β) = -J(Γ_β v_β v_β y_β) + D²φ v_β v_β.
+    -- Pure algebra: -(a - b) = -a + b.
+    abel
 
 end UnconditionalHeadline
 
