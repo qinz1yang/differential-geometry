@@ -422,6 +422,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartTransitionTTM
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartChristoffelTransform
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Intrinsic
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.ConstantSpeed
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Homogeneity
