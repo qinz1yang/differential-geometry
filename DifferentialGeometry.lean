@@ -822,8 +822,10 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.DuhamelMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Contraction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Existence
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorInstance
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Scalar
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegSpace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MaxRegFixedPoint
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.EnergyEstimates.MildSolutionBound
 
 -- Public consumption-facing facade
 import DifferentialGeometry.Interface
