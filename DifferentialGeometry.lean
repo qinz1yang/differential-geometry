@@ -420,6 +420,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.Intrinsic
 
 import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlong
 import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlongMetric
