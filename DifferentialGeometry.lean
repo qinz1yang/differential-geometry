@@ -466,7 +466,6 @@ import DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 import DifferentialGeometry.Geometry.Riemannian.InjectivityRadius
 import DifferentialGeometry.Geometry.Riemannian.SectionalCurvature
 import DifferentialGeometry.Geometry.Riemannian.AlongCurve
-import DifferentialGeometry.Geometry.Riemannian.JacobiField
 
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.NonSmooth
