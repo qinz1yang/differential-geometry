@@ -228,7 +228,7 @@ the geodesic vector field.
 This is a direct consequence of
 `TangentBundle.continuousLinearMapAt_trivializationAt` together with
 `Trivialization.continuousLinearMapAt_symmL`. -/
-private lemma mfderiv_extChartAt_tangent_geodesicVectorFieldChart
+lemma mfderiv_extChartAt_tangent_geodesicVectorFieldChart
     (g : SmoothRiemannianMetric I M) (α : M)
     {p : TangentBundle I M} (hp : p.proj ∈ (chartAt H α).source) :
     (mfderiv I.tangent 𝓘(ℝ, E × E)

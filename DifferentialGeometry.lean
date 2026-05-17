@@ -424,6 +424,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Intrinsic
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.ConstantSpeed
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Homogeneity
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.AffineReparam
 import DifferentialGeometry.Geometry.Riemannian.Length.LengthFunctional
 import DifferentialGeometry.Geometry.Riemannian.Length.EnergyFunctional
 import DifferentialGeometry.Geometry.Riemannian.Distance.Basic
