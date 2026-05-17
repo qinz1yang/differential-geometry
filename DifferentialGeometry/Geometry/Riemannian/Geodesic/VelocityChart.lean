@@ -219,6 +219,118 @@ theorem fst_mfderiv_extChartAt_tangent_at_zero_section
     ContinuousLinearMap.coe_fst'] at happ
   exact happ
 
+/-! ## Second-component identity for the tangent-bundle extended chart -/
+
+/-- On the tangent-bundle chart at `⟨α, 0⟩`, the second coordinate of the
+extended chart at `⟨α, 0⟩` agrees with the α-trivialised fibre coordinate
+`chartFiberCoord α`.
+
+Like the `fst` analogue, the identity holds for every `q` since both
+sides reduce to the second component of the trivialisation at `α`; the
+chart-source hypothesis is not needed at this pointwise level. -/
+lemma snd_extChartAt_tangent_zeroSection_apply (α : M) (q : TangentBundle I M) :
+    (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q).2 =
+      chartFiberCoord (I := I) α q := by
+  classical
+  -- Decompose the bundle-level extended chart via `FiberBundle.extChartAt`.
+  have hfb : extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q =
+      ((extChartAt I α).prod (PartialEquiv.refl E))
+        ((trivializationAt E (TangentSpace I) α).toPartialEquiv q) := by
+    have := FiberBundle.extChartAt (IB := I) (F := E) (E := TangentSpace I)
+      (x := (⟨α, (0 : E)⟩ : TangentBundle I M))
+    change extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q = _
+    rw [this]
+    rfl
+  rw [hfb]
+  -- Second coordinate of the prod-extension is the identity (`refl E`) applied to
+  -- the trivialisation's second component, which is `chartFiberCoord α q` by def.
+  rfl
+
+/-- Pointwise function-level identity restated as `EventuallyEq` on
+`𝓝 p`. Since the underlying equality is unconditional, the
+neighbourhood predicate is trivially true. -/
+lemma eventuallyEq_snd_extChartAt_tangent_zeroSection (α : M)
+    (p : TangentBundle I M) :
+    (fun q : TangentBundle I M =>
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q).2) =ᶠ[𝓝 p]
+      (fun q : TangentBundle I M => chartFiberCoord (I := I) α q) :=
+  Filter.Eventually.of_forall
+    (fun q => snd_extChartAt_tangent_zeroSection_apply (I := I) α q)
+
+/-- **Chart-coordinate rosetta stone, mfderiv form, second component.**
+The differential of the tangent-bundle extended chart at `⟨α, 0⟩`,
+followed by the second-component projection, equals the differential of
+`chartFiberCoord α : TangentBundle I M → E` at `p`.
+
+Both sides are intrinsic: the RHS uses `mfderiv` of `chartFiberCoord α`
+on the tangent bundle. -/
+theorem snd_mfderiv_extChartAt_tangent_at_zero_section
+    {α : M} {p : TangentBundle I M}
+    (hp : p.proj ∈ (chartAt H α).source)
+    (X : TangentSpace I.tangent p) :
+    ((mfderiv I.tangent 𝓘(ℝ, E × E)
+       (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) p) X).2 =
+    (mfderiv I.tangent 𝓘(ℝ, E)
+       (fun q : TangentBundle I M => chartFiberCoord (I := I) α q) p) X := by
+  classical
+  -- (1) Eventually equal in a neighbourhood of `p`.
+  have hev : (fun q : TangentBundle I M =>
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q).2) =ᶠ[𝓝 p]
+      (fun q : TangentBundle I M => chartFiberCoord (I := I) α q) :=
+    eventuallyEq_snd_extChartAt_tangent_zeroSection (I := I) α p
+  -- (2) LHS mfderiv: factors as `Prod.snd CLM ∘L mfderiv (chart) p`.
+  have hLHS_eq :
+      mfderiv I.tangent 𝓘(ℝ, E)
+        (fun q : TangentBundle I M =>
+          (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q).2) p =
+      (ContinuousLinearMap.snd ℝ E E) ∘L
+        (mfderiv I.tangent 𝓘(ℝ, E × E)
+          (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) p) := by
+    have hsnd_contMDiff : ContMDiff 𝓘(ℝ, E × E) 𝓘(ℝ, E) ∞
+        (fun y : E × E => y.2) := (ContinuousLinearMap.snd ℝ E E).contMDiff
+    have hsnd : MDifferentiableAt 𝓘(ℝ, E × E) 𝓘(ℝ, E)
+        (fun y : E × E => y.2)
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p) :=
+      hsnd_contMDiff.mdifferentiableAt (by decide)
+    have hchart : MDifferentiableAt I.tangent 𝓘(ℝ, E × E)
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) p := by
+      have hp' : p ∈ (chartAt (ModelProd H E)
+          (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
+        rw [TangentBundle.mem_chart_source_iff (I := I) (M := M) p
+          (⟨α, (0 : E)⟩ : TangentBundle I M)]
+        exact hp
+      exact mdifferentiableAt_extChartAt (I := I.tangent) hp'
+    have hcomp_mf := mfderiv_comp (I := I.tangent) (I' := 𝓘(ℝ, E × E)) (I'' := 𝓘(ℝ, E))
+      (f := extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))
+      (g := fun y : E × E => y.2) (x := p) hsnd hchart
+    have hsnd_mfderiv :
+        mfderiv 𝓘(ℝ, E × E) 𝓘(ℝ, E) (fun y : E × E => y.2)
+          (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p) =
+        ContinuousLinearMap.snd ℝ E E := by
+      have h : HasFDerivAt (fun y : E × E => y.2)
+          (ContinuousLinearMap.snd ℝ E E)
+          (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) p) :=
+        (ContinuousLinearMap.snd ℝ E E).hasFDerivAt
+      exact h.hasMFDerivAt.mfderiv
+    change mfderiv I.tangent 𝓘(ℝ, E)
+      ((fun y : E × E => y.2) ∘
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))) p = _
+    rw [hcomp_mf, hsnd_mfderiv]
+    rfl
+  -- (3) Use `EventuallyEq.mfderiv_eq` to equate the two mfderivs at `p`.
+  have hmfd : mfderiv I.tangent 𝓘(ℝ, E)
+      (fun q : TangentBundle I M =>
+        (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) q).2) p =
+      mfderiv I.tangent 𝓘(ℝ, E)
+        (fun q : TangentBundle I M => chartFiberCoord (I := I) α q) p :=
+    Filter.EventuallyEq.mfderiv_eq hev
+  rw [hLHS_eq] at hmfd
+  -- (4) Apply both sides to `X`.
+  have happ := congrArg (fun L : TangentSpace I.tangent p →L[ℝ] E => L X) hmfd
+  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+    ContinuousLinearMap.coe_snd'] at happ
+  exact happ
+
 /-! ## Trivialisation identity for the geodesic vector field -/
 
 /-- The mfderiv of the tangent-bundle extended chart, applied to the
