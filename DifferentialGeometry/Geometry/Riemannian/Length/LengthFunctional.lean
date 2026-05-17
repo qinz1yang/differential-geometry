@@ -291,10 +291,106 @@ interval integral over a finite partition, the length is the sum of the
 lengths of the smooth pieces. -/
 
 /-- The list of adjacent pairs `(xᵢ, xᵢ₊₁)` of a list. -/
-private def adjacentPairs : List ℝ → List (ℝ × ℝ)
+def adjacentPairs : List ℝ → List (ℝ × ℝ)
   | [] => []
   | [_] => []
   | x :: y :: rest => (x, y) :: adjacentPairs (y :: rest)
+
+@[simp] lemma adjacentPairs_nil : adjacentPairs [] = [] := rfl
+@[simp] lemma adjacentPairs_singleton (x : ℝ) : adjacentPairs [x] = [] := rfl
+@[simp] lemma adjacentPairs_cons_cons (x y : ℝ) (rest : List ℝ) :
+    adjacentPairs (x :: y :: rest) = (x, y) :: adjacentPairs (y :: rest) := rfl
+
+/-- Adjacent pairs commute with mapping a function over the list. -/
+lemma adjacentPairs_map (f : ℝ → ℝ) (L : List ℝ) :
+    adjacentPairs (L.map f) = (adjacentPairs L).map (Prod.map f f) := by
+  induction L with
+  | nil => simp
+  | cons x xs ih =>
+    cases xs with
+    | nil => simp
+    | cons y rest =>
+      -- `(x :: y :: rest).map f = f x :: f y :: rest.map f`.
+      change adjacentPairs (f x :: f y :: rest.map f) =
+          (adjacentPairs (x :: y :: rest)).map (Prod.map f f)
+      rw [adjacentPairs_cons_cons, adjacentPairs_cons_cons, List.map_cons]
+      -- Now reduce `adjacentPairs (f y :: rest.map f)` via IH applied to `y :: rest`.
+      have h : adjacentPairs ((y :: rest).map f) =
+          (adjacentPairs (y :: rest)).map (Prod.map f f) := ih
+      change (f x, f y) :: adjacentPairs (f y :: rest.map f) =
+          (Prod.map f f (x, y)) :: ((adjacentPairs (y :: rest)).map (Prod.map f f))
+      have h2 : (y :: rest).map f = f y :: rest.map f := by simp
+      rw [h2] at h
+      rw [h]
+      rfl
+
+/-- Auxiliary: if `L` is non-empty, then
+`adjacentPairs (L ++ [y, x]) = adjacentPairs (L ++ [y]) ++ [(y, x)]`. -/
+lemma adjacentPairs_append_two_cons_nonempty (L : List ℝ) (y x : ℝ) (hL : L ≠ []) :
+    adjacentPairs (L ++ [y, x]) = adjacentPairs (L ++ [y]) ++ [(y, x)] := by
+  induction L with
+  | nil => exact (hL rfl).elim
+  | cons a L' ih =>
+    cases L' with
+    | nil =>
+      -- `L = [a]`, so the lhs is `adjacentPairs [a, y, x] = (a, y) :: adjacentPairs [y, x] = [(a, y), (y, x)]`,
+      -- and the rhs is `adjacentPairs [a, y] ++ [(y, x)] = [(a, y)] ++ [(y, x)] = [(a, y), (y, x)]`.
+      simp [adjacentPairs_cons_cons]
+    | cons b L'' =>
+      -- `L = a :: b :: L''`, then `adjacentPairs (a :: b :: L'' ++ [y, x]) = (a, b) :: adjacentPairs (b :: L'' ++ [y, x])`.
+      have h1 : a :: b :: L'' ++ [y, x] = a :: (b :: L'' ++ [y, x]) := by simp
+      have h2 : a :: b :: L'' ++ [y] = a :: (b :: L'' ++ [y]) := by simp
+      have hL'_ne : b :: L'' ≠ [] := by simp
+      simp only [h1, h2]
+      have hib := ih hL'_ne
+      -- Now we need `adjacentPairs (a :: (b :: L'' ++ [y, x])) =
+      --   adjacentPairs (a :: (b :: L'' ++ [y])) ++ [(y, x)]`.
+      -- Both sides start with `(a, b)`.
+      have hl : adjacentPairs (a :: (b :: L'' ++ [y, x])) =
+          (a, b) :: adjacentPairs (b :: L'' ++ [y, x]) := by
+        simp [adjacentPairs_cons_cons]
+      have hr : adjacentPairs (a :: (b :: L'' ++ [y])) =
+          (a, b) :: adjacentPairs (b :: L'' ++ [y]) := by
+        simp [adjacentPairs_cons_cons]
+      rw [hl, hr, hib]
+      simp
+
+/-- Adjacent pairs of a reversed list: reverse the list of pairs and swap each
+pair. -/
+lemma adjacentPairs_reverse (L : List ℝ) :
+    adjacentPairs L.reverse = ((adjacentPairs L).map Prod.swap).reverse := by
+  induction L with
+  | nil => simp
+  | cons x xs ih =>
+    cases xs with
+    | nil => simp
+    | cons y rest =>
+      -- `(x :: y :: rest).reverse = rest.reverse ++ [y, x]`.
+      have h_rev : (x :: y :: rest).reverse = rest.reverse ++ [y, x] := by
+        simp [List.reverse_cons]
+      rw [h_rev]
+      -- Adjacent pairs of `rest.reverse ++ [y, x]`. We do a manual case split on `rest`.
+      cases h_rest_cases : rest with
+      | nil =>
+        -- `rest.reverse = []`, so the list is `[y, x]`.
+        simp [adjacentPairs_cons_cons]
+      | cons z rest' =>
+        -- After `cases h_rest_cases : rest with ... | cons z rest' =>`,
+        -- `rest` in the goal has been substituted to `z :: rest'`.
+        -- The IH `ih` still mentions `rest`, but we can use `h_rest_cases` to rewrite.
+        have h_rev_ne : (z :: rest').reverse ≠ [] := by simp
+        rw [adjacentPairs_append_two_cons_nonempty (L := (z :: rest').reverse)
+          (y := y) (x := x) h_rev_ne]
+        -- Use IH at `y :: rest = y :: z :: rest'`.
+        have h_ih_at_y_rest : adjacentPairs (y :: rest).reverse =
+            ((adjacentPairs (y :: rest)).map Prod.swap).reverse := ih
+        rw [h_rest_cases] at h_ih_at_y_rest
+        -- Now `h_ih_at_y_rest : adjacentPairs (y :: z :: rest').reverse = ...`.
+        have h_y_rest_rev : (y :: z :: rest').reverse = (z :: rest').reverse ++ [y] := by
+          simp [List.reverse_cons]
+        rw [h_y_rest_rev] at h_ih_at_y_rest
+        rw [h_ih_at_y_rest]
+        simp [adjacentPairs_cons_cons, Prod.swap]
 
 /-- A curve `γ` is *piecewise `C¹` on* `s` if there exists a finite sorted
 list of breakpoints in `s` so that on every adjacent sub-interval determined
@@ -358,6 +454,95 @@ the speed over the whole interval `[a, b]`. We do not formalise this fully
 here; the definition `length` already integrates over `[a, b]` directly via
 the Lebesgue integral, and `intervalIntegral.integral_nonneg` /
 `intervalIntegral.integral_same` apply unconditionally. -/
+
+/-! ### Reversal of a piecewise-`C¹` curve on `Icc 0 1` -/
+
+/-- The reversal of a piecewise-`C¹` curve `γ` on `Icc 0 1`: the curve
+`t ↦ γ (1 - t)` is also piecewise-`C¹` on `Icc 0 1`. -/
+theorem IsPiecewiseC1On.reverse_unitInterval
+    {γ : ℝ → M} (hγ : IsPiecewiseC1On (I := I) γ (Set.Icc (0:ℝ) 1)) :
+    IsPiecewiseC1On (I := I) (fun t : ℝ => γ (1 - t)) (Set.Icc (0:ℝ) 1) := by
+  classical
+  obtain ⟨L, hL_sorted, hL_mem, hL_pieces⟩ := hγ
+  -- Use the reversed and shifted partition `L.reverse.map (1 - ·)`.
+  refine ⟨L.reverse.map (fun x => 1 - x), ?_, ?_, ?_⟩
+  · -- Sorted property: `L` is sorted increasing, `L.reverse` is decreasing,
+    -- mapping `1 - ·` flips the order back to increasing.
+    rw [List.pairwise_map]
+    have h_rev_pw : L.reverse.Pairwise (fun a b => b ≤ a) := hL_sorted.reverse
+    exact h_rev_pw.imp (by intros a b h; linarith)
+  · -- Membership in `Icc 0 1`: if `pt = 1 - q` with `q ∈ L ⊆ Icc 0 1`, then `pt ∈ Icc 0 1`.
+    intro pt hpt
+    rw [List.mem_map] at hpt
+    obtain ⟨q, hq_mem, rfl⟩ := hpt
+    rw [List.mem_reverse] at hq_mem
+    have hq_in := hL_mem q hq_mem
+    rw [Set.mem_Icc] at hq_in ⊢
+    refine ⟨?_, ?_⟩ <;> linarith [hq_in.1, hq_in.2]
+  · -- Pieces: every adjacent pair `(a', b')` of the reverse-mapped partition
+    -- corresponds to a reversed adjacent pair `(b, a)` of `L`.
+    intro adj hadj
+    -- `adjacentPairs (L.reverse.map (1 - ·)) =
+    --   (adjacentPairs L.reverse).map (Prod.map (1-·) (1-·))
+    --  = ((adjacentPairs L).map Prod.swap).reverse.map (Prod.map (1-·) (1-·))`.
+    rw [adjacentPairs_map, adjacentPairs_reverse] at hadj
+    rw [List.mem_map] at hadj
+    obtain ⟨swapped, h_swap_mem, h_swap_eq⟩ := hadj
+    -- `swapped` is in `((adjacentPairs L).map Prod.swap).reverse = (adjacentPairs L).map Prod.swap`
+    -- (as a set, `reverse` and `id` have same membership).
+    rw [List.mem_reverse, List.mem_map] at h_swap_mem
+    obtain ⟨orig, h_orig_mem, h_orig_eq⟩ := h_swap_mem
+    -- `orig = (a, b)` in `adjacentPairs L`, `swapped = (b, a)`, so
+    -- `adj = Prod.map (1-·) (1-·) (b, a) = (1 - b, 1 - a)`.
+    -- Use `hL_pieces` to know `γ` is `C¹` on `Icc 0 1 ∩ Icc a b`.
+    have h_piece := hL_pieces orig h_orig_mem
+    -- Express `Icc 0 1 ∩ Icc adj.1 adj.2` as `(1 - ·) ⁻¹' (Icc 0 1 ∩ Icc orig.1 orig.2)`.
+    -- That is, `s ∈ Icc 0 1 ∩ Icc adj.1 adj.2 ↔ (1 - s) ∈ Icc 0 1 ∩ Icc orig.1 orig.2`.
+    have h_adj_proj : adj = (1 - orig.2, 1 - orig.1) := by
+      rw [← h_swap_eq, ← h_orig_eq]
+      simp [Prod.map, Prod.swap]
+    rw [h_adj_proj]
+    -- Now we need: `ContMDiffOn 𝓘(ℝ,ℝ) I 1 (fun t => γ (1-t)) (Icc 0 1 ∩ Icc (1-orig.2) (1-orig.1))`.
+    -- Use composition: `(fun t => γ (1-t)) = γ ∘ (1-·)`.
+    have h_one_sub_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun s : ℝ => 1 - s) := by
+      refine (?_ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ _).of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
+      exact (contMDiff_const).sub contMDiff_id
+    have h_one_sub_on : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun s : ℝ => 1 - s)
+        (Set.Icc (0:ℝ) 1 ∩ Set.Icc (1 - orig.2) (1 - orig.1)) :=
+      h_one_sub_smooth.contMDiffOn
+    -- Show that the image of `Icc 0 1 ∩ Icc (1-orig.2) (1-orig.1)` under `(1-·)` lies in
+    -- `Icc 0 1 ∩ Icc orig.1 orig.2`.
+    have h_image_subset :
+        (Set.Icc (0:ℝ) 1 ∩ Set.Icc (1 - orig.2) (1 - orig.1)) ⊆
+          (fun s : ℝ => 1 - s) ⁻¹' (Set.Icc (0:ℝ) 1 ∩ Set.Icc orig.1 orig.2) := by
+      rintro x ⟨hx01, hx_int⟩
+      rw [Set.mem_Icc] at hx01 hx_int
+      rw [Set.mem_preimage, Set.mem_inter_iff, Set.mem_Icc, Set.mem_Icc]
+      refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> linarith [hx01.1, hx01.2, hx_int.1, hx_int.2]
+    -- Now `(γ ∘ (1-·))` is `C^1` on the set.
+    have h_comp : ContMDiffOn 𝓘(ℝ, ℝ) I 1 (γ ∘ (fun s : ℝ => 1 - s))
+        (Set.Icc (0:ℝ) 1 ∩ Set.Icc (1 - orig.2) (1 - orig.1)) :=
+      h_piece.comp h_one_sub_on h_image_subset
+    exact h_comp
+
+/-! ### Concatenation of two piecewise-`C¹` curves at `t = 1/2`
+
+For `γ₁, γ₂ : ℝ → M`, the *concatenated curve at the half-way mark* is
+`fun t => if t ≤ 1/2 then γ₁ (2 * t) else γ₂ (2 * t - 1)`. This is
+piecewise-`C¹` on `Icc 0 1` provided each of `γ₁` and `γ₂` is, with the
+midpoint matching `γ₁ 1 = γ₂ 0`. -/
+
+/-- Concatenation of two curves on the unit interval at the midpoint. -/
+def concatHalf (γ₁ γ₂ : ℝ → M) (t : ℝ) : M :=
+  if t ≤ (1/2 : ℝ) then γ₁ (2 * t) else γ₂ (2 * t - 1)
+
+@[simp] lemma concatHalf_zero (γ₁ γ₂ : ℝ → M) :
+    concatHalf (M := M) γ₁ γ₂ 0 = γ₁ 0 := by
+  unfold concatHalf; simp
+
+@[simp] lemma concatHalf_one (γ₁ γ₂ : ℝ → M) :
+    concatHalf (M := M) γ₁ γ₂ 1 = γ₂ 1 := by
+  unfold concatHalf; simp; norm_num
 
 end Length
 end Riemannian
