@@ -388,6 +388,7 @@ import DifferentialGeometry.Analysis.Laplacian.Spectral.EigenBasis
 import DifferentialGeometry.Analysis.Laplacian.Spectral.EigenIdx
 import DifferentialGeometry.Analysis.Sobolev.Hk.SpectralDefs
 import DifferentialGeometry.Analysis.Sobolev.Hk.Inclusion
+import DifferentialGeometry.Analysis.Sobolev.Hk.HeatSemigroupHk
 import DifferentialGeometry.Analysis.Laplacian.Spectral.Enumeration
 import DifferentialGeometry.Analysis.Laplacian.WithBoundary.InteriorSmoothScalarPreH1
 import DifferentialGeometry.Analysis.Laplacian.WithBoundary.InteriorH1Compl
