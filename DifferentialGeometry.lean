@@ -421,6 +421,8 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
 
+import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlong
+
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.NonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.DiffQuotTestFunction
