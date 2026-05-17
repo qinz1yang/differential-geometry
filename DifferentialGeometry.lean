@@ -423,6 +423,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.Intrinsic
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.ConstantSpeed
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.Homogeneity
 
 import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlong
 import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlongMetric
