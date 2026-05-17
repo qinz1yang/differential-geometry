@@ -47,8 +47,7 @@ at `0` is proved by a three-term `ε/3` argument:
   semigroup on `[0, ∞)`.
 * `scalarHsBoundedC0Semigroup` — the heat semigroup packaged as a
   `BoundedC0Semigroup (scalarHs g σ)`.
-* `HkScalar g k`, `hkScalarBoundedC0Semigroup g k` — the integer-exponent
-  alias and its packaged semigroup.
+* `hkScalarBoundedC0Semigroup g k` — the integer-exponent specialisation.
 -/
 
 noncomputable section
@@ -674,16 +673,10 @@ theorem scalarHsBoundedC0Semigroup_apply
     scalarHsBoundedC0Semigroup (I := I) (M := M) g σ t =
       heatSemigroupHsExt (I := I) (M := M) g σ t := rfl
 
-/-! ## Integer-exponent alias
+/-! ## Integer-exponent specialisation
 
-For integer `k`, `HkScalar g k` abbreviates `scalarHs g k` (the
-spectral-`Hᵏ` Sobolev space), and `hkScalarBoundedC0Semigroup g k` is the
-corresponding bounded `C₀`-semigroup. -/
-
-/-- The integer-exponent alias for the spectral Sobolev space on scalars:
-`HkScalar g k := scalarHs g (k : ℝ)`. -/
-abbrev HkScalar (g : SmoothRiemannianMetric I M) (k : ℕ) : Type _ :=
-  scalarHs (I := I) (M := M) g (k : ℝ)
+`HkScalar g k` is defined in `…Hs.SpectralDefs`. Here we record the
+corresponding `BoundedC0Semigroup` instance. -/
 
 /-- The scalar spectral heat semigroup on `HkScalar g k`, packaged as a
 bounded strongly continuous one-parameter contraction semigroup. -/

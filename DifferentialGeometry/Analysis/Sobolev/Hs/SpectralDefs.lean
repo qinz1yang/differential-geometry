@@ -707,6 +707,19 @@ instance instCompleteSpace :
 
 end scalarHs
 
+/-! ## Integer-exponent alias
+
+`HkScalar g k` is the integer-exponent specialisation of `scalarHs g σ`
+at `σ := (k : ℝ)`. The general real-exponent space carries the canonical
+headline name; this abbreviation exists for downstream consumers that
+work with integer regularity (`H¹`, `H²`, …) and prefer to think in
+those terms. -/
+
+/-- Integer-exponent spectral Sobolev space:
+`HkScalar g k := scalarHs g (k : ℝ)`. -/
+abbrev HkScalar (g : SmoothRiemannianMetric I M) (k : ℕ) : Type _ :=
+  scalarHs (I := I) (M := M) g (k : ℝ)
+
 end Hs
 end Sobolev
 end Analysis
