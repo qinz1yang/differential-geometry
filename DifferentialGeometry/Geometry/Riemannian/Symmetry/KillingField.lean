@@ -24,10 +24,15 @@ the most directly computable.
 
 * `IsKillingField g X hX` — the antisymmetry predicate above.
 * `IsKillingField_zero g` — the zero vector field is a Killing field.
+* `IsKillingField.add` — the sum of two Killing fields is a Killing field.
+* `IsKillingField.smul` — a scalar multiple of a Killing field is a Killing field.
 
 Both statements rest only on the bundled Levi-Civita covariant derivative
 `LeviCivita g` and on `ContMDiffRiemannianMetric.inner`; in particular no
-chart-based unfolding is needed.
+chart-based unfolding is needed. The closure under linear combinations follows
+from the linearity of `LeviCivita g` (as a `CovariantDerivative`, via the
+`add` and `smul_const` axioms of `IsCovariantDerivativeOn`) together with the
+bilinearity of `g.inner x` (a `ContinuousLinearMap` in each slot).
 -/
 
 noncomputable section
@@ -128,6 +133,148 @@ theorem IsKillingField_zero
   rw [hV0, hW0]
   -- `g.inner x 0 W = 0` and `g.inner x V 0 = 0` by linearity in each slot.
   simp
+
+/-! ## Closure under linear combinations
+
+The Killing condition is linear: a finite linear combination of Killing fields
+is again a Killing field. We package this as the two basic operations, sum and
+scalar multiple. The proofs use only
+
+* the additivity / scalar-linearity axioms of the Levi-Civita covariant
+  derivative as a `CovariantDerivative` (these reduce
+  `(LeviCivita g) (X + Y) x` and `(LeviCivita g) (c • X) x` to the obvious
+  formulas, given pointwise differentiability of `X` and `Y`), and
+* the bilinearity of `g.inner x` (a `ContinuousLinearMap` in each slot).
+-/
+
+/-- **Sum of two Killing fields is a Killing field.** The proof distributes the
+sum out of the Levi-Civita derivative via the `add`-axiom of the bundled
+covariant derivative, and then uses bilinearity of `g.inner x` to split each
+inner product into a sum of two terms; the four terms regroup into the two
+Killing identities `hKX` and `hKY`, both zero. -/
+theorem IsKillingField.add
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M}
+    {X Y : ∀ x : M, TangentSpace I x}
+    {hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)}
+    {hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)}
+    (hKX : IsKillingField g X hX) (hKY : IsKillingField g Y hY) :
+    IsKillingField g (fun x : M => X x + Y x) (hX.add_section hY) := by
+  intro x V W
+  -- Pointwise differentiability of `X` and `Y` at `x` (from `ContMDiff ∞`).
+  have hX_at : MDiffAt (T% X) x := (hX x).mdifferentiableAt (by simp)
+  have hY_at : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
+  -- Distribute the Levi-Civita derivative across the sum. The function
+  -- `fun x => X x + Y x` is `X + Y` (`Pi.add_apply` is `rfl`); the `add` axiom
+  -- of the bundled covariant derivative gives the CLM-equality below.
+  have hadd_cov :
+      (LeviCivita (I := I) g).toFun (X + Y) x =
+        (LeviCivita (I := I) g).toFun X x +
+          (LeviCivita (I := I) g).toFun Y x :=
+    (LeviCivita (I := I) g).isCovariantDerivativeOn.add hX_at hY_at
+      (Set.mem_univ x)
+  have hadd_funext :
+      (fun x : M => X x + Y x) = X + Y := rfl
+  -- Apply the CLM-equality at `V` and at `W`.
+  have hadd_V :
+      (LeviCivita (I := I) g).toFun (fun x : M => X x + Y x) x V =
+        (LeviCivita (I := I) g).toFun X x V +
+          (LeviCivita (I := I) g).toFun Y x V := by
+    rw [hadd_funext, hadd_cov]
+    rfl
+  have hadd_W :
+      (LeviCivita (I := I) g).toFun (fun x : M => X x + Y x) x W =
+        (LeviCivita (I := I) g).toFun X x W +
+          (LeviCivita (I := I) g).toFun Y x W := by
+    rw [hadd_funext, hadd_cov]
+    rfl
+  -- Rewrite the goal in `toFun` form (this is what `CoeFun` produces).
+  change g.inner x
+      ((LeviCivita (I := I) g).toFun (fun x : M => X x + Y x) x V) W +
+    g.inner x V
+      ((LeviCivita (I := I) g).toFun (fun x : M => X x + Y x) x W) = 0
+  rw [hadd_V, hadd_W]
+  -- `g.inner x` is a `ContinuousLinearMap → ContinuousLinearMap → ℝ`, so it is
+  -- linear in each slot. Distribute the sums:
+  --   inner(∇_V X + ∇_V Y, W) = inner(∇_V X, W) + inner(∇_V Y, W),
+  --   inner(V, ∇_W X + ∇_W Y) = inner(V, ∇_W X) + inner(V, ∇_W Y).
+  rw [ContinuousLinearMap.map_add (g.inner x)
+        ((LeviCivita (I := I) g).toFun X x V)
+        ((LeviCivita (I := I) g).toFun Y x V),
+      ContinuousLinearMap.add_apply,
+      ContinuousLinearMap.map_add (g.inner x V)
+        ((LeviCivita (I := I) g).toFun X x W)
+        ((LeviCivita (I := I) g).toFun Y x W)]
+  -- The four terms regroup into `(hKX x V W) + (hKY x V W)`.
+  have hX_id := hKX x V W
+  have hY_id := hKY x V W
+  -- Both identities use the `(LeviCivita g)` coercion; rewrite the `CoeFun`
+  -- form in `hX_id, hY_id` to the explicit `toFun` form used in the goal.
+  change g.inner x ((LeviCivita (I := I) g).toFun X x V) W +
+      g.inner x V ((LeviCivita (I := I) g).toFun X x W) = 0 at hX_id
+  change g.inner x ((LeviCivita (I := I) g).toFun Y x V) W +
+      g.inner x V ((LeviCivita (I := I) g).toFun Y x W) = 0 at hY_id
+  linarith
+
+/-- **Scalar multiple of a Killing field is a Killing field.** The proof pulls
+the scalar out of the Levi-Civita derivative via the `smul_const`-axiom of the
+bundled covariant derivative, then uses bilinearity of `g.inner x` to pull it
+out of each inner product; the result reduces to `c * (hKX V W) = c * 0 = 0`. -/
+theorem IsKillingField.smul
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M} (c : ℝ)
+    {X : ∀ x : M, TangentSpace I x}
+    {hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)}
+    (hKX : IsKillingField g X hX) :
+    IsKillingField g (fun x : M => c • X x) (hX.const_smul_section) := by
+  intro x V W
+  -- Pointwise differentiability of `X` at `x`.
+  have hX_at : MDiffAt (T% X) x := (hX x).mdifferentiableAt (by simp)
+  -- Pull the constant scalar out of the Levi-Civita derivative. The function
+  -- `fun x => c • X x` is `c • X` (`Pi.smul_apply` is `rfl`); the `smul_const`
+  -- axiom of `IsCovariantDerivativeOn` then gives the CLM-equality below.
+  have hsmul_cov :
+      (LeviCivita (I := I) g).toFun (c • X) x =
+        c • (LeviCivita (I := I) g).toFun X x :=
+    (LeviCivita (I := I) g).isCovariantDerivativeOn.smul_const (a := c) hX_at
+      (Set.mem_univ x)
+  have hsmul_funext :
+      (fun x : M => c • X x) = c • X := rfl
+  have hsmul_V :
+      (LeviCivita (I := I) g).toFun (fun x : M => c • X x) x V =
+        c • ((LeviCivita (I := I) g).toFun X x V) := by
+    rw [hsmul_funext, hsmul_cov]
+    rfl
+  have hsmul_W :
+      (LeviCivita (I := I) g).toFun (fun x : M => c • X x) x W =
+        c • ((LeviCivita (I := I) g).toFun X x W) := by
+    rw [hsmul_funext, hsmul_cov]
+    rfl
+  -- Rewrite the goal in `toFun` form, then substitute.
+  change g.inner x
+      ((LeviCivita (I := I) g).toFun (fun x : M => c • X x) x V) W +
+    g.inner x V
+      ((LeviCivita (I := I) g).toFun (fun x : M => c • X x) x W) = 0
+  rw [hsmul_V, hsmul_W]
+  -- `g.inner x` is a `ContinuousLinearMap`, so it pulls scalars out of each
+  -- slot. After pulling them out, the goal becomes `c * (hKX V W)`.
+  rw [ContinuousLinearMap.map_smul (g.inner x) c
+        ((LeviCivita (I := I) g).toFun X x V),
+      ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.map_smul (g.inner x V) c
+        ((LeviCivita (I := I) g).toFun X x W)]
+  -- Read the Killing identity for `X` at `V, W`, in `toFun` form.
+  have hX_id := hKX x V W
+  change g.inner x ((LeviCivita (I := I) g).toFun X x V) W +
+      g.inner x V ((LeviCivita (I := I) g).toFun X x W) = 0 at hX_id
+  -- Factor `c` out and rewrite.
+  change c • g.inner x ((LeviCivita (I := I) g).toFun X x V) W +
+      c • g.inner x V ((LeviCivita (I := I) g).toFun X x W) = 0
+  rw [show (c • g.inner x ((LeviCivita (I := I) g).toFun X x V) W : ℝ) =
+        c * g.inner x ((LeviCivita (I := I) g).toFun X x V) W from rfl,
+      show (c • g.inner x V ((LeviCivita (I := I) g).toFun X x W) : ℝ) =
+        c * g.inner x V ((LeviCivita (I := I) g).toFun X x W) from rfl,
+      ← mul_add, hX_id, mul_zero]
 
 end Symmetry
 end Riemannian
