@@ -801,6 +801,7 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SpectralBounds
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SemigroupTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.TensorLinearParabolic
 
+import DifferentialGeometry.Analysis.ODE.IntegralGronwall
 import DifferentialGeometry.Analysis.ODE.Variational
 import DifferentialGeometry.Analysis.ODE.FlowC1
 import DifferentialGeometry.Analysis.ODE.FlowC1Bridge
