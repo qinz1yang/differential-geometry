@@ -1,10 +1,11 @@
 import DifferentialGeometry.Geometry.Riemannian.ParallelTransport.Defs
+import DifferentialGeometry.Geometry.Riemannian.Geodesic.ChartChristoffelTransform
 import Mathlib.Analysis.ODE.PicardLindelof
 import Mathlib.Analysis.ODE.Gronwall
 
 set_option linter.unusedSectionVars false
 set_option linter.style.setOption false
-set_option maxHeartbeats 400000
+set_option maxHeartbeats 800000
 
 /-!
 # Existence and uniqueness of parallel vector fields along a smooth curve
@@ -43,6 +44,7 @@ open scoped Manifold Topology ContDiff
 open DifferentialGeometry DifferentialGeometry.Integral.Measure
   DifferentialGeometry.Geometry.Riemannian.Curve
   DifferentialGeometry.Geometry.Riemannian.Geodesic
+  DifferentialGeometry.Integral.Connection
 
 namespace Geometry
 namespace Riemannian
@@ -420,6 +422,65 @@ theorem exists_isParallelAlong_zero
   ⟨fun t => (0 : TangentSpace I (γ t)),
     contMDiff_zeroLift (I := I) hγ_smooth, rfl,
     isParallelAlong_zero (I := I) hγ_smooth⟩
+
+/-! ## Chart-α coefficient operator for the parallel-transport ODE
+
+We define `chartParTransRHS g α γ t w` as the right-hand side of the chart-α linear
+parallel-transport ODE: with `v_α := chartFiberCoord α (⟨γ t, V t⟩)`, the ODE reads
+`v_α'(t) = chartParTransRHS g α γ t (v_α t) := -Γ_α(γ̇_α(t), v_α(t))(γ_α(t))`. The
+following bilinearity and continuity properties of `chartParTransRHS` will feed
+into the linear ODE existence argument. -/
+
+/-- Chart-α coordinate representation of `γ`. -/
+private def gammaChartα (α : M) (γ : ℝ → M) : ℝ → E :=
+  fun t => extChartAt I α (γ t)
+
+@[simp] private lemma gammaChartα_def (α : M) (γ : ℝ → M) (t : ℝ) :
+    gammaChartα (I := I) α γ t = extChartAt I α (γ t) := rfl
+
+/-- Chart-α velocity of `γ` at `t`. -/
+private def gammaVelChartα (α : M) (γ : ℝ → M) : ℝ → E :=
+  fun t => deriv (gammaChartα (I := I) α γ) t
+
+@[simp] private lemma gammaVelChartα_def (α : M) (γ : ℝ → M) (t : ℝ) :
+    gammaVelChartα (I := I) α γ t = deriv (gammaChartα (I := I) α γ) t := rfl
+
+/-- The right-hand side of the chart-α parallel-transport ODE. -/
+private def chartParTransRHS (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
+    (t : ℝ) (w : E) : E :=
+  - chartChristoffelContraction (I := I) g α
+      (gammaVelChartα (I := I) α γ t) w (gammaChartα (I := I) α γ t)
+
+@[simp] private lemma chartParTransRHS_def (g : SmoothRiemannianMetric I M) (α : M)
+    (γ : ℝ → M) (t : ℝ) (w : E) :
+    chartParTransRHS (I := I) g α γ t w =
+      - chartChristoffelContraction (I := I) g α
+          (gammaVelChartα (I := I) α γ t) w (gammaChartα (I := I) α γ t) := rfl
+
+/-- `chartParTransRHS` at `w = 0` is zero. -/
+private lemma chartParTransRHS_zero_right (g : SmoothRiemannianMetric I M) (α : M)
+    (γ : ℝ → M) (t : ℝ) :
+    chartParTransRHS (I := I) g α γ t (0 : E) = 0 := by
+  unfold chartParTransRHS
+  rw [chartChristoffelContraction_symm,
+    chartChristoffelContraction_zero_left]
+  exact neg_zero
+
+/-- `chartParTransRHS` is additive in `w`. -/
+private lemma chartParTransRHS_add (g : SmoothRiemannianMetric I M) (α : M)
+    (γ : ℝ → M) (t : ℝ) (w₁ w₂ : E) :
+    chartParTransRHS (I := I) g α γ t (w₁ + w₂) =
+      chartParTransRHS (I := I) g α γ t w₁ + chartParTransRHS (I := I) g α γ t w₂ := by
+  unfold chartParTransRHS
+  rw [chartChristoffelContraction_add_right, neg_add]
+
+/-- `chartParTransRHS` is `ℝ`-homogeneous in `w`. -/
+private lemma chartParTransRHS_smul (g : SmoothRiemannianMetric I M) (α : M)
+    (γ : ℝ → M) (t : ℝ) (c : ℝ) (w : E) :
+    chartParTransRHS (I := I) g α γ t (c • w) =
+      c • chartParTransRHS (I := I) g α γ t w := by
+  unfold chartParTransRHS
+  rw [chartChristoffelContraction_smul_right, smul_neg]
 
 end Existence
 
