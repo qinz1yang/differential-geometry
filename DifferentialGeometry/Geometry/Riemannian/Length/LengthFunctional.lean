@@ -814,6 +814,148 @@ lemma speed_reparam_unconditional
       change Real.sqrt 0 = |c| * Real.sqrt 0
       rw [Real.sqrt_zero]; ring
 
+/-! ### Length under affine reparametrization
+
+For a positive scaling `a > 0` and arbitrary shift `b`, the affine
+reparametrization `t ↦ γ (a * t + b)` preserves the length: integrating the
+speed over the new domain `[c, d]` agrees with integrating the speed of the
+original `γ` over the rescaled domain `[a*c + b, a*d + b]`. Specialisations
+to pure translation, pure reflection, and unit-interval reversal follow. -/
+
+/-- Length under an affine reparametrization `t ↦ γ (a * t + b)` with positive
+scaling `a`. The integration domain rescales accordingly. -/
+theorem length_affine_reparam [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    {a : ℝ} (ha : 0 < a) (b c d : ℝ) :
+    length (I := I) g (fun t => γ (a * t + b)) c d =
+      length (I := I) g γ (a * c + b) (a * d + b) := by
+  classical
+  unfold length
+  -- Step 1: rewrite the LHS integrand using `speed_reparam_unconditional`.
+  have h_int_eq :
+      (∫ t in c..d, speed (I := I) g (fun s => γ (a * s + b)) t) =
+        ∫ t in c..d, a * speed (I := I) g γ (a * t + b) := by
+    refine intervalIntegral.integral_congr ?_
+    intro t _
+    have h := speed_reparam_unconditional (I := I) g γ a b t
+    rw [h, abs_of_pos ha]
+  rw [h_int_eq]
+  -- Step 2: pull out the constant `a`.
+  rw [intervalIntegral.integral_const_mul a (fun t => speed (I := I) g γ (a * t + b))]
+  -- Step 3: change of variable, using `intervalIntegral.integral_comp_mul_add`.
+  have ha_ne : a ≠ 0 := ne_of_gt ha
+  rw [intervalIntegral.integral_comp_mul_add (f := speed (I := I) g γ) ha_ne b]
+  -- Goal: a * (a⁻¹ • ∫ x in a*c+b..a*d+b, speed g γ x) = ∫ x in a*c+b..a*d+b, ...
+  rw [smul_eq_mul]
+  rw [← mul_assoc]
+  rw [mul_inv_cancel₀ ha_ne]
+  ring
+
+/-- Length under a pure time translation `t ↦ γ (t + b)`. The integration
+domain shifts by `b`. -/
+theorem length_comp_add [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) (b c d : ℝ) :
+    length (I := I) g (fun t => γ (t + b)) c d =
+      length (I := I) g γ (c + b) (d + b) := by
+  classical
+  unfold length
+  -- Speed of the shifted curve at `t` equals speed of `γ` at `t + b`.
+  have h_speed_pt : ∀ t : ℝ,
+      speed (I := I) g (fun s => γ (s + b)) t = speed (I := I) g γ (t + b) := by
+    intro t
+    have h := speed_reparam_unconditional (I := I) g γ 1 b t
+    -- `h : speed (fun s => γ(1*s + b)) t = |1| * speed γ (1*t + b)`.
+    simp only [one_mul, abs_one, one_mul] at h
+    exact h
+  -- Rewrite the integrand.
+  have h_int_eq :
+      (∫ t in c..d, speed (I := I) g (fun s => γ (s + b)) t) =
+        ∫ t in c..d, speed (I := I) g γ (t + b) := by
+    refine intervalIntegral.integral_congr ?_
+    intro t _
+    exact h_speed_pt t
+  rw [h_int_eq]
+  -- Apply `intervalIntegral.integral_comp_add_right` to shift the interval.
+  exact intervalIntegral.integral_comp_add_right (f := speed (I := I) g γ) b
+
+/-- Length under time reflection `t ↦ γ (-t)`. The integration domain flips
+sign and reverses orientation. -/
+theorem length_reverse [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) (a b : ℝ) :
+    length (I := I) g (fun t => γ (-t)) (-b) (-a) =
+      length (I := I) g γ a b := by
+  classical
+  unfold length
+  -- Speed of `fun t => γ(-t)` at `t` equals `|-1| * speed γ (-t) = speed γ (-t)`.
+  have h_speed_pt : ∀ t : ℝ,
+      speed (I := I) g (fun s => γ (-s)) t = speed (I := I) g γ (-t) := by
+    intro t
+    have h := speed_reparam_unconditional (I := I) g γ (-1) 0 t
+    -- `h : speed (fun s => γ((-1)*s + 0)) t = |-1| * speed γ ((-1)*t + 0)`.
+    have h_neg_one : |(-1 : ℝ)| = 1 := by
+      rw [abs_neg, abs_one]
+    rw [h_neg_one] at h
+    simp only [neg_one_mul, add_zero, one_mul] at h
+    exact h
+  -- Rewrite the integrand.
+  have h_int_eq :
+      (∫ t in (-b)..(-a), speed (I := I) g (fun s => γ (-s)) t) =
+        ∫ t in (-b)..(-a), speed (I := I) g γ (-t) := by
+    refine intervalIntegral.integral_congr ?_
+    intro t _
+    exact h_speed_pt t
+  rw [h_int_eq]
+  -- `intervalIntegral.integral_comp_neg : ∫ x in a..b, f (-x) = ∫ x in -b..-a, f x`.
+  have h_neg := intervalIntegral.integral_comp_neg
+    (f := speed (I := I) g γ) (a := -b) (b := -a)
+  -- `h_neg : ∫ x in -b..-a, f (-x) = ∫ x in -(-a)..-(-b), f x = ∫ x in a..b, f x`.
+  rw [h_neg]
+  simp only [neg_neg]
+
+/-- Length under unit-interval reversal `t ↦ γ (1 - t)`, integrated over
+`[0, 1]`. The reversed curve has the same length. -/
+theorem length_unit_reverse [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (_hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) :
+    length (I := I) g (fun t => γ (1 - t)) 0 1 =
+      length (I := I) g γ 0 1 := by
+  classical
+  unfold length
+  -- Speed of `fun t => γ(1 - t)` at `t` equals `speed γ (1 - t)`.
+  have h_speed_pt : ∀ t : ℝ,
+      speed (I := I) g (fun s => γ (1 - s)) t = speed (I := I) g γ (1 - t) := by
+    intro t
+    -- `1 - s = (-1) * s + 1`, so apply `speed_reparam_unconditional` with `c = -1, d = 1`.
+    have h := speed_reparam_unconditional (I := I) g γ (-1) 1 t
+    have h_neg_one : |(-1 : ℝ)| = 1 := by
+      rw [abs_neg, abs_one]
+    rw [h_neg_one] at h
+    -- Massage `(-1) * s + 1 = 1 - s` and `(-1) * t + 1 = 1 - t`.
+    have h_fun : (fun s : ℝ => γ ((-1) * s + 1)) = (fun s : ℝ => γ (1 - s)) := by
+      funext s; congr 1; ring
+    have h_pt : ((-1 : ℝ) * t + 1) = 1 - t := by ring
+    rw [h_fun, h_pt] at h
+    rw [one_mul] at h
+    exact h
+  -- Rewrite the integrand.
+  have h_int_eq :
+      (∫ t in (0:ℝ)..1, speed (I := I) g (fun s => γ (1 - s)) t) =
+        ∫ t in (0:ℝ)..1, speed (I := I) g γ (1 - t) := by
+    refine intervalIntegral.integral_congr ?_
+    intro t _
+    exact h_speed_pt t
+  rw [h_int_eq]
+  -- `intervalIntegral.integral_comp_sub_left : ∫ x in a..b, f (d - x) = ∫ x in d - b..d - a, f x`.
+  have h_sub := intervalIntegral.integral_comp_sub_left
+    (f := speed (I := I) g γ) (a := (0 : ℝ)) (b := 1) 1
+  -- `h_sub : ∫ x in 0..1, f (1 - x) = ∫ x in 1 - 1..1 - 0, f x`.
+  rw [h_sub]
+  -- `1 - 1 = 0` and `1 - 0 = 1`.
+  simp
+
 /-! ### `concatHalf` agrees piecewise with each half on its half
 
 Identifying `concatHalf γ₁ γ₂` as `fun s => γ₁ (2 * s)` on the open interval
