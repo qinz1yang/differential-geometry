@@ -422,6 +422,7 @@ import DifferentialGeometry.Geometry.Riemannian.Geodesic.Velocity
 import DifferentialGeometry.Geometry.Riemannian.Geodesic.VelocityChart
 
 import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlong
+import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlongMetric
 
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.NonSmooth
