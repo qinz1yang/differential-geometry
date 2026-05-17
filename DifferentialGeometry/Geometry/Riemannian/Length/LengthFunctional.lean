@@ -392,13 +392,20 @@ lemma adjacentPairs_reverse (L : List ℝ) :
         rw [h_ih_at_y_rest]
         simp [adjacentPairs_cons_cons, Prod.swap]
 
-/-- A curve `γ` is *piecewise `C¹` on* `s` if there exists a finite sorted
-list of breakpoints in `s` so that on every adjacent sub-interval determined
-by consecutive breakpoints, `γ` is `C¹` (in the manifold sense). -/
+/-- A curve `γ` is *piecewise `C¹` on* `s` if it is continuous on `s` and
+there exists a finite sorted list of breakpoints in `s` whose adjacent
+sub-intervals cover `s`, and on each of which `γ` is `C¹` (in the manifold
+sense).
+
+The continuity-on-`s` conjunct rules out discontinuous-curve abuse, and the
+covering conjunct rules out the empty-partition abuse: together they make
+the predicate vacuity-free on intervals `s = Icc a b`. -/
 def IsPiecewiseC1On (γ : ℝ → M) (s : Set ℝ) : Prop :=
+  ContinuousOn γ s ∧
   ∃ partition : List ℝ,
     partition.Pairwise (· ≤ ·) ∧
     (∀ pt ∈ partition, pt ∈ s) ∧
+    (s ⊆ ⋃ adj ∈ adjacentPairs partition, Set.Icc adj.1 adj.2) ∧
     (∀ adj ∈ adjacentPairs partition,
       ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (s ∩ Set.Icc adj.1 adj.2))
 
@@ -410,7 +417,7 @@ theorem IsPiecewiseC1On.of_contMDiffOn
     (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc a b)) :
     IsPiecewiseC1On (I := I) γ (Set.Icc a b) := by
   classical
-  refine ⟨[a, b], ?_, ?_, ?_⟩
+  refine ⟨hγ.continuousOn, [a, b], ?_, ?_, ?_, ?_⟩
   · -- The two-element list `[a, b]` is pairwise (· ≤ ·) by `hab`.
     refine List.Pairwise.cons ?_ (List.pairwise_singleton (· ≤ ·) b)
     intro c hc
@@ -421,6 +428,11 @@ theorem IsPiecewiseC1On.of_contMDiffOn
     · exact Set.left_mem_Icc.mpr hab
     rcases List.mem_singleton.mp hpt' with rfl
     exact Set.right_mem_Icc.mpr hab
+  · -- Coverage: `Icc a b ⊆ ⋃ p ∈ [(a,b)], Icc p.1 p.2 = Icc a b`.
+    intro x hx
+    simp only [Set.mem_iUnion]
+    refine ⟨(a, b), ?_, hx⟩
+    exact List.mem_singleton.mpr rfl
   · intro adj hadj
     -- `adjacentPairs [a, b] = [(a, b)]`.
     have hpairs : adjacentPairs [a, b] = [(a, b)] := rfl
@@ -432,19 +444,29 @@ theorem IsPiecewiseC1On.of_contMDiffOn
     rw [hsub]
     exact hγ
 
-/-- The constant curve is piecewise-`C¹` on any set. -/
-theorem IsPiecewiseC1On.const (p : M) (s : Set ℝ) :
-    IsPiecewiseC1On (I := I) (fun _ : ℝ => p) s := by
+/-- The constant curve is piecewise-`C¹` on `Icc a b` whenever `a ≤ b`. -/
+theorem IsPiecewiseC1On.const_Icc (p : M) {a b : ℝ} (hab : a ≤ b) :
+    IsPiecewiseC1On (I := I) (fun _ : ℝ => p) (Set.Icc a b) := by
   classical
-  refine ⟨[], ?_, ?_, ?_⟩
-  · exact List.Pairwise.nil
+  refine ⟨continuousOn_const, [a, b], ?_, ?_, ?_, ?_⟩
+  · refine List.Pairwise.cons ?_ (List.pairwise_singleton (· ≤ ·) b)
+    intro c hc
+    rcases List.mem_singleton.mp hc with rfl
+    exact hab
   · intro pt hpt
-    cases hpt
+    rcases List.mem_cons.mp hpt with rfl | hpt'
+    · exact Set.left_mem_Icc.mpr hab
+    rcases List.mem_singleton.mp hpt' with rfl
+    exact Set.right_mem_Icc.mpr hab
+  · intro x hx
+    simp only [Set.mem_iUnion]
+    refine ⟨(a, b), ?_, hx⟩
+    exact List.mem_singleton.mpr rfl
   · intro adj hadj
-    -- `adjacentPairs [] = []`.
-    have hpairs : adjacentPairs ([] : List ℝ) = [] := rfl
+    have hpairs : adjacentPairs [a, b] = [(a, b)] := rfl
     rw [hpairs] at hadj
-    cases hadj
+    rcases List.mem_singleton.mp hadj with rfl
+    exact contMDiffOn_const
 
 /-! ### Length is well-defined for piecewise-`C¹` curves on `[a, b]`
 
@@ -463,9 +485,19 @@ theorem IsPiecewiseC1On.reverse_unitInterval
     {γ : ℝ → M} (hγ : IsPiecewiseC1On (I := I) γ (Set.Icc (0:ℝ) 1)) :
     IsPiecewiseC1On (I := I) (fun t : ℝ => γ (1 - t)) (Set.Icc (0:ℝ) 1) := by
   classical
-  obtain ⟨L, hL_sorted, hL_mem, hL_pieces⟩ := hγ
-  -- Use the reversed and shifted partition `L.reverse.map (1 - ·)`.
-  refine ⟨L.reverse.map (fun x => 1 - x), ?_, ?_, ?_⟩
+  obtain ⟨hγ_cont, L, hL_sorted, hL_mem, hL_cov, hL_pieces⟩ := hγ
+  -- Continuity of `t ↦ γ (1 - t)` on `Icc 0 1`: pre-compose with the continuous
+  -- map `t ↦ 1 - t` whose image of `Icc 0 1` lies in `Icc 0 1`.
+  have h_one_sub_cont : Continuous (fun t : ℝ => 1 - t) := by continuity
+  have h_image_subset_unit : Set.MapsTo (fun t : ℝ => 1 - t)
+      (Set.Icc (0:ℝ) 1) (Set.Icc (0:ℝ) 1) := by
+    intro t ht
+    rcases ht with ⟨h0, h1⟩
+    refine ⟨?_, ?_⟩ <;> linarith
+  have hγ_rev_cont : ContinuousOn (fun t : ℝ => γ (1 - t)) (Set.Icc (0:ℝ) 1) := by
+    refine hγ_cont.comp (h_one_sub_cont.continuousOn) ?_
+    exact h_image_subset_unit
+  refine ⟨hγ_rev_cont, L.reverse.map (fun x => 1 - x), ?_, ?_, ?_, ?_⟩
   · -- Sorted property: `L` is sorted increasing, `L.reverse` is decreasing,
     -- mapping `1 - ·` flips the order back to increasing.
     rw [List.pairwise_map]
@@ -479,6 +511,31 @@ theorem IsPiecewiseC1On.reverse_unitInterval
     have hq_in := hL_mem q hq_mem
     rw [Set.mem_Icc] at hq_in ⊢
     refine ⟨?_, ?_⟩ <;> linarith [hq_in.1, hq_in.2]
+  · -- Coverage: for each `s ∈ Icc 0 1`, `1 - s ∈ Icc 0 1` is covered by some
+    -- adjacent pair `(a, b)` of `L`, hence `s ∈ Icc (1 - b) (1 - a)` lies in
+    -- the reversed-mapped pair `(1 - b, 1 - a)` which arises in
+    -- `adjacentPairs (L.reverse.map (1 - ·))`.
+    intro s hs
+    rcases hs with ⟨hs0, hs1⟩
+    have h_1s : (1 - s) ∈ Set.Icc (0 : ℝ) 1 := ⟨by linarith, by linarith⟩
+    have h_cov_1s := hL_cov h_1s
+    simp only [Set.mem_iUnion] at h_cov_1s
+    obtain ⟨pair_set, h_pair_in_adj, h_in_pair⟩ := h_cov_1s
+    -- Now construct the corresponding pair `(1 - pair_set.2, 1 - pair_set.1)`
+    -- in `adjacentPairs (L.reverse.map (1 - ·))`.
+    simp only [Set.mem_iUnion]
+    refine ⟨(1 - pair_set.2, 1 - pair_set.1), ?_, ?_⟩
+    · -- Membership: apply `adjacentPairs_map` and `adjacentPairs_reverse`.
+      rw [adjacentPairs_map, adjacentPairs_reverse]
+      rw [List.mem_map]
+      refine ⟨pair_set.swap, ?_, ?_⟩
+      · rw [List.mem_reverse, List.mem_map]
+        refine ⟨pair_set, h_pair_in_adj, ?_⟩
+        rfl
+      · simp [Prod.swap, Prod.map]
+    · -- Coverage point.
+      rcases h_in_pair with ⟨h_lo, h_hi⟩
+      refine ⟨?_, ?_⟩ <;> simp <;> linarith
   · -- Pieces: every adjacent pair `(a', b')` of the reverse-mapped partition
     -- corresponds to a reversed adjacent pair `(b, a)` of `L`.
     intro adj hadj
@@ -543,6 +600,802 @@ def concatHalf (γ₁ γ₂ : ℝ → M) (t : ℝ) : M :=
 @[simp] lemma concatHalf_one (γ₁ γ₂ : ℝ → M) :
     concatHalf (M := M) γ₁ γ₂ 1 = γ₂ 1 := by
   unfold concatHalf; simp; norm_num
+
+/-! ### Affine reparametrization helpers
+
+Let `φ_a(t) = c * t + d`. We record the manifold-derivative of `φ_a` (it is
+multiplication by `c` as a CLM `ℝ →L[ℝ] ℝ`) and the resulting chain rule for
+`velocity (γ ∘ φ_a)` and `speed (γ ∘ φ_a)`. -/
+
+namespace Internal
+
+/-- The manifold derivative of `t ↦ c * t + d` is multiplication by `c`
+(seen as a CLM `ℝ →L[ℝ] ℝ`). -/
+private lemma mfderiv_affine (c d t : ℝ) :
+    mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => c * s + d) t =
+      c • (ContinuousLinearMap.id ℝ ℝ) := by
+  have hd : HasDerivAt (fun s : ℝ => c * s + d) c t := by
+    simpa using ((hasDerivAt_id t).const_mul c).add_const d
+  have h_fd : HasFDerivAt (fun s : ℝ => c * s + d)
+      (ContinuousLinearMap.toSpanSingleton ℝ c) t :=
+    hd.hasFDerivAt
+  have hfd : fderiv ℝ (fun s : ℝ => c * s + d) t =
+      ContinuousLinearMap.toSpanSingleton ℝ c := h_fd.fderiv
+  rw [mfderiv_eq_fderiv, hfd]
+  ext
+  simp [ContinuousLinearMap.toSpanSingleton_apply]
+
+/-- The intrinsic velocity of the affine reparametrization `t ↦ γ (c * t + d)`
+at `t`, when `γ` is mdifferentiable at `c * t + d`. -/
+private lemma velocity_affine_reparam
+    {γ : ℝ → M} {c d t : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)) :
+    Geodesic.velocity (I := I) (fun s : ℝ => γ (c * s + d)) t =
+      c • (Geodesic.velocity (I := I) γ (c * t + d) :
+        TangentSpace I (γ (c * t + d))) := by
+  classical
+  set φ : ℝ → ℝ := fun s : ℝ => c * s + d
+  have hφ_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ φ := by
+    exact ((contMDiff_const).mul contMDiff_id).add contMDiff_const
+  have hφ_md : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t :=
+    hφ_smooth.mdifferentiable (by simp [ne_eq]) t
+  have h_comp_eq : γ ∘ φ = fun s : ℝ => γ (c * s + d) := by funext s; rfl
+  have h_chain : mfderiv 𝓘(ℝ, ℝ) I (γ ∘ φ) t =
+      (mfderiv 𝓘(ℝ, ℝ) I γ (φ t)).comp (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t) :=
+    mfderiv_comp (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) (I'' := I) (x := t)
+      (by simpa [φ] using hγ) hφ_md
+  have h_φd := mfderiv_affine c d t
+  unfold Geodesic.velocity
+  rw [← h_comp_eq, h_chain, h_φd]
+  change (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d))
+      ((c • (ContinuousLinearMap.id ℝ ℝ)) (1 : ℝ)) =
+    c • (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) (1 : ℝ)
+  -- The CLM applied to `c • 1 = c`.
+  have h_clm_smul :
+      ((c • (ContinuousLinearMap.id ℝ ℝ)) : ℝ →L[ℝ] ℝ) (1 : ℝ) = c := by
+    simp [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply,
+      smul_eq_mul]
+  rw [h_clm_smul]
+  -- Now: `mfderiv γ (c*t+d) c = c • mfderiv γ (c*t+d) 1`.
+  -- Use ContinuousLinearMap.map_smul: `L (c • v) = c • L v`. We need to rewrite
+  -- `c` as `c • 1` on the LHS only.
+  have h_target : (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) c =
+      c • (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) (1 : ℝ) := by
+    have h_eq : (c : ℝ) = c • (1 : ℝ) := by rw [smul_eq_mul, mul_one]
+    calc (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) c
+        = (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) (c • (1 : ℝ)) := by
+          rw [← h_eq]
+      _ = c • (mfderiv 𝓘(ℝ, ℝ) I γ (c * t + d)) (1 : ℝ) :=
+          ContinuousLinearMap.map_smul _ c (1 : ℝ)
+  exact h_target
+
+end Internal
+
+/-- Squared speed transforms via `c²` under the affine reparametrization
+`t ↦ γ (c * t + d)`, when `γ` is mdifferentiable at `c * t + d`. -/
+private lemma speedSq_affine_reparam
+    (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} {c d t : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)) :
+    g.inner ((fun s : ℝ => γ (c * s + d)) t)
+        (Geodesic.velocity (I := I) (fun s : ℝ => γ (c * s + d)) t)
+        (Geodesic.velocity (I := I) (fun s : ℝ => γ (c * s + d)) t) =
+      (c * c) *
+        g.inner (γ (c * t + d))
+          (Geodesic.velocity (I := I) γ (c * t + d))
+          (Geodesic.velocity (I := I) γ (c * t + d)) := by
+  classical
+  have h_pt : (fun s : ℝ => γ (c * s + d)) t = γ (c * t + d) := rfl
+  have h_vel := Internal.velocity_affine_reparam (I := I) hγ
+  rw [h_pt, h_vel]
+  -- Now: `g.inner _ (c • v) (c • v) = c * c * g.inner _ v v`.
+  have h_sm₁ : g.inner (γ (c * t + d))
+        (c • (Geodesic.velocity (I := I) γ (c * t + d) :
+          TangentSpace I (γ (c * t + d)))) =
+      c • g.inner (γ (c * t + d))
+        (Geodesic.velocity (I := I) γ (c * t + d)) := by
+    exact (g.inner (γ (c * t + d))).map_smul c _
+  rw [h_sm₁]
+  -- Now: `(c • g.inner _ v) (c • v) = c * ((g.inner _ v)(c • v))`.
+  -- For a CLM `L : V →L[ℝ] ℝ`, `(c • L) v = c * L v`, and `L (c • v) = c • L v`.
+  change (c • g.inner (γ (c * t + d))
+        (Geodesic.velocity (I := I) γ (c * t + d)))
+        (c • (Geodesic.velocity (I := I) γ (c * t + d) :
+          TangentSpace I (γ (c * t + d)))) =
+    c * c * (g.inner (γ (c * t + d))
+        (Geodesic.velocity (I := I) γ (c * t + d)))
+        (Geodesic.velocity (I := I) γ (c * t + d))
+  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.map_smul]
+  simp only [smul_eq_mul]
+  ring
+
+/-- Speed transforms via `|c|` under the affine reparametrization
+`t ↦ γ (c * t + d)`. -/
+private lemma speed_affine_reparam
+    (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} {c d t : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)) :
+    speed (I := I) g (fun s : ℝ => γ (c * s + d)) t =
+      |c| * speed (I := I) g γ (c * t + d) := by
+  classical
+  unfold speed
+  have h_sq := speedSq_affine_reparam (I := I) g hγ
+  -- `√(c² * x) = |c| * √x` for `x ≥ 0`.
+  have h_pt : (fun s : ℝ => γ (c * s + d)) t = γ (c * t + d) := rfl
+  rw [h_pt]
+  rw [h_sq]
+  rw [show (c * c : ℝ) = c^2 by ring, ← sq_abs c,
+    Real.sqrt_mul (sq_nonneg _)]
+  rw [Real.sqrt_sq (abs_nonneg c)]
+
+/-- Affine reparametrization `t ↦ c * t + d` is a diffeomorphism when `c ≠ 0`,
+in particular the chain-rule criterion shows mdifferentiability of `γ ∘ (c·+d)`
+at `t` is equivalent to mdifferentiability of `γ` at `c * t + d`. -/
+private lemma mdifferentiableAt_reparam_iff
+    {γ : ℝ → M} {c d t : ℝ} (hc : c ≠ 0) :
+    MDifferentiableAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ (c * s + d)) t ↔
+      MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d) := by
+  classical
+  set φ : ℝ → ℝ := fun s : ℝ => c * s + d with hφ_def
+  have hφ_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ φ :=
+    ((contMDiff_const).mul contMDiff_id).add contMDiff_const
+  have hφ_md : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t :=
+    hφ_smooth.mdifferentiable (by simp [ne_eq]) t
+  -- The inverse `ψ s = (s - d)/c`. With `hc : c ≠ 0`, `ψ` is smooth.
+  set ψ : ℝ → ℝ := fun s : ℝ => (s - d)/c with hψ_def
+  have hψ_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ ψ := by
+    have hsmooth_sub : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ (fun s : ℝ => s - d) :=
+      contMDiff_id.sub contMDiff_const
+    have h_div : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ (fun s : ℝ => s / c) := by
+      have h_mul_const : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ⊤ (fun s : ℝ => s * c⁻¹) :=
+        contMDiff_id.mul contMDiff_const
+      simpa [div_eq_mul_inv] using h_mul_const
+    exact h_div.comp hsmooth_sub
+  have hψ_md : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ψ (c * t + d) :=
+    hψ_smooth.mdifferentiable (by simp [ne_eq]) (c * t + d)
+  have h_ψ_apply : ψ (c * t + d) = t := by
+    simp [ψ]
+    field_simp
+  refine ⟨fun h_left => ?_, fun h_right => ?_⟩
+  · -- From mdifferentiability of `fun s => γ(c*s+d)` at `t`,
+    -- compose with `ψ` to get mdifferentiability of `γ` at `c*t+d = φ t`.
+    have h_comp_eq : (fun s : ℝ => γ (c * s + d)) ∘ ψ = γ := by
+      funext s
+      change γ (c * ((s - d)/c) + d) = γ s
+      have : c * ((s - d)/c) + d = s := by field_simp; ring
+      rw [this]
+    have h_comp_md := MDifferentiableAt.comp (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) (I'' := I)
+      (g := fun s : ℝ => γ (c * s + d)) (f := ψ) (x := c * t + d)
+      (by rw [h_ψ_apply]; exact h_left) hψ_md
+    rw [h_comp_eq] at h_comp_md
+    exact h_comp_md
+  · -- From mdifferentiability of γ at `c*t+d`, compose with φ.
+    have h_comp_eq : γ ∘ φ = fun s : ℝ => γ (c * s + d) := by funext; rfl
+    have h_comp_md := MDifferentiableAt.comp (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) (I'' := I)
+      (g := γ) (f := φ) (x := t) (by simpa [φ] using h_right) hφ_md
+    rw [h_comp_eq] at h_comp_md
+    exact h_comp_md
+
+/-- Unconditional speed identity for the affine reparametrization
+`t ↦ γ (c * t + d)`, valid for ALL `t` (using the convention that
+`velocity` is zero at non-mdifferentiable points). -/
+lemma speed_reparam_unconditional
+    (g : SmoothRiemannianMetric I M)
+    (γ : ℝ → M) (c d t : ℝ) :
+    speed (I := I) g (fun s : ℝ => γ (c * s + d)) t =
+      |c| * speed (I := I) g γ (c * t + d) := by
+  classical
+  by_cases hc : c = 0
+  · -- `c = 0` case: `fun s => γ(0*s + d) = fun s => γ d` is constant, speed = 0.
+    -- `|0| * _ = 0`.
+    subst hc
+    simp only [zero_mul, zero_add, abs_zero, zero_mul]
+    -- Now LHS = speed g (fun s => γ d) t.
+    -- This is a constant curve in `M`, so velocity = 0, speed = 0.
+    exact speed_const (I := I) g (γ d) t
+  · by_cases h : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)
+    · exact speed_affine_reparam (I := I) g h
+    · -- Not mdifferentiable: both sides equal 0.
+      have h_not_left : ¬ MDifferentiableAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ (c * s + d)) t := by
+        rw [mdifferentiableAt_reparam_iff (I := I) hc]
+        exact h
+      have h_vel_γ : Geodesic.velocity (I := I) γ (c * t + d) = 0 :=
+        Geodesic.velocity_eq_zero_of_not_mdifferentiable (I := I) h
+      have h_vel : Geodesic.velocity (I := I) (fun s : ℝ => γ (c * s + d)) t = 0 :=
+        Geodesic.velocity_eq_zero_of_not_mdifferentiable (I := I) h_not_left
+      unfold speed
+      rw [h_vel, h_vel_γ]
+      -- Goal: `Real.sqrt (g.inner ((fun s => γ(c*s+d)) t) 0 0) = |c| * Real.sqrt (g.inner (γ(c*t+d)) 0 0)`.
+      have h_pt : (fun s : ℝ => γ (c * s + d)) t = γ (c * t + d) := rfl
+      rw [h_pt]
+      have h0' : g.inner (γ (c * t + d)) (0 : TangentSpace I _) =
+          (0 : TangentSpace I _ →L[ℝ] ℝ) := map_zero _
+      rw [h0']
+      change Real.sqrt 0 = |c| * Real.sqrt 0
+      rw [Real.sqrt_zero]; ring
+
+/-! ### `concatHalf` agrees piecewise with each half on its half
+
+Identifying `concatHalf γ₁ γ₂` as `fun s => γ₁ (2 * s)` on the open interval
+`Iio (1/2)` (where the `if`-condition holds and the value is `γ₁ (2 * s)`),
+and as `fun s => γ₂ (2 * s - 1)` on `Ioi (1/2)`, lets us reduce the
+speed and velocity of `concatHalf` to those of the affinely reparametrized
+halves on the appropriate open intervals (hence almost everywhere on the
+closed halves `Icc 0 (1/2)` and `Icc (1/2) 1`). -/
+
+/-- `concatHalf γ₁ γ₂` agrees with `fun s => γ₁ (2 * s)` strictly to the left
+of `1/2`. -/
+lemma concatHalf_eq_left {γ₁ γ₂ : ℝ → M} {t : ℝ} (ht : t < (1/2 : ℝ)) :
+    concatHalf (M := M) γ₁ γ₂ t = γ₁ (2 * t) := by
+  unfold concatHalf
+  rw [if_pos (le_of_lt ht)]
+
+/-- `concatHalf γ₁ γ₂` agrees with `fun s => γ₂ (2 * s - 1)` strictly to the
+right of `1/2`. -/
+lemma concatHalf_eq_right {γ₁ γ₂ : ℝ → M} {t : ℝ} (ht : (1/2 : ℝ) < t) :
+    concatHalf (M := M) γ₁ γ₂ t = γ₂ (2 * t - 1) := by
+  unfold concatHalf
+  rw [if_neg (not_le.mpr ht)]
+
+/-- `concatHalf γ₁ γ₂` agrees with `fun s => γ₁ (2 * s)` on `Icc 0 (1/2)`. -/
+lemma concatHalf_eq_left_on_Icc {γ₁ γ₂ : ℝ → M} {t : ℝ}
+    (ht : t ∈ Set.Icc (0 : ℝ) (1/2)) :
+    concatHalf (M := M) γ₁ γ₂ t = γ₁ (2 * t) := by
+  unfold concatHalf
+  rw [if_pos ht.2]
+
+/-- `concatHalf γ₁ γ₂` agrees with `fun s => γ₂ (2 * s - 1)` on `Icc (1/2) 1`
+provided the matching condition `γ₁ 1 = γ₂ 0` at the midpoint. -/
+lemma concatHalf_eq_right_on_Icc {γ₁ γ₂ : ℝ → M}
+    (h_match : γ₁ 1 = γ₂ 0) {t : ℝ}
+    (ht : t ∈ Set.Icc ((1/2 : ℝ)) 1) :
+    concatHalf (M := M) γ₁ γ₂ t = γ₂ (2 * t - 1) := by
+  rcases eq_or_lt_of_le ht.1 with h12 | h12
+  · -- `t = 1/2`.
+    rw [← h12]
+    unfold concatHalf
+    rw [if_pos (le_refl _)]
+    -- LHS = γ₁ (2 * (1/2)) = γ₁ 1, RHS = γ₂ (2 * (1/2) - 1) = γ₂ 0.
+    have hL : γ₁ ((2 : ℝ) * (1/2)) = γ₁ 1 := by norm_num
+    have hR : γ₂ ((2 : ℝ) * (1/2) - 1) = γ₂ 0 := by norm_num
+    rw [hL, hR]
+    exact h_match
+  · -- `t > 1/2`.
+    exact concatHalf_eq_right h12
+
+/-! ### Continuity of `concatHalf` from continuity of each half
+
+When `γ₁` is continuous on `Icc 0 1` and `γ₂` is continuous on `Icc 0 1` and
+the matching condition `γ₁ 1 = γ₂ 0` holds, then `concatHalf γ₁ γ₂` is
+continuous on `Icc 0 1`. -/
+
+/-- Continuity of `concatHalf γ₁ γ₂` on `Icc 0 1`, given continuity of the two
+halves on `Icc 0 1` and the midpoint-matching condition. -/
+lemma concatHalf_continuousOn {γ₁ γ₂ : ℝ → M}
+    (hγ₁ : ContinuousOn γ₁ (Set.Icc (0:ℝ) 1))
+    (hγ₂ : ContinuousOn γ₂ (Set.Icc (0:ℝ) 1))
+    (h_match : γ₁ 1 = γ₂ 0) :
+    ContinuousOn (concatHalf (M := M) γ₁ γ₂) (Set.Icc (0:ℝ) 1) := by
+  classical
+  -- Continuity on each closed half.
+  have h_aff_left : Continuous (fun s : ℝ => (2 : ℝ) * s) := by continuity
+  have h_aff_right : Continuous (fun s : ℝ => (2 : ℝ) * s - 1) := by continuity
+  have h_image_left : Set.MapsTo (fun s : ℝ => (2 : ℝ) * s)
+      (Set.Icc (0:ℝ) (1/2)) (Set.Icc (0:ℝ) 1) := by
+    intro s hs
+    rcases hs with ⟨h0, h1⟩
+    refine ⟨?_, ?_⟩ <;> linarith
+  have h_image_right : Set.MapsTo (fun s : ℝ => (2 : ℝ) * s - 1)
+      (Set.Icc ((1/2):ℝ) 1) (Set.Icc (0:ℝ) 1) := by
+    intro s hs
+    rcases hs with ⟨h0, h1⟩
+    refine ⟨?_, ?_⟩ <;> linarith
+  have h_left_cont : ContinuousOn (fun s : ℝ => γ₁ (2 * s)) (Set.Icc (0:ℝ) (1/2)) :=
+    hγ₁.comp h_aff_left.continuousOn h_image_left
+  have h_right_cont : ContinuousOn (fun s : ℝ => γ₂ (2 * s - 1))
+      (Set.Icc ((1/2):ℝ) 1) :=
+    hγ₂.comp h_aff_right.continuousOn h_image_right
+  -- `concatHalf γ₁ γ₂` agrees with the left function on `Icc 0 (1/2)` and the
+  -- right function on `Icc (1/2) 1`.
+  have h_concat_left :
+      ContinuousOn (concatHalf (M := M) γ₁ γ₂) (Set.Icc (0:ℝ) (1/2)) := by
+    refine h_left_cont.congr ?_
+    intro s hs
+    exact concatHalf_eq_left_on_Icc (γ₂ := γ₂) hs
+  have h_concat_right :
+      ContinuousOn (concatHalf (M := M) γ₁ γ₂) (Set.Icc ((1/2):ℝ) 1) := by
+    refine h_right_cont.congr ?_
+    intro s hs
+    exact concatHalf_eq_right_on_Icc (γ₁ := γ₁) h_match hs
+  -- Combine on `Icc 0 1 = Icc 0 (1/2) ∪ Icc (1/2) 1`.
+  have h_union : Set.Icc (0:ℝ) 1 = Set.Icc (0:ℝ) (1/2) ∪ Set.Icc ((1/2):ℝ) 1 := by
+    ext x
+    constructor
+    · rintro ⟨h0, h1⟩
+      by_cases h : x ≤ 1/2
+      · exact Or.inl ⟨h0, h⟩
+      · exact Or.inr ⟨le_of_not_ge h, h1⟩
+    · rintro (⟨h0, h⟩ | ⟨h, h1⟩)
+      · exact ⟨h0, by linarith⟩
+      · exact ⟨by linarith, h1⟩
+  rw [h_union]
+  -- Continuity on a union of two closed sets follows from continuity on each,
+  -- using that both are closed in the union.
+  refine ContinuousOn.union_of_isClosed ?_ ?_ ?_ ?_
+  · exact h_concat_left
+  · exact h_concat_right
+  · exact isClosed_Icc
+  · exact isClosed_Icc
+
+/-! ### Piecewise-`C¹` of `concatHalf` -/
+
+/-- The first reparametrization `fun t => γ (2 * t)` is `C¹` on
+`Icc 0 (1/2) ∩ Icc (a/2) (b/2)` whenever `γ` is `C¹` on `Icc 0 1 ∩ Icc a b`,
+where `0 ≤ a ≤ b ≤ 1`. -/
+private lemma firstHalf_contMDiffOn_aux
+    {γ : ℝ → M} {a b : ℝ}
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc (0:ℝ) 1 ∩ Set.Icc a b)) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun s : ℝ => γ (2 * s))
+      (Set.Icc (0:ℝ) (1/2) ∩ Set.Icc (a/2) (b/2)) := by
+  classical
+  have h_aff_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun s : ℝ => (2 : ℝ) * s) := by
+    refine (?_ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ _).of_le
+      (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
+    exact contMDiff_const.mul contMDiff_id
+  have h_image : (Set.Icc (0:ℝ) (1/2) ∩ Set.Icc (a/2) (b/2)) ⊆
+      (fun s : ℝ => (2 : ℝ) * s) ⁻¹' (Set.Icc (0:ℝ) 1 ∩ Set.Icc a b) := by
+    rintro x ⟨hx01, hxab⟩
+    rcases hx01 with ⟨hx0, hx1⟩
+    rcases hxab with ⟨hxa, hxb⟩
+    refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> linarith
+  exact hγ.comp h_aff_smooth.contMDiffOn h_image
+
+/-- The second reparametrization `fun t => γ (2 * t - 1)` is `C¹` on
+`Icc (1/2) 1 ∩ Icc ((a+1)/2) ((b+1)/2)` whenever `γ` is `C¹` on
+`Icc 0 1 ∩ Icc a b`, where `0 ≤ a ≤ b ≤ 1`. -/
+private lemma secondHalf_contMDiffOn_aux
+    {γ : ℝ → M} {a b : ℝ}
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc (0:ℝ) 1 ∩ Set.Icc a b)) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun s : ℝ => γ (2 * s - 1))
+      (Set.Icc ((1/2):ℝ) 1 ∩ Set.Icc ((a + 1)/2) ((b + 1)/2)) := by
+  classical
+  have h_aff_smooth : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun s : ℝ => (2 : ℝ) * s - 1) := by
+    refine (?_ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ _).of_le
+      (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
+    exact (contMDiff_const.mul contMDiff_id).sub contMDiff_const
+  have h_image : (Set.Icc ((1/2):ℝ) 1 ∩ Set.Icc ((a + 1)/2) ((b + 1)/2)) ⊆
+      (fun s : ℝ => (2 : ℝ) * s - 1) ⁻¹' (Set.Icc (0:ℝ) 1 ∩ Set.Icc a b) := by
+    rintro x ⟨hx01, hxab⟩
+    rcases hx01 with ⟨hx0, hx1⟩
+    rcases hxab with ⟨hxa, hxb⟩
+    refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> linarith
+  exact hγ.comp h_aff_smooth.contMDiffOn h_image
+
+/-! ### Structural facts about `adjacentPairs` and partition endpoints -/
+
+/-- An element appearing in `adjacentPairs L` is the first or second component
+of one of the adjacent pairs; both components lie in `L`. -/
+private lemma fst_mem_of_mem_adjacentPairs : ∀ {L : List ℝ} {adj : ℝ × ℝ},
+    adj ∈ adjacentPairs L → adj.1 ∈ L := by
+  intro L
+  induction L with
+  | nil => intro adj hadj; simp at hadj
+  | cons x L' ih =>
+    cases L' with
+    | nil => intro adj hadj; simp at hadj
+    | cons y rest =>
+      intro adj hadj
+      rw [adjacentPairs_cons_cons, List.mem_cons] at hadj
+      rcases hadj with hadj | hadj
+      · subst hadj; exact List.mem_cons_self
+      · exact List.mem_cons_of_mem _ (ih hadj)
+
+private lemma snd_mem_of_mem_adjacentPairs : ∀ {L : List ℝ} {adj : ℝ × ℝ},
+    adj ∈ adjacentPairs L → adj.2 ∈ L := by
+  intro L
+  induction L with
+  | nil => intro adj hadj; simp at hadj
+  | cons x L' ih =>
+    cases L' with
+    | nil => intro adj hadj; simp at hadj
+    | cons y rest =>
+      intro adj hadj
+      rw [adjacentPairs_cons_cons, List.mem_cons] at hadj
+      rcases hadj with hadj | hadj
+      · subst hadj
+        exact List.mem_cons_of_mem _ List.mem_cons_self
+      · exact List.mem_cons_of_mem _ (ih hadj)
+
+/-- Decomposition of `adjacentPairs` over a list-append, when both lists are
+non-empty. -/
+private lemma adjacentPairs_append_nonempty {A B : List ℝ}
+    (hA : A ≠ []) (hB : B ≠ []) :
+    adjacentPairs (A ++ B) =
+      adjacentPairs A ++ (A.getLast hA, B.head hB) :: adjacentPairs B := by
+  induction A with
+  | nil => exact (hA rfl).elim
+  | cons x A' ih =>
+    cases A' with
+    | nil =>
+      -- A = [x], so A ++ B = x :: B. We split on B.
+      cases B with
+      | nil => exact (hB rfl).elim
+      | cons y B' =>
+        -- A ++ B = x :: y :: B'. adjacentPairs starts with (x, y), then recurses on y :: B'.
+        rw [List.singleton_append, adjacentPairs_cons_cons]
+        rfl
+    | cons z A'' =>
+      -- A = x :: z :: A''. So A ++ B = x :: (z :: A'' ++ B).
+      have hA'_ne : (z :: A'') ≠ [] := by simp
+      -- Build the IH application separately.
+      have h_ih : adjacentPairs ((z :: A'') ++ B) =
+          adjacentPairs (z :: A'') ++
+            ((z :: A'').getLast hA'_ne, B.head hB) :: adjacentPairs B :=
+        ih hA'_ne
+      change adjacentPairs (x :: (z :: A'' ++ B)) =
+        adjacentPairs (x :: z :: A'') ++
+          (List.getLast (x :: z :: A'') hA, List.head B hB) ::
+          adjacentPairs B
+      have heq1 : (z :: A'' ++ B) = z :: (A'' ++ B) := by simp
+      rw [heq1, adjacentPairs_cons_cons, adjacentPairs_cons_cons]
+      -- `(x :: z :: A'').getLast hA = (z :: A'').getLast hA'_ne`.
+      have h_getLast : (x :: z :: A'').getLast hA = (z :: A'').getLast hA'_ne := by
+        rw [List.getLast_cons hA'_ne]
+      rw [h_getLast]
+      -- Need: (x, z) :: adjacentPairs (z :: (A'' ++ B)) = (x, z) :: adjacentPairs (z :: A'') ++ (...) :: adjacentPairs B
+      -- Now: ((x,z) :: adjacentPairs (z :: A'')) ++ (...) :: ... = (x,z) :: (adjacentPairs (z :: A'') ++ (...) :: ...).
+      -- z :: (A'' ++ B) = (z :: A'') ++ B definitionally.
+      change (x, z) :: adjacentPairs ((z :: A'') ++ B) =
+        ((x, z) :: adjacentPairs (z :: A'')) ++
+          ((z :: A'').getLast hA'_ne, B.head hB) :: adjacentPairs B
+      rw [h_ih]
+      rfl
+
+/-- The last element of any partition witness for
+`IsPiecewiseC1On γ (Icc 0 1)` is `1`. -/
+private lemma getLast_eq_one_of_isPiecewiseC1On_unit
+    {γ : ℝ → M} (hγ : IsPiecewiseC1On (I := I) γ (Set.Icc (0:ℝ) 1)) :
+    ∃ L : List ℝ, ∃ hne : L ≠ [],
+      L.Pairwise (· ≤ ·) ∧ (∀ pt ∈ L, pt ∈ Set.Icc (0:ℝ) 1) ∧
+      (Set.Icc (0:ℝ) 1 ⊆ ⋃ adj ∈ adjacentPairs L, Set.Icc adj.1 adj.2) ∧
+      (∀ adj ∈ adjacentPairs L,
+        ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc (0:ℝ) 1 ∩ Set.Icc adj.1 adj.2)) ∧
+      L.getLast hne = 1 ∧ L.head hne = 0 := by
+  classical
+  obtain ⟨_, L, hL_sorted, hL_mem, hL_cov, hL_pieces⟩ := hγ
+  -- The list `L` must be non-empty (since coverage at `0` requires an adj pair).
+  have hL_ne : L ≠ [] := by
+    rintro rfl
+    have h0_in : (0:ℝ) ∈ Set.Icc (0:ℝ) 1 := ⟨le_refl 0, zero_le_one⟩
+    have h_uni := hL_cov h0_in
+    simp only [adjacentPairs_nil, Set.mem_iUnion, List.not_mem_nil] at h_uni
+    obtain ⟨_, ⟨_, _⟩, _⟩ := h_uni
+  -- Get coverage at `1`.
+  have h1_in : (1:ℝ) ∈ Set.Icc (0:ℝ) 1 := ⟨zero_le_one, le_refl 1⟩
+  have h_cov_1 := hL_cov h1_in
+  simp only [Set.mem_iUnion] at h_cov_1
+  obtain ⟨pair, h_pair_in, h_1_in_pair⟩ := h_cov_1
+  rcases h_1_in_pair with ⟨h_pair1_le_1, h_1_le_pair2⟩
+  -- `pair.2 ∈ L`, so `pair.2 ≤ 1` by hL_mem. Combined with `1 ≤ pair.2`: `pair.2 = 1`.
+  have h_pair2_in_L := snd_mem_of_mem_adjacentPairs h_pair_in
+  have h_pair2_in_Icc := hL_mem pair.2 h_pair2_in_L
+  rcases h_pair2_in_Icc with ⟨_, h_pair2_le_1⟩
+  have h_pair2_eq_1 : pair.2 = 1 := le_antisymm h_pair2_le_1 h_1_le_pair2
+  -- By the pairwise-(· ≤ ·) property, `pair.2 ≤ getLast L hL_ne`.
+  -- More precisely: every element of L is ≤ getLast L hL_ne (when L is sorted).
+  have h_last_le_1 : L.getLast hL_ne ≤ 1 := by
+    exact (hL_mem (L.getLast hL_ne) (List.getLast_mem hL_ne)).2
+  have h_pair2_le_last : pair.2 ≤ L.getLast hL_ne := by
+    have h := hL_sorted.rel_getLast h_pair2_in_L
+    -- `h : pair.2 ≤ L.getLast _` with the proof obligation `ne_nil_of_mem h_pair2_in_L`.
+    -- Convert to use `hL_ne`.
+    convert h using 1
+  have h_last_eq_1 : L.getLast hL_ne = 1 := by
+    rw [h_pair2_eq_1] at h_pair2_le_last
+    exact le_antisymm h_last_le_1 h_pair2_le_last
+  -- Similarly, head L hne = 0.
+  have h_cov_0 := hL_cov ⟨le_refl 0, zero_le_one⟩
+  simp only [Set.mem_iUnion] at h_cov_0
+  obtain ⟨pair0, h_pair0_in, h_0_in_pair0⟩ := h_cov_0
+  rcases h_0_in_pair0 with ⟨h_pair01_le_0, h_0_le_pair02⟩
+  have h_pair01_in_L := fst_mem_of_mem_adjacentPairs h_pair0_in
+  have h_pair01_in_Icc := hL_mem pair0.1 h_pair01_in_L
+  rcases h_pair01_in_Icc with ⟨h_pair01_ge_0, _⟩
+  have h_pair01_eq_0 : pair0.1 = 0 := le_antisymm h_pair01_le_0 h_pair01_ge_0
+  have h_head_ge_0 : 0 ≤ L.head hL_ne :=
+    (hL_mem (L.head hL_ne) (List.head_mem hL_ne)).1
+  have h_head_le_pair01 : L.head hL_ne ≤ pair0.1 := by
+    have h := hL_sorted.rel_head h_pair01_in_L
+    convert h using 1
+  have h_head_eq_0 : L.head hL_ne = 0 := by
+    rw [h_pair01_eq_0] at h_head_le_pair01
+    exact le_antisymm h_head_le_pair01 h_head_ge_0
+  refine ⟨L, hL_ne, hL_sorted, hL_mem, hL_cov, hL_pieces, h_last_eq_1, h_head_eq_0⟩
+
+/-- Piecewise-`C¹` concatenation: given piecewise-`C¹` curves `γ₁, γ₂` on
+`Icc 0 1` with matching midpoint `γ₁ 1 = γ₂ 0`, their concatenation
+`concatHalf γ₁ γ₂` is piecewise-`C¹` on `Icc 0 1`. -/
+theorem isPiecewiseC1On_concatHalf
+    {γ₁ γ₂ : ℝ → M}
+    (hγ₁ : IsPiecewiseC1On (I := I) γ₁ (Set.Icc (0:ℝ) 1))
+    (hγ₂ : IsPiecewiseC1On (I := I) γ₂ (Set.Icc (0:ℝ) 1))
+    (h_match : γ₁ 1 = γ₂ 0) :
+    IsPiecewiseC1On (I := I) (concatHalf (M := M) γ₁ γ₂)
+      (Set.Icc (0:ℝ) 1) := by
+  classical
+  have hγ₁_cont : ContinuousOn γ₁ (Set.Icc (0:ℝ) 1) := hγ₁.1
+  have hγ₂_cont : ContinuousOn γ₂ (Set.Icc (0:ℝ) 1) := hγ₂.1
+  obtain ⟨L₁, hL₁_ne, hL₁_sorted, hL₁_mem, hL₁_cov, hL₁_pieces, hL₁_last, hL₁_head⟩ :=
+    getLast_eq_one_of_isPiecewiseC1On_unit (I := I) hγ₁
+  obtain ⟨L₂, hL₂_ne, hL₂_sorted, hL₂_mem, hL₂_cov, hL₂_pieces, hL₂_last, hL₂_head⟩ :=
+    getLast_eq_one_of_isPiecewiseC1On_unit (I := I) hγ₂
+  -- Use the partition `L₁.map (·/2) ++ L₂.map ((·+1)/2)`. Since `last L₁ = 1` and
+  -- `head L₂ = 0`, the cross adjacent pair is `(1/2, 1/2)`, degenerate.
+  set f₁ : ℝ → ℝ := fun x => x / 2 with hf₁_def
+  set f₂ : ℝ → ℝ := fun x => (x + 1) / 2 with hf₂_def
+  set L : List ℝ := (L₁.map f₁) ++ (L₂.map f₂) with hL_def
+  -- Useful facts:
+  have hL₁_map_ne : L₁.map f₁ ≠ [] := fun h => hL₁_ne (List.map_eq_nil_iff.mp h)
+  have hL₂_map_ne : L₂.map f₂ ≠ [] := fun h => hL₂_ne (List.map_eq_nil_iff.mp h)
+  have hL₁_map_last : (L₁.map f₁).getLast hL₁_map_ne = 1/2 := by
+    rw [List.getLast_map, hL₁_last]
+  have hL₂_map_head : (L₂.map f₂).head hL₂_map_ne = 1/2 := by
+    rw [List.head_map, hL₂_head]
+    change ((0 : ℝ) + 1) / 2 = 1/2
+    norm_num
+  refine ⟨concatHalf_continuousOn hγ₁_cont hγ₂_cont h_match, L, ?_, ?_, ?_, ?_⟩
+  · -- Sorted.
+    refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
+    · rw [List.pairwise_map]
+      exact hL₁_sorted.imp (fun {a b} h => by simp [f₁]; linarith)
+    · rw [List.pairwise_map]
+      exact hL₂_sorted.imp (fun {a b} h => by simp [f₂]; linarith)
+    · intro a ha b hb
+      rw [List.mem_map] at ha hb
+      obtain ⟨a', ha'_mem, rfl⟩ := ha
+      obtain ⟨b', hb'_mem, rfl⟩ := hb
+      have ha'_in := hL₁_mem a' ha'_mem
+      have hb'_in := hL₂_mem b' hb'_mem
+      simp only [f₁, f₂]
+      linarith [ha'_in.2, hb'_in.1]
+  · -- Membership in `Icc 0 1`.
+    intro pt hpt
+    rw [List.mem_append] at hpt
+    rcases hpt with hpt₁ | hpt₂
+    · rw [List.mem_map] at hpt₁
+      obtain ⟨q, hq_mem, rfl⟩ := hpt₁
+      have hq_in := hL₁_mem q hq_mem
+      simp only [f₁]
+      refine ⟨?_, ?_⟩ <;> linarith [hq_in.1, hq_in.2]
+    · rw [List.mem_map] at hpt₂
+      obtain ⟨q, hq_mem, rfl⟩ := hpt₂
+      have hq_in := hL₂_mem q hq_mem
+      simp only [f₂]
+      refine ⟨?_, ?_⟩ <;> linarith [hq_in.1, hq_in.2]
+  · -- Coverage.
+    intro s hs
+    rcases hs with ⟨hs0, hs1⟩
+    by_cases h_half : s ≤ 1/2
+    · -- Use `L₁` part.
+      have h_2s_in : (2 * s) ∈ Set.Icc (0:ℝ) 1 := ⟨by linarith, by linarith⟩
+      have h_cov := hL₁_cov h_2s_in
+      simp only [Set.mem_iUnion] at h_cov
+      obtain ⟨pair, h_pair_in_adj, h_in_pair⟩ := h_cov
+      simp only [Set.mem_iUnion]
+      refine ⟨(pair.1 / 2, pair.2 / 2), ?_, ?_⟩
+      · -- Adjacent pair lies in the L₁-block of L.
+        rw [hL_def, adjacentPairs_append_nonempty hL₁_map_ne hL₂_map_ne]
+        rw [List.mem_append]
+        left
+        rw [adjacentPairs_map, List.mem_map]
+        exact ⟨pair, h_pair_in_adj, by simp [f₁, Prod.map]⟩
+      · rcases h_in_pair with ⟨h_lo, h_hi⟩
+        refine ⟨?_, ?_⟩ <;> linarith
+    · push Not at h_half
+      -- Use `L₂` part.
+      have h_2s1_in : (2 * s - 1) ∈ Set.Icc (0:ℝ) 1 :=
+        ⟨by linarith, by linarith⟩
+      have h_cov := hL₂_cov h_2s1_in
+      simp only [Set.mem_iUnion] at h_cov
+      obtain ⟨pair, h_pair_in_adj, h_in_pair⟩ := h_cov
+      simp only [Set.mem_iUnion]
+      refine ⟨((pair.1 + 1) / 2, (pair.2 + 1) / 2), ?_, ?_⟩
+      · rw [hL_def, adjacentPairs_append_nonempty hL₁_map_ne hL₂_map_ne]
+        rw [List.mem_append, List.mem_cons]
+        right; right
+        rw [adjacentPairs_map, List.mem_map]
+        exact ⟨pair, h_pair_in_adj, by simp [f₂, Prod.map]⟩
+      · rcases h_in_pair with ⟨h_lo, h_hi⟩
+        refine ⟨?_, ?_⟩ <;> linarith
+  · -- Pieces.
+    intro adj hadj
+    rw [hL_def, adjacentPairs_append_nonempty hL₁_map_ne hL₂_map_ne] at hadj
+    rw [List.mem_append, List.mem_cons] at hadj
+    rcases hadj with h_left | h_cross | h_right
+    · -- Left block.
+      rw [adjacentPairs_map, List.mem_map] at h_left
+      obtain ⟨orig, h_orig_mem, h_orig_eq⟩ := h_left
+      have h_piece := hL₁_pieces orig h_orig_mem
+      have h_first :=
+        firstHalf_contMDiffOn_aux (I := I) (γ := γ₁)
+          (a := orig.1) (b := orig.2) h_piece
+      have h_adj_eq : adj = (orig.1/2, orig.2/2) := by
+        rw [← h_orig_eq]; simp [f₁, Prod.map]
+      rw [h_adj_eq]
+      have h_orig2_in := hL₁_mem orig.2 (snd_mem_of_mem_adjacentPairs h_orig_mem)
+      have h_orig2_le := h_orig2_in.2
+      have h_subset_half :
+          Set.Icc (0:ℝ) 1 ∩ Set.Icc (orig.1/2) (orig.2/2) ⊆
+            Set.Icc (0:ℝ) (1/2) ∩ Set.Icc (orig.1/2) (orig.2/2) := by
+        rintro x ⟨hx01, hxab⟩
+        rcases hx01 with ⟨hx0, _⟩
+        rcases hxab with ⟨hxa, hxb⟩
+        refine ⟨⟨hx0, ?_⟩, hxa, hxb⟩
+        linarith
+      have h_first_restricted :
+          ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun s : ℝ => γ₁ (2 * s))
+            (Set.Icc (0:ℝ) 1 ∩ Set.Icc (orig.1/2) (orig.2/2)) :=
+        h_first.mono h_subset_half
+      refine h_first_restricted.congr ?_
+      intro x hx
+      have hx_copy := hx
+      rcases hx with ⟨hx01, hxab⟩
+      have hxb := hxab.2
+      have h_x_half : x ≤ 1/2 := by linarith
+      have h_x_in : x ∈ Set.Icc (0:ℝ) (1/2) := ⟨hx01.1, h_x_half⟩
+      exact concatHalf_eq_left_on_Icc (γ₂ := γ₂) h_x_in
+    · -- Cross piece: `adj = (1/2, 1/2)` after the substitutions.
+      have hadj_eq : adj = ((L₁.map f₁).getLast hL₁_map_ne,
+          (L₂.map f₂).head hL₂_map_ne) := h_cross
+      rw [hL₁_map_last, hL₂_map_head] at hadj_eq
+      rw [hadj_eq]
+      -- Goal: ContMDiffOn ... (concatHalf γ₁ γ₂) (Icc 0 1 ∩ Icc (1/2) (1/2)).
+      have h_set_eq : Set.Icc (0:ℝ) 1 ∩ Set.Icc ((1/2):ℝ) (1/2) = {(1/2 : ℝ)} := by
+        ext x
+        constructor
+        · rintro ⟨_, hx2⟩
+          rw [Set.mem_Icc] at hx2
+          exact Set.mem_singleton_iff.mpr (le_antisymm hx2.2 hx2.1)
+        · rintro hx
+          rcases Set.mem_singleton_iff.mp hx with rfl
+          refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> norm_num
+      rw [h_set_eq]
+      -- `ContMDiffOn` on a singleton: at the single point, the function agrees
+      -- with the constant function `fun _ => concatHalf γ₁ γ₂ (1/2)`, which
+      -- is smooth.
+      intro y hy
+      rcases Set.mem_singleton_iff.mp hy with rfl
+      have h_const_eq : ∀ z ∈ ({(1/2 : ℝ)} : Set ℝ),
+          concatHalf γ₁ γ₂ z =
+            (fun _ : ℝ => concatHalf γ₁ γ₂ ((1/2 : ℝ))) z := by
+        intro z hz
+        rcases Set.mem_singleton_iff.mp hz with rfl
+        rfl
+      have h_ev_eq : concatHalf γ₁ γ₂ =ᶠ[𝓝[{(1/2 : ℝ)}] (1/2)]
+          (fun _ : ℝ => concatHalf γ₁ γ₂ ((1/2 : ℝ))) :=
+        Filter.eventually_of_mem self_mem_nhdsWithin h_const_eq
+      exact (contMDiffWithinAt_const
+        (c := concatHalf γ₁ γ₂ ((1/2 : ℝ)))).congr_of_eventuallyEq
+          h_ev_eq rfl
+    · -- Right block.
+      rw [adjacentPairs_map, List.mem_map] at h_right
+      obtain ⟨orig, h_orig_mem, h_orig_eq⟩ := h_right
+      have h_piece := hL₂_pieces orig h_orig_mem
+      have h_second :=
+        secondHalf_contMDiffOn_aux (I := I) (γ := γ₂)
+          (a := orig.1) (b := orig.2) h_piece
+      have h_adj_eq : adj = ((orig.1 + 1)/2, (orig.2 + 1)/2) := by
+        rw [← h_orig_eq]; simp [f₂, Prod.map]
+      rw [h_adj_eq]
+      have h_orig1_in := hL₂_mem orig.1 (fst_mem_of_mem_adjacentPairs h_orig_mem)
+      have h_orig1_ge := h_orig1_in.1
+      have h_subset_half :
+          Set.Icc (0:ℝ) 1 ∩ Set.Icc ((orig.1 + 1)/2) ((orig.2 + 1)/2) ⊆
+            Set.Icc ((1/2):ℝ) 1 ∩ Set.Icc ((orig.1 + 1)/2) ((orig.2 + 1)/2) := by
+        rintro x ⟨hx01, hxab⟩
+        rcases hx01 with ⟨_, hx1⟩
+        rcases hxab with ⟨hxa, hxb⟩
+        refine ⟨⟨?_, hx1⟩, hxa, hxb⟩
+        linarith
+      have h_second_restricted :
+          ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun s : ℝ => γ₂ (2 * s - 1))
+            (Set.Icc (0:ℝ) 1 ∩ Set.Icc ((orig.1 + 1)/2) ((orig.2 + 1)/2)) :=
+        h_second.mono h_subset_half
+      refine h_second_restricted.congr ?_
+      intro x hx
+      rcases hx with ⟨hx01, hxab⟩
+      have hxa := hxab.1
+      have h_x_half : (1/2 : ℝ) ≤ x := by linarith
+      have h_x_in : x ∈ Set.Icc ((1/2):ℝ) 1 := ⟨h_x_half, hx01.2⟩
+      exact concatHalf_eq_right_on_Icc (γ₁ := γ₁) h_match h_x_in
+
+/-! ### Length additivity for `concatHalf` -/
+
+/-- For `t < 1/2`, the velocity of `concatHalf γ₁ γ₂` at `t` equals the velocity
+of the affine reparametrization `fun s => γ₁ (2 * s)` at `t`. Reason: both
+functions agree on the open neighborhood `Set.Iio (1/2)` of `t`, so their
+manifold derivatives at `t` coincide. -/
+private lemma velocity_concatHalf_left {γ₁ γ₂ : ℝ → M} {t : ℝ}
+    (ht : t < (1/2 : ℝ)) :
+    Geodesic.velocity (I := I) (concatHalf (M := M) γ₁ γ₂) t =
+      (Geodesic.velocity (I := I) (fun s : ℝ => γ₁ (2 * s)) t :
+        TangentSpace I (γ₁ (2 * t))) := by
+  classical
+  have h_eq_pt : concatHalf (M := M) γ₁ γ₂ t = γ₁ (2 * t) :=
+    concatHalf_eq_left ht
+  -- Express both velocities as `mfderiv ... 1` and use the eventually-equal mfderiv.
+  unfold Geodesic.velocity
+  have h_ev : concatHalf (M := M) γ₁ γ₂ =ᶠ[𝓝 t] (fun s : ℝ => γ₁ (2 * s)) := by
+    filter_upwards [Iio_mem_nhds ht] with s hs
+    exact concatHalf_eq_left hs
+  -- mfderiv depends only on the eventually-equal germ of the function.
+  have h_mfderiv_eq : mfderiv 𝓘(ℝ, ℝ) I (concatHalf (M := M) γ₁ γ₂) t =
+      mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => γ₁ (2 * s)) t :=
+    Filter.EventuallyEq.mfderiv_eq h_ev
+  rw [h_mfderiv_eq]
+  rfl
+
+private lemma velocity_concatHalf_right {γ₁ γ₂ : ℝ → M} {t : ℝ}
+    (ht : (1/2 : ℝ) < t) :
+    Geodesic.velocity (I := I) (concatHalf (M := M) γ₁ γ₂) t =
+      (Geodesic.velocity (I := I) (fun s : ℝ => γ₂ (2 * s - 1)) t :
+        TangentSpace I (γ₂ (2 * t - 1))) := by
+  classical
+  have h_eq_pt : concatHalf (M := M) γ₁ γ₂ t = γ₂ (2 * t - 1) :=
+    concatHalf_eq_right ht
+  unfold Geodesic.velocity
+  have h_ev : concatHalf (M := M) γ₁ γ₂ =ᶠ[𝓝 t] (fun s : ℝ => γ₂ (2 * s - 1)) := by
+    filter_upwards [Ioi_mem_nhds ht] with s hs
+    exact concatHalf_eq_right hs
+  rw [Filter.EventuallyEq.mfderiv_eq h_ev]
+  rfl
+
+/-- Speed of `concatHalf γ₁ γ₂` at `t < 1/2` equals the speed of the affine
+reparametrization `fun s => γ₁ (2 * s)`. -/
+lemma speed_concatHalf_eq_left
+    (g : SmoothRiemannianMetric I M) (γ₁ γ₂ : ℝ → M) {t : ℝ}
+    (ht : t < (1/2 : ℝ)) :
+    speed (I := I) g (concatHalf (M := M) γ₁ γ₂) t =
+      speed (I := I) g (fun s : ℝ => γ₁ (2 * s)) t := by
+  unfold speed
+  have h_pt : concatHalf (M := M) γ₁ γ₂ t = γ₁ (2 * t) := concatHalf_eq_left ht
+  rw [h_pt]
+  have h_vel := velocity_concatHalf_left (I := I) (γ₁ := γ₁) (γ₂ := γ₂) ht
+  rw [h_vel]
+
+lemma speed_concatHalf_eq_right
+    (g : SmoothRiemannianMetric I M) (γ₁ γ₂ : ℝ → M) {t : ℝ}
+    (ht : (1/2 : ℝ) < t) :
+    speed (I := I) g (concatHalf (M := M) γ₁ γ₂) t =
+      speed (I := I) g (fun s : ℝ => γ₂ (2 * s - 1)) t := by
+  unfold speed
+  have h_pt : concatHalf (M := M) γ₁ γ₂ t = γ₂ (2 * t - 1) := concatHalf_eq_right ht
+  rw [h_pt]
+  have h_vel := velocity_concatHalf_right (I := I) (γ₁ := γ₁) (γ₂ := γ₂) ht
+  rw [h_vel]
+
+/-- Speed of `fun s => γ (2 * s)` equals `2 * speed γ (2 * t)`. -/
+lemma speed_double_reparam
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (t : ℝ) :
+    speed (I := I) g (fun s : ℝ => γ (2 * s)) t =
+      2 * speed (I := I) g γ (2 * t) := by
+  have h := speed_reparam_unconditional (I := I) g γ 2 0 t
+  -- `|2| = 2`.
+  simp only [abs_of_pos (by norm_num : (0 : ℝ) < 2)] at h
+  rw [show (fun s : ℝ => γ (2 * s + 0)) = (fun s : ℝ => γ (2 * s)) by funext s; ring_nf] at h
+  rw [show (2 * t + 0 : ℝ) = 2 * t by ring] at h
+  exact h
+
+lemma speed_double_shift_reparam
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (t : ℝ) :
+    speed (I := I) g (fun s : ℝ => γ (2 * s - 1)) t =
+      2 * speed (I := I) g γ (2 * t - 1) := by
+  have h := speed_reparam_unconditional (I := I) g γ 2 (-1) t
+  simp only [abs_of_pos (by norm_num : (0 : ℝ) < 2)] at h
+  rw [show (fun s : ℝ => γ (2 * s + (-1))) = (fun s : ℝ => γ (2 * s - 1))
+    by funext s; ring_nf] at h
+  rw [show (2 * t + (-1) : ℝ) = 2 * t - 1 by ring] at h
+  exact h
 
 end Length
 end Riemannian

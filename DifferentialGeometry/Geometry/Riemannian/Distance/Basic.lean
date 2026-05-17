@@ -61,25 +61,55 @@ def AdmissibleCurves (p q : M) : Set (ℝ → M) :=
       IsPiecewiseC1On (I := I) γ (Set.Icc 0 1) ∧ γ 0 = p ∧ γ 1 = q :=
   Iff.rfl
 
-/-! ## Definition of `riemDist` -/
+/-! ## Definition of `riemDist`
+
+We use the lower Lebesgue integral `∫⁻ t in Ioc a b, ENNReal.ofReal (speed g γ t)`
+as the *length-in-`ℝ≥0∞`* of a curve. This formulation is well-defined for
+arbitrary speed (without integrability hypotheses), and makes additivity
+over adjacent intervals unconditional via `lintegral_union`. -/
+
+/-- The length of a curve `γ` over `[a, b]` valued in `ℝ≥0∞`, computed via the
+lower Lebesgue integral of `ENNReal.ofReal (speed g γ t)` over `Ioc a b`. -/
+def lengthENN (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) : ℝ≥0∞ :=
+  ∫⁻ t in Set.Ioc a b, ENNReal.ofReal (speed (I := I) g γ t)
+
+@[simp] lemma lengthENN_def
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) :
+    lengthENN (I := I) g γ a b =
+      ∫⁻ t in Set.Ioc a b, ENNReal.ofReal (speed (I := I) g γ t) := rfl
+
+/-- The `ℝ≥0∞`-length is unconditionally additive over adjacent intervals
+`[a, b] ∪ [b, c]` for `a ≤ b ≤ c`. -/
+lemma lengthENN_add_adjacent
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b c : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) :
+    lengthENN (I := I) g γ a c =
+      lengthENN (I := I) g γ a b + lengthENN (I := I) g γ b c := by
+  unfold lengthENN
+  have h_union : Set.Ioc a c = Set.Ioc a b ∪ Set.Ioc b c :=
+    (Set.Ioc_union_Ioc_eq_Ioc hab hbc).symm
+  have h_disj : Disjoint (Set.Ioc a b) (Set.Ioc b c) :=
+    Set.Ioc_disjoint_Ioc_of_le (le_refl b)
+  rw [h_union, MeasureTheory.lintegral_union measurableSet_Ioc h_disj]
 
 /-- ### Headline 1: the Riemannian distance.
 
 The Riemannian distance from `p` to `q` is the infimum, taken in `ℝ≥0∞`,
-of the lengths (cast via `ENNReal.ofReal`) of all admissible curves. -/
+of the `ℝ≥0∞`-lengths of all admissible curves. -/
 def riemDist (g : SmoothRiemannianMetric I M) (p q : M) : ℝ≥0∞ :=
-  ⨅ γ ∈ AdmissibleCurves (I := I) p q, ENNReal.ofReal (length (I := I) g γ 0 1)
+  ⨅ γ ∈ AdmissibleCurves (I := I) p q, lengthENN (I := I) g γ 0 1
 
 @[simp] lemma riemDist_def (g : SmoothRiemannianMetric I M) (p q : M) :
     riemDist (I := I) g p q =
-      ⨅ γ ∈ AdmissibleCurves (I := I) p q, ENNReal.ofReal (length (I := I) g γ 0 1) :=
+      ⨅ γ ∈ AdmissibleCurves (I := I) p q, lengthENN (I := I) g γ 0 1 :=
   rfl
 
-/-- The Riemannian distance is bounded above by the length of any admissible curve. -/
+/-- The Riemannian distance is bounded above by the `ℝ≥0∞`-length of any
+admissible curve. -/
 lemma riemDist_le_of_mem_admissibleCurves
     {g : SmoothRiemannianMetric I M} {p q : M} {γ : ℝ → M}
     (hγ : γ ∈ AdmissibleCurves (I := I) p q) :
-    riemDist (I := I) g p q ≤ ENNReal.ofReal (length (I := I) g γ 0 1) := by
+    riemDist (I := I) g p q ≤ lengthENN (I := I) g γ 0 1 := by
   unfold riemDist
   exact iInf₂_le γ hγ
 
@@ -91,22 +121,29 @@ private def constCurve (p : M) : ℝ → M := fun _ => p
 private lemma constCurve_admissible (p : M) :
     constCurve (M := M) p ∈ AdmissibleCurves (I := I) p p := by
   refine ⟨?_, rfl, rfl⟩
-  exact IsPiecewiseC1On.const (I := I) p (Set.Icc (0 : ℝ) 1)
+  exact IsPiecewiseC1On.const_Icc (I := I) p (zero_le_one)
 
 /-- The Riemannian self-distance is zero. -/
 theorem riemDist_self (g : SmoothRiemannianMetric I M) (p : M) :
     riemDist (I := I) g p p = 0 := by
   have h_admissible : constCurve (M := M) p ∈ AdmissibleCurves (I := I) p p :=
     constCurve_admissible (I := I) p
-  have h_len : length (I := I) g (constCurve (M := M) p) 0 1 = 0 := by
-    unfold constCurve
-    exact length_const (I := I) g p 0 1
-  have h_le : riemDist (I := I) g p p ≤ ENNReal.ofReal 0 := by
+  -- The `ℝ≥0∞`-length of the constant curve is zero: its speed is identically 0.
+  have h_lenENN : lengthENN (I := I) g (constCurve (M := M) p) 0 1 = 0 := by
+    unfold lengthENN constCurve
+    -- The integrand is `ENNReal.ofReal (speed g (fun _ => p) t)` which equals 0 since
+    -- `speed g (fun _ => p) t = 0`.
+    have h_zero : ∀ t : ℝ, ENNReal.ofReal (speed (I := I) g (fun _ : ℝ => p) t) = 0 := by
+      intro t
+      rw [speed_const (I := I) g p t]
+      simp
+    simp only [h_zero, MeasureTheory.lintegral_const, zero_mul]
+  have h_le : riemDist (I := I) g p p ≤ 0 := by
     have := riemDist_le_of_mem_admissibleCurves (I := I) (g := g)
       (γ := constCurve (M := M) p) h_admissible
-    rw [h_len] at this
+    rw [h_lenENN] at this
     exact this
-  simpa using h_le
+  exact le_antisymm h_le (zero_le _)
 
 /-! ## Reversal of admissible curves -/
 
@@ -251,6 +288,61 @@ private lemma length_revCurve (g : SmoothRiemannianMetric I M) (γ : ℝ → M) 
   simp only [sub_zero, sub_self] at h2
   exact h2
 
+/-- `ℝ≥0∞`-length of the reversed curve equals that of the original. The
+involution `t ↦ 1 - t` is measure-preserving for the Lebesgue measure
+(composition of negation and translation), and maps `Ioc 0 1` ae onto itself
+(differing only by the endpoints, a null set). -/
+private lemma lengthENN_revCurve (g : SmoothRiemannianMetric I M) (γ : ℝ → M) :
+    lengthENN (I := I) g (revCurve (M := M) γ) 0 1 =
+      lengthENN (I := I) g γ 0 1 := by
+  classical
+  unfold lengthENN
+  -- Pointwise: `speed (revCurve γ) t = speed γ (1 - t)`.
+  have h_pt : ∀ t, ENNReal.ofReal (speed (I := I) g (revCurve (M := M) γ) t) =
+      ENNReal.ofReal (speed (I := I) g γ (1 - t)) := fun t => by
+    rw [speed_revCurve (I := I) g γ t]
+  have h_eq_fn : (fun t : ℝ => ENNReal.ofReal (speed (I := I) g (revCurve γ) t)) =
+      fun t => ENNReal.ofReal (speed (I := I) g γ (1 - t)) := funext h_pt
+  rw [h_eq_fn]
+  -- Measure-preserving involution `1 - ·` on `ℝ`.
+  have h_neg : MeasureTheory.MeasurePreserving (fun s : ℝ => -s)
+      (volume : MeasureTheory.Measure ℝ) volume :=
+    Measure.measurePreserving_neg _
+  have h_addLeft : MeasureTheory.MeasurePreserving (fun s : ℝ => (1 : ℝ) + s)
+      (volume : MeasureTheory.Measure ℝ) volume :=
+    measurePreserving_add_left _ _
+  have h_subLeft : MeasureTheory.MeasurePreserving (fun s : ℝ => (1 : ℝ) - s)
+      (volume : MeasureTheory.Measure ℝ) volume := by
+    have h_func_eq : (fun s : ℝ => (1 : ℝ) - s) =
+        (fun s : ℝ => 1 + s) ∘ (fun s : ℝ => -s) := by
+      funext s; simp [sub_eq_add_neg]
+    rw [h_func_eq]
+    exact h_addLeft.comp h_neg
+  have h_emb : MeasurableEmbedding (fun s : ℝ => (1 : ℝ) - s) :=
+    (Homeomorph.subLeft 1).isClosedEmbedding.measurableEmbedding
+  -- `Ioc 0 1` under `1 - ·` preimages to `Ico 0 1`.
+  have h_preim : (fun s : ℝ => (1 : ℝ) - s) ⁻¹' Set.Ioc (0:ℝ) 1 = Set.Ico (0:ℝ) 1 := by
+    ext s
+    simp only [Set.mem_preimage, Set.mem_Ioc, Set.mem_Ico]
+    constructor
+    · rintro ⟨h1, h2⟩; refine ⟨?_, ?_⟩ <;> linarith
+    · rintro ⟨h1, h2⟩; refine ⟨?_, ?_⟩ <;> linarith
+  -- Apply `MeasurePreserving.setLIntegral_comp_preimage_emb`:
+  -- LHS: `∫⁻ b in Ioc 0 1, ofReal (speed γ b) ∂volume`.
+  -- RHS via substitution: `∫⁻ a in (1-·)⁻¹(Ioc 0 1), ofReal (speed γ (1-a)) ∂volume`
+  --                     = `∫⁻ a in Ico 0 1, ofReal (speed γ (1-a)) ∂volume`.
+  have h_subst :=
+    h_subLeft.setLIntegral_comp_preimage_emb h_emb
+      (fun u : ℝ => ENNReal.ofReal (speed (I := I) g γ u)) (Set.Ioc (0:ℝ) 1)
+  rw [h_preim] at h_subst
+  -- `h_subst : ∫⁻ a in Ico 0 1, ofReal (speed γ (1-a)) ∂volume =
+  --             ∫⁻ b in Ioc 0 1, ofReal (speed γ b) ∂volume`.
+  rw [← h_subst]
+  -- Goal: `∫⁻ t in Ioc 0 1, ofReal (speed γ (1-t)) = ∫⁻ a in Ico 0 1, ofReal (speed γ (1-a))`.
+  rw [show ((volume : MeasureTheory.Measure ℝ).restrict (Set.Ioc 0 1)) =
+    (volume : MeasureTheory.Measure ℝ).restrict (Set.Ico 0 1) from
+    (MeasureTheory.restrict_Ico_eq_restrict_Ioc).symm]
+
 /-- The reverse of an admissible curve from `p` to `q` is admissible from `q` to `p`. -/
 private lemma admissible_revCurve {p q : M} {γ : ℝ → M}
     (hγ : γ ∈ AdmissibleCurves (I := I) p q) :
@@ -274,14 +366,233 @@ theorem riemDist_comm (g : SmoothRiemannianMetric I M) (p q : M) :
   intro γ hγ
   have h_rev_ad : revCurve (M := M) γ ∈ AdmissibleCurves (I := I) p' q' :=
     admissible_revCurve (I := I) hγ
-  have h_len : length (I := I) g (revCurve (M := M) γ) 0 1 = length (I := I) g γ 0 1 :=
-    length_revCurve (I := I) g γ
+  have h_lenENN : lengthENN (I := I) g (revCurve (M := M) γ) 0 1 =
+      lengthENN (I := I) g γ 0 1 := lengthENN_revCurve (I := I) g γ
   have h_le : (⨅ γ' ∈ AdmissibleCurves (I := I) p' q',
-        ENNReal.ofReal (length (I := I) g γ' 0 1)) ≤
-      ENNReal.ofReal (length (I := I) g (revCurve (M := M) γ) 0 1) :=
+        lengthENN (I := I) g γ' 0 1) ≤
+      lengthENN (I := I) g (revCurve (M := M) γ) 0 1 :=
     iInf₂_le _ h_rev_ad
-  rw [h_len] at h_le
+  rw [h_lenENN] at h_le
   exact h_le
+
+/-! ## Headline 4: triangle inequality -/
+
+/-- Change-of-variable identity (left half): the `Ioc 0 (1/2)` lintegral of
+`ofReal(speed γ (2t))` equals `1/2` times the `Ioc 0 1` lintegral of
+`ofReal(speed γ)`. -/
+private lemma lintegral_speed_2t_left
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) :
+    ∫⁻ t in Set.Ioc (0:ℝ) (1/2), ENNReal.ofReal (speed (I := I) g γ (2 * t)) =
+      ENNReal.ofReal (1/2) *
+        ∫⁻ s in Set.Ioc (0:ℝ) 1, ENNReal.ofReal (speed (I := I) g γ s) := by
+  classical
+  -- Set up the measurable embedding `(2·) : ℝ → ℝ`.
+  have h_emb : MeasurableEmbedding (fun t : ℝ => 2 * t) :=
+    (Homeomorph.mulLeft₀ (2 : ℝ) (by norm_num)).isClosedEmbedding.measurableEmbedding
+  -- Preimage of `Ioc 0 1` under `(2·)` is `Ioc 0 (1/2)`.
+  have h_preim : (fun t : ℝ => 2 * t) ⁻¹' Set.Ioc (0:ℝ) 1 = Set.Ioc (0:ℝ) (1/2) := by
+    ext s
+    simp only [Set.mem_preimage, Set.mem_Ioc]
+    constructor
+    · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
+    · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
+  -- Map of volume: `(volume.map (2·)) = (1/2) • volume`.
+  have h_map : (volume : MeasureTheory.Measure ℝ).map (fun t : ℝ => 2 * t) =
+      ENNReal.ofReal (1/2) • volume := by
+    have h := Real.map_volume_mul_left (a := (2:ℝ)) (by norm_num : (2:ℝ) ≠ 0)
+    -- `h : Measure.map (2 * ·) volume = ofReal |2⁻¹| • volume`.
+    convert h using 2
+    rw [show |(2:ℝ)⁻¹| = (1/2 : ℝ) by norm_num]
+  -- Apply `MeasurableEmbedding.lintegral_map` after using restrict_map.
+  have h_restr : (volume.map (fun t : ℝ => 2 * t)).restrict (Set.Ioc (0:ℝ) 1) =
+      (volume.restrict (Set.Ioc (0:ℝ) (1/2))).map (fun t : ℝ => 2 * t) := by
+    rw [h_emb.restrict_map]
+    rw [h_preim]
+  -- Compute the LHS via `MeasurableEmbedding.lintegral_map`.
+  calc ∫⁻ t in Set.Ioc (0:ℝ) (1/2), ENNReal.ofReal (speed (I := I) g γ (2 * t))
+      = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ (2 * t))
+          ∂((volume.restrict (Set.Ioc (0:ℝ) (1/2)))) := rfl
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((volume.restrict (Set.Ioc (0:ℝ) (1/2))).map (fun t : ℝ => 2 * t)) := by
+          rw [h_emb.lintegral_map]
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((volume.map (fun t : ℝ => 2 * t)).restrict (Set.Ioc (0:ℝ) 1)) := by
+          rw [h_restr]
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((ENNReal.ofReal (1/2) • volume).restrict (Set.Ioc (0:ℝ) 1)) := by
+          rw [h_map]
+    _ = ENNReal.ofReal (1/2) *
+          ∫⁻ t in Set.Ioc (0:ℝ) 1, ENNReal.ofReal (speed (I := I) g γ t) := by
+          rw [MeasureTheory.Measure.restrict_smul,
+            MeasureTheory.lintegral_smul_measure]
+          rfl
+
+/-- Change-of-variable identity (right half): the `Ioc (1/2) 1` lintegral of
+`ofReal(speed γ (2t - 1))` equals `1/2` times the `Ioc 0 1` lintegral of
+`ofReal(speed γ)`. -/
+private lemma lintegral_speed_2t_minus_1_right
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) :
+    ∫⁻ t in Set.Ioc ((1/2):ℝ) 1, ENNReal.ofReal (speed (I := I) g γ (2 * t - 1)) =
+      ENNReal.ofReal (1/2) *
+        ∫⁻ s in Set.Ioc (0:ℝ) 1, ENNReal.ofReal (speed (I := I) g γ s) := by
+  classical
+  -- Embeddings.
+  have h_emb_mul : MeasurableEmbedding (fun t : ℝ => 2 * t) :=
+    (Homeomorph.mulLeft₀ (2 : ℝ) (by norm_num)).isClosedEmbedding.measurableEmbedding
+  have h_emb_sub : MeasurableEmbedding (fun s : ℝ => s - 1) :=
+    (Homeomorph.subRight 1).isClosedEmbedding.measurableEmbedding
+  have h_emb : MeasurableEmbedding (fun t : ℝ => 2 * t - 1) := by
+    have h_eq : (fun t : ℝ => 2 * t - 1) =
+        (fun s : ℝ => s - 1) ∘ (fun t : ℝ => 2 * t) := rfl
+    rw [h_eq]
+    exact h_emb_sub.comp h_emb_mul
+  have h_preim : (fun t : ℝ => 2 * t - 1) ⁻¹' Set.Ioc (0:ℝ) 1 =
+      Set.Ioc ((1/2):ℝ) 1 := by
+    ext s
+    simp only [Set.mem_preimage, Set.mem_Ioc]
+    constructor
+    · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
+    · rintro ⟨h1, h2⟩; exact ⟨by linarith, by linarith⟩
+  -- Subtraction is measure-preserving.
+  have h_sub_pres : MeasureTheory.MeasurePreserving (fun s : ℝ => s - 1)
+      (volume : MeasureTheory.Measure ℝ) volume :=
+    measurePreserving_sub_right (volume : MeasureTheory.Measure ℝ) (1:ℝ)
+  -- Volume map: `(2·) ∘ (· - 1) = 2t - 1`.
+  have h_map_mul : (volume : MeasureTheory.Measure ℝ).map (fun t : ℝ => 2 * t) =
+      ENNReal.ofReal (1/2) • volume := by
+    have h := Real.map_volume_mul_left (a := (2:ℝ)) (by norm_num : (2:ℝ) ≠ 0)
+    convert h using 2
+    rw [show |(2:ℝ)⁻¹| = (1/2 : ℝ) by norm_num]
+  have h_map : (volume : MeasureTheory.Measure ℝ).map (fun t : ℝ => 2 * t - 1) =
+      ENNReal.ofReal (1/2) • volume := by
+    have h_eq : (fun t : ℝ => 2 * t - 1) =
+        (fun s : ℝ => s - 1) ∘ (fun t : ℝ => 2 * t) := rfl
+    rw [h_eq]
+    rw [← MeasureTheory.Measure.map_map h_sub_pres.measurable h_emb_mul.measurable]
+    rw [h_map_mul, MeasureTheory.Measure.map_smul, h_sub_pres.map_eq]
+  have h_restr : (volume.map (fun t : ℝ => 2 * t - 1)).restrict (Set.Ioc (0:ℝ) 1) =
+      (volume.restrict (Set.Ioc ((1/2):ℝ) 1)).map (fun t : ℝ => 2 * t - 1) := by
+    rw [h_emb.restrict_map, h_preim]
+  calc ∫⁻ t in Set.Ioc ((1/2):ℝ) 1, ENNReal.ofReal (speed (I := I) g γ (2 * t - 1))
+      = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ (2 * t - 1))
+          ∂((volume.restrict (Set.Ioc ((1/2):ℝ) 1))) := rfl
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((volume.restrict (Set.Ioc ((1/2):ℝ) 1)).map
+            (fun t : ℝ => 2 * t - 1)) := by rw [h_emb.lintegral_map]
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((volume.map (fun t : ℝ => 2 * t - 1)).restrict (Set.Ioc (0:ℝ) 1)) := by
+          rw [h_restr]
+    _ = ∫⁻ t, ENNReal.ofReal (speed (I := I) g γ t)
+          ∂((ENNReal.ofReal (1/2) • volume).restrict (Set.Ioc (0:ℝ) 1)) := by
+          rw [h_map]
+    _ = ENNReal.ofReal (1/2) *
+          ∫⁻ t in Set.Ioc (0:ℝ) 1, ENNReal.ofReal (speed (I := I) g γ t) := by
+          rw [MeasureTheory.Measure.restrict_smul,
+            MeasureTheory.lintegral_smul_measure]
+          rfl
+
+/-- `ℝ≥0∞`-length of `concatHalf γ₁ γ₂` over `[0, 1]` is the sum of the
+`ℝ≥0∞`-lengths of `γ₁` and `γ₂` over `[0, 1]`. -/
+private lemma lengthENN_concatHalf
+    (g : SmoothRiemannianMetric I M) (γ₁ γ₂ : ℝ → M) :
+    lengthENN (I := I) g (concatHalf γ₁ γ₂) 0 1 =
+      lengthENN (I := I) g γ₁ 0 1 + lengthENN (I := I) g γ₂ 0 1 := by
+  classical
+  rw [lengthENN_add_adjacent (I := I) g (concatHalf γ₁ γ₂)
+    (a := (0:ℝ)) (b := (1/2)) (c := 1) (by norm_num) (by norm_num)]
+  congr 1
+  · -- Left half.
+    unfold lengthENN
+    have h_eqOn_Ioo : Set.EqOn
+        (fun t : ℝ => ENNReal.ofReal (speed (I := I) g (concatHalf γ₁ γ₂) t))
+        (fun t : ℝ => ENNReal.ofReal (2 * speed (I := I) g γ₁ (2 * t)))
+        (Set.Ioo (0:ℝ) (1/2)) := by
+      intro t ht
+      rcases ht with ⟨_, h_lt⟩
+      change ENNReal.ofReal (speed (I := I) g (concatHalf γ₁ γ₂) t) =
+        ENNReal.ofReal (2 * speed (I := I) g γ₁ (2 * t))
+      rw [Length.speed_concatHalf_eq_left (I := I) g γ₁ γ₂ h_lt,
+        Length.speed_double_reparam (I := I) g γ₁ t]
+    rw [show ((volume : MeasureTheory.Measure ℝ).restrict (Set.Ioc (0:ℝ) (1/2))) =
+      volume.restrict (Set.Ioo (0:ℝ) (1/2)) from
+      MeasureTheory.Measure.restrict_congr_set MeasureTheory.Ioo_ae_eq_Ioc.symm]
+    rw [MeasureTheory.setLIntegral_congr_fun measurableSet_Ioo h_eqOn_Ioo]
+    rw [show ((volume : MeasureTheory.Measure ℝ).restrict (Set.Ioo (0:ℝ) (1/2))) =
+      volume.restrict (Set.Ioc (0:ℝ) (1/2)) from
+      MeasureTheory.Measure.restrict_congr_set MeasureTheory.Ioo_ae_eq_Ioc]
+    -- Now: `∫⁻ t in Ioc 0 (1/2), ofReal (2 * speed γ₁ (2t)) = lengthENN γ₁ 0 1`.
+    have h_factor : ∀ t : ℝ,
+        ENNReal.ofReal (2 * speed (I := I) g γ₁ (2 * t)) =
+          ENNReal.ofReal 2 * ENNReal.ofReal (speed (I := I) g γ₁ (2 * t)) := by
+      intro t
+      rw [ENNReal.ofReal_mul (by norm_num : (0:ℝ) ≤ 2)]
+    simp_rw [h_factor]
+    rw [MeasureTheory.lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    rw [lintegral_speed_2t_left (I := I) g γ₁]
+    rw [← mul_assoc]
+    -- `ofReal 2 * ofReal (1/2) = 1`.
+    rw [← ENNReal.ofReal_mul (by norm_num : (0:ℝ) ≤ 2)]
+    rw [show (2 : ℝ) * (1/2) = 1 by norm_num]
+    simp
+  · -- Right half — analogous.
+    unfold lengthENN
+    have h_eqOn_Ioo : Set.EqOn
+        (fun t : ℝ => ENNReal.ofReal (speed (I := I) g (concatHalf γ₁ γ₂) t))
+        (fun t : ℝ => ENNReal.ofReal (2 * speed (I := I) g γ₂ (2 * t - 1)))
+        (Set.Ioo ((1/2):ℝ) 1) := by
+      intro t ht
+      rcases ht with ⟨h_gt, _⟩
+      change ENNReal.ofReal (speed (I := I) g (concatHalf γ₁ γ₂) t) =
+        ENNReal.ofReal (2 * speed (I := I) g γ₂ (2 * t - 1))
+      rw [Length.speed_concatHalf_eq_right (I := I) g γ₁ γ₂ h_gt,
+        Length.speed_double_shift_reparam (I := I) g γ₂ t]
+    rw [show ((volume : MeasureTheory.Measure ℝ).restrict (Set.Ioc ((1/2):ℝ) 1)) =
+      volume.restrict (Set.Ioo ((1/2):ℝ) 1) from
+      MeasureTheory.Measure.restrict_congr_set MeasureTheory.Ioo_ae_eq_Ioc.symm]
+    rw [MeasureTheory.setLIntegral_congr_fun measurableSet_Ioo h_eqOn_Ioo]
+    rw [show ((volume : MeasureTheory.Measure ℝ).restrict (Set.Ioo ((1/2):ℝ) 1)) =
+      volume.restrict (Set.Ioc ((1/2):ℝ) 1) from
+      MeasureTheory.Measure.restrict_congr_set MeasureTheory.Ioo_ae_eq_Ioc]
+    have h_factor : ∀ t : ℝ,
+        ENNReal.ofReal (2 * speed (I := I) g γ₂ (2 * t - 1)) =
+          ENNReal.ofReal 2 * ENNReal.ofReal (speed (I := I) g γ₂ (2 * t - 1)) := by
+      intro t
+      rw [ENNReal.ofReal_mul (by norm_num : (0:ℝ) ≤ 2)]
+    simp_rw [h_factor]
+    rw [MeasureTheory.lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    rw [lintegral_speed_2t_minus_1_right (I := I) g γ₂]
+    rw [← mul_assoc]
+    rw [← ENNReal.ofReal_mul (by norm_num : (0:ℝ) ≤ 2)]
+    rw [show (2 : ℝ) * (1/2) = 1 by norm_num]
+    simp
+
+/-- ### Triangle inequality for `riemDist`.
+
+For any three points `p, q, r : M`, `riemDist g p r ≤ riemDist g p q + riemDist g q r`.
+The proof glues admissible curves via `concatHalf` and uses the unconditional
+`ℝ≥0∞`-length additivity for the concatenation. -/
+theorem riemDist_triangle (g : SmoothRiemannianMetric I M) (p q r : M) :
+    riemDist (I := I) g p r ≤
+      riemDist (I := I) g p q + riemDist (I := I) g q r := by
+  classical
+  unfold riemDist
+  refine ENNReal.le_iInf₂_add_iInf₂ ?_
+  intro γ₁ hγ₁ γ₂ hγ₂
+  -- Concatenation `concatHalf γ₁ γ₂` is admissible from p to r.
+  have h_concat_ad : concatHalf γ₁ γ₂ ∈ AdmissibleCurves (I := I) p r := by
+    refine ⟨?_, ?_, ?_⟩
+    · exact Length.isPiecewiseC1On_concatHalf (I := I) hγ₁.1 hγ₂.1
+        (by rw [hγ₁.2.2, hγ₂.2.1])
+    · rw [concatHalf_zero (M := M) γ₁ γ₂]; exact hγ₁.2.1
+    · rw [concatHalf_one (M := M) γ₁ γ₂]; exact hγ₂.2.2
+  -- Length-additivity for the concatenation.
+  have h_len_eq : lengthENN (I := I) g (concatHalf γ₁ γ₂) 0 1 =
+      lengthENN (I := I) g γ₁ 0 1 + lengthENN (I := I) g γ₂ 0 1 :=
+    lengthENN_concatHalf (I := I) g γ₁ γ₂
+  -- Bound the LHS.
+  calc (⨅ γ ∈ AdmissibleCurves (I := I) p r, lengthENN (I := I) g γ 0 1)
+      ≤ lengthENN (I := I) g (concatHalf γ₁ γ₂) 0 1 := iInf₂_le _ h_concat_ad
+    _ = lengthENN (I := I) g γ₁ 0 1 + lengthENN (I := I) g γ₂ 0 1 := h_len_eq
 
 end Distance
 end Riemannian
