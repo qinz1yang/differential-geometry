@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Existence
-import DifferentialGeometry.Analysis.Sobolev.Hk.HeatSemigroupContinuityAndBC0
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuityAndBC0
 
 /-!
 # Quasi-linear scalar heat equation on the spectral Sobolev scale
@@ -45,7 +45,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Hk
+open DifferentialGeometry.Analysis.Sobolev.Hs
 open DifferentialGeometry.Analysis.Laplacian.Spectral
 
 /-! ## File-local Borel-space instances on `E` and `M` -/
@@ -86,9 +86,9 @@ theorem scalar_quasilinear_local_existence
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       ∀ t ∈ Set.Icc (0:ℝ) T,
-        u t = heatSemigroupHkExt (I := I) (M := M) g σ t u₀ +
+        u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
           ∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ)) := by
+            heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ)) := by
   -- Apply the abstract semilinear existence theorem to the scalar
   -- spectral heat semigroup.
   obtain ⟨T, hT_pos, u, hu_cont, hu_zero, hu_eq⟩ :=
@@ -123,13 +123,13 @@ theorem scalar_quasilinear_local_unique
     {u v : ℝ → scalarHs (I := I) (M := M) g σ}
     (hu : ContinuousOn u (Set.Icc 0 T)) (hv : ContinuousOn v (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0:ℝ) T,
-      u t = heatSemigroupHkExt (I := I) (M := M) g σ t u₀ +
+      u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
         ∫ τ in (0:ℝ)..t,
-          heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ)))
+          heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ)))
     (hv_eq : ∀ t ∈ Set.Icc (0:ℝ) T,
-      v t = heatSemigroupHkExt (I := I) (M := M) g σ t u₀ +
+      v t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
         ∫ τ in (0:ℝ)..t,
-          heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (v τ))) :
+          heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (v τ))) :
     Set.EqOn u v (Set.Icc 0 T) := by
   -- Translate the concrete Duhamel equations into the abstract form
   -- expected by `semilinear_parabolic_unique`, then apply it.
@@ -160,9 +160,9 @@ theorem scalar_quasilinear_local_existence_Hk
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       ∀ t ∈ Set.Icc (0:ℝ) T,
-        u t = heatSemigroupHkExt (I := I) (M := M) g (k : ℝ) t u₀ +
+        u t = heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) t u₀ +
           ∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g (k : ℝ) (t - τ) (N (u τ)) :=
+            heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) (t - τ) (N (u τ)) :=
   scalar_quasilinear_local_existence (I := I) (M := M) g (k : ℝ) u₀ hN
 
 end QuasiLinear

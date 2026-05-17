@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
-import DifferentialGeometry.Analysis.Sobolev.Hk.HeatSemigroupHkExt
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHsExt
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
@@ -37,7 +37,7 @@ namespace QuasiLinear
 namespace EnergyEstimates
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Hk
+open DifferentialGeometry.Analysis.Sobolev.Hs
 open DifferentialGeometry.Analysis.Laplacian.Spectral
 open DifferentialGeometry.Analysis.ODE
 
@@ -63,9 +63,9 @@ theorem mild_solution_norm_le
     {T : ℝ} (hT : 0 ≤ T) {u : ℝ → scalarHs (I := I) (M := M) g σ}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0:ℝ) T,
-      u t = heatSemigroupHkExt (I := I) (M := M) g σ t u₀ +
+      u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
         ∫ τ in (0:ℝ)..t,
-          heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))) :
+          heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))) :
     ∀ t ∈ Set.Icc (0:ℝ) T,
       ‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ * t) * Real.exp ((L : ℝ) * t) := by
   -- Abbreviations.
@@ -119,53 +119,53 @@ theorem mild_solution_norm_le
     -- Duhamel-integral terms.
     have hu_t := hu_eq t ht
     have hf_le_split :
-        f t ≤ ‖heatSemigroupHkExt (I := I) (M := M) g σ t u₀‖ +
+        f t ≤ ‖heatSemigroupHsExt (I := I) (M := M) g σ t u₀‖ +
           ‖∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ := by
+            heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ := by
       change ‖u t‖ ≤ _
       rw [hu_t]
       exact norm_add_le _ _
     -- Homogeneous term bound: `‖e^{tΔ} u₀‖ ≤ ‖u₀‖` since the semigroup is a
     -- contraction on `Hˢ` for `t ≥ 0`.
-    have hhom_le : ‖heatSemigroupHkExt (I := I) (M := M) g σ t u₀‖ ≤ ‖u₀‖ := by
-      have h_op := heatSemigroupHkExt_opNorm_le_one
+    have hhom_le : ‖heatSemigroupHsExt (I := I) (M := M) g σ t u₀‖ ≤ ‖u₀‖ := by
+      have h_op := heatSemigroupHsExt_opNorm_le_one
         (I := I) (M := M) (g := g) (σ := σ) ht0
       have h_apply :
-          ‖heatSemigroupHkExt (I := I) (M := M) g σ t u₀‖ ≤
-            ‖heatSemigroupHkExt (I := I) (M := M) g σ t‖ * ‖u₀‖ :=
+          ‖heatSemigroupHsExt (I := I) (M := M) g σ t u₀‖ ≤
+            ‖heatSemigroupHsExt (I := I) (M := M) g σ t‖ * ‖u₀‖ :=
         ContinuousLinearMap.le_opNorm _ _
-      have h_step : ‖heatSemigroupHkExt (I := I) (M := M) g σ t‖ * ‖u₀‖ ≤
+      have h_step : ‖heatSemigroupHsExt (I := I) (M := M) g σ t‖ * ‖u₀‖ ≤
           1 * ‖u₀‖ := by gcongr
       linarith
     -- Pointwise bound for the Duhamel integrand on `Ioc 0 t`.
     have h_ptw : ∀ τ ∈ Set.Ioc (0:ℝ) t,
-        ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
+        ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
           g_int τ := by
       intro τ hτ
       have hτ_le_t : τ ≤ t := hτ.2
       have h_sub_nn : 0 ≤ t - τ := sub_nonneg.mpr hτ_le_t
       -- Contraction of the heat semigroup on `t - τ ≥ 0`.
-      have h_op_sub := heatSemigroupHkExt_opNorm_le_one
+      have h_op_sub := heatSemigroupHsExt_opNorm_le_one
         (I := I) (M := M) (g := g) (σ := σ) h_sub_nn
       have h_apply :
-          ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
-            ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ)‖ * ‖N (u τ)‖ :=
+          ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
+            ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ)‖ * ‖N (u τ)‖ :=
         ContinuousLinearMap.le_opNorm _ _
       have h_step :
-          ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ)‖ * ‖N (u τ)‖ ≤
+          ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ)‖ * ‖N (u τ)‖ ≤
             1 * ‖N (u τ)‖ := by gcongr
       have h_op_one :
-          ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
+          ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
             ‖N (u τ)‖ := by linarith
       -- Lipschitz bound on `N (u τ)`.
       have h_lip : ‖N (u τ)‖ ≤ (L : ℝ) * ‖u τ‖ + ‖N 0‖ := hN_bound (u τ)
-      change ‖heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
+      change ‖heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
         (L : ℝ) * f τ + ‖N 0‖
       linarith
     -- Bound the Duhamel-integral norm.
     have h_int_le :
         ‖∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
+            heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ ≤
           ∫ τ in (0:ℝ)..t, g_int τ := by
       refine intervalIntegral.norm_integral_le_of_norm_le (hab := ht0) ?_ hg_ii
       exact Filter.Eventually.of_forall h_ptw
@@ -193,9 +193,9 @@ theorem mild_solution_norm_le
       rw [h_split_add, h_const_mul, h_const]
     -- Assemble the final inequality.
     calc
-      f t ≤ ‖heatSemigroupHkExt (I := I) (M := M) g σ t u₀‖ +
+      f t ≤ ‖heatSemigroupHsExt (I := I) (M := M) g σ t u₀‖ +
             ‖∫ τ in (0:ℝ)..t,
-              heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ :=
+              heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))‖ :=
             hf_le_split
       _ ≤ ‖u₀‖ + ∫ τ in (0:ℝ)..t, g_int τ := by linarith
       _ = ‖u₀‖ + ((L : ℝ) * (∫ τ in (0:ℝ)..t, f τ) + ‖N 0‖ * t) := by

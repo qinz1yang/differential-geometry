@@ -42,7 +42,7 @@ namespace QuasiLinear
 namespace EnergyEstimates
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Sobolev.Hk
+open DifferentialGeometry.Analysis.Sobolev.Hs
 open DifferentialGeometry.Analysis.Laplacian.Spectral
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
@@ -71,9 +71,9 @@ theorem scalar_quasilinear_local_existence_with_norm_bound
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       (∀ t ∈ Set.Icc (0:ℝ) T,
-        u t = heatSemigroupHkExt (I := I) (M := M) g σ t u₀ +
+        u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
           ∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g σ (t - τ) (N (u τ))) ∧
+            heatSemigroupHsExt (I := I) (M := M) g σ (t - τ) (N (u τ))) ∧
       (∀ t ∈ Set.Icc (0:ℝ) T,
         ‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ * t) * Real.exp ((L : ℝ) * t)) := by
   obtain ⟨T, hT_pos, u, hu_cont, hu_zero, hu_eq⟩ :=
@@ -98,9 +98,9 @@ theorem scalar_quasilinear_local_existence_with_Hk_bound
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       (∀ t ∈ Set.Icc (0:ℝ) T,
-        u t = heatSemigroupHkExt (I := I) (M := M) g (k : ℝ) t u₀ +
+        u t = heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) t u₀ +
           ∫ τ in (0:ℝ)..t,
-            heatSemigroupHkExt (I := I) (M := M) g (k : ℝ) (t - τ) (N (u τ))) ∧
+            heatSemigroupHsExt (I := I) (M := M) g (k : ℝ) (t - τ) (N (u τ))) ∧
       (∀ t ∈ Set.Icc (0:ℝ) T,
         ‖u t‖ ≤ (‖u₀‖ + ‖N 0‖ * t) * Real.exp ((L : ℝ) * t)) :=
   scalar_quasilinear_local_existence_with_norm_bound (I := I) (M := M) g

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Sobolev.Hk.SpectralDefs
-import DifferentialGeometry.Analysis.Sobolev.Hk.Inclusion
+import DifferentialGeometry.Analysis.Sobolev.Hs.SpectralDefs
+import DifferentialGeometry.Analysis.Sobolev.Hs.Inclusion
 
 /-!
 # Finitely-supported elements of the spectral `Hˢ` Sobolev scale (scalar fields)
@@ -47,7 +47,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace Hk
+namespace Hs
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -322,7 +322,7 @@ example {g : SmoothRiemannianMetric I M} {σ : ℝ} :
       Set (scalarHs (I := I) (M := M) g σ)) :=
   scalarHs.finiteSupportSubmodule_dense (I := I) (M := M)
 
-end Hk
+end Hs
 end Sobolev
 end Analysis
 end DifferentialGeometry

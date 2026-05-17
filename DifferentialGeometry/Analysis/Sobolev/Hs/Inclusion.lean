@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Hk.SpectralDefs
+import DifferentialGeometry.Analysis.Sobolev.Hs.SpectralDefs
 
 /-!
 # Continuous inclusions of the spectral `Hˢ` Sobolev scale (scalar fields)
@@ -48,7 +48,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace Hk
+namespace Hs
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -629,7 +629,7 @@ theorem scalarHsToL2_scalarHsInclusion
     (g := g) hτ hτσ
   exact congrArg (fun L => L T) h
 
-end Hk
+end Hs
 end Sobolev
 end Analysis
 end DifferentialGeometry

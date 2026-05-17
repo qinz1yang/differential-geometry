@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Hk.Inclusion
+import DifferentialGeometry.Analysis.Sobolev.Hs.Inclusion
 import DifferentialGeometry.Analysis.SpectralBounds.SmoothingConst
 import DifferentialGeometry.Analysis.HeatEquation.Semigroup
 import Mathlib.Analysis.SpecialFunctions.Exp
@@ -32,22 +32,22 @@ operator is merely a contraction `Hᵃ → Hᵃ`.
 
 * `heatCoeffFun i t c` — the per-eigenvalue heat coefficient
   `exp(-λᵢ t) · c`.
-* `heatSemigroupHk ht` — the heat semigroup as a continuous linear map
+* `heatSemigroupHs ht` — the heat semigroup as a continuous linear map
   `Hᵃ →L[ℝ] Hᵇ` for `0 < t`, multiplying coordinate `i` by `exp(−λᵢ t)`,
   with the target exponent `b` free.
 
 ## Main results
 
-* `heatSemigroupHk_coeff` — the coordinate formula
+* `heatSemigroupHs_coeff` — the coordinate formula
   `(e^{tΔ} T).coeff i = exp(−λᵢ t) · T.coeff i`.
-* `heatSemigroupHk_opNorm_le` — the smoothing estimate
+* `heatSemigroupHs_opNorm_le` — the smoothing estimate
   `‖e^{tΔ}‖_{Hᵃ → Hᵇ} ≤ √(spectralSmoothingConst (b−a)) · t^{−(b−a)/2}`
   for `b ≥ a`, `0 < t ≤ 1`.
-* `heatSemigroupHk_opNorm_le_one` — the contraction
+* `heatSemigroupHs_opNorm_le_one` — the contraction
   `‖e^{tΔ}‖_{Hᵃ → Hᵃ} ≤ 1`.
-* `heatSemigroupHk_add` — the semigroup law
+* `heatSemigroupHs_add` — the semigroup law
   `e^{(t+s)Δ} = e^{tΔ} ∘ e^{sΔ}` on the scale.
-* `heatSemigroupHk_zeroEquivL2` — at `a = b = 0` the operator agrees,
+* `heatSemigroupHs_zeroEquivL2` — at `a = b = 0` the operator agrees,
   under `scalarHsZeroEquivL2`, with the `L²` heat semigroup.
 
 ## Sign convention
@@ -66,7 +66,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace Hk
+namespace Hs
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -485,7 +485,7 @@ It multiplies the `i`-th eigenbasis coordinate by `exp(−λᵢ t)`. Because
 positive time provides arbitrarily strong spectral decay, the *target*
 exponent `b` is **free**: for every `b`, even `b > a`, this is a bounded
 operator `Hᵃ →L[ℝ] Hᵇ`. -/
-def heatSemigroupHk {g : SmoothRiemannianMetric I M}
+def heatSemigroupHs {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ} :
     scalarHs (I := I) (M := M) g a →L[ℝ]
       scalarHs (I := I) (M := M) g b :=
@@ -582,20 +582,20 @@ def heatSemigroupHk {g : SmoothRiemannianMetric I M}
           h_norm_le_sqrt
         _ ≤ K * ‖T‖ := mul_le_mul_of_nonneg_right h_sqrtK_le_K h2)
 
-/-- `heatSemigroupHk` applied to `T` is the underlying `heatHkFun T`. -/
-@[simp] lemma heatSemigroupHk_apply {g : SmoothRiemannianMetric I M}
+/-- `heatSemigroupHs` applied to `T` is the underlying `heatHkFun T`. -/
+@[simp] lemma heatSemigroupHs_apply {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ}
     (T : scalarHs (I := I) (M := M) g a) :
-    heatSemigroupHk (I := I) (M := M) (g := g) ht (a := a) (b := b) T =
+    heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := b) T =
       scalarHs.heatHkFun (I := I) (M := M) b ht T := rfl
 
 /-- **Coordinate formula.** The heat semigroup multiplies the `i`-th
 eigenbasis coordinate by `exp(−λᵢ t)`. -/
-@[simp] theorem heatSemigroupHk_coeff {g : SmoothRiemannianMetric I M}
+@[simp] theorem heatSemigroupHs_coeff {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ}
     (T : scalarHs (I := I) (M := M) g a)
     (i : EigenIdx (I := I) (M := M) g) :
-    (heatSemigroupHk (I := I) (M := M) (g := g) ht (a := a) (b := b)
+    (heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := b)
         T).coeff i =
       Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
         T.coeff i := rfl
@@ -608,9 +608,9 @@ eigenbasis coordinate by `exp(−λᵢ t)`. -/
 the constant depending only on `b − a`. Positive time gains `b − a`
 Sobolev derivatives, at the cost of the parabolic factor
 `t^{−(b−a)/2}`. -/
-theorem heatSemigroupHk_opNorm_le {g : SmoothRiemannianMetric I M}
+theorem heatSemigroupHs_opNorm_le {g : SmoothRiemannianMetric I M}
     {a b : ℝ} (hab : a ≤ b) {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) :
-    ‖heatSemigroupHk (I := I) (M := M) (g := g) ht (a := a) (b := b)‖ ≤
+    ‖heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := b)‖ ≤
       Real.sqrt (spectralSmoothingConst (b - a)) * t ^ (-((b - a) / 2)) := by
   have h_bound_nn :
       0 ≤ Real.sqrt (spectralSmoothingConst (b - a)) *
@@ -621,16 +621,16 @@ theorem heatSemigroupHk_opNorm_le {g : SmoothRiemannianMetric I M}
       (Real.rpow_pos_of_pos ht _).le
     positivity
   refine ContinuousLinearMap.opNorm_le_bound _ h_bound_nn (fun T => ?_)
-  rw [heatSemigroupHk_apply]
+  rw [heatSemigroupHs_apply]
   exact scalarHs.norm_heatHkFun_le_smoothing (I := I) (M := M) hab ht ht1 T
 
 /-- **Contraction on a fixed scale.** For `0 < t`, the heat semigroup is
 a contraction `Hᵃ → Hᵃ`: `‖e^{t Δ_g}‖_{Hᵃ → Hᵃ} ≤ 1`. -/
-theorem heatSemigroupHk_opNorm_le_one {g : SmoothRiemannianMetric I M}
+theorem heatSemigroupHs_opNorm_le_one {g : SmoothRiemannianMetric I M}
     {a : ℝ} {t : ℝ} (ht : 0 < t) :
-    ‖heatSemigroupHk (I := I) (M := M) (g := g) ht (a := a) (b := a)‖ ≤ 1 := by
+    ‖heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := a)‖ ≤ 1 := by
   refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun T => ?_)
-  rw [heatSemigroupHk_apply, one_mul]
+  rw [heatSemigroupHs_apply, one_mul]
   exact scalarHs.norm_heatHkFun_le_self (I := I) (M := M) ht T
 
 /-! ## The semigroup law on the scale -/
@@ -638,17 +638,17 @@ theorem heatSemigroupHk_opNorm_le_one {g : SmoothRiemannianMetric I M}
 /-- **Semigroup law on the spectral Sobolev scale.** For `t, s > 0`, the
 spectral-scale heat semigroup satisfies `e^{(t+s)Δ} = e^{tΔ} ∘ e^{sΔ}`,
 as continuous linear endomorphisms of any fixed `Hᵃ`. -/
-theorem heatSemigroupHk_add {g : SmoothRiemannianMetric I M}
+theorem heatSemigroupHs_add {g : SmoothRiemannianMetric I M}
     {t s : ℝ} (ht : 0 < t) (hs : 0 < s) {a : ℝ} :
-    heatSemigroupHk (I := I) (M := M) (g := g)
+    heatSemigroupHs (I := I) (M := M) (g := g)
         (show (0:ℝ) < t + s by linarith) (a := a) (b := a) =
-      (heatSemigroupHk (I := I) (M := M) (g := g) ht (a := a) (b := a)).comp
-        (heatSemigroupHk (I := I) (M := M) (g := g) hs (a := a) (b := a)) := by
+      (heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := a)).comp
+        (heatSemigroupHs (I := I) (M := M) (g := g) hs (a := a) (b := a)) := by
   refine ContinuousLinearMap.ext (fun T => ?_)
   rw [ContinuousLinearMap.comp_apply]
   refine scalarHs.ext ?_
   funext i
-  rw [heatSemigroupHk_coeff, heatSemigroupHk_coeff, heatSemigroupHk_coeff]
+  rw [heatSemigroupHs_coeff, heatSemigroupHs_coeff, heatSemigroupHs_coeff]
   set lam := EigenIdx.lambda (I := I) (M := M) i with hlam_def
   have h_exp_add :
       Real.exp (-lam * (t + s)) =
@@ -662,7 +662,7 @@ theorem heatSemigroupHk_add {g : SmoothRiemannianMetric I M}
 /-! ## Consistency with the `L²` heat semigroup
 
 At `a = b = 0`, the spectral Sobolev space `H⁰` is isometrically the
-`L²` Hilbert space (`scalarHsZeroEquivL2`), and `heatSemigroupHk` agrees
+`L²` Hilbert space (`scalarHsZeroEquivL2`), and `heatSemigroupHs` agrees
 there with the `L²` heat semigroup `heatSemigroup`. The bridge is the
 diagonal action of both operators on the eigenbasis. -/
 
@@ -749,14 +749,14 @@ private theorem scalarL2Coeff_heatSemigroup
   exact h_eq.symm
 
 /-- **Consistency with the `L²` heat semigroup, elementwise form.** At
-`a = b = 0`, applying the spectral-scale heat semigroup `heatSemigroupHk`
+`a = b = 0`, applying the spectral-scale heat semigroup `heatSemigroupHs`
 to `T : H⁰` and then identifying with `L²` is the same as identifying
 with `L²` first and applying the `L²` heat semigroup `heatSemigroup`. -/
-theorem heatSemigroupHk_zeroEquivL2_apply
+theorem heatSemigroupHs_zeroEquivL2_apply
     {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) (T : scalarHs (I := I) (M := M) g 0) :
     scalarHsZeroEquivL2 (I := I) (M := M) g
-        (heatSemigroupHk (I := I) (M := M) (g := g) ht (a := 0) (b := 0) T) =
+        (heatSemigroupHs (I := I) (M := M) (g := g) ht (a := 0) (b := 0) T) =
       DifferentialGeometry.Analysis.HeatEquation.heatSemigroup
         (I := I) (M := M) g t
         (scalarHsZeroEquivL2 (I := I) (M := M) g T) := by
@@ -770,14 +770,14 @@ theorem heatSemigroupHk_zeroEquivL2_apply
   have hlhs : ((resolventHilbertEigenbasisSigma
         (I := I) (M := M) g).repr
       (scalarHsZeroEquivL2 (I := I) (M := M) g
-        (heatSemigroupHk (I := I) (M := M) (g := g) ht
+        (heatSemigroupHs (I := I) (M := M) (g := g) ht
           (a := 0) (b := 0) T))) i =
       Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
         T.coeff i := by
     have h := scalarHs.scalarHsZeroEquivL2_scalarL2Coeff (I := I) (M := M)
-      (heatSemigroupHk (I := I) (M := M) (g := g) ht
+      (heatSemigroupHs (I := I) (M := M) (g := g) ht
         (a := 0) (b := 0) T) i
-    rw [heatSemigroupHk_coeff] at h
+    rw [heatSemigroupHs_coeff] at h
     simpa only [scalarL2Coeff] using h
   -- RHS coordinate.
   have hrhs : ((resolventHilbertEigenbasisSigma
@@ -794,27 +794,27 @@ theorem heatSemigroupHk_zeroEquivL2_apply
   rw [hlhs, hrhs]
 
 /-- **Consistency with the `L²` heat semigroup.** At `a = b = 0`, the
-spectral-scale heat semigroup `heatSemigroupHk` agrees, under the
+spectral-scale heat semigroup `heatSemigroupHs` agrees, under the
 isometric identification `scalarHsZeroEquivL2 : H⁰ ≃ₗᵢ L²`, with the
 `L²` heat semigroup `heatSemigroup`. -/
-theorem heatSemigroupHk_zeroEquivL2 {g : SmoothRiemannianMetric I M}
+theorem heatSemigroupHs_zeroEquivL2 {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) :
     (scalarHsZeroEquivL2 (I := I) (M := M) g).symm.toLinearIsometry.toContinuousLinearMap.comp
         ((DifferentialGeometry.Analysis.HeatEquation.heatSemigroup
             (I := I) (M := M) g t).comp
           (scalarHsZeroEquivL2 (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap) =
-      heatSemigroupHk (I := I) (M := M) (g := g) ht (a := 0) (b := 0) := by
+      heatSemigroupHs (I := I) (M := M) (g := g) ht (a := 0) (b := 0) := by
   refine ContinuousLinearMap.ext (fun T => ?_)
   -- Unfold the composition on the left.
   change (scalarHsZeroEquivL2 (I := I) (M := M) g).symm
       (DifferentialGeometry.Analysis.HeatEquation.heatSemigroup
         (I := I) (M := M) g t
         (scalarHsZeroEquivL2 (I := I) (M := M) g T)) =
-    heatSemigroupHk (I := I) (M := M) (g := g) ht (a := 0) (b := 0) T
-  rw [← heatSemigroupHk_zeroEquivL2_apply (I := I) (M := M) ht T]
+    heatSemigroupHs (I := I) (M := M) (g := g) ht (a := 0) (b := 0) T
+  rw [← heatSemigroupHs_zeroEquivL2_apply (I := I) (M := M) ht T]
   exact (scalarHsZeroEquivL2 (I := I) (M := M) g).symm_apply_apply _
 
-end Hk
+end Hs
 end Sobolev
 end Analysis
 end DifferentialGeometry

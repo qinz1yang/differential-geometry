@@ -65,7 +65,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
-namespace Hk
+namespace Hs
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -707,7 +707,7 @@ instance instCompleteSpace :
 
 end scalarHs
 
-end Hk
+end Hs
 end Sobolev
 end Analysis
 end DifferentialGeometry
