@@ -786,6 +786,7 @@ import DifferentialGeometry.Analysis.Parabolic.TensorSpectral.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Parabolic.TensorSpectral.SobolevScale.Inclusion
 import DifferentialGeometry.Analysis.Parabolic.TensorSpectral.SobolevScale.FractionalPower
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingHs
+import DifferentialGeometry.Analysis.SpectralBounds.SmoothingConst
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode
