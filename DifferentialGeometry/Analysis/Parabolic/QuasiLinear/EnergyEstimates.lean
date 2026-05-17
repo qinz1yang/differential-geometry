@@ -257,7 +257,7 @@ heat equation on the integer Sobolev scale `Hᵏ`, with a-priori
 
 The integer-exponent specialisation of
 `scalar_quasilinear_local_existence_with_norm_bound`. -/
-theorem scalar_quasilinear_local_existence_with_Hk_bound
+theorem scalar_quasilinear_local_existence_with_norm_bound_Hk
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     (u₀ : HkScalar (I := I) (M := M) g k)
     {N : HkScalar (I := I) (M := M) g k → HkScalar (I := I) (M := M) g k}
