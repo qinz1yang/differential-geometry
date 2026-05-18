@@ -274,6 +274,112 @@ theorem IsParallelAlong.smul
     (contMDiff_tangentBundle_along_smul (I := I) γ c V hγ hV) t,
     hVp t, smul_zero]
 
+/-- Smoothness of the tangent-bundle lift of the pointwise negation
+`fun t => -V t` along `γ`, given smoothness of the original lift and
+`C¹` smoothness of the base curve. Reduced to `_smul` with scalar `-1`. -/
+lemma contMDiff_tangentBundle_along_neg
+    (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, V t⟩ : TangentBundle I M))) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+      (fun t => (⟨γ t, -V t⟩ : TangentBundle I M)) := by
+  have h := contMDiff_tangentBundle_along_smul (I := I) γ (-1 : ℝ) V hγ hV
+  have hfun : (fun t => (⟨γ t, (-1 : ℝ) • V t⟩ : TangentBundle I M)) =
+      (fun t => (⟨γ t, -V t⟩ : TangentBundle I M)) := by
+    funext s; congr 1; exact neg_one_smul ℝ (V s)
+  exact hfun ▸ h
+
+/-- Smoothness of the tangent-bundle lift of the pointwise difference
+`fun t => V t - W t` along `γ`, given smoothness of each operand's lift
+and `C¹` smoothness of the base curve. Reduced to `_add` + `_neg`. -/
+lemma contMDiff_tangentBundle_along_sub
+    (γ : ℝ → M) (V W : ∀ t, TangentSpace I (γ t))
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, V t⟩ : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, W t⟩ : TangentBundle I M))) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+      (fun t => (⟨γ t, V t - W t⟩ : TangentBundle I M)) := by
+  have hnegW := contMDiff_tangentBundle_along_neg (I := I) γ W hγ hW
+  have h := contMDiff_tangentBundle_along_add (I := I) γ V (fun t => -W t) hγ hV hnegW
+  have hfun : (fun t => (⟨γ t, V t + -W t⟩ : TangentBundle I M)) =
+      (fun t => (⟨γ t, V t - W t⟩ : TangentBundle I M)) := by
+    funext s; congr 1; exact (sub_eq_add_neg (V s) (W s)).symm
+  exact hfun ▸ h
+
+/-- **Negation of a parallel field is parallel.** Thin wrapper over
+`IsParallelAlong.smul` with scalar `-1`. -/
+theorem IsParallelAlong.neg
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    {V : ∀ t, TangentSpace I (γ t)}
+    {hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ}
+    {hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, V t⟩ : TangentBundle I M))}
+    (hVp : IsParallelAlong (I := I) g γ V hγ hV) :
+    IsParallelAlong (I := I) g γ (fun t => -V t) hγ
+      (contMDiff_tangentBundle_along_neg (I := I) γ V hγ hV) := by
+  -- Reduce `fun t => -V t` to `fun t => (-1 : ℝ) • V t` via `funext` + `neg_one_smul`,
+  -- then transport `IsParallelAlong … ((-1) • V) …` across this equality.
+  -- The smoothness witness's type depends on the vector field, so we transport
+  -- the entire predicate as a single dependent expression.
+  have hsmul : IsParallelAlong (I := I) g γ (fun t => (-1 : ℝ) • V t) hγ
+      (contMDiff_tangentBundle_along_smul (I := I) γ (-1 : ℝ) V hγ hV) :=
+    hVp.smul (-1 : ℝ)
+  -- Functional equality of the two vector-field shapes.
+  have hfield : (fun t => (-1 : ℝ) • V t) = (fun t => -V t) := by
+    funext s; exact neg_one_smul ℝ (V s)
+  -- Transport `hsmul` across `hfield`. Since `IsParallelAlong` takes the field
+  -- and its smoothness witness as separate arguments (with the witness type
+  -- depending on the field), we use `subst`/`Eq.mpr` after generalizing the
+  -- witness as a free parameter.
+  -- Establish the generalized form first.
+  have generalized : ∀ {W : ∀ t, TangentSpace I (γ t)}
+      (hWsmooth : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, W t⟩ : TangentBundle I M))),
+      W = (fun t => (-1 : ℝ) • V t) →
+      IsParallelAlong (I := I) g γ W hγ hWsmooth := by
+    rintro W hWsmooth rfl
+    -- Now `hWsmooth : ContMDiff ... (fun t => ⟨γ t, (-1) • V t⟩)`. Use `hsmul`
+    -- with proof-irrelevance on the witness.
+    exact hsmul
+  exact generalized (contMDiff_tangentBundle_along_neg (I := I) γ V hγ hV) hfield.symm
+
+/-- **Difference of parallel fields is parallel.** Thin wrapper over
+`IsParallelAlong.add` and `IsParallelAlong.neg`. -/
+theorem IsParallelAlong.sub
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    {V W : ∀ t, TangentSpace I (γ t)}
+    {hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ}
+    {hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, V t⟩ : TangentBundle I M))}
+    {hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, W t⟩ : TangentBundle I M))}
+    (hVp : IsParallelAlong (I := I) g γ V hγ hV)
+    (hWp : IsParallelAlong (I := I) g γ W hγ hW) :
+    IsParallelAlong (I := I) g γ (fun t => V t - W t) hγ
+      (contMDiff_tangentBundle_along_sub (I := I) γ V W hγ hV hW) := by
+  -- Reduce `fun t => V t - W t` to `fun t => V t + -W t` via `sub_eq_add_neg`,
+  -- then transport `IsParallelAlong … (V + -W) …` across this equality.
+  have hadd : IsParallelAlong (I := I) g γ (fun t => V t + -W t) hγ
+      (contMDiff_tangentBundle_along_add (I := I) γ V (fun t => -W t) hγ hV
+        (contMDiff_tangentBundle_along_neg (I := I) γ W hγ hW)) :=
+    hVp.add hWp.neg
+  have hfield : (fun t => V t + -W t) = (fun t => V t - W t) := by
+    funext s; exact (sub_eq_add_neg (V s) (W s)).symm
+  have generalized : ∀ {F : ∀ t, TangentSpace I (γ t)}
+      (hFsmooth : ContMDiff 𝓘(ℝ, ℝ) I.tangent 1
+        (fun t => (⟨γ t, F t⟩ : TangentBundle I M))),
+      F = (fun t => V t + -W t) →
+      IsParallelAlong (I := I) g γ F hγ hFsmooth := by
+    rintro F hFsmooth rfl
+    exact hadd
+  exact generalized (contMDiff_tangentBundle_along_sub (I := I) γ V W hγ hV hW)
+    hfield.symm
+
 /-! ## Inner product with an arbitrary smooth vector field along `γ`
 
 If `V` is parallel along `γ`, then for any smooth (possibly non-parallel)
