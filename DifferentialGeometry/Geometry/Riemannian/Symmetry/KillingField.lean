@@ -321,6 +321,33 @@ theorem IsKillingField.sub
   rw [hfun]
   exact hadd_id
 
+/-- **Killing identity at coincident slots.** For a Killing field `X` and any
+tangent vector `V`, the inner product `g(∇_V X, V)` vanishes. This is the
+antisymmetry identity specialised to `W = V`: `2 · g(∇_V X, V) = 0`, which over
+a real-coefficient ring forces each term to be zero. -/
+theorem IsKillingField.inner_covderiv_self_eq_zero
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M}
+    {X : ∀ x : M, TangentSpace I x}
+    {hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)}
+    (hKX : IsKillingField g X hX) (x : M) (V : TangentSpace I x) :
+    g.inner x ((LeviCivita (I := I) g) X x V) V = 0 := by
+  have h := hKX x V V
+  -- `h : g(∇_V X, V) + g(V, ∇_V X) = 0`; the two summands are equal because
+  -- `g.inner x` is symmetric (as a smooth Riemannian metric).
+  have hsym : g.inner x V ((LeviCivita (I := I) g) X x V) =
+      g.inner x ((LeviCivita (I := I) g) X x V) V :=
+    g.symm x V ((LeviCivita (I := I) g) X x V)
+  rw [hsym] at h
+  -- Now `h : g(∇_V X, V) + g(∇_V X, V) = 0`, i.e. `2 * g(∇_V X, V) = 0`.
+  have h2 : (2 : ℝ) * g.inner x ((LeviCivita (I := I) g) X x V) V = 0 := by
+    have h' :
+        g.inner x ((LeviCivita (I := I) g) X x V) V +
+          g.inner x ((LeviCivita (I := I) g) X x V) V = 0 := h
+    linarith
+  have h2_ne : (2 : ℝ) ≠ 0 := by norm_num
+  exact (mul_eq_zero.mp h2).resolve_left h2_ne
+
 end Symmetry
 end Riemannian
 end Geometry
