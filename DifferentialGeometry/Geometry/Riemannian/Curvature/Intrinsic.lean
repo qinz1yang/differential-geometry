@@ -1,5 +1,6 @@
 import DifferentialGeometry.Integral.Connection.LeviCivita
 import DifferentialGeometry.Integral.Connection.CurvatureBundling
+import DifferentialGeometry.Integral.Connection.Ricci
 
 /-!
 # Intrinsic Riemann curvature at a point
@@ -23,6 +24,7 @@ bundled fibre-trilinear form, not via any specific chart.
   `riemannSec (LeviCivita g) X Y Z x`.
 * `intrinsicRiemann_swap` — antisymmetry in the first two arguments.
 * `intrinsicRiemann_self_eq_zero` — vanishing on coincident first two arguments.
+* `intrinsicRiemann_metric_skew` — metric skew-symmetry in the last argument.
 -/
 
 set_option linter.unusedSectionVars false
@@ -107,6 +109,46 @@ theorem intrinsicRiemann_self_eq_zero
     rw [two_smul]; exact hsum
   have h2ne : (2 : ℝ) ≠ 0 := by norm_num
   exact (smul_eq_zero.mp h2).resolve_left h2ne
+
+/-- **Metric skew-symmetry in the last argument.** For every smooth Riemannian
+metric `g` on a boundaryless manifold and every quadruple of tangent vectors at
+`x`,
+$$
+  g\bigl(R(V, W) X, Y\bigr) + g\bigl(X, R(V, W) Y\bigr) = 0.
+$$
+Proved by extending each fibre vector to a globally smooth tangent-bundle
+section via `smoothExtensionTangent`, applying the section-level identity
+`riemannSec_metric_skew`, and unwinding through `intrinsicRiemann_apply_smooth`. -/
+theorem intrinsicRiemann_metric_skew
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (V W X Y : TangentSpace I x) :
+    g.inner x (intrinsicRiemann (I := I) g x V W X) Y +
+      g.inner x X (intrinsicRiemann (I := I) g x V W Y) = 0 := by
+  classical
+  -- Smooth extensions of the four fibre vectors.
+  set V' := smoothExtensionTangent (I := I) x V with hV'def
+  set W' := smoothExtensionTangent (I := I) x W with hW'def
+  set X' := smoothExtensionTangent (I := I) x X with hX'def
+  set Y' := smoothExtensionTangent (I := I) x Y with hY'def
+  have hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V') :=
+    smoothExtensionTangent_contMDiff x V
+  have hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W') :=
+    smoothExtensionTangent_contMDiff x W
+  have hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X') :=
+    smoothExtensionTangent_contMDiff x X
+  have hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y') :=
+    smoothExtensionTangent_contMDiff x Y
+  have hVx : V' x = V := smoothExtensionTangent_eq x V
+  have hWx : W' x = W := smoothExtensionTangent_eq x W
+  have hXx : X' x = X := smoothExtensionTangent_eq x X
+  have hYx : Y' x = Y := smoothExtensionTangent_eq x Y
+  -- Rewrite the fibre vectors as values of the smooth extensions.
+  rw [show V = V' x from hVx.symm, show W = W' x from hWx.symm,
+      show X = X' x from hXx.symm, show Y = Y' x from hYx.symm,
+      intrinsicRiemann_apply_smooth (I := I) g hV hW hX,
+      intrinsicRiemann_apply_smooth (I := I) g hV hW hY]
+  -- Apply the section-level metric skewness identity.
+  exact riemannSec_metric_skew (I := I) g hV hW hX hY
 
 end Curvature
 end Riemannian
