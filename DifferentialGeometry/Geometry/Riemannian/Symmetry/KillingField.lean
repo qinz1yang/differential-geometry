@@ -26,6 +26,8 @@ the most directly computable.
 * `IsKillingField_zero g` — the zero vector field is a Killing field.
 * `IsKillingField.add` — the sum of two Killing fields is a Killing field.
 * `IsKillingField.smul` — a scalar multiple of a Killing field is a Killing field.
+* `IsKillingField.neg` — the negation of a Killing field is a Killing field.
+* `IsKillingField.sub` — the difference of two Killing fields is a Killing field.
 
 Both statements rest only on the bundled Levi-Civita covariant derivative
 `LeviCivita g` and on `ContMDiffRiemannianMetric.inner`; in particular no
@@ -275,6 +277,49 @@ theorem IsKillingField.smul
       show (c • g.inner x V ((LeviCivita (I := I) g).toFun X x W) : ℝ) =
         c * g.inner x V ((LeviCivita (I := I) g).toFun X x W) from rfl,
       ← mul_add, hX_id, mul_zero]
+
+/-- **Negation of a Killing field is a Killing field.** Reduces to `IsKillingField.smul`
+with scalar `-1`, after observing that `-X x = (-1 : ℝ) • X x` pointwise. -/
+theorem IsKillingField.neg
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M}
+    {X : ∀ x : M, TangentSpace I x}
+    {hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)}
+    (hKX : IsKillingField g X hX) :
+    IsKillingField g (fun x : M => -X x) hX.neg_section := by
+  -- `IsKillingField` ignores its smoothness witness, so it suffices to show
+  -- the antisymmetry identity for `fun x => -X x`. Replace `-X x` by
+  -- `(-1 : ℝ) • X x` and invoke the existing `IsKillingField.smul` closure.
+  have hfun : (fun x : M => -X x) = (fun x : M => ((-1 : ℝ) • X x)) := by
+    funext x; rw [neg_one_smul]
+  have hKsmul : IsKillingField g (fun x : M => ((-1 : ℝ) • X x))
+      (hX.const_smul_section) :=
+    IsKillingField.smul (-1) hKX
+  intro x V W
+  have hsmul_id := hKsmul x V W
+  -- Transport along `hfun` (the predicate body depends only on the function).
+  rw [hfun]
+  exact hsmul_id
+
+/-- **Difference of two Killing fields is a Killing field.** Combines
+`IsKillingField.add` with `IsKillingField.neg`, after rewriting `X x - Y x`
+as `X x + (-Y x)`. -/
+theorem IsKillingField.sub
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    {g : SmoothRiemannianMetric I M}
+    {X Y : ∀ x : M, TangentSpace I x}
+    {hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)}
+    {hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)}
+    (hKX : IsKillingField g X hX) (hKY : IsKillingField g Y hY) :
+    IsKillingField g (fun x : M => X x - Y x) (hX.sub_section hY) := by
+  have hfun : (fun x : M => X x - Y x) = (fun x : M => X x + (-Y x)) := by
+    funext x; rw [sub_eq_add_neg]
+  -- `-Y` is Killing by `IsKillingField.neg`; sum with `X` by `IsKillingField.add`.
+  have hKadd := hKX.add hKY.neg
+  intro x V W
+  have hadd_id := hKadd x V W
+  rw [hfun]
+  exact hadd_id
 
 end Symmetry
 end Riemannian
