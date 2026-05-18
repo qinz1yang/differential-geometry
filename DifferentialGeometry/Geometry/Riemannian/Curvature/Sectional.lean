@@ -140,6 +140,65 @@ the denominator also vanishes Lean's convention `0 / 0 = 0` still gives
   rw [h0]
   simp
 
+/-- **Scale invariance in the first slot.** For any nonzero scalar `c`,
+the sectional curvature is unchanged when the first slot is rescaled by
+`c`: `K(c • V, W) = K(V, W)`. Both the numerator and the denominator
+acquire a factor of `c²` from the trilinearity of the curvature operator
+and the bilinearity of the inner product, which cancel. -/
+theorem sectionalCurvature_smul_left
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {c : ℝ} (hc : c ≠ 0) (V W : TangentSpace I x) :
+    sectionalCurvature (I := I) g x (c • V) W =
+      sectionalCurvature (I := I) g x V W := by
+  unfold sectionalCurvature
+  -- The Riemann tensor is linear in the first slot.
+  have hW1 : intrinsicRiemann (I := I) g x (c • V) W =
+      c • intrinsicRiemann (I := I) g x V W :=
+    (intrinsicRiemann (I := I) g x).map_smul c V ▸ rfl
+  have hR : intrinsicRiemann (I := I) g x (c • V) W W =
+      c • intrinsicRiemann (I := I) g x V W W := by
+    rw [hW1]; rfl
+  rw [hR]
+  -- Numerator: `g(c • R(V,W) W, c • V) = c² · g(R(V,W) W, V)`.
+  have hnum :
+      g.inner x (c • intrinsicRiemann (I := I) g x V W W) (c • V) =
+        c ^ 2 * g.inner x (intrinsicRiemann (I := I) g x V W W) V := by
+    rw [(g.inner x).map_smul c (intrinsicRiemann (I := I) g x V W W),
+        ContinuousLinearMap.smul_apply,
+        ContinuousLinearMap.map_smul (g.inner x (intrinsicRiemann (I := I) g x V W W)) c V,
+        smul_eq_mul, smul_eq_mul]
+    ring
+  rw [hnum]
+  -- Denominator: `g(c • V, c • V) g(W, W) - g(c • V, W)² = c² · (g(V,V) g(W,W) - g(V,W)²)`.
+  have hVV : g.inner x (c • V) (c • V) = c ^ 2 * g.inner x V V := by
+    rw [(g.inner x).map_smul c V, ContinuousLinearMap.smul_apply,
+        ContinuousLinearMap.map_smul (g.inner x V) c V, smul_eq_mul, smul_eq_mul]
+    ring
+  have hVW : g.inner x (c • V) W = c * g.inner x V W := by
+    rw [(g.inner x).map_smul c V, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [hVV, hVW]
+  have hden_eq :
+      c ^ 2 * g.inner x V V * g.inner x W W - (c * g.inner x V W) ^ 2 =
+        c ^ 2 * (g.inner x V V * g.inner x W W - g.inner x V W ^ 2) := by
+    ring
+  rw [hden_eq]
+  -- Cancel the common nonzero `c²` factor.
+  have hcsq : (c ^ 2 : ℝ) ≠ 0 := pow_ne_zero 2 hc
+  rw [mul_div_mul_left _ _ hcsq]
+
+/-- **Scale invariance in the second slot.** For any nonzero scalar `c`,
+the sectional curvature is unchanged when the second slot is rescaled by
+`c`: `K(V, c • W) = K(V, W)`. Follows from the first-slot version by
+the swap symmetry. -/
+theorem sectionalCurvature_smul_right
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {c : ℝ} (hc : c ≠ 0) (V W : TangentSpace I x) :
+    sectionalCurvature (I := I) g x V (c • W) =
+      sectionalCurvature (I := I) g x V W := by
+  rw [sectionalCurvature_swap (I := I) g x V (c • W),
+      sectionalCurvature_smul_left (I := I) g x hc W V,
+      sectionalCurvature_swap (I := I) g x W V]
+
 end Curvature
 end Riemannian
 end Geometry
