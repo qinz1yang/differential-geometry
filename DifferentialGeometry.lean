@@ -437,6 +437,7 @@ import DifferentialGeometry.Geometry.Riemannian.Curve.CovDerivAlongMetric
 import DifferentialGeometry.Geometry.Riemannian.ParallelTransport.Defs
 import DifferentialGeometry.Geometry.Riemannian.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Riemannian.Symmetry.KillingField
+import DifferentialGeometry.Geometry.Riemannian.Completeness.Defs
 
 import DifferentialGeometry.Analysis.Sobolev.Solutions.FriedrichsCommutator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.NonSmooth
