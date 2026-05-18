@@ -438,6 +438,7 @@ import DifferentialGeometry.Geometry.Riemannian.ParallelTransport.Defs
 import DifferentialGeometry.Geometry.Riemannian.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Riemannian.Symmetry.KillingField
 import DifferentialGeometry.Geometry.Riemannian.Curvature.Intrinsic
+import DifferentialGeometry.Geometry.Riemannian.Curvature.Sectional
 import DifferentialGeometry.Geometry.Riemannian.Completeness.Defs
 import DifferentialGeometry.Geometry.Riemannian.Exp.CompleteDomain
 
