@@ -264,6 +264,26 @@ theorem intrinsicRiemann_first_bianchi
     hcVW hcWV hcVX hcXV hcWX hcXW
     hbrVW hbrWX hbrXV hV2 hW2 hX2
 
+/-- **Antisymmetry on the metric second pair.** As a four-form on
+`(T_x M)^4` via the metric, the intrinsic Riemann tensor is antisymmetric
+in the slots `(X, Y)`: `g(R(V, W) X, Y) = -g(R(V, W) Y, X)`.
+
+This is `intrinsicRiemann_metric_skew` rewritten as a sign-change. The
+two forms are equivalent over a real symmetric inner product: the
+"add equals zero" form follows from `g.symm` applied to one term. -/
+theorem intrinsicRiemann_metric_swap_second_pair
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (V W X Y : TangentSpace I x) :
+    g.inner x (intrinsicRiemann (I := I) g x V W X) Y =
+      -g.inner x (intrinsicRiemann (I := I) g x V W Y) X := by
+  have h := intrinsicRiemann_metric_skew (I := I) g x V W X Y
+  -- h : g(R(V,W) X, Y) + g(X, R(V,W) Y) = 0
+  have hsym : g.inner x X (intrinsicRiemann (I := I) g x V W Y) =
+      g.inner x (intrinsicRiemann (I := I) g x V W Y) X :=
+    g.symm x X (intrinsicRiemann (I := I) g x V W Y)
+  rw [hsym] at h
+  linarith
+
 end Curvature
 end Riemannian
 end Geometry
