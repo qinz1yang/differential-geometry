@@ -144,6 +144,22 @@ theorem energy_nonneg [I.Boundaryless]
   have h_half_nonneg : (0 : ℝ) ≤ 1 / 2 := by norm_num
   exact mul_nonneg h_half_nonneg h_int_nonneg
 
+/-! ### Trivial endpoint and orientation identities -/
+
+/-- The energy of any curve over a degenerate interval `[a, a]` is zero. -/
+theorem energy_self (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a : ℝ) :
+    energy (I := I) g γ a a = 0 := by
+  unfold energy
+  rw [intervalIntegral.integral_same]
+  ring
+
+/-- Swapping the bounds of the energy integral flips its sign. -/
+theorem energy_swap (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) :
+    energy (I := I) g γ a b = - energy (I := I) g γ b a := by
+  unfold energy
+  rw [intervalIntegral.integral_symm b a]
+  ring
+
 /-! ### Headline: energy at a constant curve is zero -/
 
 /-- The energy of a constant curve is zero on every interval. -/
