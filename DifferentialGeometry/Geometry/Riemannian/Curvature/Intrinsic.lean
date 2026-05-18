@@ -284,6 +284,145 @@ theorem intrinsicRiemann_metric_swap_second_pair
   rw [hsym] at h
   linarith
 
+/-- **Pair-swap symmetry of the intrinsic Riemann tensor.** As a four-form on
+`(T_x M)^4` via the metric, the intrinsic Riemann tensor is invariant under
+exchanging the first pair `(V, W)` with the second pair `(X, Y)`:
+$$
+  g\bigl(R(V, W) X, Y\bigr) = g\bigl(R(X, Y) V, W\bigr).
+$$
+This is a purely algebraic consequence of the four previously-established
+symmetries: antisymmetry in the first pair (`intrinsicRiemann_swap`),
+antisymmetry in the metric second pair
+(`intrinsicRiemann_metric_swap_second_pair`), and the first Bianchi
+identity (`intrinsicRiemann_first_bianchi`). The classical Spivak / do
+Carmo proof applies the Bianchi identity in four cyclic ways and combines
+them via the antisymmetries; the linear combination
+`(B1) + (B2) - (B3) - (B4)` reduces to `2 · (LHS − RHS) = 0`. -/
+theorem intrinsicRiemann_metric_pair_swap
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (V W X Y : TangentSpace I x) :
+    g.inner x (intrinsicRiemann (I := I) g x V W X) Y =
+      g.inner x (intrinsicRiemann (I := I) g x X Y V) W := by
+  -- Abbreviation `Rm A B C D = g(R(A,B) C, D)`.
+  set Rm : TangentSpace I x → TangentSpace I x → TangentSpace I x →
+      TangentSpace I x → ℝ :=
+    fun A B C D => g.inner x (intrinsicRiemann (I := I) g x A B C) D
+    with hRm
+  -- Antisymmetry of Rm in the first pair (S1):
+  -- Rm A B C D = -Rm B A C D, from intrinsicRiemann_swap.
+  have h_swap1 : ∀ A B C D : TangentSpace I x, Rm A B C D = -Rm B A C D := by
+    intro A B C D
+    simp only [hRm]
+    rw [intrinsicRiemann_swap (I := I) g x A B C]
+    simp [ContinuousLinearMap.neg_apply]
+  -- Antisymmetry of Rm in the second pair (S2):
+  -- Rm A B C D = -Rm A B D C, from intrinsicRiemann_metric_swap_second_pair.
+  have h_swap2 : ∀ A B C D : TangentSpace I x, Rm A B C D = -Rm A B D C := by
+    intro A B C D
+    simp only [hRm]
+    exact intrinsicRiemann_metric_swap_second_pair (I := I) g x A B C D
+  -- Linearised Bianchi identity:
+  -- Rm A B C D + Rm B C A D + Rm C A B D = 0,
+  -- obtained by inner-producting the first Bianchi identity with D.
+  have h_bianchi : ∀ A B C D : TangentSpace I x,
+      Rm A B C D + Rm B C A D + Rm C A B D = 0 := by
+    intro A B C D
+    have hB := intrinsicRiemann_first_bianchi (I := I) g x A B C
+    -- hB : R(A,B) C + R(B,C) A + R(C,A) B = 0.
+    have hev :
+        g.inner x (intrinsicRiemann (I := I) g x A B C +
+          intrinsicRiemann (I := I) g x B C A +
+          intrinsicRiemann (I := I) g x C A B) D =
+        g.inner x (0 : TangentSpace I x) D := by rw [hB]
+    -- Distribute g.inner x · D over the sum.
+    have hzero : g.inner x (0 : TangentSpace I x) D = 0 := by
+      simp
+    have hadd1 : g.inner x (intrinsicRiemann (I := I) g x A B C +
+        intrinsicRiemann (I := I) g x B C A +
+        intrinsicRiemann (I := I) g x C A B) D =
+        g.inner x (intrinsicRiemann (I := I) g x A B C +
+          intrinsicRiemann (I := I) g x B C A) D +
+          g.inner x (intrinsicRiemann (I := I) g x C A B) D := by
+      have := (g.inner x).map_add
+        (intrinsicRiemann (I := I) g x A B C +
+          intrinsicRiemann (I := I) g x B C A)
+        (intrinsicRiemann (I := I) g x C A B)
+      exact congrArg (fun f : TangentSpace I x →L[ℝ] ℝ => f D) this
+    have hadd2 : g.inner x (intrinsicRiemann (I := I) g x A B C +
+        intrinsicRiemann (I := I) g x B C A) D =
+        g.inner x (intrinsicRiemann (I := I) g x A B C) D +
+          g.inner x (intrinsicRiemann (I := I) g x B C A) D := by
+      have := (g.inner x).map_add
+        (intrinsicRiemann (I := I) g x A B C)
+        (intrinsicRiemann (I := I) g x B C A)
+      exact congrArg (fun f : TangentSpace I x →L[ℝ] ℝ => f D) this
+    rw [hadd1, hadd2, hzero] at hev
+    -- Now hev expresses the sum of three Rm-terms equals 0.
+    simp only [hRm]
+    linarith
+  -- The four Bianchi instances we need:
+  have hB1 : Rm V W X Y + Rm W X V Y + Rm X V W Y = 0 := h_bianchi V W X Y
+  have hB2 : Rm W X Y V + Rm X Y W V + Rm Y W X V = 0 := h_bianchi W X Y V
+  have hB3 : Rm X Y V W + Rm Y V X W + Rm V X Y W = 0 := h_bianchi X Y V W
+  have hB4 : Rm Y V W X + Rm V W Y X + Rm W Y V X = 0 := h_bianchi Y V W X
+  -- Convert each "off-diagonal" cross-term to a canonical form via S2.
+  -- B1 rewrite: Rm W X V Y = -Rm W X Y V.
+  have h12 : Rm W X V Y = -Rm W X Y V := h_swap2 W X V Y
+  -- B2 rewrite: Rm X Y W V = -Rm X Y V W.
+  have h22 : Rm X Y W V = -Rm X Y V W := h_swap2 X Y W V
+  -- B3 rewrite: Rm Y V X W = -Rm Y V W X.
+  have h32 : Rm Y V X W = -Rm Y V W X := h_swap2 Y V X W
+  -- B4 rewrite: Rm V W Y X = -Rm V W X Y.
+  have h42 : Rm V W Y X = -Rm V W X Y := h_swap2 V W Y X
+  -- Reduce the four "extra" cross-terms via S1 + S2 to a canonical form.
+  -- Claim: Rm X V W Y = Rm V X Y W.
+  --   By S1: Rm X V W Y = -Rm V X W Y.
+  --   By S2: Rm V X W Y = -Rm V X Y W.
+  -- Hence Rm X V W Y = -(-Rm V X Y W) = Rm V X Y W.
+  have hXVWY_eq : Rm X V W Y = Rm V X Y W := by
+    have s1 : Rm X V W Y = -Rm V X W Y := h_swap1 X V W Y
+    have s2 : Rm V X W Y = -Rm V X Y W := h_swap2 V X W Y
+    rw [s1, s2]; ring
+  -- Claim: Rm Y W X V = Rm W Y V X.
+  --   By S1: Rm Y W X V = -Rm W Y X V.
+  --   By S2: Rm W Y X V = -Rm W Y V X.
+  -- Hence Rm Y W X V = Rm W Y V X.
+  have hYWXV_eq : Rm Y W X V = Rm W Y V X := by
+    have s1 : Rm Y W X V = -Rm W Y X V := h_swap1 Y W X V
+    have s2 : Rm W Y X V = -Rm W Y V X := h_swap2 W Y X V
+    rw [s1, s2]; ring
+  -- B1 + B2 - B3 - B4 = 0; substitute h12, h22, h32, h42 and the two
+  -- equalities `hXVWY_eq`, `hYWXV_eq` to reduce to
+  -- `2 · Rm V W X Y - 2 · Rm X Y V W = 0`, then divide by 2.
+  -- The substitution flow is:
+  --   B1 ⇒ Rm V W X Y + (-Rm W X Y V) + Rm X V W Y = 0.
+  --   B2 ⇒ Rm W X Y V + (-Rm X Y V W) + Rm Y W X V = 0.
+  --   B3 ⇒ Rm X Y V W + (-Rm Y V W X) + Rm V X Y W = 0.
+  --   B4 ⇒ Rm Y V W X + (-Rm V W X Y) + Rm W Y V X = 0.
+  -- (B1) + (B2) - (B3) - (B4):
+  --   +Rm V W X Y -Rm W X Y V +Rm X V W Y
+  --   +Rm W X Y V -Rm X Y V W +Rm Y W X V
+  --   -Rm X Y V W +Rm Y V W X -Rm V X Y W
+  --   -Rm Y V W X +Rm V W X Y -Rm W Y V X
+  -- The ±Rm W X Y V and ±Rm Y V W X pairs cancel.
+  -- Using hXVWY_eq, the Rm X V W Y - Rm V X Y W pair vanishes.
+  -- Using hYWXV_eq, the Rm Y W X V - Rm W Y V X pair vanishes.
+  -- Survivors: 2 · Rm V W X Y - 2 · Rm X Y V W = 0.
+  have hkey : 2 * Rm V W X Y - 2 * Rm X Y V W = 0 := by
+    -- Rewrite hB1..hB4 using the second-pair S2 facts.
+    rw [h12] at hB1
+    rw [h22] at hB2
+    rw [h32] at hB3
+    rw [h42] at hB4
+    -- Now hB1, hB2, hB3, hB4 each contain the canonical "Rm V W X Y" or
+    -- "Rm X Y V W" term plus exactly two cross terms each.
+    linarith [hXVWY_eq, hYWXV_eq, hB1, hB2, hB3, hB4]
+  -- Cancel the factor of 2.
+  have : Rm V W X Y - Rm X Y V W = 0 := by linarith
+  -- Rewrite back to the original goal.
+  change Rm V W X Y = Rm X Y V W
+  linarith
+
 end Curvature
 end Riemannian
 end Geometry
