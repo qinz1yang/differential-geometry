@@ -788,6 +788,30 @@ theorem IsGeodesic.comp_affine
     exact hproj (a * t + b)
   · exact isMIntegralCurve_affineReparamLift (I := I) hproj hf a b
 
+/-- **Translation of a geodesic.** If `γ` is a geodesic, so is `t ↦ γ (t + b)`.
+Thin wrapper around `IsGeodesic.comp_affine`. -/
+theorem IsGeodesic.translate
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : IsGeodesic (I := I) g γ) (b : ℝ) :
+    IsGeodesic (I := I) g (fun t : ℝ => γ (t + b)) := by
+  simpa [one_mul] using hγ.comp_affine 1 b
+
+/-- **Linear rescaling of a geodesic.** If `γ` is a geodesic, so is `t ↦ γ (a * t)`.
+Thin wrapper around `IsGeodesic.comp_affine`. -/
+theorem IsGeodesic.smul_param
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : IsGeodesic (I := I) g γ) (a : ℝ) :
+    IsGeodesic (I := I) g (fun t : ℝ => γ (a * t)) := by
+  simpa [add_zero] using hγ.comp_affine a 0
+
+/-- **Time reversal of a geodesic.** If `γ` is a geodesic, so is `t ↦ γ (-t)`.
+Thin wrapper around `IsGeodesic.comp_affine`. -/
+theorem IsGeodesic.neg_param
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : IsGeodesic (I := I) g γ) :
+    IsGeodesic (I := I) g (fun t : ℝ => γ (-t)) := by
+  simpa [neg_one_mul, add_zero] using hγ.comp_affine (-1 : ℝ) 0
+
 end MainTheorem
 
 end Geodesic
