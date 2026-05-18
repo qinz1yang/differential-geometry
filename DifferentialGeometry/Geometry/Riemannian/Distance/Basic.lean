@@ -78,6 +78,38 @@ def lengthENN (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) : �
     lengthENN (I := I) g γ a b =
       ∫⁻ t in Set.Ioc a b, ENNReal.ofReal (speed (I := I) g γ t) := rfl
 
+/-- The `ℝ≥0∞`-length over a degenerate interval `[a, a]` is zero. -/
+@[simp] lemma lengthENN_self
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a : ℝ) :
+    lengthENN (I := I) g γ a a = 0 := by
+  unfold lengthENN
+  simp
+
+/-- The `ℝ≥0∞`-length of a constant curve vanishes on every interval: the
+speed of `fun _ => p` is identically zero. -/
+@[simp] lemma lengthENN_const
+    (g : SmoothRiemannianMetric I M) (p : M) (a b : ℝ) :
+    lengthENN (I := I) g (fun _ : ℝ => p) a b = 0 := by
+  unfold lengthENN
+  have hfun :
+      (fun t : ℝ => ENNReal.ofReal (speed (I := I) g (fun _ : ℝ => p) t)) =
+        (fun _ : ℝ => (0 : ℝ≥0∞)) := by
+    funext t
+    rw [speed_const (I := I) g p t, ENNReal.ofReal_zero]
+  rw [hfun, MeasureTheory.lintegral_zero]
+
+/-- The `ℝ≥0∞`-length is symmetric under swapping the endpoints: the integral
+runs over `Ioc (min a b) (max a b)` either way. Concretely, for `a ≤ b` both
+`lengthENN g γ a b` and `lengthENN g γ b a` integrate `ENNReal.ofReal (speed _)`
+over the same set `Ioc a b` (the second case is `Ioc b a = ∅`). -/
+lemma lengthENN_swap_of_le
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b : ℝ} (hab : b ≤ a) :
+    lengthENN (I := I) g γ a b = 0 := by
+  unfold lengthENN
+  have h_empty : Set.Ioc a b = ∅ := Set.Ioc_eq_empty (not_lt.mpr hab)
+  rw [h_empty]
+  simp
+
 /-- The `ℝ≥0∞`-length is unconditionally additive over adjacent intervals
 `[a, b] ∪ [b, c]` for `a ≤ b ≤ c`. -/
 lemma lengthENN_add_adjacent
