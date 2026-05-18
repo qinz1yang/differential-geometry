@@ -25,6 +25,7 @@ bundled fibre-trilinear form, not via any specific chart.
 * `intrinsicRiemann_swap` — antisymmetry in the first two arguments.
 * `intrinsicRiemann_self_eq_zero` — vanishing on coincident first two arguments.
 * `intrinsicRiemann_metric_skew` — metric skew-symmetry in the last argument.
+* `intrinsicRiemann_first_bianchi` — first Bianchi identity at a point.
 -/
 
 set_option linter.unusedSectionVars false
@@ -149,6 +150,119 @@ theorem intrinsicRiemann_metric_skew
       intrinsicRiemann_apply_smooth (I := I) g hV hW hY]
   -- Apply the section-level metric skewness identity.
   exact riemannSec_metric_skew (I := I) g hV hW hX hY
+
+/-- **First Bianchi identity for the intrinsic Riemann curvature.** For every smooth
+Riemannian metric `g` on a boundaryless smooth manifold `M` and every triple of tangent
+vectors `V, W, X` at `x`,
+$$
+  R(V, W) X + R(W, X) V + R(X, V) W = 0.
+$$
+Proved by extending the three fibre vectors to globally smooth tangent-bundle sections
+via `smoothExtensionTangent`, converting each `intrinsicRiemann` term to the
+section-level `riemannSec` via `intrinsicRiemann_apply_smooth`, and applying the
+section-level Bianchi identity `riemannSec_first_bianchi_levi_civita`. -/
+theorem intrinsicRiemann_first_bianchi
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (V W X : TangentSpace I x) :
+    intrinsicRiemann (I := I) g x V W X +
+      intrinsicRiemann (I := I) g x W X V +
+      intrinsicRiemann (I := I) g x X V W = 0 := by
+  classical
+  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  -- Smooth extensions of the three fibre vectors.
+  set V' := smoothExtensionTangent (I := I) x V with hV'def
+  set W' := smoothExtensionTangent (I := I) x W with hW'def
+  set X' := smoothExtensionTangent (I := I) x X with hX'def
+  have hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V') :=
+    smoothExtensionTangent_contMDiff x V
+  have hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W') :=
+    smoothExtensionTangent_contMDiff x W
+  have hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X') :=
+    smoothExtensionTangent_contMDiff x X
+  have hVx : V' x = V := smoothExtensionTangent_eq x V
+  have hWx : W' x = W := smoothExtensionTangent_eq x W
+  have hXx : X' x = X := smoothExtensionTangent_eq x X
+  -- Pointwise `MDifferentiableAt` at `x` for each smooth section.
+  have hV_at : MDiffAt (T% V') x := (hV x).mdifferentiableAt (by simp)
+  have hW_at : MDiffAt (T% W') x := (hW x).mdifferentiableAt (by simp)
+  have hX_at : MDiffAt (T% X') x := (hX x).mdifferentiableAt (by simp)
+  -- Smoothness of intermediate `covApply` sections. `covApply_mdifferentiableAt`
+  -- takes the second argument with smoothness `∞ + 1`, which is satisfied by `∞`.
+  have hW_top : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% W') := by simpa using hW
+  have hV_top : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% V') := by simpa using hV
+  have hX_top : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% X') := by simpa using hX
+  have hcVW : MDiffAt (T% (covApply (LeviCivita (I := I) g) V' W')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hV hW_top
+  have hcWV : MDiffAt (T% (covApply (LeviCivita (I := I) g) W' V')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hW hV_top
+  have hcVX : MDiffAt (T% (covApply (LeviCivita (I := I) g) V' X')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hV hX_top
+  have hcXV : MDiffAt (T% (covApply (LeviCivita (I := I) g) X' V')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hX hV_top
+  have hcWX : MDiffAt (T% (covApply (LeviCivita (I := I) g) W' X')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hW hX_top
+  have hcXW : MDiffAt (T% (covApply (LeviCivita (I := I) g) X' W')) x :=
+    covApply_mdifferentiableAt (cov := LeviCivita (I := I) g) hX hW_top
+  -- Manifold-Lie-bracket smoothness for the three pairs.
+  haveI : IsManifold I 2 M := by
+    have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
+    exact IsManifold.of_le h_le
+  haveI : IsManifold I (minSmoothness ℝ 2 : WithTop ℕ∞) M := by
+    have h_eq : (minSmoothness ℝ 2 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by
+      rw [minSmoothness_of_isRCLikeNormedField]
+    rw [h_eq]; infer_instance
+  haveI : IsManifold I ((1 : ℕ∞) + 1) M := by
+    have h_eq : ((1 : ℕ∞) + 1 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := rfl
+    rw [h_eq]; infer_instance
+  haveI : IsManifold I ((2 : ℕ∞) + 1) M := by
+    have h_eq : ((2 : ℕ∞) + 1 : WithTop ℕ∞) = (3 : WithTop ℕ∞) := rfl
+    rw [h_eq]
+    have h_le3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
+    exact IsManifold.of_le h_le3
+  have h_le_inf2 : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
+  have hmlieBr : ∀ {U U' : Π b : M, TangentSpace I b},
+      ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% U) →
+      ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% U') →
+      MDiffAt (T% (VectorField.mlieBracket I U U')) x := by
+    intro U U' hU hU'
+    have hU2 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) 2 (T% U) x := (hU x).of_le h_le_inf2
+    have hU'2 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) 2 (T% U') x := (hU' x).of_le h_le_inf2
+    have hmin : minSmoothness ℝ ((1 : ℕ∞) + 1) ≤ (2 : ℕ∞) := by
+      rw [minSmoothness_of_isRCLikeNormedField]; decide
+    exact (hU2.mlieBracket_vectorField (m := 1) (n := 2) hU'2 hmin).mdifferentiableAt
+      (by decide)
+  have hbrVW : MDiffAt (T% (VectorField.mlieBracket I V' W')) x := hmlieBr hV hW
+  have hbrWX : MDiffAt (T% (VectorField.mlieBracket I W' X')) x := hmlieBr hW hX
+  have hbrXV : MDiffAt (T% (VectorField.mlieBracket I X' V')) x := hmlieBr hX hV
+  -- Eventual smoothness on a neighbourhood of `x`.
+  have hVnhd : ∀ᶠ b in 𝓝 x, MDiffAt (T% V') b :=
+    Filter.Eventually.of_forall (hV.mdifferentiable (by simp))
+  have hWnhd : ∀ᶠ b in 𝓝 x, MDiffAt (T% W') b :=
+    Filter.Eventually.of_forall (hW.mdifferentiable (by simp))
+  have hXnhd : ∀ᶠ b in 𝓝 x, MDiffAt (T% X') b :=
+    Filter.Eventually.of_forall (hX.mdifferentiable (by simp))
+  -- Order-`minSmoothness ℝ 2` smoothness for the Jacobi step.
+  have h_min2_le : (minSmoothness ℝ 2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+    rw [minSmoothness_of_isRCLikeNormedField]
+    norm_cast
+  have hV2 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) (minSmoothness ℝ 2) (T% V') x :=
+    (hV x).of_le h_min2_le
+  have hW2 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) (minSmoothness ℝ 2) (T% W') x :=
+    (hW x).of_le h_min2_le
+  have hX2 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) (minSmoothness ℝ 2) (T% X') x :=
+    (hX x).of_le h_min2_le
+  -- Rewrite each fibre vector as the value of the corresponding smooth extension
+  -- at `x` and convert each `intrinsicRiemann` term to its section-level form.
+  rw [show V = V' x from hVx.symm, show W = W' x from hWx.symm,
+      show X = X' x from hXx.symm,
+      intrinsicRiemann_apply_smooth (I := I) g hV hW hX,
+      intrinsicRiemann_apply_smooth (I := I) g hW hX hV,
+      intrinsicRiemann_apply_smooth (I := I) g hX hV hW]
+  -- Apply the section-level first Bianchi identity.
+  exact riemannSec_first_bianchi_levi_civita (I := I) g
+    hV_at hW_at hX_at hVnhd hWnhd hXnhd
+    hcVW hcWV hcVX hcXV hcWX hcXW
+    hbrVW hbrWX hbrXV hV2 hW2 hX2
 
 end Curvature
 end Riemannian
