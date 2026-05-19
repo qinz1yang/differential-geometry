@@ -100,19 +100,21 @@ Ricci Laplacian uses `roughLapRicInFrame`; the equality between the two scalar
 Laplacian traces is the finite-sum swap above. -/
 theorem scalarLaplacianTraceInFrame_realizes_heatOperator_of_nabla2RicTrace
     {D : Realized.RealTimeInterval}
+    {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
     (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
     (T : Real)
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hcover : forall x : M, x ∈ u)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (scalarHess : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (htrace : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
       Realized.ScalarLaplacianRealizesTraceAtInBasis (I := I)
         (G.connection t) (G.metric t)
-        (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M)))
+        (hframe.toBasisAt (hcover x))
         (gInv t x) (scalarTraceInFrame (I := I) S gInv frame t)
         (scalarHess t x))
     (hcomp : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
@@ -127,7 +129,7 @@ theorem scalarLaplacianTraceInFrame_realizes_heatOperator_of_nabla2RicTrace
     (I := I) S G T gInv frame
     (roughLapRicInFrame (M := M) gInv nabla2Ric) ?_
   intro t ht x
-  let basis := hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M))
+  let basis := hframe.toBasisAt (hcover x)
   have hmetric :
       Realized.metricTrace0S2InBasis (I := I) basis (gInv t x)
           (scalarHess t x) Fin.elim0 =

@@ -441,12 +441,14 @@ theorem scalar_parabolic_inequality_of_scalarEvolutionAllTimes_inFrame
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     {D : Realized.RealTimeInterval}
+    {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
     (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
     (T n : Real) (hT : 0 < T)
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hcover : forall x : M, x ∈ u)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn : n = (Fintype.card Idx : Real))
@@ -468,7 +470,7 @@ theorem scalar_parabolic_inequality_of_scalarEvolutionAllTimes_inFrame
           ricciNormSqInFrame (I := I) S gInv frame t x := by
     have hcs :=
       RicciTraceNormCauchySchwarzInFrame.of_metric_inverse_frame
-        (I := I) S gInv frame hframe hinv n hn
+        (I := I) S gInv frame hframe hcover hinv n hn
     intro t _ht x
     exact hcs t x
   exact scalar_parabolic_inequality_of_scalarEvolutionAllTimes
@@ -687,13 +689,15 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     {D : Realized.RealTimeInterval}
+    {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
     (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
     (T n c0 : Real) (hT : 0 < T)
     (hn_ne : n ≠ 0)
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hcover : forall x : M, x ∈ u)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn_rank : n = (Fintype.card Idx : Real))
@@ -762,7 +766,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame
           ricciNormSqInFrame (I := I) S gInv frame t x := by
     have hcs :=
       RicciTraceNormCauchySchwarzInFrame.of_metric_inverse_frame
-        (I := I) S gInv frame hframe hinv n hn_rank
+        (I := I) S gInv frame hframe hcover hinv n hn_rank
     intro t _ht x
     exact hcs t x
   exact scalar_curvature_lower_bound_of_scalarEvolution
@@ -780,6 +784,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     {omega : Real} (h0ω : 0 < omega)
+    {u : Set M}
     (S : SolutionOn (I := I) (M := M)
       (Realized.RealTimeInterval.closedOpen 0 omega h0ω))
     (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
@@ -787,7 +792,8 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
     (hn_ne : n ≠ 0)
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hcover : forall x : M, x ∈ u)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn_rank : n = (Fintype.card Idx : Real))
@@ -832,7 +838,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
           ricciNormSqInFrame (I := I) S gInv frame t x := by
     have hcs :=
       RicciTraceNormCauchySchwarzInFrame.of_metric_inverse_frame
-        (I := I) S gInv frame hframe hinv n hn_rank
+        (I := I) S gInv frame hframe hcover hinv n hn_rank
     intro t _ht x
     exact hcs t x
   exact scalar_curvature_lower_bound_of_scalarEvolution_of_regularity

@@ -110,7 +110,6 @@ theorem eq_ricci_tensor_ricci_flow_two_local
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
     (h_var : RicciVariationFormulaInFrameOnLocal (I := I) S frame u
       (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric))
     (hcomm : RicciContractedCommutatorsInFrame
@@ -119,7 +118,7 @@ theorem eq_ricci_tensor_ricci_flow_two_local
       (I := I) S Rm04 gInv frame u
       (roughLapRicInFrame (M := M) gInv nabla2Ric) :=
   RicciFlower.RicciFlow.ricciEvolutionEquationInFrameOnLocal_of_variation_commutators
-    (I := I) S Rm04 gInv frame u nabla2Ric hInv h_var hcomm
+    (I := I) S Rm04 gInv frame u nabla2Ric h_var hcomm
 
 /-- MSM110 Chapter 6.1, equation `eq:ricci_tensor_ricci_flow_two`. -/
 theorem eq_ricci_tensor_ricci_flow_two
@@ -129,7 +128,6 @@ theorem eq_ricci_tensor_ricci_flow_two
     (gInv : Real -> RicciFlower.Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
     (h_var : RicciVariationFormulaInFrameOn (I := I) S frame
       (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric))
     (hcomm : RicciContractedCommutatorsInFrame
@@ -146,7 +144,7 @@ theorem eq_ricci_tensor_ricci_flow_two
       D.carrier
       (t : Real) :=
   RicciFlower.RicciFlow.evol_ricci_inFrame_of_variation_commutators
-    (I := I) S Rm04 gInv frame nabla2Ric hInv h_var hcomm t x i j
+    (I := I) S Rm04 gInv frame nabla2Ric h_var hcomm t x i j
 
 /-- MSM110 Chapter 6.1, equation `eq:ricci_tensor_ricci_flow_two`, in the
 coordinate frame at a point, with the Ricci variation producer supplied by the
@@ -193,7 +191,6 @@ theorem eq_ricci_tensor_ricci_flow_two_coordFrame
         (coordinateFrameAt (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
         (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic))
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
     (hcomm : RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) nabla2Ric)
     (t : RicciFlower.Realized.RealTimeInterval.RegularTime D)
@@ -210,7 +207,7 @@ theorem eq_ricci_tensor_ricci_flow_two_coordFrame
       (t : Real) :=
   RicciFlower.RicciFlow.evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
     (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg
-    hnablaReg hRicTrace hRm hcurv hmix hInv hcomm t i j
+    hnablaReg hRicTrace hRm hcurv hmix hcomm t i j
 
 /-- MSM110 Chapter 6.1, scalar contracted-Bianchi algebra bridge. -/
 theorem scalar_contracted_bianchi_reduction
@@ -238,36 +235,41 @@ theorem eq_scalar_curv_evolu
 /-- MSM110 Chapter 6.1, equation `eq:scalar_curv_evolu`, traced from the
 Ricci evolution equation. -/
 theorem eq_scalar_curv_evolu_of_ricci_evolution
+    [IsManifold I (∞ + 1) M]
     {D : RicciFlower.Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (Rm13 : Real -> RicciFlower.Realized.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> RicciFlower.Realized.Tensor04Section (I := I) (M := M))
     (gInv : Real -> RicciFlower.Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
-    (hframe : IsLocalFrameOn I E 1 frame Set.univ)
+    (hcov : ConnectionLocallySmoothOn (I := I) S)
+    {u : Set M}
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hcover : forall x : M, x ∈ u)
     (hTrace : forall (t : RicciFlower.Realized.RealTimeInterval.RegularTime D) (x : M),
       RicciFlower.Realized.RicciRealizesRm04FirstTraceAt (I := I)
         (S.ricci (t : Real) x) (Rm04 (t : Real) x)
         (gInv (t : Real) x)
-        (hframe.toBasisAt (by simp : x ∈ (Set.univ : Set M))))
-    (hOutput : forall (t : RicciFlower.Realized.RealTimeInterval.RegularTime D) (x : M),
-      RicciFlower.Realized.Rm04OutputSkewAt (I := I) (Rm04 (t : Real) x))
-    (hFirst : forall (t : RicciFlower.Realized.RealTimeInterval.RegularTime D) (x : M),
-      RicciFlower.Realized.FirstBianchiAt (I := I) (Rm04 (t : Real) x))
+        (hframe.toBasisAt (hcover x)))
+    (hRm13 : forall t : RicciFlower.Realized.RealTimeInterval.RegularTime D,
+      RicciFlower.Realized.Rm13RealizesConnection (I := I)
+        (S.family.connection (t : Real)) (Rm13 (t : Real)))
+    (hLower : forall (t : RicciFlower.Realized.RealTimeInterval.RegularTime D) (x : M),
+      RicciFlower.Realized.Rm04LowersRm13At (I := I) (S.family.metric (t : Real)) x
+        (Rm13 (t : Real) x) (Rm04 (t : Real) x))
     (h_inv : InverseMetricEvolutionEquationInFrame (I := I) S gInv frame)
     (h_ricci : RicciEvolutionEquationInFrame
       (I := I) S Rm04 gInv frame roughLapRic)
-    (hInvSym : ∀ t x i j, gInv t x i j = gInv t x j i)
-    (hRicSym : ∀ t x i j,
-      ricciCompInFrame (I := I) S frame t x i j =
-        ricciCompInFrame (I := I) S frame t x j i) :
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame) :
     ScalarEvolutionEquationOn (D := D)
       (scalarTraceInFrame (I := I) S gInv frame)
       (scalarLaplacianTraceInFrame (M := M) gInv roughLapRic)
       (ricciNormSqInFrame (I := I) S gInv frame) :=
-  RicciFlower.RicciFlow.scalarEvolutionEquationOn_of_ricciEvolution
-    (I := I) S Rm04 gInv frame roughLapRic
-    hframe hTrace hOutput hFirst h_inv h_ricci hInvSym hRicSym
+  RicciFlower.RicciFlow.scalarEvolutionEquationOn_of_ricciEvolution_lc
+    (I := I) S hS Rm13 Rm04 gInv frame roughLapRic
+    hcov hframe hcover hTrace hRm13 hLower h_inv h_ricci hinv
 
 /-- MSM110 Chapter 6.1, equation `eq:evolution_of_volume_element`, in the
 integrated moving-measure form used by the current volume API. -/

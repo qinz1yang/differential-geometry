@@ -441,11 +441,11 @@ def ricciCovDerivCompInFrame
   extDerivFun (I := I)
       (fun y : M => ricciCompInFrame (I := I) S frame t y a b)
       x (frame d x) -
-    S.ricci t x
+    S.ricciAt t x
       (Realized.vec2
         ((S.family.connection t (frame a) x) (frame d x))
         (frame b x)) -
-    S.ricci t x
+    S.ricciAt t x
       (Realized.vec2
         (frame a x)
         ((S.family.connection t (frame b) x) (frame d x)))
@@ -597,7 +597,7 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
       HasDerivWithinAt
         (fun s : Real => (S.family.metric s).inner x Ca (frame b x))
         ((-2 : Real) *
-          S.ricci (t : Real) x (Realized.vec2 Ca (frame b x)))
+          S.ricciAt (t : Real) x (Realized.vec2 Ca (frame b x)))
         D.carrier
         (t : Real) := by
     simpa [Ca, ricciCompInFrame] using
@@ -607,7 +607,7 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
       HasDerivWithinAt
         (fun s : Real => (S.family.metric s).inner x (frame a x) Cb)
         ((-2 : Real) *
-          S.ricci (t : Real) x (Realized.vec2 (frame a x) Cb))
+          S.ricciAt (t : Real) x (Realized.vec2 (frame a x) Cb))
         D.carrier
         (t : Real) := by
     simpa [Cb, ricciCompInFrame] using
@@ -626,9 +626,9 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x)) -
           ((-2 : Real) *
-            S.ricci (t : Real) x (Realized.vec2 Ca (frame b x))) -
+            S.ricciAt (t : Real) x (Realized.vec2 Ca (frame b x))) -
           ((-2 : Real) *
-            S.ricci (t : Real) x (Realized.vec2 (frame a x) Cb)))
+            S.ricciAt (t : Real) x (Realized.vec2 (frame a x) Cb)))
         D.carrier
         (t : Real) :=
     (hExt.sub hCa).sub hCb
@@ -644,9 +644,9 @@ theorem metricCovDerivDerivativeComponents_of_ricciFlow
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x) -
           (-2 : Real) *
-            S.ricci (t : Real) x (Realized.vec2 Ca (frame b x)) -
+            S.ricciAt (t : Real) x (Realized.vec2 Ca (frame b x)) -
           (-2 : Real) *
-            S.ricci (t : Real) x (Realized.vec2 (frame a x) Cb) =
+            S.ricciAt (t : Real) x (Realized.vec2 (frame a x) Cb) =
         (-2 : Real) * nablaRic (t : Real) x d a b
     rw [hn]
     simp [Ca, Cb]

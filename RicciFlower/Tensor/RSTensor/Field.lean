@@ -274,6 +274,20 @@ theorem Tensor0SField.fromScalarField_apply [CompleteSpace 𝕜]
   unfold Tensor0SField.fromScalarField Tensor0SSpace.toModel tensor0SSpace_continuousLinearEquiv
   exact ContinuousMultilinearMap.constOfIsEmpty_apply _ _ _ _
 
+/-- The constant unit `(0,0)` tensor field. -/
+noncomputable def Tensor0SField.one0 [CompleteSpace 𝕜] :
+    Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
+  Tensor0SField.fromScalarField n (fun _ : M => (1 : 𝕜)) contMDiff_const
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem Tensor0SField.one0_apply [CompleteSpace 𝕜]
+    (x : M) (v : Fin 0 → TangentSpace I x) :
+    Tensor0SSpace.toModel (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) n x) v = (1 : 𝕜) := by
+  exact Tensor0SField.fromScalarField_apply n (fun _ : M => (1 : 𝕜))
+    contMDiff_const x v
+
 /-!
 A `C^n` (0,0)-tensor field `α` determines a `C^n` scalar function by evaluating each fiber
 element (a 0-multilinear map, i.e. essentially a scalar) at the unique empty argument.

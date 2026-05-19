@@ -274,5 +274,52 @@ theorem positive_scalar_finite_time_of_scalarEvolution_closedOpen
   exact scalar_endpoint_le_blowupTime_of_lower_barrier_bound
     (M := M) hn hc0 hlower hbounded
 
+/-- Lemma 11.1 in the normalized scalar-evolution form.
+
+This is exactly Corollary 7.4 specialized to dimension three: if the scalar
+curvature has positive initial minimum `c0`, then the right endpoint of the
+maximal `[0, omega)` flow is bounded by `3 / (2 * c0)`. -/
+theorem finiteTime3D
+    [I.Boundaryless] [CompactSpace M] [Nonempty M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    {omega : Real} (h0ω : 0 < omega)
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (c0 : Real)
+    (scalar scalarLap ricciNormSq : Real -> M -> Real)
+    (K : Real -> NNReal)
+    (hinit_min : InitialScalarMinimum (M := M) scalar c0)
+    (hinit_pos : forall x : M, 0 < scalar 0 x)
+    (hscalar_cont : ContinuousOn
+      (fun p : Real × M => scalar p.1 p.2)
+      (Realized.spacetimeSlab (M := M) (scalarBlowupTime 3 c0)))
+    (hreg : forall T : Real, 0 < T -> T < omega ->
+      T < scalarBlowupTime 3 c0 ->
+        ScalarLowerBoundWMPRegularity (I := I) G T 3 c0 scalar (K T))
+    (hevol : ScalarEvolutionEquationOn
+      (D := Realized.RealTimeInterval.closedOpen 0 omega h0ω)
+      scalar scalarLap ricciNormSq)
+    (hlap : forall T : Real, 0 < T -> T < omega ->
+      T < scalarBlowupTime 3 c0 ->
+        ScalarLaplacianRealizesHeatOperatorOn (I := I) G T scalar scalarLap)
+    (hricci : forall T : Real, 0 < T -> T < omega ->
+      T < scalarBlowupTime 3 c0 ->
+        forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+          (1 / 3 : Real) * (scalar t x) ^ 2 <= ricciNormSq t x)
+    (hF_lip : forall T : Real, 0 < T -> T < omega ->
+      T < scalarBlowupTime 3 c0 ->
+        forall t : Real, t ∈ Set.Icc 0 T ->
+          LipschitzOnWith (K T) (fun a : Real => scalarLowerReaction 3 a t)
+            (Realized.scalarWMPValueSet (M := M) T scalar
+              (scalarLowerBarrier 3 c0))) :
+    0 < c0 ∧ omega <= 3 / (2 * c0) := by
+  have hc0 : 0 < c0 :=
+    InitialScalarMinimum.pos_of_forall_pos (M := M) hinit_min hinit_pos
+  have hbound :
+      omega <= scalarBlowupTime 3 c0 :=
+    positive_scalar_finite_time_of_scalarEvolution_closedOpen
+      (I := I) h0ω G 3 c0 (by norm_num) scalar scalarLap ricciNormSq K
+      hinit_min hinit_pos hscalar_cont hreg hevol hlap hricci hF_lip
+  exact ⟨hc0, by simpa [scalarBlowupTime] using hbound⟩
+
 end RicciFlow
 end RicciFlower

@@ -7,6 +7,7 @@ import RicciFlower.Coordinates.CoordinateFrame
 import RicciFlower.Tensor.RSTensor.CoordinateBasis
 import RicciFlower.Tensor.RSTensor.NablaOnTensors
 import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian
+import RicciFlower.Tensor.RSTensor.MetricCompatibility
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -234,6 +235,241 @@ theorem TraceNablaHessianRealizesDLapAt.toInBasis
   unfold traceNablaHessianForDLap
   exact (metricTraceLastTwo0SAt3_eq_sum_basis (I := I) g basis gInv hinv
     nabla2Du Y).symm
+
+private theorem metricTensorField_eq_metricTensor0S
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    metricTensorField (I := I) g x = metricTensor0S (I := I) g x := by
+  classical
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+      (TangentSpace I x) :=
+    Module.finBasis Real (TangentSpace I x)
+  apply ext0S_basis (I := I) basis
+  intro slots
+  simp [component0S_apply]
+
+private theorem fin_cons_vec2_eq_vec3_local {x : M}
+    (X Y Z : TangentSpace I x) :
+    Fin.cons X (vec2 (I := I) Y Z) = vec3 (I := I) X Y Z := by
+  funext a
+  fin_cases a <;> rfl
+
+private theorem curry_three_apply_vec2 {x : M}
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (X Y Z : TangentSpace I x) :
+    tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X
+        (vec2 (I := I) Y Z) =
+      T (vec3 (I := I) X Y Z) := by
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin 3 => E) Real)
+        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 3 x) T)
+        X)
+        (vec2 (I := I) Y Z)) =
+      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 3 x) T)
+        (vec3 (I := I) X Y Z)
+  rw [continuousMultilinearCurryLeftEquiv_apply]
+  congr 1
+  exact fin_cons_vec2_eq_vec3_local (I := I) X Y Z
+
+private theorem freezeLastTwo0S3_eq_curry {x : M}
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (X : TangentSpace I x) :
+    freezeLastTwo0S3 (I := I) T X =
+      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X := by
+  classical
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+      (TangentSpace I x) :=
+    Module.finBasis Real (TangentSpace I x)
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun a : Fin 2 => basis (slots a)) =
+        vec2 (I := I) (basis (slots 0)) (basis (slots 1)) := by
+    funext a
+    fin_cases a <;> rfl
+  simp only [component0S_apply]
+  rw [hslots, freezeLastTwo0S3_apply, curry_three_apply_vec2]
+
+/-- Metric compatibility lets the exterior derivative commute with the metric
+trace of a smooth covariant two-tensor.
+
+The trace is written as `inner0S g metricTensor A`; the derivative rule for the
+induced `(0,2)` tensor metric plus `∇g = 0` leaves exactly the trace of
+`∇A`. -/
+theorem extDeriv_metricTrace_eq_traceNabla
+    [T2Space M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (nablaA :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) 2 cov A nablaA)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    extDerivFun (I := I)
+        (fun y : M => metricTracePair0SAt (I := I) g (A y)) x (X x) =
+      metricTraceLastTwo0SAt3 (I := I) g (nablaA x) (X x) := by
+  classical
+  have hinner := Tensor0SBundle.inner0S_two_nabla
+    (I := I) cov g hmc (metricTensorField (I := I) g) A X x
+  have hfun :
+      (fun y : M =>
+          inner0S (I := I) g y 2 (metricTensorField (I := I) g y) (A y)) =
+        fun y : M => metricTracePair0SAt (I := I) g (A y) := by
+    funext y
+    rw [metricTracePair0SAt, metricTensorField_eq_metricTensor0S]
+  have htrace :
+      inner0S (I := I) g x 2 (metricTensorField (I := I) g x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x)) =
+        metricTraceLastTwo0SAt3 (I := I) g (nablaA x) (X x) := by
+    rw [metricTensorField_eq_metricTensor0S, metricTraceLastTwo0SAt3,
+      metricTracePair0SAt, freezeLastTwo0S3_eq_curry]
+  have hnabla :
+      nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov X A x =
+        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x) := by
+    classical
+    let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+        (TangentSpace I x) :=
+      Module.finBasis Real (TangentSpace I x)
+    apply ext0S_basis (I := I) basis
+    intro slots
+    have hslots :
+        (fun a : Fin 2 => basis (slots a)) =
+          vec2 (I := I) (basis (slots 0)) (basis (slots 1)) := by
+      funext a
+      fin_cases a <;> rfl
+    simp only [component0S_apply]
+    rw [hslots, curry_three_apply_vec2]
+    rw [← fin_cons_vec2_eq_vec3_local]
+    exact (hA X x (vec2 (I := I) (basis (slots 0)) (basis (slots 1)))).symm
+  have hmetricZero := nabla_metric_zero (I := I) cov g hmc X x
+  rw [hfun] at hinner
+  rw [hmetricZero, hnabla] at hinner
+  rw [htrace] at hinner
+  have hzeroInner :
+      inner0S (I := I) g x 2
+          (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 x)
+          (A x) = 0 := by
+    change
+      (tensor0SMetricData (I := I) g x 2).flat
+        (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 x) (A x) = 0
+    have hflat :
+        (tensor0SMetricData (I := I) g x 2).flat
+          (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 x) = 0 := by
+      exact LinearMap.map_zero
+        ((tensor0SMetricData (I := I) g x 2).flat.toLinearMap :
+          Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 x →ₗ[Real]
+          Module.Dual Real
+            (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+              2 x))
+    rw [hflat]
+    rfl
+  rw [hzeroInner, zero_add] at hinner
+  simpa using hinner
+
+/-- If the scalar Laplacian is the metric trace of a smooth Hessian field on a
+section, then the traced covariant derivative of that Hessian realizes
+`d (Delta u)`.
+
+This is the metric-trace commutation producer for the Bochner `d(Delta u)`
+frontier.  The remaining input is the global scalar-Laplacian trace identity;
+the commutation step itself is proved here. -/
+theorem traceNablaHessianRealizesDLapAt_of_lapTrace
+    [T2Space M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (u : M -> Real)
+    (nablaDuSec : TwoTensorSection (I := I) (M := M))
+    (nabla2DuSec :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hnabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) 2 cov nablaDuSec nabla2DuSec)
+    (hlap : ∀ y : M,
+      laplacian (I := I) cov g u y =
+        scalarLapTraceAt (I := I) g (nablaDuSec y))
+    (x : M) :
+    TraceNablaHessianRealizesDLapAt (I := I) cov g u (nabla2DuSec x) := by
+  intro Y
+  obtain ⟨X, hX⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
+  have htrace := extDeriv_metricTrace_eq_traceNabla
+    (I := I) cov g hmc nablaDuSec nabla2DuSec hnabla X x
+  have hfun :
+      (fun y : M => laplacian (I := I) cov g u y) =
+        fun y : M => metricTracePair0SAt (I := I) g (nablaDuSec y) := by
+    funext y
+    rw [hlap y, scalarLapTraceAt]
+  rw [differential1FormFun_apply_eq_extDerivFun]
+  change traceNablaHessianForDLap (I := I) g (nabla2DuSec x) Y =
+    extDerivFun (I := I) (fun y : M => laplacian (I := I) cov g u y) x Y
+  rw [hfun]
+  simpa [hX] using htrace.symm
+
+/-- Pointwise scalar-Laplacian trace realizations give the global direct trace
+identity needed by `traceNablaHessianRealizesDLapAt_of_lapTrace`. -/
+theorem lapTrace_eq_direct
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (u : M -> Real)
+    (Hess : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (htrace : ∀ y : M,
+      ScalarLaplacianRealizesTraceAt (I := I) cov g u (Hess y)) :
+    ∀ y : M,
+      laplacian (I := I) cov g u y =
+        scalarLapTraceAt (I := I) g (Hess y) := by
+  intro y
+  exact ScalarLaplacianRealizesTraceAt.eq_trace (I := I) cov g u (Hess y) (htrace y)
+
+/-- Compatibility version of `lapTrace_eq_direct` in the older pair-trace
+shape. -/
+theorem lapTrace_eq_pair_of_traceAt
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (u : M -> Real)
+    (Hess : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (htrace : ∀ y : M,
+      ScalarLaplacianRealizesTraceAt (I := I) cov g u (Hess y)) :
+    ∀ y : M,
+      laplacian (I := I) cov g u y =
+        metricTracePair0SAt (I := I) g (Hess y) := by
+  intro y
+  rw [lapTrace_eq_direct (I := I) cov g u Hess htrace y, scalarLapTraceAt]
+
+/-- Version of the `d(Delta u)` Hessian-trace producer consuming the existing
+pointwise scalar-Laplacian trace predicate. -/
+theorem traceNablaHessianRealizesDLapAt_of_traceAt
+    [T2Space M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (u : M -> Real)
+    (nablaDuSec : TwoTensorSection (I := I) (M := M))
+    (nabla2DuSec :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) 3)
+    (hnabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) 2 cov nablaDuSec nabla2DuSec)
+    (htrace : ∀ y : M,
+      ScalarLaplacianRealizesTraceAt (I := I) cov g u (nablaDuSec y))
+    (x : M) :
+    TraceNablaHessianRealizesDLapAt (I := I) cov g u (nabla2DuSec x) :=
+  traceNablaHessianRealizesDLapAt_of_lapTrace (I := I) cov g hmc u
+    nablaDuSec nabla2DuSec hnabla
+    (lapTrace_eq_direct (I := I) cov g u nablaDuSec htrace) x
 
 /-- Pointwise producer for the Ricci commutator trace term:
 `tr_g ∇²du(.,.,Y) = tr_g ∇²du(Y,.,.) + Ric(Y, grad u)`. -/
@@ -1135,11 +1371,13 @@ theorem fundamental_bochner
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (normSecond :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (hlap : ScalarLaplacianRealizesTraceAt (I := I) cov g
-      (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond)
+    (hlap :
+      laplacian (I := I) cov g
+        (fun y : M =>
+          inner0S (I := I) g y 1
+            (differential1FormFun (I := I) u y)
+            (differential1FormFun (I := I) u y)) x =
+        scalarLapTraceAt (I := I) g normSecond)
     (htrace : MetricTraceInnerProductRuleAt (I := I) basis gInvAt
       (differential1FormFun (I := I) u x) (nablaDu x) nabla2Du normSecond)
     (hrough : RoughLap0SRealizesMetricTrace (I := I) g (s := 1) (roughDu x) nabla2Du)
@@ -1161,9 +1399,14 @@ theorem fundamental_bochner
     ScalarLaplacianRealizesTraceAt.toInBasis (I := I) cov g basis gInvAt
       hinv
       (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond hlap
+          inner0S (I := I) g y 1
+            (differential1FormFun (I := I) u y)
+            (differential1FormFun (I := I) u y)) normSecond
+          (scalar_laplacian_trace_of_pair (I := I) cov g
+            (fun y : M =>
+              inner0S (I := I) g y 1
+                (differential1FormFun (I := I) u y)
+                (differential1FormFun (I := I) u y)) normSecond hlap)
   have hroughBasis : RoughLap0SRealizesMetricTraceInBasis (I := I) basis gInvAt
       (s := 1) (roughDu x) nabla2Du :=
     rough_lap_one_form_realizes_metric_trace (I := I) g basis gInvAt
@@ -1230,15 +1473,10 @@ theorem fundamental_bochner_of_terms
   refine fundamental_bochner (I := I) cov g Ric Rm04 gInvFrame frame
     hRic04 u Hess nablaDu roughDu basis gInvAt hinv nabla2Du normSecond
     ?_ ?_ hrough hcomm ?_
-  · exact scalar_laplacian_trace_of_hessian (I := I) cov g
-      (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond
-      (by
-        rw [hlapTrace]
-        exact metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInvAt
-          hinv normSecond Fin.elim0)
+  · rw [hlapTrace]
+    rw [metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInvAt
+      hinv normSecond Fin.elim0]
+    rw [← scalarLapTraceAt_eq_firstTwo (I := I) g normSecond]
   · exact oneForm_norm_second_product_of_metric_compatible (I := I) cov g
       basis gInvAt duSec (differential1FormFun (I := I) u) nablaDu
       nablaDuSec nabla2Du normSecond hsecond
@@ -1306,13 +1544,15 @@ theorem fundamental_bochner_of_terms_of_normSecond_realizes
           (gradientFun (I := I) g u x) +
         hessianNormSq (I := I) g Hess x +
           ricciGradGrad (I := I) Ric g u x := by
-  have hlapIntrinsic : ScalarLaplacianRealizesTraceAt (I := I) cov g
+  have hlapDirect :
+      laplacian (I := I) cov g
       (fun y : M =>
         inner0S (I := I) g y 1
           (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond := by
+          (differential1FormFun (I := I) u y)) x =
+        scalarLapTraceAt (I := I) g normSecond := by
     simpa [hnormSecond] using
-      scalarLaplacianRealizesTraceAt_of_nablaDu (I := I) cov g hmc basis gInvAt
+      scalarLapTraceAt_of_nablaDu (I := I) cov g hmc basis gInvAt
         hinv
         (fun y : M =>
           inner0S (I := I) g y 1
@@ -1321,7 +1561,7 @@ theorem fundamental_bochner_of_terms_of_normSecond_realizes
         normDuSec normSecondSec X hfields hnormDu hnormHess hnormGrad
   refine fundamental_bochner (I := I) cov g Ric Rm04 gInvFrame frame
     hRic04 u Hess nablaDu roughDu basis gInvAt hinv nabla2Du normSecond
-    hlapIntrinsic ?_ hrough hcomm ?_
+    hlapDirect ?_ hrough hcomm ?_
   · exact oneForm_norm_second_product_of_metric_compatible (I := I) cov g
       basis gInvAt duSec (differential1FormFun (I := I) u) nablaDu
       nablaDuSec nabla2Du normSecond hsecond
@@ -1359,11 +1599,13 @@ theorem fundamental_bochner_of_components
     (hdu : DuFieldRealizes (I := I) u duSec)
     (hnabla : NablaOneFormRealizesAt (I := I) cov duSec nablaDu x)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I) cov duSec nablaDuSec x nabla2Du)
-    (hlap : ScalarLaplacianRealizesTraceAt (I := I) cov g
-      (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond)
+    (hlap :
+      laplacian (I := I) cov g
+        (fun y : M =>
+          inner0S (I := I) g y 1
+            (differential1FormFun (I := I) u y)
+            (differential1FormFun (I := I) u y)) x =
+        scalarLapTraceAt (I := I) g normSecond)
     (htrace : MetricTraceInnerProductRuleAt (I := I) basis gInvAt
       (differential1FormFun (I := I) u x) (nablaDu x) nabla2Du normSecond)
     (hrough : RoughLap0SRealizesMetricTrace (I := I) g (s := 1) (roughDu x) nabla2Du)
@@ -1423,12 +1665,14 @@ theorem fundamental_bochner_of_lc
       (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) duSec nablaDu x)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I)
       (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec x nabla2Du)
-    (hlap : ScalarLaplacianRealizesTraceAt (I := I)
-      (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
-      (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond)
+    (hlap :
+      laplacian (I := I)
+        (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
+        (fun y : M =>
+          inner0S (I := I) g y 1
+            (differential1FormFun (I := I) u y)
+            (differential1FormFun (I := I) u y)) x =
+        scalarLapTraceAt (I := I) g normSecond)
     (htrace : MetricTraceInnerProductRuleAt (I := I) basis gInvAt
       (differential1FormFun (I := I) u x) (nablaDu x) nabla2Du normSecond)
     (hrough : RoughLap0SRealizesMetricTrace (I := I) g (s := 1) (roughDu x) nabla2Du)
@@ -1532,16 +1776,10 @@ theorem fundamental_bochner_of_lc_terms
     gInvFrame frame hRm13 hRic13 hRic04 u Hess nablaDu roughDu
     basis gInvAt hinv duSec nablaDuSec nabla2Du normSecond
     hdu hnabla hnabla2 ?_ ?_ hrough hdlap hsymm hthird hSkew ?_
-  · exact scalar_laplacian_trace_of_hessian (I := I)
-      (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
-      (fun y : M =>
-        inner0S (I := I) g y 1
-          (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond
-      (by
-        rw [hlapTrace]
-        exact metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInvAt
-          hinv normSecond Fin.elim0)
+  · rw [hlapTrace]
+    rw [metricTrace0S2InBasis_eq_metricTrace (I := I) g basis gInvAt
+      hinv normSecond Fin.elim0]
+    rw [← scalarLapTraceAt_eq_firstTwo (I := I) g normSecond]
   · exact oneForm_norm_second_product_of_metric_compatible (I := I)
       (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
       basis gInvAt duSec (differential1FormFun (I := I) u) nablaDu
@@ -1626,14 +1864,16 @@ theorem fundamental_bochner_of_lc_terms_of_normSecond_realizes
           (gradientFun (I := I) g u x) +
         hessianNormSq (I := I) g Hess x +
           ricciGradGrad (I := I) Ric g u x := by
-  have hlapIntrinsic : ScalarLaplacianRealizesTraceAt (I := I)
+  have hlapDirect :
+      laplacian (I := I)
       (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
       (fun y : M =>
         inner0S (I := I) g y 1
           (differential1FormFun (I := I) u y)
-          (differential1FormFun (I := I) u y)) normSecond := by
+          (differential1FormFun (I := I) u y)) x =
+        scalarLapTraceAt (I := I) g normSecond := by
     simpa [hnormSecond] using
-      scalarLaplacianRealizesTraceAt_of_nablaDu (I := I)
+      scalarLapTraceAt_of_nablaDu (I := I)
         (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
         (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
         basis gInvAt hinv
@@ -1645,7 +1885,7 @@ theorem fundamental_bochner_of_lc_terms_of_normSecond_realizes
   refine fundamental_bochner_of_lc (I := I) g Ric Rm13 Rm04
     gInvFrame frame hRm13 hRic13 hRic04 u Hess nablaDu roughDu
     basis gInvAt hinv duSec nablaDuSec nabla2Du normSecond
-    hdu hnabla hnabla2 hlapIntrinsic ?_ hrough hdlap hsymm hthird hSkew ?_
+    hdu hnabla hnabla2 hlapDirect ?_ hrough hdlap hsymm hthird hSkew ?_
   · exact oneForm_norm_second_product_of_metric_compatible (I := I)
       (RicciFlower.LeviCivita.leviCivitaConnectionOfMetric (I := I) g) g
       basis gInvAt duSec (differential1FormFun (I := I) u) nablaDu

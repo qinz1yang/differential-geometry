@@ -63,13 +63,12 @@ theorem inverseMetricEvolution_of_timeRegularityBlackBox
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
-    (hsymm : SymmetricInverseMetricComponentsInFrameOn gInv)
     (hbb : InverseMetricTimeRegularityBlackBoxInFrameOn (M := M) (Idx := Idx)
       (D := D) gInv) :
     InverseMetricEvolutionEquationInFrame (I := I) S gInv frame :=
   inverseMetricEvolutionEquationInFrame_of_inverse_components
     (I := I) S hS gInv hbb.gInvDt frame
-    hbb.inverseMetricDerivative hinv hsymm hbb.uniqueTimeDerivatives
+    hbb.inverseMetricDerivative hinv hbb.uniqueTimeDerivatives
 
 /-- Black-box regularity package for Lemma 6.2.
 
@@ -161,13 +160,12 @@ theorem ricciEvolution_of_timeRegularityBlackBox
     (Rm04 : Real -> Realized.Tensor04Section (I := I) (M := M))
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
     (hbb : RicciEvolutionTimeRegularityBlackBoxInFrameOn
       (I := I) S Rm04 gInv frame) :
     RicciEvolutionEquationInFrame (I := I) S Rm04 gInv frame
       (roughLapRicInFrame (M := M) gInv hbb.nabla2Ric) :=
   ricciEvolution_of_variation_commutators
-    (I := I) S Rm04 gInv frame hbb.nabla2Ric hInv
+    (I := I) S Rm04 gInv frame hbb.nabla2Ric
     hbb.ricciVariation hbb.contractedCommutators
 
 /-- Aggregate black-box package for the Section 6.2 time-regularity frontiers.

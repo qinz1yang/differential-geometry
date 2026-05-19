@@ -1,4 +1,5 @@
 import RicciFlower.Tensor.RSTensor.TangentRiemannian
+import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Dual.Basis
 
 set_option autoImplicit false
@@ -80,6 +81,25 @@ def dualToCotangent {x : M} (α : Module.Dual Real (TangentSpace I x)) :
   Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
       (LinearMap.toContinuousLinearMap α))
+
+def dualToCotangentLinear {x : M} :
+    Module.Dual Real (TangentSpace I x) →ₗ[Real] Tensor0SSpace 1 I x where
+  toFun := dualToCotangent (I := I)
+  map_add' α β := by
+    apply cotangentToDualLinear_injective (I := I) (x := x)
+    ext X
+    change (α + β) X = α X + β X
+    rfl
+  map_smul' c α := by
+    apply cotangentToDualLinear_injective (I := I) (x := x)
+    ext X
+    change (c • α) X = c * α X
+    rfl
+
+@[simp] theorem dualToCotangentLinear_apply {x : M}
+    (α : Module.Dual Real (TangentSpace I x)) :
+    dualToCotangentLinear (I := I) α = dualToCotangent (I := I) α := by
+  rfl
 
 @[simp] theorem dualToCotangent_apply {x : M}
     (α : Module.Dual Real (TangentSpace I x)) (X : TangentSpace I x) :
@@ -290,6 +310,41 @@ def MetricInverseInBasis {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         (if i = j then 1 else 0) ∧
       (∑ k : Idx, g.inner x (basis i) (basis k) * gInv k j) =
         (if i = j then 1 else 0)
+
+/-- Inverse-metric components in a basis are symmetric. -/
+theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv) :
+    forall i j : Idx, gInv i j = gInv j i := by
+  classical
+  let A : Matrix Idx Idx Real := fun i j => gInv i j
+  let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
+  have hAG : A * G = 1 := by
+    ext i j
+    simpa [A, G, Matrix.mul_apply] using (hinv i j).1
+  have hGA : G * A = 1 := by
+    ext i j
+    simpa [A, G, Matrix.mul_apply] using (hinv i j).2
+  have hGt : Matrix.transpose G = G := by
+    ext i j
+    simpa [G] using g.symm x (basis j) (basis i)
+  have hAtG : Matrix.transpose A * G = 1 := by
+    calc
+      Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
+      _ = Matrix.transpose (G * A) := by rw [Matrix.transpose_mul]
+      _ = 1 := by rw [hGA]; simp
+  have hAt : Matrix.transpose A = A := by
+    calc
+      Matrix.transpose A = Matrix.transpose A * 1 := by simp
+      _ = Matrix.transpose A * (G * A) := by rw [hGA]
+      _ = (Matrix.transpose A * G) * A := by rw [← Matrix.mul_assoc]
+      _ = 1 * A := by rw [hAtG]
+      _ = A := by simp
+  intro i j
+  have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
+  simpa [A] using hentry
 
 /-- Raising a covector is inverse to lowering by the metric. -/
 theorem cotangentSharp_inner

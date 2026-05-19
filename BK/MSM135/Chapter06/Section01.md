@@ -60,3 +60,68 @@ producer without moving proof work into BK.  Formula 5.10 remains a later
 RicciFlower-native `F` first-variation producer.
 
 Verification: passed for this file and the targeted BK Section 6.1 module.
+
+## 2026-05-17 Formula 5.10 assembly aliases
+
+Added BK-facing aliases for the new RicciFlower integral assembly handles:
+
+- `lbl453_weighted_green`
+- `lbl453_weighted_divergence_zero`
+- `lbl453_shifted_trace_green`
+- `lbl453_f_formula510_assembly`
+
+These expose the proved scalar assembly route: arbitrary-test weighted Green,
+closed weighted-divergence cancellation from an actual divergence field,
+shifted-trace Green, and the final `formula510_of_ints` theorem.
+
+Verification passed for this file and the targeted BK Section 6.1 module.  The
+broader `BK.MSM135.Chapter06` aggregate build failed in an existing tensor
+regularity import cycle, not in this wrapper.
+
+## 2026-05-17 Formula 5.10 divergence field
+
+RicciFlower now has the checked divergence-field construction used by the
+formula 5.10 assembly:
+
+- `connTraceVec`
+- `connTraceDivEq`
+- `weightedDivZero_of_connTrace`
+- `formula510_of_connTrace`
+
+No new BK alias was added in this pass; the public Section 6.1 wrappers remain
+stable and continue to expose the existing formula 5.10 assembly handles.  The
+remaining mathematical bridge is to construct the global smooth trace vector
+`traceVec = g^{ij} A^p_ij` from the connection-variation tensor `A`.
+
+Verification passed for the targeted BK Section 6.1 module.
+
+## 2026-05-17 Formula 5.10 trace-field alias
+
+Added the BK-facing alias:
+
+- `lbl453_f_formula510_trace_field`
+
+This exposes the RicciFlower specialization where the divergence-field input is
+the constructed smooth metric trace field `tr_g A`.  BK remains wrapper-only;
+the remaining proof bridge is the coordinate/component realization of the
+divergence and action of this field.
+
+Verification passed for this file.
+
+## 2026-05-16 Formula 5.10 F-functional aliases
+
+Switched the Section 6.1 import to the RicciFlower `F` module and added
+book-facing aliases for Chapter 5 formula 5.10 as it is used by Lemma 6.1:
+
+- `lbl453_f_functional`
+- `lbl453_exp_density_variation_producer`
+- `lbl453_exp_weighted_measure_variation_producer`
+- `lbl453_f_first_variation_producer_of_volumeVariation`
+- `lbl453_f_formula510_statement`
+- `lbl453_f_formula510_final`
+
+These expose the concrete `F` functional, the tau-free `e^{-f}dmu` variation
+producer, and the final formula 5.10 statement layer.  The geometric producer
+for arbitrary metric variation of `Ric + Hess f` remains in RicciFlower.
+
+Verification: passed for this file and the targeted BK Section 6.1 module.

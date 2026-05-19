@@ -278,6 +278,48 @@ def HasCoordinatePullbackAccelerationAt
   HasCoordinateAlongCovDerivAt (I := I) C cov gamma
     (velocityAlong I gamma) t A
 
+/-- The along-field Christoffel term can be written using the arbitrary first
+slot Christoffel coefficient. -/
+theorem alongTerm_eq_sum
+    (C : CoordinateChartData (I := I) (M := M))
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (S : VectorFieldAlong I gamma) {t : Real}
+    (hgt : gamma t ∈ C.domain)
+    (k : CoordinateIdx (𝕜 := Real) E) :
+    C.alongChristoffelTerm cov gamma S t k =
+      ∑ j : CoordinateIdx (𝕜 := Real) E,
+        C.coeff j (S t) *
+          christoffelAlongInFrame cov C.frame C.hframe
+            (gamma t) (curveVelocity I gamma t) j k := by
+  classical
+  calc
+    C.alongChristoffelTerm cov gamma S t k
+        = ∑ i : CoordinateIdx (𝕜 := Real) E,
+            ∑ j : CoordinateIdx (𝕜 := Real) E,
+              C.christoffel cov (gamma t) i j k *
+                C.velocityCoeff gamma i t * C.coeff j (S t) := rfl
+    _ = ∑ j : CoordinateIdx (𝕜 := Real) E,
+          ∑ i : CoordinateIdx (𝕜 := Real) E,
+            C.christoffel cov (gamma t) i j k *
+              C.velocityCoeff gamma i t * C.coeff j (S t) := by
+          rw [Finset.sum_comm]
+    _ = ∑ j : CoordinateIdx (𝕜 := Real) E,
+          C.coeff j (S t) *
+            ∑ i : CoordinateIdx (𝕜 := Real) E,
+              C.velocityCoeff gamma i t * C.christoffel cov (gamma t) i j k := by
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          ring
+    _ = ∑ j : CoordinateIdx (𝕜 := Real) E,
+          C.coeff j (S t) *
+            christoffelAlongInFrame cov C.frame C.hframe
+              (gamma t) (curveVelocity I gamma t) j k := by
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [christoffelAlong_eq_sum_coeff (I := I) C cov hgt
+            (curveVelocity I gamma t) j k]
+          simp [CoordinateChartData.velocityCoeff]
+
 /-- For the velocity along the curve, the along-field Christoffel term is the
 usual quadratic Christoffel term. -/
 theorem alongChristoffelTerm_velocity_eq_christoffelVelocityQuadratic
@@ -491,6 +533,305 @@ def extChartAtCoordinateData (x0 : M) : CoordinateChartData (I := I) (M := M) wh
 theorem extChartAtCoordinateData_mem (x0 : M) :
     x0 ∈ (extChartAtCoordinateData (I := I) x0).domain := by
   exact coordinateFrameAt_mem (I := I) x0
+
+/-! ## `extChartAt`-centered coordinate API
+
+The public coordinate ODE layer should name actual coordinates by their chart
+center `x0`, not by an abstract frame package.  The older
+`CoordinateChartData` definitions remain as compatibility shims, while the
+short names below are the canonical interface for local geodesic ODE work. -/
+
+/-- Coordinate coefficient in the chart-induced frame centered at `x0`. -/
+def coordCoeffAt (x0 : M) (i : CoordinateIdx (𝕜 := Real) E)
+    {x : M} (v : TangentSpace I x) : Real :=
+  (extChartAtCoordinateData (I := I) x0).coeff i v
+
+/-- Velocity coefficient in the chart-induced frame centered at `x0`. -/
+def velCoeffAt (x0 : M) (gamma : Curve M)
+    (i : CoordinateIdx (𝕜 := Real) E) (t : Real) : Real :=
+  coordCoeffAt (I := I) x0 i (curveVelocity I gamma t)
+
+/-- Christoffel coefficient in the chart-induced frame centered at `x0`. -/
+def christoffelAt (x0 : M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (x : M) (i j k : CoordinateIdx (𝕜 := Real) E) : Real :=
+  (extChartAtCoordinateData (I := I) x0).christoffel cov x i j k
+
+/-- Quadratic Christoffel term in the chart-induced frame centered at `x0`. -/
+def christoffelQuadAt (x0 : M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (t : Real) (k : CoordinateIdx (𝕜 := Real) E) : Real :=
+  (extChartAtCoordinateData (I := I) x0).christoffelVelocityQuadratic
+    cov gamma t k
+
+/-- Christoffel correction for the along-field covariant derivative in the
+chart-induced frame centered at `x0`. -/
+def alongTermAt (x0 : M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (S : VectorFieldAlong I gamma) (t : Real)
+    (k : CoordinateIdx (𝕜 := Real) E) : Real :=
+  (extChartAtCoordinateData (I := I) x0).alongChristoffelTerm
+    cov gamma S t k
+
+/-- Coordinate acceleration in the chart-induced frame centered at `x0`. -/
+def HasCoordAccelAt (x0 : M) (gamma : Curve M) (t : Real)
+    (a : CoordinateIdx (𝕜 := Real) E -> Real) : Prop :=
+  HasCoordinateAccelerationAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) gamma t a
+
+/-- Coordinate derivative of an along-field in the chart-induced frame centered
+at `x0`. -/
+def HasCoordAlongDerivAt
+    (x0 : M) (gamma : Curve M) (S : VectorFieldAlong I gamma) (t : Real)
+    (b : CoordinateIdx (𝕜 := Real) E -> Real) : Prop :=
+  HasCoordinateAlongDerivativeAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) gamma S t b
+
+/-- Coordinate-defined covariant derivative of an along-field in the
+chart-induced frame centered at `x0`. -/
+def HasCoordAlongCovDerivAt
+    (x0 : M) (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (S : VectorFieldAlong I gamma) (t : Real)
+    (A : TangentSpace I (gamma t)) : Prop :=
+  HasCoordinateAlongCovDerivAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) cov gamma S t A
+
+/-- Coordinate-defined covariant acceleration in the chart-induced frame
+centered at `x0`. -/
+def HasCoordCovAccelAt
+    (x0 : M) (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (t : Real) (A : TangentSpace I (gamma t)) : Prop :=
+  HasCoordinatePullbackAccelerationAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) cov gamma t A
+
+/-- A smooth ambient representative that realizes an along-curve field near the
+parameter value gives the coordinate-defined covariant derivative in any valid
+`extChartAt x0` coordinate package.
+
+This is the local compatibility bridge from the representative-based pullback
+connection layer to the coordinate-defined along-curve derivative. -/
+theorem coordAlong_rep_at
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {X : GlobalVectorField I M} {t : Real}
+    (x0 : M) (hgt : gamma t ∈ coordinateFrameSet (I := I) x0)
+    (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma t)
+    (hX : MDiffAt (T% X) (gamma t))
+    (hXS : ∀ᶠ s in 𝓝 t, S s = X (gamma s)) :
+    HasCoordAlongCovDerivAt (I := I) x0 cov gamma S t
+      ((cov X (gamma t)) (curveVelocity I gamma t)) := by
+  change HasCoordinateAlongCovDerivAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) cov gamma S t
+      ((cov X (gamma t)) (curveVelocity I gamma t))
+  let C : CoordinateChartData (I := I) (M := M) :=
+    extChartAtCoordinateData (I := I) x0
+  let bfun : CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun k =>
+      extDerivFun (I := I) (fun p : M => C.coeff k (X p))
+        (gamma t) (curveVelocity I gamma t)
+  refine ⟨bfun, ?_, ?_⟩
+  · intro k
+    let f : M -> Real := fun p => C.coeff k (X p)
+    have hx :
+        gamma t ∈ (coordinateTrivializationAt (I := I) x0).baseSet := by
+      simpa [coordinateFrameSet, coordinateTrivializationAt] using hgt
+    have hf : MDifferentiableAt I 𝓘(Real, Real) f (gamma t) := by
+      simpa [f, C, CoordinateChartData.coeff, extChartAtCoordinateData,
+        coordinateFrameAt, coordinateFrameSet, coordinateTrivializationAt] using
+        (mdifferentiableAt_localFrame_coeff
+          (I := I)
+          (e := coordinateTrivializationAt (I := I) x0)
+          (b := Module.finBasis Real E)
+          hx hX k)
+    have hderiv :
+        HasDerivAt (fun s : Real => f (gamma s))
+          (extDerivFun (I := I) f (gamma t) (curveVelocity I gamma t)) t :=
+      extDerivFun_along_curve_eq_deriv (I := I) hf hgamma
+    refine hderiv.congr_of_eventuallyEq ?_
+    filter_upwards [hXS] with s hs
+    change C.coeff k (S s) = C.coeff k (X (gamma s))
+    rw [hs]
+  · intro k
+    have hxC : gamma t ∈ C.domain := by
+      simpa [C, extChartAtCoordinateData] using hgt
+    let e := coordinateTrivializationAt (I := I) x0
+    let b := Module.finBasis Real E
+    have hxE : gamma t ∈ e.baseSet := by
+      simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hgt
+    have hcoeff_eq (l : CoordinateIdx (𝕜 := Real) E) :
+        e.localFrame_coeff I b l (gamma t) = C.hframe.coeff l (gamma t) := by
+      apply (C.hframe.toBasisAt hxC).ext
+      intro i
+      rw [C.hframe.toBasisAt_coe hxC i]
+      have hleft :
+          e.localFrame_coeff I b l (gamma t) (C.frame i (gamma t)) =
+            (if i = l then 1 else 0) := by
+        rw [show C.frame i (gamma t) = e.localFrame b i (gamma t) by
+          simp [C, e, b, extChartAtCoordinateData, coordinateFrameAt,
+            coordinateTrivializationAt]]
+        rw [e.localFrame_coeff_apply_of_mem_baseSet b hxE (e.localFrame b i) l]
+        rw [e.localFrame_apply_of_mem_baseSet (b := b) (i := i) hxE]
+        rw [(e.basisAt b hxE).repr_self]
+        simp [Finsupp.single_apply]
+      have hright :
+          C.hframe.coeff l (gamma t) (C.frame i (gamma t)) =
+            (if i = l then 1 else 0) := by
+        unfold IsLocalFrameOn.coeff
+        rw [dif_pos hxC]
+        rw [← C.hframe.toBasisAt_coe hxC i]
+        rw [Module.Basis.coord_apply]
+        rw [(C.hframe.toBasisAt hxC).repr_self]
+        simp [Finsupp.single_apply]
+      rw [hleft, hright]
+    have hX_at : X (gamma t) = S t := hXS.self_of_nhds.symm
+    have hlocal :=
+      covariantDerivative_localFrame_coeff_eq_along
+        (I := I) cov e b hxE hX
+        (curveVelocity I gamma t) k
+    have hconn :
+        C.coeff k ((cov X (gamma t)) (curveVelocity I gamma t)) =
+          bfun k +
+            ∑ j : CoordinateIdx (𝕜 := Real) E,
+              C.coeff j (X (gamma t)) *
+                C.coeff k ((cov (C.frame j) (gamma t))
+                  (curveVelocity I gamma t)) := by
+      simpa [C, bfun, CoordinateChartData.coeff, extChartAtCoordinateData,
+        coordinateFrameAt, coordinateFrameSet, coordinateTrivializationAt,
+        e, b, hcoeff_eq] using hlocal
+    have hsum :
+        (∑ j : CoordinateIdx (𝕜 := Real) E,
+            C.coeff j (X (gamma t)) *
+              C.coeff k ((cov (C.frame j) (gamma t))
+                (curveVelocity I gamma t))) =
+          ∑ j : CoordinateIdx (𝕜 := Real) E,
+            C.coeff j (S t) *
+              christoffelAlongInFrame cov C.frame C.hframe
+                (gamma t) (curveVelocity I gamma t) j k := by
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [hX_at]
+      simp [CoordinateChartData.coeff, christoffelAlongInFrame]
+    have hterm :=
+      alongTerm_eq_sum (I := I) C cov gamma S hxC k
+    calc
+      C.coeff k ((cov X (gamma t)) (curveVelocity I gamma t))
+          = bfun k +
+              ∑ j : CoordinateIdx (𝕜 := Real) E,
+                C.coeff j (X (gamma t)) *
+                  C.coeff k ((cov (C.frame j) (gamma t))
+                    (curveVelocity I gamma t)) := hconn
+      _ = bfun k +
+              ∑ j : CoordinateIdx (𝕜 := Real) E,
+                C.coeff j (S t) *
+                  christoffelAlongInFrame cov C.frame C.hframe
+                    (gamma t) (curveVelocity I gamma t) j k := by
+            rw [hsum]
+      _ = bfun k + C.alongChristoffelTerm cov gamma S t k := by
+            rw [hterm]
+
+/-- A smooth ambient representative of an along-curve field gives the
+coordinate-defined covariant derivative in any valid `extChartAt x0`
+coordinate package.
+
+This is the compatibility bridge from the older ambient-representative layer to
+the coordinate-defined along-curve derivative. -/
+theorem coordAlong_global_at
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {X : GlobalVectorField I M} {t : Real}
+    (x0 : M) (hgt : gamma t ∈ coordinateFrameSet (I := I) x0)
+    (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma t)
+    (hX : MDiffAt (T% X) (gamma t))
+    (hXS : RealizesAlong (I := I) gamma X S) :
+    HasCoordAlongCovDerivAt (I := I) x0 cov gamma S t
+      ((cov X (gamma t)) (curveVelocity I gamma t)) := by
+  exact coordAlong_rep_at (I := I) (cov := cov) (gamma := gamma)
+    (S := S) (X := X) (t := t) x0 hgt hgamma hX
+    (Filter.Eventually.of_forall fun s => (hXS s).symm)
+
+/-- A smooth ambient representative gives the coordinate-defined along
+covariant derivative in all `extChartAt` coordinate systems whose domain
+contains the curve point. -/
+theorem coordAlong_global_all
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {X : GlobalVectorField I M} {t : Real}
+    (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma t)
+    (hX : MDiffAt (T% X) (gamma t))
+    (hXS : RealizesAlong (I := I) gamma X S) :
+    ∀ x0 : M, gamma t ∈ coordinateFrameSet (I := I) x0 →
+      HasCoordAlongCovDerivAt (I := I) x0 cov gamma S t
+        ((cov X (gamma t)) (curveVelocity I gamma t)) :=
+  fun x0 hgt =>
+    coordAlong_global_at (I := I) (cov := cov) (gamma := gamma)
+      (S := S) (X := X) (t := t) x0 hgt hgamma hX hXS
+
+/-- Centered compatibility wrapper for the older `CoordinateChartData` API. -/
+theorem coordAlong_of_global
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {X : GlobalVectorField I M} {t : Real}
+    (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma t)
+    (hX : MDiffAt (T% X) (gamma t))
+    (hXS : RealizesAlong (I := I) gamma X S) :
+    HasCoordinateAlongCovDerivAt (I := I)
+      (extChartAtCoordinateData (I := I) (gamma t)) cov gamma S t
+      ((cov X (gamma t)) (curveVelocity I gamma t)) := by
+  exact coordAlong_global_at
+    (I := I) (cov := cov) (gamma := gamma) (S := S) (X := X) (t := t)
+    (gamma t) (coordinateFrameAt_mem (I := I) (gamma t)) hgamma hX hXS
+
+/-- A representative-based intrinsic pullback covariant derivative along a
+curve gives the coordinate-defined along-curve covariant derivative in any
+valid `extChartAt x0` coordinate package. -/
+theorem HasPullbackCovariantDerivativeAlongCurveAt.toCoord
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {t : Real} {A : TangentSpace I (gamma t)}
+    (hA : HasPullbackCovariantDerivativeAlongCurveAt (I := I) cov gamma S t A)
+    (x0 : M) (hgt : gamma t ∈ coordinateFrameSet (I := I) x0) :
+    HasCoordAlongCovDerivAt (I := I) x0 cov gamma S t A := by
+  rcases hA with ⟨hgamma, X, hXrep, hAeq⟩
+  have hcoord :
+      HasCoordAlongCovDerivAt (I := I) x0 cov gamma S t
+        ((cov X (gamma t)) (curveVelocity I gamma t)) :=
+    coordAlong_rep_at (I := I) (cov := cov) (gamma := gamma)
+      (S := S) (X := X) (t := t) x0 hgt hgamma
+      (mdiffSectionAt_tPercent (I := I) (F := E)
+        (V := TangentSpace I) hXrep.1)
+      hXrep.2
+  have hAeq' : A = (cov X (gamma t)) (curveVelocity I gamma t) := by
+    simpa [pullbackCovDerivOfRepresentativeAt, curveVelocity] using hAeq
+  simpa [hAeq'] using hcoord
+
+/-- Centered version of `HasPullbackCovariantDerivativeAlongCurveAt.toCoord`. -/
+theorem HasPullbackCovariantDerivativeAlongCurveAt.toCoordSelf
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {S : VectorFieldAlong I gamma}
+    {t : Real} {A : TangentSpace I (gamma t)}
+    (hA : HasPullbackCovariantDerivativeAlongCurveAt (I := I) cov gamma S t A) :
+    HasCoordAlongCovDerivAt (I := I) (gamma t) cov gamma S t A :=
+  hA.toCoord (I := I) (gamma t) (coordinateFrameAt_mem (I := I) (gamma t))
+
+/-- A representative-based intrinsic pullback covariant acceleration gives the
+coordinate-defined covariant acceleration in any valid `extChartAt x0`
+coordinate package. -/
+theorem HasPullbackCovariantAccelerationAt.toCoord
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {t : Real} {A : TangentSpace I (gamma t)}
+    (hA : HasPullbackCovariantAccelerationAt (I := I) cov gamma t A)
+    (x0 : M) (hgt : gamma t ∈ coordinateFrameSet (I := I) x0) :
+    HasCoordCovAccelAt (I := I) x0 cov gamma t A :=
+  HasPullbackCovariantDerivativeAlongCurveAt.toCoord
+    (I := I) (cov := cov) (gamma := gamma)
+    (S := velocityAlong I gamma) (t := t) hA x0 hgt
+
+/-- Centered version of `HasPullbackCovariantAccelerationAt.toCoord`. -/
+theorem HasPullbackCovariantAccelerationAt.toCoordSelf
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {t : Real} {A : TangentSpace I (gamma t)}
+    (hA : HasPullbackCovariantAccelerationAt (I := I) cov gamma t A) :
+    HasCoordCovAccelAt (I := I) (gamma t) cov gamma t A :=
+  hA.toCoord (I := I) (gamma t) (coordinateFrameAt_mem (I := I) (gamma t))
 
 /-- A smooth velocity extension supplies the ordinary derivative of each
 coordinate velocity component in the `extChartAt` coordinate package. -/

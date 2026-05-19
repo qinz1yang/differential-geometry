@@ -85,7 +85,7 @@ private theorem nabla0SFun_one_eval_smooth_slots
     exact
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) x Y.contMDiff.contMDiffAt i
-  have h := nabla0SFun_eval_coordFrame_moving_raw
+  have h := Tensor0SBundle.nabla0SFun_eval_coordFrame_moving_raw
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (s := 1) cov X V α x hpair hV hVmodel hcoord
   have hupdate (w : TangentSpace I x) :

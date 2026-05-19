@@ -612,6 +612,17 @@ controlled `sorry`, after the precise realized statement is written:
 
 Do not use `axiom` or `admit`.
 
+## Post-Hamilton Global Topology TODO
+
+After the Hamilton positive-Ricci theorem path is closed, return to the global
+topology and covering-space layer.  In particular, formalize how Ricci flow
+lifts to covering spaces and descends through quotients, and connect that with
+the spherical-space-form endpoint.  This should not block the current
+Hamilton proof pipeline, but it is part of the eventual global-geometry story:
+constant-curvature metrics, quotient models, finite covers, and lifted Ricci
+flows should be related by explicit theorem statements rather than informal
+topological handoffs.
+
 ## Immediate Next Work
 
 1. Close the LaTeX Section 3 assumption as a realized theorem package:

@@ -79,6 +79,33 @@ theorem christoffelAlongInFrame_frame
       christoffelSymbolInFrame cov frame hframe x i j k := by
   rfl
 
+/-- Expand the arbitrary first-slot Christoffel coefficient in a local frame. -/
+theorem christoffelAlongInFrame_eq_sum_coeff
+    [Fintype Idx]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    {x : M} (hx : x ∈ u) (X : TangentSpace I x) (j k : Idx) :
+    christoffelAlongInFrame cov frame hframe x X j k =
+      ∑ i : Idx,
+        hframe.coeff i x X *
+          christoffelSymbolInFrame cov frame hframe x i j k := by
+  classical
+  have hX : X = ∑ i : Idx, hframe.coeff i x X • frame i x := by
+    simpa [IsLocalFrameOn.coeff, hx, IsLocalFrameOn.toBasisAt_coe] using
+      ((hframe.toBasisAt hx).sum_repr X).symm
+  calc
+    christoffelAlongInFrame cov frame hframe x X j k
+        = hframe.coeff k x ((cov (frame j) x) X) := rfl
+    _ = hframe.coeff k x
+          ((cov (frame j) x)
+            (∑ i : Idx, hframe.coeff i x X • frame i x)) := by
+          rw [← hX]
+    _ = ∑ i : Idx,
+          hframe.coeff i x X *
+            christoffelSymbolInFrame cov frame hframe x i j k := by
+          simp [map_sum, map_smul, christoffelSymbolInFrame]
+
 /-- Expansion of `nabla_{frame i} frame j` in the local frame. -/
 theorem covariantDerivative_eq_sum_christoffel
     [Fintype Idx]

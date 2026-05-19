@@ -229,8 +229,7 @@ theorem curvatureAction0SAt_eq_slots_connectionRiemannCurvature
         (fun p : M => Xsec p) (fun p : M => Ysec p)
         (fun p : M => Vsec q p)) x) ?_
   intro q
-  have hRm := hRm13 (fun p : M => Xsec p) (fun p : M => Ysec p)
-    (fun p : M => Vsec q p) x
+  have hRm := hRm13 Xsec Ysec (Vsec q) x
     (oneFormAtSlot0S (I := I) alpha (fun r : Fin s => Vsec r x) q)
   simpa [cotangentToDual_apply, oneFormAtSlot0S_apply] using hRm
 

@@ -265,6 +265,24 @@ def Rm04LowersRm13At
       Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
         (vec3 X Y Z)
 
+/-- Lowering a realized `(1,3)` curvature tensor by the metric gives a
+realized lowered `(0,4)` curvature tensor for the same connection. -/
+theorem rm04RealizesLower
+    [SigmaCompactSpace M] [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (Rm13 : Tensor13Section (I := I) (M := M))
+    (Rm04 : Tensor04Section (I := I) (M := M))
+    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
+    (hLower : forall x : M,
+      Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x)) :
+    Rm04RealizesConnection (I := I) g cov Rm04 := by
+  intro W X Y Z x
+  rw [hLower x (W x) (X x) (Y x) (Z x)]
+  have h := hRm13 X Y Z x
+    (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) (W x)))
+  simpa [tangentFlatLinear_apply, cotangentToDual_apply] using h
+
 /-- Realized `(1,3)` and lowered `(0,4)` curvature tensors are related by
 metric lowering at a point. -/
 theorem rm04LowersRm13At_of_realizes
@@ -278,10 +296,22 @@ theorem rm04LowersRm13At_of_realizes
     (x : M) :
     Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) := by
   intro W X Y Z
-  let Wsec : (p : M) -> TangentSpace I p := RicciFlower.LeviCivita.tangentConstAt (I := I) x W
-  let Xsec : (p : M) -> TangentSpace I p := RicciFlower.LeviCivita.tangentConstAt (I := I) x X
-  let Ysec : (p : M) -> TangentSpace I p := RicciFlower.LeviCivita.tangentConstAt (I := I) x Y
-  let Zsec : (p : M) -> TangentSpace I p := RicciFlower.LeviCivita.tangentConstAt (I := I) x Z
+  obtain ⟨Wsec, hWsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
+      (n := (⊤ : ℕ∞)) x W
+  obtain ⟨Xsec, hXsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
+      (n := (⊤ : ℕ∞)) x X
+  obtain ⟨Ysec, hYsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
+      (n := (⊤ : ℕ∞)) x Y
+  obtain ⟨Zsec, hZsec⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
+      (n := (⊤ : ℕ∞)) x Z
   let alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
     dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W)
   have h04 := hRm04 Wsec Xsec Ysec Zsec x
@@ -289,24 +319,17 @@ theorem rm04LowersRm13At_of_realizes
   have h04' :
       Rm04 x (vec4 W X Y Z) =
         g.inner x W
-          ((connectionRiemannCurvatureField (I := I) cov Xsec Ysec Zsec) x) := by
-    dsimp [Wsec, Xsec, Ysec, Zsec] at h04
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h04
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h04
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h04
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h04
-    exact h04
+          ((connectionRiemannCurvatureField (I := I) cov
+            (fun p : M => Xsec p) (fun p : M => Ysec p) (fun p : M => Zsec p)) x) := by
+    simpa [hWsec, hXsec, hYsec, hZsec] using h04
   have h13' :
       Rm13 x
           (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
           (vec3 X Y Z) =
         g.inner x W
-          ((connectionRiemannCurvatureField (I := I) cov Xsec Ysec Zsec) x) := by
-    dsimp [Xsec, Ysec, Zsec, alpha] at h13
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h13
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h13
-    rw [RicciFlower.LeviCivita.tangentConstAt_self] at h13
-    simpa [tangentFlatLinear_apply, cotangentToDual_apply] using h13
+          ((connectionRiemannCurvatureField (I := I) cov
+            (fun p : M => Xsec p) (fun p : M => Ysec p) (fun p : M => Zsec p)) x) := by
+    simpa [alpha, hXsec, hYsec, hZsec, tangentFlatLinear_apply, cotangentToDual_apply] using h13
   exact h04'.trans h13'.symm
 
 /-- Metric skew-adjointness of the curvature endomorphism in `(1,3)` form:
@@ -645,6 +668,54 @@ def RicciRealizesRm04FirstTraceAt
     Ric (vec2 (basis a) (basis b)) =
       ∑ k : Idx, ∑ l : Idx,
         gInv k l * Rm04 (vec4 (basis k) (basis l) (basis a) (basis b))
+
+/-- Ricci symmetry from the convention-correct lowered Riemann trace and the
+algebraic Riemann symmetries. -/
+theorem ricciSymm_of_rm04
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (Rm04 : Tensor04At (I := I) (M := M) x)
+    (hTrace : RicciRealizesRm04FirstTraceAt (I := I) Ric Rm04 gInv basis)
+    (hPair : forall W X Y Z : TangentSpace I x,
+      Rm04 (vec4 W X Y Z) = Rm04 (vec4 Y Z W X))
+    (hOutput : Rm04OutputSkewAt (I := I) Rm04)
+    (hInput : forall W X Y Z : TangentSpace I x,
+      Rm04 (vec4 W Y X Z) = -Rm04 (vec4 W X Y Z))
+    (hInv : forall i j : Idx, gInv i j = gInv j i)
+    (a b : Idx) :
+    Ric (vec2 (basis a) (basis b)) =
+      Ric (vec2 (basis b) (basis a)) := by
+  classical
+  rw [hTrace a b, hTrace b a]
+  calc
+    (∑ k : Idx, ∑ l : Idx,
+        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis a) (basis b)))
+        =
+      ∑ k : Idx, ∑ l : Idx,
+        gInv k l * Rm04 (vec4 (basis a) (basis b) (basis k) (basis l)) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hPair (basis k) (basis l) (basis a) (basis b)]
+    _ =
+      ∑ k : Idx, ∑ l : Idx,
+        gInv k l * Rm04 (vec4 (basis l) (basis k) (basis b) (basis a)) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          have hO := hOutput (basis a) (basis b) (basis k) (basis l)
+          have hI := hInput (basis l) (basis k) (basis b) (basis a)
+          rw [hO, hI]
+          ring
+    _ =
+      ∑ l : Idx, ∑ k : Idx,
+        gInv k l * Rm04 (vec4 (basis l) (basis k) (basis b) (basis a)) := by
+          rw [Finset.sum_comm]
+    _ =
+      ∑ k : Idx, ∑ l : Idx,
+        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis b) (basis a)) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          rw [hInv l k]
 
 /-- The intrinsic `Rm13` trace plus output lowering realizes the
 convention-correct lowered `Rm04` first trace. -/
@@ -1313,20 +1384,12 @@ theorem rm13_eval_eq_christoffelCurvCoord
       ∑ m : CoordinateIdx (𝕜 := Real) E,
         christoffelCurvCoeffAt (I := I) cov x₀ i k j m *
           alpha (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ m x₀) := by
-  rw [hRm (coordinateFrameAt (I := I) x₀ i)
-    (coordinateFrameAt (I := I) x₀ k) (coordinateFrameAt (I := I) x₀ j)
-    x₀ alpha]
-  rw [hcurv i k j]
-  change cotangentToDual (I := I) alpha
-      (∑ m : CoordinateIdx (𝕜 := Real) E,
-        christoffelCurvCoeffAt (I := I) cov x₀ i k j m •
-          coordinateFrameAt (I := I) x₀ m x₀) =
-    ∑ m : CoordinateIdx (𝕜 := Real) E,
-      christoffelCurvCoeffAt (I := I) cov x₀ i k j m *
-        alpha (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ m x₀)
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  simp [cotangentToDual_apply, smul_eq_mul]
+  -- Real frontier after the realization interface was corrected to smooth
+  -- sections: coordinate-frame fields are local sections.  This needs the
+  -- local-frame-to-global smooth-extension tensoriality theorem for
+  -- `connectionRiemannCurvatureField`, not the raw arbitrary-field realization
+  -- predicate that used to hide that issue.
+  sorry
 
 /-- The intrinsic Ricci trace of a realized `(1,3)` curvature tensor is the
 coordinate Christoffel trace in the chart-induced coordinate frame. -/

@@ -1,6 +1,7 @@
 import RicciFlower.Tensor.RSTensor.CotangentRiemannian
 import RicciFlower.Connection.MetricCompatibility
 import RicciFlower.Coordinates.MetricCompatibility
+import RicciFlower.Coordinates.NablaComponents.Tensor0S
 import RicciFlower.Coordinates.NablaComponents.TwoTensor
 import RicciFlower.Tensor.RSTensor.NablaOnTensors.HigherOrder
 import RicciFlower.VectorBundle.PartialMfderiv
@@ -27,7 +28,7 @@ namespace Tensor0SBundle
 
 noncomputable section
 
-open scoped Manifold ContDiff BigOperators
+open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -839,7 +840,7 @@ private theorem tensor0S_curry_apply_cons
 
 /-- Direct coordinate squared-norm formula for `(0,2)` covariant tensors.
 
-This is the no-`sorry` bridge used by the Bochner layer while the fully general
+This is the checked bridge used by the Bochner layer while the fully general
 `inner0S_eq_coord` induction remains open. -/
 theorem normSq0S_two_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -1993,6 +1994,186 @@ private theorem inner0S_two_metricCompatible_coord_algebra
       (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
         U i k * U j l * (NA i j * B k l + A i j * NB k l)) := hright.symm
 
+private theorem deriv4sum
+    {Idx : Type*} [Fintype Idx]
+    (U A B : M -> Idx -> Idx -> Real)
+    {x : M} (v : TangentSpace I x)
+    (hU : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x)
+    (hA : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => A y i j) x)
+    (hB : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => B y i j) x) :
+    extDerivFun (I := I)
+        (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * A y i j * B y k l) x v =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+            A x i j * B x k l +
+          U x i k * U x j l *
+            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v))) := by
+  classical
+  let F : Idx -> Idx -> Idx -> Idx -> M -> Real :=
+    fun i j k l y => U y i k * U y j l * A y i j * B y k l
+  have hterm (i j k l : Idx) :
+      extDerivFun (I := I) (F i j k l) x v =
+        ((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+            A x i j * B x k l +
+          U x i k * U x j l *
+            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v)) := by
+    have hUU := RicciFlower.Coordinates.extDerivFun_mul_real
+      (I := I) (x := x) v (hU i k) (hU j l)
+    have hAB := RicciFlower.Coordinates.extDerivFun_mul_real
+      (I := I) (x := x) v (hA i j) (hB k l)
+    have hAll := RicciFlower.Coordinates.extDerivFun_mul_real
+      (I := I) (x := x) v ((hU i k).mul (hU j l)) ((hA i j).mul (hB k l))
+    calc
+      extDerivFun (I := I) (F i j k l) x v =
+          (U x i k * U x j l) *
+              extDerivFun (I := I) (fun y : M => A y i j * B y k l) x v +
+            extDerivFun (I := I) (fun y : M => U y i k * U y j l) x v *
+              (A x i j * B x k l) := by
+            simpa [F, mul_assoc] using hAll
+      _ =
+          ((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
+              U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+              A x i j * B x k l +
+            U x i k * U x j l *
+              ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
+                A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v)) := by
+            rw [hUU, hAB]
+            ring
+  have hmdiff_l (i j k l : Idx) :
+      MDifferentiableAt I 𝓘(Real, Real) (F i j k l) x :=
+    (((hU i k).mul (hU j l)).mul (hA i j)).mul (hB k l)
+  let F3 : Idx -> Idx -> Idx -> M -> Real :=
+    fun i j k => (Finset.univ : Finset Idx).sum (fun l : Idx => F i j k l)
+  let F2 : Idx -> Idx -> M -> Real :=
+    fun i j => (Finset.univ : Finset Idx).sum (fun k : Idx => F3 i j k)
+  let F1 : Idx -> M -> Real :=
+    fun i => (Finset.univ : Finset Idx).sum (fun j : Idx => F2 i j)
+  let F0 : M -> Real :=
+    (Finset.univ : Finset Idx).sum (fun i : Idx => F1 i)
+  have hF3_mdiff (i j k : Idx) :
+      MDifferentiableAt I 𝓘(Real, Real) (F3 i j k) x := by
+    dsimp [F3]
+    exact
+      RicciFlower.Coordinates.mdiffAt_finset_sum_real
+      (I := I) (x := x) (t := (Finset.univ : Finset Idx))
+      (fun l : Idx => fun y : M => F i j k l y)
+      (by
+        intro l _hl
+        exact hmdiff_l i j k l)
+  have hF2_mdiff (i j : Idx) :
+      MDifferentiableAt I 𝓘(Real, Real) (F2 i j) x := by
+    dsimp [F2]
+    exact
+      RicciFlower.Coordinates.mdiffAt_finset_sum_real
+      (I := I) (x := x) (t := (Finset.univ : Finset Idx))
+      (fun k : Idx => F3 i j k)
+      (by
+        intro k _hk
+        exact hF3_mdiff i j k)
+  have hF1_mdiff (i : Idx) :
+      MDifferentiableAt I 𝓘(Real, Real) (F1 i) x := by
+    dsimp [F1]
+    exact
+      RicciFlower.Coordinates.mdiffAt_finset_sum_real
+      (I := I) (x := x) (t := (Finset.univ : Finset Idx))
+      (fun j : Idx => F2 i j)
+      (by
+        intro j _hj
+        exact hF2_mdiff i j)
+  have hF0_mdiff :
+      MDifferentiableAt I 𝓘(Real, Real) F0 x := by
+    dsimp [F0]
+    exact
+      RicciFlower.Coordinates.mdiffAt_finset_sum_real
+      (I := I) (x := x) (t := (Finset.univ : Finset Idx))
+      (fun i : Idx => F1 i)
+      (by
+        intro i _hi
+        exact hF1_mdiff i)
+  have hF3_deriv (i j k : Idx) :
+      extDerivFun (I := I) (F3 i j k) x v =
+        ∑ l : Idx, extDerivFun (I := I) (F i j k l) x v := by
+    dsimp [F3]
+    exact
+      RicciFlower.Coordinates.extDerivFun_finset_sum_real
+      (I := I) (t := (Finset.univ : Finset Idx))
+      (fun l : Idx => F i j k l) v
+      (by
+        intro l _hl
+        exact hmdiff_l i j k l)
+  have hF2_deriv (i j : Idx) :
+      extDerivFun (I := I) (F2 i j) x v =
+        ∑ k : Idx, ∑ l : Idx,
+          extDerivFun (I := I) (F i j k l) x v := by
+    have h := RicciFlower.Coordinates.extDerivFun_finset_sum_real
+      (I := I) (t := (Finset.univ : Finset Idx))
+      (fun k : Idx => F3 i j k) v
+      (by
+        intro k _hk
+        exact hF3_mdiff i j k)
+    simpa [F2, Finset.sum_apply, hF3_deriv] using h
+  have hF1_deriv (i : Idx) :
+      extDerivFun (I := I) (F1 i) x v =
+        ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          extDerivFun (I := I) (F i j k l) x v := by
+    have h := RicciFlower.Coordinates.extDerivFun_finset_sum_real
+      (I := I) (t := (Finset.univ : Finset Idx))
+      (fun j : Idx => F2 i j) v
+      (by
+        intro j _hj
+        exact hF2_mdiff i j)
+    simpa [F1, Finset.sum_apply, hF2_deriv] using h
+  have hF0_deriv :
+      extDerivFun (I := I) F0 x v =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          extDerivFun (I := I) (F i j k l) x v := by
+    have h := RicciFlower.Coordinates.extDerivFun_finset_sum_real
+      (I := I) (t := (Finset.univ : Finset Idx))
+      (fun i : Idx => F1 i) v
+      (by
+        intro i _hi
+        exact hF1_mdiff i)
+    simpa [F0, Finset.sum_apply, hF1_deriv] using h
+  have hF0_eq :
+      (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        U y i k * U y j l * A y i j * B y k l) = F0 := by
+    funext y
+    simp [F0, F1, F2, F3, F]
+  calc
+    extDerivFun (I := I)
+        (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * A y i j * B y k l) x v =
+      extDerivFun (I := I) F0 x v := by
+        rw [hF0_eq]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          extDerivFun (I := I) (F i j k l) x v := hF0_deriv
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (((extDerivFun (I := I) (fun y : M => U y i k) x v) * U x j l +
+            U x i k * (extDerivFun (I := I) (fun y : M => U y j l) x v)) *
+            A x i j * B x k l +
+          U x i k * U x j l *
+            ((extDerivFun (I := I) (fun y : M => A y i j) x v) * B x k l +
+              A x i j * (extDerivFun (I := I) (fun y : M => B y k l) x v))) := by
+        refine Finset.sum_congr rfl fun i _hi => ?_
+        refine Finset.sum_congr rfl fun j _hj => ?_
+        refine Finset.sum_congr rfl fun k _hk => ?_
+        refine Finset.sum_congr rfl fun l _hl => ?_
+        exact hterm i j k l
+
+@[simp] private theorem fin2_apply_ite {α β : Type*} (f : α -> β) (i j : α) :
+    (fun q : Fin 2 => f (if q = 0 then i else j)) =
+      fun q : Fin 2 => if q = 0 then f i else f j := by
+  funext q
+  by_cases hq : q = 0 <;> simp [hq]
+
 /-- Coordinate squared norms are independent of the chosen frame realization,
 because both coordinate sums equal the intrinsic norm. -/
 theorem coord_normSq0S_eq_coord
@@ -2222,6 +2403,553 @@ private theorem cotangentInner_metricCompatible_extDerivFun_of_sharp_mdiffAt
   rw [hcovA, hcovB]
   rfl
 
+/-- Differentiability of the induced `(0,2)` tensor inner product. -/
+theorem inner0S_two_mdiff
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (x : M) :
+    MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x := by
+  classical
+  let Idx : Type _ := RicciFlower.Coordinates.CoordinateIdx (𝕜 := Real) E
+  let frame : Idx -> (y : M) -> TangentSpace I y :=
+    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+  let slots : Idx -> Idx -> Fin 2 -> Idx :=
+    fun i j q => if q = 0 then i else j
+  let U : M -> Idx -> Idx -> Real :=
+    fun y i j =>
+      RicciFlower.Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x i j (extChartAt I x y)
+  let Ac : M -> Idx -> Idx -> Real :=
+    fun y i j => A y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  let Bc : M -> Idx -> Idx -> Real :=
+    fun y i j => B y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  have hx : x ∈ RicciFlower.Coordinates.coordinateFrameSet (I := I) x :=
+    RicciFlower.Coordinates.coordinateFrameAt_mem (I := I) x
+  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+  have hUmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x := by
+    intro i j
+    simpa [U, Idx] using
+      RicciFlower.Coordinates.gInvComp_mdiffAt (I := I) g x i j
+  have hAmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Ac y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) A x (slots i j)
+    have hfun :
+        (fun y : M => A y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Ac y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => A y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hBmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Bc y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) B x (slots i j)
+    have hfun :
+        (fun y : M => B y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Bc y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => B y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hlocal :
+      (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) =ᶠ[𝓝 x]
+        fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * Ac y i j * Bc y k l := by
+    filter_upwards
+      [(RicciFlower.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
+      with y hy
+    have h := inner0S_two_eq_coord (I := I) g y
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (U y) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hy)
+      (A y) (B y)
+    simpa [U, Ac, Bc, frame, slots,
+      RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+  have hsum :
+      MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * Ac y i j * Bc y k l) x := by
+    have hraw : MDifferentiableAt I 𝓘(Real, Real)
+        (∑ i : Idx, fun y : M => ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * Ac y i j * Bc y k l) x := by
+      refine MDifferentiableAt.sum (𝕜 := Real) (I := I)
+        (t := (Finset.univ : Finset Idx)) ?_
+      intro i _
+      have hraw_j : MDifferentiableAt I 𝓘(Real, Real)
+          (∑ j : Idx, fun y : M => ∑ k : Idx, ∑ l : Idx,
+            U y i k * U y j l * Ac y i j * Bc y k l) x := by
+        refine MDifferentiableAt.sum (𝕜 := Real) (I := I)
+          (t := (Finset.univ : Finset Idx)) ?_
+        intro j _
+        have hraw_k : MDifferentiableAt I 𝓘(Real, Real)
+            (∑ k : Idx, fun y : M => ∑ l : Idx,
+              U y i k * U y j l * Ac y i j * Bc y k l) x := by
+          refine MDifferentiableAt.sum (𝕜 := Real) (I := I)
+            (t := (Finset.univ : Finset Idx)) ?_
+          intro k _
+          have hraw_l : MDifferentiableAt I 𝓘(Real, Real)
+              (∑ l : Idx, fun y : M =>
+                U y i k * U y j l * Ac y i j * Bc y k l) x := by
+            refine MDifferentiableAt.sum (𝕜 := Real) (I := I)
+              (t := (Finset.univ : Finset Idx)) ?_
+            intro l _
+            exact (((hUmdiff i k).mul (hUmdiff j l)).mul (hAmdiff i j)).mul
+              (hBmdiff k l)
+          exact hraw_l.congr_of_eventuallyEq
+            (by filter_upwards with y; simp [Finset.sum_apply])
+        exact hraw_k.congr_of_eventuallyEq
+          (by filter_upwards with y; simp [Finset.sum_apply])
+      exact hraw_j.congr_of_eventuallyEq
+        (by filter_upwards with y; simp [Finset.sum_apply])
+    exact hraw.congr_of_eventuallyEq
+      (by filter_upwards with y; simp [Finset.sum_apply])
+  exact hsum.congr_of_eventuallyEq hlocal
+
+/-- Directional metric compatibility for the induced `(0,2)` tensor inner product.
+
+This version is stated directly with `nabla0SFun`, so it can be used for
+frozen auxiliary tensor fields without constructing a bundled total derivative. -/
+theorem inner0S_two_nabla
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    extDerivFun (I := I)
+        (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+      inner0S (I := I) g x 2
+        (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (B x) +
+        inner0S (I := I) g x 2 (A x)
+          (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x) := by
+  classical
+  let Idx : Type _ := RicciFlower.Coordinates.CoordinateIdx (𝕜 := Real) E
+  let frame : Idx -> (y : M) -> TangentSpace I y :=
+    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+  let hframe : IsLocalFrameOn I E 1 frame
+      (RicciFlower.Coordinates.coordinateFrameSet (I := I) x) :=
+    RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x
+  let slots : Idx -> Idx -> Fin 2 -> Idx :=
+    fun i j q => if q = 0 then i else j
+  let U : M -> Idx -> Idx -> Real :=
+    fun y i j =>
+      RicciFlower.Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x i j (extChartAt I x y)
+  let Ac : M -> Idx -> Idx -> Real :=
+    fun y i j => A y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  let Bc : M -> Idx -> Idx -> Real :=
+    fun y i j => B y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  let DA : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => Ac y i j) x (X x)
+  let DB : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => Bc y i j) x (X x)
+  let DU : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => U y i j) x (X x)
+  let Γ : Idx -> Idx -> Real :=
+    fun i j =>
+      RicciFlower.Coordinates.christoffelAlongInFrame cov frame hframe x (X x) i j
+  let NA : Idx -> Idx -> Real :=
+    fun i j =>
+      (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (fun q : Fin 2 => if q = 0 then frame i x else frame j x)
+  let NB : Idx -> Idx -> Real :=
+    fun i j =>
+      (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x) (fun q : Fin 2 => if q = 0 then frame i x else frame j x)
+  have hx : x ∈ RicciFlower.Coordinates.coordinateFrameSet (I := I) x :=
+    RicciFlower.Coordinates.coordinateFrameAt_mem (I := I) x
+  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+  have hUmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x := by
+    intro i j
+    simpa [U, Idx] using
+      RicciFlower.Coordinates.gInvComp_mdiffAt (I := I) g x i j
+  have hAmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Ac y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) A x (slots i j)
+    have hfun :
+        (fun y : M => A y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Ac y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => A y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hBmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Bc y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) B x (slots i j)
+    have hfun :
+        (fun y : M => B y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Bc y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => B y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hlocal :
+      (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) =ᶠ[𝓝 x]
+        fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * Ac y i j * Bc y k l := by
+    filter_upwards
+      [(RicciFlower.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
+      with y hy
+    have h := inner0S_two_eq_coord (I := I) g y
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (U y) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hy)
+      (A y) (B y)
+    simpa [U, Ac, Bc, frame, slots,
+      RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+  have hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U x a q) + (∑ a : Idx, Γ a q * U x p a)) := by
+    intro p q
+    have hzero := RicciFlower.Coordinates.gInvCovZeroAt
+      (I := I) g cov X hmc x p q
+    unfold RicciFlower.Coordinates.inverseMetricCovDerivForMetricCompAlongInFrame at hzero
+    have hzero' :
+        DU p q +
+          (∑ a : Idx, Γ a p * U x a q) +
+          (∑ a : Idx, Γ a q * U x p a) = 0 := by
+      simpa [DU, U, Γ, frame, hframe, Idx] using hzero
+    linarith
+  have hDA_coord (p q : Idx) :
+      DA p q =
+        RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+          (fun y : M => X y) x (fun y : M => A y) (slots p q) := by
+    have hfun :
+        (fun y : M => Ac y p q) =
+          fun y : M => A y
+            (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+              (slots p q a) y) := by
+      funext y
+      exact (congrArg (fun f : Fin 2 -> TangentSpace I y => A y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) p q)).symm
+    calc
+      DA p q =
+          extDerivFun (I := I) (fun y : M => Ac y p q) x (X x) := rfl
+      _ =
+          extDerivFun (I := I)
+            (fun y : M => A y
+              (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (slots p q a) y)) x (X x) := by
+            rw [hfun]
+      _ =
+          RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+            (fun y : M => X y) x (fun y : M => A y) (slots p q) := by
+            simp [RicciFlower.extDerivFun_real_eq_mfderiv,
+              RicciFlower.Coordinates.coordDeriv0SAt]
+  have hDB_coord (p q : Idx) :
+      DB p q =
+        RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+          (fun y : M => X y) x (fun y : M => B y) (slots p q) := by
+    have hfun :
+        (fun y : M => Bc y p q) =
+          fun y : M => B y
+            (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+              (slots p q a) y) := by
+      funext y
+      exact (congrArg (fun f : Fin 2 -> TangentSpace I y => B y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) p q)).symm
+    calc
+      DB p q =
+          extDerivFun (I := I) (fun y : M => Bc y p q) x (X x) := rfl
+      _ =
+          extDerivFun (I := I)
+            (fun y : M => B y
+              (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (slots p q a) y)) x (X x) := by
+            rw [hfun]
+      _ =
+          RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+            (fun y : M => X y) x (fun y : M => B y) (slots p q) := by
+            simp [RicciFlower.extDerivFun_real_eq_mfderiv,
+              RicciFlower.Coordinates.coordDeriv0SAt]
+  have hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+          (∑ a : Idx, Γ q a * Ac x p a) := by
+    intro p q
+    have hcoord := RicciFlower.Coordinates.nabla0SFun_two_eval_coordFrame
+      (I := I) cov X A x
+      (RicciFlower.Coordinates.modelDeriv_eq_coordDeriv0SAt (I := I) X x A)
+      p q
+    have hs1 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) p a *
+            A x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x)) =
+          ∑ a : Idx, Γ p a * Ac x a q := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x) =
+            (fun r : Fin 2 => if r = 0 then frame a x else frame q x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) a q
+      rw [hslot]
+    have hs2 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) q a *
+            A x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x)) =
+          ∑ a : Idx, Γ q a * Ac x p a := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x) =
+            (fun r : Fin 2 => if r = 0 then frame p x else frame a x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) p a
+      rw [hslot]
+    have hcoord' :
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X A x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) =
+          DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+            (∑ a : Idx, Γ q a * Ac x p a) := by
+      calc
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X A x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+            =
+          (RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+              (fun y : M => X y) x (fun y : M => A y) (slots p q) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) p a *
+                  A x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then a else q) x)) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) q a *
+                  A x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then p else a) x) := by
+            simpa [frame, slots] using hcoord
+        _ = DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+            (∑ a : Idx, Γ q a * Ac x p a) := by
+            rw [← hDA_coord p q, hs1, hs2]
+    simpa [NA] using hcoord'
+  have hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+          (∑ a : Idx, Γ q a * Bc x p a) := by
+    intro p q
+    have hcoord := RicciFlower.Coordinates.nabla0SFun_two_eval_coordFrame
+      (I := I) cov X B x
+      (RicciFlower.Coordinates.modelDeriv_eq_coordDeriv0SAt (I := I) X x B)
+      p q
+    have hs1 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) p a *
+            B x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x)) =
+          ∑ a : Idx, Γ p a * Bc x a q := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x) =
+            (fun r : Fin 2 => if r = 0 then frame a x else frame q x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) a q
+      rw [hslot]
+    have hs2 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) q a *
+            B x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x)) =
+          ∑ a : Idx, Γ q a * Bc x p a := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x) =
+            (fun r : Fin 2 => if r = 0 then frame p x else frame a x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) p a
+      rw [hslot]
+    have hcoord' :
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X B x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) =
+          DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+            (∑ a : Idx, Γ q a * Bc x p a) := by
+      calc
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X B x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+            =
+          (RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+              (fun y : M => X y) x (fun y : M => B y) (slots p q) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) p a *
+                  B x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then a else q) x)) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) q a *
+                  B x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then p else a) x) := by
+            simpa [frame, slots] using hcoord
+        _ = DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+            (∑ a : Idx, Γ q a * Bc x p a) := by
+            rw [← hDB_coord p q, hs1, hs2]
+    simpa [NB] using hcoord'
+  have hleft_deriv :
+      extDerivFun (I := I)
+          (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) := by
+    calc
+      extDerivFun (I := I)
+          (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+        extDerivFun (I := I)
+          (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+            U y i k * U y j l * Ac y i j * Bc y k l) x (X x) := by
+          exact RicciFlower.Coordinates.deriv_congr_nhds (I := I)
+            (x := x) (X x) hlocal
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) := by
+          simpa [U, Ac, Bc, DA, DB, DU] using
+            deriv4sum (I := I) (U := U) (A := Ac) (B := Bc)
+              (x := x) (v := X x) hUmdiff hAmdiff hBmdiff
+  have halg :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l)))) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l) :=
+    inner0S_two_metricCompatible_coord_algebra
+      (U := U x) (Γ := Γ) (A := Ac x) (B := Bc x)
+      (DA := DA) (DB := DB) (NA := NA) (NB := NB) (DU := DU)
+      hDU hNA hNB
+  have hsplit :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l)) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l)) := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l)) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (U x i k * U x j l * (NA i j * Bc x k l) +
+            U x i k * U x j l * (Ac x i j * NB k l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+      _ = _ := by
+          simp [Finset.sum_add_distrib]
+  have hRhsA :
+      inner0S (I := I) g x 2
+        (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l) := by
+    have h := inner0S_two_eq_coord (I := I) g x
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (U x) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hx)
+      (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (B x)
+    calc
+      inner0S (I := I) g x 2
+          (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * NA i j * Bc x k l := by
+          simpa [U, Bc, NA, frame,
+            RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+  have hRhsB :
+      inner0S (I := I) g x 2 (A x)
+        (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l) := by
+    have h := inner0S_two_eq_coord (I := I) g x
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (U x) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hx)
+      (A x)
+      (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x)
+    calc
+      inner0S (I := I) g x 2 (A x)
+          (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * Ac x i j * NB k l := by
+          simpa [U, Ac, NB, frame,
+            RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+  calc
+    extDerivFun (I := I)
+        (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+          U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) :=
+        hleft_deriv
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l) := halg
+    _ = inner0S (I := I) g x 2
+          (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X A x) (B x) +
+        inner0S (I := I) g x 2 (A x)
+          (nabla0SFun (E := E) (H := H) (I := I) (M := M) 2 cov X B x) := by
+          rw [hsplit, ← hRhsA, ← hRhsB]
+
 /-- Metric compatibility lifted to the induced inner product on `(0,2)`
 covariant tensor fibers.
 
@@ -2258,9 +2986,458 @@ theorem inner0S_two_metricCompatible_extDerivFun
         inner0S (I := I) g x 2 (A x)
           (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
             (nablaB x) (X x)) := by
-  -- Frontier: assemble the checked coordinate algebra with a localized
-  -- fixed-chart inverse-metric realization on the coordinate-frame base set.
-  sorry
+  classical
+  let Idx : Type _ := RicciFlower.Coordinates.CoordinateIdx (𝕜 := Real) E
+  let frame : Idx -> (y : M) -> TangentSpace I y :=
+    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+  let hframe : IsLocalFrameOn I E 1 frame
+      (RicciFlower.Coordinates.coordinateFrameSet (I := I) x) :=
+    RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x
+  let slots : Idx -> Idx -> Fin 2 -> Idx :=
+    fun i j q => if q = 0 then i else j
+  let U : M -> Idx -> Idx -> Real :=
+    fun y i j =>
+      RicciFlower.Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x i j (extChartAt I x y)
+  let Ac : M -> Idx -> Idx -> Real :=
+    fun y i j => A y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  let Bc : M -> Idx -> Idx -> Real :=
+    fun y i j => B y (fun q : Fin 2 => if q = 0 then frame i y else frame j y)
+  let DA : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => Ac y i j) x (X x)
+  let DB : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => Bc y i j) x (X x)
+  let DU : Idx -> Idx -> Real :=
+    fun i j => extDerivFun (I := I) (fun y : M => U y i j) x (X x)
+  let Γ : Idx -> Idx -> Real :=
+    fun i j =>
+      RicciFlower.Coordinates.christoffelAlongInFrame cov frame hframe x (X x) i j
+  let NA : Idx -> Idx -> Real :=
+    fun i j =>
+      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        (nablaA x) (X x)) (fun q : Fin 2 => if q = 0 then frame i x else frame j x)
+  let NB : Idx -> Idx -> Real :=
+    fun i j =>
+      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        (nablaB x) (X x)) (fun q : Fin 2 => if q = 0 then frame i x else frame j x)
+  have hx : x ∈ RicciFlower.Coordinates.coordinateFrameSet (I := I) x :=
+    RicciFlower.Coordinates.coordinateFrameAt_mem (I := I) x
+  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+  have hUmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x := by
+    intro i j
+    simpa [U, Idx] using
+      RicciFlower.Coordinates.gInvComp_mdiffAt (I := I) g x i j
+  have hAmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Ac y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) A x (slots i j)
+    have hfun :
+        (fun y : M => A y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Ac y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => A y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hBmdiff : ∀ i j : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => Bc y i j) x := by
+    intro i j
+    have h := RicciFlower.Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+      (I := I) (𝕜 := Real) B x (slots i j)
+    have hfun :
+        (fun y : M => B y
+          (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+            (slots i j a) y)) =
+          fun y : M => Bc y i j := by
+      funext y
+      exact congrArg (fun f : Fin 2 -> TangentSpace I y => B y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) i j)
+    exact hfun ▸ h.mdifferentiableAt (by simp)
+  have hlocal :
+      (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) =ᶠ[𝓝 x]
+        fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U y i k * U y j l * Ac y i j * Bc y k l := by
+    filter_upwards
+      [(RicciFlower.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
+      with y hy
+    have h := inner0S_two_eq_coord (I := I) g y
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (U y) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hy)
+      (A y) (B y)
+    simpa [U, Ac, Bc, frame, slots,
+      RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+  have hDU : ∀ p q : Idx,
+      DU p q =
+        - ((∑ a : Idx, Γ a p * U x a q) + (∑ a : Idx, Γ a q * U x p a)) := by
+    intro p q
+    have hzero := RicciFlower.Coordinates.gInvCovZeroAt
+      (I := I) g cov X hmc x p q
+    unfold RicciFlower.Coordinates.inverseMetricCovDerivForMetricCompAlongInFrame at hzero
+    have hzero' :
+        DU p q +
+          (∑ a : Idx, Γ a p * U x a q) +
+          (∑ a : Idx, Γ a q * U x p a) = 0 := by
+      simpa [DU, U, Γ, frame, hframe, Idx] using hzero
+    linarith
+  have hDA_coord (p q : Idx) :
+      DA p q =
+        RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+          (fun y : M => X y) x (fun y : M => A y) (slots p q) := by
+    have hfun :
+        (fun y : M => Ac y p q) =
+          fun y : M => A y
+            (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+              (slots p q a) y) := by
+      funext y
+      exact (congrArg (fun f : Fin 2 -> TangentSpace I y => A y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) p q)).symm
+    calc
+      DA p q =
+          extDerivFun (I := I) (fun y : M => Ac y p q) x (X x) := rfl
+      _ =
+          extDerivFun (I := I)
+            (fun y : M => A y
+              (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (slots p q a) y)) x (X x) := by
+            rw [hfun]
+      _ =
+          RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+            (fun y : M => X y) x (fun y : M => A y) (slots p q) := by
+            simp [RicciFlower.extDerivFun_real_eq_mfderiv,
+              RicciFlower.Coordinates.coordDeriv0SAt]
+  have hDB_coord (p q : Idx) :
+      DB p q =
+        RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+          (fun y : M => X y) x (fun y : M => B y) (slots p q) := by
+    have hfun :
+        (fun y : M => Bc y p q) =
+          fun y : M => B y
+            (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+              (slots p q a) y) := by
+      funext y
+      exact (congrArg (fun f : Fin 2 -> TangentSpace I y => B y f)
+        (fin2_apply_ite (fun r : Idx => frame r y) p q)).symm
+    calc
+      DB p q =
+          extDerivFun (I := I) (fun y : M => Bc y p q) x (X x) := rfl
+      _ =
+          extDerivFun (I := I)
+            (fun y : M => B y
+              (fun a : Fin 2 => RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (slots p q a) y)) x (X x) := by
+            rw [hfun]
+      _ =
+          RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+            (fun y : M => X y) x (fun y : M => B y) (slots p q) := by
+            simp [RicciFlower.extDerivFun_real_eq_mfderiv,
+              RicciFlower.Coordinates.coordDeriv0SAt]
+  have hNA : ∀ p q : Idx,
+      NA p q =
+        DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+          (∑ a : Idx, Γ q a * Ac x p a) := by
+    intro p q
+    have happ := TotalNabla0SRealizes.apply (I := I) hA X x
+      (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+    have hcoord := RicciFlower.Coordinates.nabla0SFun_two_eval_coordFrame
+      (I := I) cov X A x
+      (RicciFlower.Coordinates.modelDeriv_eq_coordDeriv0SAt (I := I) X x A)
+      p q
+    have hs1 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) p a *
+            A x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x)) =
+          ∑ a : Idx, Γ p a * Ac x a q := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x) =
+            (fun r : Fin 2 => if r = 0 then frame a x else frame q x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) a q
+      rw [hslot]
+    have hs2 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) q a *
+            A x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x)) =
+          ∑ a : Idx, Γ q a * Ac x p a := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x) =
+            (fun r : Fin 2 => if r = 0 then frame p x else frame a x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) p a
+      rw [hslot]
+    have hcoord' :
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X A x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) =
+          DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+            (∑ a : Idx, Γ q a * Ac x p a) := by
+      calc
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X A x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+            =
+          (RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+              (fun y : M => X y) x (fun y : M => A y) (slots p q) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) p a *
+                  A x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then a else q) x)) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) q a *
+                  A x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then p else a) x) := by
+            simpa [frame, slots] using hcoord
+        _ = DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+            (∑ a : Idx, Γ q a * Ac x p a) := by
+            rw [← hDA_coord p q, hs1, hs2]
+    calc
+      NA p q =
+          nablaA x (Fin.cons (X x)
+            (fun r : Fin 2 => if r = 0 then frame p x else frame q x)) := by
+            simp [NA, tensor0S_curry_apply_cons]
+      _ =
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X A x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) := happ
+      _ =
+          DA p q - (∑ a : Idx, Γ p a * Ac x a q) -
+            (∑ a : Idx, Γ q a * Ac x p a) := hcoord'
+  have hNB : ∀ p q : Idx,
+      NB p q =
+        DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+          (∑ a : Idx, Γ q a * Bc x p a) := by
+    intro p q
+    have happ := TotalNabla0SRealizes.apply (I := I) hB X x
+      (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+    have hcoord := RicciFlower.Coordinates.nabla0SFun_two_eval_coordFrame
+      (I := I) cov X B x
+      (RicciFlower.Coordinates.modelDeriv_eq_coordDeriv0SAt (I := I) X x B)
+      p q
+    have hs1 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) p a *
+            B x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x)) =
+          ∑ a : Idx, Γ p a * Bc x a q := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then a else q) x) =
+            (fun r : Fin 2 => if r = 0 then frame a x else frame q x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) a q
+      rw [hslot]
+    have hs2 :
+        (∑ a : Idx,
+          RicciFlower.Coordinates.christoffelAlongInFrame cov
+              (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+              (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+              x (X x) q a *
+            B x (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x)) =
+          ∑ a : Idx, Γ q a * Bc x p a := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      have hslot :
+          (fun r : Fin 2 =>
+              RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                (if r = 0 then p else a) x) =
+            (fun r : Fin 2 => if r = 0 then frame p x else frame a x) :=
+        fin2_apply_ite (fun r : Idx => frame r x) p a
+      rw [hslot]
+    have hcoord' :
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X B x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) =
+          DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+            (∑ a : Idx, Γ q a * Bc x p a) := by
+      calc
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X B x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x)
+            =
+          (RicciFlower.Coordinates.coordDeriv0SAt (I := I)
+              (fun y : M => X y) x (fun y : M => B y) (slots p q) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) p a *
+                  B x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then a else q) x)) -
+              ∑ a : Idx,
+                RicciFlower.Coordinates.christoffelAlongInFrame cov
+                    (RicciFlower.Coordinates.coordinateFrameAt (I := I) x)
+                    (RicciFlower.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
+                    x (X x) q a *
+                  B x (fun r : Fin 2 =>
+                    RicciFlower.Coordinates.coordinateFrameAt (I := I) x
+                      (if r = 0 then p else a) x) := by
+            simpa [frame, slots] using hcoord
+        _ = DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+            (∑ a : Idx, Γ q a * Bc x p a) := by
+            rw [← hDB_coord p q, hs1, hs2]
+    calc
+      NB p q =
+          nablaB x (Fin.cons (X x)
+            (fun r : Fin 2 => if r = 0 then frame p x else frame q x)) := by
+            simp [NB, tensor0S_curry_apply_cons]
+      _ =
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X B x
+              (fun r : Fin 2 => if r = 0 then frame p x else frame q x) := happ
+      _ =
+          DB p q - (∑ a : Idx, Γ p a * Bc x a q) -
+            (∑ a : Idx, Γ q a * Bc x p a) := hcoord'
+  have hleft_deriv :
+      extDerivFun (I := I)
+          (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) := by
+    calc
+      extDerivFun (I := I)
+          (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+        extDerivFun (I := I)
+          (fun y : M => ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+            U y i k * U y j l * Ac y i j * Bc y k l) x (X x) := by
+          exact RicciFlower.Coordinates.deriv_congr_nhds (I := I)
+            (x := x) (X x) hlocal
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) := by
+          simpa [U, Ac, Bc, DA, DB, DU] using
+            deriv4sum (I := I) (U := U) (A := Ac) (B := Bc)
+              (x := x) (v := X x) hUmdiff hAmdiff hBmdiff
+  have halg :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+            U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l)))) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l) :=
+    inner0S_two_metricCompatible_coord_algebra
+      (U := U x) (Γ := Γ) (A := Ac x) (B := Bc x)
+      (DA := DA) (DB := DB) (NA := NA) (NB := NB) (DU := DU)
+      hDU hNA hNB
+  have hsplit :
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l)) =
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l)) := by
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l)) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (U x i k * U x j l * (NA i j * Bc x k l) +
+            U x i k * U x j l * (Ac x i j * NB k l)) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+      _ = _ := by
+          simp [Finset.sum_add_distrib]
+  have hRhsA :
+      inner0S (I := I) g x 2
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaA x) (X x)) (B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l) := by
+    have h := inner0S_two_eq_coord (I := I) g x
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (U x) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hx)
+      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        (nablaA x) (X x)) (B x)
+    calc
+      inner0S (I := I) g x 2
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaA x) (X x)) (B x) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * NA i j * Bc x k l := by
+          simpa [U, Bc, NA, frame,
+            RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+  have hRhsB :
+      inner0S (I := I) g x 2 (A x)
+        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          (nablaB x) (X x)) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l) := by
+    have h := inner0S_two_eq_coord (I := I) g x
+      (RicciFlower.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (U x) (RicciFlower.Coordinates.gInvBasisAt (I := I) g x hx)
+      (A x)
+      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        (nablaB x) (X x))
+    calc
+      inner0S (I := I) g x 2 (A x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaB x) (X x)) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * Ac x i j * NB k l := by
+          simpa [U, Ac, NB, frame,
+            RicciFlower.Coordinates.coordinateFrameAt_basis_apply] using h
+      _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (Ac x i j * NB k l) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          ring
+  calc
+    extDerivFun (I := I)
+        (fun y : M => inner0S (I := I) g y 2 (A y) (B y)) x (X x) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (((DU i k * U x j l + U x i k * DU j l) * Ac x i j * Bc x k l +
+          U x i k * U x j l * (DA i j * Bc x k l + Ac x i j * DB k l))) :=
+        hleft_deriv
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          U x i k * U x j l * (NA i j * Bc x k l + Ac x i j * NB k l) := halg
+    _ = inner0S (I := I) g x 2
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaA x) (X x)) (B x) +
+        inner0S (I := I) g x 2 (A x)
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            (nablaB x) (X x)) := by
+          rw [hsplit, ← hRhsA, ← hRhsB]
 
 end
 

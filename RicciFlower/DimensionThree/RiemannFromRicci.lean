@@ -1,6 +1,7 @@
 import RicciFlower.DimensionThree.CurvatureAlgebra
 import RicciFlower.Realized.CurvatureComponents
 import RicciFlower.LeviCivita.Curvature
+import RicciFlower.Tensor.RSTensor.CotangentRiemannian
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -24,7 +25,7 @@ noncomputable section
 namespace RicciFlower
 namespace DimensionThree
 
-open Realized
+open Realized Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -48,6 +49,142 @@ def standardRmCompAt
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (i j k l : Fin 3) : Real :=
   rm04CompAt (I := I) basis Rm04 l i j k
+
+/-- Pointwise symmetry of a Ricci-type `(0,2)` tensor. -/
+def RicciSymAt
+    (Ric : Tensor02At (I := I) (M := M) x) : Prop :=
+  forall X Y : TangentSpace I x,
+    Ric (vec2 X Y) = Ric (vec2 Y X)
+
+/-- Pointwise nonnegativity of a Ricci-type `(0,2)` tensor. -/
+def RicciNonnegAt
+    (Ric : Tensor02At (I := I) (M := M) x) : Prop :=
+  forall X : TangentSpace I x, 0 <= Ric (vec2 X X)
+
+/-- The covector `Y |-> Ric(X,Y)`. -/
+def ricciCovAt
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (X : TangentSpace I x) :
+    Module.Dual Real (TangentSpace I x) where
+  toFun := fun Y => Ric (vec2 X Y)
+  map_add' := by
+    intro Y Z
+    classical
+    let m : Fin 2 -> TangentSpace I x := vec2 X Y
+    have hmap := Ric.map_update_add m 1 Y Z
+    have hleft :
+        Function.update m (1 : Fin 2) (Y + Z) = vec2 X (Y + Z) := by
+      funext i
+      fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+    have hY : Function.update m (1 : Fin 2) Y = vec2 X Y := by
+      funext i
+      fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+    have hZ : Function.update m (1 : Fin 2) Z = vec2 X Z := by
+      funext i
+      fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+    simpa [hleft, hY, hZ] using hmap
+  map_smul' := by
+    intro c Y
+    classical
+    let m : Fin 2 -> TangentSpace I x := vec2 X Y
+    have hmap := Ric.map_update_smul m 1 c Y
+    have hleft :
+        Function.update m (1 : Fin 2) (c • Y) = vec2 X (c • Y) := by
+      funext i
+      fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+    have hY : Function.update m (1 : Fin 2) Y = vec2 X Y := by
+      funext i
+      fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+    simpa [hleft, hY] using hmap
+
+private theorem ricciCovAt_add
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (X Y : TangentSpace I x) :
+    ricciCovAt (I := I) Ric (X + Y) =
+      ricciCovAt (I := I) Ric X + ricciCovAt (I := I) Ric Y := by
+  ext Z
+  classical
+  let m : Fin 2 -> TangentSpace I x := vec2 X Z
+  have hmap := Ric.map_update_add m 0 X Y
+  have hleft :
+      Function.update m (0 : Fin 2) (X + Y) = vec2 (X + Y) Z := by
+    funext i
+    fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+  have hX : Function.update m (0 : Fin 2) X = vec2 X Z := by
+    funext i
+    fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+  have hY : Function.update m (0 : Fin 2) Y = vec2 Y Z := by
+    funext i
+    fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+  simpa [ricciCovAt, hleft, hX, hY] using hmap
+
+private theorem ricciCovAt_smul
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (c : Real) (X : TangentSpace I x) :
+    ricciCovAt (I := I) Ric (c • X) =
+      c • ricciCovAt (I := I) Ric X := by
+  ext Z
+  classical
+  let m : Fin 2 -> TangentSpace I x := vec2 X Z
+  have hmap := Ric.map_update_smul m 0 c X
+  have hleft :
+      Function.update m (0 : Fin 2) (c • X) = vec2 (c • X) Z := by
+    funext i
+    fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+  have hX : Function.update m (0 : Fin 2) X = vec2 X Z := by
+    funext i
+    fin_cases i <;> simp [m, Curvature.vec2, Function.update]
+  simpa [ricciCovAt, hleft, hX] using hmap
+
+/-- Raise the first slot of a Ricci-type tensor to get an endomorphism. -/
+def ricciEndAt
+    (g : SmoothRiemannianMetric I M)
+    (Ric : Tensor02At (I := I) (M := M) x) :
+    TangentSpace I x →ₗ[Real] TangentSpace I x where
+  toFun := fun X =>
+    cotangentSharp (I := I) g x
+      (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X))
+  map_add' := by
+    intro X Y
+    change
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric (X + Y))) =
+        cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X)) +
+          cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric Y))
+    rw [ricciCovAt_add (I := I) Ric X Y]
+    change
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangentLinear (I := I)
+            (ricciCovAt (I := I) Ric X + ricciCovAt (I := I) Ric Y)) =
+        cotangentSharpLinear (I := I) g x
+          (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X)) +
+          cotangentSharpLinear (I := I) g x
+          (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric Y))
+    rw [map_add, map_add]
+  map_smul' := by
+    intro c X
+    change
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric (c • X))) =
+        c • cotangentSharpLinear (I := I) g x
+          (dualToCotangent (I := I) (ricciCovAt (I := I) Ric X))
+    rw [ricciCovAt_smul (I := I) Ric c X]
+    change
+      cotangentSharpLinear (I := I) g x
+          (dualToCotangentLinear (I := I)
+            (c • ricciCovAt (I := I) Ric X)) =
+        c • cotangentSharpLinear (I := I) g x
+          (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X))
+    rw [map_smul, map_smul]
+
+theorem ricciEnd_inner
+    (g : SmoothRiemannianMetric I M)
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (X Y : TangentSpace I x) :
+    g.inner x (ricciEndAt (I := I) g Ric X) Y = Ric (vec2 X Y) := by
+  simp [ricciEndAt, ricciCovAt, cotangentSharp_inner]
 
 @[simp]
 theorem standardRmCompAt_apply
@@ -178,6 +315,108 @@ structure RiemannFromRicci3DTraceDataAt
       stdRicci3 (standardRmCompAt basis Rm04) i j
   scalar_trace :
     scalar = stdScalar3 (standardRmCompAt basis Rm04)
+
+/-- The convention-correct first trace of `Rm04` is the negative of the
+displayed-slot Ricci contraction used by `stdRicci3`.
+
+This is the sign bridge between RicciFlower's intrinsic convention
+`Ric(Y,Z) = tr (X |-> R(X,Y)Z)` and the displayed component convention used in
+the 3D finite algebra file. -/
+theorem firstTrace_delta3_eq_neg_stdRicci3
+    {Rm04 : Tensor04At (I := I) (M := M) x}
+    {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
+    (hcurv : AlgebraicCurvatureSymmetries3 (standardRmCompAt basis Rm04))
+    (i j : Fin 3) :
+    (∑ k : Fin 3, ∑ l : Fin 3,
+        delta3 k l * Rm04 (vec4 (basis k) (basis l) (basis i) (basis j))) =
+      -stdRicci3 (standardRmCompAt basis Rm04) i j := by
+  have h0 := hcurv.anti_last 0 i j 0
+  have h1 := hcurv.anti_last 1 i j 1
+  have h2 := hcurv.anti_last 2 i j 2
+  have h0' :
+      standardRmCompAt basis Rm04 0 i j 0 =
+        -standardRmCompAt basis Rm04 0 i 0 j := by
+    linarith
+  have h1' :
+      standardRmCompAt basis Rm04 1 i j 1 =
+        -standardRmCompAt basis Rm04 1 i 1 j := by
+    linarith
+  have h2' :
+      standardRmCompAt basis Rm04 2 i j 2 =
+        -standardRmCompAt basis Rm04 2 i 2 j := by
+    linarith
+  have h0d :
+      Rm04 (vec4 (basis 0) (basis 0) (basis i) (basis j)) =
+        -Rm04 (vec4 (basis j) (basis 0) (basis i) (basis 0)) := by
+    simpa [standardRmCompAt_apply, rm04CompAt_apply] using h0'
+  have h1d :
+      Rm04 (vec4 (basis 1) (basis 1) (basis i) (basis j)) =
+        -Rm04 (vec4 (basis j) (basis 1) (basis i) (basis 1)) := by
+    simpa [standardRmCompAt_apply, rm04CompAt_apply] using h1'
+  have h2d :
+      Rm04 (vec4 (basis 2) (basis 2) (basis i) (basis j)) =
+        -Rm04 (vec4 (basis j) (basis 2) (basis i) (basis 2)) := by
+    simpa [standardRmCompAt_apply, rm04CompAt_apply] using h2'
+  rw [Fin.sum_univ_three]
+  simp [delta3]
+  rw [h0d, h1d, h2d]
+  unfold stdRicci3
+  simp [standardRmCompAt_apply, rm04CompAt_apply]
+  ring
+
+/-- Produce the displayed-slot 3D trace-data package from RicciFlower's
+convention-correct first trace.
+
+Because `RiemannFromRicci3DTraceDataAt` is stated for the displayed-slot
+contraction `stdRicci3`, the geometric Ricci tensor and scalar appear with a
+minus sign. -/
+theorem traceDataOfFirst
+    {g : SmoothRiemannianMetric I M}
+    {Ric : Tensor02At (I := I) (M := M) x}
+    {scalar : Real}
+    {Rm04 : Tensor04At (I := I) (M := M) x}
+    {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (hcurv : AlgebraicCurvatureSymmetries3 (standardRmCompAt basis Rm04))
+    (hRic : RicciRealizesRm04FirstTraceAt (I := I) Ric Rm04 delta3 basis)
+    (hScalar : ScalarRealizesRicciTraceAt (I := I) scalar Ric delta3 basis) :
+    RiemannFromRicci3DTraceDataAt g (-Ric) (-scalar) Rm04 basis := by
+  refine ⟨horth, hcurv, ?_, ?_⟩
+  · intro i j
+    rw [ricciCompAt_apply]
+    have hfirst := firstTrace_delta3_eq_neg_stdRicci3
+      (I := I) (M := M) hcurv i j
+    have hRicij := hRic i j
+    change -(Ric (vec2 (basis i) (basis j))) =
+      stdRicci3 (standardRmCompAt basis Rm04) i j
+    rw [hRicij]
+    rw [hfirst]
+    ring
+  · have h00 := firstTrace_delta3_eq_neg_stdRicci3
+      (I := I) (M := M) hcurv 0 0
+    have h11 := firstTrace_delta3_eq_neg_stdRicci3
+      (I := I) (M := M) hcurv 1 1
+    have h22 := firstTrace_delta3_eq_neg_stdRicci3
+      (I := I) (M := M) hcurv 2 2
+    have hRic00 := hRic 0 0
+    have hRic11 := hRic 1 1
+    have hRic22 := hRic 2 2
+    have hdiag0 :
+        Ric (vec2 (basis 0) (basis 0)) =
+          -stdRicci3 (standardRmCompAt basis Rm04) 0 0 := by
+      rw [hRic00, h00]
+    have hdiag1 :
+        Ric (vec2 (basis 1) (basis 1)) =
+          -stdRicci3 (standardRmCompAt basis Rm04) 1 1 := by
+      rw [hRic11, h11]
+    have hdiag2 :
+        Ric (vec2 (basis 2) (basis 2)) =
+          -stdRicci3 (standardRmCompAt basis Rm04) 2 2 := by
+      rw [hRic22, h22]
+    change -scalar = stdScalar3 (standardRmCompAt basis Rm04)
+    rw [hScalar]
+    simp [stdScalar3, Fin.sum_univ_three, delta3, hdiag0, hdiag1, hdiag2]
+    ring
 
 /-- Lemma 14.2 as a realized pointwise `Rm04` component formula in an
 orthonormal `Fin 3` basis.

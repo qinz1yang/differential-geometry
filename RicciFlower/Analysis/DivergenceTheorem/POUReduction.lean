@@ -1,0 +1,784 @@
+import RicciFlower.Analysis.DivergenceTheorem.LocalFormula
+import RicciFlower.Analysis.DivergenceTheorem.TangentAction
+import RicciFlower.Analysis.DivergenceTheorem.Ibp
+import RicciFlower.Analysis.DivergenceTheorem.ChartInvariance
+import RicciFlower.Analysis.Volume.Glue
+import Mathlib.Analysis.Calculus.FDeriv.Mul
+import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
+import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+
+/-!
+# Leibniz rule for the chart-Voss-Weyl divergence and partition-of-unity decomposition
+
+For a smooth Riemannian metric `g`, a smooth tangent section `X`, and a smooth scalar
+function `φ : M → ℝ`, the pointwise smul-section `(φ • X) x := φ x • X x` is again a
+smooth tangent section, and the divergence satisfies the Leibniz rule:
+$$\operatorname{div}_g(\varphi \cdot X)(x)
+    = \varphi(x) \cdot \operatorname{div}_g(X)(x) + X(\varphi)(x).$$
+
+Combined with a smooth partition of unity `ρ` subordinate to the chart atlas, this gives the
+decomposition identity
+$$\operatorname{div}_g(X)(x)
+    = \sum'_{\alpha \in M} \operatorname{div}_g(\rho_\alpha \cdot X)(x).$$
+
+The countable sum is locally finite: in a neighborhood of any point only finitely many
+terms are nonzero.
+-/
+
+noncomputable section
+
+open Bundle Manifold Set MeasureTheory
+open scoped Manifold Topology ContDiff Matrix
+
+namespace RicciFlower
+namespace Analysis
+namespace DivergenceTheorem
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+  [Module.Finite ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+open RicciFlower.Analysis.Volume
+
+/-! ## Pointwise smul of a smooth function and a smooth tangent section
+
+For a smooth function `φ : M → ℝ` and a smooth tangent section `X`, we package the
+pointwise smul `(fun x => φ x • X x)` as a `ContMDiffSection`. -/
+
+/-- The pointwise scalar multiplication of a smooth tangent section by a smooth scalar
+function, packaged as a smooth tangent section. -/
+def smoothSmul (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+  ⟨fun x : M => φ x • X x, hφ.smul_section X.contMDiff⟩
+
+@[simp] lemma smoothSmul_apply (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
+    (smoothSmul (I := I) φ hφ X) x = φ x • X x := rfl
+
+/-! ## Behaviour of `chartCoeff` and tangent components under `smoothSmul`
+
+The chart-basis component of `(φ • X)` decomposes pointwise as `φ x · chartCoeff α X i x`
+on the chart base set, by linearity of the trivialization. -/
+
+/-- On the chart base set at `α`, the chart-basis component of `(φ • X)` equals
+`φ · chartCoeff α X i`. -/
+lemma chartCoeff_smoothSmul (α : M)
+    (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (i : Fin (Module.finrank ℝ E))
+    {x : M} (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
+    chartCoeff (I := I) α (smoothSmul (I := I) φ hφ X) i x =
+      φ x * chartCoeff (I := I) α X i x := by
+  classical
+  set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
+    trivializationAt E (TangentSpace I) α
+  -- Apply the trivialization's linearity at `x ∈ T.baseSet`.
+  have hlin : (T ⟨x, (smoothSmul (I := I) φ hφ X) x⟩).2 =
+      φ x • (T ⟨x, X x⟩).2 := by
+    have h := (T.linear ℝ hx).map_smul (φ x) (X x)
+    -- `(T.linear ℝ hx).map_smul` says: `(T ⟨x, c • v⟩).2 = c • (T ⟨x, v⟩).2`.
+    change (T ⟨x, φ x • X x⟩).2 = φ x • (T ⟨x, X x⟩).2
+    exact h
+  unfold chartCoeff
+  rw [hlin]
+  -- `(Module.finBasis ℝ E).repr` is linear; apply to the smul.
+  rw [LinearEquiv.map_smul]
+  -- Apply at index `i` and unfold `Finsupp.smul_apply`.
+  rw [Finsupp.smul_apply, smul_eq_mul]
+
+/-- On the chart target, the chart-pulled-back component of `(φ • X)` equals
+`(scalarOnE α φ y) · chartCoeffOnE α X i y`. -/
+lemma chartCoeffOnE_smoothSmul (α : M)
+    (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (i : Fin (Module.finrank ℝ E))
+    {y : E} (hy : y ∈ (extChartAt I α).target) :
+    chartCoeffOnE (I := I) α (smoothSmul (I := I) φ hφ X) i y =
+      scalarOnE (I := I) α φ y * chartCoeffOnE (I := I) α X i y := by
+  -- Both sides are values of `chartCoeff … ((extChartAt I α).symm y)` evaluated at the
+  -- preimage of `y`, which lives in the chart source ⊆ trivialization base set.
+  have hsymm_src : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+    (extChartAt I α).map_target hy
+  have hsymm_chart : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
+    exact hsymm_src
+  have hsymm_base : (extChartAt I α).symm y ∈
+      (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hsymm_chart
+  unfold chartCoeffOnE scalarOnE
+  exact chartCoeff_smoothSmul (I := I) α φ hφ X i hsymm_base
+
+/-! ## Leibniz rule for `localDivergence`
+
+In the chart at the point `x` itself, the Voss–Weyl chart formula combined with the
+ordinary Leibniz rule for the model-space partial derivative yields the divergence
+Leibniz rule. -/
+
+/-- The Leibniz rule for the chart-local Voss–Weyl divergence at the chart at the point
+itself. -/
+private lemma localDivergence_at_self_smoothSmul [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    localDivergence (I := I) g x (smoothSmul (I := I) φ hφ X) x =
+      φ x * localDivergence (I := I) g x X x +
+        tangentSectionAction (I := I) X φ x := by
+  classical
+  -- Setup.
+  set y₀ : E := extChartAt I x x with hy₀_def
+  -- `y₀` lies in the chart target.
+  have hxsrc : x ∈ (extChartAt I x).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact mem_chart_source H x
+  have hy₀_target : y₀ ∈ (extChartAt I x).target :=
+    (extChartAt I x).map_source hxsrc
+  -- `chartDensity g x x ≠ 0`.
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact mem_chart_source H x
+  have hρ_pos : 0 < chartDensity (I := I) g x x :=
+    chartDensity_pos (I := I) g x hbase
+  have hρ_ne : chartDensity (I := I) g x x ≠ 0 := ne_of_gt hρ_pos
+  -- Unfold both sides via `localDivergence_def`.
+  rw [localDivergence_def, localDivergence_def]
+  -- Pointwise on the chart target, the integrand is
+  --   `(scalarOnE α φ * chartCoeffOnE α X i) · chartDensityOnE g α`,
+  -- whose `partialDeriv i` at `y₀` decomposes by the Leibniz rule for `fderiv`.
+  -- Step 1: the integrand of `(φ • X)` equals `(scalarOnE α φ) · (chartCoeffOnE α X i · chartDensityOnE g α)`
+  -- on the chart target.
+  set u : E → ℝ := scalarOnE (I := I) x φ with hu_def
+  set v : Fin (Module.finrank ℝ E) → E → ℝ :=
+    fun i y => chartCoeffOnE (I := I) x X i y * chartDensityOnE (I := I) g x y with hv_def
+  -- The integrand of `localDivergence g x (φ • X) i` at `y` for `y ∈ target` is `u y * v i y`.
+  have hintegrand_eq : ∀ y ∈ (extChartAt I x).target,
+      ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeffOnE (I := I) x (smoothSmul (I := I) φ hφ X) i y *
+          chartDensityOnE (I := I) g x y =
+        u y * v i y := by
+    intro y hy i
+    rw [chartCoeffOnE_smoothSmul (I := I) x φ hφ X i hy]
+    change scalarOnE (I := I) x φ y * chartCoeffOnE (I := I) x X i y *
+        chartDensityOnE (I := I) g x y =
+      u y * (chartCoeffOnE (I := I) x X i y * chartDensityOnE (I := I) g x y)
+    ring
+  -- Step 2: For each `i`, `partialDeriv i (u · v i)` at `y₀` decomposes by Leibniz.
+  -- We use the eventually-equal version: the two integrands agree on the open chart
+  -- target (a neighborhood of `y₀`). So we can replace one by the other in `partialDeriv i`.
+  have htarget_open : IsOpen (extChartAt I x).target := isOpen_extChartAt_target (I := I) x
+  have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ := htarget_open.mem_nhds hy₀_target
+  -- The intermediate integrand equals `u · v i` on a neighborhood of `y₀`.
+  have hpartial_eq : ∀ i : Fin (Module.finrank ℝ E),
+      partialDeriv (E := E) i
+        (fun y => chartCoeffOnE (I := I) x (smoothSmul (I := I) φ hφ X) i y *
+          chartDensityOnE (I := I) g x y) y₀ =
+      partialDeriv (E := E) i (fun y => u y * v i y) y₀ := by
+    intro i
+    unfold partialDeriv
+    have hev : (fun y => chartCoeffOnE (I := I) x
+            (smoothSmul (I := I) φ hφ X) i y * chartDensityOnE (I := I) g x y) =ᶠ[𝓝 y₀]
+        (fun y => u y * v i y) := by
+      filter_upwards [htarget_nhd] with y hy
+      exact hintegrand_eq y hy i
+    rw [hev.fderiv_eq]
+  -- Step 3: For each `i`, expand `partialDeriv i (u · v i)` via Leibniz.
+  -- We need differentiability of `u` and `v i` at `y₀`.
+  have hu_diff : DifferentiableAt ℝ u y₀ := by
+    have hu_smooth : ContDiffOn ℝ ∞ u (extChartAt I x).target :=
+      scalarOnE_contDiffOn (I := I) x hφ
+    have hu_at : ContDiffAt ℝ ∞ u y₀ := by
+      have h_within := hu_smooth y₀ hy₀_target
+      exact h_within.contDiffAt htarget_nhd
+    exact hu_at.differentiableAt (by simp)
+  have hv_diff : ∀ i : Fin (Module.finrank ℝ E), DifferentiableAt ℝ (v i) y₀ := by
+    intro i
+    have hv_smooth : ContDiffOn ℝ ∞ (v i) (extChartAt I x).target :=
+      chartCoeffOnE_mul_chartDensityOnE_contDiffOn (I := I) g x X i
+    have hv_at : ContDiffAt ℝ ∞ (v i) y₀ := by
+      have h_within := hv_smooth y₀ hy₀_target
+      exact h_within.contDiffAt htarget_nhd
+    exact hv_at.differentiableAt (by simp)
+  have hLeibniz : ∀ i : Fin (Module.finrank ℝ E),
+      partialDeriv (E := E) i (fun y => u y * v i y) y₀ =
+        partialDeriv (E := E) i u y₀ * v i y₀ +
+          u y₀ * partialDeriv (E := E) i (v i) y₀ := by
+    intro i
+    unfold partialDeriv
+    -- `fderiv (u * v i) y₀ = u y₀ • fderiv (v i) y₀ + v i y₀ • fderiv u y₀`.
+    have hmul : fderiv ℝ (fun y => u y * v i y) y₀ =
+        u y₀ • fderiv ℝ (v i) y₀ + v i y₀ • fderiv ℝ u y₀ :=
+      fderiv_fun_mul hu_diff (hv_diff i)
+    rw [hmul]
+    -- Apply at the basis vector and unfold the smul on continuous linear maps.
+    rw [ContinuousLinearMap.add_apply,
+        ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    -- Goal: `u y₀ • (fderiv (v i) y₀) (basis i) + v i y₀ • (fderiv u y₀) (basis i) =
+    --        (fderiv u y₀) (basis i) * v i y₀ + u y₀ * (fderiv (v i) y₀) (basis i)`.
+    -- Convert smul to mul on ℝ.
+    simp only [smul_eq_mul]
+    ring
+  -- Step 4: Combine the per-i results and sum.
+  -- LHS numerator: `∑ i, partialDeriv i ((scalarOnE * chartCoeffOnE) · chartDensityOnE) y₀`.
+  -- After `hpartial_eq` + `hLeibniz`: `∑ i, [∂_i u (y₀) · v i y₀ + u y₀ · ∂_i (v i) y₀]`.
+  have hLHS_num :
+      ∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i
+          (fun y => chartCoeffOnE (I := I) x (smoothSmul (I := I) φ hφ X) i y *
+            chartDensityOnE (I := I) g x y) y₀ =
+      ∑ i : Fin (Module.finrank ℝ E),
+        (partialDeriv (E := E) i u y₀ * v i y₀ +
+          u y₀ * partialDeriv (E := E) i (v i) y₀) := by
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    rw [hpartial_eq i, hLeibniz i]
+  rw [hLHS_num]
+  rw [Finset.sum_add_distrib]
+  -- Now split into the action term and the φ · localDivergence term.
+  -- Refactor the sum to factor out `u y₀`.
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+            u y₀ * partialDeriv (E := E) i (v i) y₀) =
+          u y₀ *
+            ∑ i : Fin (Module.finrank ℝ E),
+              partialDeriv (E := E) i (v i) y₀ from
+        (Finset.mul_sum _ _ _).symm]
+  -- LHS = (a + u y₀ · S) / ρ where
+  --   a = ∑ ∂_i u y₀ · v i y₀
+  --   S = ∑ ∂_i (v i) y₀
+  -- RHS = φ x * (S / ρ) + tangentSectionAction X φ x.
+  -- Rewrite RHS = (u y₀ · S) / ρ + a / ρ (by add_comm_div), then use addition congr.
+  rw [add_div]
+  -- Goal: (∑ ∂_i u · v i y₀)/ρ + (u y₀ · S)/ρ = φ x * (S / ρ) + tangentSectionAction X φ x
+  -- Swap LHS terms to align with RHS (commutativity).
+  rw [add_comm]
+  -- Goal: (u y₀ · S)/ρ + (∑ ∂_i u · v i y₀)/ρ = φ x * (S / ρ) + tangentSectionAction X φ x
+  have hsymm_inv : (extChartAt I x).symm y₀ = x := (extChartAt I x).left_inv hxsrc
+  have hu_eq_φ : u y₀ = φ x := by
+    change scalarOnE (I := I) x φ y₀ = φ x
+    exact scalarOnE_extChartAt (I := I) x φ hxsrc
+  congr 1
+  · -- `u y₀ · S / ρ = φ x · (S / ρ)`.
+    rw [hu_eq_φ]
+    rw [mul_div_assoc]
+  · -- `(∑ i, ∂_i u · v i y₀) / ρ = tangentSectionAction X φ x`.
+    have hρOnE : chartDensityOnE (I := I) g x y₀ = chartDensity (I := I) g x x := by
+      change chartDensity (I := I) g x ((extChartAt I x).symm y₀) = _
+      rw [hsymm_inv]
+    have heach : ∀ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i u y₀ * v i y₀ =
+          (partialDeriv (E := E) i u y₀ * chartCoeffOnE (I := I) x X i y₀) *
+            chartDensity (I := I) g x x := by
+      intro i
+      change partialDeriv (E := E) i u y₀ *
+          (chartCoeffOnE (I := I) x X i y₀ * chartDensityOnE (I := I) g x y₀) =
+        (partialDeriv (E := E) i u y₀ * chartCoeffOnE (I := I) x X i y₀) *
+          chartDensity (I := I) g x x
+      rw [hρOnE]
+      ring
+    rw [show (∑ i : Fin (Module.finrank ℝ E),
+              partialDeriv (E := E) i u y₀ * v i y₀) =
+            ∑ i : Fin (Module.finrank ℝ E),
+              (partialDeriv (E := E) i u y₀ * chartCoeffOnE (I := I) x X i y₀) *
+                chartDensity (I := I) g x x from
+          Finset.sum_congr rfl (fun i _ => heach i)]
+    rw [← Finset.sum_mul]
+    rw [mul_div_assoc, div_self hρ_ne, mul_one]
+    -- Goal: `∑ i, partialDeriv i u y₀ · chartCoeffOnE x X i y₀ = tangentSectionAction X φ x`.
+    have hchartCoeff : ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeffOnE (I := I) x X i y₀ = chartCoeff (I := I) x X i x := by
+      intro i
+      change chartCoeff (I := I) x X i ((extChartAt I x).symm y₀) = _
+      rw [hsymm_inv]
+    have htsa := tangentSectionAction_chartLocal_of_boundaryless (I := I) x X hφ
+      (mem_chart_source H x)
+    rw [htsa]
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    rw [hchartCoeff i]
+    -- u y₀ = scalarOnE x φ y₀; need partial commute.
+    change partialDeriv (E := E) i (scalarOnE (I := I) x φ) y₀ * chartCoeff (I := I) x X i x =
+      chartCoeff (I := I) x X i x * partialDeriv (E := E) i (scalarOnE (I := I) x φ)
+        (extChartAt I x x)
+    ring
+
+/-- **Leibniz rule for the global divergence.** -/
+theorem divergence_g_smoothSmul [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ∀ x : M, divergence_g (I := I) g (smoothSmul (I := I) φ hφ X) x =
+      φ x * divergence_g (I := I) g X x +
+        tangentSectionAction (I := I) X φ x := by
+  intro x
+  -- Use the Voss–Weyl identity to identify each side with a chart-local divergence at `x`.
+  rw [divergence_g_def, divergence_g_def]
+  exact localDivergence_at_self_smoothSmul (I := I) g x φ hφ X
+
+/-! ## `tangentSectionAction` commutes with finite sums and vanishes on constants -/
+
+/-- The tangent action of `X` on a finite sum of functions equals the finite sum of the
+tangent actions. -/
+theorem tangentSectionAction_finset_sum
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {ι : Type*} (s : Finset ι) (f : ι → M → ℝ) (x : M)
+    (hf : ∀ α ∈ s, MDifferentiableAt I 𝓘(ℝ) (f α) x) :
+    tangentSectionAction (I := I) X (∑ α ∈ s, f α) x =
+      ∑ α ∈ s, tangentSectionAction (I := I) X (f α) x := by
+  classical
+  -- Reformulate via `extDerivFun`, which has well-behaved additivity lemmas.
+  -- `tangentSectionAction X g x = extDerivFun g x (X x)` (after the canonical
+  -- identification of `TangentSpace 𝓘(ℝ, ℝ) (g x) = ℝ`).
+  have heq : ∀ g : M → ℝ, ∀ y : M, ∀ v : TangentSpace I y,
+      (mfderiv I 𝓘(ℝ, ℝ) g y) v = extDerivFun (I := I) g y v := by
+    intro g y v
+    -- `extDerivFun g y v = (fromTangentSpace (g y)).toContinuousLinearMap ((mfderiv g y) v)`,
+    -- and `fromTangentSpace (g y)` is a continuous linear equiv between `TangentSpace 𝓘(ℝ, ℝ) (g y)`
+    -- and `ℝ`. For scalar codomain, this is the identity (definitionally).
+    rfl
+  -- Use the `extDerivFun` formulation throughout.
+  simp only [tangentSectionAction_def, heq]
+  -- Now LHS = `extDerivFun (∑ α ∈ s, f α) x (X x)`,
+  -- RHS = `∑ α ∈ s, extDerivFun (f α) x (X x)`.
+  -- Induction on `s`.
+  induction s using Finset.induction_on with
+  | empty =>
+    -- LHS: extDerivFun (∑ α ∈ ∅, f α) x (X x) = extDerivFun 0 x (X x) = 0.
+    simp only [Finset.sum_empty]
+    -- The empty sum unfolds to `fun _ => 0`. We rewrite `extDerivFun (fun _ => 0)` via
+    -- `mfderiv_const`, which is the underlying definition.
+    change (extDerivFun (I := I) (fun _ : M => (0 : ℝ)) x) (X x) = 0
+    change (((NormedSpace.fromTangentSpace ((fun _ : M => (0 : ℝ)) x)).toContinuousLinearMap ∘L
+        (mfderiv I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) x)) (X x) : ℝ) = 0
+    rw [mfderiv_const]
+    rfl
+  | insert α s hα ih =>
+    have hmem_α : α ∈ insert α s := Finset.mem_insert_self α s
+    have hmem_rest : ∀ β ∈ s, MDifferentiableAt I 𝓘(ℝ) (f β) x := by
+      intro β hβ
+      exact hf β (Finset.mem_insert_of_mem hβ)
+    have ih_eq := ih hmem_rest
+    rw [Finset.sum_insert hα, Finset.sum_insert hα]
+    -- LHS: extDerivFun (f α + ∑ β ∈ s, f β) x (X x).
+    -- Use `extDerivFun_add`.
+    have hsum_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (∑ β ∈ s, f β) x := by
+      -- Provable by induction on the Finset; we extract a closed lemma to avoid
+      -- generalizing the ambient context.
+      have aux : ∀ (t : Finset ι), (∀ β ∈ t, MDifferentiableAt I 𝓘(ℝ) (f β) x) →
+          MDifferentiableAt I 𝓘(ℝ, ℝ) (∑ β ∈ t, f β) x := by
+        intro t ht
+        induction t using Finset.induction_on with
+        | empty =>
+          simp only [Finset.sum_empty]
+          exact mdifferentiable_const ..
+        | insert γ t' hγ ih' =>
+          have hmem_γ : γ ∈ insert γ t' := Finset.mem_insert_self γ t'
+          have ht_rest : ∀ β ∈ t', MDifferentiableAt I 𝓘(ℝ) (f β) x := by
+            intro β hβ
+            exact ht β (Finset.mem_insert_of_mem hβ)
+          rw [Finset.sum_insert hγ]
+          exact (ht γ hmem_γ).add (ih' ht_rest)
+      exact aux s hmem_rest
+    rw [extDerivFun_add (hf α hmem_α) hsum_diff]
+    rw [ContinuousLinearMap.add_apply]
+    rw [ih_eq]
+
+/-- The tangent action of `X` on a constant function vanishes. -/
+@[simp] theorem tangentSectionAction_const
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (c : ℝ) (x : M) :
+    tangentSectionAction (I := I) X (fun _ => c) x = 0 := by
+  unfold tangentSectionAction
+  rw [mfderiv_const]
+  rfl
+
+/-- The tangent action of `X` on the zero function vanishes. -/
+@[simp] theorem tangentSectionAction_zero_fun
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
+    tangentSectionAction (I := I) X (fun _ : M => (0 : ℝ)) x = 0 :=
+  tangentSectionAction_const (I := I) X 0 x
+
+/-! ## Tangent action of a smooth POU sum vanishes pointwise
+
+Let `ρ` be a smooth POU on `M` indexed by `M` itself, with `IsSubordinate` a family of open
+sets so that `LocallyFinite (fun α => support (ρ α))`. Then `∑' α, ρ α y = 1` on the support
+set, but more importantly, `tangentSectionAction X (fun y => ∑' α, ρ α y) x = 0` because
+the tsum is locally a finite sum and equals the constant `1`. -/
+
+/-- A POU sum `∑' α, ρ α y` agrees with a finite Finset sum on a neighborhood of any point,
+where the Finset is `ρ.fintsupport x`. -/
+private lemma pou_tsum_eq_finset_sum_eventually
+    (ρ : SmoothPartitionOfUnity M I M univ) (x : M) :
+    (fun y : M => ∑' α : M, (ρ α : M → ℝ) y) =ᶠ[𝓝 x]
+      (fun y : M => ∑ α ∈ ρ.fintsupport x, (ρ α : M → ℝ) y) := by
+  classical
+  -- For `y` in a small neighborhood of `x`, the support of `ρ · y` is contained in
+  -- `ρ.fintsupport x`. For such `y`, the tsum equals the Finset sum.
+  filter_upwards [ρ.eventually_finsupport_subset x] with y hy
+  -- `hy : ρ.finsupport y ⊆ ρ.fintsupport x`.
+  -- ∑' α, ρ α y = ∑ α ∈ ρ.fintsupport x, ρ α y by `tsum_eq_sum`, since ρ α y = 0 for
+  -- α ∉ ρ.fintsupport x ⊇ ρ.finsupport y.
+  refine tsum_eq_sum ?_
+  intro α hα
+  -- α ∉ ρ.fintsupport x ⇒ α ∉ ρ.finsupport y ⇒ ρ α y = 0.
+  by_contra hne
+  have hα_finsupp : α ∈ ρ.finsupport y := by
+    rw [ρ.mem_finsupport]
+    exact hne
+  exact hα (hy hα_finsupp)
+
+/-- The tangent action of `X` on the POU completion `∑' α, ρ α y` equals the action on
+the constant function `1` at any point in the partition's set, which is `0`. -/
+theorem tangentSectionAction_pou_tsum_eq_zero
+    (ρ : SmoothPartitionOfUnity M I M univ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
+    tangentSectionAction (I := I) X (fun y : M => ∑' α : M, (ρ α : M → ℝ) y) x = 0 := by
+  classical
+  -- Strategy: reduce to a constant function via local-equality (POU completeness).
+  -- Step 1: On a neighborhood of x, `∑' α, ρ α y = 1` (constant). Hence
+  -- `mfderiv … = mfderiv (constant) … = 0`.
+  have h_eq_one_at_x : ∀ᶠ y in 𝓝 x, (∑' α : M, (ρ α : M → ℝ) y) = 1 := by
+    -- POU sum ∑ᶠ α, ρ α y = 1 for y ∈ univ. We need `tsum`. They agree.
+    classical
+    -- Combine `pou_tsum_eq_finset_sum_eventually` with `ρ.sum_finsupport'` for y ∈ univ.
+    filter_upwards [ρ.eventually_finsupport_subset x] with y hy
+    have h1 : (∑' α : M, (ρ α : M → ℝ) y) =
+        ∑ α ∈ ρ.fintsupport x, (ρ α : M → ℝ) y := by
+      refine tsum_eq_sum ?_
+      intro α hα
+      by_contra hne
+      have hα_finsupp : α ∈ ρ.finsupport y := by
+        rw [ρ.mem_finsupport]
+        exact hne
+      exact hα (hy hα_finsupp)
+    rw [h1]
+    -- y ∈ univ, so ρ.sum_finsupport' applies.
+    exact ρ.sum_finsupport' y (mem_univ y) hy
+  -- Step 2: replace the function with the constant `1` near `x`, using `EventuallyEq.mfderiv_eq`.
+  have h_eq : (fun y : M => ∑' α : M, (ρ α : M → ℝ) y) =ᶠ[𝓝 x]
+      (fun _ : M => (1 : ℝ)) := h_eq_one_at_x
+  unfold tangentSectionAction
+  rw [Filter.EventuallyEq.mfderiv_eq h_eq]
+  rw [mfderiv_const]
+  rfl
+
+/-! ## POU divergence-decomposition identity -/
+
+/-- For a smooth POU `ρ` indexed by `M` (e.g. `chartAtlasPOU I M`), the divergence
+`divergence_g g X x` decomposes as the locally-finite tsum
+$\sum'_\alpha \operatorname{div}_g(\rho_\alpha \cdot X)(x)$. -/
+theorem divergence_g_pou_tsum [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (ρ : SmoothPartitionOfUnity M I M univ)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ∀ x : M, divergence_g (I := I) g X x =
+      ∑' α : M, divergence_g (I := I) g
+        (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
+  intro x
+  classical
+  -- Each term: `divergence_g g (ρ α • X) x = ρ α x · divergence_g g X x + tangentSectionAction X (ρ α) x`.
+  -- Finset-sum the LHS first, then send finset → tsum at the end.
+  -- Step 1: locally-finite sum representation.
+  -- Choose the Finset `S := ρ.fintsupport x`.
+  set S : Finset M := ρ.fintsupport x with hS_def
+  -- For `α ∉ S`, `ρ α x = 0`, hence `(ρ α • X) x = 0`. We need divergence_g of a section
+  -- whose value at `x` is 0 — but that's not enough; we need `localDivergence g x` to be
+  -- 0 at `x` when the section is `0` near `x`.
+  -- Easier: use that `tsum` is over the support, and `tsum_eq_sum` reduces it to a Finset
+  -- sum over `S`. We need: for `α ∉ S`, `divergence_g g (ρ α • X) x = 0`.
+  -- For `α ∉ S`, `α ∉ tsupport (ρ α)` is FALSE in general, but we can use `α ∈ ρ.fintsupport x`
+  -- iff `x ∈ tsupport (ρ α)`. So if `α ∉ ρ.fintsupport x`, then `x ∉ tsupport (ρ α)`,
+  -- which means `ρ α` vanishes on a neighborhood of `x`. Hence `ρ α • X` vanishes on a
+  -- neighborhood of `x`. By the divergence Leibniz at `x`:
+  --   divergence_g g (ρ α • X) x = ρ α x · divergence_g g X x + tangentSectionAction X (ρ α) x.
+  -- Both `ρ α x = 0` and `tangentSectionAction X (ρ α) x = 0` (the second by locality of mfderiv).
+  -- So divergence_g g (ρ α • X) x = 0.
+  -- Step 2: tsum equals Finset sum over S.
+  have h_tsum_eq_sum :
+      (∑' α : M, divergence_g (I := I) g
+          (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x) =
+        ∑ α ∈ S, divergence_g (I := I) g
+          (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
+    refine tsum_eq_sum ?_
+    intro α hα
+    -- α ∉ S = ρ.fintsupport x ⇒ x ∉ tsupport (ρ α).
+    have hxnotin : x ∉ tsupport (ρ α : M → ℝ) := by
+      intro h
+      apply hα
+      rw [ρ.mem_fintsupport_iff]
+      exact h
+    -- Apply the Leibniz rule at x.
+    rw [divergence_g_smoothSmul (I := I) g (ρ α : M → ℝ) (ρ α).contMDiff X x]
+    -- Show ρ α x = 0 and tangentSectionAction X (ρ α) x = 0.
+    have hραx : (ρ α : M → ℝ) x = 0 := by
+      by_contra hne
+      exact hxnotin (subset_tsupport _ hne)
+    have htsa_zero : tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by
+      unfold tangentSectionAction
+      have h_open : IsOpen (tsupport (ρ α : M → ℝ))ᶜ :=
+        (isClosed_tsupport _).isOpen_compl
+      have hev : (ρ α : M → ℝ) =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
+        filter_upwards [h_open.mem_nhds hxnotin] with y hy
+        by_contra hne
+        exact hy (subset_tsupport _ hne)
+      rw [Filter.EventuallyEq.mfderiv_eq hev, mfderiv_const]
+      rfl
+    rw [hραx, htsa_zero, zero_mul, add_zero]
+  rw [h_tsum_eq_sum]
+  -- Step 3: expand each Finset summand by Leibniz.
+  have h_each : ∀ α ∈ S,
+      divergence_g (I := I) g
+        (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x =
+        (ρ α : M → ℝ) x * divergence_g (I := I) g X x +
+          tangentSectionAction (I := I) X (ρ α : M → ℝ) x := by
+    intro α _
+    exact divergence_g_smoothSmul (I := I) g (ρ α : M → ℝ) (ρ α).contMDiff X x
+  rw [Finset.sum_congr rfl h_each]
+  -- Step 4: split the Finset sum and identify `∑ α ∈ S, ρ α x = 1` and
+  -- `∑ α ∈ S, tangentSectionAction X (ρ α) x = tangentSectionAction X (∑' α, ρ α) x = 0`.
+  rw [Finset.sum_add_distrib]
+  -- (a) `∑ α ∈ S, ρ α x · divergence_g g X x = (∑ α ∈ S, ρ α x) · divergence_g g X x = divergence_g g X x`.
+  rw [show (∑ α ∈ S, (ρ α : M → ℝ) x * divergence_g (I := I) g X x) =
+        (∑ α ∈ S, (ρ α : M → ℝ) x) * divergence_g (I := I) g X x from
+      (Finset.sum_mul _ _ _).symm]
+  rw [ρ.sum_finsupport' x (mem_univ x)
+        (ρ.finsupport_subset_fintsupport x)]
+  rw [one_mul]
+  -- (b) `∑ α ∈ S, tangentSectionAction X (ρ α) x = tangentSectionAction X (∑ α ∈ S, ρ α) x = 0`.
+  -- We use `tangentSectionAction_finset_sum` to commute the sum out, then equate to the
+  -- tsum (locally), use POU completeness to get constant 1, and then the action of constant
+  -- function vanishes.
+  have hsum_action : ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by
+    -- Direct: `tangentSectionAction X (∑ α ∈ S, ρ α) x = ∑ α ∈ S, tangentSectionAction X (ρ α) x`
+    -- by `tangentSectionAction_finset_sum`, then identify the sum with constant 1 in a neighborhood
+    -- of x (since ρ.finsupport y ⊆ ρ.fintsupport x = S for y near x), and apply
+    -- `tangentSectionAction_const`.
+    have hMDiff_each : ∀ α ∈ S,
+        MDifferentiableAt I 𝓘(ℝ) ((ρ α : M → ℝ)) x :=
+      fun α _ => (ρ α).contMDiff.mdifferentiable (by simp) x
+    have hcomm := tangentSectionAction_finset_sum (I := I) X S
+      (fun α => ((ρ α : M → ℝ))) x hMDiff_each
+    rw [← hcomm]
+    -- `∑ α ∈ S, (ρ α : M → ℝ)` is a function `M → ℝ`. We claim it's `=ᶠ[𝓝 x] 1`.
+    have h_finset_eq_one : (fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y) =ᶠ[𝓝 x]
+        (fun _ : M => (1 : ℝ)) := by
+      filter_upwards [ρ.eventually_finsupport_subset x] with y hy
+      -- For y near x: ρ.finsupport y ⊆ ρ.fintsupport x = S, so ∑ α ∈ S, ρ α y = 1.
+      exact ρ.sum_finsupport' y (mem_univ y) hy
+    -- Now use `EventuallyEq.mfderiv_eq` and `mfderiv_const`.
+    unfold tangentSectionAction
+    -- Note: ∑ α ∈ S, ρ α : M → ℝ is, when applied at y, ∑ α ∈ S, ρ α y, but
+    -- the syntax `∑ α ∈ S, (ρ α : M → ℝ)` is a function `M → ℝ` whose value at `y`
+    -- is `∑ α ∈ S, (ρ α : M → ℝ) y`.
+    have h_fun_eq : (∑ α ∈ S, (ρ α : M → ℝ)) = fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y := by
+      funext y
+      rw [Finset.sum_apply]
+    rw [h_fun_eq]
+    rw [Filter.EventuallyEq.mfderiv_eq h_finset_eq_one]
+    rw [mfderiv_const]
+    rfl
+  rw [hsum_action]
+  ring
+
+/-! ## Optional: divergence is `ℝ`-linear in `X`
+
+These small lemmas are direct consequences of the chart-local Voss-Weyl formula being
+linear in `X`. -/
+
+/-- Sum rule: `divergence_g g (X + Y) = divergence_g g X + divergence_g g Y`. -/
+theorem divergence_g_add [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ∀ x : M, divergence_g (I := I) g (X + Y) x =
+      divergence_g (I := I) g X x + divergence_g (I := I) g Y x := by
+  intro x
+  classical
+  -- Use the chart at `x`: `localDivergence g x (X + Y) x = localDivergence g x X x + localDivergence g x Y x`.
+  rw [divergence_g_def, divergence_g_def, divergence_g_def]
+  -- Unfold both sides.
+  rw [localDivergence_def, localDivergence_def, localDivergence_def]
+  -- Reduce to the chart-coefficient additivity.
+  set y₀ : E := extChartAt I x x with hy₀_def
+  -- `chartCoeffOnE x (X + Y) i y = chartCoeffOnE x X i y + chartCoeffOnE x Y i y` on the chart
+  -- target (by linearity of the trivialization).
+  -- Pointwise additivity at the symm-image points; the integrand differs by `+`.
+  -- Strategy: combine the integrands and split the sum / fderiv.
+  have hxsrc : x ∈ (extChartAt I x).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact mem_chart_source H x
+  have hy₀_target : y₀ ∈ (extChartAt I x).target :=
+    (extChartAt I x).map_source hxsrc
+  have htarget_open : IsOpen (extChartAt I x).target := isOpen_extChartAt_target (I := I) x
+  have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ := htarget_open.mem_nhds hy₀_target
+  -- Pointwise: chartCoeff x (X + Y) i z = chartCoeff x X i z + chartCoeff x Y i z on baseSet.
+  have hchartCoeff_add : ∀ z ∈ (trivializationAt E (TangentSpace I) x).baseSet,
+      ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeff (I := I) x (X + Y) i z =
+          chartCoeff (I := I) x X i z + chartCoeff (I := I) x Y i z := by
+    intro z hz i
+    classical
+    set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
+      trivializationAt E (TangentSpace I) x
+    have hadd : (T ⟨z, (X + Y) z⟩).2 = (T ⟨z, X z⟩).2 + (T ⟨z, Y z⟩).2 := by
+      have h := (T.linear ℝ hz).map_add (X z) (Y z)
+      -- Goal: (T ⟨z, (X + Y) z⟩).2 = ...
+      -- Identify (X + Y) z with X z + Y z definitionally via the coercion of `+` on sections.
+      change (T ⟨z, X z + Y z⟩).2 = (T ⟨z, X z⟩).2 + (T ⟨z, Y z⟩).2
+      exact h
+    unfold chartCoeff
+    rw [hadd]
+    rw [LinearEquiv.map_add]
+    rw [Finsupp.add_apply]
+  -- Pointwise additivity on the chart target via `chartCoeffOnE`.
+  have hchartCoeffOnE_add : ∀ y ∈ (extChartAt I x).target,
+      ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeffOnE (I := I) x (X + Y) i y =
+          chartCoeffOnE (I := I) x X i y + chartCoeffOnE (I := I) x Y i y := by
+    intro y hy i
+    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+      (extChartAt I x).map_target hy
+    have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
+      exact hsymm_src
+    have hsymm_base : (extChartAt I x).symm y ∈
+        (trivializationAt E (TangentSpace I) x).baseSet := by
+      rw [trivializationAt_baseSet_eq_chartAt_source]
+      exact hsymm_chart
+    unfold chartCoeffOnE
+    exact hchartCoeff_add ((extChartAt I x).symm y) hsymm_base i
+  -- Per index, the integrand splits.
+  have hpartial_split : ∀ i : Fin (Module.finrank ℝ E),
+      partialDeriv (E := E) i
+        (fun y => chartCoeffOnE (I := I) x (X + Y) i y *
+          chartDensityOnE (I := I) g x y) y₀ =
+      partialDeriv (E := E) i
+        (fun y => chartCoeffOnE (I := I) x X i y *
+          chartDensityOnE (I := I) g x y) y₀ +
+      partialDeriv (E := E) i
+        (fun y => chartCoeffOnE (I := I) x Y i y *
+          chartDensityOnE (I := I) g x y) y₀ := by
+    intro i
+    -- Replace `chartCoeffOnE x (X + Y) i y * ρ y` by `(chartCoeffOnE x X i y + chartCoeffOnE x Y i y) · ρ y`
+    -- on a neighborhood of y₀, and use additivity of fderiv.
+    unfold partialDeriv
+    have hev : (fun y => chartCoeffOnE (I := I) x (X + Y) i y *
+            chartDensityOnE (I := I) g x y) =ᶠ[𝓝 y₀]
+        (fun y => chartCoeffOnE (I := I) x X i y * chartDensityOnE (I := I) g x y +
+          chartCoeffOnE (I := I) x Y i y * chartDensityOnE (I := I) g x y) := by
+      filter_upwards [htarget_nhd] with y hy
+      rw [hchartCoeffOnE_add y hy i]
+      ring
+    rw [hev.fderiv_eq]
+    -- `fderiv (f + g) = fderiv f + fderiv g`.
+    have hfX : DifferentiableAt ℝ
+        (fun y => chartCoeffOnE (I := I) x X i y * chartDensityOnE (I := I) g x y) y₀ := by
+      have hsmooth :=
+        (chartCoeffOnE_mul_chartDensityOnE_contDiffOn (I := I) g x X i) y₀ hy₀_target
+      exact (hsmooth.contDiffAt htarget_nhd).differentiableAt (by simp)
+    have hfY : DifferentiableAt ℝ
+        (fun y => chartCoeffOnE (I := I) x Y i y * chartDensityOnE (I := I) g x y) y₀ := by
+      have hsmooth :=
+        (chartCoeffOnE_mul_chartDensityOnE_contDiffOn (I := I) g x Y i) y₀ hy₀_target
+      exact (hsmooth.contDiffAt htarget_nhd).differentiableAt (by simp)
+    rw [fderiv_fun_add hfX hfY]
+    rfl
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+            partialDeriv (E := E) i
+              (fun y => chartCoeffOnE (I := I) x (X + Y) i y *
+                chartDensityOnE (I := I) g x y) y₀) =
+          ∑ i : Fin (Module.finrank ℝ E),
+            (partialDeriv (E := E) i
+              (fun y => chartCoeffOnE (I := I) x X i y *
+                chartDensityOnE (I := I) g x y) y₀ +
+            partialDeriv (E := E) i
+              (fun y => chartCoeffOnE (I := I) x Y i y *
+                chartDensityOnE (I := I) g x y) y₀) from
+        Finset.sum_congr rfl (fun i _ => hpartial_split i)]
+  rw [Finset.sum_add_distrib]
+  rw [add_div]
+
+/-- The divergence of the zero section vanishes. -/
+@[simp] theorem divergence_g_zero [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    ∀ x : M, divergence_g (I := I) g
+      (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by
+  intro x
+  classical
+  rw [divergence_g_def, localDivergence_def]
+  -- Each chartCoeff for the zero section is zero pointwise on the base set.
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact mem_chart_source H x
+  set y₀ : E := extChartAt I x x with hy₀_def
+  have hxsrc : x ∈ (extChartAt I x).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact mem_chart_source H x
+  have hy₀_target : y₀ ∈ (extChartAt I x).target :=
+    (extChartAt I x).map_source hxsrc
+  have htarget_open : IsOpen (extChartAt I x).target := isOpen_extChartAt_target (I := I) x
+  have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ := htarget_open.mem_nhds hy₀_target
+  -- For y ∈ target, the integrand `chartCoeffOnE x 0 i y * chartDensityOnE g x y = 0`.
+  -- Hence its fderiv at y₀ is 0, so each summand is 0, and the total is 0/ρ = 0.
+  have hchartCoeff_zero : ∀ z ∈ (trivializationAt E (TangentSpace I) x).baseSet,
+      ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeff (I := I) x
+          (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i z = 0 := by
+    intro z hz i
+    classical
+    set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
+      trivializationAt E (TangentSpace I) x
+    have hzero : ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) z : E) = 0 := by
+      change ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) z : E) = (0 : E)
+      rfl
+    have h0 : (T ⟨z, (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) z⟩).2 = 0 := by
+      have h := (T.linear ℝ hz).map_zero
+      change (T ⟨z, (0 : TangentSpace I z)⟩).2 = 0
+      exact h
+    unfold chartCoeff
+    rw [h0]
+    simp
+  have hchartCoeffOnE_zero : ∀ y ∈ (extChartAt I x).target,
+      ∀ i : Fin (Module.finrank ℝ E),
+        chartCoeffOnE (I := I) x
+          (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y = 0 := by
+    intro y hy i
+    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+      (extChartAt I x).map_target hy
+    have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
+      exact hsymm_src
+    have hsymm_base : (extChartAt I x).symm y ∈
+        (trivializationAt E (TangentSpace I) x).baseSet := by
+      rw [trivializationAt_baseSet_eq_chartAt_source]
+      exact hsymm_chart
+    unfold chartCoeffOnE
+    exact hchartCoeff_zero _ hsymm_base i
+  have hpartial_zero : ∀ i : Fin (Module.finrank ℝ E),
+      partialDeriv (E := E) i
+        (fun y => chartCoeffOnE (I := I) x
+          (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y *
+          chartDensityOnE (I := I) g x y) y₀ = 0 := by
+    intro i
+    unfold partialDeriv
+    have hev : (fun y => chartCoeffOnE (I := I) x
+            (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y *
+            chartDensityOnE (I := I) g x y) =ᶠ[𝓝 y₀]
+        (fun _ : E => (0 : ℝ)) := by
+      filter_upwards [htarget_nhd] with y hy
+      rw [hchartCoeffOnE_zero y hy i]
+      ring
+    rw [hev.fderiv_eq]
+    rw [show (fun _ : E => (0 : ℝ)) = Function.const E (0 : ℝ) from rfl, fderiv_const]
+    rfl
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+            partialDeriv (E := E) i
+              (fun y => chartCoeffOnE (I := I) x
+                (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y *
+                chartDensityOnE (I := I) g x y) y₀) = 0 from
+        Finset.sum_eq_zero (fun i _ => hpartial_zero i)]
+  rw [zero_div]
+
+end DivergenceTheorem
+end Analysis
+end RicciFlower

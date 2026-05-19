@@ -86,12 +86,28 @@ def InverseMetricComponentsInFrameOn [DecidableEq Idx]
         metricCompInFrame (I := I) S frame t x i k * gInv t x k j) =
         (if i = j then 1 else 0)
 
-/-- Symmetry of the inverse metric components in the chosen frame.  This is a
-separate v1 hypothesis because the existing frame-inverse predicate records
-left/right inverse identities but not symmetry. -/
+/-- Symmetry of the inverse metric components in the chosen frame. -/
 def SymmetricInverseMetricComponentsInFrameOn
     (gInv : Real -> Realized.InverseMetricComponents M Idx) : Prop :=
   forall t x i j, gInv t x i j = gInv t x j i
+
+/-- A supplied two-sided inverse of the frame Gram matrix is automatically
+symmetric. -/
+theorem gInv_symm [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame) :
+    SymmetricInverseMetricComponentsInFrameOn gInv := by
+  intro t x i j
+  exact Curvature.invComp_symm
+    (I := I) (g := S.family.metric t)
+    (gInv := fun x i j => gInv t x i j) frame
+    (by
+      intro y a b
+      simpa [metricCompInFrame] using hinv t y a b)
+    x i j
 
 /-- Componentwise regularity of a supplied inverse-metric component family. -/
 def InverseMetricDerivativeComponentsOn
@@ -131,8 +147,6 @@ structure MetricFrameTimeRegularityInFrameOnLocal
   frame Gram matrix. -/
   nondegenerateGram :
     InverseMetricComponentsInFrameOn (I := I) S gInv frame
-  inverseSymmetric :
-    SymmetricInverseMetricComponentsInFrameOn gInv
   inverseMetricDerivative :
     InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt
   uniqueTimeDerivatives :
@@ -757,12 +771,42 @@ theorem inverseMetric_derivative_solve
     (hrow : forall j : Idx,
       (∑ a : Idx,
         (gInvDt i a * metric a j + gInv i a * ((-2 : Real) * ric a j))) = 0)
+    (hleft : forall a b : Idx,
+      (∑ k : Idx, gInv a k * metric k b) = (if a = b then 1 else 0))
     (hright : forall a b : Idx,
       (∑ k : Idx, metric a k * gInv k b) = (if a = b then 1 else 0))
-    (hsymm : forall a b : Idx, gInv a b = gInv b a)
+    (hmetric_symm : forall a b : Idx, metric a b = metric b a)
     (j : Idx) :
     gInvDt i j =
       2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * ric a b) := by
+  classical
+  have hsymm : forall a b : Idx, gInv a b = gInv b a := by
+    intro a b
+    let A : Matrix Idx Idx Real := fun i j => gInv i j
+    let G : Matrix Idx Idx Real := fun i j => metric i j
+    have hAG : A * G = 1 := by
+      ext p q
+      simpa [A, G, Matrix.mul_apply] using hleft p q
+    have hGA : G * A = 1 := by
+      ext p q
+      simpa [A, G, Matrix.mul_apply] using hright p q
+    have hGt : Matrix.transpose G = G := by
+      ext p q
+      simpa [G] using hmetric_symm q p
+    have hAtG : Matrix.transpose A * G = 1 := by
+      calc
+        Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
+        _ = Matrix.transpose (G * A) := by rw [Matrix.transpose_mul]
+        _ = 1 := by rw [hGA]; simp
+    have hAt : Matrix.transpose A = A := by
+      calc
+        Matrix.transpose A = Matrix.transpose A * 1 := by simp
+        _ = Matrix.transpose A * (G * A) := by rw [hGA]
+        _ = (Matrix.transpose A * G) * A := by rw [← Matrix.mul_assoc]
+        _ = 1 * A := by rw [hAtG]
+        _ = A := by simp
+    have hentry := congrArg (fun B : Matrix Idx Idx Real => B b a) hAt
+    simpa [A] using hentry
   have hrow' : forall m : Idx,
       (∑ a : Idx, gInvDt i a * metric a m) =
         2 * (∑ a : Idx, gInv i a * ric a m) := by
@@ -844,7 +888,6 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
-    (hsymm : SymmetricInverseMetricComponentsInFrameOn gInv)
     (t : Real)
     (hmc : RicciFlower.Connection.IsMetricCompatible (I := I)
       cov (S.family.metric t))
@@ -868,6 +911,8 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
     extDerivFun (I := I) (fun y : M => gInv t y a b) x (frame d x)
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
+  have hsymm : SymmetricInverseMetricComponentsInFrameOn gInv :=
+    gInv_symm (I := I) S gInv frame hinv
   have hDG : ∀ a b : Idx,
       DG a b =
         (∑ p : Idx, Γ a p * G p b) +
@@ -948,10 +993,14 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
         _ = 0 := hrow m)
     (by
       intro a b
+      simpa [G, U] using (hinv t x a b).1)
+    (by
+      intro a b
       simpa [G, U] using (hinv t x a b).2)
     (by
       intro a b
-      simpa [U] using hsymm t x a b)
+      simpa [G, metricCompInFrame] using
+        (S.family.metric t).symm x (frame a x) (frame b x))
     l
   have hUG_left : ∀ p : Idx,
       (∑ a : Idx, U k a * G a p) = (if k = p then 1 else 0) := by
@@ -1118,10 +1167,9 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
 /-- Inverse-metric evolution from the differentiated identity `g^{-1}g = I`.
 
 The proof uses the Ricci-flow metric derivative, the product rule on the
-left-inverse identity, uniqueness of the interval derivative, and the right
-inverse identity to solve for the component derivative.  The symmetry hypothesis
-aligns the solved component with the existing `raisedRicciCompInFrame`
-convention. -/
+left-inverse identity, uniqueness of the interval derivative, and the two-sided
+inverse identity to solve for the component derivative.  Inverse-metric
+symmetry is derived from the two-sided inverse identities. -/
 theorem inverseMetricEvolutionEquationInFrame_of_inverse_components
     [DecidableEq Idx]
     {D : Realized.RealTimeInterval}
@@ -1132,7 +1180,6 @@ theorem inverseMetricEvolutionEquationInFrame_of_inverse_components
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
-    (hsymm : SymmetricInverseMetricComponentsInFrameOn gInv)
     (hunique : forall t : Realized.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)) :
     InverseMetricEvolutionEquationInFrame (I := I) S gInv frame := by
@@ -1158,8 +1205,11 @@ theorem inverseMetricEvolutionEquationInFrame_of_inverse_components
       (gInvDt := fun a b => gInvDt (t : Real) x a b)
       i
       hrow
+      (fun a b => (hinv (t : Real) x a b).1)
       (fun a b => (hinv (t : Real) x a b).2)
-      (fun a b => hsymm (t : Real) x a b)
+      (fun a b => by
+        simpa [metricCompInFrame] using
+          (S.family.metric (t : Real)).symm x (frame a x) (frame b x))
       j
   exact (hdt t x i j).congr_deriv hsolve
 
@@ -1185,7 +1235,6 @@ theorem inverseMetricEvolution_of_metricFrameTimeRegularity
     (I := I) S hS gInv gInvDt frame
     hreg.inverseMetricDerivative
     hreg.nondegenerateGram
-    hreg.inverseSymmetric
     hreg.uniqueTimeDerivatives
 
 /-- LaTeX Lemma 6.1 in fixed-frame component form:

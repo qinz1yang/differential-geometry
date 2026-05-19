@@ -68,24 +68,37 @@ abbrev rm13Comp {Idx : Type*} {u : Set M}
   RicciFlower.Curvature.rm13Comp (I := I) Rm13 frame hframe x a b c d
 abbrev CurvatureTensorData := RicciFlower.Curvature.CurvatureTensorData (I := I) (M := M)
 
+/-- Smooth tangent sections used by curvature-realization predicates. -/
+abbrev SmoothTangentSection :=
+  ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)
+
 /-- A bundled `(1,3)` tensor realizes the connection curvature operator after
-pairing the output with a covector. -/
+pairing the output with a covector, on smooth tangent sections.
+
+The smooth-section restriction is essential: Mathlib's covariant-derivative
+axioms only control differentiable sections.  Raw dependent functions
+`(x : M) -> TangentSpace I x` are not a valid realization interface for
+connection curvature. -/
 def Rm13RealizesConnection
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M)) : Prop :=
-  forall (X Y Z : TangentField (I := I) (M := M)) (x : M)
+  forall (X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M)
     (alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x),
       Rm13 x alpha (vec3 (X x) (Y x) (Z x)) =
-        cotangentToDual (I := I) alpha ((connectionRiemannCurvatureField (I := I) cov X Y Z) x)
+        cotangentToDual (I := I) alpha
+          ((connectionRiemannCurvatureField (I := I) cov
+            (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
 
-/-- A bundled lowered Riemann tensor realizes `g(R(X,Y)Z,W)`. -/
+/-- A bundled lowered Riemann tensor realizes `g(R(X,Y)Z,W)` on smooth tangent
+sections. -/
 def Rm04RealizesConnection
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M)) : Prop :=
-  forall (W X Y Z : TangentField (I := I) (M := M)) (x : M),
+  forall (W X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M),
     Rm04 x (vec4 (W x) (X x) (Y x) (Z x)) =
-      g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x)
+      g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
 
 /-- A bundled Ricci tensor is the trace contraction of bundled `(1,3)` Riemann. -/
 def RicciTensorRealizesRm13Trace
@@ -128,15 +141,14 @@ theorem rm04_comp_eq_connection
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (frame : Idx -> SmoothTangentSection (I := I) (M := M))
     (hRm : Rm04RealizesConnection (I := I) g cov Rm04)
     (x : M) (a b c d : Idx) :
-    rm04Comp (I := I) Rm04 frame x a b c d =
+    rm04Comp (I := I) Rm04 (fun i y => frame i y) x a b c d =
       g.inner x (frame a x) ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) := by
   simpa [rm04Comp] using
-    hRm (fun y => frame a y) (fun y => frame b y) (fun y => frame c y)
-      (fun y => frame d y) x
+    hRm (frame a) (frame b) (frame c) (frame d) x
 
 theorem ricciComp_eq_trace
     {Idx : Type*} [Fintype Idx]
@@ -173,16 +185,15 @@ theorem rm13_comp_eq_connection
     {Idx : Type*} {u : Set M}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E ∞ frame u)
+    (frame : Idx -> SmoothTangentSection (I := I) (M := M))
+    (hframe : IsLocalFrameOn I E ∞ (fun i y => frame i y) u)
     (hRm : Rm13RealizesConnection (I := I) cov Rm13)
     (x : M) (a b c d : Idx) :
-    rm13Comp (I := I) Rm13 frame hframe x a b c d =
+    rm13Comp (I := I) Rm13 (fun i y => frame i y) hframe x a b c d =
       hframe.coeff a x ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) := by
   simpa [rm13Comp] using
-    hRm (fun y => frame b y) (fun y => frame c y) (fun y => frame d y) x
-      (dualToCotangent (hframe.coeff a x))
+    hRm (frame b) (frame c) (frame d) x (dualToCotangent (hframe.coeff a x))
 
 namespace CurvatureTensorData
 
@@ -190,11 +201,11 @@ theorem rm13_comp_eq_connection
     {Idx : Type*} {u : Set M}
     (K : CurvatureTensorData (I := I) (M := M))
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E ∞ frame u)
+    (frame : Idx -> SmoothTangentSection (I := I) (M := M))
+    (hframe : IsLocalFrameOn I E ∞ (fun i y => frame i y) u)
     (hRm : Rm13RealizesConnection (I := I) cov K.rm13)
     (x : M) (a b c d : Idx) :
-    rm13Comp (I := I) K.rm13 frame hframe x a b c d =
+    rm13Comp (I := I) K.rm13 (fun i y => frame i y) hframe x a b c d =
       hframe.coeff a x ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) :=
   RicciFlower.Realized.rm13_comp_eq_connection (I := I) cov K.rm13 frame hframe hRm x a b c d
@@ -204,10 +215,10 @@ theorem rm04_comp_eq_connection
     (K : CurvatureTensorData (I := I) (M := M))
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (frame : Idx -> SmoothTangentSection (I := I) (M := M))
     (hRm : Rm04RealizesConnection (I := I) g cov K.rm04)
     (x : M) (a b c d : Idx) :
-    rm04Comp (I := I) K.rm04 frame x a b c d =
+    rm04Comp (I := I) K.rm04 (fun i y => frame i y) x a b c d =
       g.inner x (frame a x) ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) :=
   RicciFlower.Realized.rm04_comp_eq_connection (I := I) g cov K.rm04 frame hRm x a b c d
@@ -230,16 +241,18 @@ theorem ricci_comp_eq_connection_trace
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (gInv : InverseMetricComponents M Idx)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (frame : Idx -> SmoothTangentSection (I := I) (M := M))
     (hRm : Rm04RealizesConnection (I := I) g cov K.rm04)
-    (hRic : RicciTensorRealizesRm04TraceInFrame (I := I) K.ricci K.rm04 gInv frame)
+    (hRic : RicciTensorRealizesRm04TraceInFrame (I := I) K.ricci K.rm04 gInv
+      (fun i y => frame i y))
     (x : M) (i j : Idx) :
-    ricciComp (I := I) K.ricci frame x i j =
+    ricciComp (I := I) K.ricci (fun i y => frame i y) x i j =
       ∑ k : Idx, ∑ l : Idx,
         gInv x k l *
           g.inner x (frame k x) ((connectionRiemannCurvatureField (I := I) cov
             (fun y => frame i y) (fun y => frame j y) (fun y => frame l y)) x) := by
-  rw [CurvatureTensorData.ricci_comp_eq_trace (I := I) K gInv frame hRic x i j]
+  rw [CurvatureTensorData.ricci_comp_eq_trace (I := I) K gInv
+    (fun i y => frame i y) hRic x i j]
   refine Finset.sum_congr rfl fun k _ => ?_
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [RicciFlower.Realized.rm04_comp_eq_connection (I := I) g cov K.rm04 frame hRm x k i j l]

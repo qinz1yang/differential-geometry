@@ -26,12 +26,12 @@ the full statements, theorem names, and file locations.
 
 | Distance | Count | Current interpretation |
 | --- | ---: | --- |
-| `0` | 21 | Native theorem closed; only presentation wrappers or downstream use remain. |
-| `1` | 0 | A checked consumer route remains one finite-sum/convention producer away. |
-| `2` | 1 | In-tree component or finite-sum producer work remains. |
-| `3` | 4 | A real geometric producer is still missing. |
-| `4` | 16 | Major analytic/global Ricci-flow infrastructure or old synthetic route remains. |
-| `5` | 11 | Deliberate black box or external-scale theorem for now. |
+| `0` | 22 | Native theorem closed; only presentation wrappers or downstream use remain. |
+| `1` | 1 | A checked consumer route remains one packaging or compatibility wrapper away. |
+| `2` | 2 | In-tree component or finite-sum producer work remains. |
+| `3` | 3 | A real geometric producer is still missing. |
+| `4` | 15 | Major analytic/global Ricci-flow infrastructure or old synthetic route remains. |
+| `5` | 10 | Deliberate black box or external-scale theorem for now. |
 
 ### Closed Native Results
 
@@ -47,11 +47,13 @@ the full statements, theorem names, and file locations.
 
 | Target | Distance | Smallest next step |
 | --- | ---: | --- |
-| Hamilton Section 6 remainder | `2` | Next local target is Lemma 6.7 / trace-free Ricci norm evolution; arbitrary-frame packaging of Lemma 6.3 is optional polish. |
+| Hamilton Section 6 remainder | `1` | Next local target is the trace-free Ricci norm evolution; arbitrary-frame packaging of Lemma 6.3 is optional polish. |
+| Lemma 11.1 finite time | `1` | `HamiltonPositiveRicci.ham3_scalar74` and `ham3_finite_time` are now assembled; `Ham3FlowPackage` now carries `IsSmoothSolutionOn`, so canonical scalar regularity and intrinsic scalar evolution are packaged. Remaining work is scalar WMP regularity. |
 | Lemma 10.5 quotient evolution | `2` | Port the pure scalar quotient algebra to `RicciFlower` if it is still needed by the pinching route. |
 | Assumption 3.1 calculus package | `3` | Continue native Bianchi, contracted Bianchi, tensor commutator, and trace/norm infrastructure. |
-| Lemma 6.7 | `3` | Prove the pointwise `(0,2)` tensor norm Hessian product rule `Tensor02NormHessianProductInBasis` from metric compatibility; the trace bridge to `Tensor02NormSecondProductInBasis` is now checked. |
-| Corollary 11.4 and Lemma 11.15 | `3` | Finish the native 3D curvature/norm comparison and Einstein-space-form bridge. |
+| Lemma 6.7 | `0` | Closed canonically through the `(0,2)` tensor Bochner product rule and `ricci_heat_mc`. |
+| Corollary 11.4 | `0` | Closed at the pointwise first-trace realization layer by `DimensionThree.normSqLeOfFirstData`; remaining work belongs to Section 12 geometry packaging, not the local inequality. |
+| Lemma 11.15 | `3` | Finish the native Einstein-space-form bridge from contracted Bianchi and the 3D Riemann-from-Ricci formula. |
 
 ### Section 14 Snapshot
 
@@ -168,14 +170,33 @@ g0 with Ric(g0) > 0, then M admits a metric of constant positive sectional
 curvature. Equivalently, M is diffeomorphic to a spherical space form.
 ```
 
-Status: old synthetic assembly exists as `wordly_latex_thm_main_hamilton_3d`.
-There is no native unconditional `RicciFlower` theorem yet.
+Status: native theorem-shaped endpoint now exists as
+`RicciFlower.HamiltonPositiveRicci.thm_2_1`.  It uses the current
+`SmoothRiemannianMetric`, canonical metric Ricci/scalar accessors,
+`SolutionOn`, and `IsSolutionOn` structures.  The final Section 12 assembly is
+represented natively in `ham3_const_metric`: finite time, point
+selection/rescaling, Ricci-nonnegative preservation, the Section 12
+Corollary 11.4 curvature bound, the `r0 = 1/10` window, noncollapsing, CGH
+compactness, constant-curvature limit, and pullback to `M` are separate named
+endpoints.  The local arithmetic and logical assembly check.  The remaining
+`sorry`s are deliberately global analytic or topology inputs, plus the honest
+Hamilton-side scalar regularity/evolution producer endpoints.
 
-Distance: `5`.
+Verification: the full local `lake build` completed successfully after the
+canonical Ricci accessor fallout in `ImprovedPinching.lean` and the
+`metricUnit_quadCont` smoothness-level mismatch in `QuadraticBounds.lean` were
+repaired.
 
-Next target: replace the typed synthetic assembly by concrete Ricci-flow
-solution data, analytic inputs, realized curvature, and pinching/convergence
-theorems.
+Distance: `4`.
+
+Next target: replace the Section 12 endpoint `sorry`s one at a time with the
+native producer theorems already tracked in Section 11.  The closest local
+scalar-evolution bridge `HamiltonPositiveRicci.ham3_evol74` is closed through
+`RicciFlow.scalarEvolOfSmooth`.  Canonical scalar spacetime regularity and
+intrinsic scalar evolution now come from `IsSmoothSolutionOn`; the remaining
+regularity endpoint `ham3_scalarRegular` belongs to the smooth maximal-flow
+setup, not to the scalar WMP theorem itself.
+Do not collapse these back into a single final convergence black box.
 
 ### Assumption 3.1, `ass:riemannian-calculus`
 
@@ -384,37 +405,18 @@ Along Ricci flow,
 -2 |nabla Ric|^2 + 4 R_ikjl Ric^{ij} Ric^{kl}.
 ```
 
-Status: the time-derivative side is closed canonically in
+Status: closed canonically.  The time-derivative side is closed in
 `RicciFlow.ricciNormTimeDerivativeComponentsOn_of_ricciEvolution_canonical`.
-The Laplacian side now has the exact coordinate expansion frontier
-`Realized.RicciNormScalarLaplacianExpansionInFrame` and the producer
-`Realized.ricciNormLaplacianComponentsInFrame_of_normSq_laplacian_expansion`.
-The realized Bochner layer also has
-`Realized.ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule`,
-which reduces that exact expansion to the named `(0,2)` tensor norm product
-rule `Realized.Tensor02NormSecondProductInBasis`.
-The trace bridge
-`Realized.Tensor02NormSecondProductInBasis.of_hessian_product` is checked: it
-traces the pointwise `(0,2)` Hessian product rule and uses
-`RoughLap0SRealizesMetricTraceInBasis` to replace the traced second derivative
-by the supplied rough tensor.
-The folder-level consumer
-`RicciFlow.ricciNormHeatEquationOn_of_solution_canonical_laplacian` assembles
-Lemma 6.7 from the closed time side and that exact Bochner expansion.
+The Laplacian side is supplied by the proved `(0,2)` tensor Bochner chain in
+`Bochner.lean`: `freeze02_deriv`, `hess_norm02`, `second_norm02_mc`, and
+`ricci_lap_mc`.  The folder-level consumer `RicciFlow.ricci_heat_mc` assembles
+Lemma 6.7 without asking callers for a separate
+`RicciNormScalarLaplacianExpansionInFrame` hypothesis.
 
-Distance: `3`.
+Distance: `0`.
 
-Next target: prove `Tensor02NormHessianProductInBasis` from metric
-compatibility.  The missing local API is the `(0,2)` tensor inner-product
-derivative rule
-`X <A,B> = <nabla_X A,B> + <A,nabla_X B>`, followed by one more derivative and
-the Hessian correction.  The exact helper is now stated in
-`Bochner.lean` as `Realized.tensor02_inner_extDerivFun_eq_inner_nabla`; its
-proof is the remaining frontier.  This is a real tensor Bochner producer/API
-theorem, not finite-sum algebra or Ricci-evolution work.  After it closes, feed
-it through the existing trace bridge, mark Lemma 6.7 distance `0`, and then
-repeat the pattern for the trace-free Ricci norm evolution needed by Hamilton's
-pinching argument.
+Next target: repeat the trace/norm pattern for the trace-free Ricci norm
+evolution needed by Hamilton's pinching argument.
 
 ### Theorem 7.1, `thm:scalar-wmp-super`
 
@@ -595,12 +597,18 @@ Statement:
 For a closed 3D Ricci flow, Ric(g(0)) >= 0 implies Ric(g(t)) >= 0.
 ```
 
-Status: synthetic tensor-WMP consumer.
+Status: Ricci-flow conditional WMP consumer layer added in
+`RicciFlower.RicciFlow.Evolution.RicciPreservation`.  The local three-dimensional
+reaction algebra includes the null-eigenvector identity
+`N_11 = (lambda_2 - lambda_3)^2`, and `ricci_nonneg_wmp` packages the existing
+Hamilton tensor WMP once Ricci evolution, regularity, and the null-eigenvector
+condition are supplied.
 
-Distance: `4`.
+Distance: `2`.
 
-Next target: combine native Ricci evolution, 3D curvature algebra, and tensor
-WMP.
+Remaining frontier: produce the geometric `TensorNullEigenvectorCondition` from
+the component reaction algebra and close the analytic `TensorWMPRegularityOn`
+inputs from Theorem 7.5.
 
 ### Lemma 9.2, `lem:preserve-ricci-pinching`
 
@@ -611,11 +619,18 @@ For 0 <= delta <= 1/3, if Ric(g(0)) >= delta R(g(0)) g(0), then
 Ric(g(t)) >= delta R(g(t)) g(t).
 ```
 
-Status: synthetic tensor-WMP consumer.
+Status: shifted Ricci pinching reaction algebra and conditional WMP consumer
+added in `RicciFlower.RicciFlow.Evolution.RicciPreservation`.  The checked local
+algebra gives the null-direction expression
+`delta^2 (1 - 3 delta) R^2 + (1 - delta) (lambda_2 - lambda_3)^2`, and
+`ricci_pinch_wmp` packages Hamilton tensor WMP for
+`S = Ric - delta R g`.
 
-Distance: `4`.
+Distance: `2`.
 
-Next target: prove shifted tensor reaction algebra and feed tensor WMP.
+Remaining frontier: prove the shifted tensor evolution for
+`S = Ric - delta R g`, bridge the local algebra to the null-eigenvector
+condition, and close the same tensor-WMP regularity producers.
 
 ### Corollary 9.3, `cor:strict-positive-gives-pinching`
 
@@ -627,12 +642,41 @@ on g0, such that Ric(g0) >= delta R(g0) g0. Consequently the same pinching
 holds along the Ricci flow from g0.
 ```
 
-Status: not native.
+Status: conditional native setup added in
+`RicciFlower.RicciFlow.Evolution.RicciPreservation`.  The file now records
+`RicciPosInit`, the selected-initial-pinching predicate `PinchInit`, and the
+book-facing conditional consequence `strict_pinch_wmp`.  The local selector
+algebra is also checked: `InitBounds` gives uniform initial lower Ricci and
+upper scalar bounds, and `pinchInit_of_bounds` selects a valid `delta`.
+The base compactness selector is now checked as well: `RicMinData` packages a
+continuous positive Ricci lower-bound function on `M`, `bounds_ricMin` turns it
+and scalar continuity into `InitBounds`, `boundsPos_ricMin` feeds the older
+`BoundsOfPosRic` path, and `strict_pinch_min` gives the conditional Corollary
+9.3 route from that data.  The preferred entrypoint is now metric/Ricci-native:
+`MetricRicciData` records that the supplied initial Ricci tensor is realized by
+the Levi-Civita Ricci tensor of `G 0`, `MetricRicciMin` is the corresponding
+canonical lower-bound function data, and `strict_pinch_metric` is the
+book-facing conditional route.  The unit tangent route is now checked:
+`UnitRicciLower` records a uniform positive lower bound on `g_0`-unit tangent
+vectors, `metricMin_unit` rescales that bound to a constant `MetricRicciMin`,
+and `unitLower_pos` / `metricMin_pos` extract such a bound from compactness of
+`UnitTangent (G 0)` plus continuity of the unit Ricci quadratic form.  The
+unit tangent type is now routed through the actual tangent-bundle subtype, and
+the high-level `pinchInit_pos` / `strict_pinch_pos` wrappers now use checked
+producers: `unitTan_compact` delegates to the lower `metricUnit_compact`, and
+`unitRic_cont` delegates to `metricUnit_quadCont`.  The unit-tangent compactness
+and tensor-evaluation continuity frontiers are closed in
+`RicciFlower.Tensor.RSTensor.QuadraticBounds`.
 
-Distance: `4`.
+Distance: `1`.
 
-Next target: compactness of the unit tangent bundle/continuous eigenvalue
-minimum plus Lemma 9.2.
+Next target: discharge the remaining Lemma 9.2/Theorem 7.5 dependencies:
+the shifted evolution equation for `S = Ric - delta R g`, the bridge from the
+local diagonal reaction algebra to `TensorNullEigenvectorCondition`, and the
+analytic `TensorWMPRegularityOn` producers.  The bare implication from the
+current `RicciPosInit` predicate is still not valid without continuity or
+metric-Ricci realization data, so the preferred 9.3 route remains
+`strict_pinch_pos`.
 
 ### Lemma 10.4, `lem:evol-tracefree-ricci-norm`
 
@@ -645,12 +689,35 @@ In dimension 3, along Ricci flow and wherever R > 0,
   + (4 |Ric|^2 |Ric^o|^2 - 2 Q) / R.
 ```
 
-Status: synthetic P3/P4 route.
+Status: native Section 10 definitions and algebraic assembly interface added in
+`RicciFlower/RicciFlow/Evolution/ImprovedPinching.lean`.  The file now contains
+`metric02`, `tfRic`, `tfRicNormSq`, `pinchP`, and `cubicQ`, with `cubicQ_eigen`
+linking the definition of `Q` to the existing eigenvalue polynomial
+`DimensionThree.hamiltonCubicQ3`.  The book-facing heat predicate
+`tfRicHeatOn` and the assembly theorem `tfRicHeat_alg` reduce Lemma 10.4 to the
+scalar-square heat product rule and the reaction relation `tfRicReactRel`.
+The native scalar-square time product rule is closed as `sqHeat_of_scalar`, and
+the spatial scalar-square Laplacian producer is closed as `sqLap_realizes`
+using the existing scalar operator identity `(1/2) Delta(f^2)=f Delta f+
+|grad f|^2`.  The pointwise three-dimensional eigenvalue reaction algebra is
+closed as `tfRel_eigen` / `tfRel_from_eigen`, with `curv3_diag_eq` recording the
+formal plus-sign standard-component contraction in the Section 6
+curvature-contraction slot order.  A convention audit confirmed that
+RicciFlower's `Rm04(W,X,Y,Z)` lowers the output slot first, so the actual
+3D Riemann-from-Ricci bridge for realized Ricci eigenvalues uses
+`stdRmDiag3 (-l1) (-l2) (-l3)`.  The new `curv3_frame_neg` /
+`canon3_frame_neg` bridge records the corrected result: the canonical
+Section 6 reaction agrees with `+ricciReact3`, matching `tfRel_eigen`.
+The theorem `tfHeat_sec6` now consumes the canonical Section 6 Ricci-norm heat
+equation directly; the heat equation and reaction relation are conditional on
+nonzero scalar curvature, matching the book's `R > 0` domain.
 
-Distance: `4`.
+Distance: `2`.
 
-Next target: port trace-free decomposition, scalar evolution, Ricci norm
-evolution, and the algebraic reaction reduction.
+Next target: feed `canon3_frame_neg` into the Section 10 heat-equation wrapper
+by producing the actual eigenframe and Riemann-from-Ricci component hypotheses.
+The scalar-square Laplacian, diagonal finite sums, sign bridge, and Section 6
+heat-equation assembly are no longer expected frontiers.
 
 ### Lemma 10.5, `lem:quotient-evolution`
 
@@ -751,11 +818,27 @@ The maximal Ricci flow starting from a closed 3-manifold with R(g0) > 0 has
 finite maximal time, bounded by data from g0.
 ```
 
-Status: synthetic finite-time wrapper.
+Status: native normalized scalar finite-time theorem closed as
+`RicciFlow.finiteTime3D` in
+`RicciFlower/RicciFlow/Evolution/ScalarFiniteTime.lean`.  The Section 12
+endpoint `HamiltonPositiveRicci.ham3_finite_time` now calls this theorem and
+is no longer a direct finite-time black box.  It is exactly Corollary 7.4 with
+dimension parameter `3`, proving `omega <= 3 / (2 * c0)` from a positive
+initial scalar minimum and the scalar evolution/WMP package.
 
-Distance: `4`.
+The Hamilton-side scalar package assembly is also now represented natively:
+`HamiltonPositiveRicci.ham3_scalar74` builds the package consumed by
+`finiteTime3D` from named producers.  The initial scalar minimum, time-zero
+scalar positivity, scalar continuity-on-slab consumer, Laplacian realization,
+Ricci trace/norm lower bound, WMP regularity consumer, and Lipschitz reaction
+input are checked.  The intrinsic scalar evolution bridge `ham3_evol74` is
+also checked via `RicciFlow.scalarEvolOfSmooth`.  The remaining producer
+frontiers are `ham3_flow_exists_normalized` and `ham3_scalarRegular`.
 
-Next target: follows natively after Corollary 7.4 and maximal interval API.
+Distance: `1`.
+
+Next target: move `ham3_scalarRegular` into the smooth maximal-flow setup.
+Arbitrary initial time should be handled later by a time-shift wrapper.
 
 ### Black Box 11.2, `bb:rf-extension-criterion`
 
@@ -766,11 +849,16 @@ If a closed-manifold Ricci flow on [0,T) has sup_{M x [0,T)} |Rm| < infinity,
 then it extends smoothly to [0,T+eta).
 ```
 
-Status: synthetic/global interface.
+Status: native black-box interface exists as
+`RicciFlow.extends_of_rmBounded` in
+`RicciFlower/RicciFlow/MaximalTime.lean`.  It takes a realizing lowered
+Riemann tensor and a metric-induced squared-curvature bound and returns
+`ExtendsPastEndpoint`.
 
 Distance: `5`.
 
-Next target: keep as global analytic black box.
+Next target: keep as global analytic black box unless explicitly working on
+Ricci-flow PDE extension theory.
 
 ### Lemma 11.3, `lem:finite-time-curvature-blow-up`
 
@@ -781,12 +869,18 @@ For a maximal Ricci flow with finite maximal time Tmax,
 sup_{M x [0,Tmax)} |Rm| = infinity.
 ```
 
-Status: synthetic wrapper around extension criterion.
+Status: native consumer theorem closed as
+`RicciFlow.rmUnbounded_of_maximal` in
+`RicciFlower/RicciFlow/MaximalTime.lean`.  The existential wrapper
+`RicciFlow.formsSing_of_maximal` matches the current `FormsSingularityAt`
+definition once a curvature realization producer supplies a lowered Riemann
+tensor family.
 
-Distance: `4`.
+Distance: `0`.
 
-Next target: native wrapper once maximal interval and extension criterion APIs
-are concrete.
+Next target: wire `formsSing_of_maximal` into the Section 12
+point-selection/singularity package.  The analytic extension theorem remains
+Black Box 11.2.
 
 ### Corollary 11.4, `cor:ricci-controls-rm`
 
@@ -797,11 +891,51 @@ There exists a universal constant C3 such that on any 3D Riemannian manifold
 with Ric >= 0, |Rm| <= C3 R.
 ```
 
-Status: synthetic curvature algebra route.
+Status: native pointwise theorem closed.  The eigenvalue/sectional algebra is in
+`RicciFlower.DimensionThree.RicciControlsRm`.  It proves that nonnegative
+Ricci eigenvalues give `|K_ij| <= R / 2` and the coarse squared sectional-model
+bound with constant `100`.  The file also has a checked pointwise bridge from a
+realized three-dimensional `Rm04` tensor with diagonal Ricci components to the
+standard orthonormal-frame component norm estimate, plus the intrinsic
+`normSq0S` identity for `(0,4)` tensors in an orthonormal `Fin 3` frame.
+The packaging theorems `DimensionThree.normSqLeOfRicNonneg`,
+`DimensionThree.normSqLeOfFirstTrace`, and
+`DimensionThree.normSqLeOfFirstData` assemble a nonnegative symmetric Ricci
+tensor, the spectral Ricci eigenbasis producer, first-trace curvature data, and
+the intrinsic norm estimate.
 
-Distance: `3`.
+Distance: `0` for the pointwise first-trace realized statement.
 
-Next target: port 3D sectional-curvature algebra and norm comparison.
+Section 12 routing: the pointwise Corollary 11.4 estimate is closed, but
+`HamiltonPositiveRicci.ham3_rm_bound` is still a theorem-shaped producer
+frontier.  It no longer hides the conclusion behind a vacuous `Ham3RmBound`
+predicate or an artificial eigenmodel stored in the blow-up data.  Its current
+statement asks directly for a positive universal constant and the expected
+rescaled slab inequality for the canonical curvature norm of `P.S.base.rm04`.
+The remaining work is packaging the pointwise first-trace realized estimate
+with parabolic rescaling and Ricci-nonnegative preservation on the selected
+slabs.
+
+### Definition 11.5, `def:parabolic-rescaling`
+
+Statement:
+
+```text
+For R > 0 and center time τ, set g^R(s) = R g(τ + s/R), defined on the
+pulled-back interval.  The scalar curvature rescales by R^-1, and the
+trace-free Ricci ratio |Ric°|^2/R^2 is invariant.
+```
+
+Status: native RicciFlower rescaling layer closed in
+`RicciFlow.ParabolicRescaling`.  The checked layer includes `paraTime`,
+`paraBack`, `paraInterval`, the closed-open display interval formulas, rescaled
+solution-family data, inverse field laws, and scalar/trace-free display
+statements.  The solution theorem `paraSol` is checked: affine pullback of
+metric-family smoothness and the metric variation chain rule are both proved.
+
+Distance: `0`.
+
+Next target: use `paraSol` in the Lemma 11.6 point-selection/rescaling package.
 
 ### Lemma 11.6, `lem:point-selection-rescaling`
 
@@ -1230,8 +1364,9 @@ Hamilton Section 6 norm/pinching evolution pipeline.
 2. Optionally add a stronger public mixed `(r,s)` coordinate Ricci identity
    wrapper from the existing Remark 14.13 component algebra.  Keep the proof at
    the coordinate/local-frame layer; do not reopen lower-level tensor algebra.
-3. Work on Lemma 6.7 and the trace-free Ricci norm evolution by connecting the
-   closed Ricci and inverse-metric evolution producers to the finite-sum
-   Bochner/Ricci-norm algebra.
+3. Continue from the now-closed Lemma 6.7 toward the trace-free Ricci norm
+   evolution and Hamilton pinching pipeline.  The remaining work should reuse
+   the proved Ricci-norm time derivative and `(0,2)` tensor Bochner product
+   rule rather than reopening the Ricci norm calculation.
 4. Treat 14.27, 14.29, and 14.30 as maximal-time or singular-time
    infrastructure, not appendix tensor-calculus cleanup.

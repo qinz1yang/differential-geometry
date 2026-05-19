@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (n : WithTop ℕ∞)
-variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
+variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 
 /-- A Riemannian metric on a smooth manifold `M` is a `ContMDiffRiemannianMetric` on the
 tangent bundle, i.e. a smoothly varying family of inner products on the tangent spaces. -/
@@ -53,7 +53,7 @@ private noncomputable def to02Tensor_uCLM :
 /-- In local coordinates at `x₀`, the `(0,2)`-tensor obtained from a Riemannian metric is
 `uCLM` applied to the local coordinates of the curried inner product section. -/
 private lemma to02Tensor_trivialization_eq {x₀ x : M}
-    (g : RiemannianMetric I n M)
+    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     let gI := Bundle.ContMDiffRiemannianMetric.inner g
     (trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -92,8 +92,9 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
 inner product `g.inner x : TₓM →L[ℝ] TₓM →L[ℝ] ℝ` is uncurried into a continuous
 bilinear form `TₓM × TₓM → ℝ`, i.e. a (0,2)-tensor. -/
 def RiemannianMetric.to02Tensor {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
-    (g : RiemannianMetric I n M) :
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I 1 M] [IsManifold I (n + 1) M]
+    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (I := I) (M := M) (n := n) 2 := by
   unfold Tensor0SBundle.Tensor0SField
   letI := Tensor0SBundle.tensor0SBundle_topology
@@ -119,5 +120,19 @@ def RiemannianMetric.to02Tensor {I : ModelWithCorners ℝ E H} {n : WithTop ℕ�
       (mem_baseSet_trivializationAt E (TangentSpace I) x₀)] with x hx
     exact to02Tensor_trivialization_eq (I := I) (n := n) (M := M) (g := g) (x := x)
       (x₀ := x₀) hx⟩
+
+@[simp]
+theorem RiemannianMetric.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I 1 M] [IsManifold I (n + 1) M]
+    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
+    (x : M) (v : Fin 2 -> TangentSpace I x) :
+    RiemannianMetric.to02Tensor (I := I) (n := n) g x v =
+      (Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
+  simp [RiemannianMetric.to02Tensor, to02Tensor_eCLM,
+    ContinuousLinearMap.uncurryLeft_apply]
+  change ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
+    ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
+  simp [Fin.tail]
 
 end

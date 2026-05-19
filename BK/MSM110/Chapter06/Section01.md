@@ -100,3 +100,44 @@ Christoffel-coordinate variation producer in `RicciFlow/Evolution/Ricci.lean`.
 
 Verification passed.  Existing later scaffold declarations in this companion
 file still contain their planned `sorry`s; they are unrelated to Lemma 6.3.
+
+## 2026-05-16 inverse symmetry assumptions removed
+
+The Chapter 6.1 Ricci evolution wrappers no longer expose a separate
+`SymmetricInverseMetricComponentsInFrameOn` assumption. The RicciFlower metric
+layer now proves inverse-metric symmetry from the supplied two-sided inverse
+identities, so BK stays label-facing.
+
+Verification passed. The existing Section 6.1 scaffold `sorry`s are unchanged.
+
+## 2026-05-18 local frame domains
+
+The scalar evolution exposure wrapper now takes an arbitrary local frame domain
+`u` plus a cover proof, instead of requiring `IsLocalFrameOn ... Set.univ`.
+This mirrors the RicciFlower scalar route: frame components remain a local
+tool, while the global theorem conclusion is justified by the supplied cover.
+
+Verification passed for this file. The existing Section 6.1 scaffold `sorry`s
+are unchanged.
+
+## 2026-05-17 scalar wrapper uses produced curvature symmetries
+
+Updated the Chapter 6.1 scalar evolution wrapper to call the RicciFlower
+LC-produced scalar route. The book-facing theorem now takes the geometric
+realization data needed to produce `Rm04` and Ricci symmetries instead of
+exposing `hOutput`, `hFirst`, or `hRicSym` as application assumptions.
+
+The wrapper inherits the same `IsManifold I (∞ + 1) M` requirement as the
+RicciFlower LC curvature producer path. This is a regularity/input-shape
+requirement, not a curvature symmetry hypothesis.
+
+Verification passed for the focused BK file check and the targeted BK module
+build. The existing Section 6.1 scaffold `sorry`s are unchanged.
+
+## 2026-05-17 scalar inverse symmetry removed
+
+The scalar evolution wrapper `eq_scalar_curv_evolu_of_ricci_evolution` now
+passes the frame inverse-metric predicate instead of an explicit inverse
+symmetry function. The proof work stays in `RicciFlower.RicciFlow.Evolution.Scalar`.
+
+Verification passed. The existing Section 6.1 scaffold `sorry`s are unchanged.

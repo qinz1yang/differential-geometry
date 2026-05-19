@@ -16,16 +16,11 @@ This file bundles static curvature objects as tensor sections over one
 manifold.  It deliberately avoids parameterized metric data and flow
 hypotheses.
 
-Future producer route for constructing these sections from a connection:
-
-* use mathlib's `TensorialAt`, `TensorialAt.mkHom`, and `mkHom₂`;
-* use the local vector-bundle helper route through
-  `ContMDiffVectorBundleHom.ofTensorialAt`;
-* prove tensoriality of `connectionRiemannCurvatureField` in the vector-field slots from
-  the covariant-derivative laws and Lie-bracket product rules;
-* only after those tensoriality and smoothness facts are available, construct
-  curvature values in the generic `Tensor13Section` and `Tensor04Section`
-  types from the connection.
+The connection-to-section producer lives in `RicciFlower.Riemann.Basic` as the
+intrinsic `rm13Section`, `rm04Section`, and `ricciSection` constructors.  Their
+remaining proof fields are the honest smoothness/tensoriality frontier for
+`connectionRiemannCurvatureField`; coordinate files should consume those
+sections or their component theorems, not define curvature primitively.
 
 This file contains only tensor aliases, pointwise trace operations, and
 component evaluation helpers.  Realization predicates for supplied curvature
@@ -48,15 +43,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 /-- Static smooth `(1,3)` tensor section. -/
 abbrev Tensor13Section :=
-  TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ⊤ 1 3
+  TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ 1 3
 
 /-- Static smooth `(0,4)` tensor section. -/
 abbrev Tensor04Section :=
-  Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ⊤ 4
+  Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ 4
 
 /-- Static smooth `(0,2)` tensor section. -/
 abbrev Tensor02Section :=
-  Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ⊤ 2
+  Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ 2
 
 /-- Pointwise `(0,2)` tensor fiber. -/
 abbrev Tensor02At (x : M) :=
@@ -140,7 +135,7 @@ structure CurvatureTensorData where
   rm04 : Tensor04Section (I := I) (M := M)
   ricci : Tensor02Section (I := I) (M := M)
   scalar : M -> Real
-  scalar_smooth : ContMDiff I 𝓘(Real) ⊤ scalar
+  scalar_smooth : ContMDiff I 𝓘(Real) ∞ scalar
 
 @[simp]
 theorem rm04_comp_eq_eval

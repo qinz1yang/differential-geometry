@@ -244,6 +244,69 @@ theorem chartPushVF_initial_snd_modelCoord
   exact modelCoord_leviCivitaGeodesicSprayAcceleration
     (I := I) g x (extChartAt I x x) v k
 
+/-- Off-center fixed-chart right-hand side.
+
+If the chart-pushed phase-space chart is centered at a tangent vector over
+`x`, then throughout the same base chart the chart-pushed vector-field value is
+the chart-fiber RHS used to define the spray.  This is the fixed-chart version
+of `chartPushVF_initial_eq_chartFiber`; it is the tangent-bundle chart bridge
+needed to read the spray equation away from the initial time without
+re-centering the coordinates. -/
+theorem chartVF_eq_fiber
+    (g : SmoothRiemannianMetric I M)
+    {x : M} {v0 : TangentSpace I x}
+    {lift : Real -> TangentBundle I M} {t0 t : Real}
+    (hlift0 : lift t0 = (⟨x, v0⟩ : TangentBundle I M))
+    (hsrc : (lift t).proj ∈ (extChartAt I x).source) :
+    chartPushVF (I := I) g x lift t0 t =
+      leviCivitaGeodesicSprayChartFiber (I := I) g x (lift t) := by
+  classical
+  let q : TangentBundle I M := lift t
+  let q0 : TangentBundle I M := (⟨x, (0 : E)⟩ : TangentBundle I M)
+  let e := trivializationAt (E × E) (TangentSpace I.tangent) q0
+  let w : TangentSpace I.tangent q :=
+    leviCivitaGeodesicSprayChart (I := I) g x q
+  have hq_chart : q.proj ∈ (chartAt H x).source := by
+    simpa [q, extChartAt_source] using hsrc
+  have hq_source : q ∈ (chartAt (ModelProd H E) q0).source := by
+    rw [TangentBundle.mem_chart_source_iff]
+    simpa [q, q0] using hq_chart
+  have hcenter_chart :
+      chartAt (ModelProd H E) (lift t0) =
+        chartAt (ModelProd H E) q0 := by
+    rw [hlift0]
+    rw [TangentBundle.chartAt, TangentBundle.chartAt]
+  have hq_center_source : q ∈ (chartAt (ModelProd H E) (lift t0)).source := by
+    simpa [hcenter_chart] using hq_source
+  have hlin :
+      e.continuousLinearMapAt Real q =
+        tangentCoordChange I.tangent q q0 q := by
+    simpa [e, q0] using
+      TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
+        (I := I.tangent) (𝕜 := Real) (b₀ := q0) (b := q) hq_source
+  have hchange :
+      tangentCoordChange I.tangent q (lift t0) q =
+        tangentCoordChange I.tangent q q0 q := by
+    simp [tangentCoordChange, hlift0, q0, TangentBundle.chartAt]
+  have htriv :
+      e.continuousLinearMapAt Real q w =
+        leviCivitaGeodesicSprayChartFiber (I := I) g x q := by
+    have hbase : q ∈ e.baseSet := by
+      simpa [e, q0] using hq_source
+    simpa [w, leviCivitaGeodesicSprayChart, e, q0] using
+      e.continuousLinearMapAt_symmL (R := Real) hbase
+        (leviCivitaGeodesicSprayChartFiber (I := I) g x q)
+  calc
+    chartPushVF (I := I) g x lift t0 t =
+        tangentCoordChange I.tangent q (lift t0) q w := by
+          rfl
+    _ = tangentCoordChange I.tangent q q0 q w := by
+          rw [hchange]
+    _ = e.continuousLinearMapAt Real q w := by
+          rw [← hlin]
+          rfl
+    _ = leviCivitaGeodesicSprayChartFiber (I := I) g x q := htriv
+
 /-! ## Bridge to the coordinate-geodesic ODE package -/
 
 /-- At the center of the `extChartAt` coordinate package, its frame coefficient
@@ -270,6 +333,25 @@ theorem extChartAtCoordinateData_christoffel_eq_leviCivitaModelRHS_center
         (I := I) g x i j k (extChartAt I x x) := by
   exact (LeviCivita.leviCivitaChristoffelModelRHS_center_eq_christoffel
     (I := I) g x i j k).symm
+
+/-- Off-center version of the fixed-chart Christoffel bridge.
+
+In the `extChartAt x0` coordinate package, the Levi-Civita Christoffel
+coefficient at any point of the coordinate-frame domain agrees with the smooth
+model RHS used by the chart-fixed geodesic spray. -/
+theorem extChartAtCoordinateData_christoffel_eq_leviCivitaModelRHS_of_mem
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (x0 : M) {x : M}
+    (hx : x ∈ (extChartAtCoordinateData (I := I) x0).domain)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    (extChartAtCoordinateData (I := I) x0).christoffel
+        (LeviCivita.leviCivitaConnectionOfMetric (I := I) g) x i j k =
+      LeviCivita.leviCivitaChristoffelModelRHS
+        (I := I) g x0 i j k (extChartAt I x0 x) := by
+  have hx' : x ∈ coordinateFrameSet (I := I) x0 := by
+    simpa [extChartAtCoordinateData] using hx
+  exact (LeviCivita.leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
+    (I := I) g x0 hx' i j k).symm
 
 /-- At the center of the `extChartAt` coordinate package, velocity coefficients
 are the fixed model coordinates of the velocity. -/
@@ -317,6 +399,22 @@ theorem extChartAtCoordinateData_coeff_eq_chartFiberCoordAt_of_mem
       Bundle.Trivialization.basisAt]
   simpa [CoordinateChartData.coeff, extChartAtCoordinateData,
     coordinateFrameAt, coordinateTrivializationAt, e, b] using hcoeff'
+
+/-- If `lift t` is the tangent lift of `gamma` at `t`, then the velocity
+coefficient in fixed `extChartAt x` coordinates is the corresponding model
+coordinate of the fixed-chart fiber coordinate of `lift t`. -/
+theorem velCoeff_eq_fiber
+    {x : M} {gamma : Curve M} {lift : Real -> TangentBundle I M}
+    {t : Real}
+    (hvel : curveVelocityBundle I gamma t = lift t)
+    (hsrc : gamma t ∈ (extChartAtCoordinateData (I := I) x).domain)
+    (k : CoordinateIdx (𝕜 := Real) E) :
+    (extChartAtCoordinateData (I := I) x).velocityCoeff gamma k t =
+      modelCoord k (chartFiberCoordAt (I := I) x (lift t)) := by
+  rw [← hvel]
+  simpa [CoordinateChartData.velocityCoeff, curveVelocityBundle] using
+    extChartAtCoordinateData_coeff_eq_chartFiberCoordAt_of_mem
+      (I := I) x hsrc (curveVelocity I gamma t) k
 
 /-- If a lift is the tangent lift of `gamma` at `t`, then the coordinate
 velocity of `gamma` equals the second chart-pushed fiber coordinate of the
@@ -376,6 +474,58 @@ theorem extChartAtCoordinateData_christoffelVelocityQuadratic_eq_leviCivita
       (I := I) gamma t i]
   rw [extChartAtCoordinateData_velocityCoeff_eq_modelCoord
       (I := I) gamma t j]
+
+/-- Off-center fixed-chart version of the Christoffel quadratic bridge.
+
+This is the scalar identity needed to read the chart-fixed spray RHS as the
+coordinate geodesic ODE in the same fixed `extChartAt x0` coordinates. -/
+theorem extChartAtCoordinateData_christoffelVelocityQuadratic_eq_leviCivita_of_mem
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {gamma : Curve M} {t : Real}
+    {x0 : M}
+    (hsrc : gamma t ∈ (extChartAtCoordinateData (I := I) x0).domain)
+    (k : CoordinateIdx (𝕜 := Real) E) :
+    (extChartAtCoordinateData (I := I) x0).christoffelVelocityQuadratic
+        (LeviCivita.leviCivitaConnectionOfMetric (I := I) g) gamma t k =
+      leviCivitaGeodesicSprayQuadratic
+        (I := I) g x0 (extChartAt I x0 (gamma t))
+        (chartFiberCoordAt (I := I) x0
+          (curveVelocityBundle I gamma t)) k := by
+  change
+    (∑ i : CoordinateIdx (𝕜 := Real) E,
+      ∑ j : CoordinateIdx (𝕜 := Real) E,
+        (extChartAtCoordinateData (I := I) x0).christoffel
+          (LeviCivita.leviCivitaConnectionOfMetric (I := I) g) (gamma t) i j k *
+          (extChartAtCoordinateData (I := I) x0).velocityCoeff gamma i t *
+          (extChartAtCoordinateData (I := I) x0).velocityCoeff gamma j t) =
+    ∑ i : CoordinateIdx (𝕜 := Real) E,
+      ∑ j : CoordinateIdx (𝕜 := Real) E,
+        LeviCivita.leviCivitaChristoffelModelRHS
+          (I := I) g x0 i j k (extChartAt I x0 (gamma t)) *
+          modelCoord i (chartFiberCoordAt (I := I) x0
+            (curveVelocityBundle I gamma t)) *
+          modelCoord j (chartFiberCoordAt (I := I) x0
+            (curveVelocityBundle I gamma t))
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  refine Finset.sum_congr rfl ?_
+  intro j _
+  rw [extChartAtCoordinateData_christoffel_eq_leviCivitaModelRHS_of_mem
+      (I := I) g x0 hsrc i j k]
+  rw [show
+      (extChartAtCoordinateData (I := I) x0).velocityCoeff gamma i t =
+        modelCoord i (chartFiberCoordAt (I := I) x0
+          (curveVelocityBundle I gamma t)) by
+    simpa [CoordinateChartData.velocityCoeff, curveVelocityBundle] using
+      extChartAtCoordinateData_coeff_eq_chartFiberCoordAt_of_mem
+        (I := I) x0 hsrc (curveVelocity I gamma t) i]
+  rw [show
+      (extChartAtCoordinateData (I := I) x0).velocityCoeff gamma j t =
+        modelCoord j (chartFiberCoordAt (I := I) x0
+          (curveVelocityBundle I gamma t)) by
+    simpa [CoordinateChartData.velocityCoeff, curveVelocityBundle] using
+      extChartAtCoordinateData_coeff_eq_chartFiberCoordAt_of_mem
+        (I := I) x0 hsrc (curveVelocity I gamma t) j]
 
 /-- Pointwise version of the chart-pushed first-order ODE at the base time. -/
 theorem chartPushLift_hasDerivAt_self
@@ -621,6 +771,49 @@ theorem hasCoordinateAccelerationAt_projectCurve_of_geodesicSprayIntegral
       (lift := lift) (t0 := t0) hlift0 hf k
   simpa [gamma] using hderiv.congr_of_eventuallyEq heq
 
+/-- On an open time ball, the second component of the fixed chart-pushed lift
+has derivative equal to the spray acceleration at every time in the ball. -/
+theorem chartSnd_derivOn
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M}
+    {x : M} {v : TangentSpace I x}
+    {lift : Real -> TangentBundle I M} {epsilon t : Real}
+    (hlift0 : lift 0 = (⟨x, v⟩ : TangentBundle I M))
+    (hf : IsMIntegralCurveOn lift
+      (leviCivitaGeodesicSprayChart (I := I) g x)
+      (Metric.ball (0 : Real) epsilon))
+    (ht : t ∈ Metric.ball (0 : Real) epsilon)
+    (hsrc : ∀ s ∈ Metric.ball (0 : Real) epsilon,
+      (lift s).proj ∈ (extChartAt I x).source) :
+    HasDerivAt (fun s : Real => (chartPushLift (I := I) lift 0 s).2)
+      (leviCivitaGeodesicSprayAcceleration
+        (I := I) g x (extChartAt I x (lift t).proj)
+        (chartFiberCoordAt (I := I) x (lift t))) t := by
+  have hsrcTM : lift t ∈ (extChartAt I.tangent (lift 0)).source := by
+    have hsrc_chart : (lift t).proj ∈ (chartAt H x).source := by
+      simpa [extChartAt_source] using hsrc t ht
+    rw [hlift0]
+    rw [extChartAt_source]
+    rw [TangentBundle.mem_chart_source_iff]
+    simpa using hsrc_chart
+  have hwithin :=
+    IsMIntegralCurveOn.hasDerivWithinAt
+      (I := I.tangent) (γ := lift)
+      (v := leviCivitaGeodesicSprayChart (I := I) g x)
+      (s := Metric.ball (0 : Real) epsilon) (t₀ := 0)
+      hf ht hsrcTM
+  have hderiv :
+      HasDerivAt (chartPushLift (I := I) lift 0)
+        (chartPushVF (I := I) g x lift 0 t) t := by
+    simpa [chartPushLift, chartPushVF, Function.comp_def] using
+      hwithin.hasDerivAt (Metric.isOpen_ball.mem_nhds ht)
+  have hsnd := hasDerivAt_snd_of_prod hderiv
+  have hrhs :=
+    chartVF_eq_fiber
+      (I := I) g hlift0 (hsrc t ht)
+  rw [hrhs] at hsnd
+  simpa [leviCivitaGeodesicSprayChartFiber] using hsnd
+
 /-- Scalar coordinate ODE produced by the geodesic spray.
 
 Unlike `HasCoordinateGeodesicODEAt`, this predicate does not assert a
@@ -651,6 +844,141 @@ theorem HasCoordinateSprayODEAt.hasCoordinatePullbackAccelerationZero
     rw [alongChristoffelTerm_velocity_eq_christoffelVelocityQuadratic
       (I := I) C cov gamma t k]
     simpa [CoordinateChartData.coeff] using (hode k).symm
+
+/-- Scalar coordinate spray ODE in the concrete `extChartAt x0` coordinates.
+
+This is the canonical public form for local geodesic ODE work; the older
+`HasCoordinateSprayODEAt C` remains a compatibility layer for existing
+`CoordinateChartData` statements. -/
+def HasCoordSprayODEAt
+    (x0 : M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (gamma : Curve M) (t : Real) : Prop :=
+  HasCoordinateSprayODEAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) cov gamma t
+
+/-- Zero coordinate-defined covariant acceleration follows from the concrete
+`extChartAt x0` scalar spray ODE. -/
+theorem HasCoordSprayODEAt.zeroAccel
+    {x0 : M}
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {gamma : Curve M} {t : Real}
+    (h : HasCoordSprayODEAt (I := I) x0 cov gamma t) :
+    HasCoordCovAccelAt (I := I) x0 cov gamma t 0 := by
+  change HasCoordinatePullbackAccelerationAt (I := I)
+    (extChartAtCoordinateData (I := I) x0) cov gamma t 0
+  exact HasCoordinateSprayODEAt.hasCoordinatePullbackAccelerationZero
+    (I := I) h
+
+/-- A chart-fixed spray integral curve on a time ball satisfies the scalar
+coordinate spray ODE in the fixed initial `extChartAt x` coordinates at every
+time in that ball, provided its base projection stays in that chart. -/
+theorem coordSprayODEOn
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M}
+    {x : M} {v : TangentSpace I x}
+    {lift : Real -> TangentBundle I M} {epsilon t : Real}
+    (hlift0 : lift 0 = (⟨x, v⟩ : TangentBundle I M))
+    (hf : IsMIntegralCurveOn lift
+      (leviCivitaGeodesicSprayChart (I := I) g x)
+      (Metric.ball (0 : Real) epsilon))
+    (ht : t ∈ Metric.ball (0 : Real) epsilon)
+    (hsrc : ∀ s ∈ Metric.ball (0 : Real) epsilon,
+      projectCurve (I := I) lift s ∈
+        (extChartAtCoordinateData (I := I) x).domain) :
+    HasCoordSprayODEAt (I := I) x
+      (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+      (projectCurve (I := I) lift) t := by
+  classical
+  let gamma : Curve M := projectCurve (I := I) lift
+  let C : CoordinateChartData (I := I) (M := M) :=
+    extChartAtCoordinateData (I := I) x
+  let cov := LeviCivita.leviCivitaConnectionOfMetric (I := I) g
+  have hsrc_lift : ∀ s ∈ Metric.ball (0 : Real) epsilon,
+      (lift s).proj ∈ (extChartAt I x).source := by
+    intro s hs
+    simpa [gamma, projectCurve, C, extChartAtCoordinateData,
+      coordinateFrameSet, coordinateTrivializationAt, extChartAt_source]
+      using hsrc s hs
+  have hball_mem : Metric.ball (0 : Real) epsilon ∈ 𝓝 t :=
+    Metric.isOpen_ball.mem_nhds ht
+  have hf_at : IsMIntegralCurveAt lift
+      (leviCivitaGeodesicSprayChart (I := I) g x) t :=
+    hf.isMIntegralCurveAt hball_mem
+  have hsrc_eventual :
+      ∀ᶠ s in 𝓝 t, (lift s).proj ∈ (extChartAt I x).source := by
+    filter_upwards [hball_mem] with s hs
+    exact hsrc_lift s hs
+  have hvel_eventual :
+      ∀ᶠ s in 𝓝 t,
+        curveVelocityBundle I gamma s = lift s := by
+    simpa [gamma] using
+      projectCurve_velocityBundle_eventually_eq_lift
+        (I := I) (g := g) (x0 := x) (f := lift) (t0 := t)
+        hf_at hsrc_eventual
+  refine ⟨fun k : CoordinateIdx (𝕜 := Real) E =>
+      -C.christoffelVelocityQuadratic cov gamma t k, ?_, ?_⟩
+  · intro k
+    have hderivPush :=
+      chartSnd_derivOn
+        (I := I) (g := g) (x := x) (v := v)
+        (lift := lift) (epsilon := epsilon) (t := t)
+        hlift0 hf ht hsrc_lift
+    have hderivModel :
+        HasDerivAt
+          (fun s : Real =>
+            modelCoord k ((chartPushLift (I := I) lift 0 s).2))
+          (-leviCivitaGeodesicSprayQuadratic
+            (I := I) g x (extChartAt I x (lift t).proj)
+            (chartFiberCoordAt (I := I) x (lift t)) k) t := by
+      simpa using hasDerivAt_modelCoord_of_vector k hderivPush
+    have hchart_eq :
+        (fun s : Real =>
+          modelCoord k ((chartPushLift (I := I) lift 0 s).2))
+          =ᶠ[𝓝 t]
+        (fun s : Real =>
+          modelCoord k (chartFiberCoordAt (I := I) x (lift s))) := by
+      filter_upwards [hball_mem] with s hs
+      rw [chartPushLift_snd_eq_chartFiberCoordAt
+        (I := I) hlift0 (hsrc_lift s hs)]
+    have hderivFiber :
+        HasDerivAt
+          (fun s : Real =>
+            modelCoord k (chartFiberCoordAt (I := I) x (lift s)))
+          (-leviCivitaGeodesicSprayQuadratic
+            (I := I) g x (extChartAt I x (lift t).proj)
+            (chartFiberCoordAt (I := I) x (lift t)) k) t :=
+      hderivModel.congr_of_eventuallyEq hchart_eq.symm
+    have hvel_eq :
+        (fun s : Real => C.velocityCoeff gamma k s)
+          =ᶠ[𝓝 t]
+        (fun s : Real =>
+          modelCoord k (chartFiberCoordAt (I := I) x (lift s))) := by
+      filter_upwards [hvel_eventual, hball_mem] with s hvel_s hs
+      exact velCoeff_eq_fiber
+        (I := I) (x := x) (gamma := gamma) (lift := lift)
+        (t := s) hvel_s (by simpa [C, gamma] using hsrc s hs) k
+    have hderivVel :
+        HasDerivAt (fun s : Real => C.velocityCoeff gamma k s)
+          (-leviCivitaGeodesicSprayQuadratic
+            (I := I) g x (extChartAt I x (lift t).proj)
+            (chartFiberCoordAt (I := I) x (lift t)) k) t :=
+      hderivFiber.congr_of_eventuallyEq hvel_eq
+    have hvel_t : curveVelocityBundle I gamma t = lift t :=
+      hvel_eventual.self_of_nhds
+    have hquad :
+        C.christoffelVelocityQuadratic cov gamma t k =
+          leviCivitaGeodesicSprayQuadratic
+            (I := I) g x (extChartAt I x (lift t).proj)
+            (chartFiberCoordAt (I := I) x (lift t)) k := by
+      have hq :=
+        extChartAtCoordinateData_christoffelVelocityQuadratic_eq_leviCivita_of_mem
+          (I := I) (g := g) (gamma := gamma) (t := t)
+          (x0 := x) (by simpa [C, gamma] using hsrc t ht) k
+      simpa [hvel_t] using hq
+    simpa [C, cov, hquad] using hderivVel
+  · intro k
+    simp [C, cov, gamma]
 
 /-- Eventual differentiability of the chart-pushed lift, as a lightweight
 regularity consequence of the integral-curve equation. -/
@@ -754,6 +1082,18 @@ theorem IsSprayGeodesicAt.hasCoordinateODE
   intro k
   simp
 
+/-- A centered spray geodesic satisfies the scalar coordinate geodesic ODE in
+the concrete `extChartAt (gamma t0)` API. -/
+theorem IsSprayGeodesicAt.hasCoordODE
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {gamma : Curve M} {t0 : Real}
+    (hgamma : IsSprayGeodesicAt (I := I) g gamma t0) :
+    HasCoordSprayODEAt (I := I) (gamma t0)
+      (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+      gamma t0 :=
+  IsSprayGeodesicAt.hasCoordinateODE
+    (I := I) (g := g) (gamma := gamma) (t0 := t0) hgamma
+
 /-- A centered spray geodesic has zero coordinate-defined pullback
 acceleration in the `extChartAt` coordinate package at the base time. -/
 theorem IsSprayGeodesicAt.hasCoordinatePullbackAccelerationZero
@@ -766,6 +1106,18 @@ theorem IsSprayGeodesicAt.hasCoordinatePullbackAccelerationZero
       gamma t0 0 :=
   (IsSprayGeodesicAt.hasCoordinateODE
     (I := I) (g := g) (gamma := gamma) (t0 := t0) hgamma).hasCoordinatePullbackAccelerationZero
+
+/-- A centered spray geodesic has zero coordinate-defined covariant
+acceleration in the concrete `extChartAt (gamma t0)` API. -/
+theorem IsSprayGeodesicAt.hasCoordAccelZero
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {gamma : Curve M} {t0 : Real}
+    (hgamma : IsSprayGeodesicAt (I := I) g gamma t0) :
+    HasCoordCovAccelAt (I := I) (gamma t0)
+      (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+      gamma t0 0 :=
+  (IsSprayGeodesicAt.hasCoordODE
+    (I := I) (g := g) (gamma := gamma) (t0 := t0) hgamma).zeroAccel
 
 /-- Picard-Lindelof local existence, packaged with the chart-pushed
 first-order ODE satisfied by the produced lift. -/
@@ -872,6 +1224,45 @@ theorem exists_local_geodesic_coordinateAccelerationZero
       (I := I) (g := g) (gamma := gamma) (t0 := 0) hspray
   refine ⟨gamma, hgamma0, hvel, hspray, hode, ?_⟩
   simpa [hgamma0] using hacc
+
+/-- Local existence of a Levi-Civita spray geodesic, using the concrete
+`extChartAt x` scalar ODE API. -/
+theorem exists_local_geodesic_coord
+    [I.Boundaryless] [CompleteSpace E]
+    (g : SmoothRiemannianMetric I M)
+    (x : M) (v : TangentSpace I x) :
+    ∃ gamma : Curve M,
+      gamma 0 = x ∧
+        curveVelocityBundle I gamma 0 =
+          (⟨x, v⟩ : TangentBundle I M) ∧
+        IsSprayGeodesicAt (I := I) g gamma 0 ∧
+        HasCoordSprayODEAt (I := I) x
+          (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+          gamma 0 := by
+  obtain ⟨gamma, hgamma0, hvel, hspray, hode⟩ :=
+    exists_local_geodesic (I := I) g x v
+  exact ⟨gamma, hgamma0, hvel, hspray, hode⟩
+
+/-- Local existence of a Levi-Civita spray geodesic, using the concrete
+`extChartAt x` zero coordinate acceleration API. -/
+theorem exists_local_geodesic_coordZero
+    [I.Boundaryless] [CompleteSpace E]
+    (g : SmoothRiemannianMetric I M)
+    (x : M) (v : TangentSpace I x) :
+    ∃ gamma : Curve M,
+      gamma 0 = x ∧
+        curveVelocityBundle I gamma 0 =
+          (⟨x, v⟩ : TangentBundle I M) ∧
+        IsSprayGeodesicAt (I := I) g gamma 0 ∧
+        HasCoordSprayODEAt (I := I) x
+          (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+          gamma 0 ∧
+        HasCoordCovAccelAt (I := I) x
+          (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+          gamma 0 0 := by
+  obtain ⟨gamma, hgamma0, hvel, hspray, hode, hacc⟩ :=
+    exists_local_geodesic_coordinateAccelerationZero (I := I) g x v
+  exact ⟨gamma, hgamma0, hvel, hspray, hode, hacc⟩
 
 end Lecture07
 end GlobalGeometry

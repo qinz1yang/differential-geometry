@@ -1,5 +1,6 @@
 import RicciFlower.Metric.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Matrix.Mul
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
@@ -85,6 +86,41 @@ def InverseMetricComponentsInFrame [DecidableEq Idx]
         (if i = j then 1 else 0) ∧
       (∑ k : Idx, g.inner x (frame i x) (frame k x) * gInv x k j) =
         (if i = j then 1 else 0)
+
+/-- A two-sided inverse of a symmetric frame Gram matrix is symmetric. -/
+theorem invComp_symm [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M)
+    (gInv : InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hinv : InverseMetricComponentsInFrame (I := I) g gInv frame) :
+    forall x i j, gInv x i j = gInv x j i := by
+  classical
+  intro x i j
+  let A : Matrix Idx Idx Real := fun i j => gInv x i j
+  let G : Matrix Idx Idx Real := fun i j => g.inner x (frame i x) (frame j x)
+  have hAG : A * G = 1 := by
+    ext a b
+    simpa [A, G, Matrix.mul_apply] using (hinv x a b).1
+  have hGA : G * A = 1 := by
+    ext a b
+    simpa [A, G, Matrix.mul_apply] using (hinv x a b).2
+  have hGt : Matrix.transpose G = G := by
+    ext a b
+    simpa [G] using g.symm x (frame b x) (frame a x)
+  have hAtG : Matrix.transpose A * G = 1 := by
+    calc
+      Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
+      _ = Matrix.transpose (G * A) := by rw [Matrix.transpose_mul]
+      _ = 1 := by rw [hGA]; simp
+  have hAt : Matrix.transpose A = A := by
+    calc
+      Matrix.transpose A = Matrix.transpose A * 1 := by simp
+      _ = Matrix.transpose A * (G * A) := by rw [hGA]
+      _ = (Matrix.transpose A * G) * A := by rw [← Matrix.mul_assoc]
+      _ = 1 * A := by rw [hAtG]
+      _ = A := by simp
+  have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
+  simpa [A] using hentry
 
 /-- Ricci curvature as the metric trace of lowered Riemann curvature in a static
 frame, with slot convention `Ric_ij = g^{kl} R_{k i j l}`. -/

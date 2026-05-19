@@ -1,5 +1,8 @@
-import RicciFlower.Tensor.RSTensor.NablaOnTensors.Raw
+import RicciFlower.Tensor.RSTensor.NablaOnTensors.RawDefs
+import RicciFlower.Tensor.RSTensor.CoordinateBasis
 import RicciFlower.Tensor.RSTensor.NablaOnTensors.Connection.Endomorphism
+import RicciFlower.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import RicciFlower.VectorBundle.PartialMfderiv
 
 /-!
 # Higher-order covariant derivative interfaces
@@ -557,5 +560,218 @@ theorem higherCovDeriv0SRealizes_two_apply {s : ℕ}
   h2.apply X x slots
 
 end
+
+section RealLinearity
+
+set_option backward.isDefEq.respectTransparency false
+
+open Bundle Set IsManifold ContinuousLinearMap TensorLieDeriv
+open scoped Manifold Topology Bundle ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I 1 M] [IsManifold I 2 M]
+variable [IsManifold I (∞ : WithTop ℕ∞) M]
+variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+
+/-- The directional covariant derivative of covariant tensor fields is
+additive in the tensor argument.  This Real-specialized form matches the
+smooth-section extension API used throughout the RicciFlower geometry layer. -/
+theorem nabla0SFun_add [T2Space M] {s : ℕ}
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (α β : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (x : M) :
+    nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov X (α + β) x =
+      nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x +
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X β x := by
+  classical
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+      (TangentSpace I x) :=
+    Module.finBasis Real (TangentSpace I x)
+  apply ext0S_basis (I := I) basis
+  intro idx
+  let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    fun a =>
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis (idx a))).choose
+  have hV : ∀ a : Fin s, V a x = basis (idx a) := by
+    intro a
+    exact
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis (idx a))).choose_spec
+  have hslots : (fun a : Fin s => V a x) = fun a : Fin s => basis (idx a) := by
+    funext a
+    exact hV a
+  have hsum := nabla0SFun_eval_smooth_slots (I := I) cov X V (α + β) x
+  have hα := nabla0SFun_eval_smooth_slots (I := I) cov X V α x
+  have hβ := nabla0SFun_eval_smooth_slots (I := I) cov X V β x
+  have hfα : MDifferentiableAt I 𝓘(Real, Real)
+      (fun p : M => α p (fun a : Fin s => V a p)) x :=
+    (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) α V x).mdifferentiableAt
+      (by simp)
+  have hfβ : MDifferentiableAt I 𝓘(Real, Real)
+      (fun p : M => β p (fun a : Fin s => V a p)) x :=
+    (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) β V x).mdifferentiableAt
+      (by simp)
+  have hext :
+      extDerivFun (I := I)
+          (fun p : M => (α + β) p (fun a : Fin s => V a p)) x (X x) =
+        extDerivFun (I := I)
+            (fun p : M => α p (fun a : Fin s => V a p)) x (X x) +
+          extDerivFun (I := I)
+            (fun p : M => β p (fun a : Fin s => V a p)) x (X x) := by
+    change
+      extDerivFun (I := I)
+          ((fun p : M => α p (fun a : Fin s => V a p)) +
+            fun p : M => β p (fun a : Fin s => V a p)) x (X x) =
+        extDerivFun (I := I)
+            (fun p : M => α p (fun a : Fin s => V a p)) x (X x) +
+          extDerivFun (I := I)
+            (fun p : M => β p (fun a : Fin s => V a p)) x (X x)
+    rw [extDerivFun_add hfα hfβ]
+    rfl
+  simp only [component0S_apply]
+  rw [← hslots]
+  change
+    (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov X (α + β) x) (fun a : Fin s => V a x) =
+      (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x) (fun a : Fin s => V a x) +
+        (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X β x) (fun a : Fin s => V a x)
+  rw [hsum, hα, hβ, hext]
+  simp [Finset.sum_add_distrib]
+  ring
+
+/-- The directional covariant derivative of covariant tensor fields is
+homogeneous under constant scalar multiplication of the tensor argument. -/
+theorem nabla0SFun_smul [T2Space M] {s : ℕ}
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (c : Real)
+    (α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (x : M) :
+    nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov X (c • α) x =
+      c • nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x := by
+  classical
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+      (TangentSpace I x) :=
+    Module.finBasis Real (TangentSpace I x)
+  apply ext0S_basis (I := I) basis
+  intro idx
+  let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    fun a =>
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis (idx a))).choose
+  have hV : ∀ a : Fin s, V a x = basis (idx a) := by
+    intro a
+    exact
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis (idx a))).choose_spec
+  have hslots : (fun a : Fin s => V a x) = fun a : Fin s => basis (idx a) := by
+    funext a
+    exact hV a
+  have hsmul := nabla0SFun_eval_smooth_slots (I := I) cov X V (c • α) x
+  have hα := nabla0SFun_eval_smooth_slots (I := I) cov X V α x
+  have hfα : MDifferentiableAt I 𝓘(Real, Real)
+      (fun p : M => α p (fun a : Fin s => V a p)) x :=
+    (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) α V x).mdifferentiableAt
+      (by simp)
+  have hext :
+      extDerivFun (I := I)
+          (fun p : M => (c • α) p (fun a : Fin s => V a p)) x (X x) =
+        c *
+          extDerivFun (I := I)
+            (fun p : M => α p (fun a : Fin s => V a p)) x (X x) := by
+    have h := RicciFlower.extDerivFun_const_mul I c hfα
+    exact congrArg (fun L : TangentSpace I x →L[Real] Real => L (X x)) h
+  simp only [component0S_apply]
+  rw [← hslots]
+  change
+    (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov X (c • α) x) (fun a : Fin s => V a x) =
+      c *
+        (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x) (fun a : Fin s => V a x)
+  rw [hsmul, hα, hext]
+  simp only [coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply,
+    ContMDiffSection.coe_smul, Pi.smul_apply, ContinuousMultilinearMap.smul_apply,
+    smul_eq_mul]
+  rw [← Finset.mul_sum]
+  ring
+
+/-- Total covariant derivative realizations are additive in the tensor field. -/
+theorem TotalNabla0SRealizes.add [T2Space M] {s : ℕ}
+    {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
+    {α β : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    {nablaAlpha nablaBeta :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) (s + 1)}
+    (hα : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov α nablaAlpha)
+    (hβ : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov β nablaBeta) :
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      s cov (α + β) (nablaAlpha + nablaBeta) := by
+  intro X x slots
+  have hα' := hα X x slots
+  have hβ' := hβ X x slots
+  calc
+    (nablaAlpha + nablaBeta) x (Fin.cons (X x) slots)
+        = nablaAlpha x (Fin.cons (X x) slots) +
+            nablaBeta x (Fin.cons (X x) slots) := rfl
+    _ = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            s cov X α x slots +
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            s cov X β x slots := by rw [hα', hβ']
+    _ = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X (α + β) x slots := by
+        rw [nabla0SFun_add (I := I) cov X α β x]
+        rfl
+
+/-- Total covariant derivative realizations are homogeneous under constant
+scalar multiplication of the tensor field. -/
+theorem TotalNabla0SRealizes.smul [T2Space M] {s : ℕ}
+    {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
+    (c : Real)
+    {α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    {nablaAlpha :
+      Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (n := (∞ : WithTop ℕ∞)) (s + 1)}
+    (hα : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov α nablaAlpha) :
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      s cov (c • α) (c • nablaAlpha) := by
+  intro X x slots
+  have hα' := hα X x slots
+  calc
+    (c • nablaAlpha) x (Fin.cons (X x) slots)
+        = c • nablaAlpha x (Fin.cons (X x) slots) := rfl
+    _ = c • nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x slots := by rw [hα']
+    _ = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X (c • α) x slots := by
+        rw [nabla0SFun_smul (I := I) cov X c α x]
+        rfl
+
+end RealLinearity
 
 end Tensor0SBundle

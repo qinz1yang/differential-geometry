@@ -137,6 +137,17 @@ private theorem tensor0SBundle_linearMapAt_apply_of_mem {n : ℕ} (x₀ b : M)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rfl
 
+private theorem tensor0SBundle_linearMapAt_apply_tensor {n : ℕ} (x₀ b : M)
+    (hb : b ∈ (trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun x : M => Tensor0SSpace n I x) x₀).baseSet)
+    (B : Tensor0SSpace n I b) (v : Fin n → E) :
+    (((trivializationAt (Tensor0SModel n 𝕜 E)
+        (fun x : M => Tensor0SSpace n I x) x₀).linearMapAt 𝕜 b) B) v =
+    Tensor0SSpace.toModel B
+      (fun j => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b (v j)) := by
+  simpa using tensor0SBundle_linearMapAt_apply_of_mem (I := I) (M := M) x₀ b hb
+    (Tensor0SSpace.toModel B) v
+
 /-- Curried section: applying the fiberwise CLE `tensor0S_curry n b` to a section `T` of
 the `(0, n + 1)`-tensor bundle gives a section of `Hom(TM, Tensor0SSpace n)`. -/
 @[reducible]
@@ -372,6 +383,195 @@ private theorem continuous_section_apply_aux : ∀ (n : ℕ)
     · simp [Fin.cons_zero]
     · intro k; simp [Fin.cons_succ]
 
+private theorem trivializationAt_tensor0SBundle_succ_fibre_pt {n : ℕ}
+    {b : M} (A : Tensor0SSpace (n + 1) I b) (x₀ : M) :
+    (trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
+      (fun x : M => Tensor0SSpace (n + 1) I x) x₀ ⟨b, A⟩).2 =
+    A.compContinuousLinearMap
+      (fun _ : Fin (n + 1) => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b) := rfl
+
+private theorem trivializationAt_tensor0SBundle_zero_fibre_pt
+    {b : M} (A : Tensor0SSpace 0 I b) (x₀ : M) :
+    (trivializationAt (Tensor0SModel 0 𝕜 E)
+      (fun x : M => Tensor0SSpace 0 I x) x₀ ⟨b, A⟩).2 =
+    (ContinuousMultilinearMap.constOfIsEmpty 𝕜 _ (A 0) :
+      ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => E) 𝕜) := by
+  change (A.compContinuousLinearMap
+    (fun _ : Fin 0 => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b)) =
+    ContinuousMultilinearMap.constOfIsEmpty 𝕜 _ (A 0)
+  rw [compContinuousLinearMap_isEmpty]
+
+private theorem trivializationAt_homBundle_fibre_pt {n : ℕ}
+    {b : M} (φ : TangentSpace I b →L[𝕜] Tensor0SSpace n I b) (x₀ : M) :
+    (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
+      (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
+      ⟨b, φ⟩).2 =
+    ((trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun x : M => Tensor0SSpace n I x) x₀).continuousLinearMapAt 𝕜 b).comp
+      (φ.comp ((trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b)) := rfl
+
+private theorem trivializationAt_homBundle_curry_eq_pt {n : ℕ}
+    {b : M} (A : Tensor0SSpace (n + 1) I b) (x₀ : M)
+    (hb : b ∈ (trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun x : M => Tensor0SSpace n I x) x₀).baseSet) :
+    (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
+      (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
+      ⟨b, tensor0S_curry (I := I) (M := M) n b A⟩).2 =
+    continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜
+      ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
+        (fun x : M => Tensor0SSpace (n + 1) I x) x₀ ⟨b, A⟩).2) := by
+  rw [trivializationAt_homBundle_fibre_pt (I := I) (M := M)
+    (φ := tensor0S_curry (I := I) (M := M) n b A) x₀]
+  rw [trivializationAt_tensor0SBundle_succ_fibre_pt (I := I) (M := M) A x₀]
+  ext w v
+  change (((trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun x : M => Tensor0SSpace n I x) x₀).linearMapAt 𝕜 b)
+      ((tensor0S_curry (I := I) (M := M) n b A)
+        ((trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b w))) v =
+    (A.compContinuousLinearMap
+      (fun _ : Fin (n + 1) => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b))
+        (Fin.cons w v)
+  rw [tensor0SBundle_linearMapAt_apply_tensor (I := I) (M := M) x₀ b hb]
+  rw [tensor0S_curry_apply_eval]
+  rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  congr 1
+  funext j
+  refine Fin.cases ?_ ?_ j
+  · rfl
+  · intro k
+    rfl
+
+private theorem continuous_curry_of_continuous_base {P : Type*} [TopologicalSpace P]
+    {n : ℕ} {b : P → M}
+    {T : ∀ p : P, Tensor0SSpace (n + 1) I (b p)}
+    (hb : Continuous b)
+    (hT : Continuous (fun p : P =>
+      TotalSpace.mk' (Tensor0SModel (n + 1) 𝕜 E)
+        (E := fun x : M => Tensor0SSpace (n + 1) I x) (b p) (T p))) :
+    Continuous (fun p : P =>
+      TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
+        (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) (b p)
+        (tensor0S_curry (I := I) (M := M) n (b p) (T p))) := by
+  rw [continuous_iff_continuousAt]
+  intro p₀
+  rw [FiberBundle.continuousAt_totalSpace]
+  refine ⟨hb.continuousAt, ?_⟩
+  have hT_at : ContinuousAt
+      (fun p : P =>
+        TotalSpace.mk' (Tensor0SModel (n + 1) 𝕜 E)
+          (E := fun x : M => Tensor0SSpace (n + 1) I x) (b p) (T p)) p₀ :=
+    hT.continuousAt
+  rw [FiberBundle.continuousAt_totalSpace] at hT_at
+  obtain ⟨_, hT_fibre⟩ := hT_at
+  have hcurry_cont : Continuous
+      (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜 :
+        ContinuousMultilinearMap 𝕜 (fun _ : Fin (n + 1) => E) 𝕜 →
+        E →L[𝕜] ContinuousMultilinearMap 𝕜 (fun _ : Fin n => E) 𝕜) :=
+    (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜
+      ).toContinuousLinearEquiv.continuous
+  have hcomp : ContinuousAt
+      (fun p : P =>
+        (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
+          ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
+            (fun y : M => Tensor0SSpace (n + 1) I y) (b p₀)
+              ⟨b p, T p⟩).2)) p₀ :=
+    hcurry_cont.continuousAt.comp hT_fibre
+  refine hcomp.congr ?_
+  have hbase_nhds : (trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun y : M => Tensor0SSpace n I y) (b p₀)).baseSet ∈ 𝓝 (b p₀) :=
+    (trivializationAt (Tensor0SModel n 𝕜 E)
+      (fun y : M => Tensor0SSpace n I y) (b p₀)).open_baseSet.mem_nhds
+      (mem_baseSet_trivializationAt _ _ _)
+  filter_upwards [hb.continuousAt.preimage_mem_nhds hbase_nhds] with p hp
+  change (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
+      ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
+        (fun y : M => Tensor0SSpace (n + 1) I y) (b p₀) ⟨b p, T p⟩).2) =
+    (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
+      (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) (b p₀)
+      ⟨b p, tensor0S_curry (I := I) (M := M) n (b p) (T p)⟩).2
+  exact (trivializationAt_homBundle_curry_eq_pt (I := I) (M := M)
+    (A := T p) (x₀ := b p₀) hp).symm
+
+private theorem continuous_section_apply_base_aux {P : Type*} [TopologicalSpace P] :
+    ∀ (n : ℕ)
+    (b : P → M)
+    (_hb : Continuous b)
+    (T : ∀ p : P, Tensor0SSpace n I (b p))
+    (_hT : Continuous (fun p : P =>
+      TotalSpace.mk' (Tensor0SModel n 𝕜 E)
+        (E := fun x : M => Tensor0SSpace n I x) (b p) (T p)))
+    (v : Fin n → ∀ p : P, TangentSpace I (b p))
+    (_hv : ∀ i : Fin n, Continuous (fun p : P =>
+      TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b p) (v i p))),
+    Continuous (fun p : P =>
+      Tensor0SSpace.toModel (T p) (fun i : Fin n => v i p))
+  | 0, b, hb, T, hT, v, _hv => by
+    rw [continuous_iff_continuousAt]
+    intro p₀
+    have hT_at := hT.continuousAt (x := p₀)
+    rw [FiberBundle.continuousAt_totalSpace] at hT_at
+    obtain ⟨_, hT_fibre⟩ := hT_at
+    have hcurry_cont : Continuous
+        ((continuousMultilinearCurryFin0 𝕜 E 𝕜) :
+          ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => E) 𝕜 → 𝕜) :=
+      (continuousMultilinearCurryFin0 𝕜 E 𝕜).toContinuousLinearEquiv.continuous
+    have hcomp : ContinuousAt
+        (fun p : P =>
+          (continuousMultilinearCurryFin0 𝕜 E 𝕜)
+            ((trivializationAt (Tensor0SModel 0 𝕜 E)
+              (fun y : M => Tensor0SSpace 0 I y) (b p₀)
+                ⟨b p, T p⟩).2)) p₀ :=
+      hcurry_cont.continuousAt.comp hT_fibre
+    refine hcomp.congr ?_
+    filter_upwards with p
+    rw [trivializationAt_tensor0SBundle_zero_fibre_pt
+      (I := I) (M := M) (A := T p) (x₀ := b p₀)]
+    change (continuousMultilinearCurryFin0 𝕜 E 𝕜)
+        (ContinuousMultilinearMap.constOfIsEmpty 𝕜
+          (fun _ : Fin 0 => E) ((T p) 0)) =
+      Tensor0SSpace.toModel (T p) (fun i : Fin 0 => v i p)
+    have hev : (continuousMultilinearCurryFin0 𝕜 E 𝕜)
+        (ContinuousMultilinearMap.constOfIsEmpty 𝕜
+          (fun _ : Fin 0 => E) ((T p) 0)) = (T p) 0 := by
+      change (ContinuousMultilinearMap.constOfIsEmpty 𝕜
+        (fun _ : Fin 0 => E) ((T p) 0)) 0 = (T p) 0
+      rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
+    rw [hev]
+    have huniq : (fun i : Fin 0 => v i p) = (0 : Fin 0 → E) := Subsingleton.elim _ _
+    rw [huniq]
+    rfl
+  | n + 1, b, hb, T, hT, v, hv => by
+    have hCurry := continuous_curry_of_continuous_base (I := I) (M := M)
+      (n := n) (b := b) (T := T) hb hT
+    have hApplied : Continuous
+        (fun p : P =>
+          TotalSpace.mk' (Tensor0SModel n 𝕜 E)
+            (E := fun x : M => Tensor0SSpace n I x) (b p)
+            ((tensor0S_curry (I := I) (M := M) n (b p) (T p)) (v 0 p))) :=
+      Continuous.clm_bundle_apply (𝕜 := 𝕜)
+        (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
+        (E₁ := fun x : M => TangentSpace I x)
+        (E₂ := fun x : M => Tensor0SSpace n I x)
+        (b := b)
+        (ϕ := fun p : P => tensor0S_curry (I := I) (M := M) n (b p) (T p))
+        (v := fun p : P => v 0 p) hCurry (hv 0)
+    have hRec := continuous_section_apply_base_aux n b hb
+      (fun p : P => (tensor0S_curry (I := I) (M := M) n (b p) (T p)) (v 0 p))
+      hApplied
+      (fun (i : Fin n) (p : P) => v i.succ p)
+      (fun i => hv i.succ)
+    refine hRec.congr (fun p => ?_)
+    change Tensor0SSpace.toModel
+        ((tensor0S_curry (I := I) (M := M) n (b p) (T p)) (v 0 p))
+        (fun i : Fin n => v i.succ p) =
+      Tensor0SSpace.toModel (T p) (fun i : Fin (n + 1) => v i p)
+    rw [tensor0S_curry_apply_eval]
+    congr 1
+    funext j
+    refine Fin.cases ?_ ?_ j
+    · simp [Fin.cons_zero]
+    · intro k; simp [Fin.cons_succ]
+
 private theorem contMDiff_section_apply_aux : ∀ (n : ℕ)
     (T : ∀ b : M, Tensor0SSpace n I b)
     (_hT : ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel n 𝕜 E)) ∞
@@ -465,6 +665,24 @@ theorem continuous_section_apply
     Continuous (fun b : M =>
       Tensor0SSpace.toModel (T b) (fun i : Fin n => v i b)) :=
   continuous_section_apply_aux n T hT v hv
+
+/-- **Continuity of multilinear bundle evaluation over an arbitrary base map.**
+For a continuous family of `(0,n)` tensors over `b : P → M` and continuous
+tangent vectors over the same base map, pointwise tensor evaluation is
+continuous on `P`. -/
+theorem continuous_section_apply_base
+    {P : Type*} [TopologicalSpace P] {n : ℕ}
+    (b : P → M) (hb : Continuous b)
+    (T : ∀ p : P, Tensor0SSpace n I (b p))
+    (hT : Continuous (fun p : P =>
+      TotalSpace.mk' (Tensor0SModel n 𝕜 E)
+        (E := fun x : M => Tensor0SSpace n I x) (b p) (T p)))
+    (v : Fin n → ∀ p : P, TangentSpace I (b p))
+    (hv : ∀ i : Fin n, Continuous (fun p : P =>
+      TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b p) (v i p))) :
+    Continuous (fun p : P =>
+      Tensor0SSpace.toModel (T p) (fun i : Fin n => v i p)) :=
+  continuous_section_apply_base_aux n b hb T hT v hv
 
 /-- **Smoothness of multilinear bundle evaluation.**
 For a smooth section `T` of the `(0, n)`-tensor bundle and smooth tangent sections

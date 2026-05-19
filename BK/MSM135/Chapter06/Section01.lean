@@ -1,4 +1,4 @@
-import RicciFlower.RicciFlow.Perelman.Variation
+import RicciFlower.RicciFlow.Perelman.F
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -230,6 +230,164 @@ Book-facing alias for the moving-volume producer that turns the scalar
 derivative data into `WEntropyHasFirstVariationAt`. -/
 abbrev lbl551_entropy_first_variation_producer_of_volumeVariation :=
   @WEntropyHasFirstVariationAt_of_volumeVariation
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the concrete measure-theoretic `F` functional. -/
+abbrev lbl453_f_functional := @fFunctional
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the tau-free density derivative
+`d(e^{-f_s})/ds = -h e^{-f}`. -/
+abbrev lbl453_exp_density_variation_producer :=
+  @expNegPotentialDensity_hasDerivAt
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the tau-free moving-volume producer
+`delta(e^{-f} dmu) = (V/2 - h)e^{-f} dmu`. -/
+abbrev lbl453_exp_weighted_measure_variation_producer :=
+  @expWeightedMeasureIntegral_hasDerivAt_at
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the `F` first-variation producer from scalar derivative
+data and moving-volume differentiation. -/
+abbrev lbl453_f_first_variation_producer_of_volumeVariation :=
+  @FFunctionalHasFirstVariationAt_of_volumeVariation
+
+/-- MSM135 Chapter 6.1, weighted integration-by-parts identity used in
+Lemma 6.1.
+
+Book-facing alias for
+`integral (Delta f - |grad f|^2) d(e^{-f}mu_g) = 0`. -/
+abbrev lbl552_weighted_ibp :=
+  @weightedIBP
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the arbitrary-test weighted Green identity against
+`e^{-f} dmu_g`. -/
+abbrev lbl453_weighted_green :=
+  @weightedGreen
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for canceling the closed density-weighted divergence term. -/
+abbrev lbl453_weighted_divergence_zero :=
+  @weightedDivZero
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the shifted Hessian trace integral identity. -/
+abbrev lbl453_shifted_trace_green :=
+  @shiftIntEq
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the final integral statement of formula 5.10. -/
+abbrev lbl453_f_formula510_statement :=
+  @FFunctionalFormula510
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for assembling formula 5.10 from divergence cancellation
+and the shifted-trace Green identity. -/
+abbrev lbl453_f_formula510_assembly :=
+  @formula510_of_ints
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the same assembly after the connection-trace vector field
+has been constructed as `tr_g A`. -/
+abbrev lbl453_f_formula510_trace_field :=
+  @formula510_of_connTraceField
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the intrinsic trace-field assembly after replacing the
+abstract `rawTrace` and `actionTrace` inputs by the constructed field's own
+divergence and action. -/
+abbrev lbl453_f_formula510_trace_intrinsic :=
+  @formula510_of_trace
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the coordinate realization of `(tr_g A)(f)`. -/
+abbrev lbl453_f_formula510_trace_action :=
+  @connTraceAction_eq_gamma
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the finite-sum algebra contracting
+`nabla_p A^p_ij - A^p_ij partial_p f` by `g^{ij}`. -/
+abbrev lbl453_f_formula510_weighted_trace :=
+  @weightedTrace_eq
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for reducing the final weighted-divergence trace to the
+single raw divergence bridge for `tr_g A`. -/
+abbrev lbl453_f_formula510_weighted_trace_raw :=
+  @weightedTrace_of_raw
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the fixed-chart coefficient of the constructed trace
+field `tr_g A`. -/
+abbrev lbl453_f_formula510_trace_chart :=
+  @connTraceChartCoeff_eventually
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the Voss-Weyl chart expansion of
+`divergence_g(tr_g A)`. -/
+abbrev lbl453_f_formula510_trace_voss :=
+  @connTraceRawDiv_voss
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the product-rule split of the Voss-Weyl chart expansion
+of `divergence_g(tr_g A)`. -/
+abbrev lbl453_f_formula510_trace_product :=
+  @connTraceRawDiv_chart_product
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the model-chart coefficient identity of the constructed
+trace field `tr_g A`. -/
+abbrev lbl453_f_formula510_trace_chart_onE :=
+  @connTraceChartCoeffOnE_eventually
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for differentiating the explicit chart coefficient of
+`tr_g A`. -/
+abbrev lbl453_f_formula510_trace_chart_partial :=
+  @connTraceChartCoeff_partial
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the center value of the constructed trace-field chart
+coefficient. -/
+abbrev lbl453_f_formula510_trace_chart_center :=
+  @connTraceChartCoeff_center
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the explicit Voss-Weyl expansion of
+`div(tr_g A)`, with chart coefficients replaced by
+`g^{ij} A^p_ij`. -/
+abbrev lbl453_f_formula510_trace_explicit :=
+  @connTraceRawDiv_chart_explicit
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias converting a proved formula 5.10 identity for the derivative
+value into an identity for the `deriv`-based first variation. -/
+abbrev lbl453_f_formula510_final :=
+  @fFunctionalFirstVariation_eq_formula510_of_hasFirstVariationAt
 
 /-- MSM135 Chapter 6, labels `notes_and_commentary:lbl551` and
 `notes_and_commentary:lbl552`. -/

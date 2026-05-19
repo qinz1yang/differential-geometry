@@ -217,7 +217,7 @@ theorem model_contract_contravariant_first_bilinear_apply (r s : ℕ)
 
 section FieldContraction
 
-variable (n : WithTop ℕ∞ := ⊤) [IsManifold I ω M]
+variable (n : WithTop ℕ∞ := ⊤) [IsManifold I (n + 1) M]
 /-- Pointwise contraction of a (0,s+1)-tensor field with a vector field,
 giving a (0,s)-tensor field. At each point `x`, this feeds `X(x)` into the first
 slot of the (0,s+1)-tensor `α(x)` via the currying isomorphism. -/
