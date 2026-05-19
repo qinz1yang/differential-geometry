@@ -443,6 +443,7 @@ import DifferentialGeometry.Geometry.Riemannian.Curvature.Sectional
 import DifferentialGeometry.Geometry.Riemannian.Curvature.Einstein
 import DifferentialGeometry.Geometry.Riemannian.Curvature.ConstantSectional
 import DifferentialGeometry.Geometry.Riemannian.Curvature.Bounds
+import DifferentialGeometry.Geometry.Riemannian.Curvature.Bridges
 import DifferentialGeometry.Geometry.Riemannian.Completeness.Defs
 import DifferentialGeometry.Geometry.Riemannian.Exp.CompleteDomain
 import DifferentialGeometry.Geometry.Riemannian.Exp.NormalNeighborhood
