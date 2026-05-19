@@ -1606,6 +1606,31 @@ theorem length_of_velocity_zero [I.Boundaryless]
   rw [hcongr]
   simp [intervalIntegral.integral_zero]
 
+/-- **Fundamental theorem of calculus for Riemannian arc length.** For a
+`C¹` curve `γ` and a fixed lower endpoint `a`, the function `t ↦ length g γ a t`
+is differentiable at every `t : ℝ` with derivative equal to the speed at `t`.
+
+The speed is continuous (`speed_continuous`), so the standard `Continuous.deriv_integral`
+applies directly. -/
+theorem deriv_length_right
+    (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) (a t : ℝ) :
+    deriv (fun u : ℝ => length (I := I) g γ a u) t = speed (I := I) g γ t := by
+  unfold length
+  exact (speed_continuous (I := I) g hγ).deriv_integral _ _ _
+
+/-- **Strict differentiability of the arc-length function.** As a
+strengthening of `deriv_length_right`: for a `C¹` curve, the map
+`t ↦ length g γ a t` has the speed at `t` as its derivative in the
+strong `HasDerivAt` sense (not merely the weak `deriv`-extraction). -/
+theorem hasDerivAt_length_right
+    (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ) (a t : ℝ) :
+    HasDerivAt (fun u : ℝ => length (I := I) g γ a u)
+      (speed (I := I) g γ t) t := by
+  unfold length
+  exact ((speed_continuous (I := I) g hγ).integral_hasStrictDerivAt a t).hasDerivAt
+
 end Length
 end Riemannian
 end Geometry
