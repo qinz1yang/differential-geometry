@@ -49,9 +49,15 @@ abbrev Tensor13Section :=
 abbrev Tensor04Section :=
   Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ 4
 
+/-- Preferred name for a static smooth covariant four-tensor field. -/
+abbrev FourTensorField := Tensor04Section (I := I) (M := M)
+
 /-- Static smooth `(0,2)` tensor section. -/
 abbrev Tensor02Section :=
   Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ 2
+
+/-- Preferred name for a static smooth covariant two-tensor field. -/
+abbrev TwoTensorField := Tensor02Section (I := I) (M := M)
 
 /-- Pointwise `(0,2)` tensor fiber. -/
 abbrev Tensor02At (x : M) :=
@@ -93,12 +99,12 @@ def vec4 {x : M} (W X Y Z : TangentSpace I x) : Fin 4 -> TangentSpace I x :=
 
 /-- Interpret a bundled Ricci section as a pointwise two-tensor field. -/
 def tensor02ToField (Ric : Tensor02Section (I := I) (M := M)) :
-    TwoTensorField (I := I) (M := M) :=
+    RawTwoTensorField (I := I) (M := M) :=
   fun x X Y => Ric x (vec2 X Y)
 
 /-- Interpret a bundled lowered Riemann section as a pointwise four-tensor field. -/
 def tensor04ToField (Rm04 : Tensor04Section (I := I) (M := M)) :
-    FourTensorField (I := I) (M := M) :=
+    RawFourTensorField (I := I) (M := M) :=
   fun x W X Y Z => Rm04 x (vec4 W X Y Z)
 
 /-- Ricci component in a static frame. -/

@@ -172,7 +172,16 @@ RicciFlower.RicciFlow.Perelman.connTraceRawDiv_chart_product
 RicciFlower.RicciFlow.Perelman.connTraceRawDiv_chart_explicit
 RicciFlower.Analysis.DivergenceTheorem.divergence_g_chart_product
 RicciFlower.RicciFlow.Perelman.formula510_of_trace
+RicciFlower.Variation.MetricPotentialVariationPath
+RicciFlower.Variation.IsMetricPotentialVariationPath
+RicciFlower.RicciFlow.Perelman.FHasVariation
+RicciFlower.RicciFlow.Perelman.f_firstVariation_formula510
 ```
+
+The newest reformulation adds the canonical path-based meaning of
+`delta_(v,h)F(g,f)`.  The coordinate and divergence formulas above are now
+proof-layer infrastructure feeding that endpoint, not the book-facing
+definition of first variation.
 
 The remaining formula 5.10 frontier is no longer the local `delta Ric` or
 `delta Hess f` calculation, and the arbitrary-test `Delta(exp(-f))` expansion

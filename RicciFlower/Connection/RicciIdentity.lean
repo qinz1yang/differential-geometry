@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [Module.Finite Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 
@@ -88,10 +88,12 @@ theorem oneFormRicciIdentity_of_connection
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x alpha nabla2Alpha) :
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha :=
-  one_form_third_comm_coord_of_christoffelCurv (I := I) cov Rm13 x alpha
+  one_form_third_comm_coord_of_christoffelCurv (I := I) cov hcov Rm13 x alpha
     nabla2Alpha hRm hcurv hcoord
 
 /-- Smooth-connection version of `oneFormRicciIdentity_of_connection`.
@@ -110,10 +112,12 @@ theorem oneFormRicciIdentity_of_smooth_connection
     (hRm : Rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
+    (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x alpha nabla2Alpha) :
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha :=
   oneFormRicciIdentity_of_connection (I := I) cov Rm13 x alpha nabla2Alpha
-    hRm (connection_curvature_coord_of_christoffel (I := I) cov hcov x) hcoord
+    hRm hcov_one (connection_curvature_coord_of_christoffel (I := I) cov hcov x) hcoord
 
 /-- Evaluation form of `oneFormRicciIdentity_of_connection`. -/
 theorem oneFormRicciIdentity_of_connection_apply
@@ -125,6 +129,8 @@ theorem oneFormRicciIdentity_of_connection_apply
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x alpha nabla2Alpha)
     (X Y Z : TangentSpace I x) :
@@ -132,7 +138,7 @@ theorem oneFormRicciIdentity_of_connection_apply
       -Rm13 x alpha (vec3 X Y Z) :=
   one_form_third_covDeriv_comm (I := I) Rm13 alpha nabla2Alpha
     (oneFormRicciIdentity_of_connection (I := I) cov Rm13 x alpha nabla2Alpha
-      hRm hcurv hcoord) X Y Z
+      hRm hcov hcurv hcoord) X Y Z
 
 /-- Evaluation form of `oneFormRicciIdentity_of_smooth_connection`. -/
 theorem oneFormRicciIdentity_of_smooth_connection_apply
@@ -146,13 +152,15 @@ theorem oneFormRicciIdentity_of_smooth_connection_apply
     (hRm : Rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
+    (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
     (hcoord : OneFormThirdCommChristoffelCoordAt (I := I) cov x alpha nabla2Alpha)
     (X Y Z : TangentSpace I x) :
     nabla2Alpha (vec3 X Y Z) - nabla2Alpha (vec3 Y X Z) =
       -Rm13 x alpha (vec3 X Y Z) :=
   one_form_third_covDeriv_comm (I := I) Rm13 alpha nabla2Alpha
     (oneFormRicciIdentity_of_smooth_connection (I := I) cov Rm13 x alpha
-      nabla2Alpha hRm hcov hcoord) X Y Z
+      nabla2Alpha hRm hcov hcov_one hcoord) X Y Z
 
 end Connection
 end RicciFlower

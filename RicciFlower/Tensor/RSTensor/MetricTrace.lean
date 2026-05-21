@@ -425,6 +425,85 @@ private theorem gInvComp_contMDiffAt
       (mem_extChartAt_source (I := I) x₀))
   simpa [f, Function.comp_def] using hcompAt
 
+/-- Local coordinate expansion of the intrinsic trace of a smooth covariant
+two-tensor field. -/
+private theorem trace02_eventually
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (x₀ : M) :
+    (fun y : M => metricTracePair0SAt (I := I) g (A y)) =ᶠ[nhds x₀]
+      fun y : M =>
+        ∑ i : CoordinateIdx (𝕜 := Real) E,
+          ∑ j : CoordinateIdx (𝕜 := Real) E,
+            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+                (extChartAt I x₀ y) *
+              A y
+                (fun q : Fin 2 =>
+                  coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) := by
+  classical
+  filter_upwards
+    [(coordinateFrameSet_open (I := I) x₀).mem_nhds
+      (coordinateFrameAt_mem (I := I) x₀)] with y hy
+  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j =>
+      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+        (extChartAt I x₀ y)
+  have htrace :=
+    metricTracePair0SAt_eq_sum_basis (I := I) g basis gInv
+      (gInvBasisAt (I := I) g x₀ hy) (A y)
+  calc
+    metricTracePair0SAt (I := I) g (A y) =
+        ∑ i : CoordinateIdx (𝕜 := Real) E,
+          ∑ j : CoordinateIdx (𝕜 := Real) E,
+            gInv i j * A y (vec2 (I := I) (basis i) (basis j)) := htrace
+    _ =
+        ∑ i : CoordinateIdx (𝕜 := Real) E,
+          ∑ j : CoordinateIdx (𝕜 := Real) E,
+            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+                (extChartAt I x₀ y) *
+              A y
+                (fun q : Fin 2 =>
+                  coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) := by
+      refine Finset.sum_congr rfl fun i _ => ?_
+      refine Finset.sum_congr rfl fun j _ => ?_
+      congr 1
+      apply congrArg
+      funext q
+      fin_cases q <;>
+        simp [basis, coordinateFrameAt_basis_apply, Curvature.vec2]
+
+/-- The metric trace of a smooth covariant two-tensor field is smooth. -/
+theorem trace02_smooth
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2) :
+    ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+      (fun x : M => metricTracePair0SAt (I := I) g (A x)) := by
+  classical
+  intro x₀
+  have hRhs :
+      ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+        (fun y : M =>
+          ∑ i : CoordinateIdx (𝕜 := Real) E,
+            ∑ j : CoordinateIdx (𝕜 := Real) E,
+              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+                  (extChartAt I x₀ y) *
+                A y
+                  (fun q : Fin 2 =>
+                    coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y))
+        x₀ := by
+    refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
+    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+      change IsManifold I ∞ M
+      infer_instance
+    exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul
+      (Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+        (𝕜 := Real) (I := I) (M := M) A x₀
+        (fun q : Fin 2 => if q = 0 then i else j))
+  exact hRhs.congr_of_eventuallyEq (trace02_eventually (I := I) g A x₀)
+
 theorem connTraceCoeff_eventually
     (g : SmoothRiemannianMetric I M)
     (A : TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

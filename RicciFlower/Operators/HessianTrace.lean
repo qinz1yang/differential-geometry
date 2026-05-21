@@ -1,5 +1,6 @@
 import RicciFlower.Connection.MetricCompatibility
 import RicciFlower.Operators
+import RicciFlower.Operators.GradientRegularity
 import RicciFlower.RoughLaplacian
 import RicciFlower.Coordinates.NablaComponents.OneForm
 import RicciFlower.Tensor.RicciIdentity
@@ -160,6 +161,37 @@ theorem differential1FormFun_apply_eq_extDerivFun
       extDerivFun (I := I) u x v := by
   simp [differential1FormFun, extDerivFun, NormedSpace.fromTangentSpace]
   rfl
+
+/-- Smoothness of evaluating the scalar differential on a smooth vector
+section. -/
+theorem dphi_apply_smooth
+    (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
+    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
+    ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+      (fun p : M => extDerivFun (I := I) u p (Y p)) := by
+  let du : OneFormSection (I := I) (M := M) := duSec (I := I) u hu
+  let Slots : Fin 1 ->
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    fun _ => Y
+  have hraw :=
+    TensorMultilinear.contMDiff_tensor0SField_apply (I := I) (M := M) du Slots
+  have hfun :
+      (fun p : M => du p (fun i : Fin 1 => Slots i p)) =
+        fun p : M => extDerivFun (I := I) u p (Y p) := by
+    funext p
+    rw [duSec_apply]
+    exact differential1FormFun_apply_eq_extDerivFun (I := I) u p (Y p)
+  simpa [hfun] using hraw
+
+/-- Pointwise differentiability of evaluating the scalar differential on a
+smooth vector section. -/
+theorem dphi_apply_mdiffAt
+    (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
+    (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    MDifferentiableAt I 𝓘(Real, Real)
+      (fun p : M => extDerivFun (I := I) u p (Y p)) x :=
+  (dphi_apply_smooth (I := I) u hu Y).contMDiffAt.mdifferentiableAt (by simp)
 
 /-- The raw differential one-form is metric-dual to the gradient. -/
 theorem differential1FormFun_apply_eq_inner_gradientFun
@@ -498,6 +530,48 @@ theorem ScalarLaplacianRealizesTraceAt.eq_trace
   rw [h, traceFirstTwo_elim0]
   rfl
 
+/-- If the first two slots of a higher covariant tensor agree with a scalar
+Hessian candidate after freezing the remaining slots, then the corresponding
+metric trace is the scalar Laplacian realized by that Hessian. -/
+theorem lapTrace_of_slots
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {x : M} {s : ℕ}
+    (f : M -> Real)
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 2) x)
+    (tail : Fin s -> TangentSpace I x)
+    (hessF :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (hlap : ScalarLaplacianRealizesTraceAt (I := I) cov g f hessF)
+    (hslots :
+      ∀ X Y : TangentSpace I x,
+        T (metricTraceInput (I := I) X Y tail) =
+          hessF (vec2 (I := I) X Y)) :
+    metricTraceFirstTwo0SAt (I := I) g T tail =
+      laplacian (I := I) cov g f x := by
+  classical
+  have hfreeze : freezeFirstTwo0S (I := I) T tail = hessF := by
+    let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+        (TangentSpace I x) :=
+      Module.finBasis Real (TangentSpace I x)
+    apply ext0S_basis (I := I) basis
+    intro slots
+    simp only [component0S_apply]
+    have hslot_vec :
+        (fun a : Fin 2 => basis (slots a)) =
+          vec2 (I := I) (basis (slots 0)) (basis (slots 1)) := by
+      funext a
+      fin_cases a <;> rfl
+    rw [hslot_vec, freezeFirstTwo0S_apply]
+    exact hslots (basis (slots 0)) (basis (slots 1))
+  have htrace :
+      metricTraceFirstTwo0SAt (I := I) g T tail =
+        scalarLapTraceAt (I := I) g hessF := by
+    rw [metricTraceFirstTwo0SAt, hfreeze, scalarLapTraceAt]
+  exact htrace.trans
+    ((ScalarLaplacianRealizesTraceAt.eq_trace (I := I) cov g f hessF hlap).symm)
+
 /-- A basis-coordinate scalar trace realization follows from the intrinsic one. -/
 theorem ScalarLaplacianRealizesTraceAt.toInBasis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -673,6 +747,71 @@ theorem scalarLapTraceAt_of_nablaDu
   ScalarLaplacianRealizesTraceAt.eq_trace (I := I) cov g f (hessF x)
     (scalarLaplacianRealizesTraceAt_of_nablaDu (I := I) cov g hmc basis gInv
       hinv f duSec hessF X hfields hdu hHess hgrad)
+
+/-- Canonical smooth-scalar producer for the scalar Laplacian trace identity.
+
+For a smooth scalar `f`, the canonical one-form `duSec f` and canonical Hessian
+section `hessianSec f` supply the realization inputs needed by the pointwise
+trace theorem. -/
+theorem scalarLap_canon
+    [T2Space M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    {x : M}
+    (f : M -> Real)
+    (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
+    (hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x) :
+    ScalarLaplacianRealizesTraceAt (I := I) cov g f
+      (hessianSec (I := I) cov hcov f hf x) := by
+  classical
+  let basis :
+      Module.Basis (CoordinateIdx (𝕜 := Real) E) Real (TangentSpace I x) :=
+    Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun k l =>
+      Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k l
+        (extChartAt I x x)
+  let X :
+      CoordinateIdx (𝕜 := Real) E ->
+        ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    fun i =>
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis i)).choose
+  have hfields : SmoothBasisFieldsAt (I := I) basis X := by
+    intro i
+    dsimp [X]
+    exact
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (basis i)).choose_spec
+  exact scalarLaplacianRealizesTraceAt_of_nablaDu (I := I) cov g hmc basis gInv
+    (Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+      (I := I) g x)
+    f (duSec (I := I) f hf)
+    (fun y : M => hessianSec (I := I) cov hcov f hf y)
+    X hfields (duSec_realizes (I := I) f hf)
+    (hessianSec_realizesAt (I := I) cov hcov f hf x) hgrad
+
+/-- Canonical smooth-scalar producer with gradient regularity derived from
+smoothness of the scalar. -/
+theorem scalarLap_smooth
+    [T2Space M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (g : SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    {x : M}
+    (f : M -> Real)
+    (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) :
+    ScalarLaplacianRealizesTraceAt (I := I) cov g f
+      (hessianSec (I := I) cov hcov f hf x) := by
+  exact scalarLap_canon (I := I) cov hcov g hmc f hf
+    (gradientFun_mdiffAt (I := I) g hf x)
 
 /-- Global direct-object scalar Laplacian trace theorem.
 

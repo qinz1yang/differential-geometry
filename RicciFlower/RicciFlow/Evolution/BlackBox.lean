@@ -33,6 +33,9 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
+local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+
 section Components
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -65,9 +68,9 @@ theorem inverseMetricEvolution_of_timeRegularityBlackBox
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (hbb : InverseMetricTimeRegularityBlackBoxInFrameOn (M := M) (Idx := Idx)
       (D := D) gInv) :
-    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame :=
+    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame Set.univ :=
   inverseMetricEvolutionEquationInFrame_of_inverse_components
-    (I := I) S hS gInv hbb.gInvDt frame
+    (I := I) (u := Set.univ) S hS gInv hbb.gInvDt frame
     hbb.inverseMetricDerivative hinv hbb.uniqueTimeDerivatives
 
 /-- Black-box regularity package for Lemma 6.2.

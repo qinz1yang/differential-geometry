@@ -48,26 +48,6 @@ private theorem directionalDeriv_congr_nhds
   rw [hfh.mfderiv_eq]
   rw [hx]
 
-private theorem rm04_tconst_eval
-    (g : SmoothRiemannianMetric I M)
-    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
-      (1 : WithTop ℕ∞))
-    (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
-    {x : M} (W X Y Z : TangentSpace I x) :
-    Rm04 x (vec4 W X Y Z) =
-      g.inner x W
-        ((connectionRiemannCurvatureField (I := I) cov
-          (tangentConstAt (I := I) x X)
-          (tangentConstAt (I := I) x Y)
-          (tangentConstAt (I := I) x Z)) x) := by
-  -- Real frontier exposed by the corrected smooth-section realization
-  -- interface: prove tensoriality of the connection curvature operator, then
-  -- compare smooth extensions through `W X Y Z` with these local
-  -- tangent-constant representatives at `x`.
-  sorry
-
 private theorem directionalDeriv_add_fun
     (X : (p : M) -> TangentSpace I p) {f h : M -> Real} (x : M)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
@@ -536,6 +516,207 @@ private theorem cov_tangentConstAt_apply_mdiffAt_of_mem
   exact ((h_on p (by simpa [e] using hp)).contMDiffAt
     (e.open_baseSet.mem_nhds hp)).mdifferentiableAt
       (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
+
+private theorem cov_smooth_apply_mdiffAt_one
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
+    (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    MDiffAt (T% (fun p : M => (cov (fun q : M => Y q) p) (X p))) x := by
+  exact (CovariantDerivative.smoothSections_cov_contMDiffAt_one
+    (𝕜 := Real) (I := I) cov hcov X Y x).mdifferentiableAt
+      (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
+
+private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
+    (x : M) (v : TangentSpace I x) :
+    ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
+      (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v ∧ V x = v := by
+  classical
+  let e := trivializationAt E (TangentSpace I) x
+  let b := Module.finBasis Real E
+  have he : x ∈ e.baseSet := by
+    simp [e]
+  have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  let V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    ∑ i, (b.repr v i) • s' i
+  have hV : (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v := by
+    filter_upwards [hs', e.open_baseSet.mem_nhds he] with p hs'p hp
+    have hbasis :
+        (∑ i, (b.repr v i) • e.localFrame b i p) =
+          tangentConstAt (I := I) x v p := by
+      have hframe_apply (i) :
+          e.localFrame b i p = e.symmL Real p (b i) := by
+        rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
+          (e := e) (b := b) (i := i) hp]
+        simp [e, Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
+      calc
+        (∑ i, (b.repr v i) • e.localFrame b i p)
+            = ∑ i, (b.repr v i) • e.symmL Real p (b i) := by
+              exact Finset.sum_congr rfl (fun i _ => by rw [hframe_apply i])
+        _ = e.symmL Real p (∑ i, (b.repr v i) • b i) := by
+              rw [map_sum]
+              simp
+        _ = tangentConstAt (I := I) x v p := by
+              rw [b.sum_repr]
+              rfl
+    calc
+      V p = ∑ i, (b.repr v i) • s' i p := by
+        simp [V, ContMDiffSection.finset_sum_apply]
+      _ = ∑ i, (b.repr v i) • e.localFrame b i p := by
+        apply Finset.sum_congr rfl
+        intro i hi
+        rw [hs'p i]
+      _ = tangentConstAt (I := I) x v p := hbasis
+  refine ⟨V, hV, ?_⟩
+  exact hV.self_of_nhds.trans (tangentConstAt_self (I := I) x v)
+
+private theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
+    {x : M} (X Y Z : TangentSpace I x)
+    (Xs Ys Zs :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (hX : (fun p : M => Xs p) =ᶠ[𝓝 x] tangentConstAt (I := I) x X)
+    (hY : (fun p : M => Ys p) =ᶠ[𝓝 x] tangentConstAt (I := I) x Y)
+    (hZ : (fun p : M => Zs p) =ᶠ[𝓝 x] tangentConstAt (I := I) x Z) :
+    connectionRiemannCurvatureField (I := I) cov
+        (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
+        (tangentConstAt (I := I) x Z) x =
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Xs p) (fun p : M => Ys p) (fun p : M => Zs p) x := by
+  classical
+  let Xc : (p : M) -> TangentSpace I p := tangentConstAt (I := I) x X
+  let Yc : (p : M) -> TangentSpace I p := tangentConstAt (I := I) x Y
+  let Zc : (p : M) -> TangentSpace I p := tangentConstAt (I := I) x Z
+  have hX' : Xc =ᶠ[𝓝 x] fun p : M => Xs p := by
+    simpa [Xc] using hX.symm
+  have hY' : Yc =ᶠ[𝓝 x] fun p : M => Ys p := by
+    simpa [Yc] using hY.symm
+  have hZ' : Zc =ᶠ[𝓝 x] fun p : M => Zs p := by
+    simpa [Zc] using hZ.symm
+  have hXx : Xc x = Xs x := hX'.self_of_nhds
+  have hYx : Yc x = Ys x := hY'.self_of_nhds
+  have hbr :
+      VectorField.mlieBracket I Xc Yc x =
+        VectorField.mlieBracket I (fun p : M => Xs p) (fun p : M => Ys p) x := by
+    exact hX'.mlieBracket_vectorField_eq (I := I) hY'
+  have hZ_at :
+      cov Zc x = cov (fun p : M => Zs p) x := by
+    exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      (by simpa [Zc] using mdifferentiableAt_tangentConstAt_self (I := I) x Z)
+      (Zs.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+      (by simp) hZ'
+  let e := trivializationAt E (TangentSpace I) x
+  have he : x ∈ e.baseSet := by
+    simp [e]
+  have hinnerY :
+      (fun p : M => (cov Zc p) (Yc p)) =ᶠ[𝓝 x]
+        (fun p : M => (cov (fun q : M => Zs q) p) (Ys p)) := by
+    rcases mem_nhds_iff.mp (hZ' : {p : M | Zc p = Zs p} ∈ 𝓝 x) with
+      ⟨U, hUsub, hUopen, hxU⟩
+    filter_upwards [hUopen.mem_nhds hxU, hY', e.open_baseSet.mem_nhds he] with
+      p hpU hYp hpE
+    have hZp : Zc =ᶠ[𝓝 p] fun q : M => Zs q :=
+      Filter.eventuallyEq_of_mem (hUopen.mem_nhds hpU) fun q hq => hUsub hq
+    have hZc_md : MDiffAt (T% Zc) p := by
+      exact mdifferentiableAt_tangentConstAt_of_mem (I := I) x Z (by simpa [e] using hpE)
+    have hcovp :
+        cov Zc p = cov (fun q : M => Zs q) p := by
+      exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+        hZc_md (Zs.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+        (by simp) hZp
+    rw [hcovp, hYp]
+  have hinnerX :
+      (fun p : M => (cov Zc p) (Xc p)) =ᶠ[𝓝 x]
+        (fun p : M => (cov (fun q : M => Zs q) p) (Xs p)) := by
+    rcases mem_nhds_iff.mp (hZ' : {p : M | Zc p = Zs p} ∈ 𝓝 x) with
+      ⟨U, hUsub, hUopen, hxU⟩
+    filter_upwards [hUopen.mem_nhds hxU, hX', e.open_baseSet.mem_nhds he] with
+      p hpU hXp hpE
+    have hZp : Zc =ᶠ[𝓝 p] fun q : M => Zs q :=
+      Filter.eventuallyEq_of_mem (hUopen.mem_nhds hpU) fun q hq => hUsub hq
+    have hZc_md : MDiffAt (T% Zc) p := by
+      exact mdifferentiableAt_tangentConstAt_of_mem (I := I) x Z (by simpa [e] using hpE)
+    have hcovp :
+        cov Zc p = cov (fun q : M => Zs q) p := by
+      exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+        hZc_md (Zs.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+        (by simp) hZp
+    rw [hcovp, hXp]
+  have hcovZY :
+      cov (fun p : M => (cov Zc p) (Yc p)) x =
+        cov (fun p : M => (cov (fun q : M => Zs q) p) (Ys p)) x := by
+    exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      (by
+        simpa [Zc, Yc] using
+          cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x Y Z he)
+      (cov_smooth_apply_mdiffAt_one (I := I) cov hcov Ys Zs x)
+      (by simp) hinnerY
+  have hcovZX :
+      cov (fun p : M => (cov Zc p) (Xc p)) x =
+        cov (fun p : M => (cov (fun q : M => Zs q) p) (Xs p)) x := by
+    exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      (by
+        simpa [Zc, Xc] using
+          cov_tangentConstAt_apply_mdiffAt_of_mem (I := I) cov hcov x X Z he)
+      (cov_smooth_apply_mdiffAt_one (I := I) cov hcov Xs Zs x)
+      (by simp) hinnerX
+  have hXval : tangentConstAt (I := I) x X x = Xs x := by
+    simpa [Xc] using hXx
+  have hYval : tangentConstAt (I := I) x Y x = Ys x := by
+    simpa [Yc] using hYx
+  simp only [connectionRiemannCurvatureField, RicciFlower.Curvature.connectionRiemannCurvatureField]
+  rw [hcovZY, hcovZX, hZ_at, hbr]
+  rw [hXval, hYval]
+
+private theorem rm04_tconst_eval
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (1 : WithTop ℕ∞))
+    (Rm04 : Tensor04Section (I := I) (M := M))
+    (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
+    {x : M} (W X Y Z : TangentSpace I x) :
+    Rm04 x (vec4 W X Y Z) =
+      g.inner x W
+        ((connectionRiemannCurvatureField (I := I) cov
+          (tangentConstAt (I := I) x X)
+          (tangentConstAt (I := I) x Y)
+          (tangentConstAt (I := I) x Z)) x) := by
+  obtain ⟨Wsec, hWnear, hWx⟩ :=
+    exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x W
+  obtain ⟨Xsec, hXnear, hXx⟩ :=
+    exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x X
+  obtain ⟨Ysec, hYnear, hYx⟩ :=
+    exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x Y
+  obtain ⟨Zsec, hZnear, hZx⟩ :=
+    exists_contMDiffSection_eventuallyEq_tangentConstAt (I := I) x Z
+  have hcurv :
+      connectionRiemannCurvatureField (I := I) cov
+          (tangentConstAt (I := I) x X)
+          (tangentConstAt (I := I) x Y)
+          (tangentConstAt (I := I) x Z) x =
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => Xsec p) (fun p : M => Ysec p) (fun p : M => Zsec p) x :=
+    connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
+      (I := I) cov hcov X Y Z Xsec Ysec Zsec hXnear hYnear hZnear
+  have hRm := hRm04 Wsec Xsec Ysec Zsec x
+  calc
+    Rm04 x (vec4 W X Y Z)
+        = Rm04 x (vec4 (Wsec x) (Xsec x) (Ysec x) (Zsec x)) := by
+          simp [hWx, hXx, hYx, hZx]
+    _ = g.inner x (Wsec x)
+        ((connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => Xsec p) (fun p : M => Ysec p) (fun p : M => Zsec p)) x) := hRm
+    _ = g.inner x W
+        ((connectionRiemannCurvatureField (I := I) cov
+          (tangentConstAt (I := I) x X)
+          (tangentConstAt (I := I) x Y)
+          (tangentConstAt (I := I) x Z)) x) := by
+          rw [hWx, ← hcurv]
 
 /-- The scalar Lie bracket acts as the commutator of directional derivatives.
 

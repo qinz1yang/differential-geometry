@@ -104,6 +104,7 @@ section Interval
 
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable [SigmaCompactSpace M] [T2Space M]
+variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 
 /-- The Ricci-flow metric variation equation on a concrete real time interval.
 

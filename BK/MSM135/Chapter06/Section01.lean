@@ -1,4 +1,4 @@
-import RicciFlower.RicciFlow.Perelman.F
+import RicciFlower.RicciFlow.Perelman.FirstVariation
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -388,6 +388,14 @@ Book-facing alias converting a proved formula 5.10 identity for the derivative
 value into an identity for the `deriv`-based first variation. -/
 abbrev lbl453_f_formula510_final :=
   @fFunctionalFirstVariation_eq_formula510_of_hasFirstVariationAt
+
+/-- MSM135 Chapter 5, formula 5.10, used in Chapter 6.1 Lemma 6.1.
+
+Book-facing alias for the canonical path-based first variation formulation
+`delta_(v,h) F(g,f)`.  The lower component formulas above are now proof-layer
+producers feeding this endpoint, not the definition of variation. -/
+abbrev lbl453_f_formula510_canonical_variation :=
+  @f_firstVariation_formula510
 
 /-- MSM135 Chapter 6, labels `notes_and_commentary:lbl551` and
 `notes_and_commentary:lbl552`. -/

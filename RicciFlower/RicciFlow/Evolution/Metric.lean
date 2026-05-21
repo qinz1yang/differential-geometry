@@ -31,6 +31,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 section Components
@@ -245,6 +246,18 @@ private noncomputable def frameGInvCLM
   classical
   simp [frameGInvCLM, Finset.sum_apply]
 
+private noncomputable def matrixCLM
+    [DecidableEq Idx] (A : Idx -> Idx -> Real) :
+    (Idx -> Real) →L[Real] (Idx -> Real) :=
+  ∑ i : Idx, ∑ j : Idx, A i j • frameEntryCLM (Idx := Idx) i j
+
+@[simp] private theorem matrixCLM_apply
+    [DecidableEq Idx] (A : Idx -> Idx -> Real)
+    (v : Idx -> Real) (i : Idx) :
+    matrixCLM (Idx := Idx) A v i = ∑ j : Idx, A i j * v j := by
+  classical
+  simp [matrixCLM, Finset.sum_apply]
+
 private theorem contMDiffOn_finset_sum
     {ι V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     {D : Realized.RealTimeInterval} {u : Set M}
@@ -355,6 +368,32 @@ private theorem sum_mul_pi_single
   · intro hnot
     exact False.elim (hnot (Finset.mem_univ j))
 
+private theorem matrixInvDerivEntry
+    [DecidableEq Idx]
+    (gInv ric : Idx -> Idx -> Real)
+    (hsymm : forall a b : Idx, gInv a b = gInv b a)
+    (i j : Idx) :
+    ((-(matrixCLM (Idx := Idx) gInv *
+          matrixCLM (Idx := Idx) (fun a b => (-2 : Real) * ric a b) *
+          matrixCLM (Idx := Idx) gInv))
+        (Pi.single (M := fun _ : Idx => Real) j (1 : Real))) i =
+      2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * ric a b) := by
+  classical
+  calc
+    ((-(matrixCLM (Idx := Idx) gInv *
+          matrixCLM (Idx := Idx) (fun a b => (-2 : Real) * ric a b) *
+          matrixCLM (Idx := Idx) gInv))
+        (Pi.single (M := fun _ : Idx => Real) j (1 : Real))) i
+        =
+        2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv b j * ric a b) := by
+          simp [ContinuousLinearMap.mul_apply, Finset.mul_sum,
+            mul_assoc, mul_left_comm, mul_comm, sum_mul_pi_single]
+    _ = 2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * ric a b) := by
+          congr 1
+          refine Finset.sum_congr rfl fun a _ha => ?_
+          refine Finset.sum_congr rfl fun b _hb => ?_
+          rw [hsymm b j]
+
 private theorem frameGramCLM_comp_frameGInvCLM
     [DecidableEq Idx]
     {D : Realized.RealTimeInterval}
@@ -419,6 +458,182 @@ private theorem frameGInvCLM_eq_inverse
   exact ContinuousLinearMap.inverse_eq
     (frameGramCLM_comp_frameGInvCLM (I := I) S gInv frame hinv p)
     (frameGInvCLM_comp_frameGramCLM (I := I) S gInv frame hinv p)
+
+private theorem frameGramCLM_comp_frameGInvCLM_at
+    [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (p : Real × M)
+    (_hleft : forall a b : Idx,
+      (∑ k : Idx,
+        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
+        (if a = b then 1 else 0))
+    (hright : forall a b : Idx,
+      (∑ k : Idx,
+        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
+        (if a = b then 1 else 0)) :
+    frameGramCLM (I := I) S frame p ∘L frameGInvCLM (Idx := Idx) gInv p =
+      ContinuousLinearMap.id Real (Idx -> Real) := by
+  classical
+  ext v i
+  simpa [ContinuousLinearMap.comp_apply] using
+    metric_mul_inverse_apply
+      (metric := fun a b => metricCompInFrame (I := I) S frame p.1 p.2 a b)
+      (gInv := fun a b => gInv p.1 p.2 a b)
+      hright v i
+
+private theorem frameGInvCLM_comp_frameGramCLM_at
+    [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (p : Real × M)
+    (hleft : forall a b : Idx,
+      (∑ k : Idx,
+        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
+        (if a = b then 1 else 0))
+    (_hright : forall a b : Idx,
+      (∑ k : Idx,
+        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
+        (if a = b then 1 else 0)) :
+    frameGInvCLM (Idx := Idx) gInv p ∘L frameGramCLM (I := I) S frame p =
+      ContinuousLinearMap.id Real (Idx -> Real) := by
+  classical
+  ext v i
+  simpa [ContinuousLinearMap.comp_apply] using
+    inverse_mul_metric_apply
+      (metric := fun a b => metricCompInFrame (I := I) S frame p.1 p.2 a b)
+      (gInv := fun a b => gInv p.1 p.2 a b)
+      hleft v i
+
+private theorem frameGramCLM_isInvertible_at
+    [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (p : Real × M)
+    (hleft : forall a b : Idx,
+      (∑ k : Idx,
+        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
+        (if a = b then 1 else 0))
+    (hright : forall a b : Idx,
+      (∑ k : Idx,
+        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
+        (if a = b then 1 else 0)) :
+    (frameGramCLM (I := I) S frame p).IsInvertible := by
+  exact ContinuousLinearMap.IsInvertible.of_inverse
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+
+private theorem frameGInvCLM_eq_inverse_at
+    [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real -> Realized.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (p : Real × M)
+    (hleft : forall a b : Idx,
+      (∑ k : Idx,
+        gInv p.1 p.2 a k * metricCompInFrame (I := I) S frame p.1 p.2 k b) =
+        (if a = b then 1 else 0))
+    (hright : forall a b : Idx,
+      (∑ k : Idx,
+        metricCompInFrame (I := I) S frame p.1 p.2 a k * gInv p.1 p.2 k b) =
+        (if a = b then 1 else 0)) :
+    ContinuousLinearMap.inverse (frameGramCLM (I := I) S frame p) =
+      frameGInvCLM (Idx := Idx) gInv p := by
+  exact ContinuousLinearMap.inverse_eq
+    (frameGramCLM_comp_frameGInvCLM_at (I := I) S gInv frame p hleft hright)
+    (frameGInvCLM_comp_frameGramCLM_at (I := I) S gInv frame p hleft hright)
+
+private theorem frameGramCLM_hasDerivWithinAt
+    [DecidableEq Idx]
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Realized.RealTimeInterval.RegularTime D)
+    (x : M) :
+    HasDerivWithinAt
+      (fun s : Real => frameGramCLM (I := I) S frame (s, x))
+      (matrixCLM (Idx := Idx)
+        (fun a b => (-2 : Real) * ricciCompInFrame (I := I) S frame (t : Real) x a b))
+      D.carrier
+      (t : Real) := by
+  classical
+  unfold frameGramCLM matrixCLM
+  simpa using
+    (HasDerivWithinAt.fun_sum
+      (u := (Finset.univ : Finset Idx))
+      (A := fun a s =>
+        ∑ b : Idx,
+          metricCompInFrame (I := I) S frame s x a b •
+            frameEntryCLM (Idx := Idx) a b)
+      (A' := fun a =>
+        ∑ b : Idx,
+          ((-2 : Real) * ricciCompInFrame (I := I) S frame (t : Real) x a b) •
+            frameEntryCLM (Idx := Idx) a b)
+      (s := D.carrier) (x := (t : Real))
+      (fun a _ha =>
+        by
+          simpa using
+            (HasDerivWithinAt.fun_sum
+              (u := (Finset.univ : Finset Idx))
+              (A := fun b s =>
+                metricCompInFrame (I := I) S frame s x a b •
+                  frameEntryCLM (Idx := Idx) a b)
+              (A' := fun b =>
+                ((-2 : Real) *
+                    ricciCompInFrame (I := I) S frame (t : Real) x a b) •
+                  frameEntryCLM (Idx := Idx) a b)
+              (s := D.carrier) (x := (t : Real))
+              (fun b _hb =>
+                (metricCompInFrame_hasDerivWithinAt
+                  (I := I) S hS frame t x a b).smul_const
+                    (frameEntryCLM (Idx := Idx) a b)))))
+
+private theorem hasFDerivAt_clmInv
+    (A : (Idx -> Real) →L[Real] (Idx -> Real))
+    (hA : A.IsInvertible) :
+    HasFDerivAt ContinuousLinearMap.inverse
+      (-(ContinuousLinearMap.mulLeftRight Real
+          ((Idx -> Real) →L[Real] (Idx -> Real)) A.inverse A.inverse))
+      A := by
+  rcases hA with ⟨e, rfl⟩
+  rw [← ContinuousLinearMap.ringInverse_eq_inverse]
+  simpa [ContinuousLinearMap.inverse_equiv, ContinuousLinearEquiv.toUnit] using
+    (hasFDerivAt_ringInverse (ContinuousLinearEquiv.toUnit e))
+
+private theorem coordInvCLM_eq
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (x0 : M) {x : M}
+    (hx : x ∈ Coordinates.coordinateFrameSet (I := I) x0)
+    (s : Real) :
+    ContinuousLinearMap.inverse
+        (frameGramCLM (I := I) S (Coordinates.coordinateFrameAt (I := I) x0)
+          (s, x)) =
+      frameGInvCLM (Idx := Coordinates.CoordinateIdx E)
+        (coordInv (I := I) S x0) (s, x) := by
+  classical
+  have hbasis :=
+    Coordinates.gInvBasisAt (I := I) (S.family.metric s) x0 hx
+  exact
+    frameGInvCLM_eq_inverse_at
+      (I := I) S (coordInv (I := I) S x0)
+      (Coordinates.coordinateFrameAt (I := I) x0) (s, x)
+      (by
+        intro a b
+        simpa [coordInv, metricCompInFrame,
+          Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).1)
+      (by
+        intro a b
+        simpa [coordInv, metricCompInFrame,
+          Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).2)
 
 private theorem frameGInvCLM_spacetimeSmooth
     [DecidableEq Idx]
@@ -1178,12 +1393,13 @@ theorem inverseMetricEvolutionEquationInFrame_of_inverse_components
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
+    {u : Set M}
     (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
     (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
     (hunique : forall t : Realized.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)) :
-    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame := by
-  intro t x i j
+    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame u := by
+  intro t x _hx i j
   have hrow : forall m : Idx,
       (∑ a : Idx,
           (gInvDt (t : Real) x i a *
@@ -1230,12 +1446,148 @@ theorem inverseMetricEvolution_of_metricFrameTimeRegularity
     (hreg :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u) :
-    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame :=
+    InverseMetricEvolutionEquationInFrame (I := I) S gInv frame u :=
   inverseMetricEvolutionEquationInFrame_of_inverse_components
     (I := I) S hS gInv gInvDt frame
     hreg.inverseMetricDerivative
     hreg.nondegenerateGram
     hreg.uniqueTimeDerivatives
+
+/-- Canonical coordinate inverse-metric evolution for a Ricci-flow solution.
+
+This differentiates the actual coordinate inverse of the frame Gram operator,
+so it does not require a supplied `gInvDt` field or interval derivative
+uniqueness.  The theorem is local on the coordinate-frame set. -/
+theorem coordInvEvol
+    {D : Realized.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x0 : M) :
+    InverseMetricEvolutionEquationInFrame
+      (I := I) S (coordInv (I := I) S x0)
+      (Coordinates.coordinateFrameAt (I := I) x0)
+      (Coordinates.coordinateFrameSet (I := I) x0) := by
+  classical
+  intro t x hx i j
+  let frame := Coordinates.coordinateFrameAt (I := I) x0
+  let gInv : Real -> Realized.InverseMetricComponents M (Coordinates.CoordinateIdx E) :=
+    coordInv (I := I) S x0
+  let G : Real -> ((Coordinates.CoordinateIdx E -> Real) →L[Real]
+      (Coordinates.CoordinateIdx E -> Real)) :=
+    fun s => frameGramCLM (I := I) S frame (s, x)
+  let Gdot : (Coordinates.CoordinateIdx E -> Real) →L[Real]
+      (Coordinates.CoordinateIdx E -> Real) :=
+    matrixCLM (Idx := Coordinates.CoordinateIdx E)
+      (fun a b => (-2 : Real) * ricciCompInFrame (I := I) S frame (t : Real) x a b)
+  let InvG : (Coordinates.CoordinateIdx E -> Real) →L[Real]
+      (Coordinates.CoordinateIdx E -> Real) :=
+    ContinuousLinearMap.inverse (G (t : Real))
+  let dInv : (Coordinates.CoordinateIdx E -> Real) →L[Real]
+      (Coordinates.CoordinateIdx E -> Real) :=
+    -(InvG * Gdot * InvG)
+  have hG :
+      HasDerivWithinAt G Gdot D.carrier (t : Real) := by
+    simpa [G, Gdot, frame] using
+      frameGramCLM_hasDerivWithinAt (I := I) S hS frame t x
+  have hbasis :=
+    Coordinates.gInvBasisAt (I := I) (S.family.metric (t : Real)) x0 hx
+  have hGinv : (G (t : Real)).IsInvertible := by
+    dsimp [G]
+    exact
+      frameGramCLM_isInvertible_at
+        (I := I) S gInv frame ((t : Real), x)
+        (by
+          intro a b
+          simpa [gInv, coordInv, frame, metricCompInFrame,
+            Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).1)
+        (by
+          intro a b
+          simpa [gInv, coordInv, frame, metricCompInFrame,
+            Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).2)
+  have hInv :
+      HasDerivWithinAt
+        (fun s : Real => ContinuousLinearMap.inverse (G s))
+        dInv
+        D.carrier
+        (t : Real) := by
+    have hF :=
+      (hasFDerivAt_clmInv
+        (G (t : Real)) hGinv).comp_hasFDerivWithinAt
+        (t : Real) hG.hasFDerivWithinAt
+    simpa [dInv, InvG, ContinuousLinearMap.mulLeftRight_apply] using hF.hasDerivWithinAt
+  have hApp :
+      HasDerivWithinAt
+        (fun s : Real =>
+          ContinuousLinearMap.inverse (G s)
+            (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real)))
+        (dInv
+          (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real)))
+        D.carrier
+        (t : Real) := by
+    simpa using
+      hInv.clm_apply
+        (hasDerivWithinAt_const
+          (x := (t : Real)) (s := D.carrier)
+          (c := Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real)))
+  have hProj :
+      HasDerivWithinAt
+        (fun s : Real =>
+          (ContinuousLinearMap.proj i :
+            (Coordinates.CoordinateIdx E -> Real) →L[Real] Real)
+            (ContinuousLinearMap.inverse (G s)
+              (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real))))
+        ((ContinuousLinearMap.proj i :
+            (Coordinates.CoordinateIdx E -> Real) →L[Real] Real)
+          (dInv
+            (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real))))
+        D.carrier
+        (t : Real) := by
+    simpa using
+      (hasDerivWithinAt_const
+        (x := (t : Real)) (s := D.carrier)
+        (c := (ContinuousLinearMap.proj i :
+          (Coordinates.CoordinateIdx E -> Real) →L[Real] Real))).clm_apply hApp
+  have hsymm :
+      forall a b : Coordinates.CoordinateIdx E,
+        gInv (t : Real) x a b = gInv (t : Real) x b a := by
+    intro a b
+    simpa [gInv, coordInv] using
+      Coordinates.gInvChart_symm (I := I) (S.family.metric (t : Real)) x0 hx a b
+  have hDerivEq :
+      (ContinuousLinearMap.proj i :
+          (Coordinates.CoordinateIdx E -> Real) →L[Real] Real)
+          (dInv
+            (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real))) =
+        inverseMetricEvolutionRHSInFrame
+          (I := I) S gInv frame (t : Real) x i j := by
+    have hEq := coordInvCLM_eq (I := I) S x0 hx (t : Real)
+    have hentry :=
+      matrixInvDerivEntry
+        (Idx := Coordinates.CoordinateIdx E)
+        (gInv := fun a b => gInv (t : Real) x a b)
+        (ric := fun a b => ricciCompInFrame (I := I) S frame (t : Real) x a b)
+        hsymm i j
+    simpa [G, Gdot, InvG, dInv, gInv, frame, hEq, frameGInvCLM, matrixCLM,
+      ContinuousLinearMap.mulLeftRight_apply, inverseMetricEvolutionRHSInFrame,
+      raisedRicciCompInFrame] using hentry
+  refine (hProj.congr_deriv hDerivEq).congr ?_ ?_
+  · intro s _hs
+    have hEq := coordInvCLM_eq (I := I) S x0 hx s
+    simpa [G, gInv, frame, sum_mul_pi_single] using congrArg
+      (fun A : (Coordinates.CoordinateIdx E -> Real) →L[Real]
+          (Coordinates.CoordinateIdx E -> Real) =>
+        (ContinuousLinearMap.proj i :
+          (Coordinates.CoordinateIdx E -> Real) →L[Real] Real)
+          (A (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real))))
+      hEq |>.symm
+  · have hEq := coordInvCLM_eq (I := I) S x0 hx (t : Real)
+    simpa [G, gInv, frame, sum_mul_pi_single] using congrArg
+      (fun A : (Coordinates.CoordinateIdx E -> Real) →L[Real]
+          (Coordinates.CoordinateIdx E -> Real) =>
+        (ContinuousLinearMap.proj i :
+          (Coordinates.CoordinateIdx E -> Real) →L[Real] Real)
+          (A (Pi.single (M := fun _ : Coordinates.CoordinateIdx E => Real) j (1 : Real))))
+      hEq |>.symm
 
 /-- LaTeX Lemma 6.1 in fixed-frame component form:
 `partial_t g^{ij} = 2 Ric^{ij}`. -/
@@ -1252,18 +1604,18 @@ theorem evol_inverse_metric_inFrame
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u)
     (t : Realized.RealTimeInterval.RegularTime D)
-    (x : M) (i j : Idx) :
+    (x : M) (hx : x ∈ u) (i j : Idx) :
     HasDerivWithinAt
       (fun s : Real => gInv s x i j)
       (2 * raisedRicciCompInFrame (I := I) S gInv frame (t : Real) x i j)
       D.carrier
       (t : Real) := by
-  have hEq : InverseMetricEvolutionEquationInFrame (I := I) S gInv frame :=
+  have hEq : InverseMetricEvolutionEquationInFrame (I := I) S gInv frame u :=
     inverseMetricEvolution_of_metricFrameTimeRegularity
       (I := I) S hS gInv gInvDt frame hreg
   have h :=
     inverseMetricEvolutionEquationInFrame_apply
-      (I := I) (S := S) (gInv := gInv) (frame := frame) hEq t x i j
+      (I := I) (S := S) (gInv := gInv) (frame := frame) hEq t x hx i j
   simpa [inverseMetricEvolutionRHSInFrame] using h
 
 end Components

@@ -28,16 +28,19 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-/-- A static tangent field on one manifold. -/
-abbrev TangentField :=
+/-- A raw static tangent field on one manifold, represented only by pointwise
+evaluation.  It carries no smoothness or bundled-section data. -/
+abbrev RawTangentField :=
   (x : M) -> TangentSpace I x
 
-/-- A static covariant two-tensor field, represented by pointwise evaluation. -/
-abbrev TwoTensorField :=
+/-- A raw static covariant two-tensor field, represented only by pointwise
+evaluation.  It carries no smoothness, tensoriality, or bundled-section data. -/
+abbrev RawTwoTensorField :=
   (x : M) -> TangentSpace I x -> TangentSpace I x -> Real
 
-/-- A static covariant four-tensor field, represented by pointwise evaluation. -/
-abbrev FourTensorField :=
+/-- A raw static covariant four-tensor field, represented only by pointwise
+evaluation. -/
+abbrev RawFourTensorField :=
   (x : M) -> TangentSpace I x -> TangentSpace I x -> TangentSpace I x ->
     TangentSpace I x -> Real
 
@@ -52,8 +55,8 @@ This is intentionally still operator-level.  The tensor-section construction
 from this operator is a separate tensoriality theorem frontier. -/
 def connectionRiemannCurvatureField
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (X Y Z : TangentField (I := I) (M := M)) :
-    TangentField (I := I) (M := M) :=
+    (X Y Z : RawTangentField (I := I) (M := M)) :
+    RawTangentField (I := I) (M := M) :=
   fun x =>
     (cov (fun y => (cov Z y) (Y y)) x) (X x) -
       (cov (fun y => (cov Z y) (X y)) x) (Y x) -
@@ -62,7 +65,7 @@ def connectionRiemannCurvatureField
 /-- The connection curvature operator is skew in its two direction slots. -/
 theorem connectionRiemannCurvatureField_swap
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (X Y Z : TangentField (I := I) (M := M)) (x : M) :
+    (X Y Z : RawTangentField (I := I) (M := M)) (x : M) :
     connectionRiemannCurvatureField (I := I) cov Y X Z x =
       -connectionRiemannCurvatureField (I := I) cov X Y Z x := by
   unfold connectionRiemannCurvatureField
@@ -125,16 +128,16 @@ theorem invComp_symm [DecidableEq Idx]
 /-- Ricci curvature as the metric trace of lowered Riemann curvature in a static
 frame, with slot convention `Ric_ij = g^{kl} R_{k i j l}`. -/
 def ricciFromRiemann04TraceInFrame
-    (Riemann04 : FourTensorField (I := I) (M := M))
+    (Riemann04 : RawFourTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
-    TwoTensorField (I := I) (M := M) :=
+    RawTwoTensorField (I := I) (M := M) :=
   fun x X Y =>
     ∑ k : Idx, ∑ l : Idx, gInv x k l * Riemann04 x (frame k x) X Y (frame l x)
 
 @[simp]
 theorem ricciFromRiemann04TraceInFrame_apply
-    (Riemann04 : FourTensorField (I := I) (M := M))
+    (Riemann04 : RawFourTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (x : M) (X Y : TangentSpace I x) :
@@ -145,14 +148,14 @@ theorem ricciFromRiemann04TraceInFrame_apply
 
 /-- Scalar curvature as the metric trace of Ricci in a static frame. -/
 def scalarFromRicciTraceInFrame
-    (Ric : TwoTensorField (I := I) (M := M))
+    (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) : M -> Real :=
   fun x => ∑ i : Idx, ∑ j : Idx, gInv x i j * Ric x (frame i x) (frame j x)
 
 @[simp]
 theorem scalarFromRicciTraceInFrame_apply
-    (Ric : TwoTensorField (I := I) (M := M))
+    (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) (x : M) :
     scalarFromRicciTraceInFrame (I := I) Ric gInv frame x =

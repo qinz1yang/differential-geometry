@@ -145,6 +145,58 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
     congrArg (fun L : E →L[𝕜] TangentSpace I x => L ((Module.finBasis 𝕜 E) i))
       (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src)
 
+/-- The fixed coordinate-frame basis vector has constant model coordinates in
+the tangent-bundle trivialization. -/
+theorem coordinateFrameAt_basis_triv
+    (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (i : CoordinateIdx (𝕜 := 𝕜) E) :
+    (coordinateTrivializationAt (I := I) x₀).continuousLinearMapAt
+        𝕜 x ((coordinateFrameAt_basis (I := I) x₀ hx) i) =
+      (Module.finBasis 𝕜 E) i := by
+  let e := coordinateTrivializationAt (I := I) x₀
+  have hxE : x ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
+  have hx_src : x ∈ (chartAt H x₀).source := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt, e] using hx
+  have hframe :
+      (coordinateFrameAt_basis (I := I) x₀ hx) i =
+        e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
+    rw [coordinateFrameAt_basis_apply]
+    rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rfl
+  rw [hframe]
+  exact e.continuousLinearMapAt_symmL (R := 𝕜) hxE ((Module.finBasis 𝕜 E) i)
+
+/-- Coordinates in the chart-induced tangent basis are the same as coordinates
+after applying the fixed tangent-bundle trivialization. -/
+theorem basisRepr_eq_triv
+    (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (v : TangentSpace I x) :
+    (coordinateFrameAt_basis (I := I) x₀ hx).repr v =
+      (Module.finBasis 𝕜 E).repr
+        ((coordinateTrivializationAt (I := I) x₀).continuousLinearMapAt 𝕜 x v) := by
+  classical
+  let b := coordinateFrameAt_basis (I := I) x₀ hx
+  let e := Module.finBasis 𝕜 E
+  let L := (coordinateTrivializationAt (I := I) x₀).continuousLinearMapAt 𝕜 x
+  have hLbasis : ∀ i, L (b i) = e i := by
+    intro i
+    exact coordinateFrameAt_basis_triv (I := I) x₀ hx i
+  have hLv : L v = ∑ i, (b.repr v i) • e i := by
+    calc
+      L v = L (∑ i, (b.repr v i) • b i) := by
+          exact congrArg L (b.sum_repr v).symm
+      _ = ∑ i, L ((b.repr v i) • b i) := by
+          rw [map_sum]
+      _ = ∑ i, (b.repr v i) • L (b i) := by
+          simp
+      _ = ∑ i, (b.repr v i) • e i := by
+          simp [hLbasis]
+  rw [hLv]
+  ext i
+  exact (congrFun (e.repr_sum_self (fun i => b.repr v i)) i).symm
+
 /-- At the base point, the chart-induced coordinate basis is the model-space basis. -/
 theorem coordinateFrameAt_toBasis_eq_finBasis (x₀ : M) :
     coordinateFrameAt_toBasis (I := I) x₀ = Module.finBasis 𝕜 E := by
@@ -152,6 +204,35 @@ theorem coordinateFrameAt_toBasis_eq_finBasis (x₀ : M) :
   rw [coordinateFrameAt_toBasis_apply]
   rw [coordinateFrameAt_apply_of_mem (I := I) (coordinateFrameAt_mem (I := I) x₀) i]
   rw [mfderivWithin_range_extChartAt_symm]
+  rfl
+
+/-- On the coordinate-frame domain, the local-frame coefficient of a tangent
+vector is the corresponding model coordinate of the fixed chart derivative. -/
+theorem coordCoeff_eq_chart {x₀ x : M}
+    (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (v : TangentSpace I x) (i : CoordinateIdx (𝕜 := 𝕜) E) :
+    (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff i x v =
+      (Module.finBasis 𝕜 E).repr
+        ((mfderiv I 𝓘(𝕜, E) (extChartAt I x₀) x) v) i := by
+  have hbasis :
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt hx =
+        coordinateFrameAt_basis (I := I) x₀ hx := by
+    ext j
+    rw [IsLocalFrameOn.toBasisAt_coe]
+    rw [coordinateFrameAt_basis_apply]
+  have hcoeff :
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff i x v =
+        (coordinateFrameAt_basis (I := I) x₀ hx).repr v i := by
+    unfold IsLocalFrameOn.coeff
+    rw [dif_pos hx]
+    rw [hbasis]
+    rfl
+  have hx_chart : x ∈ (chartAt H x₀).source := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
+  rw [hcoeff]
+  rw [basisRepr_eq_triv (I := I) x₀ hx v]
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt
+    (I := I) (𝕜 := 𝕜) (x₀ := x₀) (x := x) hx_chart]
   rfl
 
 private theorem coordinateFrame_pullback_eq_const (x₀ : M) (i : CoordinateIdx (𝕜 := 𝕜) E) :

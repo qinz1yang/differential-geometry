@@ -1,5 +1,6 @@
 import RicciFlower.ScalarBochner
 import RicciFlower.Realized.CurvatureTensor
+import RicciFlower.Coordinates.MetricCompatibility
 import RicciFlower.Coordinates.Tensor
 import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian
 import RicciFlower.Tensor.Multilinear.BundleSmoothEval
@@ -84,6 +85,130 @@ def normSq02
     (A : Tensor02At (I := I) x) :
     normSq02 (I := I) g x A = inner02 (I := I) g x A A := by
   rfl
+
+private theorem norm02_event
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (x₀ : M) :
+    (fun y : M => normSq02 (I := I) g y (A y)) =ᶠ[nhds x₀]
+      fun y : M =>
+        ∑ i : Coordinates.CoordinateIdx (𝕜 := Real) E,
+          ∑ j : Coordinates.CoordinateIdx (𝕜 := Real) E,
+            ∑ k : Coordinates.CoordinateIdx (𝕜 := Real) E,
+              ∑ l : Coordinates.CoordinateIdx (𝕜 := Real) E,
+                Coordinates.inverseMetricFlatModelInChart_component
+                    (I := I) g x₀ i k (extChartAt I x₀ y) *
+                  Coordinates.inverseMetricFlatModelInChart_component
+                    (I := I) g x₀ j l (extChartAt I x₀ y) *
+                    A y
+                      (fun q : Fin 2 =>
+                        Coordinates.coordinateFrameAt (I := I) x₀
+                          (if q = 0 then i else j) y) *
+                      A y
+                        (fun q : Fin 2 =>
+                          Coordinates.coordinateFrameAt (I := I) x₀
+                            (if q = 0 then k else l) y) := by
+  classical
+  filter_upwards
+    [(Coordinates.coordinateFrameSet_open (I := I) x₀).mem_nhds
+      (Coordinates.coordinateFrameAt_mem (I := I) x₀)] with y hy
+  let basis := Coordinates.coordinateFrameAt_basis (I := I) x₀ hy
+  let gInv :
+      Coordinates.CoordinateIdx (𝕜 := Real) E →
+        Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j =>
+      Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x₀ i j (extChartAt I x₀ y)
+  have hnorm :=
+    Tensor0SBundle.normSq0S_two_eq_coord (I := I) (M := M) g y
+      basis gInv (Coordinates.gInvBasisAt (I := I) g x₀ hy) (A y)
+  calc
+    normSq02 (I := I) g y (A y) =
+        Tensor0SBundle.normSq0S (I := I) g y 2 (A y) := by
+          rfl
+    _ =
+        ∑ i : Coordinates.CoordinateIdx (𝕜 := Real) E,
+          ∑ j : Coordinates.CoordinateIdx (𝕜 := Real) E,
+            ∑ k : Coordinates.CoordinateIdx (𝕜 := Real) E,
+              ∑ l : Coordinates.CoordinateIdx (𝕜 := Real) E,
+                gInv i k * gInv j l *
+                  A y (fun q : Fin 2 => if q = 0 then basis i else basis j) *
+                    A y (fun q : Fin 2 => if q = 0 then basis k else basis l) := hnorm
+    _ =
+        ∑ i : Coordinates.CoordinateIdx (𝕜 := Real) E,
+          ∑ j : Coordinates.CoordinateIdx (𝕜 := Real) E,
+            ∑ k : Coordinates.CoordinateIdx (𝕜 := Real) E,
+              ∑ l : Coordinates.CoordinateIdx (𝕜 := Real) E,
+                Coordinates.inverseMetricFlatModelInChart_component
+                    (I := I) g x₀ i k (extChartAt I x₀ y) *
+                  Coordinates.inverseMetricFlatModelInChart_component
+                    (I := I) g x₀ j l (extChartAt I x₀ y) *
+                    A y
+                      (fun q : Fin 2 =>
+                        Coordinates.coordinateFrameAt (I := I) x₀
+                          (if q = 0 then i else j) y) *
+                      A y
+                        (fun q : Fin 2 =>
+                          Coordinates.coordinateFrameAt (I := I) x₀
+                            (if q = 0 then k else l) y) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          congr 3
+          · funext q
+            fin_cases q <;>
+              simp [basis, Coordinates.coordinateFrameAt_basis_apply]
+          · funext q
+            fin_cases q <;>
+              simp [basis, Coordinates.coordinateFrameAt_basis_apply]
+
+/-- The pointwise squared norm of a smooth `(0,2)` tensor field is smooth. -/
+theorem norm02_smooth
+    [CompleteSpace E]
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2) :
+    ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+      (fun y : M => normSq02 (I := I) g y (A y)) := by
+  classical
+  intro x₀
+  have hRhs :
+      ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+        (fun y : M =>
+          ∑ i : Coordinates.CoordinateIdx (𝕜 := Real) E,
+            ∑ j : Coordinates.CoordinateIdx (𝕜 := Real) E,
+              ∑ k : Coordinates.CoordinateIdx (𝕜 := Real) E,
+                ∑ l : Coordinates.CoordinateIdx (𝕜 := Real) E,
+                  Coordinates.inverseMetricFlatModelInChart_component
+                      (I := I) g x₀ i k (extChartAt I x₀ y) *
+                    Coordinates.inverseMetricFlatModelInChart_component
+                      (I := I) g x₀ j l (extChartAt I x₀ y) *
+                      A y
+                        (fun q : Fin 2 =>
+                          Coordinates.coordinateFrameAt (I := I) x₀
+                            (if q = 0 then i else j) y) *
+                        A y
+                          (fun q : Fin 2 =>
+                            Coordinates.coordinateFrameAt (I := I) x₀
+                              (if q = 0 then k else l) y))
+        x₀ := by
+    refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
+    refine ContMDiffAt.sum fun k _ => ContMDiffAt.sum fun l _ => ?_
+    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+      change IsManifold I ∞ M
+      infer_instance
+    exact
+      (((Coordinates.gInvComp_contMDiffAt (I := I) g x₀ i k).mul
+        (Coordinates.gInvComp_contMDiffAt (I := I) g x₀ j l)).mul
+        (Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+          (𝕜 := Real) (I := I) (M := M) A x₀
+          (fun q : Fin 2 => if q = 0 then i else j))).mul
+        (Coordinates.tensor0S_eval_coordinateFrame_contMDiffAt
+          (𝕜 := Real) (I := I) (M := M) A x₀
+          (fun q : Fin 2 => if q = 0 then k else l))
+  exact hRhs.congr_of_eventuallyEq (norm02_event (I := I) g A x₀)
 
 /-- Pointwise norm square of a time-dependent `(0,2)` tensor field. -/
 def tensorNormSq02
@@ -324,7 +449,7 @@ variable {Idx : Type*} [Fintype Idx]
 /-- Components of Ricci with both indices raised:
 `Ric^{ij} = g^{ia} g^{jb} Ric_ab`. -/
 def raisedRicciComponentsInFrame
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
     Time -> M -> Idx -> Idx -> Real :=
@@ -333,7 +458,7 @@ def raisedRicciComponentsInFrame
       gInv t x i a * gInv t x j b * Ric t x (frame a x) (frame b x)
 
 @[simp] theorem raisedRicciComponentsInFrame_apply
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Time) (x : M) (i j : Idx) :
@@ -345,7 +470,7 @@ def raisedRicciComponentsInFrame
 /-- Coordinate squared norm of Ricci:
 `|Ric|^2 = Ric_ij Ric^{ij}`. -/
 def ricciNormSqInFrame
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
     Time -> M -> Real :=
@@ -355,7 +480,7 @@ def ricciNormSqInFrame
         raisedRicciComponentsInFrame (I := I) Ric gInv frame t x i j
 
 @[simp] theorem ricciNormSqInFrame_apply
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Time) (x : M) :
@@ -368,7 +493,7 @@ def ricciNormSqInFrame
 /-- Coordinate inner product `<roughDelta Ric, Ric>`. -/
 def roughLapRicciInnerInFrame
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
     Time -> M -> Real :=
@@ -379,7 +504,7 @@ def roughLapRicciInnerInFrame
 
 @[simp] theorem roughLapRicciInnerInFrame_apply
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Time) (x : M) :
@@ -1509,7 +1634,7 @@ and the tensor norm product rule, not from Christoffel expansion. -/
 def RicciNormScalarLaplacianExpansionInFrame
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
@@ -1536,7 +1661,7 @@ covariant derivative components used by the formula. -/
 theorem ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)
@@ -1604,7 +1729,7 @@ theorem ricci_lap_mc
     (G : RealizedMetricFamily (I := I) (M := M) Time)
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)
@@ -1676,7 +1801,7 @@ end Tensor02ProductProducer
 `R_ikjl Ric^{ij} Ric^{kl}` in the frame convention fixed in
 `Curvature.lean`. -/
 def curvRicciRicciReactionInFrame
-    (Riemann04 : Time -> FourTensorField (I := I) (M := M))
+    (Riemann04 : Time -> RawFourTensorField (I := I) (M := M))
     (RicRaised : Time -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
     Time -> M -> Real :=
@@ -1686,7 +1811,7 @@ def curvRicciRicciReactionInFrame
         RicRaised t x i j * RicRaised t x k l
 
 @[simp] theorem curvRicciRicciReactionInFrame_apply
-    (Riemann04 : Time -> FourTensorField (I := I) (M := M))
+    (Riemann04 : Time -> RawFourTensorField (I := I) (M := M))
     (RicRaised : Time -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Time) (x : M) :
@@ -1719,7 +1844,7 @@ The conclusion is the reusable component form
 theorem ricciNormLaplacianComponentsInFrame_of_normSq_laplacian_expansion
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
-    (Ric : Time -> TwoTensorField (I := I) (M := M))
+    (Ric : Time -> RawTwoTensorField (I := I) (M := M))
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)

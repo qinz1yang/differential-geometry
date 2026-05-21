@@ -121,7 +121,7 @@ theorem rm04RealizesConnection_convention
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (h : Rm04RealizesConnection (I := I) g cov Rm04)
-    (W X Y Z : TangentField (I := I) (M := M)) (x : M) :
+    (W X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M) :
     Rm04 x (vec4 (W x) (X x) (Y x) (Z x)) =
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
   h W X Y Z x

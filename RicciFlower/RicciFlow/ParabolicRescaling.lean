@@ -17,7 +17,7 @@ noncomputable section
 namespace RicciFlower
 namespace RicciFlow
 
-open Bundle
+open Bundle Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -25,6 +25,7 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 /-- Forward parabolic-rescaling time map: old time as a function of rescaled
@@ -207,6 +208,13 @@ def paraSolution
       fun s => S.base.ricci (paraTime τ R s) := by
   sorry
 
+private theorem metricTensorField_scaleMetric
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) :
+    metricTensorField (I := I) (scaleMetric (I := I) c hc g) x =
+      c • metricTensorField (I := I) g x := by
+  ext v
+  simp [metricTensorField_apply, scaleMetric_inner, smul_eq_mul]
+
 /-- Time smoothness of the rescaled metric family.  This is the exact
 regularity bridge: constant scaling plus affine time pullback preserves metric
 coefficient smoothness on the pulled-back interval. -/
@@ -218,24 +226,41 @@ theorem metricFamilySmooth_para
     Realized.MetricFamilySmoothOn (I := I) (M := M)
       (paraInterval D τ R hR hτ)
       (paraSolution (I := I) S τ R hR hτ).family := by
-  intro x X Y
-  have hOld := hS.smoothMetric x X Y
-  have haff_global : ContDiff Real ⊤ (fun s : Real => paraTime τ R s) := by
-    unfold paraTime
-    exact contDiff_const.add (contDiff_id.div_const R)
-  have hmaps :
-      Set.MapsTo (fun s : Real => paraTime τ R s)
-        (paraInterval D τ R hR hτ).carrier D.carrier := by
-    intro s hs
-    exact hs
-  have hcomp :
-      ContDiffOn Real ⊤
-        (fun s : Real => (S.base.metric (paraTime τ R s)).inner x X Y)
-        (paraInterval D τ R hR hτ).carrier := by
-    simpa [Function.comp_def] using
-      hOld.comp haff_global.contDiffOn hmaps
-  simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner, smul_eq_mul]
-    using ContDiffOn.const_smul R hcomp
+  constructor
+  · intro x X Y
+    have hOld := hS.smoothMetric.coeff x X Y
+    have haff_global : ContDiff Real ⊤ (fun s : Real => paraTime τ R s) := by
+      unfold paraTime
+      exact contDiff_const.add (contDiff_id.div_const R)
+    have hmaps :
+        Set.MapsTo (fun s : Real => paraTime τ R s)
+          (paraInterval D τ R hR hτ).carrier D.carrier := by
+      intro s hs
+      exact hs
+    have hcomp :
+        ContDiffOn Real ⊤
+          (fun s : Real => (S.base.metric (paraTime τ R s)).inner x X Y)
+          (paraInterval D τ R hR hτ).carrier := by
+      simpa [Function.comp_def] using
+        hOld.comp haff_global.contDiffOn hmaps
+    simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner, smul_eq_mul]
+      using ContDiffOn.const_smul R hcomp
+  · have hmaps :
+        Set.MapsTo (fun s : Real => paraTime τ R s)
+          (paraInterval D τ R hR hτ).carrier D.carrier := by
+      intro s hs
+      exact hs
+    have htime : Continuous (fun s : Real => paraTime τ R s) := by
+      unfold paraTime
+      exact continuous_const.add (continuous_id.div_const R)
+    have hcomp :=
+      Realized.Tensor0SFamilyContinuousOnSet.comp_time (I := I) (M := M)
+        hS.smoothMetric.metricTensor_cont htime hmaps
+    have hscale :=
+      Realized.Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+        R hcomp
+    simpa [SolutionOn.family, paraSolution, paraFamily, metricTensorField_scaleMetric]
+      using hscale
 
 /-- Connection smoothness is preserved by the affine time pullback. -/
 theorem connectionFamilySmooth_para

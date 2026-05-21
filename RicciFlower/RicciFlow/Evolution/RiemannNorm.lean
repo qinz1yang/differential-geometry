@@ -31,6 +31,9 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
+local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+
 section Components
 
 variable {Idx : Type*} [Fintype Idx]

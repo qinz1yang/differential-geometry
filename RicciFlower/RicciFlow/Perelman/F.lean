@@ -107,6 +107,12 @@ def fFunctionalClosedBracket (scalarCurvature lapPotential : M -> Real) :
     M -> Real :=
   fun x => scalarCurvature x + lapPotential x
 
+/-- Scalar derivative of the closed bracket `R + Delta f`. -/
+def fFunctionalClosedBracketVariation
+    (scalarCurvatureVariation lapPotentialVariation : M -> Real) :
+    M -> Real :=
+  fun x => scalarCurvatureVariation x + lapPotentialVariation x
+
 /-- Concrete measure-theoretic version of Perelman's `F` functional. -/
 def fFunctional [MeasurableSpace M] (mu : Measure M)
     (scalarCurvature gradPotentialNormSq potential : M -> Real) : Real :=
@@ -261,6 +267,59 @@ theorem weightedIBP
   · simpa [expNegPotentialDensity] using
       RicciFlower.Analysis.DivergenceTheorem.expNegIBP
         (I := I) g hpotential hlap hgrad
+
+/-- Scalar consequence of weighted integration by parts:
+if `∫(Delta f - |grad f|^2)e^{-f}dmu = 0`, then the two bracket forms of
+Perelman's `F` have the same weighted integral. -/
+theorem bracket_eq_closed_of_ibp [MeasurableSpace M]
+    (mu : Measure M)
+    (scalarCurvature lapPotential gradPotentialNormSq potential : M -> Real)
+    (hscalar_int :
+      Integrable scalarCurvature
+        (expNegPotentialWeightedMeasure mu potential))
+    (hlap_int :
+      Integrable lapPotential
+        (expNegPotentialWeightedMeasure mu potential))
+    (hgrad_int :
+      Integrable gradPotentialNormSq
+        (expNegPotentialWeightedMeasure mu potential))
+    (hibp :
+      ∫ x, (lapPotential x - gradPotentialNormSq x)
+        ∂(expNegPotentialWeightedMeasure mu potential) = 0) :
+    (∫ x, fFunctionalBracket scalarCurvature gradPotentialNormSq x
+      ∂(expNegPotentialWeightedMeasure mu potential)) =
+      ∫ x, fFunctionalClosedBracket scalarCurvature lapPotential x
+        ∂(expNegPotentialWeightedMeasure mu potential) := by
+  let μw := expNegPotentialWeightedMeasure mu potential
+  have hdiff :
+      (∫ x, lapPotential x ∂μw) =
+        ∫ x, gradPotentialNormSq x ∂μw := by
+    have hsub :
+        (∫ x, (lapPotential x - gradPotentialNormSq x) ∂μw) =
+          (∫ x, lapPotential x ∂μw) -
+            ∫ x, gradPotentialNormSq x ∂μw := by
+      exact integral_sub hlap_int hgrad_int
+    rw [hsub] at hibp
+    linarith
+  calc
+    (∫ x, fFunctionalBracket scalarCurvature gradPotentialNormSq x ∂μw)
+        =
+      ∫ x, scalarCurvature x + gradPotentialNormSq x ∂μw := by
+        rfl
+    _ =
+      (∫ x, scalarCurvature x ∂μw) +
+        ∫ x, gradPotentialNormSq x ∂μw := by
+        exact integral_add hscalar_int hgrad_int
+    _ =
+      (∫ x, scalarCurvature x ∂μw) +
+        ∫ x, lapPotential x ∂μw := by
+        rw [hdiff]
+    _ =
+      ∫ x, scalarCurvature x + lapPotential x ∂μw := by
+        exact (integral_add hscalar_int hlap_int).symm
+    _ =
+      ∫ x, fFunctionalClosedBracket scalarCurvature lapPotential x ∂μw := by
+        rfl
 
 /-- Arbitrary-test weighted Green identity transported to the weighted measure
 `e^{-f} dmu_g`. -/
@@ -678,6 +737,30 @@ theorem fFunctionalBracket_hasDerivAt
   have h := (hscalar_deriv x).add (hgrad_deriv x)
   simpa [fFunctionalBracket, fFunctionalBracketVariation] using h
 
+/-- Scalar derivative of the closed bracket `R + Delta f`. -/
+theorem closedBracket_deriv
+    {scalarCurvaturePath lapPotentialPath : Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvatureVariation lapPotentialVariation : M -> Real}
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (x : M) :
+    HasDerivAt
+      (fun s : Real =>
+        fFunctionalClosedBracket (scalarCurvaturePath s)
+          (lapPotentialPath s) x)
+      (fFunctionalClosedBracketVariation scalarCurvatureVariation
+        lapPotentialVariation x)
+      s0 := by
+  have h := (hscalar_deriv x).add (hlap_deriv x)
+  simpa [fFunctionalClosedBracket, fFunctionalClosedBracketVariation] using h
+
 /-- Formula specialized to Perelman's `F` bracket.  The derivatives of scalar
 curvature and `|grad f|^2` are scalar inputs; formula 5.10 later identifies
 their integrated geometric expression. -/
@@ -750,6 +833,79 @@ theorem fFunctionalBaseIntegral_hasDerivAt_at
       (scalarCurvatureVariation := scalarCurvatureVariation)
       (gradPotentialNormSqVariation := gradPotentialNormSqVariation)
       hscalar_deriv hgrad_deriv)
+    htrace hmetric_reg hintegrand_reg
+
+/-- Moving-volume first derivative for the closed bracket `R + Delta f`.
+This is the derivative producer used before comparing the closed bracket with
+the original `R + |grad f|^2` form by weighted integration by parts. -/
+theorem closedBase_deriv
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath lapPotentialPath potentialPath :
+      Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvatureVariation lapPotentialVariation potentialVariation
+      metricVariationTrace : M -> Real}
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (hpotential_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => potentialPath s x)
+          (potentialVariation x) s0)
+    (htrace :
+      ∀ x : M,
+        traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
+    (hmetric_reg :
+      MetricFamilyRegularAt (I := I)
+        (metricFamilyForMeasure (I := I) (M := M) G) s0)
+    (hintegrand_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x)
+        s0) :
+    HasDerivAt
+      (fun s : Real =>
+        ∫ x,
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s))
+      (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalClosedBracket (scalarCurvaturePath s0)
+            (lapPotentialPath s0))
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+      s0 :=
+  expWeightedMeasureIntegral_hasDerivAt_at
+    (I := I) (M := M) G
+    (potentialPath := potentialPath)
+    (phiPath := fun s : Real => fun x : M =>
+      fFunctionalClosedBracket (scalarCurvaturePath s)
+        (lapPotentialPath s) x)
+    (s0 := s0)
+    (potentialVariation := potentialVariation)
+    (metricVariationTrace := metricVariationTrace)
+    (phiVariation :=
+      fFunctionalClosedBracketVariation scalarCurvatureVariation
+        lapPotentialVariation)
+    hpotential_deriv
+    (closedBracket_deriv
+      (M := M) (scalarCurvaturePath := scalarCurvaturePath)
+      (lapPotentialPath := lapPotentialPath) (s0 := s0)
+      (scalarCurvatureVariation := scalarCurvatureVariation)
+      (lapPotentialVariation := lapPotentialVariation)
+      hscalar_deriv hlap_deriv)
     htrace hmetric_reg hintegrand_reg
 
 /-- Convert a base-integral derivative into the path-level first-variation
@@ -1106,6 +1262,70 @@ theorem pre510_eq_final_add_rem
     fFunctional510Remainder expWeightedMeasureVariationFactor
   ring
 
+/-- Pointwise bridge from the moving-volume derivative integrand to the
+pre-cancellation formula 5.10 integrand.
+
+The hypothesis is exactly the geometric variation of `R + |grad f|^2` before
+closed weighted Green cancels the shifted trace. -/
+theorem expWeightedIntegralVariation_eq_pre510
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
+      gradPotentialNormSqVariation : M -> Real}
+    (hvariation :
+      ∀ x : M,
+        fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x +
+            (lapPotential x - gradPotentialNormSq x) *
+              expWeightedMeasureVariationFactor potentialVariation
+                metricVariationTrace x) :
+    ∀ x : M,
+      expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalBracket scalarCurvature gradPotentialNormSq)
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x =
+      expNegPotentialDensity potential x *
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
+  intro x
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPre510Integrand
+    fFunctionalBracket
+  rw [hvariation x]
+  unfold expWeightedMeasureVariationFactor
+  ring
+
+/-- Pointwise closed-bracket version of the formula 5.10 integrand bridge.
+Here the geometric producer differentiates the closed bracket `R + Delta f`,
+so the extra `(Delta f - |grad f|^2)` correction is supplied by the later
+integral comparison with the original `R + |grad f|^2` bracket. -/
+theorem expWeightedClosedVariation_eq_pre510
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace closedBracketVariation :
+      M -> Real}
+    (hvariation :
+      ∀ x : M,
+        closedBracketVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x) :
+    ∀ x : M,
+      expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          closedBracketVariation x =
+      expNegPotentialDensity potential x *
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
+  intro x
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPre510Integrand
+    fFunctionalClosedBracket
+  rw [hvariation x]
+
 /-- The formula 5.10 remainder has zero integral once the closed divergence
 term vanishes and weighted Green identifies the shifted Hessian trace. -/
 theorem rem510_integral_zero [MeasurableSpace M]
@@ -1294,6 +1514,642 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
+
+/-- Integral bridge from the moving-volume first-variation integrand to the
+pre-cancellation formula 5.10 integral.
+
+This is the exact `hfirst` shape consumed by the component-level formula 5.10
+assembly theorem once the geometric variation producer has identified
+`delta(R + |grad f|^2)`. -/
+theorem firstVariationIntegral_eq_pre510
+    [T2Space M] [SigmaCompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
+      Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
+      gradPotentialNormSqVariation : M -> Real}
+    (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
+    (hgrad0 : gradPotentialNormSqPath s0 = gradPotentialNormSq)
+    (hpotential0 : potentialPath s0 = potential)
+    (hmeas :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hvariation :
+      ∀ x : M,
+        fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x +
+            (lapPotential x - gradPotentialNormSq x) *
+              expWeightedMeasureVariationFactor potentialVariation
+                metricVariationTrace x) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+  calc
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+        =
+      ∫ x,
+        expNegPotentialDensity potential x *
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
+      simp only [volumeMeasureFamily, metricFamilyForMeasure,
+        riemannianMeasureFamily, hscalar0, hgrad0, hpotential0]
+      apply integral_congr_ae
+      exact Filter.Eventually.of_forall
+        (expWeightedIntegralVariation_eq_pre510 (M := M)
+          (hvariation := hvariation))
+    _ =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+      exact (expNegPotentialWeightedMeasure_integral_eq_base
+        (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+        (potential := potential)
+        (integrand :=
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
+        hmeas).symm
+
+/-- Closed-bracket integral bridge for formula 5.10.
+
+This is the producer form suited to the `R + Delta f` trace variation coming
+from `LeviCivita.Variation`: once the closed bracket varies by
+`-v^{ij}(Ric_ij + Hess_ij f) + div_A + Hess(h - V/2)`, the moving-volume
+integrand is exactly the pre-cancellation formula 5.10 integral. -/
+theorem closedIntegral_eq_pre510
+    [T2Space M] [SigmaCompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {s0 : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace closedBracketVariation : M -> Real}
+    (hmeas :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hvariation :
+      ∀ x : M,
+        closedBracketVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          closedBracketVariation x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+  calc
+    (∫ x,
+        expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          closedBracketVariation x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+        =
+      ∫ x,
+        expNegPotentialDensity potential x *
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
+      simp only [volumeMeasureFamily, metricFamilyForMeasure,
+        riemannianMeasureFamily]
+      apply integral_congr_ae
+      exact Filter.Eventually.of_forall
+        (expWeightedClosedVariation_eq_pre510 (M := M)
+          (hvariation := hvariation))
+    _ =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+      exact (expNegPotentialWeightedMeasure_integral_eq_base
+        (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+        (potential := potential)
+        (integrand :=
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
+        hmeas).symm
+
+/-- Integral bridge from the original `R + |grad f|^2` moving-volume integrand
+to the pre-cancellation formula 5.10 integral via the closed bracket
+`R + Delta f`.  The hypothesis `hclosed_compare` is the differentiated
+closed-manifold Green/IBP comparison between the two bracket forms. -/
+theorem firstVar_pre510_closed
+    [T2Space M] [SigmaCompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
+      Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
+      gradPotentialNormSqVariation closedBracketVariation : M -> Real}
+    (hmeas :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hclosed_compare :
+      (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          closedBracketVariation x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+    (hclosed_variation :
+      ∀ x : M,
+        closedBracketVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+  rw [hclosed_compare]
+  exact closedIntegral_eq_pre510 (I := I) (M := M) G hmeas hclosed_variation
+
+/-- Convert a per-time weighted-IBP equality into equality of the base-measure
+integrals used by the moving-volume derivative theorem. -/
+theorem bracketClosed_eventually
+    {muPath : Real -> Measure M}
+    {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
+      potentialPath : Real -> M -> Real}
+    {s0 : Real}
+    (hmeas :
+      ∀ᶠ s in nhds s0,
+        AEMeasurable
+          (fun x : M =>
+            ENNReal.ofReal (expNegPotentialDensity (potentialPath s) x))
+          (muPath s))
+    (hibp :
+      ∀ᶠ s in nhds s0,
+        (∫ x,
+          fFunctionalBracket (scalarCurvaturePath s)
+            (gradPotentialNormSqPath s) x
+          ∂(expNegPotentialWeightedMeasure (muPath s)
+              (potentialPath s))) =
+        ∫ x,
+          fFunctionalClosedBracket (scalarCurvaturePath s)
+            (lapPotentialPath s) x
+          ∂(expNegPotentialWeightedMeasure (muPath s)
+              (potentialPath s))) :
+    (fun s : Real =>
+      ∫ x,
+        expNegPotentialDensity (potentialPath s) x *
+          fFunctionalBracket (scalarCurvaturePath s)
+            (gradPotentialNormSqPath s) x
+        ∂(muPath s)) =ᶠ[nhds s0]
+      fun s : Real =>
+        ∫ x,
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x
+          ∂(muPath s) := by
+  filter_upwards [hmeas, hibp] with s hmeas_s hibp_s
+  calc
+    (∫ x,
+      expNegPotentialDensity (potentialPath s) x *
+        fFunctionalBracket (scalarCurvaturePath s)
+          (gradPotentialNormSqPath s) x
+      ∂(muPath s))
+        =
+      ∫ x,
+        fFunctionalBracket (scalarCurvaturePath s)
+          (gradPotentialNormSqPath s) x
+        ∂(expNegPotentialWeightedMeasure (muPath s)
+            (potentialPath s)) := by
+        exact (expNegPotentialWeightedMeasure_integral_eq_base
+          (mu := muPath s) (potential := potentialPath s)
+          (integrand :=
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s)) hmeas_s).symm
+    _ =
+      ∫ x,
+        fFunctionalClosedBracket (scalarCurvaturePath s)
+          (lapPotentialPath s) x
+        ∂(expNegPotentialWeightedMeasure (muPath s)
+            (potentialPath s)) := hibp_s
+    _ =
+      ∫ x,
+        expNegPotentialDensity (potentialPath s) x *
+          fFunctionalClosedBracket (scalarCurvaturePath s)
+            (lapPotentialPath s) x
+        ∂(muPath s) := by
+        exact expNegPotentialWeightedMeasure_integral_eq_base
+          (mu := muPath s) (potential := potentialPath s)
+          (integrand :=
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s)) hmeas_s
+
+/-- Derivative comparison between the original `R + |grad f|^2` bracket and
+the closed `R + Delta f` bracket.  The input equality is the per-time weighted
+IBP identity, already transported to the base-measure integral shape. -/
+theorem closedCompare
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
+      potentialPath : Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvature lapPotential potential
+      scalarCurvatureVariation lapPotentialVariation
+      gradPotentialNormSqVariation potentialVariation metricVariationTrace :
+      M -> Real}
+    (hbase_eq :
+      (fun s : Real =>
+        ∫ x,
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s)) =ᶠ[nhds s0]
+        fun s : Real =>
+          ∫ x,
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalClosedBracket (scalarCurvaturePath s)
+                (lapPotentialPath s) x
+            ∂(volumeMeasureFamily (I := I) (M := M) G s))
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hgrad_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => gradPotentialNormSqPath s x)
+          (gradPotentialNormSqVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (hpotential_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => potentialPath s x)
+          (potentialVariation x) s0)
+    (htrace :
+      ∀ x : M,
+        traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
+    (hmetric_reg :
+      MetricFamilyRegularAt (I := I)
+        (metricFamilyForMeasure (I := I) (M := M) G) s0)
+    (horig_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x)
+        s0)
+    (hclosed_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x)
+        s0)
+    (hpotential0 : potentialPath s0 = potential)
+    (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
+    (hlap0 : lapPotentialPath s0 = lapPotential) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
+  have horig :=
+    fFunctionalBaseIntegral_hasDerivAt_at (I := I) (M := M) G
+      hscalar_deriv hgrad_deriv hpotential_deriv htrace hmetric_reg horig_reg
+  have hclosed :=
+    closedBase_deriv (I := I) (M := M) G
+      hscalar_deriv hlap_deriv hpotential_deriv htrace hmetric_reg
+      hclosed_reg
+  have hclosed_orig :
+      HasDerivAt
+        (fun s : Real =>
+          ∫ x,
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalBracket (scalarCurvaturePath s)
+                (gradPotentialNormSqPath s) x
+            ∂(volumeMeasureFamily (I := I) (M := M) G s))
+        (∫ x,
+          expWeightedIntegralVariationIntegrand
+            (potentialPath s0) potentialVariation metricVariationTrace
+            (fFunctionalClosedBracket (scalarCurvaturePath s0)
+              (lapPotentialPath s0))
+            (fFunctionalClosedBracketVariation scalarCurvatureVariation
+              lapPotentialVariation) x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+        s0 :=
+    hclosed.congr_of_eventuallyEq hbase_eq
+  have hderiv_eq := horig.unique hclosed_orig
+  calc
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+        =
+      ∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalClosedBracket (scalarCurvaturePath s0)
+            (lapPotentialPath s0))
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0) := hderiv_eq
+    _ =
+      ∫ x,
+        expWeightedIntegralVariationIntegrand potential potentialVariation
+          metricVariationTrace
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
+        simp [hpotential0, hscalar0, hlap0]
+
+/-- Formula 5.10 pre-cancellation integral with the closed-bracket comparison
+supplied by the derivative of the per-time weighted IBP identity. -/
+theorem firstVar_pre510_weighted
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
+      potentialPath : Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
+      lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
+    (hmeas :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hbase_eq :
+      (fun s : Real =>
+        ∫ x,
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s)) =ᶠ[nhds s0]
+        fun s : Real =>
+          ∫ x,
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalClosedBracket (scalarCurvaturePath s)
+                (lapPotentialPath s) x
+            ∂(volumeMeasureFamily (I := I) (M := M) G s))
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hgrad_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => gradPotentialNormSqPath s x)
+          (gradPotentialNormSqVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (hpotential_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => potentialPath s x)
+          (potentialVariation x) s0)
+    (htrace :
+      ∀ x : M,
+        traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
+    (hmetric_reg :
+      MetricFamilyRegularAt (I := I)
+        (metricFamilyForMeasure (I := I) (M := M) G) s0)
+    (horig_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x)
+        s0)
+    (hclosed_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x)
+        s0)
+    (hpotential0 : potentialPath s0 = potential)
+    (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
+    (hlap0 : lapPotentialPath s0 = lapPotential)
+    (hclosed_variation :
+      ∀ x : M,
+        fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+  apply firstVar_pre510_closed (I := I) (M := M) G hmeas
+  · exact closedCompare (I := I) (M := M) G hbase_eq
+      hscalar_deriv hgrad_deriv hlap_deriv hpotential_deriv htrace
+      hmetric_reg horig_reg hclosed_reg hpotential0 hscalar0 hlap0
+  · exact hclosed_variation
+
+/-- Formula 5.10 pre-cancellation integral with the closed-bracket comparison
+supplied in the natural weighted-measure form:
+`∫ (R + |grad f|^2)e^{-f}dmu = ∫ (R + Delta f)e^{-f}dmu` near the base time. -/
+theorem firstVar_pre510_ibp
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
+      potentialPath : Real -> M -> Real}
+    {s0 : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
+      lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
+    (hmeas0 :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hmeas_near :
+      ∀ᶠ s in nhds s0,
+        AEMeasurable
+          (fun x : M =>
+            ENNReal.ofReal (expNegPotentialDensity (potentialPath s) x))
+          (volumeMeasureFamily (I := I) (M := M) G s))
+    (hibp_near :
+      ∀ᶠ s in nhds s0,
+        (∫ x,
+          fFunctionalBracket (scalarCurvaturePath s)
+            (gradPotentialNormSqPath s) x
+          ∂(expNegPotentialWeightedMeasure
+              (volumeMeasureFamily (I := I) (M := M) G s)
+              (potentialPath s))) =
+        ∫ x,
+          fFunctionalClosedBracket (scalarCurvaturePath s)
+            (lapPotentialPath s) x
+          ∂(expNegPotentialWeightedMeasure
+              (volumeMeasureFamily (I := I) (M := M) G s)
+              (potentialPath s)))
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hgrad_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => gradPotentialNormSqPath s x)
+          (gradPotentialNormSqVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (hpotential_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => potentialPath s x)
+          (potentialVariation x) s0)
+    (htrace :
+      ∀ x : M,
+        traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
+    (hmetric_reg :
+      MetricFamilyRegularAt (I := I)
+        (metricFamilyForMeasure (I := I) (M := M) G) s0)
+    (horig_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x)
+        s0)
+    (hclosed_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x)
+        s0)
+    (hpotential0 : potentialPath s0 = potential)
+    (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
+    (hlap0 : lapPotentialPath s0 = lapPotential)
+    (hclosed_variation :
+      ∀ x : M,
+        fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation x =
+          -metricVariationRicciHess x +
+            weightedDivergenceTrace x + shiftedTrace x) :
+    (∫ x,
+        expWeightedIntegralVariationIntegrand
+          (potentialPath s0) potentialVariation metricVariationTrace
+          (fFunctionalBracket (scalarCurvaturePath s0)
+            (gradPotentialNormSqPath s0))
+          (fFunctionalBracketVariation scalarCurvatureVariation
+            gradPotentialNormSqVariation) x
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
+      ∫ x,
+        fFunctionalPre510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
+        ∂(expNegPotentialWeightedMeasure
+            (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+            potential) := by
+  apply firstVar_pre510_weighted (I := I) (M := M) G hmeas0
+  · exact bracketClosed_eventually
+      (M := M)
+      (muPath := volumeMeasureFamily (I := I) (M := M) G)
+      (scalarCurvaturePath := scalarCurvaturePath)
+      (lapPotentialPath := lapPotentialPath)
+      (gradPotentialNormSqPath := gradPotentialNormSqPath)
+      (potentialPath := potentialPath)
+      (s0 := s0)
+      hmeas_near hibp_near
+  · exact hscalar_deriv
+  · exact hgrad_deriv
+  · exact hlap_deriv
+  · exact hpotential_deriv
+  · exact htrace
+  · exact hmetric_reg
+  · exact horig_reg
+  · exact hclosed_reg
+  · exact hpotential0
+  · exact hscalar0
+  · exact hlap0
+  · exact hclosed_variation
 
 /-- Formula 5.10 from the geometric connection-trace divergence field and the
 weighted Green shift identity.  This is the assembly form matching the book's
@@ -3697,6 +4553,301 @@ theorem formula510_of_components
         nablaChristoffelVariation christoffelVariation gradPotential)
     hpotential hq hmeas hfirst hfinal_int hdiv_int hshift_int hcorr_int
     hweighted hlap hgradSq hshift hqeq
+
+/-- Formula 5.10 endpoint producer.
+
+This is the book-facing assembly theorem for the current component route: the
+input first variation is the moving-volume derivative of the original
+`R + |grad f|^2` bracket, and the theorem uses the per-time weighted IBP
+comparison with the closed `R + Delta f` bracket plus the connection-trace
+component geometry to produce `FFunctionalFormula510`. -/
+theorem formula510_producer
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    {s0 : Real}
+    (hLC : RicciFlower.LeviCivita.IsLeviCivita (I := I) cov (G.metric s0))
+    (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
+    (nablaChristoffelVariation :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (christoffelVariation :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (gradPotential : M -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (gInvDeriv :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (componentDeriv :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
+      potentialPath : Real -> M -> Real}
+    {firstVariation : Real}
+    {scalarCurvature lapPotential gradPotentialNormSq potential
+      potentialVariation metricVariationTrace metricVariationRicciHess
+      shiftedTrace q scalarCurvatureVariation lapPotentialVariation
+      gradPotentialNormSqVariation : M -> Real}
+    (hpotential : ContMDiff I 𝓘(Real, Real) ∞ potential)
+    (hq : ContMDiff I 𝓘(Real, Real) ∞ q)
+    (hmeas :
+      AEMeasurable
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
+    (hfirstVariation :
+      firstVariation =
+        ∫ x,
+          expWeightedIntegralVariationIntegrand
+            (potentialPath s0) potentialVariation metricVariationTrace
+            (fFunctionalBracket (scalarCurvaturePath s0)
+              (gradPotentialNormSqPath s0))
+            (fFunctionalBracketVariation scalarCurvatureVariation
+              gradPotentialNormSqVariation) x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s0))
+    (hmeas_near :
+      ∀ᶠ s in nhds s0,
+        AEMeasurable
+          (fun x : M =>
+            ENNReal.ofReal (expNegPotentialDensity (potentialPath s) x))
+          (volumeMeasureFamily (I := I) (M := M) G s))
+    (hibp_near :
+      ∀ᶠ s in nhds s0,
+        (∫ x,
+          fFunctionalBracket (scalarCurvaturePath s)
+            (gradPotentialNormSqPath s) x
+          ∂(expNegPotentialWeightedMeasure
+              (volumeMeasureFamily (I := I) (M := M) G s)
+              (potentialPath s))) =
+        ∫ x,
+          fFunctionalClosedBracket (scalarCurvaturePath s)
+            (lapPotentialPath s) x
+          ∂(expNegPotentialWeightedMeasure
+              (volumeMeasureFamily (I := I) (M := M) G s)
+              (potentialPath s)))
+    (hscalar_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => scalarCurvaturePath s x)
+          (scalarCurvatureVariation x) s0)
+    (hgrad_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => gradPotentialNormSqPath s x)
+          (gradPotentialNormSqVariation x) s0)
+    (hlap_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => lapPotentialPath s x)
+          (lapPotentialVariation x) s0)
+    (hpotential_deriv :
+      ∀ x : M,
+        HasDerivAt (fun s : Real => potentialPath s x)
+          (potentialVariation x) s0)
+    (htrace :
+      ∀ x : M,
+        traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
+    (hmetric_reg :
+      MetricFamilyRegularAt (I := I)
+        (metricFamilyForMeasure (I := I) (M := M) G) s0)
+    (horig_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
+              (gradPotentialNormSqPath s) x)
+        s0)
+    (hclosed_reg :
+      FunctionRegularAt
+        (fun s : Real => fun x : M =>
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
+              (lapPotentialPath s) x)
+        s0)
+    (hpotential0 : potentialPath s0 = potential)
+    (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
+    (hlap0 : lapPotentialPath s0 = lapPotential)
+    (hclosed_variation :
+      ∀ x : M,
+        fFunctionalClosedBracketVariation scalarCurvatureVariation
+            lapPotentialVariation x =
+          -metricVariationRicciHess x +
+            christoffelWeightedDivergenceTrace (I := I) (G.metric s0)
+              nablaChristoffelVariation christoffelVariation gradPotential x +
+            shiftedTrace x)
+    (hfinal_int :
+      Integrable
+        (fFunctionalFormula510Integrand scalarCurvature lapPotential
+          gradPotentialNormSq potentialVariation metricVariationTrace
+          metricVariationRicciHess)
+        (expNegPotentialWeightedMeasure
+          (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) potential))
+    (hdiv_int :
+      Integrable
+        (christoffelWeightedDivergenceTrace (I := I) (G.metric s0)
+          nablaChristoffelVariation christoffelVariation gradPotential)
+        (expNegPotentialWeightedMeasure
+          (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) potential))
+    (hshift_int :
+      Integrable shiftedTrace
+        (expNegPotentialWeightedMeasure
+          (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) potential))
+    (hcorr_int :
+      Integrable
+        (fun x : M =>
+          expWeightedMeasureVariationFactor potentialVariation
+            metricVariationTrace x *
+            (lapPotential x - gradPotentialNormSq x))
+        (expNegPotentialWeightedMeasure
+          (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) potential))
+    (hA :
+      ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
+        componentRS (I := I)
+            (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+            (A x) (fun _ : Fin 1 => p)
+            (fun q : Fin 2 => if q = 0 then i else j) =
+          christoffelVariation x p i j)
+    (hgrad :
+      ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
+        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+          gradPotential x p)
+    (hgInvDiff : ∀ x : M, ∀ i j : CoordinateIdx (𝕜 := Real) E,
+      DifferentiableAt Real
+        (fun y : E =>
+          inverseMetricFlatModelInChart_component (I := I) (G.metric s0) x i j y)
+        (extChartAt I x x))
+    (hADiff : ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
+      DifferentiableAt Real
+        (fun y : E =>
+          (A ((extChartAt I x).symm y)
+            (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
+              (I := I) (M := M) 1 x
+              ((continuousMultilinearMap_basis
+                (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
+                (fun _ : Fin 1 => p)) ((extChartAt I x).symm y)))
+            (fun q : Fin 2 =>
+              coordinateFrameAt (I := I) x (if q = 0 then i else j)
+                ((extChartAt I x).symm y)))
+        (extChartAt I x x))
+    (hgInvDeriv : ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
+      RicciFlower.Analysis.DivergenceTheorem.partialDeriv (E := E) p
+        (fun y : E =>
+          inverseMetricFlatModelInChart_component (I := I) (G.metric s0) x i j y)
+        (extChartAt I x x) = gInvDeriv x p i j)
+    (hADeriv : ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
+      RicciFlower.Analysis.DivergenceTheorem.partialDeriv (E := E) p
+        (fun y : E =>
+          (A ((extChartAt I x).symm y)
+            (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
+              (I := I) (M := M) 1 x
+              ((continuousMultilinearMap_basis
+                (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
+                (fun _ : Fin 1 => p)) ((extChartAt I x).symm y)))
+            (fun q : Fin 2 =>
+              coordinateFrameAt (I := I) x (if q = 0 then i else j)
+                ((extChartAt I x).symm y)))
+        (extChartAt I x x) = componentDeriv x p p i j)
+    (hginvExt : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
+      gInvDeriv x d i j =
+        extDerivFun (I := I)
+          (fun y : M =>
+            inverseMetricFlatModelInChart_component (I := I) (G.metric s0) x i j
+              (extChartAt I x y))
+          x (coordinateFrameAt (I := I) x d x))
+    (hzero : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
+      RicciFlower.Coordinates.inverseMetricCovDerivForMetricCompInFrame
+        (I := I)
+        (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
+          inverseMetricFlatModelInChart_component (I := I) (G.metric s0) x a b
+            (extChartAt I x y))
+        cov (coordinateFrameAt (I := I) x)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x)
+        x d i j = 0)
+    (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
+      nablaChristoffelVariation x d k i j =
+        componentDeriv x d k i j +
+          (∑ a : CoordinateIdx (𝕜 := Real) E,
+            christoffelSymbolInFrame cov
+              (coordinateFrameAt (I := I) x)
+              (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
+              componentRS (I := I)
+                (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAt_mem (I := I) x))
+                (A x) (fun _ : Fin 1 => a)
+                (fun q : Fin 2 => if q = 0 then i else j)) -
+          (∑ a : CoordinateIdx (𝕜 := Real) E,
+            christoffelSymbolInFrame cov
+              (coordinateFrameAt (I := I) x)
+              (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
+              componentRS (I := I)
+                (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAt_mem (I := I) x))
+                (A x) (fun _ : Fin 1 => k)
+                (fun q : Fin 2 => if q = 0 then a else j)) -
+          (∑ a : CoordinateIdx (𝕜 := Real) E,
+            christoffelSymbolInFrame cov
+              (coordinateFrameAt (I := I) x)
+              (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
+              componentRS (I := I)
+                (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAt_mem (I := I) x))
+                (A x) (fun _ : Fin 1 => k)
+                (fun q : Fin 2 => if q = 0 then i else a)))
+    (hGamma : ∀ x : M, ∀ d a k : CoordinateIdx (𝕜 := Real) E,
+      christoffelSymbolInFrame cov
+        (coordinateFrameAt (I := I) x)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k =
+      christoffelSymbolInFrame cov
+        (coordinateFrameAt (I := I) x)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x) x a d k)
+    (hlap :
+      ∀ x : M,
+        lapPotential x =
+          RicciFlower.Analysis.DivergenceTheorem.Δ_g
+            (I := I) (G.metric s0) hpotential x)
+    (hgradSq :
+      ∀ x : M,
+        gradPotentialNormSq x =
+          (G.metric s0).inner x
+            ((RicciFlower.Analysis.DivergenceTheorem.grad_g
+              (I := I) (G.metric s0) hpotential :
+              Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
+            ((RicciFlower.Analysis.DivergenceTheorem.grad_g
+              (I := I) (G.metric s0) hpotential :
+              Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
+    (hshift :
+      ∀ x : M,
+        shiftedTrace x =
+          RicciFlower.Analysis.DivergenceTheorem.Δ_g
+            (I := I) (G.metric s0) hq x)
+    (hqeq :
+      ∀ x : M,
+        q x = potentialVariation x - metricVariationTrace x / 2) :
+    FFunctionalFormula510
+      (expNegPotentialWeightedMeasure
+        (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) potential)
+      firstVariation scalarCurvature lapPotential gradPotentialNormSq
+      potentialVariation metricVariationTrace metricVariationRicciHess := by
+  have hfirst_pre :
+      firstVariation =
+        ∫ x,
+          fFunctionalPre510Integrand scalarCurvature lapPotential
+            gradPotentialNormSq potentialVariation metricVariationTrace
+            metricVariationRicciHess
+            (christoffelWeightedDivergenceTrace (I := I) (G.metric s0)
+              nablaChristoffelVariation christoffelVariation gradPotential)
+            shiftedTrace x
+          ∂(expNegPotentialWeightedMeasure
+              (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
+              potential) := by
+    refine hfirstVariation.trans ?_
+    exact firstVar_pre510_ibp (I := I) (M := M) G hmeas hmeas_near
+      hibp_near hscalar_deriv hgrad_deriv hlap_deriv hpotential_deriv
+      htrace hmetric_reg horig_reg hclosed_reg hpotential0 hscalar0 hlap0
+      hclosed_variation
+  exact formula510_of_components (I := I) (cov := cov) (G.metric s0) hLC A
+    nablaChristoffelVariation christoffelVariation gradPotential
+    gInvDeriv componentDeriv hpotential hq hmeas hfirst_pre
+    hfinal_int hdiv_int hshift_int hcorr_int hA hgrad
+    hgInvDiff hADiff hgInvDeriv hADeriv hginvExt hzero hNabla hGamma
+    hlap hgradSq hshift hqeq
 
 end GeometryFormula510
 

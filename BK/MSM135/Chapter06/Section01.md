@@ -125,3 +125,16 @@ producer, and the final formula 5.10 statement layer.  The geometric producer
 for arbitrary metric variation of `Ric + Hess f` remains in RicciFlower.
 
 Verification: passed for this file and the targeted BK Section 6.1 module.
+
+## 2026-05-20 Canonical formula 5.10 variation endpoint
+
+Switched the Section 6.1 import to the RicciFlower `FirstVariation` module and
+added the BK-facing alias:
+
+- `lbl453_f_formula510_canonical_variation`
+
+This exposes the path-based `delta_(v,h)F(g,f)` formulation.  The older
+component aliases remain available as proof-layer handles, but they are no
+longer the book-facing definition of first variation.
+
+Verification passed for this file and for the targeted BK Section 6.1 module.

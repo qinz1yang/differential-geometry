@@ -32,25 +32,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
 
-private theorem tensor0SSpace_sum_apply {ι : Type*} [Fintype ι] {s : ℕ}
-    (T : ι -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
-    (v : Fin s -> TangentSpace I x) :
-    ((∑ i : ι, T i) v) = ∑ i : ι, (T i) v := by
-  classical
-  let S : Finset ι := Finset.univ
-  change ((∑ i ∈ S, T i) v) = ∑ i ∈ S, (T i) v
-  induction S using Finset.induction_on with
-  | empty =>
-      change (0 : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v = 0
-      simp
-  | insert a S ha ih =>
-      rw [Finset.sum_insert ha, Finset.sum_insert ha]
-      change (((T a : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) +
-          (∑ i ∈ S, (T i : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real))) v) =
-        (T a : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v +
-          ∑ i ∈ S, (T i : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v
-      rw [ContinuousMultilinearMap.add_apply, ih]
-
 /-- A one-form is the inverse-metric contraction of its metric-flat basis
 components. -/
 theorem oneForm_eq_sum_inv_flat

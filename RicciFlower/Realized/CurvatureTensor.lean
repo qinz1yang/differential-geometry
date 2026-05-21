@@ -45,10 +45,10 @@ abbrev vec3 {x : M} (X Y Z : TangentSpace I x) : Fin 3 -> TangentSpace I x :=
 abbrev vec4 {x : M} (W X Y Z : TangentSpace I x) : Fin 4 -> TangentSpace I x :=
   RicciFlower.Curvature.vec4 (I := I) W X Y Z
 abbrev tensor02ToField (Ric : Tensor02Section (I := I) (M := M)) :
-    TwoTensorField (I := I) (M := M) :=
+    RawTwoTensorField (I := I) (M := M) :=
   RicciFlower.Curvature.tensor02ToField (I := I) Ric
 abbrev tensor04ToField (Rm04 : Tensor04Section (I := I) (M := M)) :
-    FourTensorField (I := I) (M := M) :=
+    RawFourTensorField (I := I) (M := M) :=
   RicciFlower.Curvature.tensor04ToField (I := I) Rm04
 abbrev ricciComp {Idx : Type*}
     (Ric : Tensor02Section (I := I) (M := M))

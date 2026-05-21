@@ -4,6 +4,7 @@ import RicciFlower.Curvature.Basic
 import RicciFlower.Curvature.Components
 import RicciFlower.LeviCivita.Basic
 import RicciFlower.LeviCivita.Torsion
+import RicciFlower.Variation.Basic
 import RicciFlower.VectorBundle.PartialMfderiv
 
 set_option autoImplicit false
@@ -13,11 +14,12 @@ set_option linter.unusedFintypeInType false
 set_option linter.unusedDecidableInType false
 
 /-!
-# First variation of Levi-Civita Christoffel components
+# Coordinate proof layer for Levi-Civita variations
 
-This file contains the RicciFlower-native arbitrary metric-variation interface
-needed by Perelman's formula 5.10.  Unlike the Ricci-flow evolution files, this
-layer does not assume `partial_t g = -2 Ric`.
+This file contains the coordinate and local-frame proof tools needed by
+Perelman's formula 5.10.  The book-facing definition of a variation path lives
+in `RicciFlower.Variation.Basic`; the predicates in this file are component
+packages extracted from such a path plus higher space/time regularity.
 
 The central producer is `lcGammaVar`: from a path of Levi-Civita connections,
 raw metric-component derivatives, fixed-base covariant derivatives of the
@@ -181,6 +183,36 @@ def metricVarOn
       (metricDot x a b)
       base
 
+/-- Components of the metric-variation tensor in a fixed frame. -/
+def metricDotFrame
+    (metricVariation :
+      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (x : M) (a b : Idx) : Real :=
+  Variation.metricVariationComponent (I := I) metricVariation x
+    (frame a x) (frame b x)
+
+/-- An admissible metric-potential variation path gives the raw fixed-frame
+metric-component derivative. -/
+theorem metricVar_path
+    {g : SmoothRiemannianMetric I M} {potential : M -> Real}
+    (path : Variation.MetricPotentialVariationPath (I := I) g potential)
+    (metricVariation :
+      Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
+    (potentialVariation : M -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (u : Set M)
+    (hpath :
+      Variation.IsMetricPotentialVariationPath (I := I) path metricVariation
+        potentialVariation) :
+    metricVarOn (I := I) path.G frame path.base u
+      (metricDotFrame (I := I) metricVariation frame) := by
+  intro x _hx a b
+  simpa [metricDotFrame] using
+    hpath.metric_deriv x (frame a x) (frame b x)
+
 /-- Mixed regularity for an arbitrary metric variation: differentiating the
 fixed-frame spatial derivative of a metric component in time gives the spatial
 derivative of the metric variation component. -/
@@ -197,6 +229,29 @@ def metricExtDtOn
           x (frame d x))
       (extDerivFun (I := I) (fun y : M => metricDot y a b) x (frame d x))
       base
+
+/-- Chart/model mixed regularity gives `metricExtDtOn`.
+
+This theorem keeps the regularity input as an explicit analytic hypothesis,
+instead of bundling it as a field of a component package. -/
+theorem metricExtDt_chart
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (base : Real) (u : Set M)
+    (metricDot : M -> Idx -> Idx -> Real)
+    (hchart :
+      ∀ x : M, x ∈ u -> ∀ d a b : Idx,
+        HasDerivAt
+          (fun s : Real =>
+            extDerivFun (I := I)
+              (fun y : M => (G.metric s).inner y (frame a y) (frame b y))
+              x (frame d x))
+          (extDerivFun (I := I) (fun y : M => metricDot y a b) x
+            (frame d x))
+          base) :
+    metricExtDtOn (I := I) G frame base u metricDot := by
+  intro x hx d a b
+  exact hchart x hx d a b
 
 /-- Fixed-frame covariant derivative components of an arbitrary metric
 variation tensor. -/
@@ -400,6 +455,68 @@ theorem covDtEqDotCov
     exact Filter.Eventually.of_forall fun s => by
       simp [metricCovAtBase, Ca, Cb]
   exact (hmetric x hx d a b).unique hDeriv'
+
+/-- The fixed-base covariant derivative of the metric path varies by the
+covariant derivative of the metric variation tensor.
+
+This is the general arbitrary-variation version of the Ricci-flow
+metric-covariant derivative bridge. -/
+theorem metricCovVar_ext
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (base : Real)
+    (metricDot : M -> Idx -> Idx -> Real)
+    (hmetricVar : metricVarOn (I := I) G frame base u metricDot)
+    (hExt : metricExtDtOn (I := I) G frame base u metricDot) :
+    metricCovVarOn (I := I) G frame base u
+      (dotCovAt (I := I) (G.connection base) frame hframe metricDot) := by
+  intro x hx d a b
+  let Ca : TangentSpace I x :=
+    (G.connection base (frame a) x) (frame d x)
+  let Cb : TangentSpace I x :=
+    (G.connection base (frame b) x) (frame d x)
+  have hDeriv :
+      HasDerivAt
+        (fun s : Real =>
+          extDerivFun (I := I)
+              (fun y : M => (G.metric s).inner y (frame a y) (frame b y))
+              x (frame d x) -
+            (G.metric s).inner x Ca (frame b x) -
+            (G.metric s).inner x (frame a x) Cb)
+        (dotCovAt (I := I) (G.connection base) frame hframe metricDot
+          x d a b)
+        base := by
+    have hExt' := hExt x hx d a b
+    have hCa := metricVarConnLeft
+      (I := I) G frame hframe base metricDot hmetricVar hx d a b
+    have hCb := metricVarConnRight
+      (I := I) G frame hframe base metricDot hmetricVar hx d a b
+    have hCa' :
+        HasDerivAt
+          (fun s : Real => (G.metric s).inner x Ca (frame b x))
+          (∑ p : Idx,
+            Coordinates.christoffelSymbolInFrame
+                (G.connection base) frame hframe x d a p *
+              metricDot x p b)
+          base := by
+      simpa [Ca] using hCa
+    have hCb' :
+        HasDerivAt
+          (fun s : Real => (G.metric s).inner x (frame a x) Cb)
+          (∑ p : Idx,
+            Coordinates.christoffelSymbolInFrame
+                (G.connection base) frame hframe x d b p *
+              metricDot x a p)
+          base := by
+      simpa [Cb] using hCb
+    have h0 := (hExt'.sub hCa').sub hCb'
+    refine h0.congr_deriv ?_
+    unfold dotCovAt
+    ring
+  refine hDeriv.congr_of_eventuallyEq ?_
+  exact Filter.Eventually.of_forall fun s => by
+    simp [metricCovAtBase, Ca, Cb]
 
 private theorem connDiffVec_symm
     (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
@@ -646,6 +763,26 @@ def gammaDerivOn
           (G.connection s) frame hframe x i j k)
       (gammaDot x k i j)
       base
+
+/-- Chart-level Christoffel derivative regularity gives the fixed-frame
+Christoffel derivative package. -/
+theorem gammaDeriv_chart
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (base : Real) (u : Set M)
+    (gammaDot : M -> Idx -> Idx -> Idx -> Real)
+    (hchart :
+      ∀ x : M, x ∈ u -> ∀ i j k : Idx,
+        HasDerivAt
+          (fun s : Real =>
+            Coordinates.christoffelSymbolInFrame
+              (G.connection s) frame hframe x i j k)
+          (gammaDot x k i j)
+          base) :
+    gammaDerivOn (I := I) G frame hframe base u gammaDot := by
+  intro x hx i j k
+  exact hchart x hx i j k
 
 /-- Product-rule bridge: the variable-metric lowered connection difference has
 derivative obtained by lowering `gammaDot` with the base metric. -/
@@ -1104,6 +1241,88 @@ section RicciCoordVariation
 open RicciFlower.Coordinates
 
 variable [DecidableEq (CoordinateIdx (𝕜 := Real) E)]
+
+/-- Finite trace contraction of a two-index object against inverse-metric
+components.  This is the scalar trace algebra used when contracting the
+variation of `Ric + Hess f`. -/
+def trace2
+    {ι : Type*} [Fintype ι]
+    (gInv T : ι -> ι -> Real) : Real :=
+  ∑ i : ι, ∑ j : ι, gInv i j * T i j
+
+/-- Product rule for the finite trace contraction `trace2`. -/
+theorem trace2_deriv
+    {ι : Type*} [Fintype ι]
+    {timeSet : Set Real} {base : Real}
+    {gInvPath TPath : Real -> ι -> ι -> Real}
+    {gInvDot TDot : ι -> ι -> Real}
+    (hgInv :
+      ∀ i j : ι,
+        HasDerivWithinAt (fun s : Real => gInvPath s i j)
+          (gInvDot i j) timeSet base)
+    (hT :
+      ∀ i j : ι,
+        HasDerivWithinAt (fun s : Real => TPath s i j)
+          (TDot i j) timeSet base) :
+    HasDerivWithinAt
+      (fun s : Real => trace2 (gInvPath s) (TPath s))
+      ((Finset.univ : Finset ι).sum fun i =>
+        (Finset.univ : Finset ι).sum fun j =>
+          gInvDot i j * TPath base i j + gInvPath base i j * TDot i j)
+      timeSet base := by
+  unfold trace2
+  refine HasDerivWithinAt.fun_sum ?_
+  intro i _
+  refine HasDerivWithinAt.fun_sum ?_
+  intro j _
+  simpa [mul_add] using (hgInv i j).mul (hT i j)
+
+/-- Algebraic normalization of the inverse-metric part of a traced variation.
+If `metricVariation` is the contravariant metric variation, i.e.
+`gInvDot = -metricVariation`, then the `gInvDot` contraction contributes
+`-trace2 metricVariation T`. -/
+theorem trace2_neg
+    {ι : Type*} [Fintype ι]
+    (gInvDot metricVariation T U : ι -> ι -> Real)
+    (h : ∀ i j : ι, gInvDot i j = -metricVariation i j) :
+    ((Finset.univ : Finset ι).sum fun i =>
+      (Finset.univ : Finset ι).sum fun j =>
+        gInvDot i j * T i j + U i j) =
+      -trace2 metricVariation T +
+        ((Finset.univ : Finset ι).sum fun i =>
+          (Finset.univ : Finset ι).sum fun j => U i j) := by
+  classical
+  unfold trace2
+  calc
+    ((Finset.univ : Finset ι).sum fun i =>
+      (Finset.univ : Finset ι).sum fun j =>
+        gInvDot i j * T i j + U i j)
+        =
+      ((Finset.univ : Finset ι).sum fun i =>
+        (Finset.univ : Finset ι).sum fun j =>
+          gInvDot i j * T i j) +
+        ((Finset.univ : Finset ι).sum fun i =>
+          (Finset.univ : Finset ι).sum fun j => U i j) := by
+        simp [Finset.sum_add_distrib]
+    _ =
+      ((Finset.univ : Finset ι).sum fun i =>
+        (Finset.univ : Finset ι).sum fun j =>
+          -metricVariation i j * T i j) +
+        ((Finset.univ : Finset ι).sum fun i =>
+          (Finset.univ : Finset ι).sum fun j => U i j) := by
+        refine congrArg (fun z =>
+          z + ((Finset.univ : Finset ι).sum fun i =>
+            (Finset.univ : Finset ι).sum fun j => U i j)) ?_
+        refine Finset.sum_congr rfl fun i _ => ?_
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [h i j]
+    _ =
+      -((Finset.univ : Finset ι).sum fun i =>
+        (Finset.univ : Finset ι).sum fun j =>
+          metricVariation i j * T i j) +
+        ((Finset.univ : Finset ι).sum fun i =>
+          (Finset.univ : Finset ι).sum fun j => U i j) := by
+        simp [Finset.sum_neg_distrib]
 
 private def covDGamma
     {ι : Type*} [Fintype ι]
@@ -2083,6 +2302,38 @@ def scalarSecondVarCoordAt
       timeSet
       base
 
+/-- Chart-level first spatial derivative regularity of the potential path gives
+the scalar first-coordinate derivative package. -/
+theorem scalarFirst_chart
+    (f : Real -> M -> Real) (h : M -> Real)
+    (timeSet : Set Real) (base : Real) (x0 : M)
+    (hchart :
+      ∀ p : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt
+          (fun s : Real => scalarCoordDerivAt (I := I) (f s) x0 p)
+          (scalarCoordDerivAt (I := I) h x0 p)
+          timeSet
+          base) :
+    scalarFirstVarCoordAt (I := I) f h timeSet base x0 := by
+  intro p
+  exact hchart p
+
+/-- Chart-level second spatial derivative regularity of the potential path
+gives the scalar second-coordinate derivative package. -/
+theorem scalarSecond_chart
+    (f : Real -> M -> Real) (h : M -> Real)
+    (timeSet : Set Real) (base : Real) (x0 : M)
+    (hchart :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt
+          (fun s : Real => scalarCoordSecondAt (I := I) (f s) x0 i j)
+          (scalarCoordSecondAt (I := I) h x0 i j)
+          timeSet
+          base) :
+    scalarSecondVarCoordAt (I := I) f h timeSet base x0 := by
+  intro i j
+  exact hchart i j
+
 /-- Coordinate-frame Hessian variation from Christoffel variation:
 `d Hess_ij(f_s) / ds = Hess_ij(h) - A^p_ij partial_p f`. -/
 theorem lcHessVarCoord
@@ -2246,6 +2497,61 @@ theorem lcRicciHessVarShifted
   rw [htrace]
   ring_nf
 
+/-- Trace contraction of the shifted `Ric + Hess f` variation formula.  This is
+the scalar producer for the variation of `g^{ij}(Ric_ij + Hess_ij f)` before
+identifying the inverse-metric variation term with `-v_ij(Ric_ij+Hess_ij f)`. -/
+theorem lcTraceVar
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (hLC : ∀ s : Real,
+      IsLeviCivita (I := I) (G.connection s) (G.metric s))
+    (timeSet : Set Real) (base : Real) (x0 : M)
+    (f : Real -> M -> Real) (h metricTrace : M -> Real)
+    (gammaDot :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (gInvPath :
+      Real -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        Real)
+    (gInvDot :
+      CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (hgamma : gammaCoordDerivAt (I := I) G timeSet base x0 gammaDot)
+    (hmix : gammaMixedCoordAt (I := I) G timeSet base x0 gammaDot)
+    (hfirst : scalarFirstVarCoordAt (I := I) f h timeSet base x0)
+    (hsecond : scalarSecondVarCoordAt (I := I) f h timeSet base x0)
+    (hgInv :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt (fun s : Real => gInvPath s i j)
+          (gInvDot i j) timeSet base)
+    (htrace :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        gammaTraceCovAt (I := I) (G.connection base) gammaDot x0 i j =
+          (1 / 2 : Real) *
+            scalarHessCoordAt (I := I) (G.connection base) metricTrace x0 i j) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        trace2 (gInvPath s)
+          (fun i j : CoordinateIdx (𝕜 := Real) E =>
+            Realized.christoffelRicciCoeffAt (I := I) (G.connection s) x0 i j +
+              scalarHessCoordAt (I := I) (G.connection s) (f s) x0 i j))
+      ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun i =>
+        (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun j =>
+          gInvDot i j *
+            (Realized.christoffelRicciCoeffAt (I := I) (G.connection base)
+                x0 i j +
+              scalarHessCoordAt (I := I) (G.connection base) (f base)
+                x0 i j) +
+          gInvPath base i j *
+            (gammaWeightedDivCoordAt (I := I) (G.connection base) gammaDot
+                (f base) x0 i j +
+              shiftedScalarHessCoordAt (I := I) (G.connection base) h
+                metricTrace x0 i j))
+      timeSet base := by
+  apply trace2_deriv
+  · exact hgInv
+  · intro i j
+    exact lcRicciHessVarShifted (I := I) G hLC timeSet base x0 f h
+      metricTrace gammaDot hgamma hmix hfirst hsecond i j (htrace i j)
+
 /-- Coordinate-frame variation of `Ric_ij + Hess_ij f` with the trace
 covariant-derivative input produced from the traced Christoffel one-form. -/
 theorem lcRicciHessShifted_of_trace
@@ -2298,6 +2604,163 @@ theorem lcRicciHessShifted_of_trace
     htrace_deriv htrace_point htrace_ext
   exact lcRicciHessVarShifted (I := I) G hLC timeSet base x0 f h
     metricTrace gammaDot hgamma hmix hfirst hsecond i j htrace_cov
+
+/-- Trace contraction of `lcRicciHessShifted_of_trace`.  This removes the
+pointwise `nabla_i A^p_pj` input from the scalar trace variation producer. -/
+theorem lcTraceVar_of_trace
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (hLC : ∀ s : Real,
+      IsLeviCivita (I := I) (G.connection s) (G.metric s))
+    (timeSet : Set Real) (base : Real) (x0 : M)
+    (f : Real -> M -> Real) (h metricTrace : M -> Real)
+    (gammaDot :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (gInvPath :
+      Real -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        Real)
+    (gInvDot :
+      CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (hgamma : gammaCoordDerivAt (I := I) G timeSet base x0 gammaDot)
+    (hmix : gammaMixedCoordAt (I := I) G timeSet base x0 gammaDot)
+    (hfirst : scalarFirstVarCoordAt (I := I) f h timeSet base x0)
+    (hsecond : scalarSecondVarCoordAt (I := I) f h timeSet base x0)
+    (hgInv :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt (fun s : Real => gInvPath s i j)
+          (gInvDot i j) timeSet base)
+    (htrace_eventual :
+      ∀ j : CoordinateIdx (𝕜 := Real) E,
+        (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
+          gammaDot y p p j) =ᶠ[nhds x0]
+            fun y : M =>
+              (1 / 2 : Real) *
+                scalarCoordDerivFun (I := I) metricTrace x0 j y)
+    (htrace_point :
+      ∀ a : CoordinateIdx (𝕜 := Real) E,
+        (∑ p : CoordinateIdx (𝕜 := Real) E, gammaDot x0 p p a) =
+          (1 / 2 : Real) * scalarCoordDerivAt (I := I) metricTrace x0 a)
+    (hgamma_mdiff :
+      ∀ j p : CoordinateIdx (𝕜 := Real) E,
+        MDifferentiableAt I 𝓘(Real, Real)
+          (fun y : M => gammaDot y p p j) x0)
+    (hscalar_mdiff :
+      ∀ j : CoordinateIdx (𝕜 := Real) E,
+        MDifferentiableAt I 𝓘(Real, Real)
+          (scalarCoordDerivFun (I := I) metricTrace x0 j) x0) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        trace2 (gInvPath s)
+          (fun i j : CoordinateIdx (𝕜 := Real) E =>
+            Realized.christoffelRicciCoeffAt (I := I) (G.connection s) x0 i j +
+              scalarHessCoordAt (I := I) (G.connection s) (f s) x0 i j))
+      ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun i =>
+        (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun j =>
+          gInvDot i j *
+            (Realized.christoffelRicciCoeffAt (I := I) (G.connection base)
+                x0 i j +
+              scalarHessCoordAt (I := I) (G.connection base) (f base)
+                x0 i j) +
+          gInvPath base i j *
+            (gammaWeightedDivCoordAt (I := I) (G.connection base) gammaDot
+                (f base) x0 i j +
+              shiftedScalarHessCoordAt (I := I) (G.connection base) h
+                metricTrace x0 i j))
+      timeSet base := by
+  apply trace2_deriv
+  · exact hgInv
+  · intro i j
+    exact lcRicciHessShifted_of_trace
+      (I := I) G hLC timeSet base x0 f h metricTrace gammaDot
+      hgamma hmix hfirst hsecond i j (htrace_eventual j) htrace_point
+      (hgamma_mdiff j) (hscalar_mdiff j)
+
+/-- Trace contraction of `Ric + Hess f` with the inverse-metric variation
+normalized as the contravariant metric-variation contraction.  This is the
+formula 5.10 scalar trace producer: the first term in the product rule is
+rewritten as `-v^{ij}(Ric_ij + Hess_ij f)`. -/
+theorem lcTraceVar_inv
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (hLC : ∀ s : Real,
+      IsLeviCivita (I := I) (G.connection s) (G.metric s))
+    (timeSet : Set Real) (base : Real) (x0 : M)
+    (f : Real -> M -> Real) (h metricTrace : M -> Real)
+    (gammaDot :
+      M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real)
+    (gInvPath :
+      Real -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
+        Real)
+    (gInvDot metricVariation :
+      CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
+    (hgamma : gammaCoordDerivAt (I := I) G timeSet base x0 gammaDot)
+    (hmix : gammaMixedCoordAt (I := I) G timeSet base x0 gammaDot)
+    (hfirst : scalarFirstVarCoordAt (I := I) f h timeSet base x0)
+    (hsecond : scalarSecondVarCoordAt (I := I) f h timeSet base x0)
+    (hgInv :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        HasDerivWithinAt (fun s : Real => gInvPath s i j)
+          (gInvDot i j) timeSet base)
+    (hcontra :
+      ∀ i j : CoordinateIdx (𝕜 := Real) E,
+        gInvDot i j = -metricVariation i j)
+    (htrace_eventual :
+      ∀ j : CoordinateIdx (𝕜 := Real) E,
+        (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
+          gammaDot y p p j) =ᶠ[nhds x0]
+            fun y : M =>
+              (1 / 2 : Real) *
+                scalarCoordDerivFun (I := I) metricTrace x0 j y)
+    (htrace_point :
+      ∀ a : CoordinateIdx (𝕜 := Real) E,
+        (∑ p : CoordinateIdx (𝕜 := Real) E, gammaDot x0 p p a) =
+          (1 / 2 : Real) * scalarCoordDerivAt (I := I) metricTrace x0 a)
+    (hgamma_mdiff :
+      ∀ j p : CoordinateIdx (𝕜 := Real) E,
+        MDifferentiableAt I 𝓘(Real, Real)
+          (fun y : M => gammaDot y p p j) x0)
+    (hscalar_mdiff :
+      ∀ j : CoordinateIdx (𝕜 := Real) E,
+        MDifferentiableAt I 𝓘(Real, Real)
+          (scalarCoordDerivFun (I := I) metricTrace x0 j) x0) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        trace2 (gInvPath s)
+          (fun i j : CoordinateIdx (𝕜 := Real) E =>
+            Realized.christoffelRicciCoeffAt (I := I) (G.connection s) x0 i j +
+              scalarHessCoordAt (I := I) (G.connection s) (f s) x0 i j))
+      (-trace2 metricVariation
+          (fun i j : CoordinateIdx (𝕜 := Real) E =>
+            Realized.christoffelRicciCoeffAt (I := I) (G.connection base)
+                x0 i j +
+              scalarHessCoordAt (I := I) (G.connection base) (f base)
+                x0 i j) +
+        ((Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun i =>
+          (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)).sum fun j =>
+            gInvPath base i j *
+              (gammaWeightedDivCoordAt (I := I) (G.connection base) gammaDot
+                  (f base) x0 i j +
+                shiftedScalarHessCoordAt (I := I) (G.connection base) h
+                  metricTrace x0 i j)))
+      timeSet base := by
+  have htrace :=
+    lcTraceVar_of_trace (I := I) G hLC timeSet base x0 f h metricTrace
+      gammaDot gInvPath gInvDot hgamma hmix hfirst hsecond hgInv
+      htrace_eventual htrace_point hgamma_mdiff hscalar_mdiff
+  refine htrace.congr_deriv ?_
+  exact trace2_neg gInvDot metricVariation
+    (fun i j : CoordinateIdx (𝕜 := Real) E =>
+      Realized.christoffelRicciCoeffAt (I := I) (G.connection base)
+          x0 i j +
+        scalarHessCoordAt (I := I) (G.connection base) (f base)
+          x0 i j)
+    (fun i j : CoordinateIdx (𝕜 := Real) E =>
+      gInvPath base i j *
+        (gammaWeightedDivCoordAt (I := I) (G.connection base) gammaDot
+            (f base) x0 i j +
+          shiftedScalarHessCoordAt (I := I) (G.connection base) h
+            metricTrace x0 i j))
+    hcontra
 
 /-- Coordinate-frame shifted Ricci-plus-Hessian variation with the Christoffel
 trace inputs produced from the metric-trace and inverse-metric compatibility

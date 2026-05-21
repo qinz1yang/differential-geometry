@@ -67,9 +67,16 @@ def RicciNormSquaredEvolutionOn
     (ricciNormSq ricciNormSqRhs : Real -> M -> Real) : Prop :=
   ∀ (t : Real) (x : M), ricciNormSq t x = ricciNormSqRhs t x
 
+/-- Pointwise trace-free Ricci norm square from scalar curvature and
+`|Ric|^2`. -/
+def tracefreeRicciNormSqAtOf (scalar ricciNormSq : Real) : Real :=
+  ricciNormSq - scalar ^ 2 / 3
+
+/-- Canonical time-space trace-free Ricci norm square from scalar curvature
+and `|Ric|^2`. -/
 def tracefreeRicciNormSqOf
     (scalar ricciNormSq : Real -> M -> Real) (t : Real) (x : M) : Real :=
-  ricciNormSq t x - scalar t x ^ 2 / 3
+  tracefreeRicciNormSqAtOf (scalar t x) (ricciNormSq t x)
 
 def TracefreeRicciEvolutionInequalityOn
     (tracefreeRicciNormSq scalar ricciNormSq rhs : Real -> M -> Real) : Prop :=

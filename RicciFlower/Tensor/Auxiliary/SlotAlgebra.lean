@@ -3,6 +3,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Tactic.Abel
+import Mathlib.Tactic.FinCases
 
 /-!
 # Slot algebra for tensor calculations
@@ -17,6 +18,38 @@ open scoped BigOperators
 namespace RicciFlower
 namespace Tensor
 namespace SlotAlgebra
+
+/-- Reindex a sum over three finite slots as an explicit triple sum. -/
+lemma sum_fin3_fun_eq_triple
+    {R ι : Type*} [CommSemiring R] [Fintype ι] [DecidableEq ι]
+    (A B C : ι -> R) (K : ι -> ι -> ι -> R) :
+    (∑ r : Fin 3 -> ι, A (r 0) * B (r 1) * C (r 2) * K (r 0) (r 1) (r 2)) =
+      ∑ i : ι, ∑ k : ι, ∑ j : ι, A i * B k * C j * K i k j := by
+  classical
+  let e : (Fin 3 -> ι) ≃ ((ι × ι) × ι) := {
+    toFun := fun r => ((r 0, r 1), r 2)
+    invFun := fun p q =>
+      if q = (0 : Fin 3) then p.1.1
+      else if q = (1 : Fin 3) then p.1.2
+      else p.2
+    left_inv := by
+      intro r
+      funext q
+      fin_cases q <;> simp
+    right_inv := by
+      intro p
+      rcases p with ⟨⟨i, k⟩, j⟩
+      simp }
+  calc
+    (∑ r : Fin 3 -> ι, A (r 0) * B (r 1) * C (r 2) * K (r 0) (r 1) (r 2))
+        =
+      ∑ p : (ι × ι) × ι,
+        A p.1.1 * B p.1.2 * C p.2 * K p.1.1 p.1.2 p.2 := by
+        exact Fintype.sum_equiv e _ _ (by
+          intro r
+          simp [e])
+    _ = ∑ i : ι, ∑ k : ι, ∑ j : ι, A i * B k * C j * K i k j := by
+      simp [Fintype.sum_prod_type]
 
 lemma update_update_ne_comm
     {ι V : Type*} [DecidableEq ι]
@@ -249,6 +282,72 @@ lemma sum_update_finCons_raw
     sum_update_finCons
       (F := F) (head := head) (dHead := d 0) (tail := tail)
       (dTail := fun q : Fin s => d q.succ)
+
+/-- Rotate a triple finite sum by moving the last index to the front. -/
+lemma sum_rotate3
+    {ι κ ι' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
+    [AddCommMonoid A] (F : ι → κ → ι' → A) :
+    (∑ i : ι, ∑ k : κ, ∑ j : ι', F i k j) =
+      ∑ j : ι', ∑ i : ι, ∑ k : κ, F i k j := by
+  calc
+    (∑ i : ι, ∑ k : κ, ∑ j : ι', F i k j)
+        = ∑ i : ι, ∑ j : ι', ∑ k : κ, F i k j := by
+          refine Finset.sum_congr rfl ?_
+          intro i _
+          rw [Finset.sum_comm]
+    _ = ∑ j : ι', ∑ i : ι, ∑ k : κ, F i k j := by
+          rw [Finset.sum_comm]
+
+/-- Rotate a quadruple finite sum by moving the last index to the front. -/
+lemma sum_rotate4
+    {ι κ ι' κ' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
+    [Fintype κ'] [AddCommMonoid A] (F : ι → κ → ι' → κ' → A) :
+    (∑ i : ι, ∑ k : κ, ∑ l : ι', ∑ m : κ', F i k l m) =
+      ∑ m : κ', ∑ i : ι, ∑ k : κ, ∑ l : ι', F i k l m := by
+  calc
+    (∑ i : ι, ∑ k : κ, ∑ l : ι', ∑ m : κ', F i k l m)
+        = ∑ i : ι, ∑ k : κ, ∑ m : κ', ∑ l : ι', F i k l m := by
+          refine Finset.sum_congr rfl ?_
+          intro i _
+          refine Finset.sum_congr rfl ?_
+          intro k _
+          rw [Finset.sum_comm]
+    _ = ∑ m : κ', ∑ i : ι, ∑ k : κ, ∑ l : ι', F i k l m := by
+          rw [sum_rotate3]
+
+/-- Rotate a quadruple finite sum by moving the last two indices to the front. -/
+lemma sum_rotate4_two
+    {ι κ ι' κ' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
+    [Fintype κ'] [AddCommMonoid A] (F : ι → κ → ι' → κ' → A) :
+    (∑ i : ι, ∑ k : κ, ∑ l : ι', ∑ m : κ', F i k l m) =
+      ∑ l : ι', ∑ m : κ', ∑ i : ι, ∑ k : κ, F i k l m := by
+  calc
+    (∑ i : ι, ∑ k : κ, ∑ l : ι', ∑ m : κ', F i k l m)
+        = ∑ i : ι, ∑ l : ι', ∑ k : κ, ∑ m : κ', F i k l m := by
+          refine Finset.sum_congr rfl ?_
+          intro i _
+          rw [Finset.sum_comm]
+    _ = ∑ l : ι', ∑ i : ι, ∑ k : κ, ∑ m : κ', F i k l m := by
+          rw [Finset.sum_comm]
+    _ = ∑ l : ι', ∑ m : κ', ∑ i : ι, ∑ k : κ, F i k l m := by
+          refine Finset.sum_congr rfl ?_
+          intro l _
+          rw [sum_rotate3]
+
+/-- Expand an outer right factor through a double sum and rotate indices. -/
+lemma sum_mul_right3
+    {ι κ ι' R : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
+    [Semiring R] (F : ι → κ → ι' → R) (c : ι' → R) :
+    (∑ j : ι', (∑ i : ι, ∑ k : κ, F i k j) * c j) =
+      ∑ i : ι, ∑ k : κ, ∑ j : ι', F i k j * c j := by
+  calc
+    (∑ j : ι', (∑ i : ι, ∑ k : κ, F i k j) * c j)
+        = ∑ j : ι', ∑ i : ι, ∑ k : κ, F i k j * c j := by
+          refine Finset.sum_congr rfl ?_
+          intro j _
+          simp [Finset.sum_mul]
+    _ = ∑ i : ι, ∑ k : κ, ∑ j : ι', F i k j * c j := by
+          rw [← sum_rotate3]
 
 end SlotAlgebra
 end Tensor

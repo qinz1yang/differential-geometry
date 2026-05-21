@@ -166,6 +166,33 @@ theorem totalNabla0S_reg (s : ℕ)
     congr
   exact hsec
 
+/-- Canonical first and second total covariant derivative data for a smooth
+covariant tensor field and a smooth connection. -/
+noncomputable def CanonicalSpatialDerivs0S.of_smooth_connection {s : ℕ}
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s) :
+    CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) cov A := by
+  let hreg1 := totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    s cov hcov A
+  let nablaA := totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I)
+    (M := M) s cov A hreg1
+  let hreg2 := totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (s + 1) cov hcov nablaA
+  refine
+    { nablaA := nablaA
+      nabla2A := totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I)
+        (M := M) (s + 1) cov nablaA hreg2
+      first := ?_
+      second := ?_ }
+  · exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) s cov A hreg1
+  · exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) (s + 1) cov nablaA hreg2
+
 end
 
 end Tensor0SBundle

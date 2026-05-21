@@ -34,6 +34,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx]
 
+local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
+
 private theorem sum_swap_four
     {R : Type*} [AddCommMonoid R]
     (F : Idx -> Idx -> Idx -> Idx -> R) :

@@ -3,7 +3,6 @@ import RicciFlower.Coordinates.NablaComponents.Tensor0S
 import RicciFlower.Coordinates.NablaComponents.OneForm
 import RicciFlower.Coordinates.NablaComponents.TwoTensor
 import RicciFlower.Coordinates.NablaComponents.TensorRS
-import RicciFlower.Coordinates.NablaComponents.TensorRS12
 
 /-!
 # Compatibility import for coordinate covariant-derivative components

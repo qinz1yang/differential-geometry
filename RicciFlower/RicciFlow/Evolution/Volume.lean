@@ -119,7 +119,7 @@ volume trace frame, gives exactly the raw component sum used by the trace
 calculation. -/
 theorem scalar_trace_eq_volume_trace_components
     (g : RicciFlower.Analysis.Volume.SmoothRiemannianMetric I M)
-    (Ric : Realized.TwoTensorField (I := I) (M := M))
+    (Ric : Realized.RawTwoTensorField (I := I) (M := M))
     (scalar : M → Real)
     (hScalar : Realized.ScalarRealizesRicciTraceInFrame (I := I)
       scalar Ric

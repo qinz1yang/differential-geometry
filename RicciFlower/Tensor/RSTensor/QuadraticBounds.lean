@@ -84,12 +84,352 @@ def MetricUnitTangentSlab
     (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real) : Type _ :=
   Σ t : {t : Real // t ∈ Set.Icc t0 t1}, MetricUnitTangent (I := I) (M := M) (G t.1)
 
+instance metricUnitTangentSlabTop
+    (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real) :
+    TopologicalSpace (MetricUnitTangentSlab (I := I) (M := M) G t0 t1) :=
+  inferInstanceAs (TopologicalSpace
+    (Σ t : {t : Real // t ∈ Set.Icc t0 t1},
+      MetricUnitTangent (I := I) (M := M) (G t.1)))
+
+/-- Geometric time slab of unit tangent vectors, with the subspace topology
+from `{t // t ∈ K} × TangentBundle`.  This is the compactness/continuity
+object for time-dependent unit-tangent arguments. -/
+def MetricUnitTangentTimeSlab
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real) : Type _ :=
+  {q : ({t : Real // t ∈ K} × TangentBundle I M) //
+    (G q.1.1).inner q.2.proj q.2.2 q.2.2 = 1}
+
+instance metricUnitTangentTimeSlabTop
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real) :
+    TopologicalSpace (MetricUnitTangentTimeSlab (I := I) (M := M) G K) :=
+  inferInstanceAs (TopologicalSpace
+    {q : ({t : Real // t ∈ K} × TangentBundle I M) //
+      (G q.1.1).inner q.2.proj q.2.2 q.2.2 = 1})
+
+/-- Interval version of the geometric unit-tangent time slab. -/
+abbrev MetricUnitTangentIccSlab
+    (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real) : Type _ :=
+  MetricUnitTangentTimeSlab (I := I) (M := M) G (Set.Icc t0 t1)
+
+namespace MetricUnitTangentTimeSlab
+
+/-- Time coordinate of a geometric unit-tangent time slab point. -/
+def time {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) : Real :=
+  q.1.1.1
+
+@[simp]
+theorem time_mem {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) :
+    time (I := I) (M := M) q ∈ K :=
+  q.1.1.2
+
+/-- Tangent-bundle point of a geometric unit-tangent time slab point. -/
+def bundlePoint {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) :
+    TangentBundle I M :=
+  q.1.2
+
+/-- Base point of a geometric unit-tangent time slab point. -/
+def base {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) : M :=
+  (bundlePoint (I := I) (M := M) q).proj
+
+/-- Tangent vector of a geometric unit-tangent time slab point. -/
+def vec {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) :
+    TangentSpace I (base (I := I) (M := M) q) :=
+  (bundlePoint (I := I) (M := M) q).2
+
+@[simp]
+theorem unit {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    (q : MetricUnitTangentTimeSlab (I := I) (M := M) G K) :
+    (G (time (I := I) (M := M) q)).inner
+      (base (I := I) (M := M) q)
+      (vec (I := I) (M := M) q) (vec (I := I) (M := M) q) = 1 :=
+  q.2
+
+@[simp]
+theorem time_mk {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    {t : Real} {ht : t ∈ K} {x : M} {v : TangentSpace I x}
+    {hunit : (G t).inner x v v = 1} :
+    time (I := I) (M := M)
+      (⟨(⟨t, ht⟩, (⟨x, v⟩ : TangentBundle I M)), hunit⟩ :
+        MetricUnitTangentTimeSlab (I := I) (M := M) G K) = t :=
+  rfl
+
+@[simp]
+theorem bundlePoint_mk {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    {t : Real} {ht : t ∈ K} {x : M} {v : TangentSpace I x}
+    {hunit : (G t).inner x v v = 1} :
+    bundlePoint (I := I) (M := M)
+      (⟨(⟨t, ht⟩, (⟨x, v⟩ : TangentBundle I M)), hunit⟩ :
+        MetricUnitTangentTimeSlab (I := I) (M := M) G K) =
+      (⟨x, v⟩ : TangentBundle I M) :=
+  rfl
+
+@[simp]
+theorem base_mk {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    {t : Real} {ht : t ∈ K} {x : M} {v : TangentSpace I x}
+    {hunit : (G t).inner x v v = 1} :
+    base (I := I) (M := M)
+      (⟨(⟨t, ht⟩, (⟨x, v⟩ : TangentBundle I M)), hunit⟩ :
+        MetricUnitTangentTimeSlab (I := I) (M := M) G K) = x :=
+  rfl
+
+@[simp]
+theorem vec_mk {G : Real -> SmoothRiemannianMetric I M} {K : Set Real}
+    {t : Real} {ht : t ∈ K} {x : M} {v : TangentSpace I x}
+    {hunit : (G t).inner x v v = 1} :
+    vec (I := I) (M := M)
+      (⟨(⟨t, ht⟩, (⟨x, v⟩ : TangentBundle I M)), hunit⟩ :
+        MetricUnitTangentTimeSlab (I := I) (M := M) G K) = v :=
+  rfl
+
+end MetricUnitTangentTimeSlab
+
 /-- Evaluate a covariant two-tensor on the repeated vector `(v,v)`. -/
 def quad02
     {x : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (v : TangentSpace I x) : Real :=
   A (fun _ : Fin 2 => v)
+
+/-- Evaluate a covariant two-tensor on two explicit tangent vectors. -/
+def eval02
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (v w : TangentSpace I x) : Real :=
+  A (fun i : Fin 2 => if i = 0 then v else w)
+
+@[simp] theorem eval02_self
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (v : TangentSpace I x) :
+    eval02 (I := I) (M := M) A v v = quad02 (I := I) (M := M) A v := by
+  unfold eval02 quad02
+  congr 1
+  funext i
+  by_cases hi : i = 0
+  · simp [hi]
+  · simp [hi]
+
+private theorem eval02_slots_eq
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (m : Fin 2 -> TangentSpace I x) (v w : TangentSpace I x)
+    (h0 : m 0 = v) (h1 : m 1 = w) :
+    A m = eval02 (I := I) (M := M) A v w := by
+  congr 1
+  funext i
+  fin_cases i <;> simp [h0, h1]
+
+private theorem quad02_add_smul_eq
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    {v w : TangentSpace I x} {a : Real}
+    (hsym : eval02 (I := I) (M := M) A w v =
+      eval02 (I := I) (M := M) A v w) :
+    quad02 (I := I) (M := M) A (v + a • w) =
+      quad02 (I := I) (M := M) A v +
+        2 * a * eval02 (I := I) (M := M) A v w +
+        a * a * quad02 (I := I) (M := M) A w := by
+  let m : Fin 2 -> TangentSpace I x := fun _ => v + a • w
+  have h0 := A.map_update_add m (0 : Fin 2) v (a • w)
+  have h00 :
+      Function.update m (0 : Fin 2) (v + a • w) = m := by
+    funext i
+    fin_cases i <;> simp [m]
+  have h0v :
+      A (Function.update m (0 : Fin 2) v) =
+        eval02 (I := I) (M := M) A v (v + a • w) := by
+    apply eval02_slots_eq
+    · simp [m]
+    · simp [m]
+  have h0w :
+      A (Function.update m (0 : Fin 2) (a • w)) =
+        a * eval02 (I := I) (M := M) A w (v + a • w) := by
+    have hsmul := A.map_update_smul m (0 : Fin 2) a w
+    have hslot :
+        A (Function.update m (0 : Fin 2) w) =
+          eval02 (I := I) (M := M) A w (v + a • w) := by
+      apply eval02_slots_eq
+      · simp [m]
+      · simp [m]
+    calc
+      A (Function.update m (0 : Fin 2) (a • w))
+          = a • A (Function.update m (0 : Fin 2) w) := by
+              exact hsmul
+      _ = a * eval02 (I := I) (M := M) A w (v + a • w) := by
+              simp [hslot, smul_eq_mul]
+  have hfirst :
+      quad02 (I := I) (M := M) A (v + a • w) =
+        eval02 (I := I) (M := M) A v (v + a • w) +
+          a * eval02 (I := I) (M := M) A w (v + a • w) := by
+    calc
+      quad02 (I := I) (M := M) A (v + a • w) = A m := by
+        rfl
+      _ = A (Function.update m (0 : Fin 2) (v + a • w)) := by rw [h00]
+      _ = A (Function.update m (0 : Fin 2) v) +
+            A (Function.update m (0 : Fin 2) (a • w)) := by
+              exact h0
+      _ = eval02 (I := I) (M := M) A v (v + a • w) +
+            a * eval02 (I := I) (M := M) A w (v + a • w) := by
+              rw [h0v, h0w]
+  have hv_add :
+      eval02 (I := I) (M := M) A v (v + a • w) =
+        quad02 (I := I) (M := M) A v +
+          a * eval02 (I := I) (M := M) A v w := by
+    let mv : Fin 2 -> TangentSpace I x := fun i => if i = 0 then v else v + a • w
+    have hslot :
+        mv = Function.update mv (1 : Fin 2) (v + a • w) := by
+      funext i
+      fin_cases i <;> simp [mv]
+    have hadd := A.map_update_add mv (1 : Fin 2) v (a • w)
+    have hleft :
+        A (Function.update mv (1 : Fin 2) (v + a • w)) =
+          eval02 (I := I) (M := M) A v (v + a • w) := by
+      apply eval02_slots_eq <;> simp [mv]
+    have hvv :
+        A (Function.update mv (1 : Fin 2) v) =
+          quad02 (I := I) (M := M) A v := by
+      calc
+        A (Function.update mv (1 : Fin 2) v) =
+            eval02 (I := I) (M := M) A v v := by
+              apply eval02_slots_eq <;> simp [mv]
+        _ = quad02 (I := I) (M := M) A v := by
+              rw [eval02_self]
+    have hvw_smul :
+        A (Function.update mv (1 : Fin 2) (a • w)) =
+          a * eval02 (I := I) (M := M) A v w := by
+      have hsmul := A.map_update_smul mv (1 : Fin 2) a w
+      have hvw :
+          A (Function.update mv (1 : Fin 2) w) =
+            eval02 (I := I) (M := M) A v w := by
+        apply eval02_slots_eq <;> simp [mv]
+      calc
+        A (Function.update mv (1 : Fin 2) (a • w))
+            = a • A (Function.update mv (1 : Fin 2) w) := by
+                exact hsmul
+        _ = a * eval02 (I := I) (M := M) A v w := by
+                simp [hvw, smul_eq_mul]
+    calc
+      eval02 (I := I) (M := M) A v (v + a • w)
+          = A (Function.update mv (1 : Fin 2) (v + a • w)) := by
+              rw [hleft]
+      _ = A (Function.update mv (1 : Fin 2) v) +
+            A (Function.update mv (1 : Fin 2) (a • w)) := by
+              exact hadd
+      _ = quad02 (I := I) (M := M) A v +
+            a * eval02 (I := I) (M := M) A v w := by
+              rw [hvv, hvw_smul]
+  have hw_add :
+      eval02 (I := I) (M := M) A w (v + a • w) =
+        eval02 (I := I) (M := M) A w v +
+          a * quad02 (I := I) (M := M) A w := by
+    let mw : Fin 2 -> TangentSpace I x := fun i => if i = 0 then w else v + a • w
+    have hadd := A.map_update_add mw (1 : Fin 2) v (a • w)
+    have hleft :
+        A (Function.update mw (1 : Fin 2) (v + a • w)) =
+          eval02 (I := I) (M := M) A w (v + a • w) := by
+      apply eval02_slots_eq <;> simp [mw]
+    have hwv :
+        A (Function.update mw (1 : Fin 2) v) =
+          eval02 (I := I) (M := M) A w v := by
+      apply eval02_slots_eq <;> simp [mw]
+    have hww_smul :
+        A (Function.update mw (1 : Fin 2) (a • w)) =
+          a * quad02 (I := I) (M := M) A w := by
+      have hsmul := A.map_update_smul mw (1 : Fin 2) a w
+      have hww :
+          A (Function.update mw (1 : Fin 2) w) =
+            quad02 (I := I) (M := M) A w := by
+        calc
+          A (Function.update mw (1 : Fin 2) w) =
+              eval02 (I := I) (M := M) A w w := by
+                apply eval02_slots_eq <;> simp [mw]
+          _ = quad02 (I := I) (M := M) A w := by
+                rw [eval02_self]
+      calc
+        A (Function.update mw (1 : Fin 2) (a • w))
+            = a • A (Function.update mw (1 : Fin 2) w) := by
+                exact hsmul
+        _ = a * quad02 (I := I) (M := M) A w := by
+                simp [hww, smul_eq_mul]
+    calc
+      eval02 (I := I) (M := M) A w (v + a • w)
+          = A (Function.update mw (1 : Fin 2) (v + a • w)) := by
+              rw [hleft]
+      _ = A (Function.update mw (1 : Fin 2) v) +
+            A (Function.update mw (1 : Fin 2) (a • w)) := by
+              exact hadd
+      _ = eval02 (I := I) (M := M) A w v +
+            a * quad02 (I := I) (M := M) A w := by
+              rw [hwv, hww_smul]
+  calc
+    quad02 (I := I) (M := M) A (v + a • w)
+        = eval02 (I := I) (M := M) A v (v + a • w) +
+            a * eval02 (I := I) (M := M) A w (v + a • w) := hfirst
+    _ = quad02 (I := I) (M := M) A v +
+          2 * a * eval02 (I := I) (M := M) A v w +
+          a * a * quad02 (I := I) (M := M) A w := by
+            rw [hv_add, hw_add, hsym]
+            ring
+
+/-- A positive-semidefinite symmetric covariant two-tensor kills every vector
+paired with a null vector. -/
+theorem psd_null_left
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    {v : TangentSpace I x}
+    (hsym : ∀ u w : TangentSpace I x,
+      eval02 (I := I) (M := M) A u w = eval02 (I := I) (M := M) A w u)
+    (hpsd : ∀ u : TangentSpace I x, 0 ≤ quad02 (I := I) (M := M) A u)
+    (hnull : quad02 (I := I) (M := M) A v = 0) :
+    ∀ w : TangentSpace I x, eval02 (I := I) (M := M) A v w = 0 := by
+  intro w
+  let c : Real := eval02 (I := I) (M := M) A v w
+  let q : Real := quad02 (I := I) (M := M) A w
+  have hq : 0 ≤ q := hpsd w
+  by_contra hc
+  let a : Real := -c / (q + 1)
+  have hden_pos : 0 < q + 1 := by linarith
+  have hden_ne : q + 1 ≠ 0 := ne_of_gt hden_pos
+  have hpos := hpsd (v + a • w)
+  have hquad :
+      quad02 (I := I) (M := M) A (v + a • w) =
+        2 * a * c + a * a * q := by
+    have h := quad02_add_smul_eq (I := I) (M := M) A
+      (v := v) (w := w) (a := a) (hsym w v)
+    simpa [c, q, hnull, add_assoc, add_comm, add_left_comm] using h
+  have hnonneg : 0 ≤ 2 * a * c + a * a * q := by
+    simpa [hquad] using hpos
+  have hcalc : 2 * a * c + a * a * q =
+      - (c * c) * (q + 2) / ((q + 1) * (q + 1)) := by
+    subst a
+    field_simp [hden_ne]
+    ring
+  have hc_sq_pos : 0 < c * c := mul_self_pos.mpr hc
+  have hq2_pos : 0 < q + 2 := by linarith
+  have hden_sq_pos : 0 < (q + 1) * (q + 1) := mul_pos hden_pos hden_pos
+  have hneg : - (c * c) * (q + 2) / ((q + 1) * (q + 1)) < 0 := by
+    exact div_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (neg_lt_zero.mpr hc_sq_pos) hq2_pos)
+      hden_sq_pos
+  exact not_le_of_gt (by simpa [hcalc] using hneg) hnonneg
+
+/-- Right-sided version of `psd_null_left`, using symmetry. -/
+theorem psd_null_right
+    {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    {v : TangentSpace I x}
+    (hsym : ∀ u w : TangentSpace I x,
+      eval02 (I := I) (M := M) A u w = eval02 (I := I) (M := M) A w u)
+    (hpsd : ∀ u : TangentSpace I x, 0 ≤ quad02 (I := I) (M := M) A u)
+    (hnull : quad02 (I := I) (M := M) A v = 0) :
+    ∀ w : TangentSpace I x, eval02 (I := I) (M := M) A w v = 0 := by
+  intro w
+  rw [← hsym v w]
+  exact psd_null_left (I := I) (M := M) A hsym hpsd hnull w
 
 /-!
 ## Unit tangent topology producers
@@ -520,6 +860,448 @@ theorem metric_smul2
       simp [smul_eq_mul]
     _ = a * a * g.inner x v v := by ring
 
+/-- Metric quadratic evaluation on a time/tangent-bundle product. -/
+def metricTimeBundleQuad
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (q : {t : Real // t ∈ K} × TangentBundle I M) : Real :=
+  (G q.1.1).inner q.2.proj q.2.2 q.2.2
+
+/-- Metric quadratic value of the time-dependent metric on a fixed-reference
+unit tangent source. -/
+def metricUnitTimeSlabRefQuad
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    Real :=
+  (G q.1.1).inner
+    (MetricUnitTangent.base (I := I) (M := M) q.2)
+    (MetricUnitTangent.vec (I := I) (M := M) q.2)
+    (MetricUnitTangent.vec (I := I) (M := M) q.2)
+
+theorem metricUnitTimeSlabRefQuad_cont_of_bundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad : Continuous (metricTimeBundleQuad (I := I) (M := M) G K)) :
+    Continuous (metricUnitTimeSlabRefQuad (I := I) (M := M) G K g₀) := by
+  let incl :
+      ({t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) ->
+        {t : Real // t ∈ K} × TangentBundle I M :=
+    fun q => (q.1, q.2.1)
+  have hincl : Continuous incl := by
+    dsimp [incl]
+    exact continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
+  simpa [metricUnitTimeSlabRefQuad, metricTimeBundleQuad, incl,
+    MetricUnitTangent.base, MetricUnitTangent.vec] using hquad.comp hincl
+
+/-- The scalar normalization factor that sends a reference-unit vector to a
+`G t`-unit vector. -/
+noncomputable def metricUnitTimeSlabScale
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    Real :=
+  (Real.sqrt (metricUnitTimeSlabRefQuad (I := I) (M := M) G K g₀ q))⁻¹
+
+theorem metricUnitTimeSlabRefQuad_pos
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    0 < metricUnitTimeSlabRefQuad (I := I) (M := M) G K g₀ q := by
+  have hv : MetricUnitTangent.vec (I := I) (M := M) q.2 ≠ 0 := by
+    intro hv0
+    have hbad := MetricUnitTangent.unit (I := I) (M := M) q.2
+    rw [hv0] at hbad
+    norm_num at hbad
+  exact (G q.1.1).pos
+    (MetricUnitTangent.base (I := I) (M := M) q.2)
+    (MetricUnitTangent.vec (I := I) (M := M) q.2) hv
+
+/-- Continuity of the scalar normalization factor, once the metric quadratic
+value is known to be continuous on the reference-unit source. -/
+theorem metricUnitTimeSlabScale_cont
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad :
+      Continuous (metricUnitTimeSlabRefQuad (I := I) (M := M) G K g₀)) :
+    Continuous (metricUnitTimeSlabScale (I := I) (M := M) G K g₀) := by
+  unfold metricUnitTimeSlabScale
+  exact (Real.continuous_sqrt.comp hquad).inv₀
+    (fun q => ne_of_gt
+      (Real.sqrt_pos.mpr
+        (metricUnitTimeSlabRefQuad_pos (I := I) (M := M) G K g₀ q)))
+
+/-- Continuity of the scalar normalization factor from ambient
+time/tangent-bundle metric quadratic continuity. -/
+theorem metricUnitTimeSlabScale_cont_of_bundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad : Continuous (metricTimeBundleQuad (I := I) (M := M) G K)) :
+    Continuous (metricUnitTimeSlabScale (I := I) (M := M) G K g₀) :=
+  metricUnitTimeSlabScale_cont (I := I) (M := M) G K g₀
+    (metricUnitTimeSlabRefQuad_cont_of_bundle (I := I) (M := M) G K g₀ hquad)
+
+/-- The tangent-bundle part of the reference-unit normalization map. -/
+noncomputable def metricUnitTimeSlabScaledBundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    TangentBundle I M :=
+  ⟨MetricUnitTangent.base (I := I) (M := M) q.2,
+    metricUnitTimeSlabScale (I := I) (M := M) G K g₀ q •
+      MetricUnitTangent.vec (I := I) (M := M) q.2⟩
+
+theorem metricUnitTimeSlabScaledBundle_unit
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    (G q.1.1).inner
+      (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).proj
+      (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2
+      (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2 = 1 := by
+  let r : Real := metricUnitTimeSlabRefQuad (I := I) (M := M) G K g₀ q
+  have hrpos : 0 < r := metricUnitTimeSlabRefQuad_pos (I := I) (M := M) G K g₀ q
+  let s : Real := Real.sqrt r
+  have hspos : 0 < s := Real.sqrt_pos.mpr hrpos
+  have hsne : s ≠ 0 := ne_of_gt hspos
+  let a : Real := s⁻¹
+  let x : M := MetricUnitTangent.base (I := I) (M := M) q.2
+  let v : TangentSpace I x := MetricUnitTangent.vec (I := I) (M := M) q.2
+  have hss : s * s = r := by
+    simpa [sq] using (Real.sq_sqrt (le_of_lt hrpos))
+  have haa : a * a * r = 1 := by
+    have hmul : (s * s) * (s⁻¹ * s⁻¹) = 1 := by
+      field_simp [hsne]
+    calc
+      a * a * r = (s⁻¹ * s⁻¹) * (s * s) := by
+        rw [hss]
+      _ = (s * s) * (s⁻¹ * s⁻¹) := by ring
+      _ = 1 := hmul
+  calc
+    (G q.1.1).inner
+        (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).proj
+        (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2
+        (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2
+        = a * a * r := by
+          simpa [metricUnitTimeSlabScaledBundle, metricUnitTimeSlabScale,
+            metricUnitTimeSlabRefQuad, r, s, a, x, v] using
+            metric_smul2 (I := I) (M := M) (G q.1.1) a v
+    _ = 1 := haa
+
+/-- Fiberwise scalar multiplication is continuous on the tangent-bundle total
+space.  This is the local-trivialization fact needed by the unit-slab
+normalization map. -/
+private theorem tangentBundle_smul_cont :
+    Continuous (fun p : Real × TangentBundle I M =>
+      (⟨p.2.proj, p.1 • p.2.2⟩ : TangentBundle I M)) := by
+  rw [continuous_iff_continuousAt]
+  intro p₀
+  rw [FiberBundle.continuousAt_totalSpace]
+  constructor
+  · simpa using
+      (((FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd).continuousAt)
+  · let e := trivializationAt E (TangentSpace I : M -> Type _) p₀.2.proj
+    have hbase :
+        e.baseSet ∈ nhds p₀.2.proj :=
+      e.open_baseSet.mem_nhds
+        (mem_baseSet_trivializationAt E (TangentSpace I : M -> Type _) p₀.2.proj)
+    have hev :
+        ∀ᶠ p : Real × TangentBundle I M in nhds p₀, p.2.proj ∈ e.baseSet :=
+      (((FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd).continuousAt)
+        hbase
+    have hcoord :
+        ContinuousAt (fun p : Real × TangentBundle I M => (e p.2).2) p₀ := by
+      have hp :
+          ContinuousAt (fun p : Real × TangentBundle I M => p.2) p₀ :=
+        continuous_snd.continuousAt
+      exact ((FiberBundle.continuousAt_totalSpace
+        (F := E) (E := (TangentSpace I : M -> Type _))
+        (f := fun p : Real × TangentBundle I M => p.2)).mp hp).2
+    change
+      ContinuousAt
+        (fun p : Real × TangentBundle I M =>
+          (e (⟨p.2.proj, p.1 • p.2.2⟩ : TangentBundle I M)).2) p₀
+    refine ContinuousAt.congr (continuousAt_fst.smul hcoord) ?_
+    filter_upwards [hev] with p hp
+    calc
+      p.1 • (e p.2).2
+          = p.1 • (e.linearMapAt Real p.2.proj p.2.2) := by
+              rw [e.coe_linearMapAt_of_mem (R := Real) hp]
+      _ = e.linearMapAt Real p.2.proj (p.1 • p.2.2) := by
+              rw [map_smul]
+      _ = (e (⟨p.2.proj, p.1 • p.2.2⟩ : TangentBundle I M)).2 := by
+              rw [e.coe_linearMapAt_of_mem (R := Real) hp]
+
+/-- Continuity of the tangent-bundle component of the reference-unit
+normalization map follows from ambient time/tangent-bundle continuity of the
+metric quadratic form. -/
+theorem metricUnitTimeSlabScaledBundle_cont_of_bundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad : Continuous (metricTimeBundleQuad (I := I) (M := M) G K)) :
+    Continuous (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀) := by
+  have hscale :
+      Continuous (metricUnitTimeSlabScale (I := I) (M := M) G K g₀) :=
+    metricUnitTimeSlabScale_cont_of_bundle (I := I) (M := M) G K g₀ hquad
+  let sourceToPair :
+      ({t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) ->
+        Real × TangentBundle I M :=
+    fun q => (metricUnitTimeSlabScale (I := I) (M := M) G K g₀ q, q.2.1)
+  have hpair : Continuous sourceToPair := by
+    dsimp [sourceToPair]
+    exact hscale.prodMk (continuous_subtype_val.comp continuous_snd)
+  simpa [sourceToPair, metricUnitTimeSlabScaledBundle,
+    MetricUnitTangent.base, MetricUnitTangent.vec] using
+    tangentBundle_smul_cont (I := I) (M := M).comp hpair
+
+/-- Normalize a reference-unit tangent vector to be unit for the time-dependent
+metric at the same base point and time. -/
+noncomputable def metricUnitTimeSlabParam
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    MetricUnitTangentTimeSlab (I := I) (M := M) G K := by
+  let t : Real := q.1.1
+  let x : M := MetricUnitTangent.base (I := I) (M := M) q.2
+  let v : TangentSpace I x := MetricUnitTangent.vec (I := I) (M := M) q.2
+  have hv : v ≠ 0 := by
+    intro hv0
+    have hbad : (0 : Real) = 1 := by
+      simpa [x, v, hv0] using
+        (MetricUnitTangent.unit (I := I) (M := M) q.2)
+    norm_num at hbad
+  let r : Real := (G t).inner x v v
+  have hrpos : 0 < r := (G t).pos x v hv
+  let s : Real := Real.sqrt r
+  have hspos : 0 < s := Real.sqrt_pos.mpr hrpos
+  have hsne : s ≠ 0 := ne_of_gt hspos
+  let a : Real := s⁻¹
+  let u : TangentSpace I x := a • v
+  have hss : s * s = r := by
+    simpa [sq] using (Real.sq_sqrt (le_of_lt hrpos))
+  have hunit : (G t).inner x u u = 1 := by
+    have haa : a * a * r = 1 := by
+      have hmul : (s * s) * (s⁻¹ * s⁻¹) = 1 := by
+        field_simp [hsne]
+      calc
+        a * a * r = (s⁻¹ * s⁻¹) * (s * s) := by
+          rw [hss]
+        _ = (s * s) * (s⁻¹ * s⁻¹) := by ring
+        _ = 1 := hmul
+    calc
+      (G t).inner x u u = a * a * r := by
+        simpa [u, r] using metric_smul2 (I := I) (M := M) (G t) a v
+      _ = 1 := haa
+  exact ⟨(q.1, (⟨x, u⟩ : TangentBundle I M)), hunit⟩
+
+@[simp]
+theorem metricUnitTimeSlabParam_time
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (q : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) :
+    MetricUnitTangentTimeSlab.time (I := I) (M := M)
+      (metricUnitTimeSlabParam (I := I) (M := M) G K g₀ q) = q.1.1 := by
+  rfl
+
+/-- The only topological input needed to make the reference-unit
+normalization map continuous is continuity of its tangent-bundle component. -/
+theorem metricUnitTimeSlabParam_cont_of_scaledBundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hscaled :
+      Continuous (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀)) :
+    Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀) := by
+  let pairMap :
+      ({t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀) ->
+        {t : Real // t ∈ K} × TangentBundle I M :=
+    fun q => (q.1, metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q)
+  have hpair : Continuous pairMap := by
+    dsimp [pairMap]
+    exact continuous_fst.prodMk hscaled
+  have hsub :
+      Continuous (fun q =>
+        (⟨pairMap q,
+          metricUnitTimeSlabScaledBundle_unit (I := I) (M := M) G K g₀ q⟩ :
+          MetricUnitTangentTimeSlab (I := I) (M := M) G K)) :=
+    Continuous.subtype_mk hpair
+      (fun q => metricUnitTimeSlabScaledBundle_unit (I := I) (M := M) G K g₀ q)
+  refine hsub.congr ?_
+  intro q
+  apply Subtype.ext
+  simp [pairMap, metricUnitTimeSlabParam, metricUnitTimeSlabScaledBundle,
+    metricUnitTimeSlabScale, metricUnitTimeSlabRefQuad,
+    MetricUnitTangent.base, MetricUnitTangent.vec]
+
+/-- Continuity of the reference-unit normalization map follows from ambient
+time/tangent-bundle continuity of the metric quadratic form. -/
+theorem metricUnitTimeSlabParam_cont_of_bundle
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad : Continuous (metricTimeBundleQuad (I := I) (M := M) G K)) :
+    Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀) :=
+  metricUnitTimeSlabParam_cont_of_scaledBundle (I := I) (M := M) G K g₀
+    (metricUnitTimeSlabScaledBundle_cont_of_bundle (I := I) (M := M) G K g₀ hquad)
+
+/-- The reference-unit normalization map is onto the geometric unit tangent
+time slab. -/
+theorem metricUnitTimeSlabParam_surjective
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M) :
+    Function.Surjective
+      (metricUnitTimeSlabParam (I := I) (M := M) G K g₀) := by
+  rintro ⟨⟨⟨t, ht⟩, ⟨x, v⟩⟩, hGunit⟩
+  have hGtunit : (G t).inner x v v = 1 := by
+    simpa using hGunit
+  have hv : v ≠ 0 := by
+    intro hv0
+    have hbad := hGtunit
+    rw [hv0] at hbad
+    norm_num at hbad
+  let r₀ : Real := g₀.inner x v v
+  have hr₀pos : 0 < r₀ := g₀.pos x v hv
+  let s₀ : Real := Real.sqrt r₀
+  have hs₀pos : 0 < s₀ := Real.sqrt_pos.mpr hr₀pos
+  have hs₀ne : s₀ ≠ 0 := ne_of_gt hs₀pos
+  let a₀ : Real := s₀⁻¹
+  let u : TangentSpace I x := a₀ • v
+  have hs₀s₀ : s₀ * s₀ = r₀ := by
+    simpa [sq] using (Real.sq_sqrt (le_of_lt hr₀pos))
+  have hunit₀ : g₀.inner x u u = 1 := by
+    have haa : a₀ * a₀ * r₀ = 1 := by
+      have hmul : (s₀ * s₀) * (s₀⁻¹ * s₀⁻¹) = 1 := by
+        field_simp [hs₀ne]
+      calc
+        a₀ * a₀ * r₀ = (s₀⁻¹ * s₀⁻¹) * (s₀ * s₀) := by
+          rw [hs₀s₀]
+        _ = (s₀ * s₀) * (s₀⁻¹ * s₀⁻¹) := by ring
+        _ = 1 := hmul
+    calc
+      g₀.inner x u u = a₀ * a₀ * r₀ := by
+        simpa [u, r₀] using metric_smul2 (I := I) (M := M) g₀ a₀ v
+      _ = 1 := haa
+  let p₀ : MetricUnitTangent (I := I) (M := M) g₀ :=
+    ⟨(⟨x, u⟩ : TangentBundle I M), hunit₀⟩
+  let source : {t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀ :=
+    (⟨t, ht⟩, p₀)
+  refine ⟨source, ?_⟩
+  apply Subtype.ext
+  dsimp [source, metricUnitTimeSlabParam, p₀, u, a₀]
+  have hsqrtRaw :
+      Real.sqrt (s₀⁻¹ * (s₀⁻¹ * (G t).inner x v v)) = s₀⁻¹ := by
+    rw [hGtunit, mul_one]
+    have hnonneg : 0 ≤ s₀⁻¹ := le_of_lt (inv_pos.mpr hs₀pos)
+    have hsq : s₀⁻¹ * s₀⁻¹ = (s₀⁻¹) ^ 2 := by ring
+    rw [hsq, Real.sqrt_sq_eq_abs]
+    exact abs_of_nonneg hnonneg
+  have hvecRaw :
+      (Real.sqrt (s₀⁻¹ * (s₀⁻¹ * (G t).inner x v v)))⁻¹ •
+          (s₀⁻¹ • v) = v := by
+    rw [hsqrtRaw]
+    calc
+      (s₀⁻¹)⁻¹ • (s₀⁻¹ • v) = ((s₀⁻¹)⁻¹ * s₀⁻¹) • v := by
+        simp [smul_smul]
+      _ = v := by
+        have hcoef : (s₀⁻¹)⁻¹ * s₀⁻¹ = 1 := by
+          field_simp [hs₀ne]
+        rw [hcoef]
+        simp
+  simpa [hGtunit, hsqrtRaw] using hvecRaw
+
+/-- Compactness of the geometric time slab from an explicit continuous
+surjective reference-unit parametrization.  The hard future work is proving
+continuity of `metricUnitTimeSlabParam` from metric-family regularity. -/
+theorem metricUnitTimeSlab_compact_of_param
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hsource :
+      IsCompact
+        (Set.univ :
+          Set ({t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀)))
+    (hcont :
+      Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀))
+    (hsurj :
+      Function.Surjective
+        (metricUnitTimeSlabParam (I := I) (M := M) G K g₀)) :
+    IsCompact
+      (Set.univ : Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)) := by
+  simpa [Set.image_univ, hsurj.range_eq] using hsource.image hcont
+
+/-- Compactness of the geometric time slab from the reference-unit
+normalization map, using its proved surjectivity. -/
+theorem metricUnitTimeSlab_compact_of_param_cont
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hsource :
+      IsCompact
+        (Set.univ :
+          Set ({t : Real // t ∈ K} × MetricUnitTangent (I := I) (M := M) g₀)))
+    (hcont :
+      Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀)) :
+    IsCompact
+      (Set.univ : Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)) :=
+  metricUnitTimeSlab_compact_of_param (I := I) (M := M) G K g₀ hsource hcont
+    (metricUnitTimeSlabParam_surjective (I := I) (M := M) G K g₀)
+
+/-- Compactness of the geometric time slab from compactness of the reference
+source and continuity of the normalization map. -/
+theorem metricUnitTimeSlab_compact_of_param_cont_compactSpace
+    (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    [CompactSpace {t : Real // t ∈ K}]
+    [CompactSpace (MetricUnitTangent (I := I) (M := M) g₀)]
+    (hcont :
+      Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀)) :
+    IsCompact
+      (Set.univ : Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)) :=
+  metricUnitTimeSlab_compact_of_param_cont (I := I) (M := M) G K g₀
+    isCompact_univ hcont
+
+/-- Closed-interval version of the reference-parametrization compactness
+criterion.  The remaining input is continuity of the normalization map. -/
+theorem metricUnitTimeSlab_icc_compact_of_param_cont
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hcont :
+      Continuous (metricUnitTimeSlabParam (I := I) (M := M)
+        G (Set.Icc t0 t1) g₀)) :
+    IsCompact
+      (Set.univ :
+        Set (MetricUnitTangentTimeSlab (I := I) (M := M) G
+          (Set.Icc t0 t1))) := by
+  letI : CompactSpace {t : Real // t ∈ Set.Icc t0 t1} :=
+    isCompact_iff_compactSpace.mp isCompact_Icc
+  have hsource :
+      IsCompact
+        (Set.univ :
+          Set ({t : Real // t ∈ Set.Icc t0 t1} ×
+            MetricUnitTangent (I := I) (M := M) g₀)) := by
+    convert
+      (isCompact_univ.prod
+        (metricUnit_compact (I := I) (M := M) g₀) :
+        IsCompact
+          ((Set.univ : Set {t : Real // t ∈ Set.Icc t0 t1}) ×ˢ
+            (Set.univ : Set (MetricUnitTangent (I := I) (M := M) g₀)))) using 1
+    ext q
+    simp
+  exact metricUnitTimeSlab_compact_of_param_cont
+    (I := I) (M := M) G (Set.Icc t0 t1) g₀ hsource hcont
+
+/-- Closed-interval compactness of the geometric time slab from ambient
+time/tangent-bundle continuity of the metric quadratic form. -/
+theorem metricUnitTimeSlab_icc_compact_of_bundle
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
+    (g₀ : SmoothRiemannianMetric I M)
+    (hquad :
+      Continuous (metricTimeBundleQuad (I := I) (M := M) G (Set.Icc t0 t1))) :
+    IsCompact
+      (Set.univ :
+        Set (MetricUnitTangentTimeSlab (I := I) (M := M) G
+          (Set.Icc t0 t1))) :=
+  metricUnitTimeSlab_icc_compact_of_param_cont (I := I) (M := M) G t0 t1 g₀
+    (metricUnitTimeSlabParam_cont_of_bundle (I := I) (M := M)
+      G (Set.Icc t0 t1) g₀ hquad)
+
 /-- A unit-vector absolute bound on a two-tensor gives a metric-relative bound
 on all tangent vectors. -/
 theorem unitAbsBound_to_all
@@ -635,5 +1417,109 @@ theorem compactUnitSlab_absBound
     intro p
     exfalso
     exact hne ⟨⟨⟨t, ht⟩, p⟩, Set.mem_univ _⟩
+
+/-- A compact geometric unit tangent time slab and continuity of the absolute
+quadratic evaluation give a metric-relative bound on the full time set. -/
+theorem compactUnitTimeSlab_absBound
+    (G : Real -> SmoothRiemannianMetric I M)
+    (A : (t : Real) -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (K : Set Real)
+    (hcompact :
+      IsCompact
+        (Set.univ :
+          Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)))
+    (hcont : Continuous
+      (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
+        |quad02 (I := I) (M := M)
+          (A (MetricUnitTangentTimeSlab.time (I := I) (M := M) p)
+            (MetricUnitTangentTimeSlab.base (I := I) (M := M) p))
+          (MetricUnitTangentTimeSlab.vec (I := I) (M := M) p)|)) :
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ t, t ∈ K ->
+        ∀ x (v : TangentSpace I x),
+          |quad02 (I := I) (M := M) (A t x) v| ≤ C * (G t).inner x v v := by
+  classical
+  let slab := MetricUnitTangentTimeSlab (I := I) (M := M) G K
+  let f : slab -> Real :=
+    fun p =>
+      |quad02 (I := I) (M := M)
+        (A (MetricUnitTangentTimeSlab.time (I := I) (M := M) p)
+          (MetricUnitTangentTimeSlab.base (I := I) (M := M) p))
+        (MetricUnitTangentTimeSlab.vec (I := I) (M := M) p)|
+  by_cases hne : (Set.univ : Set slab).Nonempty
+  · obtain ⟨p0, _hp0, hmax⟩ := hcompact.exists_isMaxOn hne hcont.continuousOn
+    let C : Real := f p0
+    have hC : 0 ≤ C := by
+      dsimp [C, f]
+      positivity
+    refine ⟨C, hC, ?_⟩
+    intro t ht x v
+    apply unitAbsBound_to_all (I := I) (M := M) (g := G t)
+      (A := A t)
+    intro p
+    let q : slab := ⟨(⟨t, ht⟩, (p.1 : TangentBundle I M)), by
+      exact MetricUnitTangent.unit (I := I) (M := M) p⟩
+    have hq := (isMaxOn_iff.mp hmax) q (Set.mem_univ q)
+    simpa [C, f, q, MetricUnitTangent.base, MetricUnitTangent.vec,
+      MetricUnitTangentTimeSlab.time, MetricUnitTangentTimeSlab.base,
+      MetricUnitTangentTimeSlab.vec, MetricUnitTangentTimeSlab.bundlePoint] using hq
+  · refine ⟨0, le_rfl, ?_⟩
+    intro t ht x v
+    apply unitAbsBound_to_all (I := I) (M := M) (g := G t)
+      (A := A t)
+    intro p
+    exfalso
+    let q : slab := ⟨(⟨t, ht⟩, (p.1 : TangentBundle I M)), by
+      exact MetricUnitTangent.unit (I := I) (M := M) p⟩
+    exact hne ⟨q, Set.mem_univ q⟩
+
+/-- Continuity of the absolute quadratic evaluation on the geometric time slab
+from total-space continuity of the time-dependent `(0,2)` tensor. -/
+theorem timeSlabAbsQuadCont
+    (G : Real -> SmoothRiemannianMetric I M)
+    (A : (t : Real) -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (K : Set Real)
+    (hA :
+      Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
+        TotalSpace.mk' (Tensor0SModel 2 Real E)
+          (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
+          (A q.1.1 q.2.proj))) :
+    Continuous
+      (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
+        |quad02 (I := I) (M := M)
+          (A (MetricUnitTangentTimeSlab.time (I := I) (M := M) p)
+            (MetricUnitTangentTimeSlab.base (I := I) (M := M) p))
+          (MetricUnitTangentTimeSlab.vec (I := I) (M := M) p)|) := by
+  let P := MetricUnitTangentTimeSlab (I := I) (M := M) G K
+  let b : P -> M := fun p => MetricUnitTangentTimeSlab.base (I := I) (M := M) p
+  let T : (p : P) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 (b p) :=
+    fun p => A (MetricUnitTangentTimeSlab.time (I := I) (M := M) p) (b p)
+  let v : Fin 2 -> (p : P) -> TangentSpace I (b p) :=
+    fun _ p => MetricUnitTangentTimeSlab.vec (I := I) (M := M) p
+  have hb : Continuous b := by
+    dsimp [b, MetricUnitTangentTimeSlab.base, MetricUnitTangentTimeSlab.bundlePoint]
+    exact (FiberBundle.continuous_proj E (TangentSpace I)).comp
+      (continuous_snd.comp continuous_subtype_val)
+  have hT : Continuous (fun p : P =>
+      TotalSpace.mk' (Tensor0SModel 2 Real E)
+        (E := fun x : M => Tensor0SSpace 2 I x) (b p) (T p)) := by
+    simpa [P, b, T, MetricUnitTangentTimeSlab.time,
+      MetricUnitTangentTimeSlab.base, MetricUnitTangentTimeSlab.bundlePoint] using
+      hA.comp (continuous_subtype_val :
+        Continuous (fun p : P => (p.1 : {t : Real // t ∈ K} × TangentBundle I M)))
+  have hv : ∀ i : Fin 2, Continuous (fun p : P =>
+      TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b p) (v i p)) := by
+    intro i
+    simpa [P, b, v, MetricUnitTangentTimeSlab.base,
+      MetricUnitTangentTimeSlab.vec, MetricUnitTangentTimeSlab.bundlePoint] using
+      (continuous_snd.comp continuous_subtype_val :
+        Continuous (fun p : P => (p.1.2 : TangentBundle I M)))
+  have hEval := TensorMultilinear.continuous_section_apply_base
+    (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
+    b hb T hT v hv
+  simpa [quad02, P, b, T, v] using hEval.abs
 
 end RicciFlower

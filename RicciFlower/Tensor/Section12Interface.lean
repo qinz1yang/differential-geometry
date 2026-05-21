@@ -109,24 +109,45 @@ def heat (f : Time -> Point -> R) (t : Time) (x : Point) : R :=
 
 end Section12ScalarHeatSupport
 
+/-- Algebraic decomposition of the trace-free Ricci norm used in the P3/P4
+pipeline.  Concrete scalar packages carry this as data so Section 12 consumers
+cannot treat the trace-free norm as an independent scalar object. -/
+def TracefreeRicciNormSqDecomposition
+    {R : Type*} [Mul R] [Sub R] (nInv : R)
+    {Time Point : Type*}
+    (scalarCurvature ricciNormSq tracefreeRicciNormSq : Time -> Point -> R) :
+    Prop :=
+  forall t x,
+    tracefreeRicciNormSq t x =
+      ricciNormSq t x - nInv * scalarCurvature t x * scalarCurvature t x
+
 /-- Named scalar quantities that the Section 12 tensor algebra eventually has
-to provide from concrete curvature tensors. -/
+to provide from concrete curvature tensors.  The trace-free Ricci norm field is
+packaged together with its decomposition, so it is not a standalone scalar
+choice. -/
 structure Section12CurvatureScalars
-    (R : Type*) (Time Point : Type*) where
+    (R : Type*) [Mul R] [Sub R] (Time Point : Type*) where
   scalarCurvature : Time -> Point -> R
   ricciNormSq : Time -> Point -> R
   tracefreeRicciNormSq : Time -> Point -> R
+  tracefreeRicciNormSq_nInv : R
+  tracefreeRicciNormSq_decomp :
+    TracefreeRicciNormSqDecomposition tracefreeRicciNormSq_nInv
+      scalarCurvature ricciNormSq tracefreeRicciNormSq
   cubicQ : Time -> Point -> R
 
-/-- Algebraic decomposition of the trace-free Ricci norm used in the P3/P4
-pipeline.  It is intentionally a predicate so concrete tensor models can prove
-it once and Section 12 can consume it without unfolding contractions. -/
-def TracefreeRicciNormSqDecomposition
-    {R : Type*} [Mul R] [Sub R] (nInv : R)
-    {Time Point : Type*} (Q : Section12CurvatureScalars R Time Point) : Prop :=
-  forall t x,
-    Q.tracefreeRicciNormSq t x =
-      Q.ricciNormSq t x - nInv * Q.scalarCurvature t x * Q.scalarCurvature t x
+namespace Section12CurvatureScalars
+
+variable {R : Type*} [Mul R] [Sub R] {Time Point : Type*}
+
+/-- Projection of the carried trace-free Ricci norm decomposition. -/
+theorem tracefreeRicciNormSqDecomposition
+    (Q : Section12CurvatureScalars R Time Point) :
+    TracefreeRicciNormSqDecomposition Q.tracefreeRicciNormSq_nInv
+      Q.scalarCurvature Q.ricciNormSq Q.tracefreeRicciNormSq :=
+  Q.tracefreeRicciNormSq_decomp
+
+end Section12CurvatureScalars
 
 /-- Cubic reaction identity used to rewrite the trace-free norm heat equation
 into Hamilton's Section 12 form. -/

@@ -204,6 +204,28 @@ theorem coordinate_torsion_coeff_eq_christoffel_skew
   rw [coordinateFrameAt_bracket_zero (I := I) x0 i j] at h
   simpa [hframe] using h
 
+/-- A torsion-free connection has symmetric coordinate Christoffel coefficients
+in the lower two coordinate indices. -/
+theorem coordinate_christoffel_symm_of_torsionFree
+    {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    (htf : IsTorsionFree (I := I) cov)
+    (x0 : M) (i j k : CoordinateIdx (𝕜 := Real) E) :
+    christoffelSymbolInFrame cov (coordinateFrameAt (I := I) x0)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x0) x0 i j k =
+      christoffelSymbolInFrame cov (coordinateFrameAt (I := I) x0)
+        (coordinateFrameAt_isLocalFrame_one (I := I) x0) x0 j i k := by
+  have hzero :
+      (coordinateFrameAt_isLocalFrame_one (I := I) x0).coeff k x0
+          (cov.torsion x0
+            (coordinateFrameAt (I := I) x0 i x0)
+            (coordinateFrameAt (I := I) x0 j x0)) = 0 := by
+    rw [htf x0]
+    simp
+  have hskew := coordinate_torsion_coeff_eq_christoffel_skew
+    (I := I) cov x0 i j k
+  rw [hzero] at hskew
+  exact sub_eq_zero.mp hskew.symm
+
 /-- The Koszul connection is symmetric on coordinate-frame basis vectors. -/
 theorem leviCivitaConnectionOfMetric_coordinateFrame_apply_symm
     (g : SmoothRiemannianMetric I M) (x0 : M) (i j : CoordinateIdx (𝕜 := Real) E) :

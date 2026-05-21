@@ -33,8 +33,8 @@ directions:
 `(nabla^2 Z)(X,Y) = nabla_X (nabla_Y Z) - nabla_{nabla_X Y} Z`. -/
 def nabla2VectorField
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : TangentField (I := I) (M := M)) :
-    TangentField (I := I) (M := M) :=
+    (X Y Z : RawTangentField (I := I) (M := M)) :
+    RawTangentField (I := I) (M := M) :=
   fun x =>
     (cov (fun p : M => (cov Z p) (Y p)) x) (X x) -
       (cov Z x) ((cov Y x) (X x))
@@ -42,7 +42,7 @@ def nabla2VectorField
 @[simp]
 theorem nabla2VectorField_apply
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : TangentField (I := I) (M := M)) (x : M) :
+    (X Y Z : RawTangentField (I := I) (M := M)) (x : M) :
     nabla2VectorField (I := I) cov X Y Z x =
       (cov (fun p : M => (cov Z p) (Y p)) x) (X x) -
         (cov Z x) ((cov Y x) (X x)) :=
@@ -52,7 +52,7 @@ theorem nabla2VectorField_apply
 torsion correction. -/
 theorem nabla2VectorField_skew_eq_curvature_sub_torsion
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    {X Y Z : TangentField (I := I) (M := M)} {x : M}
+    {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
     nabla2VectorField (I := I) cov X Y Z x -
         nabla2VectorField (I := I) cov Y X Z x =
@@ -67,7 +67,7 @@ theorem nabla2VectorField_skew_eq_curvature_sub_torsion
 curvature is the skew of the second covariant derivative. -/
 theorem connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    {X Y Z : TangentField (I := I) (M := M)} {x : M}
+    {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x)
     (htor : cov.torsion x (X x) (Y x) = 0) :
     connectionRiemannCurvatureField (I := I) cov X Y Z x =
@@ -83,7 +83,7 @@ theorem connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zer
 to construct the pointwise curvature tensor. -/
 theorem riemannCurvatureAux_eq_nabla2VectorField_skew_of_torsion_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    {X Y Z : TangentField (I := I) (M := M)} {x : M}
+    {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x)
     (htor : cov.torsion x (X x) (Y x) = 0) :
     CovariantDerivative.riemannCurvatureAux (I := I) cov X Y Z x =
@@ -99,7 +99,7 @@ Levi-Civita connection. -/
 theorem leviCivita_connectionRiemannCurvatureField_eq_nabla2VectorField_skew
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    {X Y Z : TangentField (I := I) (M := M)} {x : M}
+    {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
     connectionRiemannCurvatureField (I := I)
         (LeviCivita.leviCivitaConnectionOfMetric (I := I) g) X Y Z x =

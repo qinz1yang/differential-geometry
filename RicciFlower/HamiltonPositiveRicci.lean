@@ -42,6 +42,7 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 /-- Closed, connected, smooth, boundaryless, three-dimensional manifold
@@ -167,17 +168,17 @@ abbrev ham3Solution
     RicciFlow.SolutionOn (I := I) (M := M) P.D :=
   P.S
 
-/-- Global maximal-flow setup supplies joint spacetime regularity for the
-canonical curvature quantities.
+/-- Global maximal-flow setup supplies joint spacetime continuity for the
+canonical scalar curvature.
 
 This is a theorem endpoint, not stored data in `Ham3FlowPackage`: proving it
 belongs to the smooth Ricci-flow existence/regularity package. -/
-theorem ham3_curvRegular
+theorem ham3_scalarSTCont
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0) :
-    RicciFlower.RicciFlow.CanonicalCurvatureSpacetimeRegularOn
+    RicciFlower.RicciFlow.ScalarSTContOn
       (I := I) (M := M) (ham3Solution (I := I) (M := M) P) := by
-  exact P.isSmooth.curvatureRegular
+  exact P.isSmooth.scalarSTCont
 
 /-- Canonical metric-induced squared curvature norm for a Hamilton Section 12
 package. -/
@@ -221,6 +222,7 @@ structure Ham3CGHLimitData (I : ModelWithCorners Real E H) (M : Type u) where
   [topology : TopologicalSpace N]
   [charted : ChartedSpace H N]
   [smooth : IsManifold I ∞ N]
+  [smooth_plus : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
   [sigmaCompact : SigmaCompactSpace N]
   [t2 : T2Space N]
   basepoint : N
@@ -242,6 +244,7 @@ def Ham3LimitFlow (L : Ham3CGHLimitData (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
+  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
   letI : SigmaCompactSpace L.N := L.sigmaCompact
   letI : T2Space L.N := L.t2
   RicciFlow.IsSolutionOn (I := I) L.S
@@ -344,11 +347,21 @@ theorem ham3_scalarRegular
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)
     (c0 : Real) (K : Real -> NNReal) (T : Real)
-    (_hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier) :
+    (hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier)
+    (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
+      1 - (2 / (3 : Real)) * c0 * t ≠ 0) :
     RicciFlow.ScalarLowerBoundWMPRegularity
       (I := I) (ham3RealFamily (I := I) P) T 3 c0
       (ham3Scalar (I := I) P) (K T) := by
-  sorry
+  simpa [ham3Scalar, ham3Solution] using
+    (RicciFlow.scalarRegOfSmooth (I := I) (M := M)
+      P.S P.isSmooth (ham3RealFamily (I := I) P) T 3 c0 (K T)
+      hsubset
+      (by
+        intro t ht
+        have htD : t ∈ P.D.carrier := hsubset t ht
+        simp [ham3RealFamily, ham3RealFamilyCore, htD])
+      hden)
 
 /-! ## Section 12 blow-up quantities derived from the maximal flow -/
 
@@ -551,9 +564,9 @@ theorem ham3_cont74
       (Realized.spacetimeSlab (M := M)
         (RicciFlow.scalarBlowupTime 3 c0)) := by
   have hreg :
-      RicciFlow.CanonicalCurvatureSpacetimeRegularOn
+      RicciFlow.ScalarSTContOn
         (I := I) (M := M) (ham3Solution (I := I) P) :=
-    ham3_curvRegular (I := I) (M := M) P
+    ham3_scalarSTCont (I := I) (M := M) P
   simpa [ham3Scalar, Realized.spacetimeSlab] using
     RicciFlow.SolutionOn.scalar_continuousOn
       (I := I) (M := M) (ham3Solution (I := I) P)
@@ -620,19 +633,29 @@ theorem ham3_reg74
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)
     (hD : P.D = Realized.RealTimeInterval.closedOpen 0 omega h0ω)
-    (c0 : Real) (K : Real -> NNReal) :
+    (c0 : Real) (hc0 : 0 < c0) (K : Real -> NNReal) :
     forall T : Real, 0 < T -> T < omega ->
       T < RicciFlow.scalarBlowupTime 3 c0 ->
         RicciFlow.ScalarLowerBoundWMPRegularity
           (I := I) (ham3RealFamily (I := I) P) T 3 c0
           (ham3Scalar (I := I) P) (K T) := by
-  intro T _hT hTω _hPole
+  intro T _hT hTω hPole
   have hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier := by
     intro t ht
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
+  have hden_pos :
+      ∀ t : Real, t ∈ Set.Icc 0 T ->
+        0 < 1 - (2 / (3 : Real)) * c0 * t :=
+    RicciFlow.scalarLowerBarrier_denominator_pos_on_Icc_of_lt_blowup
+      (n := 3) (c0 := c0) (by norm_num) hc0 hPole
+  have hden :
+      ∀ t : Real, t ∈ Set.Icc 0 T ->
+        1 - (2 / (3 : Real)) * c0 * t ≠ 0 := by
+    intro t ht
+    exact ne_of_gt (hden_pos t ht)
   simpa [ham3RealFamily, ham3Scalar, ham3Solution] using
-    ham3_scalarRegular (I := I) (M := M) P c0 K T hsubset
+    ham3_scalarRegular (I := I) (M := M) P c0 K T hsubset hden
 
 /-- Three-dimensional trace Cauchy-Schwarz for the intrinsic scalar and Ricci
 norm package. -/
@@ -811,7 +834,7 @@ theorem ham3_scalar74
   refine ⟨ham3RealFamily (I := I) P, c0,
     ham3Scalar (I := I) P, ham3ScalarLap (I := I) P,
     ham3RicNormSq (I := I) P, K, hinit_min, hinit_pos, hcont, ?_, ?_, ?_, ?_, ?_⟩
-  · exact ham3_reg74 (I := I) (M := M) h0ω P hD c0 K
+  · exact ham3_reg74 (I := I) (M := M) h0ω P hD c0 hc0 K
   · exact ham3_evol74 (I := I) (M := M) h0ω P hD
   · intro T _hT _hTω _hPole
     exact ham3_lap74 (I := I) (M := M) P T

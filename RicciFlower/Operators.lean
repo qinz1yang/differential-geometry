@@ -393,6 +393,39 @@ theorem laplacian_sub_const
       _ = gradientFun (I := I) g f y := by simp
   simp [laplacian, hgrad]
 
+/-- The Laplacian is linear under subtraction on functions whose gradient
+fields are differentiable at the evaluation point. -/
+theorem laplacian_sub
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : forall y : M, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x)
+    (hgradh : MDiffAt (T% fun y : M => gradientFun (I := I) g h y) x) :
+    laplacian (I := I) cov g (fun y : M => f y - h y) x =
+      laplacian (I := I) cov g f x -
+        laplacian (I := I) cov g h x := by
+  have hgrad :
+      gradientFun (I := I) g (fun y : M => f y - h y) =
+        fun y : M => gradientFun (I := I) g f y -
+          gradientFun (I := I) g h y := by
+    funext y
+    exact gradientFun_sub (I := I) g (hf y) (hh y)
+  calc
+    laplacian (I := I) cov g (fun y : M => f y - h y) x =
+        divergence (I := I) cov
+          (fun y : M => gradientFun (I := I) g f y -
+            gradientFun (I := I) g h y) x := by
+          simp [laplacian, hgrad]
+    _ = laplacian (I := I) cov g f x -
+        laplacian (I := I) cov g h x := by
+          simpa [laplacian, Pi.sub_apply] using
+            (divergence_sub (I := I) cov
+              (X := fun y : M => gradientFun (I := I) g f y)
+              (Y := fun y : M => gradientFun (I := I) g h y)
+              hgradf hgradh)
+
 /-- The Laplacian scales by a spatially constant scalar. -/
 theorem laplacian_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

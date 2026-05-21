@@ -596,6 +596,44 @@ private theorem model_hasDerivAt_fixed_snd
     · fun_prop
   simpa [hLderiv] using hcomp
 
+/-- Derivative of a scalar model function along a horizontal line in
+`ℝ × ℝ`. -/
+theorem modelLine_fst_hasDerivAt
+    {A : ℝ × ℝ -> ℝ} {s t : ℝ}
+    (hA : DifferentiableAt ℝ A (s, t)) :
+    HasDerivAt (fun σ : ℝ => A (σ, t))
+      ((fderiv ℝ A (s, t)) ((1 : ℝ), 0)) s := by
+  let L : ℝ -> ℝ × ℝ := fun σ => (σ, t)
+  have hL : DifferentiableAt ℝ L s := by
+    fun_prop
+  have hcomp := (hA.hasFDerivAt.comp s hL.hasFDerivAt).hasDerivAt
+  have hLderiv : deriv L s = ((1 : ℝ), 0) := by
+    rw [deriv]
+    rw [DifferentiableAt.fderiv_prodMk]
+    · simp
+    · fun_prop
+    · fun_prop
+  simpa [L, hLderiv] using hcomp
+
+/-- Derivative of a scalar model function along a vertical line in
+`ℝ × ℝ`. -/
+theorem modelLine_snd_hasDerivAt
+    {A : ℝ × ℝ -> ℝ} {s t : ℝ}
+    (hA : DifferentiableAt ℝ A (s, t)) :
+    HasDerivAt (fun τ : ℝ => A (s, τ))
+      ((fderiv ℝ A (s, t)) (0, (1 : ℝ))) t := by
+  let L : ℝ -> ℝ × ℝ := fun τ => (s, τ)
+  have hL : DifferentiableAt ℝ L t := by
+    fun_prop
+  have hcomp := (hA.hasFDerivAt.comp t hL.hasFDerivAt).hasDerivAt
+  have hLderiv : deriv L t = (0, (1 : ℝ)) := by
+    rw [deriv]
+    rw [DifferentiableAt.fderiv_prodMk]
+    · simp
+    · fun_prop
+    · fun_prop
+  simpa [L, hLderiv] using hcomp
+
 /-- Model-space fixed-base mixed derivative.
 
 This is the chart-level theorem behind
@@ -680,6 +718,52 @@ theorem fixedBaseFDerivTimeDerivativeWithinAt_of_contDiff
       timeSet
       t :=
   (fixedBaseFDerivTimeDerivativeAt_of_contDiff (E := E) F hF t x V).hasDerivWithinAt
+
+/-- Model-space equality of scalar mixed partials on `ℝ × ℝ`, expressed as
+equality of the two directional derivatives of the first derivative. -/
+theorem modelMix2
+    {φ : ℝ × ℝ -> ℝ} {s t : ℝ}
+    (hφ : ContDiffAt ℝ 2 φ (s, t)) :
+    (fderiv ℝ (fun p : ℝ × ℝ => (fderiv ℝ φ p) (0, (1 : ℝ))) (s, t))
+        ((1 : ℝ), 0) =
+      (fderiv ℝ (fun p : ℝ × ℝ => (fderiv ℝ φ p) ((1 : ℝ), 0)) (s, t))
+        (0, (1 : ℝ)) := by
+  have hlie := VectorField.fderiv_apply_lieBracket
+    (𝕜 := ℝ) (E := ℝ × ℝ) (F := ℝ)
+    (f := φ)
+    (V := fun _ : ℝ × ℝ => ((1 : ℝ), 0))
+    (W := fun _ : ℝ × ℝ => (0, (1 : ℝ)))
+    (x := (s, t))
+    hφ
+    (by norm_num : minSmoothness ℝ 2 ≤ (2 : WithTop ℕ∞))
+    (by fun_prop)
+    (by fun_prop)
+  simp [VectorField.lieBracket] at hlie
+  linarith
+
+/-- Model-space equality of the mixed partials of the time derivative on
+`ℝ × ℝ`.  This is the scalar `∂s∂t∂t = ∂t∂s∂t` bridge used by surface
+velocity-jet calculations. -/
+theorem modelMix3
+    {φ : ℝ × ℝ -> ℝ} {s t : ℝ}
+    (hφ : ContDiffAt ℝ 3 φ (s, t)) :
+    (fderiv ℝ
+        (fun p : ℝ × ℝ =>
+          (fderiv ℝ (fun q : ℝ × ℝ => (fderiv ℝ φ q) (0, (1 : ℝ))) p)
+            (0, (1 : ℝ))) (s, t))
+        ((1 : ℝ), 0) =
+      (fderiv ℝ
+        (fun p : ℝ × ℝ =>
+          (fderiv ℝ (fun q : ℝ × ℝ => (fderiv ℝ φ q) (0, (1 : ℝ))) p)
+            ((1 : ℝ), 0)) (s, t))
+        (0, (1 : ℝ)) := by
+  have hD : ContDiffAt ℝ 2 (fun q : ℝ × ℝ => (fderiv ℝ φ q) (0, (1 : ℝ)))
+      (s, t) := by
+    have hfd : ContDiffAt ℝ 2 (fderiv ℝ φ) (s, t) :=
+      hφ.fderiv_right (m := (2 : WithTop ℕ∞)) (by norm_num)
+    exact hfd.clm_apply contDiffAt_const
+  exact modelMix2 (φ := fun q : ℝ × ℝ => (fderiv ℝ φ q) (0, (1 : ℝ)))
+    (s := s) (t := t) hD
 
 end ModelMixed
 

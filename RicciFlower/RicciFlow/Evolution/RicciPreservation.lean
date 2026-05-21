@@ -720,22 +720,38 @@ structure PinchWMPData
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) (T delta : Real) : Type _ where
+  S : TwoTensorSecFamily (I := I) (M := M)
   X : TimeDependentVectorField (I := I) (M := M)
   N : TwoTensorReaction (I := I) (M := M)
-  nabla2S : TensorNabla2Family (I := I) (M := M)
-  nablaS : TensorNabla1Family (I := I) (M := M)
+  cov : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)
+  nablaS : TensorNabla1SecFamily (I := I) (M := M)
+  nabla2S : TensorNabla2SecFamily (I := I) (M := M)
+  section_eq :
+    twoTensorSecToFamily (I := I) (M := M) S =
+      pinchTensor (I := I) (M := M) G Ric scalar delta
   reg :
-    TensorWMPRegularityOn (I := I) (M := M) G
-      (pinchTensor (I := I) (M := M) G Ric scalar delta) X N T
+    TensorWMPSectionCore (I := I) (M := M) G S X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn (I := I) (M := M) G
-      (pinchTensor (I := I) (M := M) G Ric scalar delta) X N
-      nabla2S nablaS T
+      (twoTensorSecToFamily (I := I) (M := M) S) X N
+      (fun t x => nabla2S t x) (fun t x => nablaS t x) T
   null :
     TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T)
+  hcov1 :
+    forall t : Real,
+      CovariantDerivative.ContMDiffCovariantDerivativeLocally
+        (cov t) (1 : WithTop ℕ∞)
+  hcovInf :
+    forall t : Real,
+      CovariantDerivative.ContMDiffCovariantDerivativeLocally
+        (cov t) (∞ : WithTop ℕ∞)
+  hmc :
+    forall t : Real,
+      RicciFlower.Connection.IsMetricCompatible (I := I) (cov t) (G t)
+  spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
-/-- Lemma 9.1 as a conditional consumer of Hamilton's tensor WMP. -/
-theorem ricci_nonneg_wmp
+/-- Lemma 9.1 as a raw compatibility consumer of Hamilton's tensor WMP. -/
+theorem ricci_nonneg_wmp_raw
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -754,8 +770,34 @@ theorem ricci_nonneg_wmp
     (X := X) (N := N) (nabla2S := nabla2Ric) (nablaS := nablaRic)
     hT hreg hparabolic hnull hinit
 
-/-- Lemma 9.2 as a conditional consumer of Hamilton's tensor WMP. -/
-theorem ricci_pinch_wmp
+/-- Lemma 9.1 as a section-backed consumer of theorem 7.5. -/
+theorem ricci_nonneg_wmp
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    {G : Real -> SmoothRiemannianMetric I M}
+    {Ric : TwoTensorFamily (I := I) (M := M)}
+    {RicSec : TwoTensorSecFamily (I := I) (M := M)}
+    {X : TimeDependentVectorField (I := I) (M := M)}
+    {N : TwoTensorReaction (I := I) (M := M)}
+    {cov : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {nablaRic : TensorNabla1SecFamily (I := I) (M := M)}
+    {nabla2Ric : TensorNabla2SecFamily (I := I) (M := M)}
+    {T : Real}
+    (hRic :
+      twoTensorSecToFamily (I := I) (M := M) RicSec = Ric)
+    (data : TensorWMPInput (I := I) (M := M)
+      G RicSec X N cov nablaRic nabla2Ric T) :
+    TwoTensorFamilyNonnegativeOn (I := I) (M := M) Ric (Set.Icc 0 T) := by
+  have hsec :
+      TwoTensorFamilyNonnegativeOn (I := I) (M := M)
+        (twoTensorSecToFamily (I := I) (M := M) RicSec) (Set.Icc 0 T) :=
+    tensor_wmp (I := I) (M := M) data
+  simpa [hRic] using hsec
+
+/-- Lemma 9.2 as a raw compatibility consumer of Hamilton's tensor WMP. -/
+theorem ricci_pinch_wmp_raw
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -783,8 +825,42 @@ theorem ricci_pinch_wmp
     (X := X) (N := N) (nabla2S := nabla2S) (nablaS := nablaS)
     hT hreg hparabolic hnull hinit
 
+/-- Lemma 9.2 as a section-backed consumer of theorem 7.5. -/
+theorem ricci_pinch_wmp
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    {G : Real -> SmoothRiemannianMetric I M}
+    {Ric : TwoTensorFamily (I := I) (M := M)}
+    {scalar : Real -> M -> Real}
+    {delta : Real}
+    {S : TwoTensorSecFamily (I := I) (M := M)}
+    {X : TimeDependentVectorField (I := I) (M := M)}
+    {N : TwoTensorReaction (I := I) (M := M)}
+    {cov : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)}
+    {nablaS : TensorNabla1SecFamily (I := I) (M := M)}
+    {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
+    {T : Real}
+    (_hdelta0 : 0 <= delta) (_hdelta13 : delta <= (1 : Real) / 3)
+    (hS :
+      twoTensorSecToFamily (I := I) (M := M) S =
+        pinchTensor (I := I) (M := M) G Ric scalar delta)
+    (data : TensorWMPInput (I := I) (M := M)
+      G S X N cov nablaS nabla2S T) :
+    PinchPres (I := I) (M := M) G Ric scalar T delta := by
+  have hsec :
+      TwoTensorFamilyNonnegativeOn (I := I) (M := M)
+        (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) :=
+    tensor_wmp (I := I) (M := M) data
+  simpa [PinchPres, hS] using hsec
+
 /-- Corollary 9.3 setup from an already selected initial pinching constant. -/
 theorem pinch_init_wmp
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -800,14 +876,32 @@ theorem pinch_init_wmp
   rcases hinit with ⟨delta, hdelta0, hdelta13, hpinch0⟩
   let data := hdata delta hdelta0 hdelta13
   refine ⟨delta, hdelta0, hdelta13, ?_⟩
+  let input : TensorWMPInput (I := I) (M := M)
+      G data.S data.X data.N data.cov data.nablaS data.nabla2S T := {
+    hT := hT
+    reg := data.reg
+    parabolic := data.parabolic
+    null := data.null
+    initial := by
+      simpa [data.section_eq] using hpinch0
+    hcov1 := data.hcov1
+    hcovInf := data.hcovInf
+    hmc := data.hmc
+    spatial := data.spatial
+  }
   exact ricci_pinch_wmp (I := I) (M := M) (G := G) (Ric := Ric)
-    (scalar := scalar) (delta := delta) (X := data.X) (N := data.N)
-    (nabla2S := data.nabla2S) (nablaS := data.nablaS) (T := T)
-    hT (le_of_lt hdelta0) hdelta13 data.reg data.parabolic data.null hpinch0
+    (scalar := scalar) (delta := delta) (S := data.S) (X := data.X)
+    (N := data.N) (cov := data.cov) (nablaS := data.nablaS)
+    (nabla2S := data.nabla2S) (T := T)
+    (le_of_lt hdelta0) hdelta13 data.section_eq input
 
 /-- Corollary 9.3 conditional form: strict initial Ricci positivity supplies a
 pinching constant, and Lemma 9.2 preserves it. -/
 theorem strict_pinch_wmp
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -830,6 +924,10 @@ theorem strict_pinch_wmp
 /-- Corollary 9.3 conditional form using a realized continuous base
 Ricci-minimum function instead of a raw compactness selector. -/
 theorem strict_pinch_min
+    [I.Boundaryless] [T2Space M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -854,6 +952,10 @@ theorem strict_pinch_min
 /-- Corollary 9.3 conditional form with the initial Ricci tensor realized from
 the initial metric. -/
 theorem strict_pinch_metric
+    [I.Boundaryless]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -879,6 +981,10 @@ theorem strict_pinch_metric
 /-- Corollary 9.3 conditional form using the unit tangent compact-minimum
 selector. -/
 theorem strict_pinch_pos
+    [I.Boundaryless]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
+    [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}

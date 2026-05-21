@@ -860,6 +860,31 @@ theorem roughLap0STensor_realizes
       (roughLap0STensor (I := I) g nabla2A) := by
   rw [rough_lap_0s_iff_eq_tensor]
 
+/-!
+## TODO: generic tensor norm-square Laplacian
+
+Eventually the tensor/operator layer should expose the basis-free formula
+
+`Delta |A|^2 = 2 <tr_g nabla^2 A, A> + 2 |nabla A|^2`
+
+for a smooth covariant `(0,s)` tensor field `A`, where `tr_g nabla^2 A` is the
+existing intrinsic object `roughLap0STensor g nabla2A`.
+
+This is not currently needed by a checked consumer.  The existing Bochner route
+already proves the corresponding `(0,2)` product rule.  When a generic consumer
+appears, the missing reusable API should be added below `Tensor0SRiemannian` or
+the nearest tensor-product layer:
+
+* arbitrary-valence smoothness for `fun x => inner0S g x s (A x) (B x)`;
+* the metric-compatible first product rule for `inner0S` at valence `s`;
+* the second product rule for `normSq0S`, using two
+  `TotalNabla0SRealizes` inputs for `A`, `nablaA`, and `nabla2A`;
+* the traced version identifying the Hessian trace with
+  `2 * inner0S g x s (roughLap0STensor g (nabla2A x)) (A x) +
+   2 * normSq0S g x (s + 1) (nablaA x)`;
+* a final scalar-laplacian bridge through the existing Hessian trace APIs.
+-/
+
 /-- One-form specialization of the intrinsic-facing rough Laplacian interface. -/
 def rough_lap_one_form
     (g : SmoothRiemannianMetric I M)

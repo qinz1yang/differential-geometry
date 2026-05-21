@@ -346,6 +346,44 @@ theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
   simpa [A] using hentry
 
+/-- Basis coordinates are inverse-metric contractions of metric-lowered
+basis pairings. -/
+theorem coord_eq_invInner {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (a : Idx) (V : TangentSpace I x) :
+    basis.coord a V =
+      ∑ k : Idx, gInv a k * g.inner x (basis k) V := by
+  classical
+  symm
+  calc
+    (∑ k : Idx, gInv a k * g.inner x (basis k) V)
+        = ∑ k : Idx, gInv a k *
+            g.inner x (basis k) (∑ j : Idx, basis.coord j V • basis j) := by
+          rw [show (∑ j : Idx, basis.coord j V • basis j) = V from basis.sum_repr V]
+    _ = ∑ k : Idx, ∑ j : Idx,
+          gInv a k * (basis.coord j V * g.inner x (basis k) (basis j)) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          rw [map_sum]
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [map_smul]
+          simp [smul_eq_mul]
+    _ = ∑ j : Idx, basis.coord j V *
+          (∑ k : Idx, gInv a k * g.inner x (basis k) (basis j)) := by
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun k _ => ?_
+          ring
+    _ = ∑ j : Idx, basis.coord j V * (if a = j then 1 else 0) := by
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [(hinv a j).1]
+    _ = basis.coord a V := by
+          simp
+
 /-- Raising a covector is inverse to lowering by the metric. -/
 theorem cotangentSharp_inner
     (g : SmoothMetric I M) (x : M)

@@ -1,4 +1,5 @@
 import RicciFlower.Operators.LaplacianMinimum
+import RicciFlower.Operators.GradientRegularity
 import RicciFlower.Realized.MetricFamily
 
 set_option autoImplicit false
@@ -147,6 +148,89 @@ theorem heatOperatorWithDrift_const_smul
   rw [laplacian_const_smul (I := I) (G.connection t) (G.metric t) a hf hgrad]
   rw [driftTerm_const_smul (I := I) G t X a (hf x)]
   ring
+
+/-- Family-facing subtraction rule for the scalar Laplacian. -/
+theorem laplacianAt_sub
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f h : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : forall y : M, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x)
+    (hgradh : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) h y) x) :
+    laplacianAt (I := I) G t (fun y : M => f y - h y) x =
+      laplacianAt (I := I) G t f x -
+        laplacianAt (I := I) G t h x := by
+  unfold laplacianAt
+  exact laplacian_sub (I := I) (G.connection t) (G.metric t)
+    hf hh hgradf hgradh
+
+/-- Family-facing constant-scalar rule for the scalar Laplacian. -/
+theorem laplacianAt_smul
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) (a : Real) {f : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x) :
+    laplacianAt (I := I) G t (a • f) x =
+      a * laplacianAt (I := I) G t f x := by
+  unfold laplacianAt
+  exact laplacian_const_smul (I := I) (G.connection t) (G.metric t)
+    a hf hgrad
+
+/-- Family-facing scalar-square Laplacian product rule. -/
+theorem laplacianAt_sq
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f : M -> Real} {x : M}
+    (hf_all : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hf_x : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x)
+    (hfg : MDiffAt (T% (f • fun y : M =>
+      gradientFun (I := I) (G.metric t) f y)) x) :
+    laplacianAt (I := I) G t (fun y : M => f y ^ 2) x =
+      2 * f x * laplacianAt (I := I) G t f x +
+        2 * (G.metric t).inner x
+          (gradientAt (I := I) G t f x)
+          (gradientAt (I := I) G t f x) := by
+  have hhalf :=
+    half_laplacian_mul_self
+      (I := I) (G.connection t) (G.metric t) (f := f) (x := x)
+      hf_all hf_x hgrad hfg
+  unfold laplacianAt gradientAt
+  have hpow :
+      (fun y : M => f y ^ 2) = fun y : M => f y * f y := by
+    funext y
+    ring
+  rw [hpow]
+  have hmain :
+      laplacian (I := I) (G.connection t) (G.metric t)
+          (fun y : M => f y * f y) x =
+        2 * (f x * laplacian (I := I) (G.connection t) (G.metric t) f x +
+          (G.metric t).inner x
+            (gradientFun (I := I) (G.metric t) f x)
+            (gradientFun (I := I) (G.metric t) f x)) := by
+    linarith
+  rw [hmain]
+  ring
+
+/-- Family-facing scalar-square Laplacian product rule with the `f ∇f`
+regularity input produced from scalar and gradient regularity. -/
+theorem laplacianAt_sq_of_scalarRegular
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f : M -> Real} {x : M}
+    (hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : ∀ y : M, MDiffAt (T% fun z : M =>
+      gradientFun (I := I) (G.metric t) f z) y) :
+    laplacianAt (I := I) G t (fun y : M => f y ^ 2) x =
+      2 * f x * laplacianAt (I := I) G t f x +
+        2 * (G.metric t).inner x
+          (gradientAt (I := I) G t f x)
+          (gradientAt (I := I) G t f x) := by
+  exact laplacianAt_sq (I := I) G t
+    hf (hf x) (hgrad x)
+    (scalar_mul_grad_mdiffAt (I := I) (G.metric t) hf hgrad)
 
 end FamilyAlgebraicRules
 
