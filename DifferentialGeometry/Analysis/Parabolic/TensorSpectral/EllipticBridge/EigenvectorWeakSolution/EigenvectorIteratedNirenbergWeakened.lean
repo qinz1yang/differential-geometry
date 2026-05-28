@@ -554,6 +554,357 @@ example (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
 
 end ElaborationTests
 
+/-! ## Chart-locality-free twins
+
+The declarations below re-key the bridge and the global `W^{2,2}` headline onto
+the intrinsic compact-operator eigenbasis
+`tensorResolventEigenbasisVec_ofCompact (tensorResolventL2_isCompactOperator_intrinsic g r s) i`.
+The proofs transfer verbatim with the chart-locality-free dependency twins
+substituted for their originals. -/
+
+/-- Chart-locality-free twin of `eigenvectorIteratedChartBilinearH1ComplData`. -/
+private def eigenvectorIteratedChartBilinearH1ComplData_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
+    (D_m : eigenvectorIteratedTensorChartBilinearData_unconditional (I := I) (M := M)
+      g r s i α P₀ m)
+    (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) (m + 1) 2
+      (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α)) :
+    ChartBilinearH1ComplData (I := I) (M := M) g α where
+  u_chart :=
+    eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+      g r s i α P₀ m D_m.directions
+  f_chart := D_m.fChartEff
+  weak_partial := fun j =>
+    chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
+      (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+        g r s i α P₀ m D_m.directions)
+      (chartTargetEuclid (I := I) (M := M) α)
+  u_chart_memLp_weighted := by
+      -- Weighted `MemLp 2` of the `m`-fold mixed weak partial: from the
+      -- unconditional plain-volume membership, upgraded via the compact-support
+      -- weighted-`L²` lemma. The `m`-fold mixed partial is a.e. zero off the
+      -- compact partition-of-unity kernel.
+      set K : Set EuclN := chartPouKernel (I := I) (M := M) α with hK_def
+      have hK_compact : IsCompact K :=
+        chartPouKernel_isCompact (I := I) (M := M) α
+      have hK_meas : MeasurableSet K :=
+        chartPouKernel_measurableSet (I := I) (M := M) α
+      have hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
+        chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α
+      -- The `m`-fold mixed weak partial is `MemLp 2` of the plain volume
+      -- restricted to the chart target (unconditional).
+      have h_plain : MemLp (eigenvectorChartIteratedPartial_unconditional
+          (I := I) (M := M)
+          g r s i α P₀ m D_m.directions) 2
+          ((volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α)) :=
+        eigenvectorChartIteratedPartial_unconditional_memLp_volume
+          (I := I) (M := M) g r s i α P₀ m D_m.directions
+      -- The `m`-fold mixed weak partial is a.e. zero off the kernel.
+      have h_off : ∀ᵐ y ∂((volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) α)),
+          y ∉ K → eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+            g r s i α P₀ m D_m.directions y = 0 := by
+        -- `_ae_zero_off_chartPouKernel` is an a.e. equality on the open
+        -- complement `chartTargetEuclid α \ K`; rephrase it as an a.e.
+        -- implication on the chart target.
+        have h_ae := eigenvectorChartIteratedPartial_unconditional_ae_zero_off_chartPouKernel
+          (I := I) (M := M) g r s i α P₀ m D_m.directions
+        have hΩ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+          (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
+        have hV_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α \ K) :=
+          (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet.diff hK_meas
+        rw [ae_restrict_iff' hΩ_meas]
+        rw [Filter.EventuallyEq, ae_restrict_iff' hV_meas] at h_ae
+        filter_upwards [h_ae] with y hy
+        intro hy_chart hy_off
+        exact hy ⟨hy_chart, hy_off⟩
+      exact memLp_chartPulledWeightedMeasure_of_memLp_volume_of_ae_zero_off_compact
+        (I := I) (M := M) g α hK_compact hK_meas hK_in h_off h_plain
+  f_chart_memLp_weighted := D_m.fChartEff_memLp_weighted
+  weak_partial_locally_memLp := by
+      -- Local `MemLp 2` of `chosenWeakPartial' 2 j (m-fold mixed partial)`:
+      -- from `MemWkp 1 2` of the `m`-fold mixed partial (the polymorphic
+      -- regularity bridge at `k = 1`) via `chosenWeakPartial'_memLp_of_mem`.
+      intro j K hK_compact hK_in
+      have h_parent' :
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+            (d := Module.finrank ℝ E) (1 + m) 2
+            (eigenvectorChartComponentFun_ofCompact (I := I) (M := M)
+              g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α) := by
+        rw [Nat.add_comm 1 m]
+        exact h_parent
+      have h_memWkp_one :=
+        eigenvectorChartIteratedPartial_unconditional_memWkp_of_memWkp
+          (I := I) (M := M) g r s i α P₀ m 1 h_parent' D_m.directions
+      rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
+        at h_memWkp_one
+      have h_chosen_memLp :=
+        chosenWeakPartial'_memLp_of_mem h_memWkp_one j
+      -- Restrict the chart-target `L²` membership to the compact subset `K`.
+      have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
+      have h_eq : ((volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α)).restrict K =
+          (volume : Measure EuclN).restrict K := by
+        rw [Measure.restrict_restrict hK_meas]
+        congr 1
+        exact Set.inter_eq_self_of_subset_left hK_in
+      rw [← h_eq]
+      exact h_chosen_memLp.restrict K
+  weak_partial_isWeakPartial := by
+      -- Each chosen weak `j`-partial is a genuine weak `j`-partial of the
+      -- `m`-fold mixed partial, which lies in `W^{1,2}` of the chart target.
+      intro j
+      have h_parent' :
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+            (d := Module.finrank ℝ E) (1 + m) 2
+            (eigenvectorChartComponentFun_ofCompact (I := I) (M := M)
+              g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α) := by
+        rw [Nat.add_comm 1 m]
+        exact h_parent
+      have h_memWkp_one :=
+        eigenvectorChartIteratedPartial_unconditional_memWkp_of_memWkp
+          (I := I) (M := M) g r s i α P₀ m 1 h_parent' D_m.directions
+      rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
+        at h_memWkp_one
+      exact chosenWeakPartial'_isWeakPartial_of_mem h_memWkp_one j
+  variational_identity := by
+      -- The carrier's `m`-fold-differentiated variational identity, with the
+      -- level-`(m+1)` principal block re-expressed via the polymorphic Schwarz
+      -- reindexing as chosen weak partials of the `m`-fold mixed partial.
+      classical
+      intro ψ hψ hψ_cs hψ_supp
+      have h_in := D_m.m_diff_variational_identity ψ hψ hψ_cs hψ_supp
+      set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+      -- The polymorphic Schwarz reindexing in every new direction `a`.
+      have h_schwarz : ∀ a : Fin (Module.finrank ℝ E),
+          eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+              g r s i α P₀ (m + 1) (Fin.cons a D_m.directions)
+            =ᵐ[(volume : Measure EuclN).restrict Ω]
+          chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+            (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+              g r s i α P₀ m D_m.directions) Ω := fun a =>
+        eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae_unconditional
+          (I := I) (M := M) g r s i α P₀ m D_m.directions a h_parent
+      -- Re-express the principal integral via the Schwarz reindexing.
+      have h_principal_eq :
+          (∫ y in Ω,
+            (∑ a : Fin (Module.finrank ℝ E),
+              ∑ b : Fin (Module.finrank ℝ E),
+                weightedInvGramOnEuclid (I := I) g α a b y *
+                  eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+                    g r s i α P₀ (m + 1)
+                    (Fin.cons a D_m.directions) y *
+                  (fderiv ℝ ψ y) (EuclideanSpace.single b 1))
+            ∂(volume : Measure EuclN)) =
+          ∫ y in Ω,
+            (∑ a : Fin (Module.finrank ℝ E),
+              ∑ b : Fin (Module.finrank ℝ E),
+                weightedInvGramOnEuclid (I := I) g α a b y *
+                  chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+                    (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+                      g r s i α P₀ m D_m.directions) Ω y *
+                  (fderiv ℝ ψ y) (EuclideanSpace.single b 1))
+            ∂(volume : Measure EuclN) := by
+        refine MeasureTheory.integral_congr_ae ?_
+        have h_combined : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
+            ∀ a : Fin (Module.finrank ℝ E),
+              eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+                g r s i α P₀ (m + 1)
+                (Fin.cons a D_m.directions) y =
+              chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+                (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+                  g r s i α P₀ m D_m.directions) Ω y := by
+          rw [ae_all_iff]
+          intro a
+          filter_upwards [h_schwarz a] with y hy
+          exact hy
+        filter_upwards [h_combined] with y hy
+        refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
+        rw [hy a]
+      rw [h_principal_eq] at h_in
+      exact h_in
+
+/-- Chart-locality-free twin of
+`eigenvectorIteratedTensorChartBilinearData_toData`. -/
+def eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
+    (D_m : eigenvectorIteratedTensorChartBilinearData_unconditional (I := I) (M := M)
+      g r s i α P₀ m)
+    (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) (m + 1) 2
+      (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α)) :
+    TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ where
+  toChartData :=
+    eigenvectorIteratedChartBilinearH1ComplData_unconditional
+      (I := I) (M := M) g r s i α P₀ D_m h_parent
+
+/-- Chart-locality-free twin of
+`eigenvectorChartIteratedPartial_memWkp_two_two`. -/
+theorem eigenvectorChartIteratedPartial_memWkp_two_two_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
+    (directions : Fin m → Fin (Module.finrank ℝ E))
+    (D_m : eigenvectorIteratedTensorChartBilinearData_unconditional (I := I) (M := M)
+      g r s i α P₀ m)
+    (h_dir : D_m.directions = directions)
+    (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) (m + 1) 2
+      (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α)) :
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) 2 2
+      (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+        g r s i α P₀ m directions)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  classical
+  -- The bridged per-component scalar divergence-form datum.
+  set D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
+    eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+      (I := I) (M := M) g r s i α P₀ D_m h_parent
+    with hD_def
+  -- `D.u_chart` is, definitionally, the `m`-fold mixed weak partial along
+  -- `D_m.directions`.
+  have hD_u_chart : D.u_chart =
+      eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+        g r s i α P₀ m D_m.directions := rfl
+  -- The compact partition-of-unity kernel and its enclosing open chart target.
+  set K : Set EuclN := chartPouKernel (I := I) (M := M) α with hK_def
+  have hK_compact : IsCompact K := chartPouKernel_isCompact (I := I) (M := M) α
+  have hK_meas : MeasurableSet K :=
+    chartPouKernel_measurableSet (I := I) (M := M) α
+  have hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α
+  have h_chart_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_isOpen (I := I) (M := M) α
+  -- A closed thickening of `K` of radius `R_α` inside the chart target.
+  obtain ⟨R_α, hR_α_pos, hR_α_subset⟩ :=
+    hK_compact.exists_cthickening_subset_open h_chart_open hK_in
+  -- The precompact interior subdomain `Ω'' := thickening (R_α / 2) K`.
+  set Ω'' : Set EuclN := Metric.thickening (R_α / 2) K with hΩ''_def
+  have hΩ''_open : IsOpen Ω'' := Metric.isOpen_thickening
+  have h_half_pos : 0 < R_α / 2 := by positivity
+  have hK_in_Ω'' : K ⊆ Ω'' := Metric.self_subset_thickening h_half_pos K
+  -- `closure Ω'' ⊆ cthickening (R_α / 2) K ⊆ cthickening R_α K ⊆ chart target`.
+  have h_closureΩ''_sub : closure Ω'' ⊆ Metric.cthickening (R_α / 2) K :=
+    closure_minimal (Metric.thickening_subset_cthickening _ _)
+      Metric.isClosed_cthickening
+  have h_cthick_half_in_chart : Metric.cthickening (R_α / 2) K ⊆
+      chartTargetEuclid (I := I) (M := M) α := by
+    have hle : (R_α / 2) ≤ R_α := by linarith
+    exact (Metric.cthickening_mono hle K).trans hR_α_subset
+  have h_closureΩ''_in_chart :
+      closure Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    h_closureΩ''_sub.trans h_cthick_half_in_chart
+  have hΩ''_compact_closure : IsCompact (closure Ω'') :=
+    hK_compact.cthickening.of_isClosed_subset isClosed_closure h_closureΩ''_sub
+  -- The difference-quotient room radius `R₀ := R_α / 4`.
+  set R₀ : ℝ := R_α / 4 with hR₀_def
+  have hR₀_pos : 0 < R₀ := by positivity
+  have h_room : Metric.cthickening R₀ (closure Ω'') ⊆
+      chartTargetEuclid (I := I) (M := M) α := by
+    -- `cthickening R₀ (closure Ω'') ⊆ cthickening R₀ (cthickening (R_α/2) K)`
+    -- `⊆ cthickening (R₀ + R_α/2) K ⊆ cthickening R_α K ⊆ chart target`.
+    have h1 : Metric.cthickening R₀ (closure Ω'') ⊆
+        Metric.cthickening R₀ (Metric.cthickening (R_α / 2) K) :=
+      Metric.cthickening_subset_of_subset _ h_closureΩ''_sub
+    have h2 : Metric.cthickening R₀ (Metric.cthickening (R_α / 2) K) ⊆
+        Metric.cthickening (R₀ + R_α / 2) K := by
+      apply Metric.cthickening_cthickening_subset
+      · positivity
+      · positivity
+    have h3 : Metric.cthickening (R₀ + R_α / 2) K ⊆
+        Metric.cthickening R_α K := by
+      have hle : R₀ + R_α / 2 ≤ R_α := by rw [hR₀_def]; linarith
+      exact Metric.cthickening_mono hle K
+    exact ((h1.trans h2).trans h3).trans hR_α_subset
+  -- The order-2 interior elliptic engine: `D.u_chart` lies in `W^{1,2}(Ω'')`
+  -- and every weak partial `D.weak_partial j` lies in `W^{1,2}(Ω'')`.
+  obtain ⟨h_uChart_memW1p, h_wp_memW1p⟩ :=
+    tensorChartBilinear_chartComponent_regularity_of_data
+      (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
+      hΩ''_open hΩ''_compact_closure hR₀_pos h_room
+  -- Assemble `MemWkp 2 2` of `D.u_chart` on `Ω''`: `W^{1,2}` plus chart-`H¹`
+  -- of every chosen weak partial (which agrees a.e. with `D.weak_partial j`).
+  have h_uChart_memWkp_two_Ω'' :
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) 2 2 D.u_chart Ω'' := by
+    refine ⟨h_uChart_memW1p, fun j => ?_⟩
+    -- The canonical chosen weak `j`-partial of `D.u_chart` over `Ω''` agrees
+    -- a.e. with `D.weak_partial j`, which lies in `W^{1,2}(Ω'')`.
+    have hΩ''_in_chart : Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
+      fun y hy => h_closureΩ''_in_chart (subset_closure hy)
+    have h_dwp_weak_uChart_Ω'' : DeGiorgi.HasWeakPartialDeriv
+        (d := Module.finrank ℝ E) j (D.weak_partial j) D.u_chart Ω'' :=
+      DeGiorgi.HasWeakPartialDeriv.restrict hΩ''_open hΩ''_in_chart
+        (D.weak_partial_isWeakPartial j)
+    have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
+        (d := Module.finrank ℝ E) j
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          2 j D.u_chart Ω'') D.u_chart Ω'' :=
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+        h_uChart_memW1p j
+    have h_chosen_loc : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          2 j D.u_chart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+        h_uChart_memW1p j).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weak_partial j)
+        ((volume : Measure EuclN).restrict Ω'') :=
+      (h_wp_memW1p j).1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    have h_ae :
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          2 j D.u_chart Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω'']
+            D.weak_partial j :=
+      DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
+        h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
+    rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
+    exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
+      hΩ''_open h_ae.symm).mp (h_wp_memW1p j)
+  -- Rewrite the interior `W^{2,2}` to be about the `m`-fold mixed weak partial.
+  rw [hD_u_chart] at h_uChart_memWkp_two_Ω''
+  -- The `m`-fold mixed weak partial is `MemLp 2` of the plain volume restricted
+  -- to the chart target (the global `L²` input for the promotion).
+  have h_global_Lp : MemLp (eigenvectorChartIteratedPartial_unconditional
+      (I := I) (M := M)
+      g r s i α P₀ m D_m.directions) 2
+      ((volume : Measure EuclN).restrict
+        (chartTargetEuclid (I := I) (M := M) α)) :=
+    eigenvectorChartIteratedPartial_unconditional_memLp_volume
+      (I := I) (M := M) g r s i α P₀ m D_m.directions
+  -- The `m`-fold mixed weak partial is a.e. zero off the compact kernel `K`.
+  have h_ae_zero : eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+      g r s i α P₀ m D_m.directions
+      =ᵐ[(volume : Measure EuclN).restrict
+        (chartTargetEuclid (I := I) (M := M) α \ K)] 0 :=
+    eigenvectorChartIteratedPartial_unconditional_ae_zero_off_chartPouKernel
+      (I := I) (M := M) g r s i α P₀ m D_m.directions
+  -- Promote the interior `W^{2,2}(Ω'')` to global `W^{2,2}` of the chart target.
+  have h_global :
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) 2 2
+        (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+          g r s i α P₀ m D_m.directions)
+        (chartTargetEuclid (I := I) (M := M) α) :=
+    MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
+      (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+      h_chart_open hΩ''_open hK_compact hK_in_Ω'' h_closureΩ''_in_chart
+      h_global_Lp h_ae_zero h_uChart_memWkp_two_Ω''
+  -- Rewrite the direction multi-index `D_m.directions` to `directions`.
+  rw [h_dir] at h_global
+  exact h_global
+
 end TensorSpectral
 end Parabolic
 end Analysis
