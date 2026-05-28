@@ -1167,6 +1167,375 @@ example
 
 end ElaborationTests
 
+/-! ## Chart-locality-free restatements — the cross-left limit object
+
+The cross-left `wkpNorm` bounds carry the chart-selection hypothesis `h_atlas`
+only through the limit object `crossLeftLimitComponent`, which is built from the
+eigenvector resolvent `eigenvectorResolvent`. The limit object has a
+chart-locality-free twin `crossLeftLimitComponent_unconditional` — keyed on the
+eigenvector resolvent `eigenvectorResolvent_unconditional`, itself built from the
+eigenbasis vector
+`tensorResolventEigenbasisVec_ofCompact (tensorResolventL2_isCompactOperator_intrinsic g r s) i`
+selected at the unconditional compactness witness. By definition this twin is the
+cutoff Euclidean chart component, at `(α, P)`, of the abstract `L²` element
+`tensorCovGradL2Compl g r s (eigenvectorResolvent_unconditional g r s i)`. The
+foundational cutoff `wkpNorm` bound `wkpNorm_tensorL2ChartComponentCutoff_le_of_pou`
+(and its eigenbasis-uniform, input-uniform companion `…_uniform`) quantifies over
+an arbitrary abstract `L²` element, so it applies verbatim to the
+chart-locality-free limit object; the covariant-gradient chart-component
+reduction enters through the chart-locality-free covariant-gradient twins
+`eigenvectorCovGrad_pou_memWkp_unconditional`,
+`eigenvectorCovGrad_pou_wkpNorm_le_unconditional`, and (for the uniform headline)
+`eigenvectorCovGrad_pou_wkpNorm_le_uniform_unconditional`. The cross-left proof
+bodies transfer verbatim, with the resolvent inclusion of `eigenvectorResolvent`
+replaced by that of `eigenvectorResolvent_unconditional` and every per-centre
+aggregate written out explicitly. -/
+
+section CrossRotationWkpNormBoundsUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s) (K : ℕ)
+
+/-- **Chart-locality-free explicit-constant order-`K` `wkpNorm` bound for the
+cross-left limit object.** Chart-locality-free twin of
+`wkpNorm_crossLeftLimitComponent_le`. For a closed Riemannian manifold `(M, g)`,
+ranks `(r, s)`, an eigenbasis index `i`, a chart center `α : M`, a component
+multi-index `P : TensorCompIdx r (s + 1)`, and an order `K`, there is a
+nonnegative constant `C` with
+
+```
+wkpNorm K 2 (crossLeftLimitComponent_unconditional g r s i α P) (chartTargetEuclid α)
+  ≤ ENNReal.ofReal C
+      * ∑ β ∈ transportChartCenters α,
+          ((∑ Q, wkpNorm (K+1) 2 (resolvent-inclusion chart Q-component at β))
+            + ∑ β' ∈ transportChartCenters β, ∑ Q,
+                wkpNorm (K+1) 2 (resolvent-inclusion chart Q-component at β')),
+```
+
+given the order-`(K+1)` `MemWkp` regularity hypothesis `h_pou` on the
+resolvent-inclusion partition-of-unity chart components.
+
+By definition `crossLeftLimitComponent_unconditional` is the cutoff Euclidean
+chart component of the abstract `L²` element `tensorCovGradL2Compl g r s
+(eigenvectorResolvent_unconditional …)`; the foundational
+`wkpNorm_tensorL2ChartComponentCutoff_le_of_pou` reduces its order-`K` `wkpNorm`
+to a finite double sum of the order-`K` `wkpNorm` of the covariant-gradient
+partition-of-unity chart components, each of which is in turn `wkpNorm K 2`-bounded
+by an explicit constant times the order-`(K+1)` resolvent-inclusion aggregate. The
+summation multiplicity and every per-summand constant are folded into the single
+constant `C`. -/
+theorem wkpNorm_crossLeftLimitComponent_le_unconditional
+    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β))
+    (α : M) (P : TensorCompIdx (E := E) r (s + 1)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+              g r s i α P :
+              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          ∑ β ∈ transportChartCenters (I := I) (M := M) α,
+            ((∑ Q : TensorCompIdx (E := E) r s,
+                wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                  (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                      (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                        (eigenvectorResolvent_unconditional (I := I) (M := M)
+                          g r s i))
+                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      EuclN → ℝ) y)
+                  (chartTargetEuclid (I := I) (M := M) β))
+              + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                  ∑ Q : TensorCompIdx (E := E) r s,
+                    wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                            (eigenvectorResolvent_unconditional (I := I) (M := M)
+                              g r s i))
+                          β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                          EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) β')) := by
+  classical
+  -- The per-centre order-`(K+1)` resolvent-inclusion aggregate, written out
+  -- explicitly (the chart-locality-free analogue of `covGradResAggregate`).
+  set aggr : M → ℝ≥0∞ := fun β =>
+    (∑ Q : TensorCompIdx (E := E) r s,
+        wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+          (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+              (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              EuclN → ℝ) y)
+          (chartTargetEuclid (I := I) (M := M) β))
+      + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+          ∑ Q : TensorCompIdx (E := E) r s,
+            wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+              (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                  (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                    (eigenvectorResolvent_unconditional (I := I) (M := M)
+                      g r s i))
+                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  EuclN → ℝ) y)
+              (chartTargetEuclid (I := I) (M := M) β')
+    with haggr_def
+  -- Step 1: the cutoff bound reduces the order-`K` `wkpNorm` of the limit object
+  -- to a finite double sum of covariant-gradient chart-component norms; the
+  -- `MemWkp` premises are the chart-locality-free covariant-gradient memberships.
+  obtain ⟨C₀, hC₀_nn, hC₀_bd⟩ :=
+    wkpNorm_tensorL2ChartComponentCutoff_le_of_pou (I := I) (M := M)
+      g r (s + 1)
+      (tensorCovGradL2Compl (I := I) (M := M) g r s
+        (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+      α P K
+      (fun β Q' => eigenvectorCovGrad_pou_memWkp_unconditional (I := I) (M := M)
+        g r s i K h_pou β Q')
+  -- Step 2: each covariant-gradient chart-component norm is bounded by an
+  -- explicit constant times the per-centre order-`(K+1)` aggregate.
+  have h_per : ∀ (β : M) (Q' : TensorCompIdx (E := E) r (s + 1)),
+      ∃ C : ℝ, 0 ≤ C ∧
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
+                (tensorCovGradL2Compl (I := I) (M := M) g r s
+                  (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+                β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                EuclN → ℝ) y)
+            (chartTargetEuclid (I := I) (M := M) β)
+          ≤ ENNReal.ofReal C * aggr β :=
+    fun β Q' => eigenvectorCovGrad_pou_wkpNorm_le_unconditional (I := I) (M := M)
+      g r s i K h_pou β Q'
+  -- Step 3: collect the double sum into a constant times the single sum, over
+  -- the transport chart centres, of the per-centre aggregates.
+  obtain ⟨C₁, hC₁_nn, hC₁_bd⟩ :=
+    wkpNorm_doubleSum_le_const_mul_aggregateSum
+      (transportChartCenters (I := I) (M := M) α)
+      (fun β Q' => wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
+            (tensorCovGradL2Compl (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β))
+      (fun β => aggr β)
+      (fun β Q' => (h_per β Q').choose)
+      (fun β _ Q' => (h_per β Q').choose_spec.1)
+      (fun β _ Q' => (h_per β Q').choose_spec.2)
+  -- Assemble: the headline constant is `C₀ * C₁`.
+  refine ⟨C₀ * C₁, by positivity, ?_⟩
+  -- Chain the two reductions and pull the constant `C₀ * C₁` together.
+  have h_chain : wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+            g r s i α P :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) α)
+      ≤ ENNReal.ofReal C₀ *
+        (ENNReal.ofReal C₁ *
+          ∑ β ∈ transportChartCenters (I := I) (M := M) α, aggr β) := by
+    -- Rewrite the limit object as the cutoff component, then chain.
+    have h_unfold : (fun y => ((crossLeftLimitComponent_unconditional (I := I)
+          (M := M) g r s i α P :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
+            g r (s + 1)
+            (tensorCovGradL2Compl (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            EuclN → ℝ) y) := by
+      rw [crossLeftLimitComponent_unconditional]
+    rw [h_unfold]
+    refine hC₀_bd.trans ?_
+    exact mul_le_mul_of_nonneg_left hC₁_bd (zero_le _)
+  refine h_chain.trans ?_
+  rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
+
+end CrossRotationWkpNormBoundsUnconditional
+
+section CrossRotationWkpNormBoundsUniformUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (K : ℕ)
+
+/-- **Chart-locality-free eigenbasis-uniform explicit-constant order-`K`
+`wkpNorm` bound for the cross-left limit object.** Chart-locality-free twin of
+`wkpNorm_crossLeftLimitComponent_le_uniform`: a *single* nonnegative constant `C`,
+independent of the eigenbasis index `i`, serves every `i` simultaneously, with no
+chart-selection hypothesis.
+
+For a closed Riemannian manifold `(M, g)`, ranks `(r, s)`, a chart center
+`α : M`, a component multi-index `P : TensorCompIdx r (s + 1)`, and an order
+`K`, given the order-`(K+1)` `MemWkp` regularity hypothesis `h_pou` on the
+resolvent-inclusion partition-of-unity chart components — phrased uniformly over
+`i` — there is a nonnegative constant `C` with, for every `i`,
+
+```
+wkpNorm K 2 (crossLeftLimitComponent_unconditional g r s i α P) (chartTargetEuclid α)
+  ≤ ENNReal.ofReal C
+      * ∑ β ∈ transportChartCenters α,
+          ((∑ Q, wkpNorm (K+1) 2 (resolvent-inclusion chart Q-component at β))
+            + ∑ β' ∈ transportChartCenters β, ∑ Q,
+                wkpNorm (K+1) 2 (resolvent-inclusion chart Q-component at β')).
+```
+
+No exposed eigenvalue factor appears: the cutoff-component reduction is
+input-uniform, and the covariant-gradient chart-component bound's
+eigenbasis-uniform companion `eigenvectorCovGrad_pou_wkpNorm_le_uniform_unconditional`
+is purely geometric (the `‖μ‖ · μ⁻¹` cancellation removes the eigenvalue
+dependence). The constant `C` is the product of the input-uniform cutoff constant
+and the eigenbasis-uniform double-sum collection constant, both `i`-independent
+and hence hoisted before the `∀ i`. -/
+theorem wkpNorm_crossLeftLimitComponent_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β))
+    (α : M) (P : TensorCompIdx (E := E) r (s + 1)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+                g r s i α P :
+                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            ∑ β ∈ transportChartCenters (I := I) (M := M) α,
+              ((∑ Q : TensorCompIdx (E := E) r s,
+                  wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                    (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                        (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                          (eigenvectorResolvent_unconditional (I := I) (M := M)
+                            g r s i))
+                        β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                        EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) β))
+                + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                    ∑ Q : TensorCompIdx (E := E) r s,
+                      wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                        (fun y => ((tensorL2ChartComponent (I := I) (M := M)
+                            g r s
+                            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                              (eigenvectorResolvent_unconditional (I := I)
+                                (M := M) g r s i))
+                            β' Q :
+                            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                            EuclN → ℝ) y)
+                        (chartTargetEuclid (I := I) (M := M) β')) := by
+  classical
+  -- The per-centre order-`(K+1)` resolvent-inclusion aggregate, written out
+  -- explicitly (the chart-locality-free analogue of `covGradResAggregate`),
+  -- parametrised by the eigenbasis index `i`.
+  set aggr : TensorEigenIdx (I := I) (M := M) g r s → M → ℝ≥0∞ := fun i β =>
+    (∑ Q : TensorCompIdx (E := E) r s,
+        wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+          (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+              (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              EuclN → ℝ) y)
+          (chartTargetEuclid (I := I) (M := M) β))
+      + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+          ∑ Q : TensorCompIdx (E := E) r s,
+            wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+              (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                  (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                    (eigenvectorResolvent_unconditional (I := I) (M := M)
+                      g r s i))
+                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  EuclN → ℝ) y)
+              (chartTargetEuclid (I := I) (M := M) β')
+    with haggr_def
+  -- Step 1: the input-uniform cutoff bound — its constant `C₀` is
+  -- chart-transition geometric data, independent of the abstract `L²` element
+  -- and hence of `i`; it is hoisted here, before the `∀ i`.
+  obtain ⟨C₀, hC₀_nn, hC₀_bd⟩ :=
+    wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform (I := I) (M := M)
+      g r (s + 1) α P K
+  -- Step 2: the eigenbasis-uniform covariant-gradient chart-component bound,
+  -- invoked at each `(β, Q')`. Because its `h_pou` hypothesis is itself uniform
+  -- over `i`, the resulting per-summand constant — extracted as the
+  -- `Classical.choice` witness — depends only on `(β, Q')`, not on `i`.
+  set Cf : M → TensorCompIdx (E := E) r (s + 1) → ℝ :=
+    fun β Q' =>
+      (eigenvectorCovGrad_pou_wkpNorm_le_uniform_unconditional (I := I) (M := M)
+        g r s K h_pou β Q').choose
+    with hCf_def
+  have hCf_spec : ∀ (β : M) (Q' : TensorCompIdx (E := E) r (s + 1)),
+      0 ≤ Cf β Q' ∧
+        ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+          wkpNorm (d := Module.finrank ℝ E) K 2
+              (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
+                  (tensorCovGradL2Compl (I := I) (M := M) g r s
+                    (eigenvectorResolvent_unconditional (I := I) (M := M)
+                      g r s i))
+                  β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  EuclN → ℝ) y)
+              (chartTargetEuclid (I := I) (M := M) β)
+            ≤ ENNReal.ofReal (Cf β Q') * aggr i β :=
+    fun β Q' =>
+      (eigenvectorCovGrad_pou_wkpNorm_le_uniform_unconditional (I := I) (M := M)
+        g r s K h_pou β Q').choose_spec
+  -- Step 3: collect the cutoff bound's double sum into a constant times the
+  -- single sum, over the transport chart centres, of the per-centre aggregates.
+  -- The per-summand constant family `Cf` is `i`-independent, so the
+  -- eigenbasis-uniform collection lemma hoists the collapsed constant `C₁`.
+  obtain ⟨C₁, hC₁_nn, hC₁_bd⟩ :=
+    wkpNorm_doubleSum_le_const_mul_aggregateSum_uniform
+      (δ := TensorEigenIdx (I := I) (M := M) g r s)
+      (transportChartCenters (I := I) (M := M) α)
+      (fun i β Q' => wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
+            (tensorCovGradL2Compl (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β))
+      (fun i β => aggr i β)
+      (fun β Q' => Cf β Q')
+      (fun β _ Q' => (hCf_spec β Q').1)
+      (fun i β _ Q' => (hCf_spec β Q').2 i)
+  -- Assemble: the headline constant is `C₀ * C₁`, hoisted before the `∀ i`.
+  refine ⟨C₀ * C₁, by positivity, fun i => ?_⟩
+  -- Chain the two reductions and pull the constant `C₀ * C₁` together.
+  have h_chain : wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+            g r s i α P :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) α)
+      ≤ ENNReal.ofReal C₀ *
+        (ENNReal.ofReal C₁ *
+          ∑ β ∈ transportChartCenters (I := I) (M := M) α, aggr i β) := by
+    -- Rewrite the limit object as the cutoff component, then chain.
+    have h_unfold : (fun y => ((crossLeftLimitComponent_unconditional (I := I)
+          (M := M) g r s i α P :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
+            g r (s + 1)
+            (tensorCovGradL2Compl (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            EuclN → ℝ) y) := by
+      rw [crossLeftLimitComponent_unconditional]
+    rw [h_unfold]
+    -- The cutoff bound applied to the covariant-gradient `L²` element, whose
+    -- partition-of-unity chart components are `MemWkp` by
+    -- `eigenvectorCovGrad_pou_memWkp_unconditional`.
+    refine (hC₀_bd
+      (tensorCovGradL2Compl (I := I) (M := M) g r s
+        (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+      (fun β Q' => eigenvectorCovGrad_pou_memWkp_unconditional (I := I) (M := M)
+        g r s i K (h_pou i) β Q')).trans ?_
+    exact mul_le_mul_of_nonneg_left (hC₁_bd i) (zero_le _)
+  refine h_chain.trans ?_
+  rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
+
+end CrossRotationWkpNormBoundsUniformUnconditional
+
 end TensorSpectral
 end Parabolic
 end Analysis
