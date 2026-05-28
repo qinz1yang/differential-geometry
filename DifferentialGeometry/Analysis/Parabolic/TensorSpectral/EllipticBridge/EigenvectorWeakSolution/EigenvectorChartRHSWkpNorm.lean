@@ -3161,6 +3161,2232 @@ end UniformMainBound
 
 end UniformBounds
 
+/-! ## Chart-locality-free twins
+
+The declarations below are chart-locality-free `_unconditional` twins of the
+`h_atlas`-carrying declarations above, re-keyed onto the intrinsic compact
+self-adjoint resolvent eigenbasis `tensorResolventEigenbasisVec_ofCompact …`
+(through the intrinsic compactness witness
+`tensorResolventL2_isCompactOperator_intrinsic g r s`) and onto the
+chart-locality-free eigenvector-resolvent / cross- / lower-order limit objects.
+Each proves the same statement as its original, with the `h_atlas` hypothesis
+dropped and every chart-locality-dependent dependency replaced by its committed
+`_unconditional` companion. -/
+
+section Unconditional
+
+open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+
+/-! ### The order-`(K + 1)` partition-of-unity regularity input (twin) -/
+
+/-- Chart-locality-free twin of `PouRegularity`. -/
+private def PouRegularity_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s) (K : ℕ) : Prop :=
+  ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+    MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+            (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+      (chartTargetEuclid (I := I) (M := M) β)
+
+/-! ### The seven bracket terms (twins) -/
+
+section BracketTermsUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s)
+
+/-- Chart-locality-free twin of `rhsTerm1`. -/
+private def rhsTerm1_unconditional : EuclN → ℝ :=
+  fun y =>
+    ((tensorL2ChartComponent (I := I) (M := M) g r s
+        (tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+            g r s) i) α P₀ :
+      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+/-- Chart-locality-free twin of `rhsTerm2`. -/
+private def rhsTerm2_unconditional : EuclN → ℝ :=
+  fun y => ∑ P : TensorCompIdx (E := E) r (s + 1),
+    ∑ Q : TensorCompIdx (E := E) r (s + 1),
+      (covChartMetricGram (I := I) (M := M) g r (s + 1) α P Q y *
+          crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
+        ((crossLeftLimitComponent_unconditional (I := I) (M := M) g r s i α P :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+/-- Chart-locality-free twin of `rhsTerm3`. -/
+private def rhsTerm3_unconditional : EuclN → ℝ :=
+  fun y => ∑ P : TensorCompIdx (E := E) r s,
+    ∑ Q : TensorCompIdx (E := E) r s,
+      (covChartMetricGram (I := I) (M := M) g r s α P Q y *
+          crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
+        ((crossRightLimitComponent_unconditional (I := I) (M := M) g r s i α P :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+/-- Chart-locality-free twin of `rhsTerm4`. -/
+private def rhsTerm4_unconditional : EuclN → ℝ :=
+  covPrincipalRotationCoeffLimit_unconditional (I := I) (M := M) g r s i α P₀
+
+/-- Chart-locality-free twin of `rhsTerm5`. -/
+private def rhsTerm5_unconditional : EuclN → ℝ :=
+  covLowerOrderRotationValueCoeffLimit_unconditional (I := I) (M := M)
+    g r s i α P₀
+
+/-- Chart-locality-free twin of `rhsTerm6`. -/
+private def rhsTerm6_unconditional : EuclN → ℝ :=
+  fun y => (1 / densityOnEuclid (I := I) g α y) *
+    (∑ l : Fin (Module.finrank ℝ E),
+      weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀ l y)
+
+/-- Chart-locality-free twin of `rhsTerm7`. -/
+private def rhsTerm7_unconditional : EuclN → ℝ :=
+  fun y => (1 / densityOnEuclid (I := I) g α y) *
+    crossRightGradCoeffDivLimit_unconditional (I := I) (M := M) g r s i α P₀ y
+
+/-- Chart-locality-free twin of `rhsBracket`. -/
+private def rhsBracket_unconditional : EuclN → ℝ :=
+  rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ -
+      rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ +
+      rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ -
+      rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ -
+      rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ +
+      rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ -
+      rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `eigenvectorChartRHS_eq_smul_bracket`. -/
+private lemma eigenvectorChartRHS_eq_smul_bracket_unconditional :
+    eigenvectorChartRHS_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => (i.fst.val)⁻¹ *
+          rhsBracket_unconditional (I := I) (M := M) g r s i α P₀ y := by
+  funext y
+  simp only [eigenvectorChartRHS_unconditional, rhsBracket_unconditional,
+    rhsTerm1_unconditional, rhsTerm2_unconditional, rhsTerm3_unconditional,
+    rhsTerm4_unconditional, rhsTerm5_unconditional, rhsTerm6_unconditional,
+    rhsTerm7_unconditional, Pi.sub_apply, Pi.add_apply]
+
+end BracketTermsUnconditional
+
+/-! ### `W^{K,2}` membership of the seven bracket terms (twins) -/
+
+section TermMemWkpUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+/-- Chart-locality-free twin of `rhsTerm1_memWkp`. -/
+private lemma rhsTerm1_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm1_unconditional
+  exact eigenvectorChartRHS_summand1_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm2_memWkp`. -/
+private lemma rhsTerm2_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm2_unconditional
+  exact eigenvectorChartRHS_summand2_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm3_memWkp`. -/
+private lemma rhsTerm3_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm3_unconditional
+  exact eigenvectorChartRHS_summand3_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm4_memWkp`. -/
+private lemma rhsTerm4_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm4_unconditional
+  exact eigenvectorChartRHS_summand4_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm5_memWkp`. -/
+private lemma rhsTerm5_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm5_unconditional
+  exact eigenvectorChartRHS_summand5_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm6_memWkp`. -/
+private lemma rhsTerm6_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm6_unconditional
+  exact eigenvectorChartRHS_summand6_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+/-- Chart-locality-free twin of `rhsTerm7_memWkp`. -/
+private lemma rhsTerm7_memWkp_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  unfold rhsTerm7_unconditional
+  exact eigenvectorChartRHS_summand7_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+
+end TermMemWkpUnconditional
+
+/-! ### The order-`K` source-quantity aggregate (twins) -/
+
+section AggregateUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+/-- Chart-locality-free twin of `resInclNorm`. -/
+private def resInclNorm_unconditional (N : ℕ) (β : M)
+    (Q : TensorCompIdx (E := E) r s) : ℝ≥0∞ :=
+  wkpNorm (d := Module.finrank ℝ E) N 2
+    (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+        (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+          (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+        β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+    (chartTargetEuclid (I := I) (M := M) β)
+
+/-- Chart-locality-free twin of `aggrUchart`. -/
+private def aggrUchart_unconditional : ℝ≥0∞ :=
+  wkpNorm (d := Module.finrank ℝ E) K 2
+    (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+        (tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+            g r s) i) α P₀ :
+      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+    (chartTargetEuclid (I := I) (M := M) α)
+
+/-- Chart-locality-free twin of `aggrCrossLeft`. -/
+private def aggrCrossLeft_unconditional : ℝ≥0∞ :=
+  ∑ β ∈ transportChartCenters (I := I) (M := M) α,
+    ((∑ Q : TensorCompIdx (E := E) r s,
+        resInclNorm_unconditional (I := I) (M := M) g r s i (K + 1) β Q)
+      + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+          ∑ Q : TensorCompIdx (E := E) r s,
+            resInclNorm_unconditional (I := I) (M := M) g r s i (K + 1) β' Q)
+
+/-- Chart-locality-free twin of `aggrCrossRight`. -/
+private def aggrCrossRight_unconditional : ℝ≥0∞ :=
+  ∑ β ∈ transportChartCenters (I := I) (M := M) α,
+    ∑ Q : TensorCompIdx (E := E) r s,
+      resInclNorm_unconditional (I := I) (M := M) g r s i K β Q
+
+/-- Chart-locality-free twin of `aggrPartial`. -/
+private def aggrPartial_unconditional : ℝ≥0∞ :=
+  ∑ P : TensorCompIdx (E := E) r s,
+    ∑ k : Fin (Module.finrank ℝ E),
+      wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((partialLpLimit_unconditional (I := I) (M := M)
+            g r s i α P k :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) α)
+
+/-- Chart-locality-free twin of `aggrComponent`. -/
+private def aggrComponent_unconditional : ℝ≥0∞ :=
+  ∑ p : TensorCompIdx (E := E) r s,
+    wkpNorm (d := Module.finrank ℝ E) K 2
+      (fun y => ((componentLpLimit_unconditional (I := I) (M := M)
+          g r s i α p :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      (chartTargetEuclid (I := I) (M := M) α)
+
+/-- Chart-locality-free twin of `aggrCrossRightLimit`. -/
+private def aggrCrossRightLimit_unconditional : ℝ≥0∞ :=
+  ∑ P : TensorCompIdx (E := E) r s,
+    wkpNorm (d := Module.finrank ℝ E) K 2
+      (fun y => ((crossRightLimitComponent_unconditional (I := I) (M := M)
+          g r s i α P :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      (chartTargetEuclid (I := I) (M := M) α)
+
+/-- Chart-locality-free twin of `aggrCutoffPartial`. -/
+private def aggrCutoffPartial_unconditional : ℝ≥0∞ :=
+  ∑ P : TensorCompIdx (E := E) r s,
+    ∑ l : Fin (Module.finrank ℝ E),
+      wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => ((cutoffPartialLpLimit_unconditional (I := I) (M := M)
+            g r s i α P l :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) α)
+
+/-- Chart-locality-free twin of `wkpRhsAggregate`. -/
+private def wkpRhsAggregate_unconditional : ℝ≥0∞ :=
+  aggrUchart_unconditional (I := I) (M := M) g r s i α P₀ K +
+    aggrCrossLeft_unconditional (I := I) (M := M) g r s i α K +
+    aggrCrossRight_unconditional (I := I) (M := M) g r s i α K +
+    aggrPartial_unconditional (I := I) (M := M) g r s i α K +
+    aggrComponent_unconditional (I := I) (M := M) g r s i α K +
+    aggrCrossRightLimit_unconditional (I := I) (M := M) g r s i α K +
+    aggrCutoffPartial_unconditional (I := I) (M := M) g r s i α K
+
+end AggregateUnconditional
+
+/-! ### Aggregate-domination arithmetic (twins) -/
+
+section DominationUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrUchart_le`. -/
+private lemma aggrUchart_le_unconditional :
+    aggrUchart_unconditional (I := I) (M := M) g r s i α P₀ K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]; exact (le_sevenSum _ _ _ _ _ _ _).1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrCrossLeft_le`. -/
+private lemma aggrCrossLeft_le_unconditional :
+    aggrCrossLeft_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]; exact (le_sevenSum _ _ _ _ _ _ _).2.1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrCrossRight_le`. -/
+private lemma aggrCrossRight_le_unconditional :
+    aggrCrossRight_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]; exact (le_sevenSum _ _ _ _ _ _ _).2.2.1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrPartial_le`. -/
+private lemma aggrPartial_le_unconditional :
+    aggrPartial_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]; exact (le_sevenSum _ _ _ _ _ _ _).2.2.2.1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrComponent_le`. -/
+private lemma aggrComponent_le_unconditional :
+    aggrComponent_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]
+  exact (le_sevenSum _ _ _ _ _ _ _).2.2.2.2.1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrCrossRightLimit_le`. -/
+private lemma aggrCrossRightLimit_le_unconditional :
+    aggrCrossRightLimit_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]
+  exact (le_sevenSum _ _ _ _ _ _ _).2.2.2.2.2.1
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `aggrCutoffPartial_le`. -/
+private lemma aggrCutoffPartial_le_unconditional :
+    aggrCutoffPartial_unconditional (I := I) (M := M) g r s i α K
+      ≤ wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  rw [wkpRhsAggregate_unconditional]
+  exact (le_sevenSum _ _ _ _ _ _ _).2.2.2.2.2.2
+
+end DominationUnconditional
+
+/-! ### The per-term order-`K` `wkpNorm` bounds (twins) -/
+
+section TermBoundsUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm1_wkpNorm_le`. -/
+private lemma rhsTerm1_wkpNorm_le_unconditional :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  refine ⟨1, by norm_num, ?_⟩
+  rw [ENNReal.ofReal_one, one_mul]
+  exact le_trans (le_of_eq rfl)
+    (aggrUchart_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+
+/-- Chart-locality-free twin of `rhsTerm2_wkpNorm_le`. -/
+private lemma rhsTerm2_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  set F : (TensorCompIdx (E := E) r (s + 1) ×
+      TensorCompIdx (E := E) r (s + 1)) → EuclN → ℝ :=
+    fun x y => (covChartMetricGram (I := I) (M := M) g r (s + 1) α x.1 x.2 y *
+        crossLeftTestCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+      ((crossLeftLimitComponent_unconditional (I := I) (M := M) g r s i α x.1 :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+    with hF_def
+  have h_data : ∀ x : TensorCompIdx (E := E) r (s + 1) ×
+      TensorCompIdx (E := E) r (s + 1),
+      MemWkp (d := Module.finrank ℝ E) K 2 (F x) Ω ∧
+        ∃ C : ℝ, 0 ≤ C ∧
+          wkpNorm (d := Module.finrank ℝ E) K 2 (F x) Ω
+            ≤ ENNReal.ofReal C *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K := by
+    intro x
+    have h_factor : MemWkp (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+            g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+      crossLeftLimitComponent_memWkp_unconditional (I := I) (M := M)
+        g r s i α x.1 K h_pou
+    have hcoef_chart : ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun y => covChartMetricGram (I := I) (M := M) g r (s + 1) α x.1 x.2 y *
+          crossLeftTestCoeff (I := I) (M := M) g r s α P₀ x.2 y) Ω :=
+      (covChartMetricGram_contDiffOn (I := I) (M := M)
+          g r (s + 1) α x.1 x.2).mul
+        (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2)
+    have h_factor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
+          ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+      rw [crossLeftLimitComponent_unconditional]
+      exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
+        (I := I) (M := M) g r (s + 1)
+        (tensorCovGradL2Compl (I := I) (M := M) g r s
+          (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i)) α x.1
+    obtain ⟨h_summand_memWkp, C, hC_nn, hC_bd⟩ :=
+      wkpNorm_smoothCoef_mul_aeZeroFactor_le
+        (I := I) (M := M) α K
+        (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
+        (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
+        hcoef_chart h_factor h_factor_ae_zero
+    refine ⟨?_, ?_⟩
+    · rw [hF_def]; exact h_summand_memWkp
+    obtain ⟨C', hC'_nn, hC'_bd⟩ := wkpNorm_crossLeftLimitComponent_le_unconditional
+      (I := I) (M := M) g r s i K h_pou α x.1
+    refine ⟨C * C', by positivity, ?_⟩
+    rw [hF_def]
+    have h_aggr_eq :
+        (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+            ((∑ Q : TensorCompIdx (E := E) r s,
+                wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                  (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                      (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                        (eigenvectorResolvent_unconditional (I := I) (M := M)
+                          g r s i))
+                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      EuclN → ℝ) y)
+                  (chartTargetEuclid (I := I) (M := M) β))
+              + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                  ∑ Q : TensorCompIdx (E := E) r s,
+                    wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                            (eigenvectorResolvent_unconditional (I := I) (M := M)
+                              g r s i))
+                          β' Q :
+                          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                          EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) β')))
+          = aggrCrossLeft_unconditional (I := I) (M := M) g r s i α K := by
+      rw [aggrCrossLeft_unconditional]; rfl
+    calc
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (fun y => (covChartMetricGram (I := I) (M := M)
+              g r (s + 1) α x.1 x.2 y *
+            crossLeftTestCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+          ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+          ≤ ENNReal.ofReal C *
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+                    g r s i α x.1 :
+                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  EuclN → ℝ) y) Ω := hC_bd
+      _ ≤ ENNReal.ofReal C *
+            (ENNReal.ofReal C' *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+          gcongr
+          rw [hΩ_def]
+          refine hC'_bd.trans ?_
+          rw [h_aggr_eq]
+          gcongr
+          exact aggrCrossLeft_le_unconditional (I := I) (M := M)
+            g r s i α P₀ K
+      _ = ENNReal.ofReal (C * C') *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
+  obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_sum_le_const_mul_aggregate
+    (Ω := Ω) hΩ_open F
+    (wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun x => (h_data x).1) (fun x => (h_data x).2)
+  refine ⟨C, hC_nn, ?_⟩
+  have h_eq : rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => ∑ x : TensorCompIdx (E := E) r (s + 1) ×
+          TensorCompIdx (E := E) r (s + 1), F x y := by
+    funext y
+    simp only [rhsTerm2_unconditional, hF_def, Fintype.sum_prod_type]
+  rw [h_eq, hΩ_def]
+  exact hC_bd
+
+/-- Chart-locality-free twin of `rhsTerm3_wkpNorm_le`. -/
+private lemma rhsTerm3_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  set F : (TensorCompIdx (E := E) r s ×
+      TensorCompIdx (E := E) r s) → EuclN → ℝ :=
+    fun x y => (covChartMetricGram (I := I) (M := M) g r s α x.1 x.2 y *
+        crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+      ((crossRightLimitComponent_unconditional (I := I) (M := M) g r s i α x.1 :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+    with hF_def
+  have h_data : ∀ x : TensorCompIdx (E := E) r s ×
+      TensorCompIdx (E := E) r s,
+      MemWkp (d := Module.finrank ℝ E) K 2 (F x) Ω ∧
+        ∃ C : ℝ, 0 ≤ C ∧
+          wkpNorm (d := Module.finrank ℝ E) K 2 (F x) Ω
+            ≤ ENNReal.ofReal C *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K := by
+    intro x
+    have h_factor : MemWkp (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossRightLimitComponent_unconditional (I := I) (M := M)
+            g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+      crossRightLimitComponent_memWkp_unconditional (I := I) (M := M)
+        g r s i α x.1 K h_pou
+    have hcoef_chart : ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun y => covChartMetricGram (I := I) (M := M) g r s α x.1 x.2 y *
+          crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ x.2 y) Ω :=
+      (covChartMetricGram_contDiffOn (I := I) (M := M) g r s α x.1 x.2).mul
+        (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2)
+    have h_factor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
+          ((crossRightLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+      rw [crossRightLimitComponent_unconditional]
+      exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
+        (I := I) (M := M) g r s
+        (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+          (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i)) α x.1
+    obtain ⟨h_summand_memWkp, C, hC_nn, hC_bd⟩ :=
+      wkpNorm_smoothCoef_mul_aeZeroFactor_le
+        (I := I) (M := M) α K
+        (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
+        (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
+        hcoef_chart h_factor h_factor_ae_zero
+    refine ⟨?_, ?_⟩
+    · rw [hF_def]; exact h_summand_memWkp
+    obtain ⟨C', hC'_nn, hC'_bd⟩ := wkpNorm_crossRightLimitComponent_le_unconditional
+      (I := I) (M := M) g r s i K
+      (fun β Q => (h_pou β Q).le_of_le (Nat.le_succ K)) α x.1
+    refine ⟨C * C', by positivity, ?_⟩
+    rw [hF_def]
+    have h_aggr_eq :
+        (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+            ∑ Q : TensorCompIdx (E := E) r s,
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                    (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                      (eigenvectorResolvent_unconditional (I := I) (M := M)
+                        g r s i))
+                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    EuclN → ℝ) y)
+                (chartTargetEuclid (I := I) (M := M) β))
+          = aggrCrossRight_unconditional (I := I) (M := M) g r s i α K := by
+      rw [aggrCrossRight_unconditional]; rfl
+    calc
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (fun y => (covChartMetricGram (I := I) (M := M) g r s α x.1 x.2 y *
+            crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+          ((crossRightLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+          ≤ ENNReal.ofReal C *
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((crossRightLimitComponent_unconditional (I := I) (M := M)
+                    g r s i α x.1 :
+                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  EuclN → ℝ) y) Ω := hC_bd
+      _ ≤ ENNReal.ofReal C *
+            (ENNReal.ofReal C' *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+          gcongr
+          rw [hΩ_def]
+          refine hC'_bd.trans ?_
+          rw [h_aggr_eq]
+          gcongr
+          exact aggrCrossRight_le_unconditional (I := I) (M := M)
+            g r s i α P₀ K
+      _ = ENNReal.ofReal (C * C') *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
+  obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_sum_le_const_mul_aggregate
+    (Ω := Ω) hΩ_open F
+    (wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun x => (h_data x).1) (fun x => (h_data x).2)
+  refine ⟨C, hC_nn, ?_⟩
+  have h_eq : rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => ∑ x : TensorCompIdx (E := E) r s ×
+          TensorCompIdx (E := E) r s, F x y := by
+    funext y
+    simp only [rhsTerm3_unconditional, hF_def, Fintype.sum_prod_type]
+  rw [h_eq, hΩ_def]
+  exact hC_bd
+
+/-- Chart-locality-free twin of `rhsTerm4_wkpNorm_le`. -/
+private lemma rhsTerm4_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  obtain ⟨C, hC_nn, hC_bd⟩ :=
+    wkpNorm_covPrincipalRotationCoeffLimit_le_unconditional
+      (I := I) (M := M) g r s i K α P₀ (fun β Q => h_pou β Q)
+  refine ⟨C, hC_nn, ?_⟩
+  rw [rhsTerm4_unconditional]
+  refine le_trans hC_bd ?_
+  gcongr
+  exact aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K
+
+/-- Chart-locality-free twin of `rhsTerm5_wkpNorm_le`. -/
+private lemma rhsTerm5_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  obtain ⟨C, hC_nn, hC_bd⟩ :=
+    wkpNorm_covLowerOrderRotationValueCoeffLimit_le_unconditional
+      (I := I) (M := M) g r s i K α P₀ (fun β Q => h_pou β Q)
+  refine ⟨2 * C, by positivity, ?_⟩
+  rw [rhsTerm5_unconditional]
+  have h_sum_le :
+      aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          + aggrComponent_unconditional (I := I) (M := M) g r s i α K
+        ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+    rw [two_mul]
+    exact add_le_add
+      (aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+      (aggrComponent_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+  refine le_trans hC_bd ?_
+  calc
+    ENNReal.ofReal C *
+        (aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          + aggrComponent_unconditional (I := I) (M := M) g r s i α K)
+        ≤ ENNReal.ofReal C *
+            (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K) := by
+          gcongr
+    _ = ENNReal.ofReal (2 * C) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [← ofReal_two, ← mul_assoc, ← ENNReal.ofReal_mul hC_nn, mul_comm C 2]
+
+/-- Chart-locality-free twin of `weightedGradCoeffDivLimit_sum_wkpNorm_le`. -/
+private lemma weightedGradCoeffDivLimit_sum_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (fun y => ∑ l : Fin (Module.finrank ℝ E),
+            weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+              g r s i α P₀ l y)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have h_data : ∀ l : Fin (Module.finrank ℝ E),
+      MemWkp (d := Module.finrank ℝ E) K 2
+          (weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ l) Ω ∧
+        ∃ C : ℝ, 0 ≤ C ∧
+          wkpNorm (d := Module.finrank ℝ E) K 2
+              (weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                g r s i α P₀ l) Ω
+            ≤ ENNReal.ofReal C *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K := by
+    intro l
+    refine ⟨?_, ?_⟩
+    · rw [hΩ_def]
+      exact weightedGradCoeffDivLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P₀ l K (fun β Q => h_pou β Q)
+    obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_weightedGradCoeffDivLimit_le_unconditional
+      (I := I) (M := M) g r s i K α P₀ l (fun β Q => h_pou β Q)
+    refine ⟨2 * C, by positivity, ?_⟩
+    rw [hΩ_def]
+    refine le_trans hC_bd ?_
+    have h_sum_le :
+        aggrComponent_unconditional (I := I) (M := M) g r s i α K
+            + aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+      rw [two_mul]
+      exact add_le_add
+        (aggrComponent_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+        (aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+    calc
+      ENNReal.ofReal C *
+          (aggrComponent_unconditional (I := I) (M := M) g r s i α K
+            + aggrPartial_unconditional (I := I) (M := M) g r s i α K)
+          ≤ ENNReal.ofReal C *
+              (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+            gcongr
+      _ = ENNReal.ofReal (2 * C) *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [← ofReal_two, ← mul_assoc, ← ENNReal.ofReal_mul hC_nn,
+            mul_comm C 2]
+  exact wkpNorm_sum_le_const_mul_aggregate (Ω := Ω) hΩ_open
+    (fun l => weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+      g r s i α P₀ l)
+    (wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun l => (h_data l).1) (fun l => (h_data l).2)
+
+/-- Chart-locality-free twin of `rhsTerm6_wkpNorm_le`. -/
+private lemma rhsTerm6_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have h_sum_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ∑ l : Fin (Module.finrank ℝ E),
+        weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ l y) Ω :=
+    memWkpFinsetSum hΩ_open
+      (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      (fun l => weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀ l)
+      (fun l _ => weightedGradCoeffDivLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P₀ l K (fun β Q => h_pou β Q))
+  have h_sum_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      y ∉ chartPouKernel (I := I) (M := M) α →
+        (∑ l : Fin (Module.finrank ℝ E),
+          weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ l y) = 0 :=
+    Filter.Eventually.of_forall (fun _y hy =>
+      Finset.sum_eq_zero (fun l _ =>
+        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+          (I := I) (M := M) g r s i α P₀ l hy))
+  obtain ⟨_, C₁, hC₁_nn, hC₁_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le
+    (I := I) (M := M) α K
+    (chartPouKernel_isCompact (I := I) (M := M) α)
+    (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
+    h_sum_memWkp h_sum_ae_zero
+  obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
+    weightedGradCoeffDivLimit_sum_wkpNorm_le_unconditional
+      (I := I) (M := M) g r s i α P₀ K h_pou
+  refine ⟨C₁ * C₂, by positivity, ?_⟩
+  have h_term6_eq : rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => (1 / densityOnEuclid (I := I) g α y) *
+          (∑ l : Fin (Module.finrank ℝ E),
+            weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+              g r s i α P₀ l y) := rfl
+  rw [h_term6_eq]
+  calc
+    wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => (1 / densityOnEuclid (I := I) g α y) *
+          (∑ l : Fin (Module.finrank ℝ E),
+            weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+              g r s i α P₀ l y)) Ω
+        ≤ ENNReal.ofReal C₁ *
+            wkpNorm (d := Module.finrank ℝ E) K 2
+              (fun y => ∑ l : Fin (Module.finrank ℝ E),
+                weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                  g r s i α P₀ l y) Ω := hC₁_bd
+    _ ≤ ENNReal.ofReal C₁ *
+          (ENNReal.ofReal C₂ *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K) := by
+        gcongr
+    _ = ENNReal.ofReal (C₁ * C₂) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [ENNReal.ofReal_mul hC₁_nn, mul_assoc]
+
+/-- Chart-locality-free twin of `crossRightGradCoeffDivLimit_memWkp_local`. -/
+private lemma crossRightGradCoeffDivLimit_memWkp_local_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    MemWkp (d := Module.finrank ℝ E) K 2
+      (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α) := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have h_term7_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀) Ω :=
+    rhsTerm7_memWkp_unconditional (I := I) (M := M) g r s i α P₀ K h_pou
+  have h_term7_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      y ∉ chartPouKernel (I := I) (M := M) α →
+        rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y = 0 :=
+    Filter.Eventually.of_forall (fun y hy_imp => by
+      change (1 / densityOnEuclid (I := I) g α y) *
+        crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ y = 0
+      rw [crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+        (I := I) (M := M) g r s i α P₀ hy_imp, mul_zero])
+  obtain ⟨h_prod_memWkp, _⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le
+    (I := I) (M := M) α K
+    (chartPouKernel_isCompact (I := I) (M := M) α)
+    (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
+    (densityOnEuclid_contDiffOn (I := I) g α)
+    h_term7_memWkp h_term7_ae_zero
+  have h_ae_eq : (fun y => densityOnEuclid (I := I) g α y *
+        rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y)
+      =ᵐ[(volume : Measure EuclN).restrict Ω]
+      crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀ := by
+    refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
+    refine Filter.Eventually.of_forall fun y hy => ?_
+    have hy' : y ∈ chartTargetEuclid (I := I) (M := M) α := hy
+    have h_pos : densityOnEuclid (I := I) g α y ≠ 0 :=
+      (densityOnEuclid_pos (I := I) g α hy').ne'
+    change densityOnEuclid (I := I) g α y *
+        ((1 / densityOnEuclid (I := I) g α y) *
+          crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ y)
+      = crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ y
+    rw [← mul_assoc, mul_one_div, div_self h_pos, one_mul]
+  exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae_eq).mp h_prod_memWkp
+
+/-- Chart-locality-free twin of `rhsTerm7_wkpNorm_le`. -/
+private lemma rhsTerm7_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have h_div_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀) Ω :=
+    crossRightGradCoeffDivLimit_memWkp_local_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+  have h_div_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      y ∉ chartPouKernel (I := I) (M := M) α →
+        crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ y = 0 :=
+    Filter.Eventually.of_forall (fun y hy_imp =>
+      crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+        (I := I) (M := M) g r s i α P₀ hy_imp)
+  obtain ⟨_, C₁, hC₁_nn, hC₁_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le
+    (I := I) (M := M) α K
+    (chartPouKernel_isCompact (I := I) (M := M) α)
+    (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
+    h_div_memWkp h_div_ae_zero
+  obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
+    wkpNorm_crossRightGradCoeffDivLimit_le_unconditional
+      (I := I) (M := M) g r s i α P₀ K (fun β Q => h_pou β Q)
+  refine ⟨C₁ * (2 * C₂), by positivity, ?_⟩
+  have h_term7_eq : rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => (1 / densityOnEuclid (I := I) g α y) *
+          crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ y := rfl
+  rw [h_term7_eq]
+  have h_sum_le :
+      aggrCrossRightLimit_unconditional (I := I) (M := M) g r s i α K
+          + aggrCutoffPartial_unconditional (I := I) (M := M) g r s i α K
+        ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+    rw [two_mul]
+    exact add_le_add
+      (aggrCrossRightLimit_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+      (aggrCutoffPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+  calc
+    wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => (1 / densityOnEuclid (I := I) g α y) *
+          crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ y) Ω
+        ≤ ENNReal.ofReal C₁ *
+            wkpNorm (d := Module.finrank ℝ E) K 2
+              (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+                g r s i α P₀) Ω := hC₁_bd
+    _ ≤ ENNReal.ofReal C₁ *
+          (ENNReal.ofReal C₂ *
+            (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K)) := by
+        rw [hΩ_def]
+        gcongr
+        refine le_trans hC₂_bd ?_
+        gcongr
+        exact h_sum_le
+    _ = ENNReal.ofReal (C₁ * (2 * C₂)) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [ENNReal.ofReal_mul hC₁_nn,
+          ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ofReal_two]
+        ring
+
+end TermBoundsUnconditional
+
+/-! ### The `wkpNorm` of the seven-term bracket (twin) -/
+
+section BracketBoundUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+/-- Chart-locality-free twin of `rhsBracket_wkpNorm_le`. -/
+private lemma rhsBracket_wkpNorm_le_unconditional
+    (h_pou : PouRegularity_unconditional (I := I) (M := M) g r s i K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal C *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have hM1 := rhsTerm1_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM2 := rhsTerm2_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM3 := rhsTerm3_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM4 := rhsTerm4_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM5 := rhsTerm5_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM6 := rhsTerm6_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  have hM7 := rhsTerm7_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K h_pou
+  rw [← hΩ_def] at hM1 hM2 hM3 hM4 hM5 hM6 hM7
+  have hp2 : (1 : ℝ≥0∞) ≤ 2 := by norm_num
+  have hB12 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+        - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hM1 hM2
+  have hB123 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+          - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+        + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open hB12 hM3
+  have hB1234 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+            - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+        - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hB123 hM4
+  have hB12345 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => (((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+              - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+            + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+        - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hB1234 hM5
+  have hB123456 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+              + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+        + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open hB12345 hM6
+  obtain ⟨D1, hD1_nn, hD1⟩ := rhsTerm1_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K
+  obtain ⟨D2, hD2_nn, hD2⟩ := rhsTerm2_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  obtain ⟨D3, hD3_nn, hD3⟩ := rhsTerm3_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  obtain ⟨D4, hD4_nn, hD4⟩ := rhsTerm4_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  obtain ⟨D5, hD5_nn, hD5⟩ := rhsTerm5_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  obtain ⟨D6, hD6_nn, hD6⟩ := rhsTerm6_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  obtain ⟨D7, hD7_nn, hD7⟩ := rhsTerm7_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  rw [← hΩ_def] at hD1 hD2 hD3 hD4 hD5 hD6 hD7
+  refine ⟨D1 + D2 + D3 + D4 + D5 + D6 + D7, by positivity, ?_⟩
+  have h_tri :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        ≤ wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    have h_bracket_eq :
+        rhsBracket_unconditional (I := I) (M := M) g r s i α P₀
+        = fun y =>
+            (((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                  - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+                + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+              - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y := by
+      funext y
+      simp only [rhsBracket_unconditional, Pi.sub_apply, Pi.add_apply]
+    rw [h_bracket_eq]
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB123456 hM7) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_add_le (d := Module.finrank ℝ E)
+      (by norm_num) hΩ_open hB12345 hM6) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB1234 hM5) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB123 hM4) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_add_le (d := Module.finrank ℝ E)
+      (by norm_num) hΩ_open hB12 hM3) ?_
+    refine add_le_add ?_ (le_refl _)
+    exact wkpNorm_sub_le (K := K) hΩ_open hM1 hM2
+  refine le_trans h_tri ?_
+  have h_seven :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀) Ω
+      ≤ ENNReal.ofReal D1 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D2 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D3 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D4 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D5 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D6 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D7 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K :=
+    add_le_add (add_le_add (add_le_add (add_le_add (add_le_add
+      (add_le_add hD1 hD2) hD3) hD4) hD5) hD6) hD7
+  refine le_trans h_seven ?_
+  rw [ENNReal.ofReal_add (by positivity) hD7_nn,
+    ENNReal.ofReal_add (by positivity) hD6_nn,
+    ENNReal.ofReal_add (by positivity) hD5_nn,
+    ENNReal.ofReal_add (by positivity) hD4_nn,
+    ENNReal.ofReal_add (by positivity) hD3_nn,
+    ENNReal.ofReal_add hD1_nn hD2_nn]
+  rw [add_mul, add_mul, add_mul, add_mul, add_mul, add_mul]
+
+end BracketBoundUnconditional
+
+/-! ### The order-`K` `wkpNorm`-graded bound for the chart right-hand side
+(twin) -/
+
+section MainBoundUnconditional
+
+/-- **Chart-locality-free twin of `eigenvectorChartRHS_wkpNorm_le`.** -/
+theorem eigenvectorChartRHS_wkpNorm_le_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (eigenvectorChartRHS_unconditional (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)
+        ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+          (wkpNorm (d := Module.finrank ℝ E) K 2
+              (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                  (tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+                    (tensorResolventL2_isCompactOperator_intrinsic (I := I)
+                      (M := M) g r s) i) α P₀ :
+                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              (chartTargetEuclid (I := I) (M := M) α)
+            + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+                ((∑ Q : TensorCompIdx (E := E) r s,
+                    wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                            (eigenvectorResolvent_unconditional (I := I) (M := M)
+                              g r s i))
+                          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                          EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) β))
+                  + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                      ∑ Q : TensorCompIdx (E := E) r s,
+                        wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                          (fun y => ((tensorL2ChartComponent (I := I) (M := M)
+                              g r s
+                              (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                                (eigenvectorResolvent_unconditional (I := I)
+                                  (M := M) g r s i))
+                              β' Q :
+                              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                              EuclN → ℝ) y)
+                          (chartTargetEuclid (I := I) (M := M) β')))
+            + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+                ∑ Q : TensorCompIdx (E := E) r s,
+                  wkpNorm (d := Module.finrank ℝ E) K 2
+                    (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                        (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                          (eigenvectorResolvent_unconditional (I := I) (M := M)
+                            g r s i))
+                        β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                        EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) β))
+            + (∑ P : TensorCompIdx (E := E) r s,
+                ∑ k : Fin (Module.finrank ℝ E),
+                  wkpNorm (d := Module.finrank ℝ E) K 2
+                    (fun y => ((partialLpLimit_unconditional (I := I) (M := M)
+                        g r s i α P k :
+                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) α))
+            + (∑ p : TensorCompIdx (E := E) r s,
+                wkpNorm (d := Module.finrank ℝ E) K 2
+                  (fun y => ((componentLpLimit_unconditional (I := I) (M := M)
+                      g r s i α p :
+                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    EuclN → ℝ) y)
+                  (chartTargetEuclid (I := I) (M := M) α))
+            + (∑ P : TensorCompIdx (E := E) r s,
+                wkpNorm (d := Module.finrank ℝ E) K 2
+                  (fun y => ((crossRightLimitComponent_unconditional (I := I)
+                      (M := M) g r s i α P :
+                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    EuclN → ℝ) y)
+                  (chartTargetEuclid (I := I) (M := M) α))
+            + (∑ P : TensorCompIdx (E := E) r s,
+                ∑ l : Fin (Module.finrank ℝ E),
+                  wkpNorm (d := Module.finrank ℝ E) K 2
+                    (fun y => ((cutoffPartialLpLimit_unconditional (I := I)
+                        (M := M) g r s i α P l :
+                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) α))) := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have hμ_pos : 0 < i.fst.val := eigenIdx_val_pos (I := I) (M := M) g r s i
+  have hμ_inv_nn : 0 ≤ (i.fst.val)⁻¹ := le_of_lt (inv_pos.mpr hμ_pos)
+  have h_bracket_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    have hM1 := rhsTerm1_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM2 := rhsTerm2_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM3 := rhsTerm3_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM4 := rhsTerm4_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM5 := rhsTerm5_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM6 := rhsTerm6_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    have hM7 := rhsTerm7_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K h_pou
+    rw [← hΩ_def] at hM1 hM2 hM3 hM4 hM5 hM6 hM7
+    have hp2 : (1 : ℝ≥0∞) ≤ 2 := by norm_num
+    have h_bracket_eq :
+        rhsBracket_unconditional (I := I) (M := M) g r s i α P₀
+        = fun y =>
+            (((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                  - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+                + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+              - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y := by
+      funext y
+      simp only [rhsBracket_unconditional, Pi.sub_apply, Pi.add_apply]
+    rw [h_bracket_eq]
+    exact MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+      (MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open
+        (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+          (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+            (MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open
+              (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hM1 hM2) hM3)
+            hM4) hM5) hM6) hM7
+  obtain ⟨C, hC_nn, hC_bd⟩ := rhsBracket_wkpNorm_le_unconditional
+    (I := I) (M := M) g r s i α P₀ K h_pou
+  rw [← hΩ_def] at hC_bd
+  refine ⟨C, hC_nn, ?_⟩
+  have h_smul_eq :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (eigenvectorChartRHS_unconditional (I := I) (M := M)
+            g r s i α P₀) Ω
+        = ENNReal.ofReal (i.fst.val)⁻¹ *
+          wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    rw [eigenvectorChartRHS_eq_smul_bracket_unconditional (I := I) (M := M)
+      g r s i α P₀]
+    have h := wkpNorm_const_smul (d := Module.finrank ℝ E)
+      (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_bracket_memWkp (i.fst.val)⁻¹
+    rw [h, Real.enorm_of_nonneg hμ_inv_nn]
+  rw [h_smul_eq]
+  have h_step :
+      ENNReal.ofReal (i.fst.val)⁻¹ *
+          wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+    rw [ENNReal.ofReal_mul hμ_inv_nn, mul_assoc]
+    gcongr
+  refine le_trans h_step (le_of_eq ?_)
+  simp only [hΩ_def, wkpRhsAggregate_unconditional, aggrUchart_unconditional,
+    aggrCrossLeft_unconditional, aggrCrossRight_unconditional,
+    aggrPartial_unconditional, aggrComponent_unconditional,
+    aggrCrossRightLimit_unconditional, aggrCutoffPartial_unconditional,
+    resInclNorm_unconditional]
+
+end MainBoundUnconditional
+
+/-! ### Eigenbasis-uniform order-`K` `wkpNorm`-graded bound (twins) -/
+
+section UniformTermBoundsUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm1_wkpNorm_le_uniform`. -/
+private lemma rhsTerm1_wkpNorm_le_uniform_unconditional :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  refine ⟨1, by norm_num, fun i => ?_⟩
+  rw [ENNReal.ofReal_one, one_mul]
+  exact le_trans (le_of_eq rfl)
+    (aggrUchart_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm2_wkpNorm_le_uniform`. -/
+private lemma rhsTerm2_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  set F : (TensorCompIdx (E := E) r (s + 1) ×
+        TensorCompIdx (E := E) r (s + 1)) →
+      TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ :=
+    fun x i y =>
+      (covChartMetricGram (I := I) (M := M) g r (s + 1) α x.1 x.2 y *
+          crossLeftTestCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+        ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+          g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+    with hF_def
+  have h_data : ∀ x : TensorCompIdx (E := E) r (s + 1) ×
+      TensorCompIdx (E := E) r (s + 1),
+      ∃ C : ℝ, 0 ≤ C ∧
+        ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+          MemWkp (d := Module.finrank ℝ E) K 2 (F x i) Ω ∧
+            wkpNorm (d := Module.finrank ℝ E) K 2 (F x i) Ω
+              ≤ ENNReal.ofReal C *
+                wkpRhsAggregate_unconditional (I := I) (M := M)
+                  g r s i α P₀ K := by
+    intro x
+    have hcoef_chart : ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun y => covChartMetricGram (I := I) (M := M) g r (s + 1) α x.1 x.2 y *
+          crossLeftTestCoeff (I := I) (M := M) g r s α P₀ x.2 y) Ω :=
+      (covChartMetricGram_contDiffOn (I := I) (M := M)
+          g r (s + 1) α x.1 x.2).mul
+        (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2)
+    obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
+      (I := I) (M := M) α K
+      (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
+      (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
+      hcoef_chart
+    obtain ⟨C', hC'_nn, hC'_bd⟩ :=
+      wkpNorm_crossLeftLimitComponent_le_uniform_unconditional
+        (I := I) (M := M) g r s K h_pou α x.1
+    refine ⟨C * C', by positivity, fun i => ?_⟩
+    have h_factor : MemWkp (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+            g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+      crossLeftLimitComponent_memWkp_unconditional (I := I) (M := M)
+        g r s i α x.1 K (h_pou i)
+    have h_factor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
+          ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+      rw [crossLeftLimitComponent_unconditional]
+      exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
+        (I := I) (M := M) g r (s + 1)
+        (tensorCovGradL2Compl (I := I) (M := M) g r s
+          (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i)) α x.1
+    obtain ⟨h_summand_memWkp, h_summand_bd⟩ := hC_bd
+      (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+          g r s i α x.1 :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      h_factor h_factor_ae_zero
+    refine ⟨h_summand_memWkp, ?_⟩
+    have h_aggr_eq :
+        (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+            ((∑ Q : TensorCompIdx (E := E) r s,
+                wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                  (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                      (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                        (eigenvectorResolvent_unconditional (I := I) (M := M)
+                          g r s i))
+                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      EuclN → ℝ) y)
+                  (chartTargetEuclid (I := I) (M := M) β))
+              + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                  ∑ Q : TensorCompIdx (E := E) r s,
+                    wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                            (eigenvectorResolvent_unconditional (I := I) (M := M)
+                              g r s i))
+                          β' Q :
+                          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                          EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) β')))
+          = aggrCrossLeft_unconditional (I := I) (M := M) g r s i α K := by
+      rw [aggrCrossLeft_unconditional]; rfl
+    calc
+      wkpNorm (d := Module.finrank ℝ E) K 2 (F x i) Ω
+          ≤ ENNReal.ofReal C *
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((crossLeftLimitComponent_unconditional (I := I) (M := M)
+                    g r s i α x.1 :
+                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  EuclN → ℝ) y) Ω := h_summand_bd
+      _ ≤ ENNReal.ofReal C *
+            (ENNReal.ofReal C' *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+          gcongr
+          rw [hΩ_def]
+          refine (hC'_bd i).trans ?_
+          rw [h_aggr_eq]
+          gcongr
+          exact aggrCrossLeft_le_unconditional (I := I) (M := M)
+            g r s i α P₀ K
+      _ = ENNReal.ofReal (C * C') *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
+  choose Cx hCx_nn hCx using h_data
+  obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_sum_le_const_mul_aggregate_uniform
+    (Ω := Ω) hΩ_open F
+    (fun i => wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun x i => (hCx x i).1)
+    (fun x => ⟨Cx x, hCx_nn x, fun i => (hCx x i).2⟩)
+  refine ⟨C, hC_nn, fun i => ?_⟩
+  have h_eq : rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => ∑ x : TensorCompIdx (E := E) r (s + 1) ×
+          TensorCompIdx (E := E) r (s + 1), F x i y := by
+    funext y
+    simp only [rhsTerm2_unconditional, hF_def, Fintype.sum_prod_type]
+  rw [h_eq, hΩ_def]
+  exact hC_bd i
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm3_wkpNorm_le_uniform`. -/
+private lemma rhsTerm3_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  set F : (TensorCompIdx (E := E) r s ×
+        TensorCompIdx (E := E) r s) →
+      TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ :=
+    fun x i y =>
+      (covChartMetricGram (I := I) (M := M) g r s α x.1 x.2 y *
+          crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ x.2 y) *
+        ((crossRightLimitComponent_unconditional (I := I) (M := M)
+          g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+    with hF_def
+  have h_pou_K : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) K 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β) :=
+    fun i β Q => (h_pou i β Q).le_of_le (Nat.le_succ K)
+  have h_data : ∀ x : TensorCompIdx (E := E) r s ×
+      TensorCompIdx (E := E) r s,
+      ∃ C : ℝ, 0 ≤ C ∧
+        ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+          MemWkp (d := Module.finrank ℝ E) K 2 (F x i) Ω ∧
+            wkpNorm (d := Module.finrank ℝ E) K 2 (F x i) Ω
+              ≤ ENNReal.ofReal C *
+                wkpRhsAggregate_unconditional (I := I) (M := M)
+                  g r s i α P₀ K := by
+    intro x
+    have hcoef_chart : ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun y => covChartMetricGram (I := I) (M := M) g r s α x.1 x.2 y *
+          crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ x.2 y) Ω :=
+      (covChartMetricGram_contDiffOn (I := I) (M := M) g r s α x.1 x.2).mul
+        (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ x.2)
+    obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
+      (I := I) (M := M) α K
+      (cutoffChartKernelEuclid_isCompact (I := I) (M := M) α)
+      (cutoffChartKernelEuclid_subset_chartTargetEuclid (I := I) (M := M) α)
+      hcoef_chart
+    obtain ⟨C', hC'_nn, hC'_bd⟩ :=
+      wkpNorm_crossRightLimitComponent_le_uniform_unconditional
+        (I := I) (M := M) g r s K h_pou_K α x.1
+    refine ⟨C * C', by positivity, fun i => ?_⟩
+    have h_factor : MemWkp (d := Module.finrank ℝ E) K 2
+        (fun y => ((crossRightLimitComponent_unconditional (I := I) (M := M)
+            g r s i α x.1 :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+      crossRightLimitComponent_memWkp_unconditional (I := I) (M := M)
+        g r s i α x.1 K (h_pou i)
+    have h_factor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
+          ((crossRightLimitComponent_unconditional (I := I) (M := M)
+              g r s i α x.1 :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+      rw [crossRightLimitComponent_unconditional]
+      exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
+        (I := I) (M := M) g r s
+        (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+          (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i)) α x.1
+    obtain ⟨h_summand_memWkp, h_summand_bd⟩ := hC_bd
+      (fun y => ((crossRightLimitComponent_unconditional (I := I) (M := M)
+          g r s i α x.1 :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      h_factor h_factor_ae_zero
+    refine ⟨h_summand_memWkp, ?_⟩
+    have h_aggr_eq :
+        (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+            ∑ Q : TensorCompIdx (E := E) r s,
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                    (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                      (eigenvectorResolvent_unconditional (I := I) (M := M)
+                        g r s i))
+                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    EuclN → ℝ) y)
+                (chartTargetEuclid (I := I) (M := M) β))
+          = aggrCrossRight_unconditional (I := I) (M := M) g r s i α K := by
+      rw [aggrCrossRight_unconditional]; rfl
+    calc
+      wkpNorm (d := Module.finrank ℝ E) K 2 (F x i) Ω
+          ≤ ENNReal.ofReal C *
+              wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((crossRightLimitComponent_unconditional (I := I)
+                    (M := M) g r s i α x.1 :
+                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  EuclN → ℝ) y) Ω := h_summand_bd
+      _ ≤ ENNReal.ofReal C *
+            (ENNReal.ofReal C' *
+              wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+          gcongr
+          rw [hΩ_def]
+          refine (hC'_bd i).trans ?_
+          rw [h_aggr_eq]
+          gcongr
+          exact aggrCrossRight_le_unconditional (I := I) (M := M)
+            g r s i α P₀ K
+      _ = ENNReal.ofReal (C * C') *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
+  choose Cx hCx_nn hCx using h_data
+  obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_sum_le_const_mul_aggregate_uniform
+    (Ω := Ω) hΩ_open F
+    (fun i => wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun x i => (hCx x i).1)
+    (fun x => ⟨Cx x, hCx_nn x, fun i => (hCx x i).2⟩)
+  refine ⟨C, hC_nn, fun i => ?_⟩
+  have h_eq : rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => ∑ x : TensorCompIdx (E := E) r s ×
+          TensorCompIdx (E := E) r s, F x i y := by
+    funext y
+    simp only [rhsTerm3_unconditional, hF_def, Fintype.sum_prod_type]
+  rw [h_eq, hΩ_def]
+  exact hC_bd i
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm4_wkpNorm_le_uniform`. -/
+private lemma rhsTerm4_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  obtain ⟨C, hC_nn, hC_bd⟩ :=
+    wkpNorm_covPrincipalRotationCoeffLimit_le_uniform_unconditional
+      (I := I) (M := M) g r s K α P₀ h_pou
+  refine ⟨C, hC_nn, fun i => ?_⟩
+  rw [rhsTerm4_unconditional]
+  refine le_trans (hC_bd i) ?_
+  gcongr
+  exact aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm5_wkpNorm_le_uniform`. -/
+private lemma rhsTerm5_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  obtain ⟨C, hC_nn, hC_bd⟩ :=
+    wkpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform_unconditional
+      (I := I) (M := M) g r s K α P₀ h_pou
+  refine ⟨2 * C, by positivity, fun i => ?_⟩
+  rw [rhsTerm5_unconditional]
+  have h_sum_le :
+      aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          + aggrComponent_unconditional (I := I) (M := M) g r s i α K
+        ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+    rw [two_mul]
+    exact add_le_add
+      (aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+      (aggrComponent_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+  refine le_trans (hC_bd i) ?_
+  calc
+    ENNReal.ofReal C *
+        (aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          + aggrComponent_unconditional (I := I) (M := M) g r s i α K)
+        ≤ ENNReal.ofReal C *
+            (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K) := by
+          gcongr
+    _ = ENNReal.ofReal (2 * C) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [← ofReal_two, ← mul_assoc, ← ENNReal.ofReal_mul hC_nn, mul_comm C 2]
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `weightedGradCoeffDivLimit_sum_wkpNorm_le_uniform`. -/
+private lemma weightedGradCoeffDivLimit_sum_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (fun y => ∑ l : Fin (Module.finrank ℝ E),
+              weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                g r s i α P₀ l y)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have h_data : ∀ l : Fin (Module.finrank ℝ E),
+      ∃ C : ℝ, 0 ≤ C ∧
+        ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+          MemWkp (d := Module.finrank ℝ E) K 2
+              (weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                g r s i α P₀ l) Ω ∧
+            wkpNorm (d := Module.finrank ℝ E) K 2
+                (weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                  g r s i α P₀ l) Ω
+              ≤ ENNReal.ofReal C *
+                wkpRhsAggregate_unconditional (I := I) (M := M)
+                  g r s i α P₀ K := by
+    intro l
+    obtain ⟨C, hC_nn, hC_bd⟩ :=
+      wkpNorm_weightedGradCoeffDivLimit_le_uniform_unconditional
+        (I := I) (M := M) g r s K α P₀ l h_pou
+    refine ⟨2 * C, by positivity, fun i => ?_⟩
+    refine ⟨?_, ?_⟩
+    · rw [hΩ_def]
+      exact weightedGradCoeffDivLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P₀ l K (fun β Q => h_pou i β Q)
+    rw [hΩ_def]
+    refine le_trans (hC_bd i) ?_
+    have h_sum_le :
+        aggrComponent_unconditional (I := I) (M := M) g r s i α K
+            + aggrPartial_unconditional (I := I) (M := M) g r s i α K
+          ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+      rw [two_mul]
+      exact add_le_add
+        (aggrComponent_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+        (aggrPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+    calc
+      ENNReal.ofReal C *
+          (aggrComponent_unconditional (I := I) (M := M) g r s i α K
+            + aggrPartial_unconditional (I := I) (M := M) g r s i α K)
+          ≤ ENNReal.ofReal C *
+              (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+                g r s i α P₀ K) := by
+            gcongr
+      _ = ENNReal.ofReal (2 * C) *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K := by
+          rw [← ofReal_two, ← mul_assoc, ← ENNReal.ofReal_mul hC_nn,
+            mul_comm C 2]
+  choose Cl hCl_nn hCl using h_data
+  obtain ⟨C, hC_nn, hC_bd⟩ := wkpNorm_sum_le_const_mul_aggregate_uniform
+    (Ω := Ω) hΩ_open
+    (fun l i => weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+      g r s i α P₀ l)
+    (fun i => wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K)
+    (fun l i => (hCl l i).1)
+    (fun l => ⟨Cl l, hCl_nn l, fun i => (hCl l i).2⟩)
+  exact ⟨C, hC_nn, fun i => hC_bd i⟩
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm6_wkpNorm_le_uniform`. -/
+private lemma rhsTerm6_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  obtain ⟨C₁, hC₁_nn, hC₁_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
+    (I := I) (M := M) α K
+    (chartPouKernel_isCompact (I := I) (M := M) α)
+    (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
+  obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
+    weightedGradCoeffDivLimit_sum_wkpNorm_le_uniform_unconditional
+      (I := I) (M := M) g r s α P₀ K h_pou
+  refine ⟨C₁ * C₂, by positivity, fun i => ?_⟩
+  have h_sum_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ∑ l : Fin (Module.finrank ℝ E),
+        weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ l y) Ω :=
+    memWkpFinsetSum hΩ_open
+      (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      (fun l => weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀ l)
+      (fun l _ => weightedGradCoeffDivLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P₀ l K (fun β Q => h_pou i β Q))
+  have h_sum_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      y ∉ chartPouKernel (I := I) (M := M) α →
+        (∑ l : Fin (Module.finrank ℝ E),
+          weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ l y) = 0 :=
+    Filter.Eventually.of_forall (fun _y hy =>
+      Finset.sum_eq_zero (fun l _ =>
+        weightedGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+          (I := I) (M := M) g r s i α P₀ l hy))
+  obtain ⟨_, h_coef_bd⟩ := hC₁_bd
+    (fun y => ∑ l : Fin (Module.finrank ℝ E),
+      weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀ l y)
+    h_sum_memWkp h_sum_ae_zero
+  have h_term6_eq : rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => (1 / densityOnEuclid (I := I) g α y) *
+          (∑ l : Fin (Module.finrank ℝ E),
+            weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+              g r s i α P₀ l y) := rfl
+  rw [h_term6_eq]
+  calc
+    wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => (1 / densityOnEuclid (I := I) g α y) *
+          (∑ l : Fin (Module.finrank ℝ E),
+            weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+              g r s i α P₀ l y)) Ω
+        ≤ ENNReal.ofReal C₁ *
+            wkpNorm (d := Module.finrank ℝ E) K 2
+              (fun y => ∑ l : Fin (Module.finrank ℝ E),
+                weightedGradCoeffDivLimit_unconditional (I := I) (M := M)
+                  g r s i α P₀ l y) Ω := h_coef_bd
+    _ ≤ ENNReal.ofReal C₁ *
+          (ENNReal.ofReal C₂ *
+            wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K) := by
+        gcongr
+        exact hC₂_bd i
+    _ = ENNReal.ofReal (C₁ * C₂) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [ENNReal.ofReal_mul hC₁_nn, mul_assoc]
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsTerm7_wkpNorm_le_uniform`. -/
+private lemma rhsTerm7_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  obtain ⟨C₁, hC₁_nn, hC₁_bd⟩ := wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
+    (I := I) (M := M) α K
+    (chartPouKernel_isCompact (I := I) (M := M) α)
+    (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
+  obtain ⟨C₂, hC₂_nn, hC₂_bd⟩ :=
+    wkpNorm_crossRightGradCoeffDivLimit_le_uniform_unconditional
+      (I := I) (M := M) g r s α P₀ K h_pou
+  refine ⟨C₁ * (2 * C₂), by positivity, fun i => ?_⟩
+  have h_div_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+        g r s i α P₀) Ω :=
+    crossRightGradCoeffDivLimit_memWkp_local_unconditional (I := I) (M := M)
+      g r s i α P₀ K (fun β Q => h_pou i β Q)
+  have h_div_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      y ∉ chartPouKernel (I := I) (M := M) α →
+        crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+          g r s i α P₀ y = 0 :=
+    Filter.Eventually.of_forall (fun y hy_imp =>
+      crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel_unconditional
+        (I := I) (M := M) g r s i α P₀ hy_imp)
+  obtain ⟨_, h_coef_bd⟩ := hC₁_bd
+    (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+      g r s i α P₀)
+    h_div_memWkp h_div_ae_zero
+  have h_term7_eq : rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀
+      = fun y => (1 / densityOnEuclid (I := I) g α y) *
+          crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ y := rfl
+  rw [h_term7_eq]
+  have h_sum_le :
+      aggrCrossRightLimit_unconditional (I := I) (M := M) g r s i α K
+          + aggrCutoffPartial_unconditional (I := I) (M := M) g r s i α K
+        ≤ 2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+    rw [two_mul]
+    exact add_le_add
+      (aggrCrossRightLimit_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+      (aggrCutoffPartial_le_unconditional (I := I) (M := M) g r s i α P₀ K)
+  calc
+    wkpNorm (d := Module.finrank ℝ E) K 2
+        (fun y => (1 / densityOnEuclid (I := I) g α y) *
+          crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+            g r s i α P₀ y) Ω
+        ≤ ENNReal.ofReal C₁ *
+            wkpNorm (d := Module.finrank ℝ E) K 2
+              (crossRightGradCoeffDivLimit_unconditional (I := I) (M := M)
+                g r s i α P₀) Ω := h_coef_bd
+    _ ≤ ENNReal.ofReal C₁ *
+          (ENNReal.ofReal C₂ *
+            (2 * wkpRhsAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ K)) := by
+        gcongr
+        refine le_trans (hC₂_bd i) ?_
+        gcongr
+        exact h_sum_le
+    _ = ENNReal.ofReal (C₁ * (2 * C₂)) *
+          wkpRhsAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ K := by
+        rw [ENNReal.ofReal_mul hC₁_nn,
+          ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ofReal_two]
+        ring
+
+end UniformTermBoundsUnconditional
+
+/-! ### The eigenbasis-uniform seven-term bracket `wkpNorm` bound (twin) -/
+
+section UniformBracketBoundUnconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+
+set_option linter.unusedSectionVars false in
+/-- Chart-locality-free twin of `rhsBracket_wkpNorm_le_uniform`. -/
+private lemma rhsBracket_wkpNorm_le_uniform_unconditional
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal C *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+  classical
+  obtain ⟨D1, hD1_nn, hD1⟩ := rhsTerm1_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K
+  obtain ⟨D2, hD2_nn, hD2⟩ := rhsTerm2_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  obtain ⟨D3, hD3_nn, hD3⟩ := rhsTerm3_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  obtain ⟨D4, hD4_nn, hD4⟩ := rhsTerm4_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  obtain ⟨D5, hD5_nn, hD5⟩ := rhsTerm5_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  obtain ⟨D6, hD6_nn, hD6⟩ := rhsTerm6_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  obtain ⟨D7, hD7_nn, hD7⟩ := rhsTerm7_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  refine ⟨D1 + D2 + D3 + D4 + D5 + D6 + D7, by positivity, fun i => ?_⟩
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have hM1 := rhsTerm1_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM2 := rhsTerm2_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM3 := rhsTerm3_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM4 := rhsTerm4_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM5 := rhsTerm5_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM6 := rhsTerm6_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  have hM7 := rhsTerm7_memWkp_unconditional (I := I) (M := M)
+    g r s i α P₀ K (h_pou i)
+  rw [← hΩ_def] at hM1 hM2 hM3 hM4 hM5 hM6 hM7
+  have hp2 : (1 : ℝ≥0∞) ≤ 2 := by norm_num
+  have hB12 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+        - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hM1 hM2
+  have hB123 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+          - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+        + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open hB12 hM3
+  have hB1234 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+            - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+        - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hB123 hM4
+  have hB12345 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => (((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+              - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+            + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+        - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hB1234 hM5
+  have hB123456 : MemWkp (d := Module.finrank ℝ E) K 2
+      (fun y => ((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+              + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+        + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y) Ω :=
+    MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open hB12345 hM6
+  have hD1i := hD1 i
+  have hD2i := hD2 i
+  have hD3i := hD3 i
+  have hD4i := hD4 i
+  have hD5i := hD5 i
+  have hD6i := hD6 i
+  have hD7i := hD7 i
+  have h_tri :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        ≤ wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀) Ω
+          + wkpNorm (d := Module.finrank ℝ E) K 2
+              (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    have h_bracket_eq :
+        rhsBracket_unconditional (I := I) (M := M) g r s i α P₀
+        = fun y =>
+            (((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                  - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+                + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+              - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y := by
+      funext y
+      simp only [rhsBracket_unconditional, Pi.sub_apply, Pi.add_apply]
+    rw [h_bracket_eq]
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB123456 hM7) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_add_le (d := Module.finrank ℝ E)
+      (by norm_num) hΩ_open hB12345 hM6) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB1234 hM5) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_sub_le (K := K) hΩ_open hB123 hM4) ?_
+    refine add_le_add ?_ (le_refl _)
+    refine le_trans (wkpNorm_add_le (d := Module.finrank ℝ E)
+      (by norm_num) hΩ_open hB12 hM3) ?_
+    refine add_le_add ?_ (le_refl _)
+    exact wkpNorm_sub_le (K := K) hΩ_open hM1 hM2
+  refine le_trans h_tri ?_
+  have h_seven :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        + wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀) Ω
+      ≤ ENNReal.ofReal D1 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D2 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D3 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D4 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D5 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D6 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+          + ENNReal.ofReal D7 *
+            wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K :=
+    add_le_add (add_le_add (add_le_add (add_le_add (add_le_add
+      (add_le_add hD1i hD2i) hD3i) hD4i) hD5i) hD6i) hD7i
+  refine le_trans h_seven ?_
+  rw [ENNReal.ofReal_add (by positivity) hD7_nn,
+    ENNReal.ofReal_add (by positivity) hD6_nn,
+    ENNReal.ofReal_add (by positivity) hD5_nn,
+    ENNReal.ofReal_add (by positivity) hD4_nn,
+    ENNReal.ofReal_add (by positivity) hD3_nn,
+    ENNReal.ofReal_add hD1_nn hD2_nn]
+  rw [add_mul, add_mul, add_mul, add_mul, add_mul, add_mul]
+
+end UniformBracketBoundUnconditional
+
+/-! ### The eigenbasis-uniform order-`K` `wkpNorm`-graded bound (twin) -/
+
+section UniformMainBoundUnconditional
+
+/-- **Chart-locality-free twin of `eigenvectorChartRHS_wkpNorm_le_uniform`.** -/
+theorem eigenvectorChartRHS_wkpNorm_le_uniform_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        wkpNorm (d := Module.finrank ℝ E) K 2
+            (eigenvectorChartRHS_unconditional (I := I) (M := M) g r s i α P₀)
+            (chartTargetEuclid (I := I) (M := M) α)
+          ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+            (wkpNorm (d := Module.finrank ℝ E) K 2
+                (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                    (tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+                      (tensorResolventL2_isCompactOperator_intrinsic (I := I)
+                        (M := M) g r s) i) α P₀ :
+                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                (chartTargetEuclid (I := I) (M := M) α)
+              + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+                  ((∑ Q : TensorCompIdx (E := E) r s,
+                      wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                        (fun y => ((tensorL2ChartComponent (I := I) (M := M)
+                            g r s
+                            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                              (eigenvectorResolvent_unconditional (I := I)
+                                (M := M) g r s i))
+                            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                            EuclN → ℝ) y)
+                        (chartTargetEuclid (I := I) (M := M) β))
+                    + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
+                        ∑ Q : TensorCompIdx (E := E) r s,
+                          wkpNorm (d := Module.finrank ℝ E) (K + 1) 2
+                            (fun y => ((tensorL2ChartComponent (I := I) (M := M)
+                                g r s
+                                (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                                  (eigenvectorResolvent_unconditional (I := I)
+                                    (M := M) g r s i))
+                                β' Q :
+                                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                                EuclN → ℝ) y)
+                            (chartTargetEuclid (I := I) (M := M) β')))
+              + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
+                  ∑ Q : TensorCompIdx (E := E) r s,
+                    wkpNorm (d := Module.finrank ℝ E) K 2
+                      (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                          (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                            (eigenvectorResolvent_unconditional (I := I) (M := M)
+                              g r s i))
+                          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                          EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) β))
+              + (∑ P : TensorCompIdx (E := E) r s,
+                  ∑ k : Fin (Module.finrank ℝ E),
+                    wkpNorm (d := Module.finrank ℝ E) K 2
+                      (fun y => ((partialLpLimit_unconditional (I := I) (M := M)
+                          g r s i α P k :
+                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                        EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) α))
+              + (∑ p : TensorCompIdx (E := E) r s,
+                  wkpNorm (d := Module.finrank ℝ E) K 2
+                    (fun y => ((componentLpLimit_unconditional (I := I) (M := M)
+                        g r s i α p :
+                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) α))
+              + (∑ P : TensorCompIdx (E := E) r s,
+                  wkpNorm (d := Module.finrank ℝ E) K 2
+                    (fun y => ((crossRightLimitComponent_unconditional (I := I)
+                        (M := M) g r s i α P :
+                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      EuclN → ℝ) y)
+                    (chartTargetEuclid (I := I) (M := M) α))
+              + (∑ P : TensorCompIdx (E := E) r s,
+                  ∑ l : Fin (Module.finrank ℝ E),
+                    wkpNorm (d := Module.finrank ℝ E) K 2
+                      (fun y => ((cutoffPartialLpLimit_unconditional (I := I)
+                          (M := M) g r s i α P l :
+                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                        EuclN → ℝ) y)
+                      (chartTargetEuclid (I := I) (M := M) α))) := by
+  classical
+  obtain ⟨C, hC_nn, hC_bd⟩ := rhsBracket_wkpNorm_le_uniform_unconditional
+    (I := I) (M := M) g r s α P₀ K h_pou
+  refine ⟨C, hC_nn, fun i => ?_⟩
+  set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
+  have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
+  have hμ_pos : 0 < i.fst.val := eigenIdx_val_pos (I := I) (M := M) g r s i
+  have hμ_inv_nn : 0 ≤ (i.fst.val)⁻¹ := le_of_lt (inv_pos.mpr hμ_pos)
+  have h_bracket_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
+      (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    have hM1 := rhsTerm1_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM2 := rhsTerm2_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM3 := rhsTerm3_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM4 := rhsTerm4_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM5 := rhsTerm5_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM6 := rhsTerm6_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    have hM7 := rhsTerm7_memWkp_unconditional (I := I) (M := M)
+      g r s i α P₀ K (h_pou i)
+    rw [← hΩ_def] at hM1 hM2 hM3 hM4 hM5 hM6 hM7
+    have hp2 : (1 : ℝ≥0∞) ≤ 2 := by norm_num
+    have h_bracket_eq :
+        rhsBracket_unconditional (I := I) (M := M) g r s i α P₀
+        = fun y =>
+            (((((rhsTerm1_unconditional (I := I) (M := M) g r s i α P₀ y
+                  - rhsTerm2_unconditional (I := I) (M := M) g r s i α P₀ y)
+                + rhsTerm3_unconditional (I := I) (M := M) g r s i α P₀ y)
+              - rhsTerm4_unconditional (I := I) (M := M) g r s i α P₀ y)
+            - rhsTerm5_unconditional (I := I) (M := M) g r s i α P₀ y)
+          + rhsTerm6_unconditional (I := I) (M := M) g r s i α P₀ y)
+          - rhsTerm7_unconditional (I := I) (M := M) g r s i α P₀ y := by
+      funext y
+      simp only [rhsBracket_unconditional, Pi.sub_apply, Pi.add_apply]
+    rw [h_bracket_eq]
+    exact MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+      (MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open
+        (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+          (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open
+            (MemWkp.add (d := Module.finrank ℝ E) hp2 hΩ_open
+              (MemWkp.sub (d := Module.finrank ℝ E) hp2 hΩ_open hM1 hM2) hM3)
+            hM4) hM5) hM6) hM7
+  have hC_bd_i := hC_bd i
+  have h_smul_eq :
+      wkpNorm (d := Module.finrank ℝ E) K 2
+          (eigenvectorChartRHS_unconditional (I := I) (M := M)
+            g r s i α P₀) Ω
+        = ENNReal.ofReal (i.fst.val)⁻¹ *
+          wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω := by
+    rw [eigenvectorChartRHS_eq_smul_bracket_unconditional (I := I) (M := M)
+      g r s i α P₀]
+    have h := wkpNorm_const_smul (d := Module.finrank ℝ E)
+      (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_bracket_memWkp (i.fst.val)⁻¹
+    rw [h, Real.enorm_of_nonneg hμ_inv_nn]
+  rw [h_smul_eq]
+  have h_step :
+      ENNReal.ofReal (i.fst.val)⁻¹ *
+          wkpNorm (d := Module.finrank ℝ E) K 2
+            (rhsBracket_unconditional (I := I) (M := M) g r s i α P₀) Ω
+        ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+          wkpRhsAggregate_unconditional (I := I) (M := M) g r s i α P₀ K := by
+    rw [ENNReal.ofReal_mul hμ_inv_nn, mul_assoc]
+    gcongr
+  refine le_trans h_step (le_of_eq ?_)
+  simp only [hΩ_def, wkpRhsAggregate_unconditional, aggrUchart_unconditional,
+    aggrCrossLeft_unconditional, aggrCrossRight_unconditional,
+    aggrPartial_unconditional, aggrComponent_unconditional,
+    aggrCrossRightLimit_unconditional, aggrCutoffPartial_unconditional,
+    resInclNorm_unconditional]
+
+end UniformMainBoundUnconditional
+
+end Unconditional
+
 end TensorSpectral
 end Parabolic
 end Analysis
