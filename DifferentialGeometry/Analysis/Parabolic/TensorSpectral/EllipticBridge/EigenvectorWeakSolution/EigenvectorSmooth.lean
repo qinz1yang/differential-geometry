@@ -326,6 +326,143 @@ lemma tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source
         ((eigenvectorSmoothChart (I := I) (M := M) g r s h_atlas i α).toSection x)
       from rfl, hsec, map_zero, map_zero]
 
+/-! ## Chart-locality-free twins
+
+The declarations above carry the uniform-Sobolev hypothesis `h_atlas`, which is
+false on a general closed manifold. The twins below prove the same statements
+re-keyed onto the intrinsic compact-operator eigenbasis, via the chart-locality-free
+existence theorem `eigenvectorChartComponent_exists_smooth_representative_unconditional`
+(itself keyed on `eigenvectorChartComponentFun_ofCompact`), so they hold
+unconditionally. -/
+
+section Unconditional
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+  (i : TensorEigenIdx (I := I) (M := M) g r s)
+
+/-- Chart-locality-free twin of `chosenComp`. -/
+def chosenComp_unconditional (α : M) (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  Classical.choose
+    (eigenvectorChartComponent_exists_smooth_representative_unconditional
+      (I := I) (M := M) g r s i α P)
+
+/-- Chart-locality-free twin of `chosenComp_contDiffOn`. -/
+private lemma chosenComp_contDiffOn_unconditional
+    (α : M) (P : TensorCompIdx (E := E) r s) :
+    ContDiffOn ℝ ∞ (chosenComp_unconditional (I := I) (M := M) g r s i α P)
+      (chartTargetEuclid (I := I) (M := M) α) :=
+  (Classical.choose_spec
+    (eigenvectorChartComponent_exists_smooth_representative_unconditional
+      (I := I) (M := M) g r s i α P)).1
+
+/-- Chart-locality-free twin of `chosenComp_hasCompactSupport`. -/
+private lemma chosenComp_hasCompactSupport_unconditional
+    (α : M) (P : TensorCompIdx (E := E) r s) :
+    HasCompactSupport (chosenComp_unconditional (I := I) (M := M) g r s i α P) :=
+  (Classical.choose_spec
+    (eigenvectorChartComponent_exists_smooth_representative_unconditional
+      (I := I) (M := M) g r s i α P)).2.1
+
+/-- Chart-locality-free twin of `chosenComp_tsupport`. -/
+private lemma chosenComp_tsupport_unconditional (α : M) (P : TensorCompIdx (E := E) r s) :
+    tsupport (chosenComp_unconditional (I := I) (M := M) g r s i α P) ⊆
+      chartTargetEuclid (I := I) (M := M) α :=
+  (Classical.choose_spec
+    (eigenvectorChartComponent_exists_smooth_representative_unconditional
+      (I := I) (M := M) g r s i α P)).2.2.1
+
+/-- Chart-locality-free twin of `chosenComp_ae_eq`. -/
+lemma chosenComp_ae_eq_unconditional (α : M) (P : TensorCompIdx (E := E) r s) :
+    chosenComp_unconditional (I := I) (M := M) g r s i α P
+      =ᵐ[(volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) α)]
+      eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P :=
+  (Classical.choose_spec
+    (eigenvectorChartComponent_exists_smooth_representative_unconditional
+      (I := I) (M := M) g r s i α P)).2.2.2
+
+/-- Chart-locality-free twin of `chosenComp_hu`. -/
+private lemma chosenComp_hu_unconditional (α : M) :
+    ∀ P : TensorCompIdx (E := E) r s,
+      ContDiffOn ℝ ∞ (chosenComp_unconditional (I := I) (M := M) g r s i α P)
+        (chartTargetEuclid (I := I) (M := M) α) :=
+  fun P => chosenComp_contDiffOn_unconditional (I := I) (M := M) g r s i α P
+
+/-- Chart-locality-free twin of `chosenComp_hsupp`. -/
+private lemma chosenComp_hsupp_unconditional (α : M) :
+    ∀ P : TensorCompIdx (E := E) r s,
+      HasCompactSupport (chosenComp_unconditional (I := I) (M := M) g r s i α P) ∧
+        tsupport (chosenComp_unconditional (I := I) (M := M) g r s i α P) ⊆
+          chartTargetEuclid (I := I) (M := M) α :=
+  fun P => ⟨chosenComp_hasCompactSupport_unconditional (I := I) (M := M) g r s i α P,
+    chosenComp_tsupport_unconditional (I := I) (M := M) g r s i α P⟩
+
+/-- Chart-locality-free twin of `eigenvectorSmoothChart`. -/
+def eigenvectorSmoothChart_unconditional (α : M) : SmoothCcTensor g r s :=
+  tensorBundleSectionOfChartComponents (I := I) (M := M) g r s α
+    (chosenComp_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hu_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hsupp_unconditional (I := I) (M := M) g r s i α)
+
+/-- Chart-locality-free twin of `tensorChartComponentRaw_eigenvectorSmoothChart_self`. -/
+lemma tensorChartComponentRaw_eigenvectorSmoothChart_self_unconditional
+    (α : M) (P : TensorCompIdx (E := E) r s)
+    {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
+    tensorChartComponentRaw (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+        α P.1 P.2 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) =
+      chosenComp_unconditional (I := I) (M := M) g r s i α P y :=
+  tensorChartComponentRaw_tensorBundleSectionOfChartComponents
+    (I := I) (M := M) g r s α
+    (chosenComp_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hu_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hsupp_unconditional (I := I) (M := M) g r s i α) P hy
+
+/-- Chart-locality-free twin of `eigenvectorSmooth`. -/
+noncomputable def eigenvectorSmooth_unconditional : SmoothCcTensor g r s :=
+  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α
+
+/-- Chart-locality-free twin of `eigenvectorSmooth_eq`. -/
+lemma eigenvectorSmooth_eq_unconditional :
+    eigenvectorSmooth_unconditional (I := I) (M := M) g r s i =
+      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α := rfl
+
+/-- Chart-locality-free twin of
+`eigenvectorSmoothChart_toSection_eq_zero_off_source`. -/
+private lemma eigenvectorSmoothChart_toSection_eq_zero_off_source_unconditional
+    (α : M) {x : M} (hx : x ∉ (chartAt H α).source) :
+    (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α).toSection x =
+      0 :=
+  tensorBundleSectionOfChartComponents_toSection_eq_zero_off_source
+    (I := I) (M := M) g r s α
+    (chosenComp_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hu_unconditional (I := I) (M := M) g r s i α)
+    (chosenComp_hsupp_unconditional (I := I) (M := M) g r s i α) hx
+
+/-- Chart-locality-free twin of
+`tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source`. -/
+lemma tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source_unconditional
+    (α β : M) (P : TensorCompIdx (E := E) r s) {x : M}
+    (hx : x ∉ (chartAt H α).source) :
+    tensorChartComponentRaw (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+        β P.1 P.2 x = 0 := by
+  rw [tensorChartComponentRaw_def]
+  have hsec :
+      (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α).toSection x = 0 :=
+    eigenvectorSmoothChart_toSection_eq_zero_off_source_unconditional
+      (I := I) (M := M) g r s i α hx
+  rw [show tensorTrivProj (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α) β x =
+      (trivializationAt (TensorRSModel r s ℝ E)
+        (fun y : M => TensorRSSpace r s I y) β).continuousLinearMapAt ℝ x
+        ((eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α).toSection x)
+      from rfl, hsec, map_zero, map_zero]
+
+end Unconditional
+
 end TensorSpectral
 end Parabolic
 end Analysis
