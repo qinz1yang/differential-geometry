@@ -227,6 +227,106 @@ theorem eigenvectorSmoothChart_tensorL2ChartComponent_coeFn_aeEq
   exact raw_eigenvectorSmoothChart_eq_ite (I := I) (M := M) g r s h_atlas i α β
     P₀ (symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy)
 
+/-! ## Chart-locality-free twins -/
+
+open Classical in
+/-- Chart-locality-free twin of `raw_eigenvectorSmoothChart_eq_ite`. -/
+private lemma raw_eigenvectorSmoothChart_eq_ite_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α β : M) (P₀ : TensorCompIdx (E := E) r s)
+    {x : M} (hxβ : x ∈ (chartAt H β).source) :
+    tensorChartComponentRaw (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+        β P₀.1 P₀.2 x =
+      (if x ∈ (chartAt H α).source then
+        ∑ Q : TensorCompIdx (E := E) r s,
+          transitionCoeff (E := E) (I := I) (M := M) r s α β P₀ Q x *
+            tensorChartComponentRaw (I := I) (M := M) g r s
+              (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+              α Q.1 Q.2 x
+        else 0) := by
+  classical
+  by_cases hxα : x ∈ (chartAt H α).source
+  · -- On the chart overlap: the `(r, s)`-tensor transformation law with
+    -- transport chart `α`.
+    rw [if_pos hxα]
+    exact tensorChartComponentRaw_eq_transitionCoeff_sum
+      (E := E) (I := I) (M := M) g r s
+      (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+      α β P₀ ⟨hxα, hxβ⟩
+  · -- Off the chart-`α` source: the per-chart section vanishes there.
+    rw [if_neg hxα]
+    exact tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source_unconditional
+      (I := I) (M := M) g r s i α β P₀ hxα
+
+open Classical in
+/-- Chart-locality-free twin of
+`eigenvectorSmoothChart_tensorL2ChartComponent_coeFn_aeEq`. -/
+theorem eigenvectorSmoothChart_tensorL2ChartComponent_coeFn_aeEq_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s) (α β : M)
+    (P₀ : TensorCompIdx (E := E) r s) :
+    ((tensorL2ChartComponent (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α :
+          TensorL2 r s g) β P₀ :
+        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartL2Measure (I := I) (M := M) β]
+      (fun y => chartPushedRaw I β
+          (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
+        chartPushedRaw I β
+          (fun x => if x ∈ (chartAt H α).source then
+            ∑ Q : TensorCompIdx (E := E) r s,
+              transitionCoeff (E := E) (I := I) (M := M) r s α β P₀ Q x *
+                tensorChartComponentRaw (I := I) (M := M) g r s
+                  (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+                  α Q.1 Q.2 x
+            else 0) y) := by
+  classical
+  -- `eigenvectorSmoothChart_unconditional α` is a smooth compactly-supported
+  -- section; its canonical chart-`β` component is the `L²` class of the
+  -- concrete chart component
+  -- `tensorChartComponent g r s (eigenvectorSmoothChart_unconditional α) β P₀`.
+  have h_coeFn :=
+    tensorL2ChartComponent_smoothToTensorL2_coeFn (I := I) (M := M) g r s
+      (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α) β P₀
+  -- Chart-target membership holds almost everywhere for the restricted chart
+  -- `L²` measure.
+  have h_mem : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+      y ∈ chartTargetEuclid (I := I) (M := M) β := by
+    rw [chartL2Measure]
+    exact ae_restrict_mem (chartTargetEuclid_measurableSet (I := I) (M := M) β)
+  filter_upwards [h_coeFn, h_mem] with y hy_coe hy
+  -- Rewrite the canonical chart component as the concrete chart component.
+  rw [hy_coe]
+  -- On the chart target, the concrete chart component factors as the
+  -- chart-pushed partition-of-unity weight times the chart-pushed raw
+  -- chart-`β` component.
+  rw [tensorChartComponent_eq_chartPushedRaw_pou_mul_chartPushedRaw_raw_on_target
+    (I := I) (M := M) g r s
+    (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+    β P₀.1 P₀.2 hy]
+  -- The first factor already matches; rewrite the second factor by the
+  -- transformation-law / off-source identity for the raw chart-`β` component.
+  congr 1
+  -- Both chart pushes are precomposition with the inverse chart on the target.
+  rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β
+      (tensorChartComponentRaw (I := I) (M := M) g r s
+        (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+        β P₀.1 P₀.2) hy,
+    chartPushedRaw_apply_of_mem (I := I) (M := M) β
+      (fun x => if x ∈ (chartAt H α).source then
+        ∑ Q : TensorCompIdx (E := E) r s,
+          transitionCoeff (E := E) (I := I) (M := M) r s α β P₀ Q x *
+            tensorChartComponentRaw (I := I) (M := M) g r s
+              (eigenvectorSmoothChart_unconditional (I := I) (M := M) g r s i α)
+              α Q.1 Q.2 x
+        else 0) hy]
+  -- The inverse-chart image of a chart-target point lies in the chart-`β`
+  -- source; apply the raw-component identity.
+  exact raw_eigenvectorSmoothChart_eq_ite_unconditional (I := I) (M := M) g r s
+    i α β P₀ (symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy)
+
 end TensorSpectral
 end Parabolic
 end Analysis
