@@ -250,6 +250,120 @@ example :
 
 end ElaborationTests
 
+/-! ## Chart-locality-free twins
+
+The twins re-key the chart-component identity and the tensor Sobolev membership
+headline onto the intrinsic compact-operator eigenbasis
+`tensorResolventEigenbasisVec_ofCompact`, eliminating the uniform-Sobolev
+hypothesis. They consume the chart-locality-free smooth representative
+`eigenvectorSmooth_unconditional` (whose `L²` class is
+`tensorResolventEigenbasisVec_ofCompact … i` via
+`eigenvectorSmooth_toL2_unconditional`) and the chart-locality-free
+arbitrary-order interior regularity
+`eigenvector_chartComponent_memWkp_arbitrary_unconditional` of the intrinsic
+eigenvector chart component `eigenvectorChartComponentFun_ofCompact`. -/
+
+open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+/-- Chart-locality-free twin of
+`eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun`. -/
+theorem eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M)
+    (Idx : Fin r → Fin (Module.finrank ℝ E))
+    (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
+    tensorChartComp (I := I) (M := M) g r s
+        (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) α Idx Jdx
+      =ᵐ[(volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) α)]
+      eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α
+        (Idx, Jdx) := by
+  -- `tensorChartComp` is definitionally `tensorChartComponent`. On the smooth
+  -- section `eigenvectorSmooth_unconditional`, the weighted Euclidean chart
+  -- component agrees a.e. (on `chartL2Measure α = volume.restrict
+  -- (chartTargetEuclid α)`) with the canonical chart component of its `L²` class.
+  have h_smooth_ae :
+      ((tensorL2ChartComponent (I := I) (M := M) g r s
+          ((eigenvectorSmooth_unconditional (I := I) (M := M) g r s i :
+            TensorL2 r s g)) α (Idx, Jdx) :
+          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        =ᵐ[chartL2Measure (I := I) (M := M) α]
+      tensorChartComponent (I := I) (M := M) g r s
+        (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) α
+        (Idx, Jdx).1 (Idx, Jdx).2 :=
+    tensorL2ChartComponent_smoothToTensorL2_coeFn (I := I) (M := M) g r s
+      (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) α (Idx, Jdx)
+  -- Identify the `L²` class of the smooth representative with the intrinsic
+  -- resolvent eigenvector.
+  have h_toL2 :
+      (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i :
+          TensorL2 r s g) =
+        tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+            g r s) i :=
+    eigenvectorSmooth_toL2_unconditional (I := I) (M := M) g r s i
+  -- The intrinsic eigenvector chart component is, by definition, the canonical
+  -- chart component of the intrinsic resolvent eigenvector.
+  have h_fun_def :
+      eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α
+          (Idx, Jdx) =
+        ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+                g r s) i) α
+            (Idx, Jdx) :
+            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
+  -- `chartL2Measure α` is definitionally `volume.restrict (chartTargetEuclid α)`.
+  -- Rewrite the a.e.-identity and orient it from `tensorChartComp` to the
+  -- eigenvector chart component.
+  have h_oriented :
+      tensorChartComponent (I := I) (M := M) g r s
+          (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) α
+          (Idx, Jdx).1 (Idx, Jdx).2
+        =ᵐ[(volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α)]
+      eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α
+        (Idx, Jdx) := by
+    rw [h_fun_def, ← h_toL2]
+    exact h_smooth_ae.symm
+  exact h_oriented
+
+open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+/-- Chart-locality-free twin of `tensorEigenvector_memWtwokTwo`. -/
+theorem tensorEigenvector_memWtwokTwo_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s) (k : ℕ) :
+    MemWtwokTwo (I := I) (M := M) g k
+      (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) := by
+  -- Reduce to chart-local `MemWkp (2 * k) 2` over the canonical finite cover.
+  refine MemWtwokTwo_of_forall_finset_memWkp (I := I) (M := M) g k
+    (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+    (fun α _hα Idx Jdx => ?_)
+  -- The arbitrary-order interior regularity of the intrinsic eigenvector chart
+  -- component at order `2 * k`.
+  have h_fun_memWkp :
+      MemWkp (d := Module.finrank ℝ E) (2 * k) 2
+        (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α
+          (Idx, Jdx))
+        (chartTargetEuclid (I := I) (M := M) α) :=
+    eigenvector_chartComponent_memWkp_arbitrary_unconditional (I := I) (M := M)
+      g r s i (2 * k) α (Idx, Jdx)
+  -- The chart component of the smooth representative agrees a.e. with the
+  -- intrinsic eigenvector chart component on the chart target.
+  have h_ae :
+      tensorChartComp (I := I) (M := M) g r s
+          (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) α Idx Jdx
+        =ᵐ[(volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α)]
+      eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α
+        (Idx, Jdx) :=
+    eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun_unconditional
+      (I := I) (M := M) g r s i α Idx Jdx
+  -- Transport the order-`(2 * k)` membership across the a.e.-identity.
+  exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (chartTargetEuclid_isOpen (I := I) (M := M) α) h_ae).mpr h_fun_memWkp
+
 end TensorSpectral
 end Parabolic
 end Analysis
