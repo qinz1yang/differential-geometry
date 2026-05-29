@@ -881,6 +881,373 @@ example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
 
 end ElaborationTests
 
+/-! ## Chart-locality-free twins
+
+The declarations below re-key the chart-locality-conditional results above onto
+the intrinsic compact-operator eigenbasis, eliminating the
+`HasLocallyConstantChartAt` hypothesis. Each twin is a faithful re-keying of its
+original: the eigenbasis vector is supplied by
+`tensorResolventEigenbasisVec_ofCompact` fed the intrinsic compactness witness
+`tensorResolventL2_isCompactOperator_intrinsic g r s`, and every chart-locality
+dependency is replaced by its previously-established `_unconditional` twin. -/
+
+section MainBoundUnconditional
+
+/-- Chart-locality-free twin of
+`eigenvectorIteratedCarrier_fChartEff_eLpNorm_le`. -/
+theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
+    (directions : Fin m → Fin (Module.finrank ℝ E))
+    (D_m : eigenvectorIteratedTensorChartBilinearData_unconditional (I := I) (M := M)
+      g r s i α P₀ m)
+    (h_fChartEff : D_m.fChartEff =
+      eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+        g r s i α P₀ m directions)
+    (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) (m + 1) 2
+      (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+      (chartTargetEuclid (I := I) (M := M) α))
+    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (m + 1 + 0) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      eLpNorm
+          ((eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+              (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart)
+          2 ((chartPulledWeightedMeasure (I := I) g α).restrict
+              (chartTargetEuclid (I := I) (M := M) α))
+        ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+          diffRHSAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ m 0 directions := by
+  classical
+  -- The carrier's `f_chart` is, definitionally, `D_m.fChartEff`.
+  have h_f_chart_eq :
+      (eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+          (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart =
+        eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+          g r s i α P₀ m directions := by
+    change D_m.fChartEff =
+      eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+        g r s i α P₀ m directions
+    exact h_fChartEff
+  rw [h_f_chart_eq]
+  -- The level-`m` right-hand side vanishes a.e. off the compact kernel.
+  have h_ae_zero :
+      eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+          g r s i α P₀ m directions
+        =ᵐ[(volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) α \
+            chartPouKernel (I := I) (M := M) α)] (fun _ : EuclN => (0 : ℝ)) :=
+    rhsDiff_ae_zero_off_chartPouKernel_unconditional (I := I) (M := M)
+      g r s i α P₀ m directions
+  -- The weighted-versus-volume `eLpNorm` comparison.
+  obtain ⟨Ccmp, hCcmp_nn, hCcmp_bd⟩ :=
+    eLpNorm_chartPulledWeighted_le_of_ae_zero_off_chartPouKernel
+      (I := I) (M := M) g α h_ae_zero
+  -- The plain-volume weighted-`eLpNorm` bound for the differentiated right-hand
+  -- side: `eigenvectorChartRHSDiff_eLpNorm_le_unconditional` needs `h_pou` at
+  -- order `m + 1`.
+  obtain ⟨Cvol, hCvol_nn, hCvol_bd⟩ :=
+    eigenvectorChartRHSDiff_eLpNorm_le_unconditional (I := I) (M := M)
+      g r s i α P₀ m directions h_pou
+  -- Assemble: the headline constant is `Ccmp · Cvol`.
+  refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, ?_⟩
+  -- Chain the comparison through the plain-volume bound.
+  calc
+    eLpNorm (eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+            g r s i α P₀ m directions) 2
+          ((chartPulledWeightedMeasure (I := I) g α).restrict
+            (chartTargetEuclid (I := I) (M := M) α))
+        ≤ ENNReal.ofReal Ccmp *
+          eLpNorm (eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+              g r s i α P₀ m directions) 2
+            ((volume : Measure EuclN).restrict
+              (chartTargetEuclid (I := I) (M := M) α)) := hCcmp_bd
+    _ ≤ ENNReal.ofReal Ccmp *
+          (ENNReal.ofReal ((i.fst.val)⁻¹ * Cvol) *
+            diffRHSAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ m 0 directions) :=
+          mul_le_mul' (le_refl _) hCvol_bd
+    _ = ENNReal.ofReal ((i.fst.val)⁻¹ * (Ccmp * Cvol)) *
+          diffRHSAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ m 0 directions := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul hCcmp_nn]
+          congr 2
+          ring
+
+/-- Chart-locality-free twin of
+`eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform`. -/
+theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
+    (directions : Fin m → Fin (Module.finrank ℝ E))
+    (h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+      (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (m + 1 + 0) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+        (D_m : eigenvectorIteratedTensorChartBilinearData_unconditional
+          (I := I) (M := M) g r s i α P₀ m)
+        (_h_fChartEff : D_m.fChartEff =
+          eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+            g r s i α P₀ m directions)
+        (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+          (d := Module.finrank ℝ E) (m + 1) 2
+          (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+          (chartTargetEuclid (I := I) (M := M) α)),
+        eLpNorm
+            ((eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+                (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart)
+            2 ((chartPulledWeightedMeasure (I := I) g α).restrict
+                (chartTargetEuclid (I := I) (M := M) α))
+          ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
+            diffRHSAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ m 0 directions := by
+  classical
+  -- The level-`m` right-hand side vanishes a.e. off the compact kernel — this
+  -- holds for every eigenbasis index, so it furnishes the function family fed
+  -- to the eigenbasis-uniform comparison.
+  have h_ae_zero :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+            g r s i α P₀ m directions
+          =ᵐ[(volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α \
+              chartPouKernel (I := I) (M := M) α)] (fun _ : EuclN => (0 : ℝ)) :=
+    fun i => rhsDiff_ae_zero_off_chartPouKernel_unconditional (I := I) (M := M)
+      g r s i α P₀ m directions
+  -- The eigenbasis-uniform weighted-versus-volume `eLpNorm` comparison — its
+  -- constant depends only on `g` and `α`, so it is hoisted before `intro i`.
+  obtain ⟨Ccmp, hCcmp_nn, hCcmp_bd⟩ :=
+    eLpNorm_chartPulledWeighted_le_of_ae_zero_off_chartPouKernel_uniform
+      (I := I) (M := M)
+      (ι := TensorEigenIdx (I := I) (M := M) g r s) g α h_ae_zero
+  -- The eigenbasis-uniform plain-volume weighted-`eLpNorm` bound for the
+  -- differentiated right-hand side — its constant is likewise `i`-free.
+  obtain ⟨Cvol, hCvol_nn, hCvol_bd⟩ :=
+    eigenvectorChartRHSDiff_eLpNorm_le_uniform_unconditional (I := I) (M := M)
+      g r s α P₀ m directions h_pou
+  -- Assemble: the headline constant is `Ccmp · Cvol`.
+  refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, ?_⟩
+  intro i D_m h_fChartEff h_parent
+  -- The carrier's `f_chart` is, definitionally, `D_m.fChartEff`.
+  have h_f_chart_eq :
+      (eigenvectorIteratedTensorChartBilinearData_toData_unconditional
+          (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart =
+        eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+          g r s i α P₀ m directions := by
+    change D_m.fChartEff =
+      eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+        g r s i α P₀ m directions
+    exact h_fChartEff
+  rw [h_f_chart_eq]
+  -- Chain the eigenbasis-uniform comparison through the eigenbasis-uniform
+  -- plain-volume bound, both specialised at `i`.
+  calc
+    eLpNorm (eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+            g r s i α P₀ m directions) 2
+          ((chartPulledWeightedMeasure (I := I) g α).restrict
+            (chartTargetEuclid (I := I) (M := M) α))
+        ≤ ENNReal.ofReal Ccmp *
+          eLpNorm (eigenvectorChartRHSDiff_unconditional (I := I) (M := M)
+              g r s i α P₀ m directions) 2
+            ((volume : Measure EuclN).restrict
+              (chartTargetEuclid (I := I) (M := M) α)) := hCcmp_bd i
+    _ ≤ ENNReal.ofReal Ccmp *
+          (ENNReal.ofReal ((i.fst.val)⁻¹ * Cvol) *
+            diffRHSAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ m 0 directions) :=
+          mul_le_mul' (le_refl _) (hCvol_bd i)
+    _ = ENNReal.ofReal ((i.fst.val)⁻¹ * (Ccmp * Cvol)) *
+          diffRHSAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ m 0 directions := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul hCcmp_nn]
+          congr 2
+          ring
+
+end MainBoundUnconditional
+
+/-! ## Chart-locality-free finiteness of the order-`K` aggregate -/
+
+/-- Chart-locality-free twin of `diffRHSHead_ne_top`. -/
+private lemma diffRHSHead_ne_top_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
+    (l : Fin (m + 1) → Fin (Module.finrank ℝ E)) :
+    diffRHSHead_unconditional (I := I) (M := M) g r s i α P₀ m K l
+      ≠ (⊤ : ℝ≥0∞) := by
+  classical
+  -- Chart-locality-free order-`N` regularity of every iterated weak partial:
+  -- the eigenvector chart component lies in `MemWkp (N + j) 2` for every `j`
+  -- and `N`, and the polymorphic bridge transfers it.
+  have h_iter : ∀ (N j : ℕ) (idx : Fin j → Fin (Module.finrank ℝ E)),
+      MemWkp (d := Module.finrank ℝ E) N 2
+        (eigenvectorChartIteratedPartial_unconditional (I := I) (M := M)
+          g r s i α P₀ j idx)
+        (chartTargetEuclid (I := I) (M := M) α) := by
+    intro N j idx
+    have h_comp : MemWkp (d := Module.finrank ℝ E) (N + j) 2
+        (eigenvectorChartComponentFun_ofCompact (I := I) (M := M) g r s i α P₀)
+        (chartTargetEuclid (I := I) (M := M) α) :=
+      eigenvector_chartComponent_memWkp_arbitrary_unconditional (I := I) (M := M)
+        g r s i (N + j) α P₀
+    exact eigenvectorChartIteratedPartial_unconditional_memWkp_of_memWkp
+      (I := I) (M := M) g r s i α P₀ j N h_comp idx
+  rw [diffRHSHead_unconditional]
+  refine ENNReal.add_ne_top.mpr ⟨?_, ?_⟩
+  · -- The first piece is a finite sum of `wkpNorm`s of iterated weak partials.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun a _ => ?_))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (h_iter (2 + K) (m + 1) (Fin.cons a (Fin.init l)))
+  · -- The second piece is a single `wkpNorm` of an iterated weak partial.
+    exact ne_of_lt (wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (h_iter (2 + K) m (Fin.init l)))
+
+/-- Chart-locality-free twin of `rhsZeroAggregate_ne_top`. -/
+private lemma rhsZeroAggregate_ne_top_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
+    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    rhsZeroAggregate_unconditional (I := I) (M := M) g r s i α P₀ K
+      ≠ (⊤ : ℝ≥0∞) := by
+  classical
+  rw [rhsZeroAggregate_unconditional]
+  -- Discharge the seven-term sum piece by piece.
+  refine ENNReal.add_ne_top.mpr ⟨ENNReal.add_ne_top.mpr
+    ⟨ENNReal.add_ne_top.mpr ⟨ENNReal.add_ne_top.mpr ⟨ENNReal.add_ne_top.mpr
+      ⟨ENNReal.add_ne_top.mpr ⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+  · -- Summand 1: the eigenvector chart component at order `K` — unconditional.
+    exact ne_of_lt (wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (eigenvector_chartComponent_memWkp_arbitrary_unconditional (I := I) (M := M)
+        g r s i K α P₀))
+  · -- Summand 2: the transport double-sum of resolvent-coercion chart components
+    -- at order `K + 1`, each finite directly from `h_pou`.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun β _ =>
+      ENNReal.add_lt_top.mpr ⟨ENNReal.sum_lt_top.mpr (fun Q _ => ?_),
+        ENNReal.sum_lt_top.mpr (fun β' _ =>
+          ENNReal.sum_lt_top.mpr (fun Q _ => ?_))⟩))
+    · exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E) (h_pou β Q)
+    · exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E) (h_pou β' Q)
+  · -- Summand 3: the transport sum of resolvent-coercion chart components at
+    -- order `K`, each obtained from `h_pou` by dropping the order.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun β _ =>
+      ENNReal.sum_lt_top.mpr (fun Q _ => ?_)))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (MemWkp.le_of_le (d := Module.finrank ℝ E)
+        (by omega : K ≤ K + 1) (h_pou β Q))
+  · -- Summand 4: the chart-partial atoms `partialLpLimit_unconditional` at
+    -- order `K`.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun P _ =>
+      ENNReal.sum_lt_top.mpr (fun k _ => ?_)))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (partialLpLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P k K h_pou)
+  · -- Summand 5: the chart-component atoms `componentLpLimit_unconditional` at
+    -- order `K`.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun p _ => ?_))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (componentLpLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α p K h_pou)
+  · -- Summand 6: the cutoff cross-right limit objects
+    -- `crossRightLimitComponent_unconditional` at order `K`.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun P _ => ?_))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (crossRightLimitComponent_memWkp_unconditional (I := I) (M := M)
+        g r s i α P K h_pou)
+  · -- Summand 7: the cutoff chart-partial atoms `cutoffPartialLpLimit_unconditional`
+    -- at order `K`.
+    refine ne_of_lt (ENNReal.sum_lt_top.mpr (fun P _ =>
+      ENNReal.sum_lt_top.mpr (fun l _ => ?_)))
+    exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E)
+      (cutoffPartialLpLimit_memWkp_unconditional (I := I) (M := M)
+        g r s i α P l K h_pou)
+
+/-- Chart-locality-free twin of `diffRHSAggregate_ne_top`. -/
+theorem diffRHSAggregate_ne_top_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
+    (l : Fin m → Fin (Module.finrank ℝ E))
+    (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+      MemWkp (d := Module.finrank ℝ E) (m + 1 + K) 2
+        (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+            (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+              (eigenvectorResolvent_unconditional (I := I) (M := M) g r s i))
+            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        (chartTargetEuclid (I := I) (M := M) β)) :
+    diffRHSAggregate_unconditional (I := I) (M := M) g r s i α P₀ m K l
+      ≠ (⊤ : ℝ≥0∞) := by
+  classical
+  induction m generalizing K with
+  | zero =>
+      -- Level `0`: the order-`K` seven-term aggregate `rhsZeroAggregate_unconditional`.
+      rw [show diffRHSAggregate_unconditional (I := I) (M := M)
+          g r s i α P₀ 0 K l =
+        rhsZeroAggregate_unconditional (I := I) (M := M) g r s i α P₀ K from rfl]
+      -- `rhsZeroAggregate_ne_top_unconditional` needs `h_pou` at order `K + 1`;
+      -- this theorem's `h_pou` is at order `0 + 1 + K = K + 1`.
+      have h_pou' : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+          MemWkp (d := Module.finrank ℝ E) (K + 1) 2
+            (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                  (eigenvectorResolvent_unconditional (I := I) (M := M)
+                    g r s i))
+                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              EuclN → ℝ) y)
+            (chartTargetEuclid (I := I) (M := M) β) := by
+        intro β Q
+        have h_idx : (0 : ℕ) + 1 + K = K + 1 := by omega
+        rw [← h_idx]
+        exact h_pou β Q
+      exact rhsZeroAggregate_ne_top_unconditional (I := I) (M := M)
+        g r s i α P₀ K h_pou'
+  | succ m ih =>
+      -- Level `m + 1`: `diffRHSHead_unconditional` plus the level-`m` aggregate
+      -- at order `K + 1`.
+      rw [show diffRHSAggregate_unconditional (I := I) (M := M)
+            g r s i α P₀ (m + 1) K l =
+          diffRHSHead_unconditional (I := I) (M := M) g r s i α P₀ m K l +
+            diffRHSAggregate_unconditional (I := I) (M := M)
+              g r s i α P₀ m (K + 1) (Fin.init l) from rfl]
+      refine ENNReal.add_ne_top.mpr ⟨?_, ?_⟩
+      · exact diffRHSHead_ne_top_unconditional (I := I) (M := M)
+          g r s i α P₀ m K l
+      · -- The inductive hypothesis at order `K + 1` needs `h_pou` at order
+        -- `m + 1 + (K + 1) = m + 1 + 1 + K`, supplied by this theorem's `h_pou`.
+        have h_pou_prev : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+            MemWkp (d := Module.finrank ℝ E) (m + 1 + (K + 1)) 2
+              (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
+                  (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
+                    (eigenvectorResolvent_unconditional (I := I) (M := M)
+                      g r s i))
+                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                EuclN → ℝ) y)
+              (chartTargetEuclid (I := I) (M := M) β) := by
+          intro β Q
+          have h_idx : m + 1 + (K + 1) = m + 1 + 1 + K := by omega
+          rw [h_idx]
+          exact h_pou β Q
+        exact ih (K + 1) (Fin.init l) h_pou_prev
+
 end TensorSpectral
 end Parabolic
 end Analysis
