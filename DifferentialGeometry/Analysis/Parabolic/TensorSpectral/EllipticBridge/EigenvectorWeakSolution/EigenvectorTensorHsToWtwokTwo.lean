@@ -610,6 +610,329 @@ example {σ : ℝ} (hσ : 0 ≤ σ)
 
 end ElaborationTests
 
+/-! ## Chart-locality-free twins
+
+The declarations below re-key every `h_atlas`-dependent result above onto the
+intrinsic compact-operator eigenbasis
+`tensorResolventEigenbasisVec_ofCompact (… intrinsic g r s)`, eliminating the
+chart-selection hypothesis `h_atlas`. Each twin proves the same statement as its
+original, with `h_atlas` removed, and consumes the corresponding chart-locality-
+free twins of its dependencies. -/
+
+open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+
+namespace TensorHsSmoothReprAux
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
+
+/-- Chart-locality-free twin of `partialSum`. -/
+private def partialSum_unconditional
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s))
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    SmoothCcTensor g r s :=
+  ∑ i ∈ S, c i • eigenvectorSmooth_unconditional (I := I) (M := M) g r s i
+
+/-- Chart-locality-free twin of `partialSum_empty`. -/
+private lemma partialSum_empty_unconditional
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    partialSum_unconditional (I := I) (M := M) g r s (∅ :
+      Finset (TensorEigenIdx (I := I) (M := M) g r s)) c =
+      (0 : SmoothCcTensor g r s) := by
+  unfold partialSum_unconditional; simp
+
+open scoped Classical in
+/-- Chart-locality-free twin of `partialSum_insert`. -/
+private lemma partialSum_insert_unconditional
+    {S : Finset (TensorEigenIdx (I := I) (M := M) g r s)}
+    {j : TensorEigenIdx (I := I) (M := M) g r s} (hj : j ∉ S)
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    partialSum_unconditional (I := I) (M := M) g r s (insert j S) c =
+      c j • eigenvectorSmooth_unconditional (I := I) (M := M) g r s j +
+        partialSum_unconditional (I := I) (M := M) g r s S c := by
+  unfold partialSum_unconditional; rw [Finset.sum_insert hj]
+
+/-- Chart-locality-free twin of `partialSum_memWtwokTwo`. -/
+private lemma partialSum_memWtwokTwo_unconditional
+    (k : ℕ)
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s))
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    MemWtwokTwo (I := I) (M := M) g k
+      (partialSum_unconditional (I := I) (M := M) g r s S c) := by
+  classical
+  induction S using Finset.induction with
+  | empty =>
+      rw [partialSum_empty_unconditional (I := I) (M := M) g r s c]
+      exact MemWtwokTwo_zero_section (I := I) (M := M) g k
+  | insert j A hj ih =>
+      rw [partialSum_insert_unconditional (I := I) (M := M) g r s hj c]
+      refine MemWtwokTwo_add (I := I) (M := M) g ?_ ih
+      exact MemWtwokTwo_smul (I := I) (M := M) g (c j)
+        (tensorEigenvector_memWtwokTwo_unconditional (I := I) (M := M) g r s j k)
+
+end TensorHsSmoothReprAux
+
+/-- Chart-locality-free twin of `tensorHsSmoothRepr`. -/
+noncomputable def tensorHsSmoothRepr_unconditional
+    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    (hT_fs : (Function.support T.coeff).Finite) :
+    SmoothCcTensor g r s :=
+  TensorHsSmoothReprAux.partialSum_unconditional (I := I) (M := M) g r s
+    hT_fs.toFinset T.coeff
+
+/-- Chart-locality-free twin of `tensorHsSmoothRepr_eq`. -/
+theorem tensorHsSmoothRepr_eq_unconditional
+    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    (hT_fs : (Function.support T.coeff).Finite) :
+    tensorHsSmoothRepr_unconditional (I := I) (M := M) T hT_fs =
+      ∑ i ∈ hT_fs.toFinset,
+        T.coeff i •
+          eigenvectorSmooth_unconditional (I := I) (M := M) g r s i := rfl
+
+/-- Chart-locality-free twin of `tensorHsSmoothRepr_memWtwokTwo`. -/
+theorem tensorHsSmoothRepr_memWtwokTwo_unconditional
+    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    (hT_fs : (Function.support T.coeff).Finite) (k : ℕ) :
+    MemWtwokTwo (I := I) (M := M) g k
+      (tensorHsSmoothRepr_unconditional (I := I) (M := M) T hT_fs) :=
+  TensorHsSmoothReprAux.partialSum_memWtwokTwo_unconditional
+    (I := I) (M := M) g r s k hT_fs.toFinset T.coeff
+
+/-- Chart-locality-free twin of `tensorHsSmoothRepr_toL2`. -/
+theorem tensorHsSmoothRepr_toL2_unconditional
+    {g : SmoothRiemannianMetric I M} {r s : ℕ}
+    {σ : ℝ} (hσ : 0 ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ)
+    (hT_fs : (Function.support T.coeff).Finite) :
+    (tensorHsSmoothRepr_unconditional (I := I) (M := M) T hT_fs :
+        TensorL2 r s g) =
+      tensorHsToL2_ofCompact (I := I) (M := M)
+        (g := g) (r := r) (s := s)
+        (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+          g r s) hσ T := by
+  classical
+  -- Unfold the smooth representative to its finite sum.
+  rw [tensorHsSmoothRepr_eq_unconditional (I := I) (M := M) T hT_fs]
+  -- Rewrite `T` as the finite sum of its basis components.
+  conv_rhs => rw [tensorHs_eq_finset_sum_of_finite_support
+    (I := I) (M := M) T hT_fs]
+  -- Push the inclusion (a continuous linear map) through the finite sum.
+  rw [map_sum]
+  refine Eq.symm ?_
+  -- The `SmoothCcTensor → TensorL2` coercion pushes through the finite sum.
+  have h_coe :
+      ((∑ i ∈ hT_fs.toFinset,
+            T.coeff i • eigenvectorSmooth_unconditional
+              (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) =
+      ∑ i ∈ hT_fs.toFinset,
+        ((T.coeff i • eigenvectorSmooth_unconditional
+            (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) := by
+    rw [show ((∑ i ∈ hT_fs.toFinset,
+            T.coeff i • eigenvectorSmooth_unconditional
+              (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) =
+        SmoothCcTensor.toL2 (g := g) (r := r) (s := s)
+          (∑ i ∈ hT_fs.toFinset,
+            T.coeff i • eigenvectorSmooth_unconditional
+              (I := I) (M := M) g r s i) from
+      (SmoothCcTensor.toL2_apply _).symm]
+    rw [map_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i _hi
+    exact SmoothCcTensor.toL2_apply (g := g) (r := r) (s := s)
+      (T.coeff i • eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+  rw [h_coe]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  rw [map_smul]
+  rw [tensorHsToL2_ofCompact_tensorHsBasisVec (I := I) (M := M)
+    (h_compact := tensorResolventL2_isCompactOperator_intrinsic
+      (I := I) (M := M) g r s) hσ i]
+  rw [tensorResolventHilbertEigenbasisSigma_ofCompact_apply
+    (I := I) (M := M)
+    (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M) g r s) i]
+  -- The coercion of `c • S` in `SmoothCcTensor` to `TensorL2` is `c •` the
+  -- coercion of `S`.
+  have hcoe_smul :
+      ((T.coeff i • eigenvectorSmooth_unconditional
+          (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+        TensorL2 r s g) =
+      T.coeff i • ((eigenvectorSmooth_unconditional
+          (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) := by
+    have h1 :
+        ((T.coeff i • eigenvectorSmooth_unconditional
+            (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) =
+        SmoothCcTensor.toL2 (g := g) (r := r) (s := s)
+          (T.coeff i • eigenvectorSmooth_unconditional
+            (I := I) (M := M) g r s i) := by
+      rw [SmoothCcTensor.toL2_apply]
+    have h2 :
+        ((eigenvectorSmooth_unconditional
+            (I := I) (M := M) g r s i : SmoothCcTensor g r s) :
+          TensorL2 r s g) =
+        SmoothCcTensor.toL2 (g := g) (r := r) (s := s)
+          (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) := by
+      rw [SmoothCcTensor.toL2_apply]
+    rw [h1, h2, map_smul]
+  rw [hcoe_smul]
+  congr 1
+  exact (eigenvectorSmooth_toL2_unconditional (I := I) (M := M) g r s i).symm
+
+namespace TensorHsSmoothReprAux
+
+variable (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
+
+/-- Chart-locality-free twin of `summand_wtwokTwoNorm_le`. -/
+private lemma summand_wtwokTwoNorm_le_unconditional
+    {C : ℝ} (_hC_nn : 0 ≤ C)
+    (hC_bound : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+      wtwokTwoNorm (I := I) (M := M) g k
+          (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+        ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) *
+            ENNReal.ofReal
+              ‖tensorResolventEigenbasisVec_ofCompact
+                (I := I) (M := M)
+                (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+                  g r s) i‖)
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s) :
+    wtwokTwoNorm (I := I) (M := M) g k
+        (c i • eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+      ≤ ENNReal.ofReal |c i| *
+          ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) := by
+  have h_mem : MemWtwokTwo (I := I) (M := M) g k
+      (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i) :=
+    tensorEigenvector_memWtwokTwo_unconditional (I := I) (M := M) g r s i k
+  have h_smul := wtwokTwoNorm_smul (I := I) (M := M) g (c i) h_mem
+  rw [h_smul]
+  rw [Real.enorm_eq_ofReal_abs]
+  have h_vec_norm :
+      ‖tensorResolventEigenbasisVec_ofCompact (I := I) (M := M)
+        (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+          g r s) i‖ = 1 :=
+    (tensorResolventEigenbasisVec_ofCompact_orthonormal (I := I) (M := M)
+      (g := g) (r := r) (s := s)
+      (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+        g r s)).norm_eq_one i
+  have h_bd : wtwokTwoNorm (I := I) (M := M) g k
+        (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+      ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) := by
+    have h := hC_bound i
+    rw [h_vec_norm, ENNReal.ofReal_one, mul_one] at h
+    exact h
+  exact mul_le_mul_of_nonneg_left h_bd (zero_le _)
+
+/-- Chart-locality-free twin of `partialSum_wtwokTwoNorm_le_sum`. -/
+private lemma partialSum_wtwokTwoNorm_le_sum_unconditional
+    {C : ℝ} (hC_nn : 0 ≤ C)
+    (hC_bound : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+      wtwokTwoNorm (I := I) (M := M) g k
+          (eigenvectorSmooth_unconditional (I := I) (M := M) g r s i)
+        ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) *
+            ENNReal.ofReal
+              ‖tensorResolventEigenbasisVec_ofCompact
+                (I := I) (M := M)
+                (tensorResolventL2_isCompactOperator_intrinsic (I := I) (M := M)
+                  g r s) i‖)
+    (S : Finset (TensorEigenIdx (I := I) (M := M) g r s))
+    (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ) :
+    wtwokTwoNorm (I := I) (M := M) g k
+        (partialSum_unconditional (I := I) (M := M) g r s S c)
+      ≤ ∑ i ∈ S, ENNReal.ofReal |c i| *
+          ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) := by
+  classical
+  induction S using Finset.induction with
+  | empty =>
+      rw [partialSum_empty_unconditional (I := I) (M := M) g r s c,
+        wtwokTwoNorm_zero_section (I := I) (M := M) g k, Finset.sum_empty]
+  | insert j A hj ih =>
+      rw [partialSum_insert_unconditional (I := I) (M := M) g r s hj c]
+      have h_mem_summand : MemWtwokTwo (I := I) (M := M) g k
+          (c j • eigenvectorSmooth_unconditional (I := I) (M := M) g r s j) :=
+        MemWtwokTwo_smul (I := I) (M := M) g (c j)
+          (tensorEigenvector_memWtwokTwo_unconditional
+            (I := I) (M := M) g r s j k)
+      have h_mem_partial : MemWtwokTwo (I := I) (M := M) g k
+          (partialSum_unconditional (I := I) (M := M) g r s A c) :=
+        partialSum_memWtwokTwo_unconditional (I := I) (M := M) g r s k A c
+      have h_tri := wtwokTwoNorm_add_le (I := I) (M := M) g
+        h_mem_summand h_mem_partial
+      refine le_trans h_tri ?_
+      rw [Finset.sum_insert hj]
+      have h_sumand_bd :=
+        summand_wtwokTwoNorm_le_unconditional (I := I) (M := M) g r s k
+          hC_nn hC_bound c j
+      exact add_le_add h_sumand_bd ih
+
+end TensorHsSmoothReprAux
+
+/-- Chart-locality-free twin of `tensorHsSmoothRepr_wtwokTwoNorm_le_uniform`. -/
+theorem tensorHsSmoothRepr_wtwokTwoNorm_le_uniform_unconditional
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (k : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+        (hT_fs : (Function.support T.coeff).Finite),
+        wtwokTwoNorm (I := I) (M := M) g k
+            (tensorHsSmoothRepr_unconditional (I := I) (M := M) T hT_fs)
+          ≤ ENNReal.ofReal C *
+              ENNReal.ofReal (∑ i ∈ hT_fs.toFinset,
+                |T.coeff i| * (i.fst.val)⁻¹ ^ (2 * k + 1)) := by
+  classical
+  obtain ⟨C, hC_nn, hC_bound⟩ :=
+    eigenvectorSmooth_wtwokTwoNorm_le_uniform_unconditional
+      (I := I) (M := M) g r s k
+  refine ⟨C, hC_nn, ?_⟩
+  intro σ T hT_fs
+  unfold tensorHsSmoothRepr_unconditional
+  refine le_trans
+    (TensorHsSmoothReprAux.partialSum_wtwokTwoNorm_le_sum_unconditional
+      (I := I) (M := M) g r s k hC_nn hC_bound hT_fs.toFinset T.coeff)
+    ?_
+  have h_eigval_inv_one_le :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s, (1 : ℝ) ≤ (i.fst.val)⁻¹ :=
+    fun i => sharpDiff_eigen_inv_one_le_unconditional (I := I) (M := M) g r s i
+  have h_eigval_inv_nn :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s, (0 : ℝ) ≤ (i.fst.val)⁻¹ :=
+    fun i => le_trans zero_le_one (h_eigval_inv_one_le i)
+  have h_pow_nn :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        (0 : ℝ) ≤ (i.fst.val)⁻¹ ^ (2 * k + 1) :=
+    fun i => pow_nonneg (h_eigval_inv_nn i) _
+  have h_C_pow_nn :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        (0 : ℝ) ≤ C * (i.fst.val)⁻¹ ^ (2 * k + 1) :=
+    fun i => mul_nonneg hC_nn (h_pow_nn i)
+  have h_summand_eq :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        ENNReal.ofReal |T.coeff i| *
+          ENNReal.ofReal (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) =
+        ENNReal.ofReal
+          (|T.coeff i| * (C * (i.fst.val)⁻¹ ^ (2 * k + 1))) := by
+    intro i
+    rw [← ENNReal.ofReal_mul (abs_nonneg _)]
+  rw [Finset.sum_congr rfl (fun i _hi => h_summand_eq i)]
+  have h_summand_nn :
+      ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
+        (0 : ℝ) ≤ |T.coeff i| * (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) :=
+    fun i => mul_nonneg (abs_nonneg _) (h_C_pow_nn i)
+  rw [← ENNReal.ofReal_sum_of_nonneg (fun i _hi => h_summand_nn i)]
+  have h_sum_eq :
+      ∑ i ∈ hT_fs.toFinset,
+          |T.coeff i| * (C * (i.fst.val)⁻¹ ^ (2 * k + 1)) =
+        C * ∑ i ∈ hT_fs.toFinset,
+          |T.coeff i| * (i.fst.val)⁻¹ ^ (2 * k + 1) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i _hi; ring
+  rw [h_sum_eq]
+  rw [ENNReal.ofReal_mul hC_nn]
+
 end TensorSpectral
 end Parabolic
 end Analysis
