@@ -1,4 +1,3 @@
-import RicciFlower.RicciFlow.Evolution.OdeReduction
 import RicciFlower.RicciFlow.Evolution.ImprovedPinching
 
 set_option autoImplicit false

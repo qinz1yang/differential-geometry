@@ -7,7 +7,6 @@ Authors: RicciFlower contributors
 import RicciFlower.RicciFlow.Perelman.Entropy
 import RicciFlower.RicciFlow.Perelman.Variation
 import RicciFlower.RicciFlow.Perelman.F
-import RicciFlower.RicciFlow.Perelman.FirstVariation
 import RicciFlower.RicciFlow.Perelman.Noncollapsing
 
 set_option linter.style.longLine false

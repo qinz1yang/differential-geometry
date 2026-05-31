@@ -7,7 +7,6 @@ import RicciFlower.RicciFlow.Evolution.ImprovedPinching
 import RicciFlower.RicciFlow.Evolution.LocalPinching
 import RicciFlower.RicciFlow.Evolution.RicciPreservation
 import RicciFlower.RicciFlow.Evolution.ScalarFiniteTime
-import RicciFlower.MaximumPrinciple.ScalarStrong
 import RicciFlower.RicciFlow.MaximalTime
 import RicciFlower.RicciFlow.Perelman.Noncollapsing
 import RicciFlower.DimensionThree.RicciControlsRm
@@ -675,6 +674,7 @@ def Ham3CGHLimitExists
       Ham3LimitFlow (I := I) L /\
       Ham3RicNonnegTransfer (I := I) P Q L /\
       Ham3LimitBaseScalarConv (I := I) P Q L /\
+      LimitScalarPos (I := I) L /\
       Ham3PinchTransfer (I := I) P Q L
 
 /-- Eventually the fixed backward time window `[-r0^2,0]` lies inside the
@@ -2255,8 +2255,8 @@ theorem limit_scalar_nonneg
 
 /-- CGH convergence plus the already-checked rescaled scalar/Ricci inputs
 produce the concrete limit data used in the final Section 12 argument:
-Ricci nonnegativity, base-point scalar normalization, and the pinching
-transfer datum. -/
+Ricci nonnegativity, base-point scalar normalization, scalar positivity on the
+regular limit window, and the pinching transfer datum. -/
 theorem limit_inherit
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
@@ -2276,10 +2276,11 @@ theorem limit_inherit
         Ham3RicNonnegTransfer (I := I) P Q L /\
         Ham3PinchTransfer (I := I) P Q L /\
         LimitRicNonneg (I := I) L /\
-        LimitBaseScalarOne (I := I) L := by
+        LimitBaseScalarOne (I := I) L /\
+        LimitScalarPos (I := I) L := by
   rcases _hcgh with
     ⟨L, hsubseq, hwindow, hregwin, hconn, hbdry, hflow,
-      hricTransfer, hbaseconv, hpinchTransfer⟩
+      hricTransfer, hbaseconv, hscalarPos, hpinchTransfer⟩
   have hlimit :
       Ham3LimitSubseq (I := I) L /\
       Ham3LimitWindow (I := I) L /\
@@ -2294,71 +2295,7 @@ theorem limit_inherit
   have hbase : LimitBaseScalarOne (I := I) L :=
     limit_base_scalar_one (I := I) (M := M) P Q _hsel hbaseconv
   exact ⟨L, hsubseq, hwindow, hregwin, hconn, hbdry, hflow,
-    hricTransfer, hpinchTransfer, hnonneg, hbase⟩
-
-/-- Limit Ricci nonnegativity plus scalar normalization give scalar positivity
-on the limit by the scalar strong maximum principle. -/
-theorem limit_scal_pos_smp
-    {L : Ham3CGHLimitData (I := I) M}
-    (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I) L)
-    (hflow : Ham3LimitFlow (I := I) L)
-    (hbase : LimitBaseScalarOne (I := I) L)
-    (hcarrier0 : (0 : Real) ∈ L.D.carrier)
-    (hricNonneg : LimitRicNonneg (I := I) L)
-    (hscalarNonneg : LimitScalarNonneg (I := I) L) :
-    LimitScalarPos (I := I) L := by
-  classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
-  haveI : ConnectedSpace L.N := by
-    simpa [Ham3LimitConnected] using hconn
-  haveI : I.Boundaryless := by
-    simpa [Ham3LimitBoundaryless] using hbdry
-  have hsol : RicciFlow.IsSolutionOn (I := I) L.S := by
-    simpa [Ham3LimitFlow] using hflow
-  have hdimT : ∀ x : L.N, Module.finrank Real (TangentSpace I x) = 3 := by
-    intro x
-    simpa using hdim
-  have hricNonneg' :
-      ∀ t : Real, t ∈ L.D.carrier → ∀ x : L.N, ∀ v : TangentSpace I x,
-        0 ≤ L.S.ricciAt t x (Curvature.vec2 (I := I) v v) := by
-    simpa [LimitRicNonneg] using hricNonneg
-  have hscalarNonneg' :
-      ∀ t : Real, t ∈ L.D.carrier → ∀ x : L.N, 0 ≤ L.S.scalar t x := by
-    simpa [LimitScalarNonneg] using hscalarNonneg
-  have hbase' : L.S.scalar 0 L.basepoint = 1 := by
-    simpa [LimitBaseScalarOne] using hbase
-  have hpos : 0 < L.S.scalar 0 L.basepoint := by
-    rw [hbase']
-    norm_num
-  have hposAll :
-      ∀ t : Real, t ∈ L.D.carrier → ∀ x : L.N, 0 < L.S.scalar t x :=
-    RicciFlow.scalar_strong_maximum_principle (I := I) (M := L.N) L.S hsol
-      hdimT hricNonneg' hscalarNonneg' hcarrier0 hpos
-  intro t ht x
-  exact hposAll t (L.D.regular_subset ht) x
-
-/-- Limit Ricci nonnegativity plus scalar normalization give scalar positivity
-on the limit by scalar nonnegativity and the scalar strong maximum principle. -/
-theorem limit_scal_pos
-    {L : Ham3CGHLimitData (I := I) M}
-    (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I) L)
-    (hflow : Ham3LimitFlow (I := I) L)
-    (hnonneg : LimitRicNonneg (I := I) L)
-    (hbase : LimitBaseScalarOne (I := I) L)
-    (hcarrier0 : (0 : Real) ∈ L.D.carrier) :
-    LimitScalarPos (I := I) L := by
-  exact limit_scal_pos_smp (I := I) (M := M) hdim hconn hbdry hflow hbase hcarrier0
-    hnonneg
-    (limit_scalar_nonneg (I := I) (M := M) hdim hnonneg)
+    hricTransfer, hpinchTransfer, hnonneg, hbase, hscalarPos⟩
 
 /-- The CGH/pinching decay statement is an exact convergence frontier: prove it
 from smooth pointed convergence of the rescaled flows, the rescaling rule for
@@ -2738,7 +2675,7 @@ theorem ham3_limit_const_metric
   have hdim : Module.finrank Real E = 3 := hM.2.2.2
   rcases limit_inherit (I := I) (M := M) hM g0 hpos P Q hsel hric hcgh with
     ⟨L, hsubseq, hwindow, hregwin, hconn, hbdry, hflow,
-      _hricTransfer, hpinchTransfer, hnonneg, hbase⟩
+      _hricTransfer, hpinchTransfer, hnonneg, hbase, hscalarPos⟩
   have hlimit :
       Ham3LimitSubseq (I := I) L /\
         Ham3LimitWindow (I := I) L /\
@@ -2747,13 +2684,6 @@ theorem ham3_limit_const_metric
         Ham3LimitBoundaryless (I := I) L /\
         Ham3LimitFlow (I := I) L :=
     ⟨hsubseq, hwindow, hregwin, hconn, hbdry, hflow⟩
-  have hcarrier0 : (0 : Real) ∈ L.D.carrier := by
-    apply hwindow
-    constructor
-    · nlinarith [sq_nonneg ham3_r0]
-    · exact le_rfl
-  have hscalarPos : LimitScalarPos (I := I) L :=
-    limit_scal_pos (I := I) (M := M) hdim hconn hbdry hflow hnonneg hbase hcarrier0
   have htf : LimitTfZero (I := I) L :=
     limit_tf_zero (I := I) (M := M) hdim P Q hpinchTransfer hpinch hlimit hscalarPos
   have hconst : LimitConstPosSec (I := I) L :=
