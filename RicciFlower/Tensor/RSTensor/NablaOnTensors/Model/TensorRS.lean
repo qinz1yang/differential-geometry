@@ -452,6 +452,60 @@ theorem covariantDeriv_tensorRSModelAt_apply_basis_slots {d r s : ℕ}
     smul_eq_mul]
   abel
 
+/-- Subtracting two model covariant derivatives cancels the raw directional
+derivative and leaves only the difference of the upper- and lower-slot
+connection corrections.  This is the model-space algebra behind the first-order
+connection-change formula used in MSM135 Chapter 4, Lemma "Norms of covariant
+derivatives of tensors, I". -/
+theorem covDerivRS_sub_apply {d r s : ℕ}
+    (basis : Module.Basis (Fin d) 𝕜 E)
+    (dT_X : TensorRSModel r s 𝕜 E)
+    (ΓX ΓX' : E →L[𝕜] E)
+    (T : TensorRSModel r s 𝕜 E)
+    (upper : Fin r → Fin d)
+    (lower : Fin s → Fin d) :
+    ((covariantDeriv_tensorRSModelAt
+          (𝕜 := 𝕜) (E := E) r s dT_X ΓX T -
+        covariantDeriv_tensorRSModelAt
+          (𝕜 := 𝕜) (E := E) r s dT_X ΓX' T)
+        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+      (fun b : Fin s => basis (lower b))
+    =
+      (((∑ a : Fin r, ∑ k : Fin d,
+        connectionEndomorphismCoeff basis ΓX k (upper a) *
+          (T
+            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+              (Function.update upper a k)))
+            (fun b : Fin s => basis (lower b))) -
+        (∑ a : Fin r, ∑ k : Fin d,
+        connectionEndomorphismCoeff basis ΓX' k (upper a) *
+          (T
+            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+              (Function.update upper a k)))
+            (fun b : Fin s => basis (lower b))))
+      -
+      ((∑ b : Fin s, ∑ k : Fin d,
+        connectionEndomorphismCoeff basis ΓX (lower b) k *
+          (T
+            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            (Function.update
+              (fun c : Fin s => basis (lower c))
+              b
+              (basis k))) -
+        (∑ b : Fin s, ∑ k : Fin d,
+        connectionEndomorphismCoeff basis ΓX' (lower b) k *
+          (T
+            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            (Function.update
+              (fun c : Fin s => basis (lower c))
+              b
+              (basis k))))) := by
+  classical
+  simp only [ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.sub_apply]
+  rw [covariantDeriv_tensorRSModelAt_apply_basis_slots basis dT_X ΓX T upper lower]
+  rw [covariantDeriv_tensorRSModelAt_apply_basis_slots basis dT_X ΓX' T upper lower]
+  abel
+
 /-- Within-set variant of
 `covariantDeriv_tensorRSModelAt_apply_basis_slots`. -/
 theorem covariantDeriv_tensorRSModelWithin_apply_basis_slots {d r s : ℕ}

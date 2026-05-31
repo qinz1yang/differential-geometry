@@ -158,6 +158,79 @@ theorem normSqRS_one_two_identity_eq_sum
   intro k _
   rw [sum_fin_two_fun]
 
+/-- A single mixed-tensor component is bounded by the full component `l^2`
+sum in the same basis. -/
+theorem componentRS_sq_le_componentL2SqRS
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} {r s : Nat}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (A : TensorRSSpace r s I x)
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
+    (componentRS (I := I) basis A upper lower) ^ 2 <=
+      componentL2SqRS (I := I) basis A := by
+  classical
+  unfold componentL2SqRS
+  have h_lower :
+      (componentRS (I := I) basis A upper lower) ^ 2 <=
+        ∑ lower' : Fin s -> Idx,
+          (componentRS (I := I) basis A upper lower') ^ 2 := by
+    exact Finset.single_le_sum
+      (fun lower' _ => sq_nonneg
+        (componentRS (I := I) basis A upper lower'))
+      (by simp)
+  have h_upper :
+      (∑ lower' : Fin s -> Idx,
+          (componentRS (I := I) basis A upper lower') ^ 2) <=
+        ∑ upper' : Fin r -> Idx, ∑ lower' : Fin s -> Idx,
+          (componentRS (I := I) basis A upper' lower') ^ 2 := by
+    exact Finset.single_le_sum
+      (fun upper' _ =>
+        Finset.sum_nonneg
+          (fun lower' _ => sq_nonneg
+            (componentRS (I := I) basis A upper' lower')))
+      (by simp)
+  exact h_lower.trans h_upper
+
+/-- In an orthonormal-coordinate basis, the absolute value of a single
+mixed-tensor component is bounded by the metric-induced tensor norm. -/
+theorem abs_componentRS_le_sqrt_normSqRS
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (r s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : TensorRSSpace r s I x)
+    (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
+    |componentRS (I := I) basis A upper lower| <=
+      Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A) := by
+  classical
+  have hcomp_nonneg :
+      0 <= componentL2SqRS (I := I) basis A := by
+    unfold componentL2SqRS
+    exact Finset.sum_nonneg
+      (fun upper' _ =>
+        Finset.sum_nonneg
+          (fun lower' _ => sq_nonneg
+            (componentRS (I := I) basis A upper' lower')))
+  have hnorm_nonneg :
+      0 <= normSqRS (I := I) (g := g) (x := x) r s A := by
+    rw [normSqRS_identity_eq_componentL2SqRS
+      (I := I) g x r s basis hinv A]
+    exact hcomp_nonneg
+  have hsq :
+      |componentRS (I := I) basis A upper lower| ^ 2 <=
+        (Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A)) ^ 2 := by
+    rw [sq_abs, Real.sq_sqrt hnorm_nonneg,
+      normSqRS_identity_eq_componentL2SqRS
+        (I := I) g x r s basis hinv A]
+    exact componentRS_sq_le_componentL2SqRS
+      (I := I) basis A upper lower
+  have hsq_no_abs :
+      (componentRS (I := I) basis A upper lower) ^ 2 <=
+        (Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A)) ^ 2 := by
+    simpa [sq_abs] using hsq
+  exact abs_le_of_sq_le_sq hsq_no_abs (Real.sqrt_nonneg _)
+
 /-- A time-dependent pointwise realized `(r,s)` tensor field. -/
 abbrev TensorRSTimeField
     (I : ModelWithCorners Real E H) (M : Type*) [TopologicalSpace M]

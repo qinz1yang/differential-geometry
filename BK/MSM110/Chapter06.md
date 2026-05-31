@@ -1,5 +1,17 @@
 # MSM110 Chapter 6
 
+## 2026-05-31 Retired Outline Wrappers
+
+Section 6.1, 6.3, 6.4, and 6.7--6.10 wrappers were removed from the chapter
+index because they only depended on theorem-label outline modules or open
+global inputs outside the HPR-only cleanup surface.  Future book-facing
+wrappers should be reintroduced only when they point at proved RicciFlower
+producer theorems or explicitly accepted final black-box interfaces.
+
+Focused verification previously passed for the chapter index before the
+HPR-only pruning.  Recheck the BK wrapper only if this branch is meant to keep
+BK as a build target.
+
 ## 2026-05-12 chapter index
 
 `BK.MSM110.Chapter06` imports the Section 6.1 companion. The companion is

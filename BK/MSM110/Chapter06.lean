@@ -4,20 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: RicciFlower contributors
 -/
 
-import BK.MSM110.Chapter06.Section01
 import BK.MSM110.Chapter06.Section02
-import BK.MSM110.Chapter06.Section03
-import BK.MSM110.Chapter06.Section04
 import BK.MSM110.Chapter06.Section05
 import BK.MSM110.Chapter06.Section06
-import BK.MSM110.Chapter06.Section07
-import BK.MSM110.Chapter06.Section08
-import BK.MSM110.Chapter06.Section09
-import BK.MSM110.Chapter06.Section10
 
 /-!
 # MSM110 Chapter 6
 
 Book-companion index for Chapter 6, "Three-manifolds of positive Ricci
-curvature".
+curvature".  The theorem-label wrappers with unresolved global inputs are
+retired on the Hamilton-positive-Ricci cleanup branch until book-facing
+statements are reattached to proved RicciFlower producers.
 -/

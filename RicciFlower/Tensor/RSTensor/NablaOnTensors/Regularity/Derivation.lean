@@ -714,6 +714,96 @@ private theorem tensorRSModelInChart_apply_update_modelOutputSlot_center {r s : 
       exact tangentFieldModelInChart_center_symmL (I := I) (V b) x₀
   rw [hβ, hslots]
 
+theorem localCovDeriv0S_sub {r : ℕ}
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+      (M := M) r x)
+    (V : Fin r -> (x : M) -> TangentSpace I x) (x₀ : M)
+    (hpair : MDifferentiableAt I 𝓘(𝕜, 𝕜)
+      (fun p : M => β p (fun a : Fin r => V a p)) x₀)
+    (hβmodel : DifferentiableWithinAt 𝕜
+      (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+        (M := M) r x₀ β)
+      (Set.range I) (extChartAt I x₀ x₀))
+    (hV : ∀ a : Fin r, MDiffAt (T% (V a)) x₀)
+    (hVmodel : ∀ a : Fin r,
+      DifferentiableWithinAt 𝕜
+        (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a))
+        (Set.range I) (extChartAt I x₀ x₀))
+    (hcoord : ∀ a : Fin r, ∀ i : Fin (Module.finrank 𝕜 E),
+      MDifferentiableAt I 𝓘(𝕜, 𝕜)
+        (fun p : M =>
+          (Module.finBasis 𝕜 E).coord i
+            (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a)
+              (extChartAt I x₀ p))) x₀) :
+    (localCovariantDerivTensor0SAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀
+        (fun a : Fin r => V a x₀) -
+      localCovariantDerivTensor0SAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov' X β x₀
+        (fun a : Fin r => V a x₀)) =
+      -∑ a : Fin r,
+        β x₀
+          (Function.update (fun b : Fin r => V b x₀) a
+            (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
+  classical
+  let slots : Fin r -> TangentSpace I x₀ := fun a => V a x₀
+  have hcov := localCovariantDerivTensor0SAt_eval_moving_raw
+    (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    cov X β V x₀ hpair hβmodel hV hVmodel hcoord
+  have hcov' := localCovariantDerivTensor0SAt_eval_moving_raw
+    (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    cov' X β V x₀ hpair hβmodel hV hVmodel hcoord
+  have hdiff (a : Fin r) :
+      β x₀
+          (Function.update slots a ((cov (V a) x₀) (X x₀))) -
+        β x₀
+          (Function.update slots a ((cov' (V a) x₀) (X x₀))) =
+        β x₀
+          (Function.update slots a
+            (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
+    have hconn :
+        ((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀) =
+          ((cov (V a) x₀) (X x₀)) - ((cov' (V a) x₀) (X x₀)) := by
+      have h :=
+        IsCovariantDerivativeOn.difference_apply
+          (hcov := cov.isCovariantDerivativeOnUniv)
+          (hcov' := cov'.isCovariantDerivativeOnUniv)
+          (σ := V a) (x := x₀) (hx := by trivial) (hV a)
+      exact congrArg (fun L : TangentSpace I x₀ →L[𝕜] TangentSpace I x₀ => L (X x₀)) h
+    rw [hconn]
+    exact ((β x₀).map_update_sub slots a
+      ((cov (V a) x₀) (X x₀))
+      ((cov' (V a) x₀) (X x₀))).symm
+  let D : 𝕜 :=
+    extDerivFun (I := I) (fun p : M => β p (fun a : Fin r => V a p))
+      x₀ (X x₀)
+  let Scov : 𝕜 :=
+    ∑ a : Fin r, β x₀ (Function.update slots a ((cov (V a) x₀) (X x₀)))
+  let Scov' : 𝕜 :=
+    ∑ a : Fin r, β x₀ (Function.update slots a ((cov' (V a) x₀) (X x₀)))
+  let Sdiff : 𝕜 :=
+    ∑ a : Fin r,
+      β x₀
+        (Function.update slots a
+          (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀)))
+  have hsum : Scov - Scov' = Sdiff := by
+    dsimp [Scov, Scov', Sdiff]
+    rw [← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    exact hdiff a
+  change
+      ((localCovariantDerivTensor0SAt
+          (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀) slots -
+        (localCovariantDerivTensor0SAt
+          (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov' X β x₀) slots) =
+        -Sdiff
+  rw [hcov, hcov']
+  change (D - Scov) - (D - Scov') = -Sdiff
+  rw [← hsum]
+  abel
+
 set_option backward.isDefEq.respectTransparency false in
 theorem nablaRSFun_eval_moving_raw {r s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -959,6 +1049,108 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
             (Function.update (fun b : Fin s => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
           rw [hpair_deriv, hinput, houtput_sum]
+
+theorem nablaRSFun_sub_raw {r s : ℕ}
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) r s)
+    (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+      (M := M) r x)
+    (V : Fin s -> (x : M) -> TangentSpace I x) (x₀ : M)
+    (hpair : MDifferentiableAt I 𝓘(𝕜, 𝕜)
+      (fun p : M => (T p (β p)) (fun a : Fin s => V a p)) x₀)
+    (hβmodel : DifferentiableWithinAt 𝕜
+      (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+        (M := M) r x₀ β)
+      (Set.range I) (extChartAt I x₀ x₀))
+    (hV : ∀ a : Fin s, MDiffAt (T% (V a)) x₀)
+    (hVmodel : ∀ a : Fin s,
+      DifferentiableWithinAt 𝕜
+        (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a))
+        (Set.range I) (extChartAt I x₀ x₀))
+    (hcoord : ∀ a : Fin s, ∀ i : Fin (Module.finrank 𝕜 E),
+      MDifferentiableAt I 𝓘(𝕜, 𝕜)
+        (fun p : M =>
+          (Module.finBasis 𝕜 E).coord i
+            (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a)
+              (extChartAt I x₀ p))) x₀) :
+    (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        r s cov X T x₀ (β x₀) (fun a : Fin s => V a x₀) -
+      nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        r s cov' X T x₀ (β x₀) (fun a : Fin s => V a x₀)) =
+      -(((T x₀
+          (localCovariantDerivTensor0SAt
+            (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀))
+          (fun a : Fin s => V a x₀)) -
+        ((T x₀
+          (localCovariantDerivTensor0SAt
+            (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov' X β x₀))
+          (fun a : Fin s => V a x₀))) -
+      ∑ a : Fin s,
+        (T x₀ (β x₀))
+          (Function.update (fun b : Fin s => V b x₀) a
+            (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
+  classical
+  let slots : Fin s -> TangentSpace I x₀ := fun a => V a x₀
+  have hcov := nablaRSFun_eval_moving_raw
+    (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    cov X T β V x₀ hpair hβmodel hV hVmodel hcoord
+  have hcov' := nablaRSFun_eval_moving_raw
+    (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    cov' X T β V x₀ hpair hβmodel hV hVmodel hcoord
+  have hdiff (a : Fin s) :
+      (T x₀ (β x₀))
+          (Function.update slots a ((cov (V a) x₀) (X x₀))) -
+        (T x₀ (β x₀))
+          (Function.update slots a ((cov' (V a) x₀) (X x₀))) =
+        (T x₀ (β x₀))
+          (Function.update slots a
+            (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀))) := by
+    have hconn :
+        ((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀) =
+          ((cov (V a) x₀) (X x₀)) - ((cov' (V a) x₀) (X x₀)) := by
+      have h :=
+        IsCovariantDerivativeOn.difference_apply
+          (hcov := cov.isCovariantDerivativeOnUniv)
+          (hcov' := cov'.isCovariantDerivativeOnUniv)
+          (σ := V a) (x := x₀) (hx := by trivial) (hV a)
+      exact congrArg (fun L : TangentSpace I x₀ →L[𝕜] TangentSpace I x₀ => L (X x₀)) h
+    rw [hconn]
+    exact ((T x₀ (β x₀)).map_update_sub slots a
+      ((cov (V a) x₀) (X x₀))
+      ((cov' (V a) x₀) (X x₀))).symm
+  let D : 𝕜 :=
+    extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
+      x₀ (X x₀)
+  let Lcov : 𝕜 :=
+    (T x₀
+      (localCovariantDerivTensor0SAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)) slots
+  let Lcov' : 𝕜 :=
+    (T x₀
+      (localCovariantDerivTensor0SAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov' X β x₀)) slots
+  let Scov : 𝕜 :=
+    ∑ a : Fin s, (T x₀ (β x₀))
+      (Function.update slots a ((cov (V a) x₀) (X x₀)))
+  let Scov' : 𝕜 :=
+    ∑ a : Fin s, (T x₀ (β x₀))
+      (Function.update slots a ((cov' (V a) x₀) (X x₀)))
+  let Sdiff : 𝕜 :=
+    ∑ a : Fin s,
+      (T x₀ (β x₀))
+        (Function.update slots a
+          (((CovariantDerivative.difference cov cov' x₀) (V a x₀)) (X x₀)))
+  have hsum : Scov - Scov' = Sdiff := by
+    dsimp [Scov, Scov', Sdiff]
+    rw [← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    exact hdiff a
+  rw [hcov, hcov']
+  change (D - Lcov - Scov) - (D - Lcov' - Scov') = -(Lcov - Lcov') - Sdiff
+  rw [← hsum]
+  abel
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Pointwise moving-slot derivation formula for `nabla0SFun` in arbitrary
