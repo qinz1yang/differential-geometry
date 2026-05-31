@@ -21,7 +21,7 @@ namespace SlotAlgebra
 
 /-- Reindex a sum over three finite slots as an explicit triple sum. -/
 lemma sum_fin3_fun_eq_triple
-    {R ι : Type*} [CommSemiring R] [Fintype ι] [DecidableEq ι]
+    {R ι : Type*} [CommSemiring R] [Fintype ι]
     (A B C : ι -> R) (K : ι -> ι -> ι -> R) :
     (∑ r : Fin 3 -> ι, A (r 0) * B (r 1) * C (r 2) * K (r 0) (r 1) (r 2)) =
       ∑ i : ι, ∑ k : ι, ∑ j : ι, A i * B k * C j * K i k j := by

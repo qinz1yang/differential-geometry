@@ -54,13 +54,15 @@ theorem lem_evolving_frame_calculation
     (D := D) metricComp Ric frameComp ricciOneUp hmetric hframe hcompat
 
 /-- MSM110 Chapter 6.2, corollary that an initially orthonormal evolving frame
-remains orthonormal. -/
+remains orthonormal once the Gram matrix has been propagated from the initial
+time.  The ODE/FTC step producing `MovingFrameGramValueConstantOn` lives below
+the BK wrapper layer. -/
 theorem cor_evolving_frame_orthonormal
     {D : RicciFlower.Realized.RealTimeInterval}
     (metricComp frameComp : Real -> M -> Idx -> Idx -> Real)
-    (hconst : MovingFrameGramConstantOn (D := D) metricComp frameComp)
+    (hconst : MovingFrameGramValueConstantOn (D := D) metricComp frameComp)
     (hinit : forall x : M,
-      MovingFrameOrthonormalInFrame metricComp frameComp 0 x) :
+      MovingFrameOrthonormalInFrame metricComp frameComp D.initial x) :
     forall (t : RicciFlower.Realized.RealTimeInterval.RegularTime D) (x : M),
       MovingFrameOrthonormalInFrame metricComp frameComp (t : Real) x :=
   RicciFlower.RicciFlow.evolvingFrame_orthonormal_of_initial
@@ -99,19 +101,20 @@ theorem eq_uhlenbeck_pullback_of_riemann
 theorem lem_uhlenbeck_curvature_evolution_one
     {D : RicciFlower.Realized.RealTimeInterval}
     (iota : Real -> M -> Idx -> Idx -> Real)
-    (Rm04 pulledRm roughLapRm04 roughLapD B :
+    (Rm04 pulledRm roughLapRm04 roughLapD Borig Bpull :
       Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (ricciOneUp : Real -> M -> Idx -> Idx -> Real)
     (hiota : BundleIsomorphismODEInFrameOn (D := D) iota ricciOneUp)
     (hpull : UhlenbeckPullbackRmComponents iota Rm04 pulledRm)
     (hlap : UhlenbeckLaplacianPullbackComponents iota roughLapRm04 roughLapD)
+    (hB : UhlenbeckPullbackBComponents iota Borig Bpull)
     (hrm : Riemann04BTensorWithRicciDriftEvolutionInFrameOn
-      (D := D) Rm04 roughLapRm04 B ricciOneUp) :
+      (D := D) Rm04 roughLapRm04 Borig ricciOneUp) :
     UhlenbeckCurvatureEvolutionInFrameOn
-      (D := D) pulledRm roughLapD B :=
+      (D := D) pulledRm roughLapD Bpull :=
   RicciFlower.RicciFlow.uhlenbeckCurvatureEvolutionInFrameOn_of_ricciFlow
-    (D := D) iota Rm04 pulledRm roughLapRm04 roughLapD B ricciOneUp
-    hiota hpull hlap hrm
+    (D := D) iota Rm04 pulledRm roughLapRm04 roughLapD Borig Bpull ricciOneUp
+    hiota hpull hlap hB hrm
 
 /-- MSM110 Chapter 6.2, equation
 `eq:rm_minus_evolution_minus_uhlenbeck_trick`. -/

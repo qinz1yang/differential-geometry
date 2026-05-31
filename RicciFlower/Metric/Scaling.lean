@@ -52,7 +52,7 @@ set_option synthInstance.maxHeartbeats 80000 in
 private theorem contMDiff_scaleMetric_inner_section
     (c : Real) (g : SmoothRiemannianMetric I M) :
     ContMDiff I
-      (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ⊤
+      (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ∞
       (fun y : M =>
         TotalSpace.mk' (E →L[Real] E →L[Real] Real)
           (E := fun y : M =>

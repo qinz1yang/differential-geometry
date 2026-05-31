@@ -7,6 +7,7 @@ import RicciFlower.VectorBundle.PartialMfderiv
 
 set_option autoImplicit false
 set_option linter.style.longLine false
+set_option linter.unusedSectionVars false
 
 /-!
 # Metric compatibility as `nabla g = 0`
@@ -220,6 +221,193 @@ theorem zero_realizes_metric
   intro X x slots
   rw [nabla_metric_zero (I := I) cov g hmc X x]
   simp
+
+/-- Directional derivative product rule for scalar functions, kept private here
+to avoid adding a higher-level scalar-operator import to the tensor layer. -/
+private theorem extDerivFun_mul_real
+    {f h : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
+    extDerivFun (I := I) (fun y : M => f y * h y) x v =
+      f x * extDerivFun (I := I) h x v +
+        extDerivFun (I := I) f x v * h x := by
+  change extDerivFun (I := I) (f • h) x v =
+      f x * extDerivFun (I := I) h x v +
+        extDerivFun (I := I) f x v * h x
+  have hprod := fromTangentSpace_mfderiv_smul_apply
+    (I := I) (f := f) (g := h) hf hh v
+  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm,
+    mul_assoc] using hprod
+
+/-- Product rule for a scalar multiple of a parallel metric tensor:
+`∇(f g) = df ⊗ g`.
+
+The one-form section `df` is supplied by a realization property, so this lemma
+stays below the scalar Hessian/realized-operator layer. -/
+theorem nabla_smul_metric
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (f : M -> Real)
+    (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
+    (df : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (hdf : ∀ x : M, ∀ v : TangentSpace I x,
+      df x (fun _ : Fin 1 => v) = extDerivFun (I := I) f x v) :
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      2 cov
+      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+        f hf (metricTensorField (I := I) g))
+      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+        df (metricTensorField (I := I) g)) := by
+  intro X x slots
+  classical
+  let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    fun a =>
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (slots a)).choose
+  have hV : ∀ a : Fin 2, V a x = slots a := by
+    intro a
+    exact
+      (ContMDiffSection.exists_eq_at
+        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+        x (slots a)).choose_spec
+  let metricSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2 :=
+    metricTensorField (I := I) g
+  let mfun : M -> Real := fun y : M => metricSec y (fun a : Fin 2 => V a y)
+  have hf_at : MDifferentiableAt I 𝓘(Real, Real) f x :=
+    hf.contMDiffAt.mdifferentiableAt (by simp)
+  have hm : MDifferentiableAt I 𝓘(Real, Real) mfun x := by
+    exact (tensor0SField_eval_smooth_slots_contMDiffAt
+      (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      metricSec V x).mdifferentiableAt (by simp)
+  have hprod :
+      extDerivFun (I := I) (fun y : M => f y * mfun y) x (X x) =
+        f x * extDerivFun (I := I) mfun x (X x) +
+          extDerivFun (I := I) f x (X x) * mfun x := by
+    exact extDerivFun_mul_real (I := I) (f := f) (h := mfun) (X x) hf_at hm
+  have hmetricReal :
+      TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        2 cov metricSec
+        (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          (n := (∞ : WithTop ℕ∞)) 3) := by
+    simpa [metricSec] using zero_realizes_metric (I := I) cov g hmc
+  have hmetricEval :=
+    TotalNabla0SRealizes.eval_smooth_slots (I := I) hmetricReal X V x
+  have hnabla :=
+    nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) cov X V
+      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+        f hf metricSec) x
+  have hslots :
+      (fun a : Fin 2 => V a x) = slots := by
+    funext a
+    exact hV a
+  have hmetric_zero :
+      extDerivFun (I := I) mfun x (X x) -
+          ∑ a : Fin 2,
+            metricSec x
+              (Function.update (fun b : Fin 2 => V b x) a
+                ((cov (fun p : M => V a p) x) (X x))) =
+        0 := by
+    simpa [metricSec, mfun] using hmetricEval.symm
+  calc
+    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+        df metricSec) x (Fin.cons (X x) slots)
+        =
+          extDerivFun (I := I) f x (X x) * metricSec x slots := by
+          change (Bundle.continuousMultilinearMap.product_fun
+              (df x) (metricSec x)) (Fin.cons (X x) slots) =
+            extDerivFun (I := I) f x (X x) * metricSec x slots
+          rw [Bundle.continuousMultilinearMap.product_fun_apply]
+          have hleft :
+              Fin.cons (X x) slots ∘ Fin.castAdd 2 =
+                fun _ : Fin 1 => X x := by
+            funext a
+            fin_cases a
+            rfl
+          have hright :
+              Fin.cons (X x) slots ∘ Fin.natAdd 1 = slots := by
+            funext a
+            fin_cases a <;> rfl
+          rw [hleft, hright, hdf x (X x)]
+      _ =
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 cov X
+            (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+              (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+              f hf metricSec) x slots := by
+          rw [← hslots]
+          rw [hnabla]
+          simp only [tensor0SField_smulByFun_apply,
+            ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+          rw [hprod]
+          have hsum :
+              (∑ a : Fin 2,
+                f x *
+                  metricSec x
+                    (Function.update (fun b : Fin 2 => V b x) a
+                      ((cov (fun p : M => V a p) x) (X x)))) =
+                f x *
+                  ∑ a : Fin 2,
+                    metricSec x
+                      (Function.update (fun b : Fin 2 => V b x) a
+                        ((cov (fun p : M => V a p) x) (X x))) := by
+            rw [Finset.mul_sum]
+          rw [hsum]
+          have hdm :
+              extDerivFun (I := I) mfun x (X x) =
+                ∑ a : Fin 2,
+                  metricSec x
+                    (Function.update (fun b : Fin 2 => V b x) a
+                      ((cov (fun p : M => V a p) x) (X x))) := by
+            linarith [hmetric_zero]
+          rw [show mfun x = metricSec x (fun a : Fin 2 => V a x) from rfl, hdm]
+          ring
+
+/-- Canonical zero first and second covariant derivatives of the metric tensor
+for a metric-compatible connection. -/
+noncomputable def metricDerivsZero
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g) :
+    CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
+      (M := M) cov (metricTensorField (I := I) g) where
+  nablaA := 0
+  nabla2A := 0
+  first := zero_realizes_metric (I := I) cov g hmc
+  second := zero_realizes_nabla (I := I) 3 cov
+
+@[simp]
+theorem metricDerivsZero_nabla
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (x : M) (slots : Fin 3 -> TangentSpace I x) :
+    (metricDerivsZero (I := I) cov g hmc).nablaA x slots = 0 := rfl
+
+@[simp]
+theorem metricDerivsZero_nabla2
+    [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : RicciFlower.SmoothRiemannianMetric I M)
+    (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
+    (x : M) (slots : Fin 4 -> TangentSpace I x) :
+    (metricDerivsZero (I := I) cov g hmc).nabla2A x slots = 0 := rfl
 
 end
 

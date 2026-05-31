@@ -543,7 +543,7 @@ theorem divergence_g_chart_product
     rw [extChartAt_source_eq_chartAt_source (I := I)]
     exact mem_chart_source H x
   have hy₀_target : y₀ ∈ (extChartAt I x).target := by
-    simpa [hy₀_def] using (extChartAt I x).map_source hxsrc
+    simp [hy₀_def, (extChartAt I x).map_source hxsrc]
   have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ :=
     (isOpen_extChartAt_target (I := I) x).mem_nhds hy₀_target
   have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
@@ -553,7 +553,7 @@ theorem divergence_g_chart_product
     chartDensity_pos (I := I) g x hbase
   have hρ_ne : chartDensity (I := I) g x x ≠ 0 := ne_of_gt hρ_pos
   have hsymm : (extChartAt I x).symm y₀ = x := by
-    simpa [hy₀_def] using (extChartAt I x).left_inv hxsrc
+    simp [hy₀_def, (extChartAt I x).left_inv hxsrc]
   have hρOnE :
       chartDensityOnE (I := I) g x y₀ = chartDensity (I := I) g x x := by
     change chartDensity (I := I) g x ((extChartAt I x).symm y₀) =

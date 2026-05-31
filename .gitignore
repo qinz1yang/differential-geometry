@@ -23,6 +23,7 @@
 **/.DS_Store
 *.md
 !/RicciFlower/DG_REFERENCE_PDE_TRACKING.md
+!/RicciFlower/SPLIT_ARCHIVE.md
 !/BK.md
 !/BK/**/*.md
 /DifferentialGeometry

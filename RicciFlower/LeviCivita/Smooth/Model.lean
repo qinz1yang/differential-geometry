@@ -154,6 +154,41 @@ theorem metricFlatModelInChart_contDiffWithinAt
       (x := extChartAt I x₀ x₀) hsymm
   exact hcomp.contDiffWithinAt
 
+/-- Pointwise fixed-chart compatibility for the metric flat map on the chart
+target. -/
+theorem metricFlatModelInChart_apply_of_target
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target) (v w : E) :
+    metricFlatModelInChart (I := I) g x₀ y v w =
+      g.inner ((extChartAt I x₀).symm y)
+        ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real
+          ((extChartAt I x₀).symm y) v)
+        ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real
+          ((extChartAt I x₀).symm y) w) := by
+  let p : M := (extChartAt I x₀).symm y
+  have hp_src : p ∈ (extChartAt I x₀).source := by
+    simpa [p] using (extChartAt I x₀).map_target hy
+  have hpy : extChartAt I x₀ p = y := by
+    simpa [p] using (extChartAt I x₀).right_inv hy
+  have hcenter : (extChartAt I x₀).symm (extChartAt I x₀ p) = p :=
+    (extChartAt I x₀).left_inv hp_src
+  rw [← hpy, hcenter]
+  simp only [metricFlatModelInChart]
+  rw [hom_trivializationAt_apply]
+  rw [hcenter]
+  have hpT :
+      p ∈
+        (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
+    simpa [TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp_src
+  have hpDual :
+      p ∈
+        (trivializationAt (E →L[Real] Real)
+          (fun p : M => TangentSpace I p →L[Real] Real) x₀).baseSet := by
+    rw [hom_trivializationAt_baseSet]
+    exact ⟨hpT, by simp⟩
+  rw [ContinuousLinearMap.inCoordinates_eq hpT hpDual]
+  simp [hom_trivializationAt, Trivialization.continuousLinearMap_apply]
+
 /-- The inverse metric flat map is smooth in the fixed model chart. -/
 theorem inverseMetricFlatModelInChart_contDiffWithinAt
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
@@ -167,6 +202,60 @@ theorem inverseMetricFlatModelInChart_contDiffWithinAt
       |>.comp_contDiffWithinAt
         (x := extChartAt I x₀ x₀)
         (metricFlatModelInChart_contDiffWithinAt (I := I) g x₀)
+
+/-- The fixed-chart metric flat map is smooth at every point of the fixed
+chart target. -/
+theorem metricFlatModelInChart_contDiffWithinAt_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target) :
+    ContDiffWithinAt Real ∞
+      (metricFlatModelInChart (I := I) g x₀)
+      (Set.range I) y := by
+  let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+  let b := Module.finBasis Real E
+  let p : M := (extChartAt I x₀).symm y
+  have hp_src : p ∈ (extChartAt I x₀).source := by
+    simpa [p] using (extChartAt I x₀).map_target hy
+  have hpE : p ∈ e.baseSet := by
+    simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp_src
+  have hlocal :
+      ContMDiffAt I 𝓘(Real, E →L[Real] E →L[Real] Real) ∞
+        (fun p : M => localMetricFlatBasis (I := I) e b g p) p :=
+    localMetricFlatBasis_contMDiffAt (I := I) e b g hpE
+  have hsymm :
+      ContMDiffWithinAt 𝓘(Real, E) I ∞ (extChartAt I x₀).symm
+        (Set.range I) y := by
+    simpa using
+      contMDiffWithinAt_extChartAt_symm_range (I := I) (n := ∞) x₀ hy
+  have hcomp :
+      ContMDiffWithinAt 𝓘(Real, E)
+        𝓘(Real, E →L[Real] E →L[Real] Real) ∞
+        ((fun p : M => localMetricFlatBasis (I := I) e b g p) ∘
+          (extChartAt I x₀).symm)
+        (Set.range I) y :=
+    hlocal.comp_contMDiffWithinAt (x := y) hsymm
+  have heq :
+      metricFlatModelInChart (I := I) g x₀ =ᶠ[𝓝[Set.range I] y]
+        fun y' : E =>
+          localMetricFlatBasis (I := I) e b g ((extChartAt I x₀).symm y') := by
+    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy] with y' hy'
+    have hp'_src : (extChartAt I x₀).symm y' ∈ (extChartAt I x₀).source :=
+      (extChartAt I x₀).map_target hy'
+    have hp'E : (extChartAt I x₀).symm y' ∈ e.baseSet := by
+      simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp'_src
+    ext v w
+    calc
+      metricFlatModelInChart (I := I) g x₀ y' v w =
+          g.inner ((extChartAt I x₀).symm y')
+            (e.symmL Real ((extChartAt I x₀).symm y') v)
+            (e.symmL Real ((extChartAt I x₀).symm y') w) := by
+            simpa [e] using metricFlatModelInChart_apply_of_target
+              (I := I) g x₀ hy' v w
+      _ =
+          localMetricFlatBasis (I := I) e b g ((extChartAt I x₀).symm y') v w := by
+            rw [localMetricFlatBasis_eq_inner (I := I) e b g hp'E v w]
+  exact hcomp.contDiffWithinAt.congr_of_eventuallyEq heq
+    (heq.self_of_nhdsWithin (extChartAt_target_subset_range x₀ hy))
 
 /-- Fixed-chart inverse metric coefficients are smooth model functions. -/
 theorem inverseMetricFlatModelInChart_component_contDiffWithinAt

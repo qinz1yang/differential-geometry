@@ -744,7 +744,7 @@ def tensor02FreezeNabla
       nablaA (vec3 (I := I) X Y Z) := by
   exact freezeLastTwo0S3_apply (I := I) nablaA X Y Z
 
-private theorem tensor02FreezeNabla_eq_curry
+theorem tensor02FreezeNabla_eq_curry
     {x : M}
     (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (X : TangentSpace I x) :

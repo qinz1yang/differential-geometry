@@ -105,7 +105,78 @@ def tensor02ToField (Ric : Tensor02Section (I := I) (M := M)) :
 /-- Interpret a bundled lowered Riemann section as a pointwise four-tensor field. -/
 def tensor04ToField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
-  fun x W X Y Z => Rm04 x (vec4 W X Y Z)
+  fun x X Y Z W => Rm04 x (vec4 X Y Z W)
+
+/-- Standard slot evaluation of a lowered Riemann four-tensor:
+`Rm04(X,Y,Z,W) = <R(X,Y)Z,W>`.
+
+This is now direct evaluation of the canonical bundled tensor. -/
+def tensor04StdAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
+    (X Y Z W : TangentSpace I x) : Real :=
+  Rm04 (vec4 X Y Z W)
+
+/-- Output-first compatibility evaluation for a lowered Riemann four-tensor:
+`Rm04Out(W,X,Y,Z) = Rm04(X,Y,Z,W)`.
+
+This is the old RicciFlower slot order kept explicit during the convention
+migration. -/
+def tensor04OutAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
+    (W X Y Z : TangentSpace I x) : Real :=
+  Rm04 (vec4 X Y Z W)
+
+/-- Slot permutation sending standard arguments `(X,Y,Z,W)` to the historical
+output-first order `(W,X,Y,Z)`. -/
+def tensor04StdToOutPerm : Equiv.Perm (Fin 4) where
+  toFun i := if i = 0 then 3 else if i = 1 then 0 else if i = 2 then 1 else 2
+  invFun i := if i = 0 then 1 else if i = 1 then 2 else if i = 2 then 3 else 0
+  left_inv i := by
+    fin_cases i <;> simp
+  right_inv i := by
+    fin_cases i <;> simp
+
+/-- Convert a historical output-first lowered Riemann tensor into the canonical
+standard-slot tensor. -/
+def tensor04StdOfOutAt {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x) :
+    Tensor04At (I := I) (M := M) x :=
+  Rm04Out.domDomCongr tensor04StdToOutPerm
+
+@[simp]
+theorem tensor04StdAt_apply
+    {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
+    (X Y Z W : TangentSpace I x) :
+    tensor04StdAt (I := I) (M := M) Rm04 X Y Z W =
+      Rm04 (vec4 X Y Z W) := rfl
+
+@[simp]
+theorem tensor04OutAt_apply
+    {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
+    (W X Y Z : TangentSpace I x) :
+    tensor04OutAt (I := I) (M := M) Rm04 W X Y Z =
+      Rm04 (vec4 X Y Z W) := rfl
+
+@[simp]
+theorem tensor04StdOfOutAt_apply
+    {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x)
+    (X Y Z W : TangentSpace I x) :
+    tensor04StdOfOutAt (I := I) (M := M) Rm04Out (vec4 X Y Z W) =
+      Rm04Out (vec4 W X Y Z) := by
+  change Rm04Out (fun i => (vec4 X Y Z W) (tensor04StdToOutPerm i)) =
+    Rm04Out (vec4 W X Y Z)
+  congr 1
+  funext i
+  fin_cases i <;> simp [tensor04StdToOutPerm, vec4]
+
+/-- Interpret a bundled lowered Riemann section as a raw four-tensor field in
+standard slot order. -/
+def tensor04ToStdField (Rm04 : Tensor04Section (I := I) (M := M)) :
+    RawFourTensorField (I := I) (M := M) :=
+  fun x X Y Z W => tensor04StdAt (I := I) (Rm04 x) X Y Z W
+
+/-- Interpret a bundled lowered Riemann section as a raw four-tensor field in
+the old output-first slot order. -/
+def tensor04ToOutField (Rm04 : Tensor04Section (I := I) (M := M)) :
+    RawFourTensorField (I := I) (M := M) :=
+  fun x W X Y Z => tensor04OutAt (I := I) (Rm04 x) W X Y Z
 
 /-- Ricci component in a static frame. -/
 def ricciComp

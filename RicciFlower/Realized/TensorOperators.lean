@@ -265,6 +265,32 @@ theorem tensorHeatWithDrift2QuadMetricAt_eq
         nablaA (Fin.cons (X x) (vec2 v v)) := by
   simp [tensorHeatWithDrift2QuadMetricAt]
 
+/-- Zero-drift specialization of the metric-level quadratic tensor heat
+operator. -/
+@[simp]
+theorem tensorHeatWithDrift2QuadMetricAt_zero_drift
+    (g : SmoothRiemannianMetric I M)
+    {x : M}
+    (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      4 x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      3 x)
+    (v : TangentSpace I x) :
+    tensorHeatWithDrift2QuadMetricAt (I := I) g
+        (fun _y : M => 0) nabla2A nablaA v =
+      metricTraceFirstTwo0SAt (I := I) g nabla2A (vec2 v v) := by
+  rw [tensorHeatWithDrift2QuadMetricAt_eq]
+  have hzero :
+      nablaA (Fin.cons (n := 2)
+          (α := fun _ : Fin 3 => TangentSpace I x)
+          (0 : TangentSpace I x) (vec2 (I := I) v v)) = 0 := by
+    simpa using
+      nablaA.map_update_zero
+        (Fin.cons (n := 2) (α := fun _ : Fin 3 => TangentSpace I x)
+          (0 : TangentSpace I x) (vec2 (I := I) v v))
+        (0 : Fin 3)
+  simpa using hzero
+
 /-- Assemble the quadratic heat-with-drift value from separately identified
 Laplacian and drift scalar values. -/
 theorem heatQuad_eq_parts

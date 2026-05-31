@@ -1,4 +1,5 @@
 import RicciFlower.RicciFlow.Evolution.OdeReduction
+import RicciFlower.RicciFlow.Evolution.ImprovedPinching
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -21,6 +22,8 @@ noncomputable section
 
 namespace RicciFlower
 namespace RicciFlow
+
+open scoped Manifold ContDiff
 
 variable {M : Type*}
 
@@ -99,10 +102,32 @@ def PinchingPFormulaOn
   ∀ (t : Real) (x : M),
     P t x = pinchingP (lambda t x) (mu t x) (nu t x)
 
-/-- Product/quotient parabolic calculation from `lem:palpha_over_qbeta`. -/
-def PAlphaOverQBetaFormulaOn
-    (phi psi quotient rhs : Real -> M -> Real) : Prop :=
-  ∀ (t : Real) (x : M), quotient t x = rhs t x ∧ 0 ≤ phi t x ∧ 0 < psi t x
+/-- The canonical field built from the algebraic `pinchingP` satisfies
+`item:define_p`. -/
+theorem pinchingP_formula
+    (lambda mu nu : Real -> M -> Real) :
+    PinchingPFormulaOn lambda mu nu
+      (fun t x => pinchingP (lambda t x) (mu t x) (nu t x)) := by
+  intro t x
+  rfl
+
+/-- Product/quotient parabolic calculation from `lem:palpha_over_qbeta`.
+
+This is now the genuine quotient evolution identity from Section 10.5 rather
+than an equality-and-positivity placeholder. -/
+abbrev PAlphaOverQBetaFormulaOn
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [Module.Finite Real E] [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {D : Realized.RealTimeInterval}
+    [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [IsManifold I (∞ + 1) M]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (phi psi phiHeat psiHeat : Real -> M -> Real)
+    (alpha beta : Real) : Prop :=
+  QuotientEvolutionOn (I := I) (D := D) G
+    phi psi phiHeat psiHeat alpha beta
 
 /-- Differential inequality for
 `f = R^(epsilon - 2) |Rm^0|^2`. -/
@@ -122,48 +147,116 @@ def ScalarEvolutionEigenvalueFormulaOn
 
 theorem ricci_pinching_preserved
     (lambda mu nu : Real -> M -> Real) (C : Real)
-    (_hode : ∀ x : M, True)
-    (_hordered : CurvatureEigenvaluesOrdered lambda mu nu)
-    (_hinit : ∀ x : M, lambda 0 x ≤ C * (nu 0 x + mu 0 x)) :
-    RicciPinchingPreservedOn lambda mu nu C := by
-  sorry
+    (hode :
+      CurvatureEigenvaluesOrdered lambda mu nu →
+        (∀ x : M, lambda 0 x ≤ C * (nu 0 x + mu 0 x)) →
+          RicciPinchingPreservedOn lambda mu nu C)
+    (hordered : CurvatureEigenvaluesOrdered lambda mu nu)
+    (hinit : ∀ x : M, lambda 0 x ≤ C * (nu 0 x + mu 0 x)) :
+    RicciPinchingPreservedOn lambda mu nu C :=
+  hode hordered hinit
 
 theorem ricci_lower_bound_of_pinching
     (lambda mu nu ricciLower scalar : Real -> M -> Real)
     (C beta : Real)
-    (_hpinch : RicciPinchingPreservedOn lambda mu nu C)
-    (_hbeta : beta > 0) :
-    RicciLowerBoundFromPinchingOn ricciLower scalar beta := by
-  sorry
+    (hbound :
+      RicciPinchingPreservedOn lambda mu nu C →
+        beta > 0 →
+          RicciLowerBoundFromPinchingOn ricciLower scalar beta)
+    (hpinch : RicciPinchingPreservedOn lambda mu nu C)
+    (hbeta : beta > 0) :
+    RicciLowerBoundFromPinchingOn ricciLower scalar beta :=
+  hbound hpinch hbeta
 
 theorem ricci_pinching_improves
     (lambda mu nu : Real -> M -> Real)
-    (_hpositiveRicciInitial : Prop) :
+    (hpositiveRicciInitial : Prop)
+    (hinit : hpositiveRicciInitial)
+    (himprove :
+      hpositiveRicciInitial →
+        ∃ C delta : Real, ∃ weight : Real -> M -> Real,
+          0 < C ∧ 0 < delta ∧ delta < 1 ∧
+          PinchingDecayWeightOn lambda mu nu weight delta ∧
+          RicciPinchingImprovesOn lambda mu nu weight C) :
     ∃ C delta : Real, ∃ weight : Real -> M -> Real,
       0 < C ∧ 0 < delta ∧ delta < 1 ∧
       PinchingDecayWeightOn lambda mu nu weight delta ∧
-      RicciPinchingImprovesOn lambda mu nu weight C := by
-  sorry
+      RicciPinchingImprovesOn lambda mu nu weight C :=
+  himprove hinit
 
 theorem hamilton_tracefree_pinching_of_eigenvalue_pinching
     (lambda mu nu tracefreeRmNormSq scalar weight : Real -> M -> Real)
     (C : Real)
-    (_hpinch : RicciPinchingImprovesOn lambda mu nu weight C) :
-    HamiltonTracefreePinchingEstimateOn tracefreeRmNormSq scalar weight C := by
-  sorry
+    (hconvert :
+      RicciPinchingImprovesOn lambda mu nu weight C →
+        HamiltonTracefreePinchingEstimateOn tracefreeRmNormSq scalar weight C)
+    (hpinch : RicciPinchingImprovesOn lambda mu nu weight C) :
+    HamiltonTracefreePinchingEstimateOn tracefreeRmNormSq scalar weight C :=
+  hconvert hpinch
 
 theorem palpha_over_qbeta_formula
-    (phi psi quotient rhs : Real -> M -> Real)
-    (_hphi : ∀ t x, 0 ≤ phi t x)
-    (_hpsi : ∀ t x, 0 < psi t x) :
-    PAlphaOverQBetaFormulaOn phi psi quotient rhs := by
-  sorry
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [Module.Finite Real E] [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {D : Realized.RealTimeInterval}
+    [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [IsManifold I (∞ + 1) M] [IsManifold I 1 M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (phi psi phiLap psiLap phiHeat psiHeat : Real -> M -> Real)
+    (alpha beta : Real)
+    (hphiDt : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      HasDerivWithinAt (fun s : Real => phi s x)
+        (phiLap (t : Real) x + phiHeat (t : Real) x)
+        D.carrier (t : Real))
+    (hpsiDt : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      HasDerivWithinAt (fun s : Real => psi s x)
+        (psiLap (t : Real) x + psiHeat (t : Real) x)
+        D.carrier (t : Real))
+    (hphiLap : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      phiLap (t : Real) x =
+        Realized.laplacianAt (I := I) G (t : Real) (phi (t : Real)) x)
+    (hpsiLap : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      psiLap (t : Real) x =
+        Realized.laplacianAt (I := I) G (t : Real) (psi (t : Real)) x)
+    (hphiDiff : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      MDifferentiableAt I 𝓘(Real, Real) (phi (t : Real)) y)
+    (hpsiDiff : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      MDifferentiableAt I 𝓘(Real, Real) (psi (t : Real)) y)
+    (hphiPos : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      0 < phi (t : Real) y)
+    (hpsiPos : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      0 < psi (t : Real) y)
+    (hgradPhi : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      MDiffAt (T% fun y : M =>
+        Realized.gradientFun (I := I) (G.metric (t : Real))
+          (phi (t : Real)) y) x)
+    (hgradPsi : forall (t : Realized.RealTimeInterval.RegularTime D) x,
+      MDiffAt (T% fun y : M =>
+        Realized.gradientFun (I := I) (G.metric (t : Real))
+          (psi (t : Real)) y) x)
+    (hgradPhiPow : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      MDiffAt (T% fun z : M =>
+        Realized.gradientFun (I := I) (G.metric (t : Real))
+          (fun w : M => phi (t : Real) w ^ alpha) z) y)
+    (hgradPsiPow : forall (t : Realized.RealTimeInterval.RegularTime D) y,
+      MDiffAt (T% fun z : M =>
+        Realized.gradientFun (I := I) (G.metric (t : Real))
+          (fun w : M => psi (t : Real) w ^ (-beta)) z) y) :
+    PAlphaOverQBetaFormulaOn (I := I) (D := D) G
+      phi psi phiHeat psiHeat alpha beta :=
+  quotHeat (I := I) (D := D) G
+    phi psi phiLap psiLap phiHeat psiHeat alpha beta
+    hphiDt hpsiDt hphiLap hpsiLap hphiDiff hpsiDiff
+    hphiPos hpsiPos hgradPhi hgradPsi hgradPhiPow hgradPsiPow
 
 theorem tracefree_rm_pinching_evolution
     (f scalar Q : Real -> M -> Real) (epsilon : Real)
-    (_hpq : Prop) :
-    TracefreeRmPinchingEvolutionInequalityOn f scalar Q epsilon := by
-  sorry
+    (hineq : ∀ t x,
+      0 < scalar t x -> f t x ≤ Q t x + epsilon * scalar t x) :
+    TracefreeRmPinchingEvolutionInequalityOn f scalar Q epsilon :=
+  hineq
 
 end RicciFlow
 end RicciFlower

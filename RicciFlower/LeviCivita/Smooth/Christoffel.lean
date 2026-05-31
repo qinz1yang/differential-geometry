@@ -785,5 +785,158 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
               g.inner y (coordinateFrameAt (I := I) x₀ i y)
                 (coordinateFrameAt (I := I) x₀ j y)) x by
       rw [h₁, h₂, h₃]
+
+/-! ## Off-center smoothness of the fixed-chart Christoffel model RHS -/
+
+/-- Fixed-chart metric components are smooth at every point of the fixed chart
+target. -/
+theorem metricFlatModelInChart_component_contDiffWithinAt_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target)
+    (i j : CoordinateIdx (𝕜 := Real) E) :
+    ContDiffWithinAt Real ∞
+      (metricFlatModelInChart_component (I := I) g x₀ i j)
+      (Set.range I) y := by
+  have h := metricFlatModelInChart_contDiffWithinAt_of_mem (I := I) g x₀ hy
+  have hi :
+      ContDiffWithinAt Real ∞
+        (fun y : E =>
+          metricFlatModelInChart (I := I) g x₀ y ((Module.finBasis Real E) i))
+        (Set.range I) y := by
+    simpa using h.clm_apply contDiffWithinAt_const
+  simpa [metricFlatModelInChart_component] using hi.clm_apply contDiffWithinAt_const
+
+/-- Fixed-chart coordinate derivatives of metric components are smooth at every
+point of the fixed chart target. -/
+theorem metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target)
+    (a i j : CoordinateIdx (𝕜 := Real) E) :
+    ContDiffWithinAt Real ∞
+      (fun y : E =>
+        fderivWithin Real
+          (metricFlatModelInChart_component (I := I) g x₀ i j)
+          (Set.range I) y ((Module.finBasis Real E) a))
+      (Set.range I) y := by
+  have hf :=
+    metricFlatModelInChart_component_contDiffWithinAt_of_mem
+      (I := I) g x₀ hy i j
+  have hconst :
+      ContDiffWithinAt Real ∞
+        (fun _ : E => (Module.finBasis Real E) a)
+        (Set.range I) y :=
+    contDiffWithinAt_const
+  exact hf.fderivWithin_right_apply hconst I.uniqueDiffOn (by simp)
+    (extChartAt_target_subset_range x₀ hy)
+
+/-- The fixed-chart metric flat map is invertible at every point of the fixed
+chart target. -/
+theorem metricFlatModelInChart_isInvertible_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target) :
+    (metricFlatModelInChart (I := I) g x₀ y).IsInvertible := by
+  let p : M := (extChartAt I x₀).symm y
+  have hp_src : p ∈ (extChartAt I x₀).source := by
+    simpa [p] using (extChartAt I x₀).map_target hy
+  have hp_coord : p ∈ coordinateFrameSet (I := I) x₀ := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source]
+      using hp_src
+  have hpT :
+      p ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hp_coord
+  have hpy : extChartAt I x₀ p = y := by
+    simpa [p] using (extChartAt I x₀).right_inv hy
+  have hlocal :
+      metricFlatModelInChart (I := I) g x₀ y =
+        localMetricFlatBasis (I := I)
+          (trivializationAt E (TangentSpace I : M -> Type _) x₀)
+          (Module.finBasis Real E) g p := by
+    rw [← hpy]
+    ext v w
+    calc
+      metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ p) v w =
+          g.inner p
+            ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real p v)
+            ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real p w) := by
+            simpa using metricFlatModelInChart_apply_of_mem
+              (I := I) g x₀ hp_coord v w
+      _ =
+          localMetricFlatBasis (I := I)
+            (trivializationAt E (TangentSpace I : M -> Type _) x₀)
+            (Module.finBasis Real E) g p v w := by
+            rw [localMetricFlatBasis_eq_inner
+              (I := I)
+              (e := trivializationAt E (TangentSpace I : M -> Type _) x₀)
+              (b := Module.finBasis Real E) g hpT v w]
+  rw [hlocal]
+  exact localMetricFlatBasis_isInvertible
+    (I := I)
+    (e := trivializationAt E (TangentSpace I : M -> Type _) x₀)
+    (b := Module.finBasis Real E) g hpT
+
+/-- Fixed-chart inverse metric components are smooth at every point of the
+fixed chart target. -/
+theorem inverseMetricFlatModelInChart_component_contDiffWithinAt_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target)
+    (k l : CoordinateIdx (𝕜 := Real) E) :
+    ContDiffWithinAt Real ∞
+      (fun y : E =>
+        (Module.finBasis Real E).coord k
+          ((ContinuousLinearMap.inverse
+              (metricFlatModelInChart (I := I) g x₀ y))
+            (LinearMap.toContinuousLinearMap
+              ((Module.finBasis Real E).coord l))))
+      (Set.range I) y := by
+  let εl : E →L[Real] Real :=
+    LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)
+  let εk : E →L[Real] Real :=
+    LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord k)
+  have hinv :
+      ContDiffWithinAt Real ∞
+        (fun y : E =>
+          ContinuousLinearMap.inverse
+            (metricFlatModelInChart (I := I) g x₀ y))
+        (Set.range I) y := by
+    exact
+      (metricFlatModelInChart_isInvertible_of_mem (I := I) g x₀ hy).contDiffAt_map_inverse
+        |>.comp_contDiffWithinAt
+          (x := y)
+          (metricFlatModelInChart_contDiffWithinAt_of_mem (I := I) g x₀ hy)
+  have happ :
+      ContDiffWithinAt Real ∞
+        (fun y : E =>
+          (ContinuousLinearMap.inverse
+              (metricFlatModelInChart (I := I) g x₀ y)) εl)
+        (Set.range I) y := by
+    simpa [εl] using hinv.clm_apply contDiffWithinAt_const
+  simpa [εk, εl] using (contDiffWithinAt_const (c := εk)).clm_apply happ
+
+/-- The fixed-chart right hand side of the coordinate Christoffel formula is
+smooth at every point of the fixed chart target. -/
+theorem leviCivitaChristoffelModelRHS_contDiffWithinAt_of_mem
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    ContDiffWithinAt Real ∞
+      (leviCivitaChristoffelModelRHS (I := I) g x₀ i j k)
+      (Set.range I) y := by
+  classical
+  unfold leviCivitaChristoffelModelRHS
+  refine contDiffWithinAt_const.mul ?_
+  refine ContDiffWithinAt.sum fun l _ => ?_
+  have hinv :=
+    inverseMetricFlatModelInChart_component_contDiffWithinAt_of_mem
+      (I := I) g x₀ hy k l
+  have h₁ :=
+    metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
+      (I := I) g x₀ hy i j l
+  have h₂ :=
+    metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
+      (I := I) g x₀ hy j i l
+  have h₃ :=
+    metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
+      (I := I) g x₀ hy l i j
+  exact hinv.mul ((h₁.add h₂).sub h₃)
 end LeviCivita
 end RicciFlower

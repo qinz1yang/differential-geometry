@@ -19,16 +19,14 @@ component convention live here.
 Checklist:
 
 * Ricci from `Rm13` is `contract_trace 0 2`, i.e. first upper with first lower.
-* `Rm04(W,X,Y,Z)` lowers the output slot of `Rm13`:
-  `Rm04(W,X,Y,Z) = Rm13(W_flat)(X,Y,Z)`.
-* Lowering the intrinsic Ricci trace gives the first-trace lowered formula
-  `Ric_ij = sum_{k,l} gInv k l * Rm04(e_k,e_l,e_i,e_j)`.
-  The last-slot trace `Rm04(e_k,e_i,e_j,e_l)` is a legacy compatibility
-  orientation and should not be used silently in Lemma 6.3.
-* A realized lowered curvature tensor satisfies
-  `Rm04(W,X,Y,Z) = g(W, R(X,Y)Z)`.
+* The canonical user-facing lowered curvature convention is standard slot
+  order:
+  `Rm04(X,Y,Z,W) = <R(X,Y)Z,W>`.
+* The explicit output-first compatibility evaluator is `tensor04OutAt`.
+* Lowering the intrinsic Ricci trace gives the standard lowered formula
+  `Ric_ij = sum_{k,l} gInv k l * Rm04(e_k,e_i,e_j,e_l)`.
 * The 3D algebra adapter uses
-  `standardRmCompAt i j k l = rm04CompAt l i j k`.
+  `standardRmCompAt i j k l = rm04CompAt i j k l`.
 -/
 
 noncomputable section
@@ -63,14 +61,22 @@ theorem rm04LowersRm13At_convention
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (h : Realized.Rm04LowersRm13At (I := I) g x Rm13 Rm04)
-    (W X Y Z : TangentSpace I x) :
-    Rm04 (vec4 W X Y Z) =
+    (X Y Z W : TangentSpace I x) :
+  Rm04 (vec4 X Y Z W) =
       Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
         (vec3 X Y Z) :=
-  h W X Y Z
+  h X Y Z W
+
+/-- Checklist item: the standard slot evaluator is direct bundled evaluation. -/
+theorem tensor04StdAt_convention
+    (Rm04 : Tensor04At (I := I) (M := M) x)
+    (X Y Z W : TangentSpace I x) :
+    tensor04StdAt (I := I) (M := M) Rm04 X Y Z W =
+      Rm04 (vec4 X Y Z W) := by
+  rfl
 
 /-- Checklist item: lowering the intrinsic `Rm13` Ricci trace gives the
-first-trace `Rm04` component orientation. -/
+standard `Rm04` component orientation. -/
 theorem ricciFromRm13At_rm04_first_trace_convention
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -79,28 +85,15 @@ theorem ricciFromRm13At_rm04_first_trace_convention
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hLower : Realized.Rm04LowersRm13At (I := I) g x Rm13 Rm04)
-    (hInvSym : forall a b : Idx, gInv a b = gInv b a)
+    (_hInvSym : forall a b : Idx, gInv a b = gInv b a)
     (i j : Idx) :
     Realized.ricciCompAt (I := I) basis
         (ricciFromRm13At (I := I) (M := M) Rm13) i j =
       ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Realized.rm04CompAt (I := I) basis Rm04 k l i j := by
+        gInv k l * Realized.rm04CompAt (I := I) basis Rm04 k i j l := by
   have h := Realized.ricciFromRm13_comp_eq_rm04_trace
     (I := I) g basis gInv hinv Rm13 Rm04 hLower i j
-  rw [h]
-  calc
-    (∑ a : Idx, ∑ k : Idx,
-        gInv a k * Realized.rm04CompAt (I := I) basis Rm04 k a i j)
-        =
-      ∑ k : Idx, ∑ a : Idx,
-        gInv a k * Realized.rm04CompAt (I := I) basis Rm04 k a i j := by
-        rw [Finset.sum_comm]
-    _ =
-      ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Realized.rm04CompAt (I := I) basis Rm04 k l i j := by
-        refine Finset.sum_congr rfl fun k _ => ?_
-        refine Finset.sum_congr rfl fun l _ => ?_
-        rw [hInvSym l k]
+  simpa using h
 
 end Curvature
 
@@ -114,17 +107,29 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-/-- Checklist item: realized `Rm04` uses
-`Rm04(W,X,Y,Z) = g(W, R(X,Y)Z)`. -/
+/-- Checklist item: realized bundled `Rm04` uses standard slots. -/
 theorem rm04RealizesConnection_convention
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (h : Rm04RealizesConnection (I := I) g cov Rm04)
-    (W X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M) :
-    Rm04 x (vec4 (W x) (X x) (Y x) (Z x)) =
+    (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M) :
+    Rm04 x (vec4 (X x) (Y x) (Z x) (W x)) =
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
-  h W X Y Z x
+  h X Y Z W x
+
+/-- Checklist item: the standard slot view of a realized `Rm04` is direct
+bundled evaluation and satisfies `Rm04Std(X,Y,Z,W) = <R(X,Y)Z,W>`. -/
+theorem rm04StdRealizesConnection_convention
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (Rm04 : Tensor04Section (I := I) (M := M))
+    (h : Rm04RealizesConnection (I := I) g cov Rm04)
+    (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M) :
+    Curvature.tensor04StdAt (I := I) (M := M) (Rm04 x)
+        (X x) (Y x) (Z x) (W x) =
+      g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
+  h X Y Z W x
 
 end Realized
 
@@ -140,15 +145,15 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {x : M}
 
-/-- Checklist item: the 3D standard algebra convention is the RicciFlower
-lowered Riemann slot permutation `R i j k l = Rm04(e_l,e_i,e_j,e_k)`. -/
+/-- Checklist item: the 3D standard algebra convention directly reads the
+standard bundled lowered Riemann slots. -/
 @[simp]
 theorem standardRmCompAt_slot_convention
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (i j k l : Fin 3) :
     standardRmCompAt (I := I) basis Rm04 i j k l =
-      rm04CompAt (I := I) basis Rm04 l i j k := by
+      rm04CompAt (I := I) basis Rm04 i j k l := by
   rfl
 
 end DimensionThree

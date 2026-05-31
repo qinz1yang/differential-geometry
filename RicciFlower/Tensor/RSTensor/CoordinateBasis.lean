@@ -155,6 +155,25 @@ theorem component0S_apply
     component0S (I := I) basis A slots = A (fun a => basis (slots a)) :=
   rfl
 
+/-- Evaluation commutes with finite sums of covariant tensors. -/
+theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
+    (T : ι -> Tensor0SSpace s I x) (v : Fin s -> TangentSpace I x) :
+    ((∑ i : ι, T i) v) = ∑ i : ι, (T i) v := by
+  classical
+  let S : Finset ι := Finset.univ
+  change ((∑ i ∈ S, T i) v) = ∑ i ∈ S, (T i) v
+  induction S using Finset.induction_on with
+  | empty =>
+      change (0 : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v = 0
+      simp
+  | insert a S ha ih =>
+      rw [Finset.sum_insert ha, Finset.sum_insert ha]
+      change (((T a : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) +
+          (∑ i ∈ S, (T i : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜))) v) =
+        (T a : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v +
+          ∑ i ∈ S, (T i : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v
+      rw [ContinuousMultilinearMap.add_apply, ih]
+
 @[simp]
 theorem tensor0SBasis_repr
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
@@ -215,6 +234,41 @@ theorem basisTensor0S_component
     if slots = slots' then 1 else 0
   rw [continuousMultilinearMapBasis_apply]
   exact continuousMultilinearMapBasisElem_apply basis s slots slots'
+
+/-- The basis covariant tensor indexed by `slots` evaluates as the product of
+the corresponding tangent-basis coordinate functions. -/
+theorem basisTensor0S_apply
+    (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
+    (slots : Fin s -> Idx) (v : Fin s -> TangentSpace I x) :
+    basisTensor0S (I := I) basis slots v =
+      ∏ a : Fin s, basis.coord (slots a) (v a) := by
+  change (continuousMultilinearMapBasis basis s slots) v =
+    ∏ a : Fin s, basis.coord (slots a) (v a)
+  rw [continuousMultilinearMapBasis_apply]
+  simp [continuousMultilinearMapBasisElem]
+
+/-- Expanding a covariant tensor in a tangent basis gives the usual component
+contraction formula. -/
+theorem tensor0S_apply_eq_sum
+    (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
+    (A : Tensor0SSpace s I x) (v : Fin s -> TangentSpace I x) :
+    A v =
+      ∑ slots : Fin s -> Idx,
+        component0S (I := I) basis A slots *
+          ∏ a : Fin s, basis.coord (slots a) (v a) := by
+  conv_lhs => rw [← (tensor0SBasis (I := I) basis s).sum_repr A]
+  rw [tensor0S_sum_apply]
+  refine Finset.sum_congr rfl ?_
+  intro slots _hslots
+  rw [ContinuousMultilinearMap.smul_apply, tensor0SBasis_repr]
+  have hb :
+      ((tensor0SBasis (I := I) basis s) slots) v =
+        ∏ a : Fin s, basis.coord (slots a) (v a) := by
+    change basisTensor0S (I := I) basis slots v =
+      ∏ a : Fin s, basis.coord (slots a) (v a)
+    exact basisTensor0S_apply (I := I) basis slots v
+  rw [hb]
+  simp [smul_eq_mul]
 
 end Tensor0S
 

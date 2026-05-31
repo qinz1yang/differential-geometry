@@ -50,9 +50,7 @@ theorem scalarContOfSol
     (hS : IsSolutionOn (I := I) S)
     (p : Real × M) :
     ContinuousAt (fun q : Real × M => S.scalar q.1 q.2) p := by
-  -- Frontier: prove joint spacetime continuity of the metric scalar
-  -- curvature from `MetricFamilySmoothOn`.
-  sorry
+  exact hS.scalarCont p
 
 /-- Within-time differentiability of the canonical scalar curvature produced
 from a metric Ricci-flow solution. -/
@@ -63,9 +61,7 @@ theorem scalarTimeOfSol
     {K : Set Real} {t : Real} (ht : t ∈ K) (hK : K ⊆ D.carrier)
     (x : M) :
     DifferentiableWithinAt Real (fun s : Real => S.scalar s x) K t := by
-  -- Frontier: prove time differentiability of the metric scalar curvature
-  -- from the time-smooth metric family.
-  sorry
+  exact hS.scalarTime ht hK x
 
 /-- Scalar regularity produced from a metric Ricci-flow solution. -/
 theorem scalarRegOfSol
@@ -188,9 +184,12 @@ theorem ricciRegOfSol
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     CanonicalRicciRegularOn (I := I) (M := M) S := by
-  -- Frontier: derive Ricci/Rm/nabla-Ricci tensor-family continuity and the
-  -- scalar regularity of `|Ric|^2`.
-  sorry
+  exact
+    { ricci_cont := hS.ricciCont
+      rm04_cont := hS.rm04Cont
+      nablaRic_cont := hS.nablaRicCont
+      ricci_norm_space := hS.ricciNormSpace
+      ricci_norm_grad := hS.ricciNormGrad }
 
 /-- Scalar evolution produced from a metric Ricci-flow solution. -/
 theorem scalarEvolOfSol
@@ -211,9 +210,7 @@ theorem scalarEvolOfSol
               (S.ricci (t : Real) x))
           D.carrier
           (t : Real) := by
-  -- Frontier: assemble the intrinsic scalar heat equation from Section 6.1
-  -- producers directly from `IsSolutionOn`.
-  sorry
+  exact hS.scalarEvolution
 
 /-- Coordinate inverse-metric evolution produced from a metric Ricci-flow
 solution. -/
@@ -230,17 +227,24 @@ theorem invEvolOfSol
 
 /-- Coordinate Ricci evolution produced from a metric Ricci-flow solution. -/
 theorem ricciEvolOfSol
+    [I.Boundaryless]
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (x0 : M) :
-    RicciEvolutionEquationInFrame
-      (I := I) S S.base.rm04 (coordInv (I := I) S x0)
-      (Coordinates.coordinateFrameAt (I := I) x0)
-      (coordRoughRic (I := I) S x0 (coordNab2Ric (I := I) S x0)) := by
-  -- Frontier: derive Lemma 6.3 in the coordinate frame from Christoffel
-  -- evolution, curvature commutators, and canonical `nabla^2 Ric`.
-  sorry
+    (x0 : M) (t : Realized.RealTimeInterval.RegularTime D)
+    (i j : Coordinates.CoordinateIdx (𝕜 := Real) E) :
+    HasDerivWithinAt
+      (fun s : Real =>
+        ricciCompInFrame (I := I) S
+          (Coordinates.coordinateFrameAt (I := I) x0) s x0 i j)
+      (ricciEvolutionRHSInFrame
+        (I := I) S S.base.rm04 (coordInv (I := I) S x0)
+        (Coordinates.coordinateFrameAt (I := I) x0)
+        (coordRoughRic (I := I) S x0 (coordNab2Ric (I := I) S x0))
+        (t : Real) x0 i j)
+      D.carrier
+      (t : Real) := by
+  exact coordRicciEvol (I := I) S hS x0 t i j
 
 /-- Symmetry of the canonical coordinate inverse metric produced from a metric
 Ricci-flow solution. -/
@@ -812,6 +816,7 @@ coordinate inverse-metric evolution, coordinate Ricci evolution, symmetries,
 and the Ricci-norm Bochner/Laplacian expansion from the metric smoothness and
 Ricci-flow equation recorded by `IsSolutionOn`. -/
 theorem smoothOfSol
+    [I.Boundaryless]
     {D : Realized.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :

@@ -65,7 +65,7 @@ theorem inverseMetricEvolution_of_timeRegularityBlackBox
     (hS : IsSolutionOn (I := I) S)
     (gInv : Real -> Realized.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (hbb : InverseMetricTimeRegularityBlackBoxInFrameOn (M := M) (Idx := Idx)
       (D := D) gInv) :
     InverseMetricEvolutionEquationInFrame (I := I) S gInv frame Set.univ :=
@@ -103,14 +103,12 @@ theorem variableMetricConnectionDiffDerivative_of_blackBox
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)
-    (hunique : forall t : Realized.RealTimeInterval.RegularTime D,
-      UniqueDiffWithinAt Real D.carrier (t : Real))
     (hbb : ConnectionVariationBlackBoxInFrameOn (I := I) S frame u nablaRic) :
     VariableMetricConnectionDiffDerivativeInFrameOnLocal
       (I := I) S frame u (christoffelVariationLoweredRHSInFrame nablaRic) :=
   variableMetricConnectionDiffDerivative_of_metricCovDeriv
     (I := I) S hS frame hframe hu hbb.metricCovDerivDt nablaRic
-    hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow hunique
+    hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow
 
 /-- Use the black-box connection regularity package to obtain raised
 Christoffel evolution in Lemma 6.2. -/

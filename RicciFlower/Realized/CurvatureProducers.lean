@@ -98,10 +98,10 @@ theorem rm04Section_realizes
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞) :
     Rm04RealizesConnection (I := I) g cov
       (Riemann.CovariantDerivative.rm04Section (I := I) g cov hcov) := by
-  intro W X Y Z x
+  intro X Y Z W x
   exact
     Riemann.CovariantDerivative.rm04Section_apply_smooth
-      (I := I) (M := M) g cov hcov W X Y Z x
+      (I := I) (M := M) g cov hcov X Y Z W x
 
 end Realized
 end RicciFlower

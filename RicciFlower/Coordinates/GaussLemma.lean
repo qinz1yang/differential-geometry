@@ -356,22 +356,274 @@ theorem metricDerivAlong
   rw [hformula] at hderiv
   simpa [frame, hframe] using hderiv
 
-/-- Frontier for the Gauss lemma: coordinate-defined geodesics should have
-constant squared speed.
+set_option linter.flexible false in
+private theorem frame_inner_product_rule_algebra
+    {ι : Type*} [Fintype ι]
+    (S T dS dT : ι -> Real) (Γ : Matrix ι ι Real)
+    (G : ι -> ι -> Real) :
+    (∑ i : ι, ∑ j : ι,
+        ((dS i * T j + S i * dT j) * G i j +
+          (S i * T j) *
+            ((∑ p : ι, Γ p i * G p j) +
+              (∑ p : ι, Γ p j * G i p)))) =
+      (∑ i : ι, ∑ j : ι,
+        coeffCov Γ dS S i * T j * G i j) +
+      (∑ i : ι, ∑ j : ι,
+        S i * coeffCov Γ dT T j * G i j) := by
+  classical
+  have hΓS :
+      (∑ i : ι, ∑ j : ι,
+          S i * T j * (∑ p : ι, Γ p i * G p j)) =
+        (∑ i : ι, ∑ j : ι,
+          (∑ p : ι, Γ i p * S p) * T j * G i j) := by
+    calc
+      (∑ i : ι, ∑ j : ι,
+          S i * T j * (∑ p : ι, Γ p i * G p j))
+          = ∑ i : ι, ∑ j : ι, ∑ p : ι,
+              S i * T j * (Γ p i * G p j) := by
+              simp [Finset.mul_sum]
+      _ = ∑ i : ι, ∑ p : ι, ∑ j : ι,
+              S i * T j * (Γ p i * G p j) := by
+              refine Finset.sum_congr rfl fun i _ => ?_
+              rw [Finset.sum_comm]
+      _ = ∑ p : ι, ∑ i : ι, ∑ j : ι,
+              S i * T j * (Γ p i * G p j) := by
+              rw [Finset.sum_comm]
+      _ = ∑ p : ι, ∑ j : ι, ∑ i : ι,
+              S i * T j * (Γ p i * G p j) := by
+              refine Finset.sum_congr rfl fun p _ => ?_
+              rw [Finset.sum_comm]
+      _ = ∑ p : ι, ∑ j : ι,
+              (∑ i : ι, Γ p i * S i) * T j * G p j := by
+              refine Finset.sum_congr rfl fun p _ => ?_
+              refine Finset.sum_congr rfl fun j _ => ?_
+              rw [Finset.sum_mul]
+              rw [Finset.sum_mul]
+              refine Finset.sum_congr rfl fun i _ => ?_
+              ring
+      _ = ∑ i : ι, ∑ j : ι,
+              (∑ p : ι, Γ i p * S p) * T j * G i j := rfl
+  have hΓT :
+      (∑ i : ι, ∑ j : ι,
+          S i * T j * (∑ p : ι, Γ p j * G i p)) =
+        (∑ i : ι, ∑ j : ι,
+          S i * (∑ p : ι, Γ j p * T p) * G i j) := by
+    calc
+      (∑ i : ι, ∑ j : ι,
+          S i * T j * (∑ p : ι, Γ p j * G i p))
+          = ∑ i : ι, ∑ j : ι, ∑ p : ι,
+              S i * T j * (Γ p j * G i p) := by
+              simp [Finset.mul_sum]
+      _ = ∑ i : ι, ∑ p : ι, ∑ j : ι,
+              S i * T j * (Γ p j * G i p) := by
+              refine Finset.sum_congr rfl fun i _ => ?_
+              rw [Finset.sum_comm]
+      _ = ∑ i : ι, ∑ p : ι,
+              S i * (∑ j : ι, Γ p j * T j) * G i p := by
+              refine Finset.sum_congr rfl fun i _ => ?_
+              refine Finset.sum_congr rfl fun p _ => ?_
+              rw [Finset.mul_sum]
+              rw [Finset.sum_mul]
+              refine Finset.sum_congr rfl fun j _ => ?_
+              ring
+      _ = ∑ i : ι, ∑ j : ι,
+              S i * (∑ p : ι, Γ j p * T p) * G i j := rfl
+  have hΓS' :
+      (∑ i : ι, ∑ j : ι, ∑ p : ι,
+          S i * T j * (Γ p i * G p j)) =
+        (∑ i : ι, ∑ j : ι,
+          (∑ p : ι, Γ i p * S p) * T j * G i j) := by
+    simpa [Finset.mul_sum] using hΓS
+  have hΓT' :
+      (∑ i : ι, ∑ j : ι, ∑ p : ι,
+          S i * T j * (Γ p j * G i p)) =
+        (∑ i : ι, ∑ j : ι,
+          (∑ p : ι, S i * (Γ j p * T p)) * G i j) := by
+    simpa [Finset.mul_sum] using hΓT
+  simp [coeffCov, Matrix.mulVec, dotProduct, Finset.sum_add_distrib,
+    Finset.mul_sum, mul_add, add_mul]
+  rw [hΓS', hΓT']
+  ring
 
-The missing bridge is not the radial endpoint layer.  It is the analytic/local
-calculus statement converting `HasCoordCovAccelAt ... 0` into the usual
-metric-compatible derivative identity for
-`t ↦ g.inner (gamma t) (gamma' t) (gamma' t)`. -/
+private theorem speedSq_deriv_algebra
+    {ι : Type*} [Fintype ι]
+    (V dV : ι -> Real) (Γ : Matrix ι ι Real)
+    (G : ι -> ι -> Real)
+    (hcov : ∀ k : ι, coeffCov Γ dV V k = 0) :
+    (∑ i : ι, ∑ j : ι,
+        ((dV i * V j + V i * dV j) * G i j +
+          (V i * V j) *
+            ((∑ p : ι, Γ p i * G p j) +
+              (∑ p : ι, Γ p j * G i p)))) = 0 := by
+  classical
+  rw [frame_inner_product_rule_algebra V V dV dV Γ G]
+  simp [hcov]
+
+/-- A spray-backed radial coordinate geodesic has constant squared speed.
+
+The older `IsRadialCoordGeodesic` predicate forgets the lift/integral-curve
+witnesses needed to differentiate the metric components.  The spray-backed
+segment keeps that regularity data and still projects to the old radial
+coordinate-geodesic predicate via `SprayRadialSegment.radial`. -/
 theorem coordGeodesic_speedSq_const
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
-    {x : M} {v : TangentSpace I x} {gamma : Curve M}
-    (_hgamma : IsRadialCoordGeodesic (I := I) g x v gamma) :
+    {x : M} {v : TangentSpace I x}
+    (G : SprayRadialSegment (I := I) g x v) :
     ∃ c : Real,
       ∀ t ∈ Set.uIcc (0 : Real) 1,
-        coordSpeedSq (I := I) g gamma t = c := by
-  sorry
+        coordSpeedSq (I := I) g G.gamma t = c := by
+  classical
+  let cov := LeviCivita.leviCivitaConnectionOfMetric (I := I) g
+  let C : CoordinateChartData (I := I) (M := M) :=
+    extChartAtCoordinateData (I := I) x
+  let φ : Real -> Real := fun t => coordSpeedSq (I := I) g G.gamma t
+  have hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g :=
+    LeviCivita.leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
+  have hderiv_zero : ∀ t ∈ Set.uIcc (0 : Real) 1, HasDerivAt φ 0 t := by
+    intro t ht
+    have htball : t ∈ Metric.ball (0 : Real) G.epsilon := G.interval_subset ht
+    have hsrc : G.gamma t ∈ coordinateFrameSet (I := I) x := by
+      simpa [C] using (G.geoOn (I := I)).1 t htball
+    have hgamma : MDifferentiableAt 𝓘(Real, Real) I G.gamma t :=
+      G.gamma_mdiffAt (I := I) htball
+    have hacc : HasCoordCovAccelAt (I := I) x cov G.gamma t 0 := by
+      simpa [cov] using (G.geoOn (I := I)).2 t htball
+    rcases hacc with ⟨dV, hdV, hcov_coord⟩
+    let V : CoordinateIdx (𝕜 := Real) E -> Real :=
+      fun i => C.velocityCoeff G.gamma i t
+    let Γ : Matrix (CoordinateIdx (𝕜 := Real) E)
+        (CoordinateIdx (𝕜 := Real) E) Real :=
+      fun k j =>
+        christoffelAlongInFrame cov C.frame C.hframe
+          (G.gamma t) (curveVelocity I G.gamma t) j k
+    let Gm : CoordinateIdx (𝕜 := Real) E ->
+        CoordinateIdx (𝕜 := Real) E -> Real :=
+      fun i j => metricCompForMetricInFrame (I := I) g C.frame (G.gamma t) i j
+    have hdV' :
+        ∀ i : CoordinateIdx (𝕜 := Real) E,
+          HasDerivAt (fun s : Real => C.velocityCoeff G.gamma i s) (dV i) t := by
+      intro i
+      simpa [C, CoordinateChartData.velocityCoeff, velocityAlong] using hdV i
+    have hG' :
+        ∀ i j : CoordinateIdx (𝕜 := Real) E,
+          HasDerivAt
+            (fun s : Real =>
+              metricCompForMetricInFrame (I := I) g C.frame (G.gamma s) i j)
+            ((∑ p : CoordinateIdx (𝕜 := Real) E,
+                Γ p i * Gm p j) +
+              (∑ p : CoordinateIdx (𝕜 := Real) E,
+                Γ p j * Gm i p)) t := by
+      intro i j
+      have h :=
+        metricDerivAlong (I := I) g cov hmc x
+          (gamma := G.gamma) (t := t) hsrc hgamma i j
+      simpa [C, Γ, Gm] using h
+    have hcov :
+        ∀ k : CoordinateIdx (𝕜 := Real) E, coeffCov Γ dV V k = 0 := by
+      intro k
+      have hk := hcov_coord k
+      rw [alongChristoffelTerm_velocity_eq_christoffelVelocityQuadratic
+        (I := I) C cov G.gamma t k] at hk
+      rw [christoffelVelocityQuadratic_eq_sum_velocity_christoffelAlong
+        (I := I) C cov G.gamma hsrc k] at hk
+      have hzero : C.coeff k (0 : TangentSpace I (G.gamma t)) = 0 := by
+        have hsrcC : G.gamma t ∈ C.domain := by
+          simpa [C] using hsrc
+        simp only [CoordinateChartData.coeff, IsLocalFrameOn.coeff, hsrcC, dite_true]
+        exact map_zero ((C.hframe.toBasisAt hsrcC).coord k)
+      have hk' :
+          dV k +
+              ∑ x_1 : CoordinateIdx (𝕜 := Real) E,
+                C.velocityCoeff G.gamma x_1 t *
+                  christoffelAlongInFrame cov C.frame C.hframe
+                    (G.gamma t) (curveVelocity I G.gamma t) x_1 k = 0 :=
+        hk.symm.trans hzero
+      simpa [C, V, Γ, coeffCov, Matrix.mulVec, dotProduct, mul_comm]
+        using hk'
+    have hterm :
+        ∀ i j : CoordinateIdx (𝕜 := Real) E,
+          HasDerivAt
+            (fun s : Real =>
+              C.velocityCoeff G.gamma i s *
+                C.velocityCoeff G.gamma j s *
+                  metricCompForMetricInFrame (I := I) g C.frame (G.gamma s) i j)
+            (((dV i * V j + V i * dV j) * Gm i j +
+              (V i * V j) *
+                ((∑ p : CoordinateIdx (𝕜 := Real) E, Γ p i * Gm p j) +
+                  (∑ p : CoordinateIdx (𝕜 := Real) E, Γ p j * Gm i p)))) t := by
+      intro i j
+      have hvij := (hdV' i).mul (hdV' j)
+      have hprod := hvij.mul (hG' i j)
+      simpa [V, Gm, mul_add, add_mul, mul_assoc, mul_left_comm, mul_comm] using hprod
+    have hsum :
+        HasDerivAt
+          (fun s : Real =>
+            ∑ i : CoordinateIdx (𝕜 := Real) E,
+              ∑ j : CoordinateIdx (𝕜 := Real) E,
+                C.velocityCoeff G.gamma i s *
+                  C.velocityCoeff G.gamma j s *
+                    metricCompForMetricInFrame (I := I) g C.frame (G.gamma s) i j)
+          (∑ i : CoordinateIdx (𝕜 := Real) E,
+            ∑ j : CoordinateIdx (𝕜 := Real) E,
+              ((dV i * V j + V i * dV j) * Gm i j +
+                (V i * V j) *
+                  ((∑ p : CoordinateIdx (𝕜 := Real) E, Γ p i * Gm p j) +
+                    (∑ p : CoordinateIdx (𝕜 := Real) E, Γ p j * Gm i p)))) t := by
+      refine HasDerivAt.fun_sum (u := (Finset.univ :
+          Finset (CoordinateIdx (𝕜 := Real) E))) ?_
+      intro i _hi
+      refine HasDerivAt.fun_sum (u := (Finset.univ :
+          Finset (CoordinateIdx (𝕜 := Real) E))) ?_
+      intro j _hj
+      exact hterm i j
+    have hsum_zero :
+        (∑ i : CoordinateIdx (𝕜 := Real) E,
+          ∑ j : CoordinateIdx (𝕜 := Real) E,
+            ((dV i * V j + V i * dV j) * Gm i j +
+              (V i * V j) *
+                ((∑ p : CoordinateIdx (𝕜 := Real) E, Γ p i * Gm p j) +
+                  (∑ p : CoordinateIdx (𝕜 := Real) E, Γ p j * Gm i p)))) = 0 :=
+      speedSq_deriv_algebra V dV Γ Gm hcov
+    have hsrc_nhds : Metric.ball (0 : Real) G.epsilon ∈ 𝓝 t :=
+      Metric.isOpen_ball.mem_nhds htball
+    have hEq :
+        (fun s : Real => φ s) =ᶠ[𝓝 t]
+          (fun s : Real =>
+            ∑ i : CoordinateIdx (𝕜 := Real) E,
+              ∑ j : CoordinateIdx (𝕜 := Real) E,
+                C.velocityCoeff G.gamma i s *
+                  C.velocityCoeff G.gamma j s *
+                    metricCompForMetricInFrame (I := I) g C.frame (G.gamma s) i j) := by
+      filter_upwards [hsrc_nhds] with s hs
+      have hsrc_s : G.gamma s ∈ coordinateFrameSet (I := I) x := by
+        simpa [C] using (G.geoOn (I := I)).1 s hs
+      simpa [φ, C] using coordSpeedSq_eq_sum (I := I) g x
+        (gamma := G.gamma) (t := s) hsrc_s
+    exact (hsum.congr_of_eventuallyEq hEq).congr_deriv hsum_zero
+  refine ⟨φ 0, ?_⟩
+  intro t ht
+  have hu : Set.uIcc (0 : Real) 1 = Set.Icc (0 : Real) 1 := by
+    rw [Set.uIcc_of_le]
+    norm_num
+  have htI : t ∈ Set.Icc (0 : Real) 1 := by simpa [hu] using ht
+  have h0I : (0 : Real) ∈ Set.Icc (0 : Real) 1 := by norm_num
+  have hdiffOn : DifferentiableOn Real φ (Set.Icc (0 : Real) 1) := by
+    intro r hr
+    exact ((hderiv_zero r (by simpa [hu] using hr)).differentiableAt).differentiableWithinAt
+  have hfderivWithin :
+      ∀ r ∈ Set.Icc (0 : Real) 1,
+        fderivWithin Real φ (Set.Icc (0 : Real) 1) r = 0 := by
+    intro r hr
+    have hr_u : r ∈ Set.uIcc (0 : Real) 1 := by simpa [hu] using hr
+    rw [fderivWithin_eq_fderiv (uniqueDiffOn_Icc zero_lt_one r hr)
+      ((hderiv_zero r hr_u).differentiableAt)]
+    have hF := (hderiv_zero r hr_u).hasFDerivAt
+    rw [hF.fderiv]
+    simp
+  have hconst := (convex_Icc (0 : Real) 1).is_const_of_fderivWithin_eq_zero
+    hdiffOn hfderivWithin h0I htI
+  simpa [φ] using hconst.symm
 
 /-!
 Future Gauss-lemma target:

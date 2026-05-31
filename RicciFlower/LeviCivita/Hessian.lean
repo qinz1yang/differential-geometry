@@ -1,4 +1,5 @@
 import RicciFlower.ScalarBochner
+import RicciFlower.LeviCivita.Smooth.Connection
 import RicciFlower.LeviCivita.Torsion
 import RicciFlower.Coordinates.NablaComponents.OneForm
 import RicciFlower.Coordinates.NablaComponents.TwoTensor
@@ -251,6 +252,36 @@ private theorem leviCivita_nablaDuSec_pointwise_symm
   simpa [vec2] using
     leviCivita_nablaDuSec_coordFrame_symm
       (I := I) g u hu duSec nablaDuSec hnabla hdu x i j
+
+/-- The canonical Levi-Civita Hessian section of a smooth scalar function is
+symmetric. -/
+theorem hessSymm
+    [SigmaCompactSpace M] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (u : M -> Real)
+    (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
+    {x : M} (U V : TangentSpace I x) :
+    let cov := leviCivitaConnectionOfMetric (I := I) g
+    let hcov :=
+      leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+        (I := I) (M := M) g
+    let Hess := hessianSec (I := I) cov hcov u hu
+    Hess x (vec2 (I := I) U V) = Hess x (vec2 (I := I) V U) := by
+  classical
+  let cov := leviCivitaConnectionOfMetric (I := I) g
+  let hcov :=
+    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+      (I := I) (M := M) g
+  let du := duSec (I := I) u hu
+  let Hess := hessianSec (I := I) cov hcov u hu
+  have hnabla :
+      NablaOneFormSectionRealizes (I := I) cov du Hess := by
+    simpa [cov, hcov, du, Hess] using
+      hessianSec_nabla (I := I) cov hcov u hu
+  have hdu : DuFieldRealizes (I := I) u du := by
+    simpa [du] using duSec_realizes (I := I) u hu
+  simpa [cov, hcov, du, Hess] using
+    leviCivita_nablaDuSec_pointwise_symm
+      (I := I) g u hu du Hess hnabla hdu x U V
 
 /-- Levi-Civita Hessian symmetry for a function, expressed as trailing-slot
 symmetry of the second covariant derivative of `du`. -/

@@ -179,6 +179,93 @@ theorem laplacianAt_smul
   exact laplacian_const_smul (I := I) (G.connection t) (G.metric t)
     a hf hgrad
 
+/-- Family-facing product rule for the realized gradient. -/
+theorem gradientAt_mul
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f h : M -> Real} {x : M}
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
+    gradientAt (I := I) G t (fun y : M => f y * h y) x =
+      f x • gradientAt (I := I) G t h x +
+        h x • gradientAt (I := I) G t f x := by
+  unfold gradientAt
+  exact gradientFun_mul (I := I) (G.metric t) hf hh
+
+/-- Family-facing chain rule for the realized gradient of a real power. -/
+theorem gradientAt_rpow
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f : M -> Real} {x : M} (p : Real)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hpos : 0 < f x) :
+    gradientAt (I := I) G t (fun y : M => f y ^ p) x =
+      (p * f x ^ (p - 1)) • gradientAt (I := I) G t f x := by
+  unfold gradientAt
+  exact gradientFun_rpow (I := I) (G.metric t) p hf hpos
+
+/-- Family-facing scalar product rule for the realized Laplacian. -/
+theorem laplacianAt_mul
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f h : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : forall y : M, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x)
+    (hgradh : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) h y) x)
+    (hfgradh : MDiffAt (T% (f • fun y : M =>
+      gradientFun (I := I) (G.metric t) h y)) x)
+    (hhgradf : MDiffAt (T% (h • fun y : M =>
+      gradientFun (I := I) (G.metric t) f y)) x) :
+    laplacianAt (I := I) G t (fun y : M => f y * h y) x =
+      f x * laplacianAt (I := I) G t h x +
+        h x * laplacianAt (I := I) G t f x +
+          2 * (G.metric t).inner x
+            (gradientAt (I := I) G t f x)
+            (gradientAt (I := I) G t h x) := by
+  unfold laplacianAt gradientAt
+  exact laplacian_mul (I := I) (G.connection t) (G.metric t)
+    hf hh hgradf hgradh hfgradh hhgradf
+
+/-- Family-facing scalar product rule with scalar-multiple gradient regularity
+produced from the two gradient regularity hypotheses. -/
+theorem laplacianAt_mul_of_scalarRegular
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f h : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : forall y : M, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : forall y : M, MDiffAt (T% fun z : M =>
+      gradientFun (I := I) (G.metric t) f z) y)
+    (hgradh : forall y : M, MDiffAt (T% fun z : M =>
+      gradientFun (I := I) (G.metric t) h z) y) :
+    laplacianAt (I := I) G t (fun y : M => f y * h y) x =
+      f x * laplacianAt (I := I) G t h x +
+        h x * laplacianAt (I := I) G t f x +
+          2 * (G.metric t).inner x
+            (gradientAt (I := I) G t f x)
+            (gradientAt (I := I) G t h x) := by
+  exact laplacianAt_mul (I := I) G t
+    hf hh (hgradf x) (hgradh x)
+    ((hf x).smul_section (hgradh x))
+    ((hh x).smul_section (hgradf x))
+
+/-- Family-facing scalar real-power rule for the realized Laplacian. -/
+theorem laplacianAt_rpow
+    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (t : Time) {f : M -> Real} {x : M} (p : Real)
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hpos : forall y : M, 0 < f y)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x) :
+    laplacianAt (I := I) G t (fun y : M => f y ^ p) x =
+      (p * f x ^ (p - 1)) * laplacianAt (I := I) G t f x +
+        (p * (p - 1) * f x ^ (p - 2)) *
+          (G.metric t).inner x
+            (gradientAt (I := I) G t f x)
+            (gradientAt (I := I) G t f x) := by
+  unfold laplacianAt gradientAt
+  exact laplacian_rpow (I := I) (G.connection t) (G.metric t)
+    p hf hpos hgrad
+
 /-- Family-facing scalar-square Laplacian product rule. -/
 theorem laplacianAt_sq
     (G : RealizedMetricFamily (I := I) (M := M) Time)

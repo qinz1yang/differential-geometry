@@ -495,7 +495,7 @@ theorem metricTrace_pos_of_posDef
           (stdOrthonormalBasis Real (TangentSpace I x) i)
           (stdOrthonormalBasis Real (TangentSpace I x) i)]
       exact hpos (stdOrthonormalBasis Real (TangentSpace I x) i) hne
-    · exact ⟨⟨0, by simpa [hdim]⟩, Finset.mem_univ _⟩
+    · exact ⟨⟨0, by simp [hdim]⟩, Finset.mem_univ _⟩
   rwa [metricTrace_eq_ricciEnd (I := I) g Ric]
 
 private theorem scalar_eq_of_trace_diag
@@ -658,7 +658,6 @@ theorem coordInner0S_four_delta3_eq_stdRmNormSq3
   unfold stdRmNormSq3 standardRmCompAt rm04CompAt component0S
     tensor0SComponent Realized.slots4
   simp [Fin.sum_univ_three]
-  ring_nf
 
 /-- Intrinsic squared norm of a `(0,4)` tensor in an orthonormal `Fin 3` basis,
 identified with the standard component norm. -/

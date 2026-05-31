@@ -180,7 +180,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 abbrev SmoothMetric
     (I : ModelWithCorners Real E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Type _ :=
-  Bundle.ContMDiffRiemannianMetric I ⊤ E (TangentSpace I : M -> Type _)
+  Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I : M -> Type _)
 
 /-- The tangent flat map induced by a smooth Riemannian metric. -/
 def tangentFlatLinear (g : SmoothMetric I M) (x : M) :

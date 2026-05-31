@@ -101,6 +101,7 @@ The scalar Hessian supplied by the Hessian-trace API is allowed to be the
 `scalarHessianFromNabla2RicInFrame` trace of `nabla2Ric`.  The target rough
 Ricci Laplacian uses `roughLapRicInFrame`; the equality between the two scalar
 Laplacian traces is the finite-sum swap above. -/
+@[deprecated "use a local or pointwise scalar trace statement instead" (since := "2026-05-22")]
 theorem scalarLaplacianTraceInFrame_realizes_heatOperator_of_nabla2RicTrace
     {D : Realized.RealTimeInterval}
     {u : Set M}

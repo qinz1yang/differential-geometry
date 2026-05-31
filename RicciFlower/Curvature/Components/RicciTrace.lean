@@ -28,10 +28,20 @@ variable {x : M}
 This submodule is part of the split `RicciFlower.Curvature.Components` API.
 -/
 
+/-- In an orthonormal tangent basis, the identity matrix is the inverse metric. -/
+theorem metricInverseInBasis_of_orthonormal
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hON : forall i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0) :
+    MetricInverseInBasis (I := I) g x basis (fun a k => if a = k then 1 else 0) := by
+  classical
+  intro i j
+  constructor <;> simp [hON]
+
 /-- Coordinate form of `Ric(Y,Z) = trace (X |-> R(X,Y)Z)`, rewritten through a
-lowered `(0,4)` Riemann tensor. With the convention
-`Rm04(W,X,Y,Z) = g(W, R(X,Y)Z)`, the traced component is
-`sum_{a,k} gInv a k * Rm04(e_k,e_a,e_i,e_j)`. -/
+lowered `(0,4)` Riemann tensor. With the standard convention
+`Rm04(X,Y,Z,W) = <R(X,Y)Z,W>`, the traced component is
+`sum_{a,k} gInv a k * Rm04(e_a,e_i,e_j,e_k)`. -/
 theorem ricciFromRm13_comp_eq_rm04_trace
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -43,7 +53,7 @@ theorem ricciFromRm13_comp_eq_rm04_trace
     (i j : Idx) :
     ricciCompAt (I := I) basis (ricciFromRm13At (I := I) (M := M) Rm13) i j =
       ∑ a : Idx, ∑ k : Idx,
-        gInv a k * rm04CompAt (I := I) basis Rm04 k a i j := by
+        gInv a k * rm04CompAt (I := I) basis Rm04 a i j k := by
   rw [ricciCompAt_apply]
   change ((contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
       (scalarOne0S (I := I) x)) (vec2 (basis i) (basis j)) = _
@@ -64,7 +74,7 @@ theorem ricciFromRm13_comp_eq_rm04_trace
   rw [map_smul]
   rw [ContinuousMultilinearMap.smul_apply]
   simp only [smul_eq_mul]
-  rw [← hLower (basis k) (basis a) (basis i) (basis j)]
+  rw [← hLower (basis a) (basis i) (basis j) (basis k)]
   rw [rm04CompAt_apply]
 
 /-- Coordinate form of a Ricci tensor that is intrinsically the trace of a
@@ -82,7 +92,7 @@ theorem ricciComp_eq_rm04_trace_of_rm13
     (i j : Idx) :
     ricciCompAt (I := I) basis Ric i j =
       ∑ a : Idx, ∑ k : Idx,
-        gInv a k * rm04CompAt (I := I) basis Rm04 k a i j := by
+        gInv a k * rm04CompAt (I := I) basis Rm04 a i j k := by
   rw [hRic]
   exact ricciFromRm13_comp_eq_rm04_trace (I := I) g basis gInv hinv Rm13 Rm04 hLower i j
 
@@ -99,9 +109,33 @@ theorem ricciComp_eq_rm04_trace_of_rm13_section
     (i j : Idx) :
     ricciCompAt (I := I) basis (Ric x) i j =
       ∑ a : Idx, ∑ k : Idx,
-        gInv a k * rm04CompAt (I := I) basis (Rm04 x) k a i j := by
+        gInv a k * rm04CompAt (I := I) basis (Rm04 x) a i j k := by
   exact ricciComp_eq_rm04_trace_of_rm13 (I := I) g basis gInv hinv (Ric x) (Rm13 x)
     (Rm04 x) (hRic x) hLower i j
+
+/-- In an orthonormal basis, the diagonal inverse-metric contraction in the
+Ricci trace reduces to a single sum over lowered Riemann components. -/
+theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (Ric : Tensor02Section (I := I) (M := M))
+    (Rm13 : Tensor13Section (I := I) (M := M))
+    (Rm04 : Tensor04Section (I := I) (M := M))
+    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x))
+    (hON : forall i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0)
+    (i j : Idx) :
+    Ric x (vec2 (basis i) (basis j)) =
+      ∑ a, Rm04 x (vec4 (basis a) (basis i) (basis j) (basis a)) := by
+  classical
+  have hinv : MetricInverseInBasis (I := I) g x basis
+      (fun a k => if a = k then 1 else 0) :=
+    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+  have hcomp :=
+    ricciComp_eq_rm04_trace_of_rm13_section
+      (I := I) g basis (fun a k => if a = k then 1 else 0) hinv
+      Ric Rm13 Rm04 hRic hLower i j
+  simpa [ricciCompAt_apply, rm04CompAt_apply] using hcomp
 
 theorem ricciCompAt_eq_contractTrace_of_realizes
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -119,8 +153,8 @@ theorem ricciCompAt_eq_contractTrace_of_realizes
 /-- Convention-correct pointwise Ricci trace from a lowered Riemann tensor.
 
 This is the lowered form of the intrinsic `Rm13` trace:
-`Ric_ab = g^{kl} Rm04(e_k,e_l,e_a,e_b)`.  It is the convention used by
-`ricciFromRm13_comp_eq_rm04_trace`. -/
+`Ric_ab = g^{kl} Rm04(e_k,e_a,e_b,e_l)` in standard slots.  The name is
+retained for compatibility during the convention migration. -/
 def RicciRealizesRm04FirstTraceAt
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -129,7 +163,7 @@ def RicciRealizesRm04FirstTraceAt
   forall a b : Idx,
     Ric (vec2 (basis a) (basis b)) =
       ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis a) (basis b))
+        gInv k l * Rm04 (vec4 (basis k) (basis a) (basis b) (basis l))
 
 /-- Ricci symmetry from the convention-correct lowered Riemann trace and the
 algebraic Riemann symmetries. -/
@@ -139,11 +173,11 @@ theorem ricciSymm_of_rm04
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hTrace : RicciRealizesRm04FirstTraceAt (I := I) Ric Rm04 gInv basis)
-    (hPair : forall W X Y Z : TangentSpace I x,
-      Rm04 (vec4 W X Y Z) = Rm04 (vec4 Y Z W X))
+    (hPair : forall X Y Z W : TangentSpace I x,
+      Rm04 (vec4 X Y Z W) = Rm04 (vec4 Z W X Y))
     (hOutput : Rm04OutputSkewAt (I := I) Rm04)
-    (hInput : forall W X Y Z : TangentSpace I x,
-      Rm04 (vec4 W Y X Z) = -Rm04 (vec4 W X Y Z))
+    (hInput : forall X Y Z W : TangentSpace I x,
+      Rm04 (vec4 Y X Z W) = -Rm04 (vec4 X Y Z W))
     (hInv : forall i j : Idx, gInv i j = gInv j i)
     (a b : Idx) :
     Ric (vec2 (basis a) (basis b)) =
@@ -152,32 +186,27 @@ theorem ricciSymm_of_rm04
   rw [hTrace a b, hTrace b a]
   calc
     (∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis a) (basis b)))
+        gInv k l * Rm04 (vec4 (basis k) (basis a) (basis b) (basis l)))
         =
-      ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis a) (basis b) (basis k) (basis l)) := by
-          refine Finset.sum_congr rfl fun k _ => ?_
-          refine Finset.sum_congr rfl fun l _ => ?_
-          rw [hPair (basis k) (basis l) (basis a) (basis b)]
-    _ =
-      ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis l) (basis k) (basis b) (basis a)) := by
-          refine Finset.sum_congr rfl fun k _ => ?_
-          refine Finset.sum_congr rfl fun l _ => ?_
-          have hO := hOutput (basis a) (basis b) (basis k) (basis l)
-          have hI := hInput (basis l) (basis k) (basis b) (basis a)
-          rw [hO, hI]
-          ring
-    _ =
       ∑ l : Idx, ∑ k : Idx,
-        gInv k l * Rm04 (vec4 (basis l) (basis k) (basis b) (basis a)) := by
+        gInv k l * Rm04 (vec4 (basis k) (basis a) (basis b) (basis l)) := by
           rw [Finset.sum_comm]
     _ =
       ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis b) (basis a)) := by
+        gInv k l * Rm04 (vec4 (basis l) (basis a) (basis b) (basis k)) := by
           refine Finset.sum_congr rfl fun k _ => ?_
           refine Finset.sum_congr rfl fun l _ => ?_
           rw [hInv l k]
+    _ =
+      ∑ k : Idx, ∑ l : Idx,
+        gInv k l * Rm04 (vec4 (basis k) (basis b) (basis a) (basis l)) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          have hP := hPair (basis l) (basis a) (basis b) (basis k)
+          have hI := hInput (basis k) (basis b) (basis l) (basis a)
+          have hO := hOutput (basis k) (basis b) (basis l) (basis a)
+          rw [hP, hI, hO]
+          ring
 
 /-- The intrinsic `Rm13` trace plus output lowering realizes the
 convention-correct lowered `Rm04` first trace. -/
@@ -191,26 +220,14 @@ theorem ricciFirstTraceAt_of_rm13
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hRic : Ric = ricciFromRm13At (I := I) (M := M) Rm13)
     (hLower : Rm04LowersRm13At (I := I) g x Rm13 Rm04)
-    (hInvSym : forall i j : Idx, gInv i j = gInv j i) :
+    (_hInvSym : forall i j : Idx, gInv i j = gInv j i) :
     RicciRealizesRm04FirstTraceAt (I := I) Ric Rm04 gInv basis := by
   intro i j
   have hcomp := ricciComp_eq_rm04_trace_of_rm13
     (I := I) g basis gInv hinv Ric Rm13 Rm04 hRic hLower i j
   rw [ricciCompAt_apply] at hcomp
   rw [hcomp]
-  calc
-    (∑ a : Idx, ∑ k : Idx,
-        gInv a k * rm04CompAt (I := I) basis Rm04 k a i j)
-        =
-      ∑ k : Idx, ∑ a : Idx,
-        gInv a k * rm04CompAt (I := I) basis Rm04 k a i j := by
-        rw [Finset.sum_comm]
-    _ =
-      ∑ k : Idx, ∑ l : Idx,
-        gInv k l * Rm04 (vec4 (basis k) (basis l) (basis i) (basis j)) := by
-        refine Finset.sum_congr rfl fun k _ => ?_
-        refine Finset.sum_congr rfl fun l _ => ?_
-        rw [hInvSym l k, rm04CompAt_apply]
+  simp_rw [rm04CompAt_apply]
 
 /-- Section form of `ricciFirstTraceAt_of_rm13`. -/
 theorem ricciFirstTraceAt_of_rm13_section
@@ -231,9 +248,8 @@ theorem ricciFirstTraceAt_of_rm13_section
 /-- Legacy pointwise trace realization of Ricci from a lowered Riemann tensor
 in a tangent basis.
 
-This traces the last lowered slot, `Rm04(e_k,X,Y,e_l)`.  It is kept for
-compatibility with older wrappers; new curvature/Ricci-flow convention work
-should use `RicciRealizesRm04FirstTraceAt`. -/
+This traces the last lowered slot, `Rm04(e_k,X,Y,e_l)`, and is now the
+standard-slot Ricci trace. -/
 def RicciRealizesRm04TraceAt
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)

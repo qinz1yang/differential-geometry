@@ -723,6 +723,176 @@ theorem roughLap0STensor_apply
       metricTraceFirstTwo0SAt (I := I) g nabla2A tail := by
   exact metricTraceFirstTwo0STensor_apply (I := I) g nabla2A tail
 
+/-- Traced Leibniz rule for the rough Laplacian of a scalar multiple of a
+covariant tensor, stated at the supplied-second-derivative level.
+
+The hypothesis is the pointwise second covariant derivative product rule for
+`f • A`.  The conclusion contracts that rule with the inverse metric in an
+arbitrary basis. -/
+theorem trace_smul_leibniz
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    {s : ℕ}
+    (f : Real)
+    (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 1) x)
+    (nabla2A nabla2fA :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (s + 2) x)
+    (tail : Fin s -> TangentSpace I x)
+    (hleib :
+      ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+        nabla2fA (metricTraceInput (I := I) X Y tail) =
+          hessF (metricTraceInput (I := I) X Y Fin.elim0) * A tail +
+            df (fun _ : Fin 1 => X) * nablaA (Fin.cons Y tail) +
+            df (fun _ : Fin 1 => Y) * nablaA (Fin.cons X tail) +
+            f * nabla2A (metricTraceInput (I := I) X Y tail)) :
+    metricTraceFirstTwo0SAt (I := I) g nabla2fA tail =
+      metricTraceFirstTwo0SAt (I := I) g hessF Fin.elim0 * A tail +
+        (∑ i : Idx, ∑ j : Idx,
+          gInv i j *
+            (df (fun _ : Fin 1 => basis i) *
+                nablaA (Fin.cons (basis j) tail) +
+              df (fun _ : Fin 1 => basis j) *
+                nablaA (Fin.cons (basis i) tail))) +
+        f * metricTraceFirstTwo0SAt (I := I) g nabla2A tail := by
+  rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv
+      nabla2fA tail,
+    metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv
+      hessF Fin.elim0,
+    metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv
+      nabla2A tail]
+  simp only [metricTrace0S2InBasis]
+  simp_rw [hleib]
+  simp_rw [mul_add]
+  simp_rw [Finset.sum_add_distrib]
+  simp_rw [Finset.mul_sum]
+  ring_nf
+  rw [Finset.mul_sum]
+  simp_rw [Finset.mul_sum]
+  ring_nf
+
+/-- Parallel-factor specialization of `trace_smul_leibniz`: if the tensor
+factor has vanishing first and second covariant derivative at the point, then
+the rough Laplacian of `f • A` is `(Δ f) • A`. -/
+theorem trace_smul_parallel
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    {s : ℕ}
+    (f : Real)
+    (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 1) x)
+    (nabla2A nabla2fA :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (s + 2) x)
+    (tail : Fin s -> TangentSpace I x)
+    (hfirst : ∀ X : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+      nablaA (Fin.cons X tail) = 0)
+    (hsecond : ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+      nabla2A (metricTraceInput (I := I) X Y tail) = 0)
+    (hleib :
+      ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+        nabla2fA (metricTraceInput (I := I) X Y tail) =
+          hessF (metricTraceInput (I := I) X Y Fin.elim0) * A tail +
+            df (fun _ : Fin 1 => X) * nablaA (Fin.cons Y tail) +
+            df (fun _ : Fin 1 => Y) * nablaA (Fin.cons X tail) +
+            f * nabla2A (metricTraceInput (I := I) X Y tail)) :
+    metricTraceFirstTwo0SAt (I := I) g nabla2fA tail =
+      metricTraceFirstTwo0SAt (I := I) g hessF Fin.elim0 * A tail := by
+  rw [trace_smul_leibniz (I := I) g basis gInv hinv f
+    df hessF A nablaA nabla2A nabla2fA tail hleib]
+  simp only [hfirst, mul_zero, add_zero]
+  rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv
+      nabla2A tail]
+  simp only [metricTrace0S2InBasis, hsecond, mul_zero, Finset.sum_const_zero]
+  ring
+
+/-- Rough-Laplacian-facing form of `trace_smul_leibniz`. -/
+theorem roughLap_smul_leib
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    {s : ℕ}
+    (f : Real)
+    (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 1) x)
+    (nabla2A nabla2fA :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (s + 2) x)
+    (tail : Fin s -> TangentSpace I x)
+    (hleib :
+      ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+        nabla2fA (metricTraceInput (I := I) X Y tail) =
+          hessF (metricTraceInput (I := I) X Y Fin.elim0) * A tail +
+            df (fun _ : Fin 1 => X) * nablaA (Fin.cons Y tail) +
+            df (fun _ : Fin 1 => Y) * nablaA (Fin.cons X tail) +
+            f * nabla2A (metricTraceInput (I := I) X Y tail)) :
+    roughLap0STensor (I := I) g nabla2fA tail =
+      metricTraceFirstTwo0SAt (I := I) g hessF Fin.elim0 * A tail +
+        (∑ i : Idx, ∑ j : Idx,
+          gInv i j *
+            (df (fun _ : Fin 1 => basis i) *
+                nablaA (Fin.cons (basis j) tail) +
+              df (fun _ : Fin 1 => basis j) *
+                nablaA (Fin.cons (basis i) tail))) +
+        f * roughLap0STensor (I := I) g nabla2A tail := by
+  rw [roughLap0STensor_apply, roughLap0STensor_apply]
+  exact trace_smul_leibniz (I := I) g basis gInv hinv
+    f df hessF A nablaA nabla2A nabla2fA tail hleib
+
+/-- Rough-Laplacian-facing parallel-factor specialization: if the tensor
+factor is parallel to second order at the point, then `Δ(f • A) = (Δ f) • A`. -/
+theorem roughLap_smul_par
+    (g : SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    {s : ℕ}
+    (f : Real)
+    (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
+    (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (s + 1) x)
+    (nabla2A nabla2fA :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        (s + 2) x)
+    (tail : Fin s -> TangentSpace I x)
+    (hfirst : ∀ X : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+      nablaA (Fin.cons X tail) = 0)
+    (hsecond : ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+      nabla2A (metricTraceInput (I := I) X Y tail) = 0)
+    (hleib :
+      ∀ X Y : TangentSpace I x, ∀ tail : Fin s -> TangentSpace I x,
+        nabla2fA (metricTraceInput (I := I) X Y tail) =
+          hessF (metricTraceInput (I := I) X Y Fin.elim0) * A tail +
+            df (fun _ : Fin 1 => X) * nablaA (Fin.cons Y tail) +
+            df (fun _ : Fin 1 => Y) * nablaA (Fin.cons X tail) +
+            f * nabla2A (metricTraceInput (I := I) X Y tail)) :
+    roughLap0STensor (I := I) g nabla2fA tail =
+      metricTraceFirstTwo0SAt (I := I) g hessF Fin.elim0 * A tail := by
+  rw [roughLap0STensor_apply]
+  exact trace_smul_parallel (I := I) g basis gInv hinv
+    f df hessF A nablaA nabla2A nabla2fA tail hfirst hsecond hleib
+
 /-- Basis-level rough Laplacian value of a covariant tensor, represented as the
 metric trace of a supplied second covariant derivative tensor. -/
 def roughLap0SAt
@@ -835,8 +1005,7 @@ theorem metric_trace_0s_iff_eq_tensor
   · intro htrace
     ext tail
     rw [htrace tail, metricTraceFirstTwo0STensor_apply]
-  · intro htrace
-    intro tail
+  · intro htrace tail
     rw [htrace, metricTraceFirstTwo0STensor_apply]
 
 theorem rough_lap_0s_iff_eq_tensor

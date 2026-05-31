@@ -525,6 +525,7 @@ theorem scalar_parabolic_inequality_of_scalarEvolutionAllTimes
 /-- In-frame geometric producer for the WMP parabolic inequality.  The raw
 trace/norm Cauchy-Schwarz hypothesis is produced from the inverse-metric frame
 data. -/
+@[deprecated "use a local or intrinsic scalar lower-bound route instead" (since := "2026-05-22")]
 theorem scalar_parabolic_inequality_of_scalarEvolutionAllTimes_inFrame
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -538,7 +539,7 @@ theorem scalar_parabolic_inequality_of_scalarEvolutionAllTimes_inFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame u)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn : n = (Fintype.card Idx : Real))
     (hscalar : ScalarEvolutionAllTimesOn (M := M) T
@@ -773,6 +774,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_initialMinimum
 /-- Book-facing in-frame variant of the scalar lower-bound theorem.  The
 trace/norm inequality is supplied by the frame inverse-metric producer rather
 than exposed as a raw hypothesis. -/
+@[deprecated "use a local or intrinsic scalar lower-bound route instead" (since := "2026-05-22")]
 theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -787,7 +789,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame u)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn_rank : n = (Fintype.card Idx : Real))
     (K : NNReal)
@@ -868,6 +870,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame
 
 /-- Closed-open in-frame variant of the scalar lower-bound theorem.  This is
 the finite-slab wrapper for a solution defined on `[0, omega)`. -/
+@[deprecated "use a local or intrinsic scalar lower-bound route instead" (since := "2026-05-22")]
 theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -883,7 +886,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
-    (hinv : InverseMetricComponentsInFrameOn (I := I) S gInv frame)
+    (hinv : InvMetricLocal (I := I) S gInv frame u)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hn_rank : n = (Fintype.card Idx : Real))
     (K : NNReal)

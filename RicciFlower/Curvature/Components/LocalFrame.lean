@@ -72,8 +72,8 @@ theorem ricciTraceAt_of_frame
   simpa [RicciTensorRealizesRm04TraceInFrame, tensor02ToField, tensor04ToField,
     IsLocalFrameOn.toBasisAt_coe] using hRic x X Y
 
-/-- Convention-correct frame Ricci trace:
-`Ric_ij = g^{kl} Rm04(e_k,e_l,e_i,e_j)`. -/
+/-- Convention-correct frame Ricci trace in standard slots:
+`Ric_ij = g^{kl} Rm04(e_k,e_i,e_j,e_l)`. -/
 def RicciTensorRealizesRm04FirstTraceInFrame
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -82,7 +82,7 @@ def RicciTensorRealizesRm04FirstTraceInFrame
   forall x i j,
     Ric x (vec2 (frame i x) (frame j x)) =
       ∑ k : Idx, ∑ l : Idx,
-        gInv x k l * Rm04 x (vec4 (frame k x) (frame l x) (frame i x) (frame j x))
+        gInv x k l * Rm04 x (vec4 (frame k x) (frame i x) (frame j x) (frame l x))
 
 /-- A local frame turns the convention-correct frame trace into the pointwise
 basis trace. -/
@@ -112,7 +112,7 @@ theorem ricciComp_eq_firstTrace_rm04_frame
     ricciCompAt (I := I) (hframe.toBasisAt hx) (Ric x) i j =
       ∑ k : Idx, ∑ l : Idx,
         gInv x k l *
-          rm04CompAt (I := I) (hframe.toBasisAt hx) (Rm04 x) k l i j := by
+          rm04CompAt (I := I) (hframe.toBasisAt hx) (Rm04 x) k i j l := by
   have hAt := ricciFirstTraceAt_of_frame
     (I := I) Ric Rm04 gInv frame hframe hRic hx
   rw [ricciCompAt_apply]

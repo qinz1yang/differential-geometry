@@ -311,6 +311,111 @@ def MetricInverseInBasis {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (∑ k : Idx, g.inner x (basis i) (basis k) * gInv k j) =
         (if i = j then 1 else 0)
 
+/-- Canonical inverse-metric components in a tangent-space basis. -/
+noncomputable def basisInvMetric {Idx : Type*}
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (i j : Idx) : Real :=
+  basis.coord j ((tangentFlatEquiv (I := I) g x).symm (basis.coord i))
+
+/-- Canonical inverse-metric components in a basis are symmetric. -/
+theorem basisInvMetric_symm {Idx : Type*}
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) :
+    forall i j : Idx,
+      basisInvMetric (I := I) g x basis i j =
+        basisInvMetric (I := I) g x basis j i := by
+  intro i j
+  let sharp := (tangentFlatEquiv (I := I) g x).symm
+  have hleft :
+      basis.coord j (sharp (basis.coord i)) =
+        g.inner x (sharp (basis.coord j)) (sharp (basis.coord i)) := by
+    change basis.coord j (sharp (basis.coord i)) =
+      (tangentFlatEquiv (I := I) g x (sharp (basis.coord j)))
+        (sharp (basis.coord i))
+    rw [(tangentFlatEquiv (I := I) g x).apply_symm_apply]
+  have hright :
+      basis.coord i (sharp (basis.coord j)) =
+        g.inner x (sharp (basis.coord i)) (sharp (basis.coord j)) := by
+    change basis.coord i (sharp (basis.coord j)) =
+      (tangentFlatEquiv (I := I) g x (sharp (basis.coord i)))
+        (sharp (basis.coord j))
+    rw [(tangentFlatEquiv (I := I) g x).apply_symm_apply]
+  calc
+    basisInvMetric (I := I) g x basis i j =
+        g.inner x (sharp (basis.coord j)) (sharp (basis.coord i)) := by
+          simpa [basisInvMetric, sharp] using hleft
+    _ = g.inner x (sharp (basis.coord i)) (sharp (basis.coord j)) := by
+          exact g.symm x _ _
+    _ = basisInvMetric (I := I) g x basis j i := by
+          simpa [basisInvMetric, sharp] using hright.symm
+
+/-- The canonical basis components satisfy the two-sided inverse-metric
+predicate. -/
+theorem basisInvMetric_real {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x)) :
+    MetricInverseInBasis (I := I) g x basis
+      (basisInvMetric (I := I) g x basis) := by
+  classical
+  let sharp := (tangentFlatEquiv (I := I) g x).symm
+  have hleft (i j : Idx) :
+      (∑ k : Idx,
+          basisInvMetric (I := I) g x basis i k *
+            g.inner x (basis k) (basis j)) =
+        (if i = j then 1 else 0) := by
+    have hsum :
+        (∑ k : Idx,
+            basisInvMetric (I := I) g x basis i k • basis k) =
+          sharp (basis.coord i) := by
+      simp [basisInvMetric, sharp]
+    calc
+      (∑ k : Idx,
+          basisInvMetric (I := I) g x basis i k *
+            g.inner x (basis k) (basis j)) =
+          g.inner x
+            (∑ k : Idx,
+              basisInvMetric (I := I) g x basis i k • basis k)
+            (basis j) := by
+            simp [map_sum, map_smul, smul_eq_mul]
+      _ = g.inner x (sharp (basis.coord i)) (basis j) := by
+            rw [hsum]
+      _ = basis.coord i (basis j) := by
+            change
+              (tangentFlatEquiv (I := I) g x (sharp (basis.coord i)))
+                (basis j) =
+              basis.coord i (basis j)
+            rw [(tangentFlatEquiv (I := I) g x).apply_symm_apply]
+      _ = (if i = j then 1 else 0) := by
+            by_cases hij : i = j
+            · subst hij
+              simp
+            · simp [hij]
+  have hsym :
+      forall i j : Idx,
+        basisInvMetric (I := I) g x basis i j =
+          basisInvMetric (I := I) g x basis j i :=
+    basisInvMetric_symm (I := I) g x basis
+  intro i j
+  constructor
+  · exact hleft i j
+  · calc
+      (∑ k : Idx,
+          g.inner x (basis i) (basis k) *
+            basisInvMetric (I := I) g x basis k j) =
+          ∑ k : Idx,
+            basisInvMetric (I := I) g x basis j k *
+              g.inner x (basis k) (basis i) := by
+            refine Finset.sum_congr rfl fun k _ => ?_
+            rw [hsym k j, g.symm x (basis i) (basis k), mul_comm]
+      _ = (if j = i then 1 else 0) := hleft j i
+      _ = (if i = j then 1 else 0) := by
+            by_cases hij : i = j
+            · subst hij
+              simp
+            · have hji : j ≠ i := fun h => hij h.symm
+              simp [hij, hji]
+
 /-- Inverse-metric components in a basis are symmetric. -/
 theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothMetric I M) (x : M)

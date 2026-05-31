@@ -13,9 +13,10 @@ The component theorem below is intentionally stated for an abstract
 feed this layer without changing the finite algebra.
 
 The standard component convention in this file is the usual algebraic one:
-`R i j k l = g (R(e_i,e_j)e_k, e_l)`.  RicciFlower's lowered curvature field
-uses the convention `Rm04(W,X,Y,Z) = g(W, R(X,Y)Z)`, so adapters into this file
-must perform the corresponding slot permutation explicitly.
+`R i j k l = g (R(e_i,e_j)e_k, e_l)`.  RicciFlower's bundled lowered
+curvature field now uses the same standard slot order
+`Rm04(X,Y,Z,W) = <R(X,Y)Z,W>`, so component producers can feed this layer
+without an output-first slot permutation.
 -/
 
 noncomputable section

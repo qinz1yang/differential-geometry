@@ -318,7 +318,7 @@ lemma chartGramMatrix_entry_contMDiffOn
         (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
         b (g.inner b))
       (trivializationAt E (TangentSpace I) x₀).baseSet :=
-    (g.contMDiff.of_le le_top).contMDiffOn
+    g.contMDiff.contMDiffOn
   have hv := chartBasisVec_contMDiffOn (I := I) x₀ i
   have hw := chartBasisVec_contMDiffOn (I := I) x₀ j
   have happ :

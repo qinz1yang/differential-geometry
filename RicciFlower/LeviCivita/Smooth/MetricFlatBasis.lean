@@ -306,7 +306,9 @@ theorem localMetricFlatBasis_isInvertible {ι : Type*} [Fintype ι]
   rw [← hA]
   exact ContinuousLinearMap.isInvertible_equiv
 
-private theorem localMetricFlatBasis_contMDiffAt {ι : Type*} [Fintype ι]
+/-- The metric flat map in a fixed local-frame basis is smooth at every point
+of the trivialization base set. -/
+theorem localMetricFlatBasis_contMDiffAt {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet) :
@@ -360,6 +362,45 @@ private theorem localInvMetricCoeff_contMDiffAt {ι : Type*} [Fintype ι]
       (fun y : M => localInvMetricCoeff (I := I) e b g k l y) x :=
   localInvMetricCoeff_contMDiffAt_of_isInvertible (I := I) e b g hx
     (localMetricFlatBasis_isInvertible (I := I) e b g hx) k l
+
+/-- Fixed-chart inverse metric components are spatially differentiable
+throughout the coordinate-frame domain. -/
+theorem coordGInvMdiff
+    (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
+    (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (k l : CoordinateIdx (𝕜 := Real) E) :
+    MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M =>
+        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+          (extChartAt I x₀ y)) x := by
+  let e := coordinateTrivializationAt (I := I) x₀
+  let b := Module.finBasis Real E
+  have hxE : x ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
+  have hlocal :
+      MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => localInvMetricCoeff (I := I) e b g k l y) x :=
+    (localInvMetricCoeff_contMDiffAt (I := I) e b g hxE k l).mdifferentiableAt
+      (by simp)
+  have heq :
+      (fun y : M =>
+        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+          (extChartAt I x₀ y))
+        =ᶠ[nhds x]
+      fun y : M => localInvMetricCoeff (I := I) e b g k l y := by
+    filter_upwards [e.open_baseSet.mem_nhds hxE] with y hy
+    have hyCoord : y ∈ coordinateFrameSet (I := I) x₀ := by
+      simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hy
+    have hflat :
+        metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ y) =
+          localMetricFlatBasis (I := I) e b g y := by
+      ext v w
+      rw [flatChart_apply (I := I) g x₀ hyCoord v w]
+      rw [localMetricFlatBasis_eq_inner (I := I) e b g hy v w]
+    unfold inverseMetricFlatModelInChart_component localInvMetricCoeff
+    rw [hflat]
+    simp [e, b, coordCLM]
+  exact hlocal.congr_of_eventuallyEq heq
 
 private theorem localMetricFlatBasis_eq_dual_sum {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))

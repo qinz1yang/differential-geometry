@@ -35,6 +35,18 @@ structure ScaleControlledBall (M : Type*) where
   volume : Real
   curvatureControlled : Prop
 
+namespace ScaleControlledBall
+
+/-- The small scale-controlled ball is contained in the large one at the
+level currently expressible by this abstract interface: same center and time,
+and no larger radius.  A later Riemannian ball API should turn this predicate
+into actual set inclusion. -/
+def Nested (small large : ScaleControlledBall M) : Prop :=
+  large.center = small.center /\ large.time = small.time /\
+    small.radius <= large.radius
+
+end ScaleControlledBall
+
 /-- A single scale-controlled ball is `kappa`-noncollapsed in dimension `n`. -/
 def KappaNoncollapsedAtBall (n : Nat) (kappa : Real)
     (B : ScaleControlledBall M) : Prop :=

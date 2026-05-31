@@ -116,6 +116,20 @@ noncomputable def totalNabla0SFun (s : ℕ)
       (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s x₀ x₀ (α x₀)))
 
+/-- Structural congruence for the canonical total covariant derivative. -/
+theorem totalNabla0SFun_congr (s : ℕ)
+    {cov cov' : CovariantDerivative I E (TangentSpace I : M → Type _)}
+    {α β : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    (hcov : cov = cov') (hα : α = β) (x : M) :
+    totalNabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        s cov α x =
+      totalNabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        s cov' β x := by
+  cases hcov
+  cases hα
+  rfl
+
 /-- Regularity predicate for the canonical total covariant derivative.
 
 This is explicit for the same reason as `Nabla0SRegular`: the construction is
@@ -633,6 +647,168 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I (∞ : WithTop ℕ∞) M]
 variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+
+/-- Difference of two directional covariant derivatives on the same covariant
+tensor field.  This is the lower-slot action of the connection-difference
+tensor, and is the invariant form of the MSM135 shorthand
+`(∇ - ∇ₖ)T = (Γ - Γₖ) * T` for covariant tensors. -/
+theorem nabla0SFun_sub_cov
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
+    {s : ℕ}
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (x : M) :
+    ((nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x) -
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov' X α x) (fun a : Fin s => V a x) =
+      -∑ a : Fin s,
+        α x
+          (Function.update (fun b : Fin s => V b x) a
+            (((CovariantDerivative.difference cov cov' x) (V a x)) (X x))) := by
+  classical
+  let slots : Fin s -> TangentSpace I x := fun a => V a x
+  have hcov := nabla0SFun_eval_smooth_slots (I := I) cov X V α x
+  have hcov' := nabla0SFun_eval_smooth_slots (I := I) cov' X V α x
+  have hdiff (a : Fin s) :
+      α x
+          (Function.update slots a ((cov (fun p : M => V a p) x) (X x))) -
+        α x
+          (Function.update slots a ((cov' (fun p : M => V a p) x) (X x))) =
+        α x
+          (Function.update slots a
+            (((CovariantDerivative.difference cov cov' x) (V a x)) (X x))) := by
+    have hconn :
+        ((CovariantDerivative.difference cov cov' x) (V a x)) (X x) =
+          ((cov (fun p : M => V a p) x) (X x)) -
+            ((cov' (fun p : M => V a p) x) (X x)) := by
+      have h :=
+        IsCovariantDerivativeOn.difference_apply
+          (hcov := cov.isCovariantDerivativeOnUniv)
+          (hcov' := cov'.isCovariantDerivativeOnUniv)
+          (σ := fun p : M => V a p) (x := x) (hx := by trivial)
+          ((V a).contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+      exact congrArg (fun L : TangentSpace I x →L[Real] TangentSpace I x => L (X x)) h
+    rw [hconn]
+    exact ((α x).map_update_sub slots a
+      ((cov (fun p : M => V a p) x) (X x))
+      ((cov' (fun p : M => V a p) x) (X x))).symm
+  let D : Real :=
+    (extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V a p)) x) (X x)
+  let Scov : Real :=
+    ∑ a : Fin s,
+      α x (Function.update slots a ((cov (fun p : M => V a p) x) (X x)))
+  let Scov' : Real :=
+    ∑ a : Fin s,
+      α x (Function.update slots a ((cov' (fun p : M => V a p) x) (X x)))
+  let Sdiff : Real :=
+    ∑ a : Fin s,
+      α x
+        (Function.update slots a
+          (((CovariantDerivative.difference cov cov' x) (V a x)) (X x)))
+  have hsum : Scov - Scov' = Sdiff := by
+    dsimp [Scov, Scov', Sdiff]
+    rw [← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    exact hdiff a
+  change
+    (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x) slots -
+        (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov' X α x) slots =
+      -∑ a : Fin s,
+        α x
+          (Function.update slots a
+            (((CovariantDerivative.difference cov cov' x) (V a x)) (X x)))
+  rw [hcov, hcov']
+  change (D - Scov) - (D - Scov') = -Sdiff
+  rw [← hsum]
+  ring
+
+/-- Two-covariant-slot specialization of `nabla0SFun_sub_cov`.
+
+This is the invariant form of the MSM135 component identity that the
+difference of two covariant derivatives on a two-tensor is the connection
+difference acting on the two lower slots. -/
+theorem nabla0SFun_sub_cov_two
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 2)
+    (x : M) :
+    ((nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov X α x) -
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov' X α x)
+        (fun q : Fin 2 => if q = 0 then Y x else Z x) =
+      -((α x)
+          (fun q : Fin 2 =>
+            if q = 0 then
+              ((CovariantDerivative.difference cov cov' x) (Y x)) (X x)
+            else Z x) +
+        (α x)
+          (fun q : Fin 2 =>
+            if q = 0 then Y x
+            else ((CovariantDerivative.difference cov cov' x) (Z x)) (X x))) := by
+  classical
+  let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    fun q => if q = 0 then Y else Z
+  let DY : TangentSpace I x :=
+    ((CovariantDerivative.difference cov cov' x) (Y x)) (X x)
+  let DZ : TangentSpace I x :=
+    ((CovariantDerivative.difference cov cov' x) (Z x)) (X x)
+  have hupdate0 :
+      Function.update (fun b : Fin 2 => V b x) (0 : Fin 2) DY =
+        (fun q : Fin 2 => if q = 0 then DY else Z x) := by
+    funext q
+    fin_cases q <;> simp [V, DY]
+  have hupdate1 :
+      Function.update (fun b : Fin 2 => V b x) (1 : Fin 2) DZ =
+        (fun q : Fin 2 => if q = 0 then Y x else DZ) := by
+    funext q
+    fin_cases q <;> simp [V, DZ]
+  have h := nabla0SFun_sub_cov (I := I) cov cov' X V α x
+  have hslots :
+      (fun q : Fin 2 => if q = 0 then Y x else Z x) =
+        (fun q : Fin 2 => V q x) := by
+    funext q
+    fin_cases q <;> simp [V]
+  calc
+    ((nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov X α x) -
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov' X α x)
+        (fun q : Fin 2 => if q = 0 then Y x else Z x)
+        =
+      ((nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov X α x) -
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          2 cov' X α x)
+        (fun q : Fin 2 => V q x) := by
+          rw [hslots]
+    _ = -∑ a : Fin 2,
+          α x
+            (Function.update (fun b : Fin 2 => V b x) a
+              (((CovariantDerivative.difference cov cov' x) (V a x)) (X x))) := h
+    _ = -((α x)
+          (fun q : Fin 2 =>
+            if q = 0 then
+              ((CovariantDerivative.difference cov cov' x) (Y x)) (X x)
+            else Z x) +
+        (α x)
+          (fun q : Fin 2 =>
+            if q = 0 then Y x
+            else ((CovariantDerivative.difference cov cov' x) (Z x)) (X x))) := by
+          rw [Fin.sum_univ_two]
+          simp [V, DY, DZ, hupdate0, hupdate1]
 
 /-- The directional covariant derivative of covariant tensor fields is
 additive in the tensor argument.  This Real-specialized form matches the

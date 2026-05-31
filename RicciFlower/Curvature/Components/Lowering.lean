@@ -34,8 +34,8 @@ def Rm04LowersRm13At
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x) : Prop :=
-  forall W X Y Z : TangentSpace I x,
-    Rm04 (vec4 W X Y Z) =
+  forall X Y Z W : TangentSpace I x,
+    Rm04 (vec4 X Y Z W) =
       Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
         (vec3 X Y Z)
 
@@ -51,8 +51,8 @@ theorem rm04RealizesLower
     (hLower : forall x : M,
       Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x)) :
     Rm04RealizesConnection (I := I) g cov Rm04 := by
-  intro W X Y Z x
-  rw [hLower x (W x) (X x) (Y x) (Z x)]
+  intro X Y Z W x
+  rw [hLower x (X x) (Y x) (Z x) (W x)]
   have h := hRm13 X Y Z x
     (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) (W x)))
   simpa [tangentFlatLinear_apply, cotangentToDual_apply] using h
@@ -69,7 +69,7 @@ theorem rm04LowersRm13At_of_realizes
     (hRm04 : Rm04RealizesConnection (I := I) g cov Rm04)
     (x : M) :
     Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) := by
-  intro W X Y Z
+  intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=
     ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
@@ -88,10 +88,10 @@ theorem rm04LowersRm13At_of_realizes
       (n := (⊤ : ℕ∞)) x Z
   let alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
     dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W)
-  have h04 := hRm04 Wsec Xsec Ysec Zsec x
+  have h04 := hRm04 Xsec Ysec Zsec Wsec x
   have h13 := hRm13 Xsec Ysec Zsec x alpha
   have h04' :
-      Rm04 x (vec4 W X Y Z) =
+      Rm04 x (vec4 X Y Z W) =
         g.inner x W
           ((connectionRiemannCurvatureField (I := I) cov
             (fun p : M => Xsec p) (fun p : M => Ysec p) (fun p : M => Zsec p)) x) := by
@@ -107,7 +107,7 @@ theorem rm04LowersRm13At_of_realizes
   exact h04'.trans h13'.symm
 
 /-- Metric skew-adjointness of the curvature endomorphism in `(1,3)` form:
-`g(W,R(X,Y)Z) = -g(Z,R(X,Y)W)`. -/
+`<R(X,Y)Z,W> = -<R(X,Y)W,Z>`. -/
 def Rm13MetricSkewAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm13 : Tensor13At (I := I) (M := M) x) : Prop :=
@@ -117,12 +117,12 @@ def Rm13MetricSkewAt
       -Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) Z))
         (vec3 X Y W)
 
-/-- Last-pair metric skew for a lowered Riemann tensor in RicciFlower's slot
-order `Rm04(W,X,Y,Z) = g(W,R(X,Y)Z)`. -/
+/-- Last-pair metric skew for a lowered Riemann tensor in standard slot order:
+`Rm04(X,Y,Z,W) = -Rm04(X,Y,W,Z)`. -/
 def Rm04OutputSkewAt
     (Rm04 : Tensor04At (I := I) (M := M) x) : Prop :=
-  forall W X Y Z : TangentSpace I x,
-    Rm04 (vec4 W X Y Z) = -Rm04 (vec4 Z X Y W)
+  forall X Y Z W : TangentSpace I x,
+    Rm04 (vec4 X Y Z W) = -Rm04 (vec4 X Y W Z)
 
 theorem rm13MetricSkewAt_of_rm04_outputSkew
     (g : SmoothRiemannianMetric I M)
@@ -135,10 +135,10 @@ theorem rm13MetricSkewAt_of_rm04_outputSkew
   calc
     Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) W))
         (vec3 X Y Z)
-        = Rm04 (vec4 W X Y Z) := (hLower W X Y Z).symm
-    _ = -Rm04 (vec4 Z X Y W) := hSkew W X Y Z
+        = Rm04 (vec4 X Y Z W) := (hLower X Y Z W).symm
+    _ = -Rm04 (vec4 X Y W Z) := hSkew X Y Z W
     _ = -Rm13 (dualToCotangent (I := I) ((tangentFlatLinear (I := I) g x) Z))
-        (vec3 X Y W) := by rw [hLower Z X Y W]
+        (vec3 X Y W) := by rw [hLower X Y W Z]
 
 /-- Metric skew-adjointness of `(1,3)` curvature follows from a lowered
 realization and output skew-adjointness of the lowered tensor. -/

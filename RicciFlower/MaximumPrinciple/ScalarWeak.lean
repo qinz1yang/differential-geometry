@@ -56,6 +56,88 @@ def parabolicOperatorWithDrift
         heatOperatorWithDrift (I := I) G t (X t) (u t) x := by
   rfl
 
+/-- The drifted parabolic operator changes sign under `u ↦ C - u`. -/
+theorem parabolic_const_sub
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (C t : Real) (x : M)
+    (huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t)
+    (hu_time : DifferentiableWithinAt Real
+      (fun s : Real => u s x) (Set.Icc 0 T) t)
+    (hu_space : forall y : M, MDifferentiableAt I 𝓘(Real, Real) (u t) y)
+    (hu_grad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (u t) y) x) :
+    parabolicOperatorWithDrift (I := I) G T X
+        (fun s y => C - u s y) t x =
+      - parabolicOperatorWithDrift (I := I) G T X u t x := by
+  unfold parabolicOperatorWithDrift
+  have htime :
+      derivWithin (fun s : Real => C - u s x) (Set.Icc 0 T) t =
+        - derivWithin (fun s : Real => u s x) (Set.Icc 0 T) t := by
+    have hconst : DifferentiableWithinAt Real
+        (fun _s : Real => C) (Set.Icc 0 T) t :=
+      differentiableWithinAt_const C
+    rw [derivWithin_fun_sub hconst hu_time]
+    have hconst_deriv :
+        derivWithin (fun _s : Real => C) (Set.Icc 0 T) t = 0 := by
+      exact (hasDerivWithinAt_const
+        (x := t) (s := Set.Icc 0 T) (c := C)).derivWithin huniq
+    rw [hconst_deriv]
+    ring
+  have hsub_space : forall y : M,
+      MDifferentiableAt I 𝓘(Real, Real) (fun z : M => u t z - C) y := by
+    intro y
+    exact (hu_space y).sub mdifferentiableAt_const
+  have hsub_grad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (fun z : M => u t z - C) y) x := by
+    have hplain :
+        (fun y : M =>
+          gradientFun (I := I) (G.metric t) (fun z : M => u t z - C) y) =
+        (fun y : M => gradientFun (I := I) (G.metric t) (u t) y) := by
+      funext y
+      calc
+        gradientFun (I := I) (G.metric t) (fun z : M => u t z - C) y =
+          gradientFun (I := I) (G.metric t) (u t) y -
+            gradientFun (I := I) (G.metric t) (fun _ : M => C) y := by
+            exact gradientFun_sub (I := I) (G.metric t)
+              (hu_space y) mdifferentiableAt_const
+        _ = gradientFun (I := I) (G.metric t) (u t) y := by
+            rw [gradientFun_const]
+            simp
+    have hsection :
+        (T% fun y : M =>
+          gradientFun (I := I) (G.metric t) (fun z : M => u t z - C) y) =
+        (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y) := by
+      funext y
+      simpa using congrFun hplain y
+    rw [hsection]
+    exact hu_grad
+  have hheat_sub :
+      heatOperatorWithDrift (I := I) G t (X t) (fun y : M => u t y - C) x =
+        heatOperatorWithDrift (I := I) G t (X t) (u t) x :=
+    heatOperatorWithDrift_sub_const (I := I) G t (X t) C hu_space x
+  have hheat_scale :
+      heatOperatorWithDrift (I := I) G t (X t)
+          ((-1 : Real) • fun y : M => u t y - C) x =
+        (-1 : Real) *
+          heatOperatorWithDrift (I := I) G t (X t) (fun y : M => u t y - C) x :=
+    heatOperatorWithDrift_const_smul (I := I) G t (X t) (-1)
+      (f := fun y : M => u t y - C) hsub_space hsub_grad
+  have hheat :
+      heatOperatorWithDrift (I := I) G t (X t)
+          (fun y : M => C - u t y) x =
+        - heatOperatorWithDrift (I := I) G t (X t) (u t) x := by
+    have hfun :
+        (fun y : M => C - u t y) =
+          ((-1 : Real) • fun y : M => u t y - C) := by
+      funext y
+      simp
+    rw [hfun, hheat_scale, hheat_sub]
+    ring
+  rw [htime, hheat]
+  ring
+
 /-! ## Algebraic core of the negative-region estimate -/
 
 /-- Lipschitz control converts the reaction difference into a lower bound on
@@ -361,6 +443,124 @@ theorem strict_barrier_nonnegative_of_positive_time
       linarith
     exact not_lt_of_ge hbarrier hbarrier_neg
 
+/-- Strict-barrier scalar WMP with regularity required only at positive times.
+
+The compact-minimum proof never differentiates at the initial slice: a negative
+barrier minimum cannot occur at `t = 0`.  This variant exposes that fact for
+Ricci-flow applications whose evolution identities are naturally regular only
+on the open positive-time interval. -/
+theorem strict_barrier_posReg
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (_hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (w : Real -> M -> Real)
+    (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
+    (hw0 : forall x : M, 0 <= w 0 x)
+    (hw_time : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, DifferentiableWithinAt Real (fun s : Real => w s x) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real) (w t) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (w t) y) x)
+    (hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x := by
+  classical
+  have hbarrier_nonneg :
+      forall ε : Real, 0 < ε ->
+        forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+          0 <= w t x + ε * t := by
+    intro ε hε
+    by_contra hnot
+    push Not at hnot
+    rcases hnot with ⟨tb, htb, xb, hbneg⟩
+    let Φ : Real × M -> Real := fun p => w p.1 p.2 + ε * p.1
+    have hΦ_cont : ContinuousOn Φ (spacetimeSlab (M := M) T) := by
+      have hlinear :
+          ContinuousOn (fun p : Real × M => ε * p.1) (spacetimeSlab (M := M) T) :=
+        (continuous_const.mul continuous_fst).continuousOn
+      exact hw_cont.add hlinear
+    have hslab_compact : IsCompact (spacetimeSlab (M := M) T) :=
+      spacetimeSlab_isCompact (M := M) T
+    have hslab_nonempty : (spacetimeSlab (M := M) T).Nonempty :=
+      ⟨(tb, xb), ⟨htb, trivial⟩⟩
+    obtain ⟨p0, hp0, hp0min⟩ :=
+      hslab_compact.exists_isMinOn hslab_nonempty hΦ_cont
+    rcases p0 with ⟨t0, x0⟩
+    have hp0_time : t0 ∈ Set.Icc 0 T := hp0.1
+    have hΦ_min_bad : Φ (t0, x0) <= Φ (tb, xb) :=
+      hp0min (show (tb, xb) ∈ spacetimeSlab (M := M) T from ⟨htb, trivial⟩)
+    have hΦ0_neg : Φ (t0, x0) < 0 := lt_of_le_of_lt hΦ_min_bad hbneg
+    have ht0_ne_zero : t0 ≠ 0 := by
+      intro ht0
+      have hnonneg0 : 0 <= Φ (t0, x0) := by
+        simp [Φ, ht0, hw0 x0]
+      exact not_lt_of_ge hnonneg0 hΦ0_neg
+    have ht0_pos : 0 < t0 := lt_of_le_of_ne hp0_time.1 (Ne.symm ht0_ne_zero)
+    have hT_pos : 0 < T := lt_of_lt_of_le ht0_pos hp0_time.2
+    have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t0 :=
+      (uniqueDiffOn_Icc hT_pos).uniqueDiffWithinAt hp0_time
+    have htime_min : IsMinOn (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 := by
+      intro s hs
+      exact hp0min (show (s, x0) ∈ spacetimeSlab (M := M) T from ⟨hs, trivial⟩)
+    have htime_diff :
+        DifferentiableWithinAt Real (fun s : Real => w s x0 + ε * s)
+          (Set.Icc 0 T) t0 := by
+      exact (hw_time t0 hp0_time ht0_pos x0).add
+        ((differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
+    have hbarrier_deriv_nonpos :
+        derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
+      derivWithin_nonpos_at_Icc_min_of_pos htime_min hp0_time ht0_pos htime_diff
+    have hderiv_eq :
+      derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 =
+        derivWithin (fun s : Real => w s x0) (Set.Icc 0 T) t0 + ε :=
+      derivWithin_add_eps_mul_time (M := M) huniq (hw_time t0 hp0_time ht0_pos x0)
+    have hw_deriv_le : derivWithin (fun s : Real => w s x0) (Set.Icc 0 T) t0 <= -ε := by
+      linarith
+    have hw_t0_neg : w t0 x0 < 0 := by
+      have hεt_nonneg : 0 <= ε * t0 := mul_nonneg (le_of_lt hε) hp0_time.1
+      nlinarith [hΦ0_neg, hεt_nonneg]
+    have hspatial_min : IsLocalMin (w t0) x0 := by
+      unfold IsLocalMin IsMinFilter
+      exact Filter.Eventually.of_forall fun y => by
+        have hymin : Φ (t0, x0) <= Φ (t0, y) :=
+          hp0min (show (t0, y) ∈ spacetimeSlab (M := M) T from ⟨hp0_time, trivial⟩)
+        dsimp [Φ] at hymin ⊢
+        linarith
+    have hheat_nonneg :
+        0 <= heatOperatorWithDrift (I := I) G t0 (X t0) (w t0) x0 :=
+      heatOperatorWithDrift_at_spatial_min_nonneg (I := I) G t0 (X t0)
+        hspatial_min (hw_mdiff t0 hp0_time ht0_pos x0)
+        (Filter.Eventually.of_forall fun y => hw_mdiff t0 hp0_time ht0_pos y)
+        (hw_grad t0 hp0_time ht0_pos x0)
+    have hP_neg :
+        parabolicOperatorWithDrift (I := I) G T X w t0 x0 < 0 := by
+      unfold parabolicOperatorWithDrift
+      linarith
+    exact not_lt_of_ge (hnegative t0 hp0_time ht0_pos x0 hw_t0_neg) hP_neg
+  intro t ht x
+  by_contra hnot
+  have hw_neg : w t x < 0 := lt_of_not_ge hnot
+  by_cases ht_zero : t = 0
+  · exact not_lt_of_ge (by simpa [ht_zero] using hw0 x) hw_neg
+  · have ht_pos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht_zero)
+    let ε : Real := -(w t x) / (2 * t)
+    have hε_pos : 0 < ε := by
+      exact div_pos (neg_pos.mpr hw_neg) (mul_pos two_pos ht_pos)
+    have hbarrier := hbarrier_nonneg ε hε_pos t ht x
+    have hε_mul : ε * t = -(w t x) / 2 := by
+      dsimp [ε]
+      field_simp [ht_zero]
+    have hbarrier_neg : w t x + ε * t < 0 := by
+      rw [hε_mul]
+      linarith
+    exact not_lt_of_ge hbarrier hbarrier_neg
+
 /-- Strict-barrier form of the scalar weak maximum principle. -/
 theorem strict_barrier_nonnegative
     [I.Boundaryless]
@@ -386,6 +586,117 @@ theorem strict_barrier_nonnegative
   strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
     hw_cont hw0 hw_time hw_mdiff hw_grad
     (fun t ht _htpos x hwneg => hnegative t ht x hwneg)
+
+/-- Constant-upper-bound scalar WMP for drifted subsolutions.
+
+This is the form used by the Hamilton pinching estimate: apply the existing
+strict-barrier nonnegativity theorem to `w = C - u`.  The final operator
+linearity is supplied explicitly as `hoperator_neg`, so this wrapper does not
+open any additional spatial-calculus frontier. -/
+theorem scalar_wmp_sub_const_of_parabolic_nonpos
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (C : Real)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => C - u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hw_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => C - u s x) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => C - u t y) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => C - u t z) y) x)
+    (hinit : forall x : M, u 0 x <= C)
+    (hsub : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M,
+        parabolicOperatorWithDrift (I := I) G T X u t x <= 0)
+    (hoperator_neg : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      parabolicOperatorWithDrift (I := I) G T X
+        (fun s y => C - u s y) t x =
+      - parabolicOperatorWithDrift (I := I) G T X u t x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, u t x <= C := by
+  let w : Real -> M -> Real := fun t x => C - u t x
+  have hw0 : forall x : M, 0 <= w 0 x := by
+    intro x
+    exact sub_nonneg.mpr (hinit x)
+  have hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x := by
+    intro t ht htpos x _hwneg
+    rw [hoperator_neg t ht x]
+    exact neg_nonneg.mpr (hsub t ht htpos x)
+  have hw_nonneg :
+      forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
+    strict_barrier_nonnegative_of_positive_time (I := I) G T hT X w
+      (by simpa [w] using hw_cont) hw0
+      (by simpa [w] using hw_time)
+      (by simpa [w] using hw_mdiff)
+      (by simpa [w] using hw_grad)
+      hnegative
+  intro t ht x
+  exact sub_nonneg.mp (by simpa [w] using hw_nonneg t ht x)
+
+/-- Constant-upper-bound scalar WMP for drifted subsolutions, requiring
+time/spatial regularity only at positive times. -/
+theorem scalar_sub_const_posReg
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (C : Real)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => C - u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hw_time : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => C - u s x) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => C - u t y) x)
+    (hw_grad : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => C - u t z) y) x)
+    (hinit : forall x : M, u 0 x <= C)
+    (hsub : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M,
+        parabolicOperatorWithDrift (I := I) G T X u t x <= 0)
+    (hoperator_neg : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M,
+      parabolicOperatorWithDrift (I := I) G T X
+        (fun s y => C - u s y) t x =
+      - parabolicOperatorWithDrift (I := I) G T X u t x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, u t x <= C := by
+  let w : Real -> M -> Real := fun t x => C - u t x
+  have hw0 : forall x : M, 0 <= w 0 x := by
+    intro x
+    exact sub_nonneg.mpr (hinit x)
+  have hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x := by
+    intro t ht htpos x _hwneg
+    rw [hoperator_neg t ht htpos x]
+    exact neg_nonneg.mpr (hsub t ht htpos x)
+  have hw_nonneg :
+      forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
+    strict_barrier_posReg (I := I) G T hT X w
+      (by simpa [w] using hw_cont) hw0
+      (by simpa [w] using hw_time)
+      (by simpa [w] using hw_mdiff)
+      (by simpa [w] using hw_grad)
+      hnegative
+  intro t ht x
+  exact sub_nonneg.mp (by simpa [w] using hw_nonneg t ht x)
 
 /-! ## Hamilton Theorem 7.1, first realized core -/
 

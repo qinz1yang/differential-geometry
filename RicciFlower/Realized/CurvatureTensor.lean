@@ -95,8 +95,8 @@ def Rm04RealizesConnection
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M)) : Prop :=
-  forall (W X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M),
-    Rm04 x (vec4 (W x) (X x) (Y x) (Z x)) =
+  forall (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M),
+    Rm04 x (vec4 (X x) (Y x) (Z x) (W x)) =
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov
         (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
 
@@ -145,8 +145,8 @@ theorem rm04_comp_eq_connection
     (hRm : Rm04RealizesConnection (I := I) g cov Rm04)
     (x : M) (a b c d : Idx) :
     rm04Comp (I := I) Rm04 (fun i y => frame i y) x a b c d =
-      g.inner x (frame a x) ((connectionRiemannCurvatureField (I := I) cov
-        (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) := by
+      g.inner x (frame d x) ((connectionRiemannCurvatureField (I := I) cov
+        (fun y => frame a y) (fun y => frame b y) (fun y => frame c y)) x) := by
   simpa [rm04Comp] using
     hRm (frame a) (frame b) (frame c) (frame d) x
 
@@ -219,8 +219,8 @@ theorem rm04_comp_eq_connection
     (hRm : Rm04RealizesConnection (I := I) g cov K.rm04)
     (x : M) (a b c d : Idx) :
     rm04Comp (I := I) K.rm04 (fun i y => frame i y) x a b c d =
-      g.inner x (frame a x) ((connectionRiemannCurvatureField (I := I) cov
-        (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) :=
+      g.inner x (frame d x) ((connectionRiemannCurvatureField (I := I) cov
+        (fun y => frame a y) (fun y => frame b y) (fun y => frame c y)) x) :=
   RicciFlower.Realized.rm04_comp_eq_connection (I := I) g cov K.rm04 frame hRm x a b c d
 
 theorem ricci_comp_eq_trace
@@ -249,8 +249,8 @@ theorem ricci_comp_eq_connection_trace
     ricciComp (I := I) K.ricci (fun i y => frame i y) x i j =
       ∑ k : Idx, ∑ l : Idx,
         gInv x k l *
-          g.inner x (frame k x) ((connectionRiemannCurvatureField (I := I) cov
-            (fun y => frame i y) (fun y => frame j y) (fun y => frame l y)) x) := by
+          g.inner x (frame l x) ((connectionRiemannCurvatureField (I := I) cov
+            (fun y => frame k y) (fun y => frame i y) (fun y => frame j y)) x) := by
   rw [CurvatureTensorData.ricci_comp_eq_trace (I := I) K gInv
     (fun i y => frame i y) hRic x i j]
   refine Finset.sum_congr rfl fun k _ => ?_

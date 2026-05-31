@@ -1,4 +1,5 @@
 import RicciFlower.Curvature.Components
+import RicciFlower.Riemann.Basic
 import RicciFlower.RoughLaplacian
 import RicciFlower.LeviCivita.Basic
 import RicciFlower.LeviCivita.Torsion
@@ -253,11 +254,78 @@ private theorem tangentConst_mlieBracket_jacobi_cyclic
   rw [hXZ] at h0
   rw [VectorField.mlieBracket_const_smul_right (I := I) (c := (-1 : Real))
     (V := Yc) (W := BrZX) hZX_mdiff] at h0
-  simp at h0
+  simp only [neg_smul, one_smul] at h0
   change
     VectorField.mlieBracket I Xc BrYZ x +
       VectorField.mlieBracket I Yc BrZX x +
         VectorField.mlieBracket I Zc BrXY x = 0
+  rw [h0]
+  abel
+
+private theorem mlieBracket_jacobi_cyclic
+    (X Y Z :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    let Xf : (p : M) -> TangentSpace I p := fun p => X p
+    let Yf : (p : M) -> TangentSpace I p := fun p => Y p
+    let Zf : (p : M) -> TangentSpace I p := fun p => Z p
+    let BrYZ : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Yf Zf
+    let BrZX : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Zf Xf
+    let BrXY : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Xf Yf
+    VectorField.mlieBracket I Xf BrYZ x +
+      VectorField.mlieBracket I Yf BrZX x +
+        VectorField.mlieBracket I Zf BrXY x = 0 := by
+  let Xf : (p : M) -> TangentSpace I p := fun p => X p
+  let Yf : (p : M) -> TangentSpace I p := fun p => Y p
+  let Zf : (p : M) -> TangentSpace I p := fun p => Z p
+  let BrYZ : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Yf Zf
+  let BrZX : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Zf Xf
+  let BrXY : (p : M) -> TangentSpace I p := VectorField.mlieBracket I Xf Yf
+  haveI : IsManifold I (minSmoothness Real 3) M := by
+    rw [minSmoothness_of_isRCLikeNormedField]
+    exact (inferInstance : IsManifold I 3 M)
+  haveI : IsManifold I (minSmoothness Real 2) M := by
+    rw [minSmoothness_of_isRCLikeNormedField]
+    exact (inferInstance : IsManifold I 2 M)
+  have h0 :
+      VectorField.mlieBracket I Xf BrYZ x =
+        VectorField.mlieBracket I BrXY Zf x +
+          VectorField.mlieBracket I Yf (VectorField.mlieBracket I Xf Zf) x := by
+    simpa [Xf, Yf, Zf, BrYZ, BrXY] using
+      (VectorField.leibniz_identity_mlieBracket_apply (I := I)
+        (U := Xf) (V := Yf) (W := Zf) (x := x)
+        (X.contMDiff.contMDiffAt.of_le (by
+          rw [minSmoothness_of_isRCLikeNormedField]
+          exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)))
+        (Y.contMDiff.contMDiffAt.of_le (by
+          rw [minSmoothness_of_isRCLikeNormedField]
+          exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)))
+        (Z.contMDiff.contMDiffAt.of_le (by
+          rw [minSmoothness_of_isRCLikeNormedField]
+          exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))))
+  rw [VectorField.mlieBracket_swap_apply (I := I) (V := BrXY) (W := Zf) (x := x)] at h0
+  have hZX_mdiff : MDiffAt (T% BrZX) x := by
+    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+      simpa using (inferInstance : IsManifold I ∞ M)
+    have hZX :
+        ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞) (T% BrZX) x := by
+      simpa [BrZX, Zf, Xf] using
+        ContMDiffAt.mlieBracket_vectorField (I := I)
+          (m := (⊤ : ℕ∞)) (n := (⊤ : ℕ∞))
+          Z.contMDiff.contMDiffAt X.contMDiff.contMDiffAt
+          (by simp [minSmoothness_of_isRCLikeNormedField])
+    exact hZX.mdifferentiableAt (by simp)
+  have hXZ : VectorField.mlieBracket I Xf Zf = (-1 : Real) • BrZX := by
+    funext p
+    simp [BrZX, VectorField.mlieBracket_swap_apply (I := I) (V := Xf) (W := Zf) (x := p)]
+  rw [hXZ] at h0
+  rw [VectorField.mlieBracket_const_smul_right (I := I) (c := (-1 : Real))
+    (V := Yf) (W := BrZX) hZX_mdiff] at h0
+  simp only [neg_smul, one_smul] at h0
+  change
+    VectorField.mlieBracket I Xf BrYZ x +
+      VectorField.mlieBracket I Yf BrZX x +
+        VectorField.mlieBracket I Zf BrXY x = 0
   rw [h0]
   abel
 
@@ -272,17 +340,17 @@ def vec5 {x : M} (A B C D F : TangentSpace I x) :
     else if i = 3 then D
     else F
 
-/-- First Bianchi identity for a lowered Riemann tensor:
-`R(W,X,Y,Z) + R(W,Y,Z,X) + R(W,Z,X,Y) = 0`. -/
+/-- First Bianchi identity for a lowered Riemann tensor in standard slots:
+`R(X,Y,Z,W) + R(Y,Z,X,W) + R(Z,X,Y,W) = 0`. -/
 def FirstBianchiAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x) : Prop :=
-  ∀ W X Y Z : TangentSpace I x,
-    Rm04 (vec4 W X Y Z) + Rm04 (vec4 W Y Z X) + Rm04 (vec4 W Z X Y) = 0
+  ∀ X Y Z W : TangentSpace I x,
+    Rm04 (vec4 X Y Z W) + Rm04 (vec4 Y Z X W) + Rm04 (vec4 Z X Y W) = 0
 
 theorem first_bianchi {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (h : FirstBianchiAt (I := I) Rm04)
-    (W X Y Z : TangentSpace I x) :
-    Rm04 (vec4 W X Y Z) + Rm04 (vec4 W Y Z X) + Rm04 (vec4 W Z X Y) = 0 :=
-  h W X Y Z
+    (X Y Z W : TangentSpace I x) :
+    Rm04 (vec4 X Y Z W) + Rm04 (vec4 Y Z X W) + Rm04 (vec4 Z X Y W) = 0 :=
+  h X Y Z W
 
 /-- Section-level first Bianchi identity. -/
 def FirstBianchiSection (Rm04 : Tensor04Section (I := I) (M := M)) : Prop :=
@@ -291,10 +359,10 @@ def FirstBianchiSection (Rm04 : Tensor04Section (I := I) (M := M)) : Prop :=
 theorem first_bianchi_apply
     (Rm04 : Tensor04Section (I := I) (M := M))
     (h : FirstBianchiSection (I := I) Rm04)
-    (x : M) (W X Y Z : TangentSpace I x) :
-    Rm04 x (vec4 W X Y Z) + Rm04 x (vec4 W Y Z X) +
-      Rm04 x (vec4 W Z X Y) = 0 :=
-  h x W X Y Z
+    (x : M) (X Y Z W : TangentSpace I x) :
+    Rm04 x (vec4 X Y Z W) + Rm04 x (vec4 Y Z X W) +
+      Rm04 x (vec4 Z X Y W) = 0 :=
+  h x X Y Z W
 
 /-- Operator-level first Bianchi identity for a torsion-free connection,
 specialized to tangent-constant extensions at one point.
@@ -333,26 +401,502 @@ theorem connectionRiemannCurvatureField_tangentConst_first_bianchi_of_torsionFre
   abel_nf
   simpa [add_assoc] using hJac
 
+/-- Operator covariant derivative of the curvature endomorphism.
+
+This is the tensorial expression
+`(∇_X R)(Y,Z)W`, written before lowering by the metric.  The correction terms
+differentiate the three tensorial slots of `R(Y,Z)W`. -/
+def curvCovDerivOpAt
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) : TangentSpace I x :=
+  (cov (fun p : M =>
+      connectionRiemannCurvatureField (I := I) cov
+        (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p) x)
+      (X x) -
+    connectionRiemannCurvatureField (I := I) cov
+      (fun p : M => (cov (fun q : M => Y q) p) (X p))
+      (fun p : M => Z p) (fun p : M => W p) x -
+    connectionRiemannCurvatureField (I := I) cov
+      (fun p : M => Y p)
+      (fun p : M => (cov (fun q : M => Z q) p) (X p))
+      (fun p : M => W p) x -
+    connectionRiemannCurvatureField (I := I) cov
+      (fun p : M => Y p) (fun p : M => Z p)
+      (fun p : M => (cov (fun q : M => W q) p) (X p)) x
+
+/-- The operator commutator `[∇_X, R(Y,Z)]W`, evaluated at a point. -/
+def curvCommAt
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) : TangentSpace I x :=
+  (cov (fun p : M =>
+      connectionRiemannCurvatureField (I := I) cov
+        (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p) x)
+      (X x) -
+    connectionRiemannCurvatureField (I := I) cov
+      (fun p : M => Y p) (fun p : M => Z p)
+      (fun p : M => (cov (fun q : M => W q) p) (X p)) x
+
+/-- Relate the operator commutator to the tensorial covariant derivative of
+curvature. -/
+theorem curvComm_eq_deriv
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    curvCommAt (I := I) cov X Y Z W x =
+      curvCovDerivOpAt (I := I) cov X Y Z W x +
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => (cov (fun q : M => Y q) p) (X p))
+          (fun p : M => Z p) (fun p : M => W p) x +
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => Y p)
+          (fun p : M => (cov (fun q : M => Z q) p) (X p))
+          (fun p : M => W p) x := by
+  unfold curvCommAt curvCovDerivOpAt
+  abel
+
+private theorem curvBracket_mid
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (htf : LeviCivita.IsTorsionFree (I := I) cov)
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p)
+        (fun p : M => W p) x =
+      connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p)
+          (fun p : M => (cov (fun q : M => Z q) p) (Y p))
+          (fun p : M => W p) x -
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p)
+          (fun p : M => (cov (fun q : M => Y q) p) (Z p))
+          (fun p : M => W p) x := by
+  let Br : (p : M) -> TangentSpace I p :=
+    fun p => VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p
+  let DYZ : (p : M) -> TangentSpace I p :=
+    fun p => (cov (fun q : M => Z q) p) (Y p)
+  let DZY : (p : M) -> TangentSpace I p :=
+    fun p => (cov (fun q : M => Y q) p) (Z p)
+  let negDZY : (p : M) -> TangentSpace I p :=
+    (fun _ : M => (-1 : Real)) • DZY
+  let Ddiff : (p : M) -> TangentSpace I p := DYZ + negDZY
+  have hYmd : MDiffAt (T% (fun p : M => Y p)) x :=
+    Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hZmd : MDiffAt (T% (fun p : M => Z p)) x :=
+    Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hDYZ : MDiffAt (T% DYZ) x := by
+    simpa [DYZ] using
+      RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_mdiffAt
+        (I := I) cov hcov Y Z x
+  have hDZY : MDiffAt (T% DZY) x := by
+    simpa [DZY] using
+      RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_mdiffAt
+        (I := I) cov hcov Z Y x
+  have hneg : MDiffAt (T% negDZY) x := by
+    simpa [negDZY] using
+      (mdifferentiableAt_const (I := I) (c := (-1 : Real))).smul_section hDZY
+  have hDdiff : MDiffAt (T% Ddiff) x := by
+    simpa [Ddiff] using mdifferentiableAt_add_section hDYZ hneg
+  have hBr : MDiffAt (T% Br) x := by
+    haveI : IsManifold I (minSmoothness Real 2) M := by
+      rw [minSmoothness_of_isRCLikeNormedField]
+      exact IsManifold.of_le (I := I) (M := M) (n := ∞)
+        (by exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))
+    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+      simpa using (inferInstance : IsManifold I ∞ M)
+    have hBrC :
+        ContMDiffAt I (I.prod 𝓘(Real, E)) (∞ : WithTop ℕ∞) (T% Br) x := by
+      simpa [Br] using
+        ContMDiffAt.mlieBracket_vectorField (I := I)
+          (m := (⊤ : ℕ∞)) (n := (⊤ : ℕ∞))
+          Y.contMDiff.contMDiffAt Z.contMDiff.contMDiffAt
+          (by simp [minSmoothness_of_isRCLikeNormedField])
+    exact hBrC.mdifferentiableAt (by simp)
+  have hBrVal : Br x = Ddiff x := by
+    have hzero :=
+      congrArg
+        (fun T : TangentSpace I x →L[Real] TangentSpace I x →L[Real]
+            TangentSpace I x => T (Y x) (Z x))
+        (htf x)
+    change cov.torsion x (Y x) (Z x) = 0 at hzero
+    rw [cov.torsion_apply hYmd hZmd] at hzero
+    have ht :
+        DYZ x - DZY x = Br x := by
+      simpa [DYZ, DZY, Br] using sub_eq_zero.mp hzero
+    simpa [Br, DYZ, DZY, Ddiff, negDZY, Pi.add_apply, Pi.smul_apply,
+      sub_eq_add_neg] using ht.symm
+  let Φ : ((p : M) -> TangentSpace I p) -> TangentSpace I x :=
+    fun U =>
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p) U (fun p : M => W p) x
+  have hT :
+      TensorialAt I E Φ x :=
+    RicciFlower.Riemann.CovariantDerivative.connectionRiemannCurvatureField_tensorial_middle
+      (I := I) cov hcov X W x
+  calc
+    connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p) Br (fun p : M => W p) x
+        = connectionRiemannCurvatureField (I := I) cov
+            (fun p : M => X p) Ddiff (fun p : M => W p) x := by
+          exact TensorialAt.pointwise (I := I) (F := E) hT hBr hDdiff hBrVal
+    _ = connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p) DYZ (fun p : M => W p) x +
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p) negDZY (fun p : M => W p) x := by
+          exact hT.add hDYZ hneg
+    _ = connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p) DYZ (fun p : M => W p) x -
+        connectionRiemannCurvatureField (I := I) cov
+          (fun p : M => X p) DZY (fun p : M => W p) x := by
+          have hsmul' :
+              connectionRiemannCurvatureField (I := I) cov
+                  (fun p : M => X p) negDZY (fun p : M => W p) x =
+                -connectionRiemannCurvatureField (I := I) cov
+                  (fun p : M => X p) DZY (fun p : M => W p) x := by
+            have hsmul := hT.smul (f := fun _ : M => (-1 : Real))
+              (mdifferentiableAt_const (I := I) (c := (-1 : Real))) hDZY
+            simpa [Φ, negDZY] using hsmul
+          rw [hsmul']
+          simp [sub_eq_add_neg]
+
+private theorem curvTorsionCancel
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (htf : LeviCivita.IsTorsionFree (I := I) cov)
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => Y q) p) (X p))
+        (fun p : M => Z p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Y p)
+        (fun p : M => (cov (fun q : M => Z q) p) (X p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => Z q) p) (Y p))
+        (fun p : M => X p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Z p)
+        (fun p : M => (cov (fun q : M => X q) p) (Y p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => X q) p) (Z p))
+        (fun p : M => Y p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M => (cov (fun q : M => Y q) p) (Z p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Y p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Z q) (fun q : M => X q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Z p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p)
+        (fun p : M => W p) x = 0 := by
+  rw [curvBracket_mid (I := I) cov hcov htf X Y Z W x]
+  rw [curvBracket_mid (I := I) cov hcov htf Y Z X W x]
+  rw [curvBracket_mid (I := I) cov hcov htf Z X Y W x]
+  simp only [RicciFlower.Realized.connectionRiemannCurvatureField]
+  rw [RicciFlower.Curvature.connectionRiemannCurvatureField_swap
+    (I := I) (cov := cov)
+    (X := fun p : M => Z p)
+    (Y := fun p : M => (cov (fun q : M => Y q) p) (X p))
+    (Z := fun p : M => W p) (x := x)]
+  rw [RicciFlower.Curvature.connectionRiemannCurvatureField_swap
+    (I := I) (cov := cov)
+    (X := fun p : M => X p)
+    (Y := fun p : M => (cov (fun q : M => Z q) p) (Y p))
+    (Z := fun p : M => W p) (x := x)]
+  rw [RicciFlower.Curvature.connectionRiemannCurvatureField_swap
+    (I := I) (cov := cov)
+    (X := fun p : M => Y p)
+    (Y := fun p : M => (cov (fun q : M => X q) p) (Z p))
+    (Z := fun p : M => W p) (x := x)]
+  abel
+
+private theorem covCurvExpand
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    (cov (fun p : M =>
+        connectionRiemannCurvatureField (I := I) cov
+          (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p) x)
+        (X x) =
+      (cov (fun p : M =>
+          (cov (fun q : M => (cov (fun r : M => W r) q) (Z q)) p) (Y p)) x)
+          (X x) -
+        (cov (fun p : M =>
+            (cov (fun q : M => (cov (fun r : M => W r) q) (Y q)) p) (Z p)) x)
+            (X x) -
+          (cov (fun p : M =>
+              (cov (fun q : M => W q) p)
+                (VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p)) x)
+              (X x) := by
+  let ZW : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    ⟨fun p : M => (cov (fun q : M => W q) p) (Z p), by
+      intro p
+      exact RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_contMDiffAt
+        (I := I) cov hcov Z W p⟩
+  let YW : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    ⟨fun p : M => (cov (fun q : M => W q) p) (Y p), by
+      intro p
+      exact RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_contMDiffAt
+        (I := I) cov hcov Y W p⟩
+  let BrYZ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
+    ⟨fun p : M => VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p, by
+      intro p
+      haveI : IsManifold I (minSmoothness Real 2) M := by
+        rw [minSmoothness_of_isRCLikeNormedField]
+        exact (inferInstance : IsManifold I 2 M)
+      haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+        simpa using (inferInstance : IsManifold I ∞ M)
+      exact
+        ContMDiffAt.mlieBracket_vectorField (I := I)
+          (m := (⊤ : ℕ∞)) (n := (⊤ : ℕ∞))
+          Y.contMDiff.contMDiffAt Z.contMDiff.contMDiffAt
+          (by simp [minSmoothness_of_isRCLikeNormedField])⟩
+  let A : (p : M) -> TangentSpace I p :=
+    fun p => (cov (fun q : M => ZW q) p) (Y p)
+  let B : (p : M) -> TangentSpace I p :=
+    fun p => (cov (fun q : M => YW q) p) (Z p)
+  let C : (p : M) -> TangentSpace I p :=
+    fun p => (cov (fun q : M => W q) p) (BrYZ p)
+  let negB : (p : M) -> TangentSpace I p := -B
+  let negC : (p : M) -> TangentSpace I p := -C
+  have hA : MDiffAt (T% A) x := by
+    simpa [A, ZW] using
+      RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_mdiffAt
+        (I := I) cov hcov Y ZW x
+  have hB : MDiffAt (T% B) x := by
+    simpa [B, YW] using
+      RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_mdiffAt
+        (I := I) cov hcov Z YW x
+  have hC : MDiffAt (T% C) x := by
+    simpa [C, BrYZ] using
+      RicciFlower.Riemann.CovariantDerivative.cov_smooth_apply_mdiffAt
+        (I := I) cov hcov BrYZ W x
+  have hnegB : MDiffAt (T% negB) x := by
+    simpa [negB] using mdifferentiableAt_neg_section hB
+  have hnegC : MDiffAt (T% negC) x := by
+    simpa [negC] using mdifferentiableAt_neg_section hC
+  have hsum : MDiffAt (T% ((A + negB) + negC)) x := by
+    exact mdifferentiableAt_add_section (mdifferentiableAt_add_section hA hnegB) hnegC
+  have hR :
+      MDiffAt
+        (T% (fun p : M =>
+          connectionRiemannCurvatureField (I := I) cov
+            (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p)) x := by
+    simpa [RicciFlower.Realized.connectionRiemannCurvatureField,
+      RicciFlower.Curvature.connectionRiemannCurvatureField, A, B, C, ZW, YW, BrYZ] using
+      mdifferentiableAt_sub_section (mdifferentiableAt_sub_section hA hB) hC
+  have heq :
+      (fun p : M =>
+          connectionRiemannCurvatureField (I := I) cov
+            (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p)
+        =ᶠ[𝓝 x] ((A + negB) + negC) := by
+    refine Filter.Eventually.of_forall ?_
+    intro p
+    simp [RicciFlower.Realized.connectionRiemannCurvatureField,
+      RicciFlower.Curvature.connectionRiemannCurvatureField, A, B, C, negB, negC,
+      ZW, YW, BrYZ, Pi.add_apply, sub_eq_add_neg, add_assoc]
+  have hcongr :
+      cov (fun p : M =>
+          connectionRiemannCurvatureField (I := I) cov
+            (fun q : M => Y q) (fun q : M => Z q) (fun q : M => W q) p) x =
+        cov ((A + negB) + negC) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hR hsum (by simp) heq
+  have happly :=
+    congrArg (fun L : TangentSpace I x →L[Real] TangentSpace I x => L (X x)) hcongr
+  rw [cov.isCovariantDerivativeOnUniv.add
+    (mdifferentiableAt_add_section hA hnegB) hnegC] at happly
+  rw [cov.isCovariantDerivativeOnUniv.add hA hnegB] at happly
+  have hnegB_cov :
+      cov negB x = -cov B x := by
+    simpa [negB] using
+      cov.isCovariantDerivativeOnUniv.smul_const (-1 : Real) hB
+  have hnegC_cov :
+      cov negC x = -cov C x := by
+    simpa [negC] using
+      cov.isCovariantDerivativeOnUniv.smul_const (-1 : Real) hC
+  rw [hnegB_cov, hnegC_cov] at happly
+  simpa [A, B, C, negB, negC, ZW, YW, BrYZ, sub_eq_add_neg, add_assoc] using happly
+
+private theorem curvJacobiAt
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    curvCommAt (I := I) cov X Y Z W x +
+      curvCommAt (I := I) cov Y Z X W x +
+      curvCommAt (I := I) cov Z X Y W x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Y p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Z q) (fun q : M => X q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Z p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p)
+        (fun p : M => W p) x = 0 := by
+  -- Frontier: operator Jacobi for covariant-derivative commutators.
+  --
+  -- This is the statement obtained from
+  --   [∇_X,[∇_Y,∇_Z]] + [∇_Y,[∇_Z,∇_X]] + [∇_Z,[∇_X,∇_Y]] = 0
+  -- after rewriting `[∇_Y,∇_Z] = R(Y,Z) + ∇_[Y,Z]` and canceling
+  -- `∇_[X,[Y,Z]] + cyc` by Lie-bracket Jacobi.  It is the remaining
+  -- operator-level API below the tensor second-Bianchi theorem.
+  have hJac := mlieBracket_jacobi_cyclic (I := I) X Y Z x
+  have hJacCov :
+      (cov (fun p : M => W p) x)
+          (VectorField.mlieBracket I (fun p : M => X p)
+            (fun p : M =>
+              VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p) x) +
+        (cov (fun p : M => W p) x)
+          (VectorField.mlieBracket I (fun p : M => Y p)
+            (fun p : M =>
+              VectorField.mlieBracket I (fun q : M => Z q) (fun q : M => X q) p) x) +
+          (cov (fun p : M => W p) x)
+            (VectorField.mlieBracket I (fun p : M => Z p)
+              (fun p : M =>
+                VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p) x) =
+        0 := by
+    have h :=
+      congrArg (fun V : TangentSpace I x => (cov (fun p : M => W p) x) V) hJac
+    dsimp only at h
+    simpa using h
+  unfold curvCommAt
+  rw [covCurvExpand (I := I) cov hcov X Y Z W x]
+  rw [covCurvExpand (I := I) cov hcov Y Z X W x]
+  rw [covCurvExpand (I := I) cov hcov Z X Y W x]
+  have hJacCovNeg := congrArg Neg.neg hJacCov
+  simp only [RicciFlower.Realized.connectionRiemannCurvatureField,
+    RicciFlower.Curvature.connectionRiemannCurvatureField]
+  abel_nf at hJacCovNeg ⊢
+  exact hJacCovNeg
+
+/-- Operator form of the second Bianchi identity.
+
+This is the genuine geometric producer behind the lowered tensor statement:
+expand curvature as `[∇_X, ∇_Y] - ∇_[X,Y]`, apply the Jacobi identity for
+operator commutators, and cancel the remaining bracket terms using
+torsion-freeness and skew-symmetry of the curvature operator. -/
+theorem curvSecondBianchi
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (htf : LeviCivita.IsTorsionFree (I := I) cov)
+    (X Y Z W :
+      ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x : M) :
+    curvCovDerivOpAt (I := I) cov X Y Z W x +
+      curvCovDerivOpAt (I := I) cov Y Z X W x +
+        curvCovDerivOpAt (I := I) cov Z X Y W x = 0 := by
+  let S : TangentSpace I x :=
+    curvCovDerivOpAt (I := I) cov X Y Z W x +
+      curvCovDerivOpAt (I := I) cov Y Z X W x +
+        curvCovDerivOpAt (I := I) cov Z X Y W x
+  let T : TangentSpace I x :=
+    connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => Y q) p) (X p))
+        (fun p : M => Z p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Y p)
+        (fun p : M => (cov (fun q : M => Z q) p) (X p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => Z q) p) (Y p))
+        (fun p : M => X p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Z p)
+        (fun p : M => (cov (fun q : M => X q) p) (Y p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => (cov (fun q : M => X q) p) (Z p))
+        (fun p : M => Y p) (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M => (cov (fun q : M => Y q) p) (Z p))
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => X p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Y q) (fun q : M => Z q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Y p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => Z q) (fun q : M => X q) p)
+        (fun p : M => W p) x +
+      connectionRiemannCurvatureField (I := I) cov
+        (fun p : M => Z p)
+        (fun p : M =>
+          VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p)
+        (fun p : M => W p) x
+  change S = 0
+  have hT : T = 0 := by
+    simpa [T] using curvTorsionCancel (I := I) cov hcov htf X Y Z W x
+  have hsum : S + T = 0 := by
+    have hJ := curvJacobiAt (I := I) cov hcov X Y Z W x
+    rw [curvComm_eq_deriv (I := I) cov X Y Z W x] at hJ
+    rw [curvComm_eq_deriv (I := I) cov Y Z X W x] at hJ
+    rw [curvComm_eq_deriv (I := I) cov Z X Y W x] at hJ
+    dsimp [S, T]
+    abel_nf at hJ ⊢
+    exact hJ
+  calc
+    S = S + T := by rw [hT, add_zero]
+    _ = 0 := hsum
+
 /-- Second Bianchi identity for the covariant derivative of lowered Riemann.
-The tensor slots are `(derivative, W, X, Y, Z)`. -/
+The tensor slots are `(derivative, X, Y, Z, W)` in the standard convention. -/
 def SecondBianchiAt {x : M}
     (nablaRm04 :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x) :
     Prop :=
-  ∀ A W X Y Z : TangentSpace I x,
-    nablaRm04 (vec5 A W X Y Z) +
-      nablaRm04 (vec5 X W Y A Z) +
-        nablaRm04 (vec5 Y W A X Z) = 0
+  ∀ A X Y Z W : TangentSpace I x,
+    nablaRm04 (vec5 A X Y Z W) +
+      nablaRm04 (vec5 X Y A Z W) +
+        nablaRm04 (vec5 Y A X Z W) = 0
 
 theorem second_bianchi {x : M}
     (nablaRm04 :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
     (h : SecondBianchiAt (I := I) nablaRm04)
-    (A W X Y Z : TangentSpace I x) :
-    nablaRm04 (vec5 A W X Y Z) +
-      nablaRm04 (vec5 X W Y A Z) +
-        nablaRm04 (vec5 Y W A X Z) = 0 :=
-  h A W X Y Z
+    (A X Y Z W : TangentSpace I x) :
+    nablaRm04 (vec5 A X Y Z W) +
+      nablaRm04 (vec5 X Y A Z W) +
+        nablaRm04 (vec5 Y A X Z W) = 0 :=
+  h A X Y Z W
 
 /-- Section-level second Bianchi identity. -/
 def SecondBianchiSection
@@ -365,11 +909,11 @@ theorem second_bianchi_apply
     (nablaRm04 : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
     (h : SecondBianchiSection (I := I) nablaRm04)
-    (x : M) (A W X Y Z : TangentSpace I x) :
-    nablaRm04 x (vec5 A W X Y Z) +
-      nablaRm04 x (vec5 X W Y A Z) +
-        nablaRm04 x (vec5 Y W A X Z) = 0 :=
-  h x A W X Y Z
+    (x : M) (A X Y Z W : TangentSpace I x) :
+    nablaRm04 x (vec5 A X Y Z W) +
+      nablaRm04 x (vec5 X Y A Z W) +
+        nablaRm04 x (vec5 Y A X Z W) = 0 :=
+  h x A X Y Z W
 
 /-- Contracted second Bianchi in a tangent basis:
 `div Ric = (1/2) d scalar`.  The slots of `nablaRic` are
@@ -403,6 +947,323 @@ theorem contracted_bianchi
         (1 / 2 : Real) * dScalar (fun _ : Fin 1 => X) :=
   h X
 
+/-- Three-dimensional Schur algebra at one point: once the covariant derivative
+of Ricci has the Einstein form `∇Ric = (1 / 3) dR ⊗ g`, the contracted
+Bianchi identity forces `dR = 0`.
+
+The geometric producer for the Einstein-form covariant derivative is separate:
+it should come from differentiating `Ric = (R / 3) g` and using `∇g = 0`. -/
+theorem dR_zero_nablaEin3
+    {x : M}
+    (g : SmoothMetric I M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (gInv : Fin 3 -> Fin 3 -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hBianchi : ContractedBianchiAt (I := I) basis gInv nablaRic dScalar)
+    (hEinNabla : ∀ A B C : TangentSpace I x,
+      nablaRic (vec3 (I := I) A B C) =
+        (1 / 3 : Real) * dScalar (fun _ : Fin 1 => A) * g.inner x B C) :
+    ∀ X : TangentSpace I x, dScalar (fun _ : Fin 1 => X) = 0 := by
+  classical
+  intro X
+  let α := cotangentToDual (I := I) dScalar
+  have hcoord :
+      dScalar (fun _ : Fin 1 => X) =
+        ∑ i : Fin 3, basis.repr X i *
+          dScalar (fun _ : Fin 1 => basis i) := by
+    calc
+      dScalar (fun _ : Fin 1 => X) = α X := by
+        simp [α, cotangentToDual_apply]
+      _ = α (∑ i : Fin 3, basis.repr X i • basis i) := by
+        rw [basis.sum_repr]
+      _ = ∑ i : Fin 3, basis.repr X i *
+          dScalar (fun _ : Fin 1 => basis i) := by
+        rw [map_sum]
+        apply Finset.sum_congr rfl
+        intro i _hi
+        simp [α, cotangentToDual_apply, smul_eq_mul]
+  have htrace :
+      (∑ i : Fin 3, ∑ j : Fin 3,
+        gInv i j * nablaRic (vec3 (I := I) (basis i) (basis j) X)) =
+          (1 / 3 : Real) * dScalar (fun _ : Fin 1 => X) := by
+    calc
+      (∑ i : Fin 3, ∑ j : Fin 3,
+        gInv i j * nablaRic (vec3 (I := I) (basis i) (basis j) X))
+          = ∑ i : Fin 3, ∑ j : Fin 3,
+              gInv i j *
+                ((1 / 3 : Real) * dScalar (fun _ : Fin 1 => basis i) *
+                  g.inner x (basis j) X) := by
+            apply Finset.sum_congr rfl
+            intro i _hi
+            apply Finset.sum_congr rfl
+            intro j _hj
+            rw [hEinNabla]
+      _ = (1 / 3 : Real) *
+            (∑ i : Fin 3, ∑ j : Fin 3,
+              gInv i j * g.inner x X (basis j) *
+                dScalar (fun _ : Fin 1 => basis i)) := by
+            rw [Finset.mul_sum]
+            apply Finset.sum_congr rfl
+            intro i _hi
+            rw [Finset.mul_sum]
+            apply Finset.sum_congr rfl
+            intro j _hj
+            rw [g.symm x (basis j) X]
+            ring
+      _ = (1 / 3 : Real) * dScalar (fun _ : Fin 1 => X) := by
+            rw [hcoord]
+            congr 1
+            apply Finset.sum_congr rfl
+            intro i _hi
+            rw [basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv X i]
+            rw [Finset.sum_mul]
+  have hhalf :
+      (1 / 2 : Real) * dScalar (fun _ : Fin 1 => X) =
+        (1 / 3 : Real) * dScalar (fun _ : Fin 1 => X) := by
+    rw [← hBianchi X, htrace]
+  nlinarith
+
+/-- Section-level contracted Bianchi identity, with the basis and trace data
+chosen pointwise. -/
+def ContrBianchiSec
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
+    Prop :=
+  ∀ x : M,
+    ContractedBianchiAt (I := I) (basis x) (gInv x) (nablaRic x) (dScalar x)
+
+theorem contrBianchi_apply
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (h : ContrBianchiSec (I := I) basis gInv nablaRic dScalar)
+    (x : M) :
+    ContractedBianchiAt (I := I) (basis x) (gInv x) (nablaRic x) (dScalar x) :=
+  h x
+
+/-- The scalar differential is the metric trace of `∇ Ric` in the supplied
+basis.  The slots of `nablaRic` are `(derivative, first Ricci slot, second
+Ricci slot)`. -/
+def DScalarTraceAt
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
+    Prop :=
+  ∀ X : TangentSpace I x,
+    dScalar (fun _ : Fin 1 => X) =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * nablaRic (vec3 X (basis i) (basis j))
+
+/-- Section-level scalar-trace identity, with all data chosen pointwise. -/
+def DScalarTraceSec
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
+    Prop :=
+  ∀ x : M, DScalarTraceAt (I := I) (basis x) (gInv x) (nablaRic x) (dScalar x)
+
+theorem dScalarTrace_apply
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (h : DScalarTraceSec (I := I) basis gInv nablaRic dScalar)
+    (x : M) :
+    DScalarTraceAt (I := I) (basis x) (gInv x) (nablaRic x) (dScalar x) :=
+  h x
+
+/-- The covariant derivative of Ricci is the metric trace of the covariant
+derivative of lowered Riemann in the supplied basis. -/
+def NablaRicTraceAt
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaRm04 :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Prop :=
+  ∀ A B C : TangentSpace I x,
+    nablaRic (vec3 A B C) =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * nablaRm04 (vec5 A (basis i) B C (basis j))
+
+/-- Section-level `∇Ric = tr_g ∇Rm04`, with all data chosen pointwise. -/
+def NablaRicTraceSec
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Prop :=
+  ∀ x : M, NablaRicTraceAt (I := I) (basis x) (gInv x) (nablaRm04 x) (nablaRic x)
+
+theorem nablaRicTrace_apply
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (h : NablaRicTraceSec (I := I) basis gInv nablaRm04 nablaRic)
+    (x : M) :
+    NablaRicTraceAt (I := I) (basis x) (gInv x) (nablaRm04 x) (nablaRic x) :=
+  h x
+
+/-- The covariant derivative of a symmetric Ricci tensor is symmetric in the
+two Ricci slots. -/
+def NablaRicSymmAt
+    {x : M}
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Prop :=
+  ∀ A B C : TangentSpace I x,
+    nablaRic (vec3 A B C) = nablaRic (vec3 A C B)
+
+/-- Section-level symmetry of `∇Ric` in the Ricci slots. -/
+def NablaRicSymmSec
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    Prop :=
+  ∀ x : M, NablaRicSymmAt (I := I) (nablaRic x)
+
+theorem nablaRicSymm_apply
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (h : NablaRicSymmSec (I := I) nablaRic) (x : M) :
+    NablaRicSymmAt (I := I) (nablaRic x) :=
+  h x
+
+/-- Riemann symmetries inherited by the covariant derivative of lowered
+Riemann.  The first slot is the covariant-derivative direction, and the
+curvature slots follow the standard convention
+`Rm04(X,Y,Z,W) = <R(X,Y)Z,W>`. -/
+def NablaRmSymmAt
+    {x : M}
+    (nablaRm04 :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x) :
+    Prop :=
+  (∀ A X Y Z W : TangentSpace I x,
+      nablaRm04 (vec5 A X Y Z W) = -nablaRm04 (vec5 A X Y W Z)) ∧
+    (∀ A X Y Z W : TangentSpace I x,
+      nablaRm04 (vec5 A Y X Z W) = -nablaRm04 (vec5 A X Y Z W)) ∧
+      ∀ A X Y Z W : TangentSpace I x,
+        nablaRm04 (vec5 A X Y Z W) = nablaRm04 (vec5 A Z W X Y)
+
+/-- Section-level inherited lowered-Riemann symmetries for `∇Rm04`. -/
+def NablaRmSymmSec
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x) :
+    Prop :=
+  ∀ x : M, NablaRmSymmAt (I := I) (nablaRm04 x)
+
+theorem nablaRmSymm_apply
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (h : NablaRmSymmSec (I := I) nablaRm04) (x : M) :
+    NablaRmSymmAt (I := I) (nablaRm04 x) :=
+  h x
+
+private theorem trace_swap_symm
+    {Idx : Type*} [Fintype Idx]
+    (gInv : Idx -> Idx -> Real) (N : Idx -> Idx -> Real)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
+    (∑ k : Idx, ∑ l : Idx, gInv k l * N l k) =
+      ∑ k : Idx, ∑ l : Idx, gInv k l * N k l := by
+  classical
+  calc
+    (∑ k : Idx, ∑ l : Idx, gInv k l * N l k) =
+        ∑ l : Idx, ∑ k : Idx, gInv k l * N l k := by
+          rw [Finset.sum_comm]
+    _ = ∑ l : Idx, ∑ k : Idx, gInv l k * N l k := by
+          refine Finset.sum_congr rfl fun l _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          rw [hInv k l]
+    _ = ∑ k : Idx, ∑ l : Idx, gInv k l * N k l := by
+          rfl
+
+/-- Contracted Bianchi plus scalar-trace and Ricci-slot symmetry gives the two
+trace orientations used by the Ricci-evolution component proof. -/
+theorem contractTracesAt
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hBianchi : ContractedBianchiAt (I := I) basis gInv nablaRic dScalar)
+    (hScalar : DScalarTraceAt (I := I) basis gInv nablaRic dScalar)
+    (hNablaSymm : NablaRicSymmAt (I := I) nablaRic)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i)
+    (a : Idx) :
+    (∑ k : Idx, ∑ l : Idx,
+        gInv k l * nablaRic (vec3 (basis k) (basis a) (basis l))) =
+      (1 / 2 : Real) *
+        (∑ k : Idx, ∑ l : Idx,
+          gInv k l * nablaRic (vec3 (basis a) (basis k) (basis l))) ∧
+    (∑ k : Idx, ∑ l : Idx,
+        gInv k l * nablaRic (vec3 (basis l) (basis k) (basis a))) =
+      (1 / 2 : Real) *
+        (∑ k : Idx, ∑ l : Idx,
+          gInv k l * nablaRic (vec3 (basis a) (basis k) (basis l))) := by
+  classical
+  have hScalarA := hScalar (basis a)
+  have hBianchiA := hBianchi (basis a)
+  constructor
+  · calc
+      (∑ k : Idx, ∑ l : Idx,
+          gInv k l * nablaRic (vec3 (basis k) (basis a) (basis l))) =
+          ∑ k : Idx, ∑ l : Idx,
+            gInv k l * nablaRic (vec3 (basis k) (basis l) (basis a)) := by
+            refine Finset.sum_congr rfl fun k _ => ?_
+            refine Finset.sum_congr rfl fun l _ => ?_
+            rw [hNablaSymm (basis k) (basis a) (basis l)]
+      _ = (1 / 2 : Real) * dScalar (fun _ : Fin 1 => basis a) := hBianchiA
+      _ = (1 / 2 : Real) *
+          (∑ k : Idx, ∑ l : Idx,
+            gInv k l * nablaRic (vec3 (basis a) (basis k) (basis l))) := by
+            rw [hScalarA]
+  · calc
+      (∑ k : Idx, ∑ l : Idx,
+          gInv k l * nablaRic (vec3 (basis l) (basis k) (basis a))) =
+          ∑ k : Idx, ∑ l : Idx,
+            gInv k l * nablaRic (vec3 (basis k) (basis l) (basis a)) := by
+            exact trace_swap_symm gInv
+              (fun k l => nablaRic (vec3 (basis k) (basis l) (basis a))) hInv
+      _ = (1 / 2 : Real) * dScalar (fun _ : Fin 1 => basis a) := hBianchiA
+      _ = (1 / 2 : Real) *
+          (∑ k : Idx, ∑ l : Idx,
+            gInv k l * nablaRic (vec3 (basis a) (basis k) (basis l))) := by
+            rw [hScalarA]
+
 /-- Explicit bridge saying that a second-Bianchi proof supplies the contracted
 Bianchi identity after the metric trace and Ricci/scalar trace reductions have
 been performed.  This keeps the hard contraction proof as a named producer. -/
@@ -420,6 +1281,369 @@ def ContractedBianchiOfSecondAt
   SecondBianchiAt (I := I) nablaRm04 ->
     ContractedBianchiAt (I := I) basis gInv nablaRic dScalar
 
+/-- Section-level version of `ContractedBianchiOfSecondAt`. -/
+def ContrOfSecondSec
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
+    Prop :=
+  ∀ x : M,
+    ContractedBianchiOfSecondAt (I := I) (basis x) (gInv x)
+      (nablaRm04 x) (nablaRic x) (dScalar x)
+
+theorem contrOfSecond_apply
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (h : ContrOfSecondSec (I := I) basis gInv nablaRm04 nablaRic dScalar)
+    (x : M) :
+    ContractedBianchiOfSecondAt (I := I) (basis x) (gInv x)
+      (nablaRm04 x) (nablaRic x) (dScalar x) :=
+  h x
+
+private theorem trace4_expand
+    {Idx : Type*} [Fintype Idx]
+    (gInv : Idx -> Idx -> Real)
+    (F : Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx,
+        gInv i j * (∑ k : Idx, ∑ l : Idx, gInv k l * F i j k l)) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F i j k l := by
+  classical
+  simp [Finset.mul_sum, mul_assoc]
+
+private theorem sum4_add3
+    {Idx : Type*} [Fintype Idx]
+    (F G H : Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, F i j k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, G i j k l) +
+          (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, H i j k l) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (F i j k l + G i j k l + H i j k l) := by
+  classical
+  calc
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, F i j k l) +
+          (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, G i j k l) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, H i j k l)
+        =
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          (F i j k l + G i j k l)) +
+        (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx, H i j k l) := by
+        simp [Finset.sum_add_distrib]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        ((F i j k l + G i j k l) + H i j k l) := by
+        simp [Finset.sum_add_distrib]
+    _ =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        (F i j k l + G i j k l + H i j k l) := by
+        rfl
+
+private theorem sum4_swap34
+    {Idx : Type*} [Fintype Idx]
+    (gInv : Idx -> Idx -> Real)
+    (F : Idx -> Idx -> Idx -> Idx -> Real)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F i j l k) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F i j k l := by
+  classical
+  refine Finset.sum_congr rfl fun i _ => ?_
+  refine Finset.sum_congr rfl fun j _ => ?_
+  calc
+    (∑ k : Idx, ∑ l : Idx, gInv i j * gInv k l * F i j l k) =
+        gInv i j * (∑ k : Idx, ∑ l : Idx, gInv k l * F i j l k) := by
+          simp [Finset.mul_sum, mul_assoc]
+    _ = gInv i j * (∑ k : Idx, ∑ l : Idx, gInv k l * F i j k l) := by
+          rw [trace_swap_symm gInv (fun k l => F i j k l) hInv]
+    _ = ∑ k : Idx, ∑ l : Idx, gInv i j * gInv k l * F i j k l := by
+          simp [Finset.mul_sum, mul_assoc]
+
+private theorem sum4_lijk
+    {Idx : Type*} [Fintype Idx]
+    (gInv : Idx -> Idx -> Real)
+    (F : Idx -> Idx -> Idx -> Idx -> Real)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F l i j k) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F i k l j := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ p : (((Idx × Idx) × Idx) × Idx),
+        gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+          F p.2 p.1.1.1 p.1.1.2 p.1.2) =
+      (∑ p : (((Idx × Idx) × Idx) × Idx),
+        gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+          F p.1.1.1 p.1.2 p.2 p.1.1.2) by
+        let e : (((Idx × Idx) × Idx) × Idx) ≃
+            (((Idx × Idx) × Idx) × Idx) :=
+          { toFun := fun p => (((p.2, p.1.2), p.1.1.1), p.1.1.2)
+            invFun := fun p => (((p.1.2, p.2), p.1.1.2), p.1.1.1)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p : (((Idx × Idx) × Idx) × Idx) =>
+              gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+                F p.2 p.1.1.1 p.1.1.2 p.1.2)
+            (fun p : (((Idx × Idx) × Idx) × Idx) =>
+              gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+                F p.1.1.1 p.1.2 p.2 p.1.1.2)
+            (by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              simp [e, hInv k l, mul_comm, mul_left_comm]))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+private theorem sum4_kjli
+    {Idx : Type*} [Fintype Idx]
+    (gInv : Idx -> Idx -> Real)
+    (F : Idx -> Idx -> Idx -> Idx -> Real)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
+    (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F k j l i) =
+      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        gInv i j * gInv k l * F i k j l := by
+  classical
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [← Fintype.sum_prod_type']
+  rw [show
+      (∑ p : (((Idx × Idx) × Idx) × Idx),
+        gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+          F p.1.2 p.1.1.2 p.2 p.1.1.1) =
+      (∑ p : (((Idx × Idx) × Idx) × Idx),
+        gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+          F p.1.1.1 p.1.2 p.1.1.2 p.2) by
+        let e : (((Idx × Idx) × Idx) × Idx) ≃
+            (((Idx × Idx) × Idx) × Idx) :=
+          { toFun := fun p => (((p.1.2, p.2), p.1.1.2), p.1.1.1)
+            invFun := fun p => (((p.2, p.1.2), p.1.1.1), p.1.1.2)
+            left_inv := by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              rfl
+            right_inv := by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              rfl }
+        simpa [e] using
+          (Fintype.sum_equiv e
+            (fun p : (((Idx × Idx) × Idx) × Idx) =>
+              gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+                F p.1.2 p.1.1.2 p.2 p.1.1.1)
+            (fun p : (((Idx × Idx) × Idx) × Idx) =>
+              gInv p.1.1.1 p.1.1.2 * gInv p.1.2 p.2 *
+                F p.1.1.1 p.1.2 p.1.1.2 p.2)
+            (by
+              intro p
+              rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+              simp [e, hInv i j, mul_comm, mul_left_comm]))]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+  rw [Fintype.sum_prod_type]
+
+/-- Pure finite-sum contraction of the second Bianchi identity in the
+RicciFlower lowered-curvature convention.  This is the algebraic core of the
+contracted second Bianchi producer. -/
+theorem contractSum
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaRm04 :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (hRmSymm : NablaRmSymmAt (I := I) nablaRm04)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i)
+    (hsecond : SecondBianchiAt (I := I) nablaRm04)
+    (X : TangentSpace I x) :
+    (∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          (∑ k : Idx, ∑ l : Idx,
+            gInv k l *
+              nablaRm04 (vec5 (basis i) (basis k) (basis j) X (basis l)))) =
+      (1 / 2 : Real) *
+        (∑ i : Idx, ∑ j : Idx,
+          gInv i j *
+            (∑ k : Idx, ∑ l : Idx,
+              gInv k l *
+                nablaRm04 (vec5 X (basis k) (basis i) (basis j) (basis l)))) := by
+  classical
+  rcases hRmSymm with ⟨hOut, hIn, hPair⟩
+  rw [trace4_expand, trace4_expand]
+  let L : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv i j * gInv k l *
+        nablaRm04 (vec5 (basis i) (basis k) (basis j) X (basis l))
+  let R : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv i j * gInv k l *
+        nablaRm04 (vec5 X (basis k) (basis i) (basis j) (basis l))
+  let A : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv i j * gInv k l *
+        nablaRm04 (vec5 (basis k) (basis i) X (basis j) (basis l))
+  let B : Real :=
+    ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+      gInv i j * gInv k l *
+        nablaRm04 (vec5 (basis i) X (basis k) (basis j) (basis l))
+  change L = (1 / 2 : Real) * R
+  have hcyc : R + A + B = 0 := by
+    dsimp [R, A, B]
+    rw [sum4_add3]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    refine Finset.sum_eq_zero fun j _ => ?_
+    refine Finset.sum_eq_zero fun k _ => ?_
+    refine Finset.sum_eq_zero fun l _ => ?_
+    have h := hsecond X (basis k) (basis i) (basis j) (basis l)
+    calc
+      gInv i j * gInv k l *
+            nablaRm04 (vec5 X (basis k) (basis i) (basis j) (basis l)) +
+          gInv i j * gInv k l *
+            nablaRm04 (vec5 (basis k) (basis i) X (basis j) (basis l)) +
+            gInv i j * gInv k l *
+              nablaRm04 (vec5 (basis i) X (basis k) (basis j) (basis l))
+          =
+        gInv i j * gInv k l *
+          (nablaRm04 (vec5 X (basis k) (basis i) (basis j) (basis l)) +
+            nablaRm04 (vec5 (basis k) (basis i) X (basis j) (basis l)) +
+              nablaRm04 (vec5 (basis i) X (basis k) (basis j) (basis l))) := by
+          ring_nf
+      _ = 0 := by rw [h, mul_zero]
+  have hA : A = -L := by
+    dsimp [A, L]
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            nablaRm04 (vec5 (basis k) (basis i) X (basis j) (basis l))) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            (-nablaRm04 (vec5 (basis k) (basis j) (basis l) X (basis i))) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          have h1 : nablaRm04 (vec5 (basis k) (basis i) X (basis j) (basis l)) =
+              -nablaRm04 (vec5 (basis k) X (basis i) (basis j) (basis l)) := by
+            have h := hIn (basis k) (basis i) X (basis j) (basis l)
+            linarith
+          have h2 := hPair (basis k) X (basis i) (basis j) (basis l)
+          rw [h1, h2]
+      _ = -(∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            nablaRm04 (vec5 (basis k) (basis j) (basis l) X (basis i))) := by
+          simp [Finset.sum_neg_distrib]
+      _ = -L := by
+          rw [sum4_kjli gInv
+            (fun a b c d =>
+              nablaRm04 (vec5 (basis a) (basis b) (basis c) X (basis d)))
+            hInv]
+  have hB : B = -L := by
+    dsimp [B, L]
+    calc
+      (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            nablaRm04 (vec5 (basis i) X (basis k) (basis j) (basis l))) =
+        ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            (-nablaRm04 (vec5 (basis i) (basis l) (basis j) X (basis k))) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          refine Finset.sum_congr rfl fun j _ => ?_
+          refine Finset.sum_congr rfl fun k _ => ?_
+          refine Finset.sum_congr rfl fun l _ => ?_
+          have h1 := hPair (basis i) X (basis k) (basis j) (basis l)
+          have h2 : nablaRm04 (vec5 (basis i) (basis j) (basis l) X (basis k)) =
+              -nablaRm04 (vec5 (basis i) (basis l) (basis j) X (basis k)) := by
+            have h := hIn (basis i) (basis j) (basis l) X (basis k)
+            linarith
+          rw [h1, h2]
+      _ = -(∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+          gInv i j * gInv k l *
+            nablaRm04 (vec5 (basis i) (basis l) (basis j) X (basis k))) := by
+          simp [Finset.sum_neg_distrib]
+      _ = -L := by
+          rw [sum4_swap34 gInv
+            (fun a b c d =>
+              nablaRm04 (vec5 (basis a) (basis c) (basis b) X (basis d)))
+            hInv]
+  have hR : R = 2 * L := by
+    linarith
+  linarith
+
+/-- Producer frontier for contracted second Bianchi from second Bianchi plus
+the trace reductions and Riemann symmetries. -/
+theorem contractOfSecond
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (nablaRm04 :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hRmSymm : NablaRmSymmAt (I := I) nablaRm04)
+    (hRicTrace : NablaRicTraceAt (I := I) basis gInv nablaRm04 nablaRic)
+    (hScalar : DScalarTraceAt (I := I) basis gInv nablaRic dScalar)
+    (_hNablaSymm : NablaRicSymmAt (I := I) nablaRic)
+    (hInv : ∀ i j : Idx, gInv i j = gInv j i) :
+    ContractedBianchiOfSecondAt (I := I) basis gInv nablaRm04
+      nablaRic dScalar := by
+  intro hsecond X
+  rw [hScalar X]
+  calc
+    (∑ i : Idx, ∑ j : Idx,
+        gInv i j * nablaRic (vec3 (basis i) (basis j) X))
+        =
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          (∑ k : Idx, ∑ l : Idx,
+            gInv k l *
+              nablaRm04 (vec5 (basis i) (basis k) (basis j) X (basis l))) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hRicTrace (basis i) (basis j) X]
+    _ =
+      (1 / 2 : Real) *
+        (∑ i : Idx, ∑ j : Idx,
+          gInv i j *
+            (∑ k : Idx, ∑ l : Idx,
+              gInv k l *
+                nablaRm04 (vec5 X (basis k) (basis i) (basis j) (basis l)))) :=
+        contractSum (I := I) basis gInv nablaRm04 hRmSymm hInv hsecond X
+    _ =
+      (1 / 2 : Real) *
+        (∑ i : Idx, ∑ j : Idx,
+          gInv i j * nablaRic (vec3 X (basis i) (basis j))) := by
+        congr 1
+        refine Finset.sum_congr rfl fun i _ => ?_
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hRicTrace X (basis i) (basis j)]
+
 theorem contracted_bianchi_of_second
     {Idx : Type*} [Fintype Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -435,6 +1659,24 @@ theorem contracted_bianchi_of_second
     (hsecond : SecondBianchiAt (I := I) nablaRm04) :
     ContractedBianchiAt (I := I) basis gInv nablaRic dScalar :=
   hcontract hsecond
+
+theorem contrOfSecond_sec
+    {Idx : Type*} [Fintype Idx]
+    (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
+    (gInv : (x : M) -> Idx -> Idx -> Real)
+    (nablaRm04 : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
+    (nablaRic : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (dScalar : (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hcontract :
+      ContrOfSecondSec (I := I) basis gInv nablaRm04 nablaRic dScalar)
+    (hsecond : SecondBianchiSection (I := I) nablaRm04) :
+    ContrBianchiSec (I := I) basis gInv nablaRic dScalar := by
+  intro x
+  exact contracted_bianchi_of_second (I := I) (basis x) (gInv x)
+    (nablaRm04 x) (nablaRic x) (dScalar x) (hcontract x) (hsecond x)
 
 end Realized
 end RicciFlower

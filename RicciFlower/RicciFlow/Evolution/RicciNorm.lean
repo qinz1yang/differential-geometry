@@ -487,10 +487,19 @@ def ricciDataAtCoord
         (Coordinates.coordinateFrameAt (I := I) x0)
         (Coordinates.coordinateFrameSet (I := I) x0))
     (hRicciEvol : forall x0,
-      RicciEvolutionEquationInFrame
-        (I := I) S S.base.rm04 (coordInv (I := I) S x0)
-        (Coordinates.coordinateFrameAt (I := I) x0)
-        (coordRoughRic (I := I) S x0 (nabla2Ric x0)))
+      ∀ (t : Realized.RealTimeInterval.RegularTime D)
+        (i j : Coordinates.CoordinateIdx (𝕜 := Real) E),
+        HasDerivWithinAt
+          (fun s : Real =>
+            ricciCompInFrame (I := I) S
+              (Coordinates.coordinateFrameAt (I := I) x0) s x0 i j)
+          (ricciEvolutionRHSInFrame
+            (I := I) S S.base.rm04 (coordInv (I := I) S x0)
+            (Coordinates.coordinateFrameAt (I := I) x0)
+            (coordRoughRic (I := I) S x0 (nabla2Ric x0))
+            (t : Real) x0 i j)
+          D.carrier
+          (t : Real))
     (hInvSymm : forall x0 t i j,
       coordInv (I := I) S x0 t x0 i j =
         coordInv (I := I) S x0 t x0 j i)
@@ -519,11 +528,11 @@ def ricciDataAtCoord
   · intro t x
     let frame := Coordinates.coordinateFrameAt (I := I) x
     have hbase :=
-      ricciNormSqInFrame_hasDerivWithinAt
+      ricciNormSqDerivAt
         (I := I) S S.base.rm04 (coordInv (I := I) S x) frame
         (coordRoughRic (I := I) S x (nabla2Ric x))
-        (hInvEvol x) (hRicciEvol x) t x
-        (Coordinates.coordinateFrameAt_mem (I := I) x)
+        (hInvEvol x) t x (Coordinates.coordinateFrameAt_mem (I := I) x)
+        (hRicciEvol x t)
     have hsimplify :=
       ricciDerivSimpAt
         (I := I) S S.base.rm04 (coordInv (I := I) S x) frame

@@ -1,5 +1,7 @@
 import RicciFlower.Metric.Basic
+import RicciFlower.VectorBundle.PartialMfderiv
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
@@ -213,6 +215,153 @@ theorem gradientFun_sub
   exact e.map_sub (mfderiv I 𝓘(Real, Real) f x).toLinearMap
     (mfderiv I 𝓘(Real, Real) h x).toLinearMap
 
+/-- Directional derivative product rule for scalar functions. -/
+theorem extDerivFun_mul
+    {f h : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
+    extDerivFun (I := I) (fun y : M => f y * h y) x v =
+      f x * extDerivFun (I := I) h x v +
+        extDerivFun (I := I) f x v * h x := by
+  change extDerivFun (I := I) (f • h) x v =
+      f x * extDerivFun (I := I) h x v +
+        extDerivFun (I := I) f x v * h x
+  have hprod := fromTangentSpace_mfderiv_smul_apply
+    (I := I) (f := f) (g := h) hf hh v
+  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm,
+    mul_assoc] using hprod
+
+/-- Directional derivative of a spatially constant scalar multiple, applied to
+a tangent vector. -/
+theorem extDerivFun_const_mul_apply
+    (a : Real) {f : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    extDerivFun (I := I) (fun y : M => a * f y) x v =
+      a * extDerivFun (I := I) f x v := by
+  have h := RicciFlower.extDerivFun_const_mul (I := I) a hf
+  have hv := DFunLike.congr_fun h v
+  simpa [Pi.smul_apply, smul_eq_mul] using hv
+
+/-- Gradient product rule for scalar functions. -/
+theorem gradientFun_mul
+    (g : SmoothRiemannianMetric I M)
+    {f h : M -> Real} {x : M}
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
+    gradientFun (I := I) g (fun y : M => f y * h y) x =
+      f x • gradientFun (I := I) g h x +
+        h x • gradientFun (I := I) g f x := by
+  apply metricFlatLinear_injective (I := I) g x
+  ext v
+  have hprod := extDerivFun_mul (I := I) (f := f) (h := h) v hf hh
+  have hmul :
+      g.inner x (gradientFun (I := I) g (fun y : M => f y * h y) x) v =
+        f x * g.inner x (gradientFun (I := I) g h x) v +
+          g.inner x (gradientFun (I := I) g f x) v * h x := by
+    rw [inner_gradientFun (I := I) g (fun y : M => f y * h y) x v]
+    have hprod_mf :
+        mfderiv I 𝓘(Real, Real) (fun y : M => f y * h y) x v =
+          extDerivFun (I := I) (fun y : M => f y * h y) x v := by
+      simp [extDerivFun, NormedSpace.fromTangentSpace]
+    have hhinner :
+        extDerivFun (I := I) h x v =
+          g.inner x (gradientFun (I := I) g h x) v := by
+      rw [inner_gradientFun (I := I) g h x v]
+      simp [extDerivFun, NormedSpace.fromTangentSpace]
+    have hfinner :
+        extDerivFun (I := I) f x v =
+          g.inner x (gradientFun (I := I) g f x) v := by
+      rw [inner_gradientFun (I := I) g f x v]
+      simp [extDerivFun, NormedSpace.fromTangentSpace]
+    rw [hprod_mf, hprod, hhinner, hfinner]
+  calc
+    metricFlatLinear (I := I) g x
+        (gradientFun (I := I) g (fun y : M => f y * h y) x) v =
+        f x * g.inner x (gradientFun (I := I) g h x) v +
+          g.inner x (gradientFun (I := I) g f x) v * h x := by
+          simpa [metricFlatLinear_apply] using hmul
+    _ = metricFlatLinear (I := I) g x
+        (f x • gradientFun (I := I) g h x +
+          h x • gradientFun (I := I) g f x) v := by
+          simp [metricFlatLinear_apply, mul_comm]
+
+/-- Directional derivative chain rule for real powers, valid away from zero. -/
+theorem extDerivFun_rpow
+    {f : M -> Real} {x : M} (p : Real) (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hpos : 0 < f x) :
+    extDerivFun (I := I) (fun y : M => f y ^ p) x v =
+      (p * f x ^ (p - 1)) * extDerivFun (I := I) f x v := by
+  let coeff : Real := p * f x ^ (p - 1)
+  have hp :
+      HasMFDerivAt 𝓘(Real, Real) 𝓘(Real, Real)
+        (fun z : Real => z ^ p) (f x)
+        (ContinuousLinearMap.toSpanSingleton Real coeff) := by
+    simpa [coeff] using
+      ((Real.hasDerivAt_rpow_const (p := p) (Or.inl hpos.ne')).hasFDerivAt).hasMFDerivAt
+  have hcomp :
+      mfderiv I 𝓘(Real, Real) (fun y : M => (fun z : Real => z ^ p) (f y)) x =
+        (ContinuousLinearMap.toSpanSingleton Real coeff).comp
+          (mfderiv I 𝓘(Real, Real) f x) :=
+    (hp.comp x hf.hasMFDerivAt).mfderiv
+  unfold extDerivFun
+  rw [hcomp]
+  change
+    NormedSpace.fromTangentSpace (𝕜 := Real) (f x ^ p)
+        (((ContinuousLinearMap.toSpanSingleton Real coeff).comp
+          (mfderiv I 𝓘(Real, Real) f x)) v) =
+      coeff *
+        NormedSpace.fromTangentSpace (𝕜 := Real) (f x)
+          ((mfderiv I 𝓘(Real, Real) f x) v)
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
+    LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, smul_eq_mul]
+  rw [mul_comm]
+  rfl
+
+/-- Differentiability of a real-power composite at a positive point. -/
+theorem mdifferentiableAt_rpow
+    {f : M -> Real} {x : M} (p : Real)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hpos : 0 < f x) :
+    MDifferentiableAt I 𝓘(Real, Real) (fun y : M => f y ^ p) x := by
+  have hp :
+      MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, Real)
+        (fun z : Real => z ^ p) (f x) := by
+    exact (Real.differentiableAt_rpow_const_of_ne p hpos.ne').mdifferentiableAt
+  exact hp.comp x hf
+
+/-- Gradient chain rule for real powers, valid at positive points. -/
+theorem gradientFun_rpow
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M} (p : Real)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hpos : 0 < f x) :
+    gradientFun (I := I) g (fun y : M => f y ^ p) x =
+      (p * f x ^ (p - 1)) • gradientFun (I := I) g f x := by
+  apply metricFlatLinear_injective (I := I) g x
+  ext v
+  have hrpow := extDerivFun_rpow (I := I) (f := f) p v hf hpos
+  have hrpow_mf :
+      mfderiv I 𝓘(Real, Real) (fun y : M => f y ^ p) x v =
+        extDerivFun (I := I) (fun y : M => f y ^ p) x v := by
+    simp [extDerivFun, NormedSpace.fromTangentSpace]
+  have hfinner :
+      extDerivFun (I := I) f x v =
+        g.inner x (gradientFun (I := I) g f x) v := by
+    rw [inner_gradientFun (I := I) g f x v]
+    simp [extDerivFun, NormedSpace.fromTangentSpace]
+  calc
+    metricFlatLinear (I := I) g x
+        (gradientFun (I := I) g (fun y : M => f y ^ p) x) v =
+        (p * f x ^ (p - 1)) *
+          g.inner x (gradientFun (I := I) g f x) v := by
+          rw [metricFlatLinear_apply, inner_gradientFun]
+          rw [hrpow_mf, hrpow, hfinner]
+    _ = metricFlatLinear (I := I) g x
+        ((p * f x ^ (p - 1)) • gradientFun (I := I) g f x) v := by
+          simp [metricFlatLinear_apply]
+
 /-- First derivative of `f^2`, stated as a linear-map scalar-multiplication
 identity. The proof deliberately stays in module scalar multiplication while
 the target is the scalar model tangent space. -/
@@ -236,7 +385,7 @@ theorem mfderiv_mul_self_toLinearMap
         (2 * f x) • ((mfderiv I 𝓘(Real, Real) f x).toLinearMap v)
   rw [← add_smul]
   congr 1
-  ring
+  ring_nf
 
 /-- Gradient of a scalar square. -/
 theorem gradientFun_mul_self
@@ -463,6 +612,171 @@ theorem divergence_smul_gradientFun
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)
   simpa [extDerivFun] using congrArg id hinner.symm
 
+/-- Divergence product rule for a scalar multiple of the gradient of another
+scalar function. -/
+theorem divergence_smul_gradientFun_pair
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M -> Real} {x : M}
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g h y) x) :
+    divergence (I := I) cov (f • fun y : M => gradientFun (I := I) g h y) x =
+      f x * laplacian (I := I) cov g h x +
+        g.inner x (gradientFun (I := I) g f x)
+          (gradientFun (I := I) g h x) := by
+  rw [divergence_smul (I := I) cov hf hgrad]
+  have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g h x)
+  simpa [extDerivFun] using congrArg id hinner.symm
+
+/-- Scalar product rule for the Laplacian:
+`Δ(f h) = f Δh + h Δf + 2 <∇f, ∇h>`. -/
+theorem laplacian_mul
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M -> Real} {x : M}
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : forall y : M, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x)
+    (hgradh : MDiffAt (T% fun y : M => gradientFun (I := I) g h y) x)
+    (hfgradh : MDiffAt
+      (T% (f • fun y : M => gradientFun (I := I) g h y)) x)
+    (hhgradf : MDiffAt
+      (T% (h • fun y : M => gradientFun (I := I) g f y)) x) :
+    laplacian (I := I) cov g (fun y : M => f y * h y) x =
+      f x * laplacian (I := I) cov g h x +
+        h x * laplacian (I := I) cov g f x +
+          2 * g.inner x
+            (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g h x) := by
+  have hgrad_eq :
+      gradientFun (I := I) g (fun y : M => f y * h y) =
+        fun y : M =>
+          f y • gradientFun (I := I) g h y +
+            h y • gradientFun (I := I) g f y := by
+    funext y
+    exact gradientFun_mul (I := I) g (hf y) (hh y)
+  calc
+    laplacian (I := I) cov g (fun y : M => f y * h y) x =
+        divergence (I := I) cov
+          (fun y : M =>
+            f y • gradientFun (I := I) g h y +
+              h y • gradientFun (I := I) g f y) x := by
+          simp [laplacian, hgrad_eq]
+    _ =
+        divergence (I := I) cov
+            (f • fun y : M => gradientFun (I := I) g h y) x +
+          divergence (I := I) cov
+            (h • fun y : M => gradientFun (I := I) g f y) x := by
+          simpa [Pi.add_apply] using
+            divergence_add (I := I) cov
+              (X := f • fun y : M => gradientFun (I := I) g h y)
+              (Y := h • fun y : M => gradientFun (I := I) g f y)
+              hfgradh hhgradf
+    _ =
+        (f x * laplacian (I := I) cov g h x +
+            g.inner x (gradientFun (I := I) g f x)
+              (gradientFun (I := I) g h x)) +
+          (h x * laplacian (I := I) cov g f x +
+            g.inner x (gradientFun (I := I) g h x)
+              (gradientFun (I := I) g f x)) := by
+          rw [divergence_smul_gradientFun_pair (I := I) cov g (hf x) hgradh]
+          rw [divergence_smul_gradientFun_pair (I := I) cov g (hh x) hgradf]
+    _ =
+        f x * laplacian (I := I) cov g h x +
+          h x * laplacian (I := I) cov g f x +
+            2 * g.inner x
+              (gradientFun (I := I) g f x)
+              (gradientFun (I := I) g h x) := by
+          rw [g.symm x (gradientFun (I := I) g h x)
+            (gradientFun (I := I) g f x)]
+          ring_nf
+
+/-- Scalar real-power rule for the Laplacian:
+`Δ(f^p) = p f^(p-1) Δf + p(p-1) f^(p-2) |∇f|²`,
+valid where `f` is positive. -/
+theorem laplacian_rpow
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M} (p : Real)
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hpos : forall y : M, 0 < f y)
+    (hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x) :
+    laplacian (I := I) cov g (fun y : M => f y ^ p) x =
+      (p * f x ^ (p - 1)) * laplacian (I := I) cov g f x +
+        (p * (p - 1) * f x ^ (p - 2)) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+  let coeffFun : M -> Real := fun y => p * f y ^ (p - 1)
+  have hcoeff :
+      MDifferentiableAt I 𝓘(Real, Real) coeffFun x := by
+    have hrpow :
+        MDifferentiableAt I 𝓘(Real, Real)
+          (fun y : M => f y ^ (p - 1)) x :=
+      mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
+    simpa [coeffFun] using mdifferentiableAt_const.mul hrpow
+  have hcoeffgrad :
+      MDiffAt
+        (T% (coeffFun • fun y : M => gradientFun (I := I) g f y)) x := by
+    exact hcoeff.smul_section hgrad
+  have hgrad_eq :
+      gradientFun (I := I) g (fun y : M => f y ^ p) =
+        coeffFun • fun y : M => gradientFun (I := I) g f y := by
+    funext y
+    simpa [coeffFun] using gradientFun_rpow (I := I) g p (hf y) (hpos y)
+  have hcoeff_ext :
+      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
+        (p * (p - 1) * f x ^ (p - 2)) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+    have hrpow :=
+      extDerivFun_rpow (I := I) (f := f) (p - 1)
+        (gradientFun (I := I) g f x) (hf x) (hpos x)
+    have hrpow_diff :
+        MDifferentiableAt I 𝓘(Real, Real)
+          (fun y : M => f y ^ (p - 1)) x :=
+      mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
+    have hconst :=
+      extDerivFun_const_mul_apply (I := I) p
+        (f := fun y : M => f y ^ (p - 1))
+        (gradientFun (I := I) g f x) hrpow_diff
+    have hfinner :
+        extDerivFun (I := I) f x (gradientFun (I := I) g f x) =
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+      rw [inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)]
+      simp [extDerivFun, NormedSpace.fromTangentSpace]
+    calc
+      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
+          p * extDerivFun (I := I) (fun y : M => f y ^ (p - 1)) x
+            (gradientFun (I := I) g f x) := by
+            simpa [coeffFun] using hconst
+      _ = p * (((p - 1) * f x ^ ((p - 1) - 1)) *
+            extDerivFun (I := I) f x
+              (gradientFun (I := I) g f x)) := by
+            rw [hrpow]
+      _ = (p * (p - 1) * f x ^ (p - 2)) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+            rw [hfinner]
+            ring_nf
+  calc
+    laplacian (I := I) cov g (fun y : M => f y ^ p) x =
+        divergence (I := I) cov
+          (coeffFun • fun y : M => gradientFun (I := I) g f y) x := by
+          simp [laplacian, hgrad_eq]
+    _ =
+        coeffFun x * laplacian (I := I) cov g f x +
+          extDerivFun (I := I) coeffFun x
+            (gradientFun (I := I) g f x) := by
+          simpa [laplacian] using
+            divergence_smul (I := I) cov hcoeff hgrad
+    _ =
+        (p * f x ^ (p - 1)) * laplacian (I := I) cov g f x +
+          (p * (p - 1) * f x ^ (p - 2)) *
+            g.inner x (gradientFun (I := I) g f x)
+              (gradientFun (I := I) g f x) := by
+          rw [hcoeff_ext]
+
 /-- Left identity in the scalar square Laplacian formula:
 `(1 / 2) Δ(f^2) = div(f ∇f)`. -/
 theorem half_laplacian_mul_self_eq_divergence_smul_gradientFun
@@ -495,7 +809,7 @@ theorem half_laplacian_mul_self_eq_divergence_smul_gradientFun
       rw [divergence_const_smul (I := I) cov (2 : Real) hfg]
     _ = divergence (I := I) cov
         (f • fun y : M => gradientFun (I := I) g f y) x := by
-      ring
+      ring_nf
 
 /-- Scalar square Laplacian formula:
 `(1 / 2) Δ(f^2) = f Δf + |∇f|^2`. -/

@@ -1,10 +1,17 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Order.Interval.Set.Basic
 import Mathlib.Tactic.Linarith
+import Mathlib.Topology.Algebra.Monoid
+import Mathlib.Topology.Algebra.Ring.Real
+import Mathlib.Topology.MetricSpace.Basic
+import Mathlib.Topology.Order.OrderClosed
+import Mathlib.Topology.Order.Real
 
 set_option autoImplicit false
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
+
+open scoped Topology
 
 /-!
 # Real Time Intervals for RicciFlower
@@ -115,8 +122,43 @@ structure RealTimeInterval where
   initial : Real
   initial_mem : initial ∈ carrier
   regular_subset : regular ⊆ carrier
+  regular_mem_nhds : ∀ {t : Real}, t ∈ regular -> carrier ∈ 𝓝 t
 
 namespace RealTimeInterval
+
+private theorem endpointCarrier_mem_nhds
+    (a b : TimeEndpoint) (lowerClosed upperClosed : Bool) {t : Real}
+    (ht : TimeEndpoint.lowerLt a t ∧ TimeEndpoint.upperLt t b) :
+    {s : Real |
+      TimeEndpoint.lowerMem lowerClosed a s ∧
+        TimeEndpoint.upperMem upperClosed s b} ∈ 𝓝 t := by
+  have hstrict :
+      {s : Real | TimeEndpoint.lowerLt a s ∧ TimeEndpoint.upperLt s b} ∈ 𝓝 t := by
+    cases a with
+    | negInf =>
+        cases b with
+        | negInf =>
+            simp [TimeEndpoint.upperLt] at ht
+        | finite b =>
+            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Iio_mem_nhds ht.2
+        | posInf =>
+            simp [TimeEndpoint.lowerLt, TimeEndpoint.upperLt]
+    | finite a =>
+        cases b with
+        | negInf =>
+            simp [TimeEndpoint.upperLt] at ht
+        | finite b =>
+            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Ioo_mem_nhds ht.1 ht.2
+        | posInf =>
+            simpa [TimeEndpoint.lowerLt, TimeEndpoint.upperLt] using Ioi_mem_nhds ht.1
+    | posInf =>
+        simp [TimeEndpoint.lowerLt] at ht
+  exact
+    Filter.mem_of_superset hstrict (by
+      intro s hs
+      exact
+        ⟨TimeEndpoint.lowerLt_to_mem lowerClosed hs.1,
+          TimeEndpoint.upperLt_to_mem upperClosed hs.2⟩)
 
 /-- Times on which the flow is defined. -/
 abbrev FlowTime (D : RealTimeInterval) : Type := {t : Real // t ∈ D.carrier}
@@ -153,6 +195,11 @@ def timeShift (D : RealTimeInterval) (τ : Real) : RealTimeInterval where
   regular_subset := by
     intro s hs
     exact D.regular_subset hs
+  regular_mem_nhds := by
+    intro s hs
+    simpa [Set.preimage] using
+      (continuous_id.add continuous_const).continuousAt.preimage_mem_nhds
+        (D.regular_mem_nhds hs)
 
 @[simp] theorem timeShift_carrier (D : RealTimeInterval) (τ : Real) :
     (D.timeShift τ).carrier = {s : Real | s + τ ∈ D.carrier} := by
@@ -200,6 +247,9 @@ def ofEndpoints
     exact
       ⟨TimeEndpoint.lowerLt_to_mem lowerClosed ht.1,
         TimeEndpoint.upperLt_to_mem upperClosed ht.2⟩
+  regular_mem_nhds := by
+    intro t ht
+    exact endpointCarrier_mem_nhds a b lowerClosed upperClosed ht
 
 /-- Closed interval `[a,b]`, with regular times `(a,b)`. -/
 def closed (a b : Real) (hab : a ≤ b) : RealTimeInterval where
@@ -210,6 +260,9 @@ def closed (a b : Real) (hab : a ≤ b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ⟨le_of_lt ht.1, le_of_lt ht.2⟩
+  regular_mem_nhds := by
+    intro t ht
+    exact Icc_mem_nhds ht.1 ht.2
 
 /-- Half-open interval `[a,b)`, with regular times `(a,b)`. -/
 def closedOpen (a b : Real) (hab : a < b) : RealTimeInterval where
@@ -220,6 +273,9 @@ def closedOpen (a b : Real) (hab : a < b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ⟨le_of_lt ht.1, ht.2⟩
+  regular_mem_nhds := by
+    intro t ht
+    exact Ico_mem_nhds ht.1 ht.2
 
 /-- Carrier of a half-open interval after shifting its initial endpoint to
 zero. -/
@@ -258,6 +314,9 @@ def openInterval (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioo a b) : RealTimeInte
   regular_subset := by
     intro t ht
     exact ht
+  regular_mem_nhds := by
+    intro t ht
+    exact Ioo_mem_nhds ht.1 ht.2
 
 /-- Open-closed interval `(a,b]`, with a chosen initial time inside it. -/
 def openClosed (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioc a b) : RealTimeInterval where
@@ -268,6 +327,9 @@ def openClosed (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioc a b) : RealTimeInterv
   regular_subset := by
     intro t ht
     exact ⟨ht.1, le_of_lt ht.2⟩
+  regular_mem_nhds := by
+    intro t ht
+    exact Ioc_mem_nhds ht.1 ht.2
 
 /-- Infinite interval `[a,∞)`, with regular times `(a,∞)`. -/
 def closedInfinite (a : Real) : RealTimeInterval where
@@ -279,6 +341,9 @@ def closedInfinite (a : Real) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact Set.mem_Ici.mpr (le_of_lt (Set.mem_Ioi.mp ht))
+  regular_mem_nhds := by
+    intro t ht
+    exact Ici_mem_nhds (Set.mem_Ioi.mp ht)
 
 /-- Infinite interval `(a,∞)`, with a chosen initial time inside it. -/
 def openInfinite (a t₀ : Real) (ht₀ : a < t₀) : RealTimeInterval where
@@ -289,6 +354,9 @@ def openInfinite (a t₀ : Real) (ht₀ : a < t₀) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_mem_nhds := by
+    intro t ht
+    exact Ioi_mem_nhds ht
 
 /-- Infinite interval `(-∞,b]`, with a chosen initial time inside it. -/
 def infiniteClosed (b t₀ : Real) (ht₀ : t₀ ≤ b) : RealTimeInterval where
@@ -299,6 +367,9 @@ def infiniteClosed (b t₀ : Real) (ht₀ : t₀ ≤ b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact Set.mem_Iic.mpr (le_of_lt (Set.mem_Iio.mp ht))
+  regular_mem_nhds := by
+    intro t ht
+    exact Iic_mem_nhds (Set.mem_Iio.mp ht)
 
 /-- Infinite interval `(-∞,b)`, with a chosen initial time inside it. -/
 def infiniteOpen (b t₀ : Real) (ht₀ : t₀ < b) : RealTimeInterval where
@@ -309,6 +380,9 @@ def infiniteOpen (b t₀ : Real) (ht₀ : t₀ < b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_mem_nhds := by
+    intro t ht
+    exact Iio_mem_nhds ht
 
 /-- Whole real line, with a chosen reference initial time. -/
 def univ (t₀ : Real) : RealTimeInterval where
@@ -319,6 +393,9 @@ def univ (t₀ : Real) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_mem_nhds := by
+    intro t ht
+    simp
 
 end RealTimeInterval
 

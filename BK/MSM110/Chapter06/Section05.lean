@@ -24,12 +24,16 @@ namespace Section05
 noncomputable section
 
 open RicciFlower.RicciFlow
+open scoped Manifold ContDiff
 
 variable {M : Type*}
 
 theorem lem_ricci_pinching_preserved
     (lambda mu nu : Real -> M -> Real) (C : Real)
-    (hode : ∀ x : M, True)
+    (hode :
+      CurvatureEigenvaluesOrdered lambda mu nu →
+        (∀ x : M, lambda 0 x ≤ C * (nu 0 x + mu 0 x)) →
+          RicciPinchingPreservedOn lambda mu nu C)
     (hordered : CurvatureEigenvaluesOrdered lambda mu nu)
     (hinit : ∀ x : M, lambda 0 x ≤ C * (nu 0 x + mu 0 x)) :
     RicciPinchingPreservedOn lambda mu nu C :=
@@ -39,47 +43,84 @@ theorem lem_ricci_pinching_preserved
 theorem cor_ricci_lower_bound
     (lambda mu nu ricciLower scalar : Real -> M -> Real)
     (C beta : Real)
+    (hbound :
+      RicciPinchingPreservedOn lambda mu nu C →
+        beta > 0 →
+          RicciLowerBoundFromPinchingOn ricciLower scalar beta)
     (hpinch : RicciPinchingPreservedOn lambda mu nu C)
     (hbeta : beta > 0) :
     RicciLowerBoundFromPinchingOn ricciLower scalar beta :=
   RicciFlower.RicciFlow.ricci_lower_bound_of_pinching
-    lambda mu nu ricciLower scalar C beta hpinch hbeta
+    lambda mu nu ricciLower scalar C beta hbound hpinch hbeta
 
 theorem thm_ricci_pinching_improves_theorem
     (lambda mu nu : Real -> M -> Real)
-    (hpositiveRicciInitial : Prop) :
+    (hpositiveRicciInitial : Prop)
+    (hinit : hpositiveRicciInitial)
+    (himprove :
+      hpositiveRicciInitial →
+        ∃ C delta : Real, ∃ weight : Real -> M -> Real,
+          0 < C ∧ 0 < delta ∧ delta < 1 ∧
+          PinchingDecayWeightOn lambda mu nu weight delta ∧
+          RicciPinchingImprovesOn lambda mu nu weight C) :
     ∃ C delta : Real, ∃ weight : Real -> M -> Real,
       0 < C ∧ 0 < delta ∧ delta < 1 ∧
       PinchingDecayWeightOn lambda mu nu weight delta ∧
       RicciPinchingImprovesOn lambda mu nu weight C :=
   RicciFlower.RicciFlow.ricci_pinching_improves
-    lambda mu nu hpositiveRicciInitial
+    lambda mu nu hpositiveRicciInitial hinit himprove
 
 theorem eq_pinching_estimate_hamilton_form
     (lambda mu nu tracefreeRmNormSq scalar weight : Real -> M -> Real)
     (C : Real)
+    (hconvert :
+      RicciPinchingImprovesOn lambda mu nu weight C →
+        HamiltonTracefreePinchingEstimateOn tracefreeRmNormSq scalar weight C)
     (hpinch : RicciPinchingImprovesOn lambda mu nu weight C) :
     HamiltonTracefreePinchingEstimateOn tracefreeRmNormSq scalar weight C :=
   RicciFlower.RicciFlow.hamilton_tracefree_pinching_of_eigenvalue_pinching
-    lambda mu nu tracefreeRmNormSq scalar weight C hpinch
+    lambda mu nu tracefreeRmNormSq scalar weight C hconvert hpinch
 
+/-- Side BK label for Lemma 10.5.
+
+The actual quotient-evolution producer belongs in RicciFlower.  This file only
+records that a supplied RicciFlower-native quotient evolution statement matches
+the book label. -/
 theorem lem_palpha_over_qbeta
-    (phi psi quotient rhs : Real -> M -> Real)
-    (hphi : ∀ t x, 0 ≤ phi t x)
-    (hpsi : ∀ t x, 0 < psi t x) :
-    PAlphaOverQBetaFormulaOn phi psi quotient rhs :=
-  RicciFlower.RicciFlow.palpha_over_qbeta_formula phi psi quotient rhs hphi hpsi
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [Module.Finite Real E] [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {D : RicciFlower.Realized.RealTimeInterval}
+    [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [IsManifold I (∞ + 1) M]
+    (G : RicciFlower.Realized.RealizedMetricFamily (I := I) (M := M) Real)
+    (phi psi phiHeat psiHeat : Real -> M -> Real)
+    (alpha beta : Real)
+    (h :
+      PAlphaOverQBetaFormulaOn (I := I) (D := D) G
+        phi psi phiHeat psiHeat alpha beta) :
+    PAlphaOverQBetaFormulaOn (I := I) (D := D) G
+      phi psi phiHeat psiHeat alpha beta := h
 
 theorem item_define_p
     (lambda mu nu P : Real -> M -> Real)
     (h : PinchingPFormulaOn lambda mu nu P) :
     PinchingPFormulaOn lambda mu nu P := h
 
+theorem item_define_p_canonical
+    (lambda mu nu : Real -> M -> Real) :
+    PinchingPFormulaOn lambda mu nu
+      (fun t x => pinchingP (lambda t x) (mu t x) (nu t x)) :=
+  RicciFlower.RicciFlow.pinchingP_formula lambda mu nu
+
 theorem lem_f_pinching_evolution
     (f scalar Q : Real -> M -> Real) (epsilon : Real)
-    (hpq : Prop) :
+    (hineq : ∀ t x,
+      0 < scalar t x -> f t x ≤ Q t x + epsilon * scalar t x) :
     TracefreeRmPinchingEvolutionInequalityOn f scalar Q epsilon :=
-  RicciFlower.RicciFlow.tracefree_rm_pinching_evolution f scalar Q epsilon hpq
+  RicciFlower.RicciFlow.tracefree_rm_pinching_evolution
+    f scalar Q epsilon hineq
 
 theorem eq_ricci_pinching_preserved_ineq
     (lambda mu nu : Real -> M -> Real) (C : Real)

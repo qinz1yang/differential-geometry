@@ -526,11 +526,11 @@ theorem chartDensityOnE_partial_div_eq_half_trace_invGram_partialGram
     rw [extChartAt_source_eq_chartAt_source (I := I)]
     exact mem_chart_source H x
   have hy₀_target : y₀ ∈ (extChartAt I x).target := by
-    simpa [y₀] using (extChartAt I x).map_source hxsrc
+    simp [y₀, (extChartAt I x).map_source hxsrc]
   have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ :=
     (isOpen_extChartAt_target (I := I) x).mem_nhds hy₀_target
   have hsymm_y₀ : (extChartAt I x).symm y₀ = x := by
-    simpa [y₀] using (extChartAt I x).left_inv hxsrc
+    simp [y₀, (extChartAt I x).left_inv hxsrc]
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact mem_chart_source H x

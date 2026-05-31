@@ -104,8 +104,9 @@ def formula510Value [T2Space M] [SigmaCompactSpace M]
 
 This contains only book-facing analytic/geometric data, not the coordinate
 derivative predicates from `LeviCivita/Variation.lean`.  Those predicates
-should be supplied by theorem-level regularity rules, not by a bundled
-component package. -/
+should be produced by real regularity theorems where possible; otherwise they
+remain visible lower-level predicates rather than fields of a bundled component
+package. -/
 structure PerelmanFVariationRegularity
     [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {potential : M -> Real}
@@ -161,7 +162,8 @@ theorem f_firstVariation_formula510
         metricVariationTrace metricVariationRicciHess) := by
   refine ⟨hpath, ?_⟩
   -- The remaining proof is the intended high-level bridge:
-  -- canonical path -> theorem-level variation rules -> `formula510_producer`.
+  -- canonical path -> proved rules plus explicit regularity inputs ->
+  -- `formula510_producer`.
   sorry
 
 end Perelman

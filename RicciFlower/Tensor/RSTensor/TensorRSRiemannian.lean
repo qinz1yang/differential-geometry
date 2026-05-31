@@ -86,6 +86,78 @@ def normSqRS
       innerRS (I := I) (g := g) (x := x) r s A A := by
   rfl
 
+/-- Squared component size of a mixed `(r,s)` tensor in a tangent basis. -/
+def componentL2SqRS
+    {x : M} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    {r s : Nat} (A : TensorRSSpace r s I x) : Real :=
+  ∑ upper : Fin r -> Idx, ∑ lower : Fin s -> Idx,
+    (componentRS (I := I) basis A upper lower) ^ 2
+
+/-- In an orthonormal-coordinate basis, the Hilbert-Schmidt squared norm of a
+mixed tensor is the sum of squares of its components. -/
+theorem normSqRS_identity_eq_componentL2SqRS
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (r s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : TensorRSSpace r s I x) :
+    normSqRS (I := I) (g := g) (x := x) r s A =
+      componentL2SqRS (I := I) basis A := by
+  classical
+  rw [normSqRS_eq_inner, innerRS_eq_trace]
+  rw [LinearMap.trace_eq_matrix_trace Real (tensor0SBasis (I := I) basis r)
+    ((adjointRS (I := I) (g := g) (x := x) r s A).comp A.toLinearMap)]
+  rw [Matrix.trace]
+  unfold componentL2SqRS
+  apply Finset.sum_congr rfl
+  intro upper _
+  rw [Matrix.diag_apply, LinearMap.toMatrix_apply]
+  change
+    (tensor0SBasis (I := I) basis r).repr
+        ((adjointRS (I := I) (g := g) (x := x) r s A)
+          (A (basisTensor0S (I := I) basis upper))) upper =
+      ∑ lower : Fin s -> Idx,
+        (componentRS (I := I) basis A upper lower) ^ 2
+  rw [tensor0SBasis_repr]
+  rw [← inner0S_basisTensor_right_identity (I := I) g x r basis hinv
+    ((adjointRS (I := I) (g := g) (x := x) r s A)
+      (A (basisTensor0S (I := I) basis upper))) upper]
+  rw [adjointRS_inner]
+  rw [inner0S_eq_coord (I := I) g x s basis
+    (identityInvMetric (Idx := Idx)) hinv,
+    coordInner0S_identity_eq_sum (I := I) (x := x) s
+      (A (basisTensor0S (I := I) basis upper))
+      (A (basisTensor0S (I := I) basis upper)) basis]
+  apply Finset.sum_congr rfl
+  intro lower _
+  change
+    componentRS (I := I) basis A upper lower *
+        componentRS (I := I) basis A upper lower =
+      (componentRS (I := I) basis A upper lower) ^ 2
+  ring
+
+/-- The `(1,2)` specialization of
+`normSqRS_identity_eq_componentL2SqRS`, written as a three-index sum. -/
+theorem normSqRS_one_two_identity_eq_sum
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : TensorRSSpace 1 2 I x) :
+    normSqRS (I := I) (g := g) (x := x) 1 2 A =
+      ∑ k : Idx, ∑ i : Idx, ∑ j : Idx,
+        (componentRS (I := I) basis A (fun _ : Fin 1 => k)
+          (fun q : Fin 2 => if q = 0 then i else j)) ^ 2 := by
+  rw [normSqRS_identity_eq_componentL2SqRS (I := I) g x 1 2 basis hinv A]
+  unfold componentL2SqRS
+  rw [sum_fin_one_fun]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [sum_fin_two_fun]
+
 /-- A time-dependent pointwise realized `(r,s)` tensor field. -/
 abbrev TensorRSTimeField
     (I : ModelWithCorners Real E H) (M : Type*) [TopologicalSpace M]
