@@ -1,30 +1,17 @@
 /*
 
 # whitelist
-!/RicciFlower/
-!/RicciFlower/**
+!/DifferentialGeometry/
 !/.github
 !/Examples/
-!/BK/
-!/BK/**
-!/BK.lean
-!/RicciFlower.lean
+!/DifferentialGeometry.lean
 !/lakefile.toml
 !/lean-toolchain
 !/README.md
 !/.gitignore
 # end of whitelist
 
-/DGreference/
-
 .lake/
 
 .DS_Store
 **/.DS_Store
-*.md
-!/RicciFlower/DG_REFERENCE_PDE_TRACKING.md
-!/RicciFlower/SPLIT_ARCHIVE.md
-!/BK.md
-!/BK/**/*.md
-/DifferentialGeometry
-/DifferentialGeometry

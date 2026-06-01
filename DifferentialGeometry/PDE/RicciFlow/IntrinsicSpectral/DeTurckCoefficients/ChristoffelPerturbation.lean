@@ -1,0 +1,1098 @@
+import DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.InverseGramPerturbation
+import DifferentialGeometry.PDE.DeTurck.RicciLinearization.InvGramPerturbation
+import DifferentialGeometry.Geometry.Curvature.Ricci
+
+/-!
+# Lipschitz dependence of the chart Christoffel symbols and their derivatives on the metric jet
+
+For a fixed chart base point `α` on a smooth manifold `M` and two smooth
+Riemannian metrics `g₁, g₂`, the chart Christoffel symbols
+`chartChristoffel g i j k` (the second-kind symbols `Γ^k_{ij}(g)` in the chart-`α`
+frame) and their first model-direction derivatives
+`∂_m Γ^k_{ij}(g)` satisfy entrywise Lipschitz estimates in the chart jets of the
+metric difference `g₁ − g₂`:
+
+```
+|Γ^k_{ij}(g₁)(y) − Γ^k_{ij}(g₂)(y)| ≤ C · (chart 1-jet seminorm of (g₁−g₂) at y)
+|∂_m Γ^k_{ij}(g₁)(y) − ∂_m Γ^k_{ij}(g₂)(y)| ≤ C · (chart 2-jet seminorm of (g₁−g₂) at y)
+```
+
+with `C` uniform over a compact subset `K` of the chart source and over the
+"R-ball" of metrics (a uniform entry bound on the inverse-Gram matrices, exactly
+the hypothesis supplied to the inverse-Gram perturbation leaf).
+
+## Strategy
+
+The chart Christoffel symbol has the explicit closed-form chart formula
+
+```
+Γ^k_{ij}(g)(y) = ½ ∑_l G^{kl}(g)(y) · S^g_{ij,l}(y),
+S^g_{ij,l}(y) := ∂_i G_{lj}(g)(y) + ∂_j G_{li}(g)(y) − ∂_l G_{ij}(g)(y),
+```
+
+where `G^{kl}(g) = chartInvGramOnE g k l` and `G_{ij}(g) = chartGramOnE g i j`.
+Both `G^{kl}` (the inverse-Gram entries) and `∂ G_{ij}` (the metric first
+partials) are smooth on the interior of the chart target, hence uniformly bounded
+on a compact subset.  The Christoffel difference splits, summand by summand, as a
+difference of products `A₁B₁ − A₂B₂ = (A₁ − A₂)B₁ + A₂(B₁ − B₂)`:
+
+```
+Γ^k_{ij}(g₁) − Γ^k_{ij}(g₂) = ½ ∑_l [(G₁^{kl} − G₂^{kl}) S^{g₁}_{ij,l}
+                                       + G₂^{kl} (S^{g₁}_{ij,l} − S^{g₂}_{ij,l})].
+```
+
+The first factor `G₁^{kl} − G₂^{kl}` is controlled by the inverse-Gram
+perturbation bound `exists_chartInvGramMatrix_lipschitz_on_compact` against the
+`0`-jet difference; the second `S^{g₁}_{ij,l} − S^{g₂}_{ij,l}` is a sum of metric
+first-partial differences, controlled by the `1`-jet difference seminorm.  The
+factors `S^{g₁}_{ij,l}` and `G₂^{kl}` are uniformly bounded on `K`.
+
+Differentiating once more in direction `m` and applying the Leibniz rule to each
+product `G^{kl} · S^g_{ij,l}` produces, for `∂_m Γ`, an expression in
+`G^{kl}`, `∂_m G^{kl}`, `∂ G`, `∂² G`; the same difference-of-products
+majorisation against the `2`-jet difference seminorm gives the second estimate.
+
+## Main results
+
+* `chartMetricJet1DiffSup`, `chartMetricJet2DiffSup` — the chart `1`-jet and
+  `2`-jet seminorms of the metric difference at `y` (entry-`L¹` aggregates of the
+  Gram, Gram-partial and Gram-second-partial differences, in the spirit of
+  `chartGramDiffSup`).
+* `exists_chartChristoffel_lipschitz_on_compact` — the headline Γ bound:
+  `|Γ^k_{ij}(g₁)(y) − Γ^k_{ij}(g₂)(y)| ≤ C · chartMetricJet1DiffSup g₁ g₂ α y`
+  for all `y ∈ K`, uniform over `K`.
+* `exists_chartChristoffelDeriv_lipschitz_on_compact` — the headline `∂Γ` bound:
+  `|∂_m Γ^k_{ij}(g₁)(y) − ∂_m Γ^k_{ij}(g₂)(y)| ≤ C · chartMetricJet2DiffSup g₁ g₂ α y`
+  for all `y ∈ K`, uniform over `K`.
+-/
+
+noncomputable section
+
+set_option linter.style.setOption false
+set_option synthInstance.maxHeartbeats 800000
+set_option maxHeartbeats 1600000
+
+open Bundle Set Matrix
+open scoped Manifold Topology ContDiff BigOperators Matrix
+
+namespace DifferentialGeometry
+namespace PDE
+namespace RicciFlow
+namespace IntrinsicSpectral
+namespace DeTurckCoefficients
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+/-- The single `(a, l, b)`-entry of the chart first-partial difference:
+`|∂_a G_{lb}(g₁)(y) − ∂_a G_{lb}(g₂)(y)|`. -/
+def gramPartialDiffEntry (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (p : (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E)) ×
+      (Fin (Module.finrank ℝ E))) : ℝ :=
+  |partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.1 p.2.2) y -
+    partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.1 p.2.2) y|
+
+/-- The chart first-partial difference magnitude at `y`: the entry-`L¹` sum over
+all `(l, a, b)` of `|∂_a G_{lb}(g₁)(y) − ∂_a G_{lb}(g₂)(y)|`.  This captures the
+`1`-jet (first-derivative) part of the metric difference in the chart-`α` frame. -/
+def chartGramPartialDiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  ∑ p, gramPartialDiffEntry (I := I) (M := M) g₁ g₂ α y p
+
+/-- `chartGramPartialDiffSup` is non-negative. -/
+lemma chartGramPartialDiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y :=
+  Finset.sum_nonneg (fun _ _ => abs_nonneg _)
+
+/-- Each chart first-partial difference is bounded by `chartGramPartialDiffSup`. -/
+lemma partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (a l b : Fin (Module.finrank ℝ E)) :
+    |partialDeriv (E := E) a (chartGramOnE (I := I) g₁ α l b) y -
+        partialDeriv (E := E) a (chartGramOnE (I := I) g₂ α l b) y| ≤
+      chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  have h := Finset.single_le_sum
+    (f := gramPartialDiffEntry (I := I) (M := M) g₁ g₂ α y)
+    (fun p _ => abs_nonneg _) (Finset.mem_univ (l, a, b))
+  exact h
+
+/-- The single `(c, a, l, b)`-entry of the chart second-partial difference:
+`|∂_c ∂_a G_{lb}(g₁)(y) − ∂_c ∂_a G_{lb}(g₂)(y)|`. -/
+def gramPartial2DiffEntry (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (p : (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E)) ×
+      (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) : ℝ :=
+  |partialDeriv (E := E) p.1
+      (partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.2.2.1 p.2.2.2)) y -
+    partialDeriv (E := E) p.1
+      (partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.2.2.1 p.2.2.2)) y|
+
+/-- The chart second-partial difference magnitude at `y`: the entry-`L¹` sum over
+all `(c, a, l, b)` of `|∂_c ∂_a G_{lb}(g₁)(y) − ∂_c ∂_a G_{lb}(g₂)(y)|`.  This
+captures the `2`-jet (second-derivative) part of the metric difference. -/
+def chartGramPartial2DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  ∑ p, gramPartial2DiffEntry (I := I) (M := M) g₁ g₂ α y p
+
+/-- `chartGramPartial2DiffSup` is non-negative. -/
+lemma chartGramPartial2DiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  Finset.sum_nonneg (fun _ _ => abs_nonneg _)
+
+/-- Each chart second-partial difference is bounded by `chartGramPartial2DiffSup`. -/
+lemma partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (c a l b : Fin (Module.finrank ℝ E)) :
+    |partialDeriv (E := E) c
+          (partialDeriv (E := E) a (chartGramOnE (I := I) g₁ α l b)) y -
+        partialDeriv (E := E) c
+          (partialDeriv (E := E) a (chartGramOnE (I := I) g₂ α l b)) y| ≤
+      chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  have h := Finset.single_le_sum
+    (f := gramPartial2DiffEntry (I := I) (M := M) g₁ g₂ α y)
+    (fun p _ => abs_nonneg _) (Finset.mem_univ (c, a, l, b))
+  exact h
+
+/-- The **chart `1`-jet seminorm** of the metric difference at `y`: the `0`-jet
+(`chartGramDiffSup`) plus the first-partial aggregate (`chartGramPartialDiffSup`).
+The Christoffel symbols depend on `(g, ∂g)`, so this is the correct magnitude for
+the Christoffel Lipschitz bound. -/
+def chartMetricJet1DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y)
+    + chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y
+
+/-- The **chart `2`-jet seminorm** of the metric difference at `y`: the `1`-jet
+seminorm plus the second-partial aggregate (`chartGramPartial2DiffSup`).  The
+Christoffel derivatives depend on `(g, ∂g, ∂²g)`, so this is the correct magnitude
+for the `∂Γ` Lipschitz bound. -/
+def chartMetricJet2DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y
+    + chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y
+
+/-- `chartMetricJet1DiffSup` is non-negative. -/
+lemma chartMetricJet1DiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  add_nonneg (chartGramDiffSup_nonneg _ _ _ _)
+    (chartGramPartialDiffSup_nonneg _ _ _ _)
+
+/-- `chartMetricJet2DiffSup` is non-negative. -/
+lemma chartMetricJet2DiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  add_nonneg (chartMetricJet1DiffSup_nonneg _ _ _ _)
+    (chartGramPartial2DiffSup_nonneg _ _ _ _)
+
+/-- The `0`-jet (inverse-Gram-relevant) magnitude is dominated by the `1`-jet
+seminorm. -/
+lemma chartGramDiffSup_le_jet1
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) ≤
+      chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_right (chartGramPartialDiffSup_nonneg _ _ _ _)
+
+/-- The first-partial aggregate is dominated by the `1`-jet seminorm. -/
+lemma chartGramPartialDiffSup_le_jet1
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y ≤
+      chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_left (chartGramDiffSup_nonneg _ _ _ _)
+
+/-- The `1`-jet seminorm is dominated by the `2`-jet seminorm. -/
+lemma chartMetricJet1DiffSup_le_jet2
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+      chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_right (chartGramPartial2DiffSup_nonneg _ _ _ _)
+
+/-- The second-partial aggregate is dominated by the `2`-jet seminorm. -/
+lemma chartGramPartial2DiffSup_le_jet2
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+      chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_left (chartMetricJet1DiffSup_nonneg _ _ _ _)
+
+/-- For `y` in the interior of the chart target, the corresponding manifold point
+lies in the chart base set. -/
+lemma symm_mem_baseSet_of_mem_interior_target
+    (α : M) {y : E} (hy : y ∈ interior (extChartAt I α).target) :
+    ((extChartAt I α).symm y) ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+  have hy_target : y ∈ (extChartAt I α).target := interior_subset hy
+  have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+    (extChartAt I α).map_target hy_target
+  rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
+  rw [trivializationAt_baseSet_eq_chartAt_source]
+  exact hsource
+
+/-- The first partial of a function that is `C^∞` on the (open) chart-target
+interior is again `C^∞` there. -/
+private lemma partialDeriv_contDiffOn_interior_of_contDiffOn
+    (α : M) {f : E → ℝ}
+    (hf : ContDiffOn ℝ ∞ f (interior (extChartAt I α).target))
+    (a : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞ (partialDeriv (E := E) a f) (interior (extChartAt I α).target) := by
+  have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ f) (interior (extChartAt I α).target) :=
+    hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
+  unfold partialDeriv
+  exact hfderiv.clm_apply contDiffOn_const
+
+/-- The first partial of `chartGramOnE` is `C^∞` on the chart-target interior. -/
+private lemma partial_chartGramOnE_contDiffOn_int
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (a l b : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞ (partialDeriv (E := E) a (chartGramOnE (I := I) g α l b))
+      (interior (extChartAt I α).target) :=
+  partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α
+    ((chartGramOnE_contDiffOn (I := I) g α l b).mono interior_subset) a
+
+/-- The first partial of `chartInvGramOnE` is `C^∞` on the chart-target interior. -/
+private lemma partial_chartInvGramOnE_contDiffOn_int
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (m k l : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞ (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l))
+      (interior (extChartAt I α).target) :=
+  partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α
+    ((chartInvGramOnE_contDiffOn (I := I) g α k l).mono interior_subset) m
+
+/-- The second iterated partial of `chartGramOnE` is `C^∞` on the chart-target
+interior. -/
+private lemma partial2_chartGramOnE_contDiffOn_int
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (c a l b : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞
+      (partialDeriv (E := E) c (partialDeriv (E := E) a (chartGramOnE (I := I) g α l b)))
+      (interior (extChartAt I α).target) :=
+  partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α
+    (partial_chartGramOnE_contDiffOn_int (I := I) g α a l b) c
+
+/-- The metric-partial bracket `S^g_{ij,l}(y) = ∂_i G_{lj} + ∂_j G_{li} − ∂_l G_{ij}`
+appearing in the Christoffel formula. -/
+def gramBracket (g : SmoothRiemannianMetric I M) (α : M)
+    (i j l : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
+  partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
+    partialDeriv (E := E) j (chartGramOnE (I := I) g α l i) y -
+    partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y
+
+/-- The chart Christoffel symbol rewritten with `chartInvGramOnE` and `gramBracket`. -/
+lemma chartChristoffel_eq_sum_invGramOnE_bracket
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (i j k : Fin (Module.finrank ℝ E)) (y : E) :
+    chartChristoffel (I := I) g α i j k y =
+      (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (I := I) g α k l y * gramBracket (I := I) g α i j l y := by
+  rw [chartChristoffel_def]
+  rfl
+
+/-- A continuous real function on the interior of the chart target is uniformly
+bounded (in absolute value) on a compact subset `K`. -/
+private lemma exists_bound_of_contDiffOn_interior
+    {f : E → ℝ}
+    (α : M)
+    (hf : ContDiffOn ℝ ∞ f (interior (extChartAt I α).target))
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, |f y| ≤ C := by
+  classical
+  have hcont : ContinuousOn f K := (hf.continuousOn).mono hKsub
+  by_cases hKne : K.Nonempty
+  · have hcont_abs : ContinuousOn (fun y => |f y|) K :=
+      continuous_abs.comp_continuousOn hcont
+    obtain ⟨y₀, hy₀K, hy₀max⟩ := hK.exists_isMaxOn hKne hcont_abs
+    refine ⟨|f y₀|, abs_nonneg _, fun y hy => hy₀max hy⟩
+  · exact ⟨0, le_refl 0, fun y hy => absurd ⟨y, hy⟩ hKne⟩
+
+set_option linter.unusedFintypeInType false in
+/-- A finite family of functions, each `C^∞` on the chart-target interior, admits a
+single uniform bound on a compact subset `K`. -/
+private lemma exists_uniform_bound_of_family
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (α : M) (f : ι → E → ℝ)
+    (hf : ∀ i, ContDiffOn ℝ ∞ (f i) (interior (extChartAt I α).target))
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ i, |f i y| ≤ C := by
+  classical
+  have hbound : ∀ i, ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, |f i y| ≤ C := fun i =>
+    exists_bound_of_contDiffOn_interior (I := I) α (hf i) hK hKsub
+  choose C hC_nn hC_bd using hbound
+  refine ⟨Finset.univ.sup' Finset.univ_nonempty C, ?_, ?_⟩
+  · exact le_trans (hC_nn (Classical.arbitrary ι))
+      (Finset.le_sup' C (Finset.mem_univ (Classical.arbitrary ι)))
+  · intro y hy i
+    exact (hC_bd i y hy).trans (Finset.le_sup' C (Finset.mem_univ i))
+
+/-- Uniform bound on the inverse-Gram entries (as functions of `y`) over `K`. -/
+private lemma exists_chartInvGramOnE_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ k l : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g α k l y| ≤ C := by
+  classical
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_bound_of_family (I := I) α
+    (fun p : (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E)) =>
+      chartInvGramOnE (I := I) g α p.1 p.2)
+    (fun p => (chartInvGramOnE_contDiffOn (I := I) g α p.1 p.2).mono interior_subset) hK hKsub
+  exact ⟨C, hC_nn, fun y hy k l => hC y hy (k, l)⟩
+
+/-- Uniform bound on the `gramBracket` over `K`. -/
+private lemma exists_gramBracket_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ i j l : Fin (Module.finrank ℝ E),
+      |gramBracket (I := I) g α i j l y| ≤ C := by
+  classical
+  have hbracket_smooth : ∀ p : ((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E)),
+      ContDiffOn ℝ ∞ (gramBracket (I := I) g α p.1.1 p.1.2 p.2)
+        (interior (extChartAt I α).target) := by
+    intro p
+    refine ContDiffOn.sub (ContDiffOn.add ?_ ?_) ?_
+    · exact partial_chartGramOnE_contDiffOn_int (I := I) g α p.1.1 p.2 p.1.2
+    · exact partial_chartGramOnE_contDiffOn_int (I := I) g α p.1.2 p.2 p.1.1
+    · exact partial_chartGramOnE_contDiffOn_int (I := I) g α p.2 p.1.1 p.1.2
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_bound_of_family (I := I) α
+    (fun p : ((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E)) => gramBracket (I := I) g α p.1.1 p.1.2 p.2)
+    hbracket_smooth hK hKsub
+  exact ⟨C, hC_nn, fun y hy i j l => hC y hy ((i, j), l)⟩
+
+/-- Uniform bound on the first partials of the inverse-Gram entries over `K`. -/
+private lemma exists_partialDeriv_chartInvGramOnE_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ m k l : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y| ≤ C := by
+  classical
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_bound_of_family (I := I) α
+    (fun p : ((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E)) =>
+      partialDeriv (E := E) p.1.1 (chartInvGramOnE (I := I) g α p.1.2 p.2))
+    (fun p => partial_chartInvGramOnE_contDiffOn_int (I := I) g α p.1.1 p.1.2 p.2) hK hKsub
+  exact ⟨C, hC_nn, fun y hy m k l => hC y hy ((m, k), l)⟩
+
+/-- **Per-point Christoffel Lipschitz bound.**  Let `g₁, g₂` be smooth Riemannian
+metrics, `α` a chart base point, and `y` in the interior of the chart target.
+If the inverse-Gram entries of `g₂` are bounded by `M_b` on `K`, the
+`gramBracket` of `g₁` by `P`, and the inverse-Gram entry differences by the
+`0`-jet Lipschitz bound `Cinv · chartGramDiffSup`, then
+
+`|Γ^k_{ij}(g₁)(y) − Γ^k_{ij}(g₂)(y)| ≤ ½ n · (Cinv·P + 3·M_b) · chartMetricJet1DiffSup g₁ g₂ α y`.
+
+The factor `3` on `M_b` comes from the three first-partial terms of the
+`gramBracket`. -/
+theorem chartChristoffel_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
+    {Cinv M_b P : ℝ}
+    (hP_nn : 0 ≤ P) (hMb_nn : 0 ≤ M_b)
+    (hMb : ∀ k l : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g₂ α k l y| ≤ M_b)
+    (hP : ∀ i j l : Fin (Module.finrank ℝ E),
+      |gramBracket (I := I) g₁ α i j l y| ≤ P)
+    (hCinv : ∀ k l : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y| ≤
+        Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y))
+    (hCinv_nn : 0 ≤ Cinv)
+    (i j k : Fin (Module.finrank ℝ E)) :
+    |chartChristoffel (I := I) g₁ α i j k y - chartChristoffel (I := I) g₂ α i j k y| ≤
+      (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) * (Cinv * P + 3 * M_b) *
+        chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  rw [chartChristoffel_eq_sum_invGramOnE_bracket, chartChristoffel_eq_sum_invGramOnE_bracket]
+  rw [← mul_sub, ← Finset.sum_sub_distrib, abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1/2)]
+  set jet1 : ℝ := chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y with hjet1_def
+  have hjet1_nn : 0 ≤ jet1 := chartMetricJet1DiffSup_nonneg _ _ _ _
+  rw [show (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) * (Cinv * P + 3 * M_b) * jet1 =
+        (1 / 2 : ℝ) * ((Module.finrank ℝ E : ℝ) * ((Cinv * P + 3 * M_b) * jet1)) by ring]
+  refine mul_le_mul_of_nonneg_left ?_ (by norm_num : (0:ℝ) ≤ 1/2)
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  refine le_trans (Finset.sum_le_sum
+    (g := fun _ : Fin (Module.finrank ℝ E) => (Cinv * P + 3 * M_b) * jet1)
+    (fun l _ => ?_)) ?_
+  · have hsplit :
+        chartInvGramOnE (I := I) g₁ α k l y * gramBracket (I := I) g₁ α i j l y -
+          chartInvGramOnE (I := I) g₂ α k l y * gramBracket (I := I) g₂ α i j l y =
+        (chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
+            gramBracket (I := I) g₁ α i j l y +
+          chartInvGramOnE (I := I) g₂ α k l y *
+            (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y) := by
+      ring
+    rw [hsplit]
+    refine (abs_add_le _ _).trans ?_
+    have hbracketDiff :
+        |gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y| ≤
+          3 * chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y := by
+      have h1 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+        g₁ g₂ α y i l j
+      have h2 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+        g₁ g₂ α y j l i
+      have h3 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+        g₁ g₂ α y l i j
+      set d1 : ℝ := partialDeriv (E := E) i (chartGramOnE (I := I) g₁ α l j) y -
+        partialDeriv (E := E) i (chartGramOnE (I := I) g₂ α l j) y with hd1
+      set d2 : ℝ := partialDeriv (E := E) j (chartGramOnE (I := I) g₁ α l i) y -
+        partialDeriv (E := E) j (chartGramOnE (I := I) g₂ α l i) y with hd2
+      set d3 : ℝ := partialDeriv (E := E) l (chartGramOnE (I := I) g₁ α i j) y -
+        partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j) y with hd3
+      have hbrk_eq :
+          gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y =
+            d1 + d2 - d3 := by
+        simp only [hd1, hd2, hd3, gramBracket]; ring
+      have htri : |d1 + d2 - d3| ≤ |d1| + |d2| + |d3| := by
+        calc |d1 + d2 - d3| = |d1 + d2 + (-d3)| := by ring_nf
+          _ ≤ |d1 + d2| + |(-d3)| := abs_add_le _ _
+          _ ≤ (|d1| + |d2|) + |(-d3)| := by gcongr; exact abs_add_le _ _
+          _ = |d1| + |d2| + |d3| := by rw [abs_neg]
+      rw [hbrk_eq]
+      calc |d1 + d2 - d3| ≤ |d1| + |d2| + |d3| := htri
+        _ ≤ chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y +
+              chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y +
+              chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y :=
+            add_le_add (add_le_add h1 h2) h3
+        _ = 3 * chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y := by ring
+    have hsum1 :
+        |(chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
+            gramBracket (I := I) g₁ α i j l y| ≤
+          Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) * P := by
+      rw [abs_mul]
+      refine mul_le_mul (hCinv k l) (hP i j l) (abs_nonneg _)
+        (mul_nonneg hCinv_nn (chartGramDiffSup_nonneg _ _ _ _))
+    have hsum2 :
+        |chartInvGramOnE (I := I) g₂ α k l y *
+            (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y)| ≤
+          M_b * (3 * chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y) := by
+      rw [abs_mul]
+      refine mul_le_mul (hMb k l) hbracketDiff (abs_nonneg _) hMb_nn
+    refine (add_le_add hsum1 hsum2).trans ?_
+    have hgram_le : chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) ≤
+        jet1 := chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y
+    have hpartial_le : 3 * chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y ≤ 3 * jet1 :=
+      mul_le_mul_of_nonneg_left (chartGramPartialDiffSup_le_jet1 _ _ _ _) (by norm_num)
+    calc Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) * P +
+            M_b * (3 * chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y)
+        ≤ Cinv * jet1 * P + M_b * (3 * jet1) := by
+          refine add_le_add ?_ ?_
+          · refine mul_le_mul_of_nonneg_right ?_ hP_nn
+            exact mul_le_mul_of_nonneg_left hgram_le hCinv_nn
+          · exact mul_le_mul_of_nonneg_left hpartial_le hMb_nn
+      _ = (Cinv * P + 3 * M_b) * jet1 := by ring
+  · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, le_refl]
+
+/-- **Uniform Lipschitz dependence of the chart Christoffel symbols on the chart
+`1`-jet of the metric difference, over a compact subset of the chart-target
+interior.**
+
+For two smooth Riemannian metrics `g₁, g₂`, a chart base point `α`, and a compact
+subset `K` of the interior of the chart-`α` target, there is a single constant
+`C > 0` such that for every `y ∈ K` and all indices `(i, j, k)`,
+```
+|Γ^k_{ij}(g₁)(y) − Γ^k_{ij}(g₂)(y)| ≤ C · chartMetricJet1DiffSup g₁ g₂ α y .
+```
+The constant is `½ n · (Cinv·P + 3·M_b)`, built from the fibre dimension `n`, the
+inverse-Gram perturbation constant `Cinv` from
+`exists_chartInvGramMatrix_lipschitz_on_compact`, a uniform inverse-Gram entry
+bound `M_b`, and a uniform `gramBracket` bound `P`; all are uniform over the chart
+kernel `y ∈ K`.  On a fixed compact `R`-ball of metrics the entry bound `M_b` may
+be taken uniform over the ball, so `C` becomes the desired `C(R)`. -/
+theorem exists_chartChristoffel_lipschitz_on_compact
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K)
+    (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g₁ α i j k y - chartChristoffel (I := I) g₂ α i j k y| ≤
+        C * chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  have hKsub_target : K ⊆ (extChartAt I α).target := hKsub.trans interior_subset
+  set K' : Set M := (extChartAt I α).symm '' K with hK'_def
+  have hK'_compact : IsCompact K' :=
+    hK.image_of_continuousOn ((continuousOn_extChartAt_symm (I := I) α).mono hKsub_target)
+  have hK'_sub : K' ⊆ (chartAt H α).source := by
+    rintro x ⟨y, hyK, rfl⟩
+    have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+      (extChartAt I α).map_target (hKsub_target hyK)
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at hsource
+  obtain ⟨Cinv, hCinv_pos, hCinv⟩ :=
+    exists_chartInvGramMatrix_lipschitz_on_compact (I := I) (M := M) g₁ g₂ α hK'_compact hK'_sub
+  obtain ⟨M_b, hMb_nn, hMb⟩ :=
+    exists_chartInvGramOnE_bound_on_compact (I := I) g₂ α hK hKsub
+  obtain ⟨P, hP_nn, hP⟩ :=
+    exists_gramBracket_bound_on_compact (I := I) g₁ α hK hKsub
+  refine ⟨(1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) * (Cinv * P + 3 * M_b) + 1, ?_, ?_⟩
+  · have hnn : 0 ≤ (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) * (Cinv * P + 3 * M_b) := by
+      refine mul_nonneg (mul_nonneg (by norm_num) (by positivity)) ?_
+      have : 0 ≤ Cinv * P := mul_nonneg hCinv_pos.le hP_nn
+      linarith
+    linarith
+  intro y hy i j k
+  have hxy_mem : (extChartAt I α).symm y ∈ K' := ⟨y, hy, rfl⟩
+  have hCinv' : ∀ k l : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y| ≤
+        Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) := by
+    intro k l
+    have h := hCinv ((extChartAt I α).symm y) hxy_mem k l
+    simpa only [chartInvGramOnE_def] using h
+  have h_pt := chartChristoffel_sub_abs_le (I := I) (M := M) g₁ g₂ α
+    hP_nn hMb_nn (fun k l => hMb y hy k l) (fun i j l => hP y hy i j l)
+    hCinv' hCinv_pos.le i j k
+  have hjet1_nn : 0 ≤ chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y :=
+    chartMetricJet1DiffSup_nonneg _ _ _ _
+  refine h_pt.trans ?_
+  refine mul_le_mul_of_nonneg_right (by linarith) hjet1_nn
+
+/-- The inverse-Gram entry is differentiable at points of the chart-target
+interior. -/
+private lemma chartInvGramOnE_differentiableAt_int
+    (g : SmoothRiemannianMetric I M) (α : M) (k l : Fin (Module.finrank ℝ E))
+    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
+    DifferentiableAt ℝ (chartInvGramOnE (I := I) g α k l) y := by
+  have hcd : ContDiffOn ℝ ∞ (chartInvGramOnE (I := I) g α k l)
+      (interior (extChartAt I α).target) :=
+    (chartInvGramOnE_contDiffOn (I := I) g α k l).mono interior_subset
+  exact (hcd.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
+
+/-- The first partial of `chartGramOnE` is differentiable at points of the
+chart-target interior. -/
+private lemma partial_chartGramOnE_differentiableAt_int
+    (g : SmoothRiemannianMetric I M) (α : M) (a l b : Fin (Module.finrank ℝ E))
+    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
+    DifferentiableAt ℝ (partialDeriv (E := E) a (chartGramOnE (I := I) g α l b)) y := by
+  exact ((partial_chartGramOnE_contDiffOn_int (I := I) g α a l b).contDiffAt
+    (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
+
+/-- The `gramBracket` is differentiable at points of the chart-target interior. -/
+private lemma gramBracket_differentiableAt_int
+    (g : SmoothRiemannianMetric I M) (α : M) (i j l : Fin (Module.finrank ℝ E))
+    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
+    DifferentiableAt ℝ (gramBracket (I := I) g α i j l) y := by
+  have h1 := partial_chartGramOnE_differentiableAt_int (I := I) g α i l j hy
+  have h2 := partial_chartGramOnE_differentiableAt_int (I := I) g α j l i hy
+  have h3 := partial_chartGramOnE_differentiableAt_int (I := I) g α l i j hy
+  exact (h1.add h2).sub h3
+
+/-- The derivative `∂_m S_{ij,l}(y) = ∂_m∂_i G_{lj} + ∂_m∂_j G_{li} − ∂_m∂_l G_{ij}`
+of the `gramBracket`. -/
+def gramBracketDeriv (g : SmoothRiemannianMetric I M) (α : M)
+    (m i j l : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
+  partialDeriv (E := E) m (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) y +
+    partialDeriv (E := E) m (partialDeriv (E := E) j (chartGramOnE (I := I) g α l i)) y -
+    partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y
+
+/-- The partial of `gramBracket` equals `gramBracketDeriv` on the chart-target
+interior. -/
+lemma partialDeriv_gramBracket_eq
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (m i j l : Fin (Module.finrank ℝ E)) {y : E}
+    (hy : y ∈ interior (extChartAt I α).target) :
+    partialDeriv (E := E) m (gramBracket (I := I) g α i j l) y =
+      gramBracketDeriv (I := I) g α m i j l y := by
+  have h1 := partial_chartGramOnE_differentiableAt_int (I := I) g α i l j hy
+  have h2 := partial_chartGramOnE_differentiableAt_int (I := I) g α j l i hy
+  have h3 := partial_chartGramOnE_differentiableAt_int (I := I) g α l i j hy
+  unfold gramBracket gramBracketDeriv
+  rw [partialDeriv_sub (i := m) (fun y => partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
+        partialDeriv (E := E) j (chartGramOnE (I := I) g α l i) y)
+      (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) (h1.add h2) h3,
+    partialDeriv_add (i := m) (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j))
+      (partialDeriv (E := E) j (chartGramOnE (I := I) g α l i)) h1 h2]
+
+/-- **Leibniz expansion of `∂_m Γ`.**  On the chart-target interior,
+`∂_m Γ^k_{ij}(g)(y) = ½ ∑_l [ (∂_m G^{kl})·S_{ij,l} + G^{kl}·(∂_m S_{ij,l}) ]`. -/
+theorem partialDeriv_chartChristoffel_eq
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (m i j k : Fin (Module.finrank ℝ E)) {y : E}
+    (hy : y ∈ interior (extChartAt I α).target) :
+    partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y =
+      (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
+        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y *
+            gramBracket (I := I) g α i j l y +
+          chartInvGramOnE (I := I) g α k l y *
+            gramBracketDeriv (I := I) g α m i j l y) := by
+  classical
+  have heq : chartChristoffel (I := I) g α i j k =
+      fun z : E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (I := I) g α k l z * gramBracket (I := I) g α i j l z := by
+    funext z
+    exact chartChristoffel_eq_sum_invGramOnE_bracket (I := I) g α i j k z
+  rw [show partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y =
+        partialDeriv (E := E) m
+          (fun z : E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
+            chartInvGramOnE (I := I) g α k l z * gramBracket (I := I) g α i j l z) y from by
+    rw [heq]]
+  have hsum_diff : ∀ l : Fin (Module.finrank ℝ E),
+      DifferentiableAt ℝ
+        (fun z : E => chartInvGramOnE (I := I) g α k l z * gramBracket (I := I) g α i j l z) y :=
+    fun l => (chartInvGramOnE_differentiableAt_int (I := I) g α k l hy).mul
+      (gramBracket_differentiableAt_int (I := I) g α i j l hy)
+  rw [partialDeriv_const_mul (i := m) (1 / 2 : ℝ)
+      (fun z : E => ∑ l : Fin (Module.finrank ℝ E),
+        chartInvGramOnE (I := I) g α k l z * gramBracket (I := I) g α i j l z)
+      (DifferentiableAt.fun_sum (fun l _ => hsum_diff l))]
+  congr 1
+  rw [partialDeriv_sum (i := m) Finset.univ
+      (fun l => fun z : E => chartInvGramOnE (I := I) g α k l z * gramBracket (I := I) g α i j l z)
+      (fun l _ => hsum_diff l)]
+  refine Finset.sum_congr rfl (fun l _ => ?_)
+  rw [partialDeriv_mul (i := m) (chartInvGramOnE (I := I) g α k l)
+      (gramBracket (I := I) g α i j l)
+      (chartInvGramOnE_differentiableAt_int (I := I) g α k l hy)
+      (gramBracket_differentiableAt_int (I := I) g α i j l hy),
+    partialDeriv_gramBracket_eq (I := I) g α m i j l hy]
+
+/-- Elementary majorisation of a difference of triple products:
+`|A₁B₁C₁ − A₂B₂C₂| ≤ |A₁−A₂|·|B₁|·|C₁| + |A₂|·|B₁−B₂|·|C₁| + |A₂|·|B₂|·|C₁−C₂|`. -/
+private lemma abs_triple_prod_sub_le (A₁ A₂ B₁ B₂ C₁ C₂ : ℝ) :
+    |A₁ * B₁ * C₁ - A₂ * B₂ * C₂| ≤
+      |A₁ - A₂| * |B₁| * |C₁| + |A₂| * |B₁ - B₂| * |C₁| +
+        |A₂| * |B₂| * |C₁ - C₂| := by
+  have hsplit : A₁ * B₁ * C₁ - A₂ * B₂ * C₂ =
+      (A₁ - A₂) * B₁ * C₁ + A₂ * (B₁ - B₂) * C₁ + A₂ * B₂ * (C₁ - C₂) := by ring
+  rw [hsplit]
+  refine (abs_add_le _ _).trans ?_
+  refine add_le_add ((abs_add_le _ _).trans ?_) (le_of_eq ?_)
+  · refine add_le_add (le_of_eq ?_) (le_of_eq ?_)
+    · rw [abs_mul, abs_mul]
+    · rw [abs_mul, abs_mul]
+  · rw [abs_mul, abs_mul]
+
+/-- **Per-point perturbation bound for the inverse-Gram partial derivative.**
+With uniform inverse-Gram entry bound `M_b`, uniform metric-first-partial bound
+`Q`, and the `0`-jet inverse-Gram Lipschitz bound `Cinv·chartGramDiffSup`, the
+difference `∂_m G₁^{kl} − ∂_m G₂^{kl}` is bounded by `n²·(2·Cinv·M_b·Q + M_b²)`
+times the `1`-jet seminorm. -/
+theorem partialDeriv_chartInvGramOnE_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
+    (hy : y ∈ interior (extChartAt I α).target)
+    {Cinv M_b Q : ℝ}
+    (hMb_nn : 0 ≤ M_b) (hQ_nn : 0 ≤ Q) (hCinv_nn : 0 ≤ Cinv)
+    (hMb1 : ∀ k l, |chartInvGramOnE (I := I) g₁ α k l y| ≤ M_b)
+    (hMb2 : ∀ k l, |chartInvGramOnE (I := I) g₂ α k l y| ≤ M_b)
+    (hQ : ∀ m a b, |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y| ≤ Q)
+    (hCinv : ∀ k l, |chartInvGramOnE (I := I) g₁ α k l y -
+        chartInvGramOnE (I := I) g₂ α k l y| ≤
+        Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y))
+    (m k l : Fin (Module.finrank ℝ E)) :
+    |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+        partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 * (2 * Cinv * M_b * Q + M_b ^ 2) *
+        chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  rw [partialDeriv_chartInvGramOnE_eq (I := I) g₁ α y m k l hy,
+    partialDeriv_chartInvGramOnE_eq (I := I) g₂ α y m k l hy]
+  rw [neg_sub_neg, abs_sub_comm, ← Finset.sum_sub_distrib]
+  set jet1 : ℝ := chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y with hjet1_def
+  have hjet1_nn : 0 ≤ jet1 := chartMetricJet1DiffSup_nonneg _ _ _ _
+  set gd : ℝ := chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) with hgd
+  have hgd_le : gd ≤ jet1 := chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y
+  have hgd_nn : 0 ≤ gd := chartGramDiffSup_nonneg _ _ _ _
+  have hterm : ∀ a : Fin (Module.finrank ℝ E),
+      |(∑ b : Fin (Module.finrank ℝ E), chartInvGramOnE (I := I) g₁ α k a y *
+            chartInvGramOnE (I := I) g₁ α b l y *
+            partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y) -
+        (∑ b : Fin (Module.finrank ℝ E), chartInvGramOnE (I := I) g₂ α k a y *
+            chartInvGramOnE (I := I) g₂ α b l y *
+            partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y)| ≤
+        (Module.finrank ℝ E : ℝ) * ((2 * Cinv * M_b * Q + M_b ^ 2) * jet1) := by
+    intro a
+    rw [← Finset.sum_sub_distrib]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    refine le_trans (Finset.sum_le_sum (g := fun _ : Fin (Module.finrank ℝ E) =>
+      (2 * Cinv * M_b * Q + M_b ^ 2) * jet1) (fun b _ => ?_)) ?_
+    · have htp := abs_triple_prod_sub_le
+        (chartInvGramOnE (I := I) g₁ α k a y) (chartInvGramOnE (I := I) g₂ α k a y)
+        (chartInvGramOnE (I := I) g₁ α b l y) (chartInvGramOnE (I := I) g₂ α b l y)
+        (partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y)
+        (partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y)
+      refine htp.trans ?_
+      have hC_ka : |chartInvGramOnE (I := I) g₁ α k a y -
+          chartInvGramOnE (I := I) g₂ α k a y| ≤ Cinv * gd := hCinv k a
+      have hC_bl : |chartInvGramOnE (I := I) g₁ α b l y -
+          chartInvGramOnE (I := I) g₂ α b l y| ≤ Cinv * gd := hCinv b l
+      have hP_ab : |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y -
+          partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y| ≤
+          chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y :=
+        partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M) g₁ g₂ α y m a b
+      have hP_ab' : |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y -
+          partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y| ≤ jet1 :=
+        hP_ab.trans (chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y)
+      have ht1 : |chartInvGramOnE (I := I) g₁ α k a y - chartInvGramOnE (I := I) g₂ α k a y| *
+            |chartInvGramOnE (I := I) g₁ α b l y| *
+            |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y| ≤
+          Cinv * M_b * Q * jet1 := by
+        calc |chartInvGramOnE (I := I) g₁ α k a y - chartInvGramOnE (I := I) g₂ α k a y| *
+                |chartInvGramOnE (I := I) g₁ α b l y| *
+                |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y|
+            ≤ (Cinv * gd) * M_b * Q := by
+              refine mul_le_mul (mul_le_mul hC_ka (hMb1 b l) (abs_nonneg _)
+                (mul_nonneg hCinv_nn hgd_nn)) (hQ m a b) (abs_nonneg _) ?_
+              exact mul_nonneg (mul_nonneg hCinv_nn hgd_nn) hMb_nn
+          _ = Cinv * M_b * Q * gd := by ring
+          _ ≤ Cinv * M_b * Q * jet1 :=
+              mul_le_mul_of_nonneg_left hgd_le
+                (mul_nonneg (mul_nonneg hCinv_nn hMb_nn) hQ_nn)
+      have ht2 : |chartInvGramOnE (I := I) g₂ α k a y| *
+            |chartInvGramOnE (I := I) g₁ α b l y - chartInvGramOnE (I := I) g₂ α b l y| *
+            |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y| ≤
+          Cinv * M_b * Q * jet1 := by
+        calc |chartInvGramOnE (I := I) g₂ α k a y| *
+                |chartInvGramOnE (I := I) g₁ α b l y - chartInvGramOnE (I := I) g₂ α b l y| *
+                |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y|
+            ≤ M_b * (Cinv * gd) * Q := by
+              refine mul_le_mul (mul_le_mul (hMb2 k a) hC_bl (abs_nonneg _) hMb_nn)
+                (hQ m a b) (abs_nonneg _) ?_
+              exact mul_nonneg hMb_nn (mul_nonneg hCinv_nn hgd_nn)
+          _ = Cinv * M_b * Q * gd := by ring
+          _ ≤ Cinv * M_b * Q * jet1 :=
+              mul_le_mul_of_nonneg_left hgd_le
+                (mul_nonneg (mul_nonneg hCinv_nn hMb_nn) hQ_nn)
+      have ht3 : |chartInvGramOnE (I := I) g₂ α k a y| *
+            |chartInvGramOnE (I := I) g₂ α b l y| *
+            |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y -
+              partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y| ≤
+          M_b ^ 2 * jet1 := by
+        calc |chartInvGramOnE (I := I) g₂ α k a y| *
+                |chartInvGramOnE (I := I) g₂ α b l y| *
+                |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y -
+                  partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y|
+            ≤ M_b * M_b * jet1 := by
+              refine mul_le_mul (mul_le_mul (hMb2 k a) (hMb2 b l) (abs_nonneg _) hMb_nn)
+                hP_ab' (abs_nonneg _) (mul_nonneg hMb_nn hMb_nn)
+          _ = M_b ^ 2 * jet1 := by ring
+      calc |chartInvGramOnE (I := I) g₁ α k a y - chartInvGramOnE (I := I) g₂ α k a y| *
+              |chartInvGramOnE (I := I) g₁ α b l y| *
+              |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y| +
+            |chartInvGramOnE (I := I) g₂ α k a y| *
+              |chartInvGramOnE (I := I) g₁ α b l y - chartInvGramOnE (I := I) g₂ α b l y| *
+              |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y| +
+            |chartInvGramOnE (I := I) g₂ α k a y| *
+              |chartInvGramOnE (I := I) g₂ α b l y| *
+              |partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b) y -
+                partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b) y|
+          ≤ Cinv * M_b * Q * jet1 + Cinv * M_b * Q * jet1 + M_b ^ 2 * jet1 :=
+            add_le_add (add_le_add ht1 ht2) ht3
+        _ = (2 * Cinv * M_b * Q + M_b ^ 2) * jet1 := by ring
+    · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, le_refl]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+  refine le_trans (Finset.sum_le_sum (g := fun _ : Fin (Module.finrank ℝ E) =>
+    (Module.finrank ℝ E : ℝ) * ((2 * Cinv * M_b * Q + M_b ^ 2) * jet1)) (fun a _ => hterm a)) ?_
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  rw [show (Module.finrank ℝ E : ℝ) ^ 2 * (2 * Cinv * M_b * Q + M_b ^ 2) * jet1 =
+        (Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) * ((2 * Cinv * M_b * Q + M_b ^ 2) * jet1)) by ring]
+
+/-- `gramBracketDeriv` difference is bounded by `3 · chartGramPartial2DiffSup`. -/
+lemma gramBracketDeriv_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (m i j l : Fin (Module.finrank ℝ E)) :
+    |gramBracketDeriv (I := I) g₁ α m i j l y -
+        gramBracketDeriv (I := I) g₂ α m i j l y| ≤
+      3 * chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  have h1 := partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup (I := I) (M := M)
+    g₁ g₂ α y m i l j
+  have h2 := partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup (I := I) (M := M)
+    g₁ g₂ α y m j l i
+  have h3 := partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup (I := I) (M := M)
+    g₁ g₂ α y m l i j
+  set e1 : ℝ := partialDeriv (E := E) m
+      (partialDeriv (E := E) i (chartGramOnE (I := I) g₁ α l j)) y -
+    partialDeriv (E := E) m (partialDeriv (E := E) i (chartGramOnE (I := I) g₂ α l j)) y with he1
+  set e2 : ℝ := partialDeriv (E := E) m
+      (partialDeriv (E := E) j (chartGramOnE (I := I) g₁ α l i)) y -
+    partialDeriv (E := E) m (partialDeriv (E := E) j (chartGramOnE (I := I) g₂ α l i)) y with he2
+  set e3 : ℝ := partialDeriv (E := E) m
+      (partialDeriv (E := E) l (chartGramOnE (I := I) g₁ α i j)) y -
+    partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j)) y with he3
+  have heq : gramBracketDeriv (I := I) g₁ α m i j l y -
+      gramBracketDeriv (I := I) g₂ α m i j l y = e1 + e2 - e3 := by
+    simp only [he1, he2, he3, gramBracketDeriv]; ring
+  rw [heq]
+  calc |e1 + e2 - e3| = |e1 + e2 + (-e3)| := by ring_nf
+    _ ≤ |e1 + e2| + |(-e3)| := abs_add_le _ _
+    _ ≤ (|e1| + |e2|) + |(-e3)| := by gcongr; exact abs_add_le _ _
+    _ = |e1| + |e2| + |e3| := by rw [abs_neg]
+    _ ≤ chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y +
+          chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y +
+          chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+        add_le_add (add_le_add h1 h2) h3
+    _ = 3 * chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y := by ring
+
+/-- Uniform bound on `gramBracketDeriv` over a compact subset `K` of the
+chart-target interior. -/
+private lemma exists_gramBracketDeriv_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ m i j l : Fin (Module.finrank ℝ E),
+      |gramBracketDeriv (I := I) g α m i j l y| ≤ C := by
+  classical
+  have hsmooth : ∀ p : (((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E))) × (Fin (Module.finrank ℝ E)),
+      ContDiffOn ℝ ∞ (gramBracketDeriv (I := I) g α p.1.1.1 p.1.1.2 p.1.2 p.2)
+        (interior (extChartAt I α).target) := by
+    intro p
+    refine ContDiffOn.sub (ContDiffOn.add ?_ ?_) ?_
+    · exact partial2_chartGramOnE_contDiffOn_int (I := I) g α p.1.1.1 p.1.1.2 p.2 p.1.2
+    · exact partial2_chartGramOnE_contDiffOn_int (I := I) g α p.1.1.1 p.1.2 p.2 p.1.1.2
+    · exact partial2_chartGramOnE_contDiffOn_int (I := I) g α p.1.1.1 p.2 p.1.1.2 p.1.2
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_bound_of_family (I := I) α
+    (fun p : (((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E))) × (Fin (Module.finrank ℝ E)) =>
+      gramBracketDeriv (I := I) g α p.1.1.1 p.1.1.2 p.1.2 p.2)
+    hsmooth hK hKsub
+  exact ⟨C, hC_nn, fun y hy m i j l => hC y hy (((m, i), j), l)⟩
+
+/-- Uniform bound on the metric first partials over `K`. -/
+private lemma exists_partial_chartGramOnE_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set E} (hK : IsCompact K) (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ m a b : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartGramOnE (I := I) g α a b) y| ≤ C := by
+  classical
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_bound_of_family (I := I) α
+    (fun p : ((Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E))) ×
+        (Fin (Module.finrank ℝ E)) =>
+      partialDeriv (E := E) p.1.1 (chartGramOnE (I := I) g α p.1.2 p.2))
+    (fun p => partial_chartGramOnE_contDiffOn_int (I := I) g α p.1.1 p.1.2 p.2) hK hKsub
+  exact ⟨C, hC_nn, fun y hy m a b => hC y hy ((m, a), b)⟩
+
+/-- **Per-point Christoffel-derivative Lipschitz bound.**  On the chart-target
+interior, with the uniform inverse-Gram-partial Lipschitz bound `Cd·jet1`, the
+uniform inverse-Gram entry bound `M_b`, the uniform `gramBracket` bound `P`, the
+uniform inverse-Gram-partial bound `D`, the uniform `gramBracketDeriv` bound `R`,
+and the `0`-jet inverse-Gram Lipschitz bound `Cinv·chartGramDiffSup`,
+```
+|∂_m Γ^k_{ij}(g₁)(y) − ∂_m Γ^k_{ij}(g₂)(y)| ≤
+  ½ n · (Cd·P + 3·D + Cinv·R + 3·M_b) · chartMetricJet2DiffSup g₁ g₂ α y .
+``` -/
+theorem partialDeriv_chartChristoffel_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
+    (hy : y ∈ interior (extChartAt I α).target)
+    {Cd Cinv M_b P D R : ℝ}
+    (hCd_nn : 0 ≤ Cd) (hCinv_nn : 0 ≤ Cinv) (hMb_nn : 0 ≤ M_b)
+    (hP_nn : 0 ≤ P) (hD_nn : 0 ≤ D) (hR_nn : 0 ≤ R)
+    (m i j k : Fin (Module.finrank ℝ E))
+    (hCd : ∀ k l, |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+        partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| ≤
+        Cd * chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y)
+    (hMb2 : ∀ k l, |chartInvGramOnE (I := I) g₂ α k l y| ≤ M_b)
+    (hP : ∀ i j l, |gramBracket (I := I) g₁ α i j l y| ≤ P)
+    (hD : ∀ k l, |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| ≤ D)
+    (hR : ∀ i j l, |gramBracketDeriv (I := I) g₁ α m i j l y| ≤ R)
+    (hCinv : ∀ k l, |chartInvGramOnE (I := I) g₁ α k l y -
+        chartInvGramOnE (I := I) g₂ α k l y| ≤
+        Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y)) :
+    |partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
+        partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
+      (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
+        (Cd * P + 3 * D + Cinv * R + 3 * M_b) *
+        chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  rw [partialDeriv_chartChristoffel_eq (I := I) g₁ α m i j k hy,
+    partialDeriv_chartChristoffel_eq (I := I) g₂ α m i j k hy,
+    ← mul_sub, ← Finset.sum_sub_distrib, abs_mul, abs_of_nonneg (by norm_num : (0:ℝ) ≤ 1/2)]
+  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  have hjet2_nn : 0 ≤ jet2 := chartMetricJet2DiffSup_nonneg _ _ _ _
+  set jet1 : ℝ := chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y with hjet1_def
+  have hjet1_le : jet1 ≤ jet2 := chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y
+  have hjet1_nn : 0 ≤ jet1 := chartMetricJet1DiffSup_nonneg _ _ _ _
+  set gd : ℝ := chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) with hgd
+  have hgd_nn : 0 ≤ gd := chartGramDiffSup_nonneg _ _ _ _
+  have hgd_le2 : gd ≤ jet2 :=
+    le_trans (chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y) hjet1_le
+  rw [show (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
+        (Cd * P + 3 * D + Cinv * R + 3 * M_b) * jet2 =
+      (1 / 2 : ℝ) * ((Module.finrank ℝ E : ℝ) *
+        ((Cd * P + 3 * D + Cinv * R + 3 * M_b) * jet2)) by ring]
+  refine mul_le_mul_of_nonneg_left ?_ (by norm_num : (0:ℝ) ≤ 1/2)
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  refine le_trans (Finset.sum_le_sum
+    (g := fun _ : Fin (Module.finrank ℝ E) =>
+      (Cd * P + 3 * D + Cinv * R + 3 * M_b) * jet2) (fun l _ => ?_)) ?_
+  · have hsplit :
+        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y *
+              gramBracket (I := I) g₁ α i j l y +
+            chartInvGramOnE (I := I) g₁ α k l y *
+              gramBracketDeriv (I := I) g₁ α m i j l y) -
+          (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y *
+              gramBracket (I := I) g₂ α i j l y +
+            chartInvGramOnE (I := I) g₂ α k l y *
+              gramBracketDeriv (I := I) g₂ α m i j l y) =
+        ((partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+              partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y) *
+              gramBracket (I := I) g₁ α i j l y +
+            partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y *
+              (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y)) +
+          ((chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
+              gramBracketDeriv (I := I) g₁ α m i j l y +
+            chartInvGramOnE (I := I) g₂ α k l y *
+              (gramBracketDeriv (I := I) g₁ α m i j l y -
+                gramBracketDeriv (I := I) g₂ α m i j l y)) := by ring
+    rw [hsplit]
+    have hA1 : |(partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+          partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y) *
+          gramBracket (I := I) g₁ α i j l y| ≤ Cd * P * jet2 := by
+      rw [abs_mul]
+      calc |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+              partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| *
+            |gramBracket (I := I) g₁ α i j l y|
+          ≤ (Cd * jet1) * P := mul_le_mul (hCd k l) (hP i j l) (abs_nonneg _)
+              (mul_nonneg hCd_nn hjet1_nn)
+        _ = Cd * P * jet1 := by ring
+        _ ≤ Cd * P * jet2 := mul_le_mul_of_nonneg_left hjet1_le (mul_nonneg hCd_nn hP_nn)
+    have hA2 : |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y *
+          (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y)| ≤
+          3 * D * jet2 := by
+      rw [abs_mul]
+      have hbrkdiff : |gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y| ≤
+          3 * jet2 := by
+        have h1 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+          g₁ g₂ α y i l j
+        have h2 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+          g₁ g₂ α y j l i
+        have h3 := partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+          g₁ g₂ α y l i j
+        have hps_le2 : chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y ≤ jet2 :=
+          le_trans (chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y) hjet1_le
+        set d1 : ℝ := partialDeriv (E := E) i (chartGramOnE (I := I) g₁ α l j) y -
+          partialDeriv (E := E) i (chartGramOnE (I := I) g₂ α l j) y with hd1
+        set d2 : ℝ := partialDeriv (E := E) j (chartGramOnE (I := I) g₁ α l i) y -
+          partialDeriv (E := E) j (chartGramOnE (I := I) g₂ α l i) y with hd2
+        set d3 : ℝ := partialDeriv (E := E) l (chartGramOnE (I := I) g₁ α i j) y -
+          partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j) y with hd3
+        have hbrk_eq : gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y =
+            d1 + d2 - d3 := by simp only [hd1, hd2, hd3, gramBracket]; ring
+        rw [hbrk_eq]
+        calc |d1 + d2 - d3| = |d1 + d2 + (-d3)| := by ring_nf
+          _ ≤ |d1 + d2| + |(-d3)| := abs_add_le _ _
+          _ ≤ (|d1| + |d2|) + |(-d3)| := by gcongr; exact abs_add_le _ _
+          _ = |d1| + |d2| + |d3| := by rw [abs_neg]
+          _ ≤ jet2 + jet2 + jet2 :=
+              add_le_add (add_le_add (h1.trans hps_le2) (h2.trans hps_le2)) (h3.trans hps_le2)
+          _ = 3 * jet2 := by ring
+      calc |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| *
+            |gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y|
+          ≤ D * (3 * jet2) := mul_le_mul (hD k l) hbrkdiff (abs_nonneg _) hD_nn
+        _ = 3 * D * jet2 := by ring
+    have hB1 : |(chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
+          gramBracketDeriv (I := I) g₁ α m i j l y| ≤ Cinv * R * jet2 := by
+      rw [abs_mul]
+      calc |chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y| *
+            |gramBracketDeriv (I := I) g₁ α m i j l y|
+          ≤ (Cinv * gd) * R := mul_le_mul (hCinv k l) (hR i j l) (abs_nonneg _)
+              (mul_nonneg hCinv_nn hgd_nn)
+        _ = Cinv * R * gd := by ring
+        _ ≤ Cinv * R * jet2 := mul_le_mul_of_nonneg_left hgd_le2 (mul_nonneg hCinv_nn hR_nn)
+    have hB2 : |chartInvGramOnE (I := I) g₂ α k l y *
+          (gramBracketDeriv (I := I) g₁ α m i j l y -
+            gramBracketDeriv (I := I) g₂ α m i j l y)| ≤ 3 * M_b * jet2 := by
+      rw [abs_mul]
+      have hbdderiv : |gramBracketDeriv (I := I) g₁ α m i j l y -
+          gramBracketDeriv (I := I) g₂ α m i j l y| ≤ 3 * jet2 := by
+        refine (gramBracketDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y m i j l).trans ?_
+        have hp2_le2 : chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y ≤ jet2 :=
+          chartGramPartial2DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y
+        exact mul_le_mul_of_nonneg_left hp2_le2 (by norm_num)
+      calc |chartInvGramOnE (I := I) g₂ α k l y| *
+            |gramBracketDeriv (I := I) g₁ α m i j l y -
+              gramBracketDeriv (I := I) g₂ α m i j l y|
+          ≤ M_b * (3 * jet2) := mul_le_mul (hMb2 k l) hbdderiv (abs_nonneg _) hMb_nn
+        _ = 3 * M_b * jet2 := by ring
+    refine (abs_add_le _ _).trans ?_
+    refine le_trans (add_le_add ((abs_add_le _ _).trans (add_le_add hA1 hA2))
+      ((abs_add_le _ _).trans (add_le_add hB1 hB2))) (le_of_eq ?_)
+    ring
+  · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, le_refl]
+
+/-- **Uniform Lipschitz dependence of the chart Christoffel-symbol derivatives on
+the chart `2`-jet of the metric difference, over a compact subset of the
+chart-target interior.**
+
+For two smooth Riemannian metrics `g₁, g₂`, a chart base point `α`, a direction
+`m`, and a compact subset `K` of the interior of the chart-`α` target, there is a
+single constant `C > 0` such that for every `y ∈ K` and all indices `(i, j, k)`,
+```
+|∂_m Γ^k_{ij}(g₁)(y) − ∂_m Γ^k_{ij}(g₂)(y)| ≤ C · chartMetricJet2DiffSup g₁ g₂ α y .
+```
+The constant is built from the fibre dimension, the inverse-Gram perturbation
+constant `Cinv`, uniform bounds on the inverse-Gram entries, the metric first
+partials, the inverse-Gram first partials, the `gramBracket`, and the
+`gramBracketDeriv`; all are uniform over the chart kernel `y ∈ K`.  On a fixed
+compact `R`-ball of metrics these uniform bounds become uniform over the ball, so
+`C` becomes the desired `C(R)`. -/
+theorem exists_chartChristoffelDeriv_lipschitz_on_compact
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (m : Fin (Module.finrank ℝ E))
+    {K : Set E} (hK : IsCompact K)
+    (hKsub : K ⊆ interior (extChartAt I α).target) :
+    ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
+          partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
+        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  have hKsub_target : K ⊆ (extChartAt I α).target := hKsub.trans interior_subset
+  set K' : Set M := (extChartAt I α).symm '' K with hK'_def
+  have hK'_compact : IsCompact K' :=
+    hK.image_of_continuousOn ((continuousOn_extChartAt_symm (I := I) α).mono hKsub_target)
+  have hK'_sub : K' ⊆ (chartAt H α).source := by
+    rintro x ⟨z, hzK, rfl⟩
+    have hsource : (extChartAt I α).symm z ∈ (extChartAt I α).source :=
+      (extChartAt I α).map_target (hKsub_target hzK)
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at hsource
+  obtain ⟨Cinv, hCinv_pos, hCinv⟩ :=
+    exists_chartInvGramMatrix_lipschitz_on_compact (I := I) (M := M) g₁ g₂ α hK'_compact hK'_sub
+  obtain ⟨Mb1, hMb1_nn, hMb1⟩ := exists_chartInvGramOnE_bound_on_compact (I := I) g₁ α hK hKsub
+  obtain ⟨Mb2, hMb2_nn, hMb2⟩ := exists_chartInvGramOnE_bound_on_compact (I := I) g₂ α hK hKsub
+  set M_b : ℝ := max Mb1 Mb2 with hMb_def
+  have hMb_nn : 0 ≤ M_b := le_max_of_le_left hMb1_nn
+  obtain ⟨Q, hQ_nn, hQ⟩ := exists_partial_chartGramOnE_bound_on_compact (I := I) g₁ α hK hKsub
+  obtain ⟨P, hP_nn, hP⟩ := exists_gramBracket_bound_on_compact (I := I) g₁ α hK hKsub
+  obtain ⟨D, hD_nn, hD⟩ :=
+    exists_partialDeriv_chartInvGramOnE_bound_on_compact (I := I) g₂ α hK hKsub
+  obtain ⟨R, hR_nn, hR⟩ := exists_gramBracketDeriv_bound_on_compact (I := I) g₁ α hK hKsub
+  set Cd : ℝ := (Module.finrank ℝ E : ℝ) ^ 2 * (2 * Cinv * M_b * Q + M_b ^ 2) with hCd_def
+  have hCd_nn : 0 ≤ Cd := by
+    refine mul_nonneg (by positivity) ?_
+    have : 0 ≤ 2 * Cinv * M_b * Q := by positivity
+    have hsq : 0 ≤ M_b ^ 2 := sq_nonneg _
+    linarith
+  refine ⟨(1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
+      (Cd * P + 3 * D + Cinv * R + 3 * M_b) + 1, ?_, ?_⟩
+  · have hnn : 0 ≤ (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
+        (Cd * P + 3 * D + Cinv * R + 3 * M_b) := by
+      refine mul_nonneg (mul_nonneg (by norm_num) (by positivity)) ?_
+      have h1 : 0 ≤ Cd * P := mul_nonneg hCd_nn hP_nn
+      have h2 : 0 ≤ Cinv * R := mul_nonneg hCinv_pos.le hR_nn
+      linarith
+    linarith
+  intro y hy i j k
+  have hy_int : y ∈ interior (extChartAt I α).target := hKsub hy
+  have hxy_mem : (extChartAt I α).symm y ∈ K' := ⟨y, hy, rfl⟩
+  have hCinv' : ∀ k l : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y| ≤
+        Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) := by
+    intro k l
+    simpa only [chartInvGramOnE_def] using hCinv ((extChartAt I α).symm y) hxy_mem k l
+  have hMb1' : ∀ k l, |chartInvGramOnE (I := I) g₁ α k l y| ≤ M_b :=
+    fun k l => (hMb1 y hy k l).trans (le_max_left _ _)
+  have hMb2' : ∀ k l, |chartInvGramOnE (I := I) g₂ α k l y| ≤ M_b :=
+    fun k l => (hMb2 y hy k l).trans (le_max_right _ _)
+  have hCd : ∀ k l : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
+          partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y| ≤
+        Cd * chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y := by
+    intro k l
+    exact partialDeriv_chartInvGramOnE_sub_abs_le (I := I) (M := M) g₁ g₂ α hy_int
+      hMb_nn hQ_nn hCinv_pos.le hMb1' hMb2' (fun m a b => hQ y hy m a b) hCinv' m k l
+  have h_pt := partialDeriv_chartChristoffel_sub_abs_le (I := I) (M := M) g₁ g₂ α hy_int
+    hCd_nn hCinv_pos.le hMb_nn hP_nn hD_nn hR_nn m i j k
+    hCd hMb2' (fun i j l => hP y hy i j l) (fun k l => hD y hy m k l)
+    (fun i j l => hR y hy m i j l) hCinv'
+  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+    chartMetricJet2DiffSup_nonneg _ _ _ _
+  refine h_pt.trans ?_
+  exact mul_le_mul_of_nonneg_right (by linarith) hjet2_nn
+
+end DeTurckCoefficients
+end IntrinsicSpectral
+end RicciFlow
+end PDE
+end DifferentialGeometry
+
+end

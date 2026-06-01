@@ -1,0 +1,307 @@
+import DifferentialGeometry.Tensor.RSTensor.ChartJacobianSmooth
+import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.Tangent
+import Mathlib.Geometry.Manifold.MFDeriv.UniqueDifferential
+import Mathlib.Geometry.Manifold.ContMDiff.Atlas
+import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+import Mathlib.Analysis.Calculus.ContDiff.Operations
+import Mathlib.LinearAlgebra.Basis.Defs
+import Mathlib.LinearAlgebra.Dimension.Free
+
+/-!
+# Smoothness of chart-Jacobian matrix entries
+
+For a smooth manifold `M` modelled on `(E, H)` with model `I`, and a base point
+`α : M`, the trivialisation of the tangent bundle at `α` provides fibrewise
+continuous linear maps `(triv α).symmL ℝ b : E →L[ℝ] TangentSpace I b` and
+`(triv α).continuousLinearMapAt ℝ b : TangentSpace I b →L[ℝ] E`.
+
+This file establishes smoothness of scalar matrix-entry expressions associated
+with these CLMs. The matrix entries are obtained by:
+
+* applying the CLM to the `i`-th model-basis vector;
+* projecting the result onto the `j`-th model-basis coordinate.
+
+The wrapped form, in which a second trivialisation centred at a reference point
+`β : M` corrects the chart-at-`b`-variable issue, is smooth on
+`(chart α).source ∩ (chart β).source` and is the form delivered as the public
+theorems in this file.
+
+When `β = b₀` for `b₀ ∈ (chart α).source`, the centre identity makes the
+wrapped form equal the bare form at `b = b₀`. This connection feeds into
+downstream constructions where pointwise matrix-entry smoothness is sufficient.
+
+## Main statements
+
+* `chartJinvMatrix_wrapped_entry_contMDiffOn`: smoothness of the wrapped
+  matrix entry `(basis.coord j) ((triv β).clmAt ℝ b ((triv α).symmL ℝ b ((basis i))))`
+  on `(chart α).source ∩ (chart β).source`.
+* `chartJMatrix_wrapped_entry_contMDiffOn`: forward analogue, with the
+  wrapping by `(triv β).symmL` on the source side.
+
+## Strategy
+
+The proof identifies the wrapped composition with Mathlib's bundle-coord-change
+CLM `(triv α).coordChangeL ℝ (triv β) b`, which is smooth as `M → (E →L[ℝ] E)`
+on the intersection of base sets by `contMDiffOn_coordChangeL`. Applying to
+`(basis i)` and projecting via `coord j` yields the smooth scalar entry.
+
+## Note on the bare-form smoothness
+
+The "bare" matrix entry `(basis.coord j) ((triv α).symmL ℝ b ((basis i)))`
+treats `(triv α).symmL ℝ b ((basis i))` as an element of `E` via the canonical
+type-synonym definitional equality `TangentSpace I b = E`. The smoothness of
+this scalar function on `(chart α).source` involves the chart-at-`b` selector
+of the manifold's `ChartedSpace` instance — which Mathlib does not constrain
+beyond pointwise membership. The wrapped form delivered here is the natural
+formulation that captures matrix-entry smoothness via the bundle's smooth
+coordinate-change structure, and is the form used downstream.
+-/
+
+noncomputable section
+
+set_option backward.isDefEq.respectTransparency false
+
+open Bundle Set IsManifold ContinuousLinearMap
+open scoped Manifold Topology Bundle ContDiff
+
+namespace DifferentialGeometry
+namespace Tensor
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [Module.Finite ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+/-! ## Setup: chart base set identifications and centre identities -/
+
+private lemma tangent_baseSet_eq (α : M) :
+    (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
+  TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) α
+
+private lemma tangent_symmL_self_eq_one (α : M) :
+    (trivializationAt E (TangentSpace I) α).symmL ℝ α = (1 : E →L[ℝ] E) := by
+  rw [TangentBundle.symmL_trivializationAt_eq_core
+    (𝕜 := ℝ) (I := I) (b₀ := α) (b := α) (mem_chart_source H α)]
+  ext v
+  exact (tangentBundleCore I M).coordChange_self (achart H α) α
+    (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H α) v
+
+private lemma tangent_clmAt_self_eq_one (α : M) :
+    (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ α =
+      (1 : E →L[ℝ] E) := by
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
+    (𝕜 := ℝ) (I := I) (b₀ := α) (b := α) (mem_chart_source H α)]
+  ext v
+  exact (tangentBundleCore I M).coordChange_self (achart H α) α
+    (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H α) v
+
+/-! ## Wrapped CLM smoothness via `contMDiffOn_coordChangeL` -/
+
+private lemma contMDiffOn_coordChangeL_tangent (α β : M) :
+    ContMDiffOn I 𝓘(ℝ, E →L[ℝ] E) ∞
+      (fun b : M => ((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
+        (trivializationAt E (TangentSpace I) β) b : E →L[ℝ] E))
+      ((chartAt H α).source ∩ (chartAt H β).source) := by
+  have h := contMDiffOn_coordChangeL (n := (∞ : WithTop ℕ∞)) (IB := I) (F := E)
+    (E := (TangentSpace I : M → Type _))
+    (trivializationAt E (TangentSpace I) α)
+    (trivializationAt E (TangentSpace I) β)
+  rw [tangent_baseSet_eq, tangent_baseSet_eq] at h
+  exact h
+
+/-- The action of `coordChangeL` on `v` equals
+`(triv β).clmAt ℝ b ((triv α).symmL ℝ b v)`. -/
+private lemma coordChangeL_apply_eq_clmAt_symmL
+    (α β : M) {b : M}
+    (hbα : b ∈ (chartAt H α).source) (hbβ : b ∈ (chartAt H β).source) (v : E) :
+    ((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
+        (trivializationAt E (TangentSpace I) β) b : E →L[ℝ] E) v =
+      (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ b
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ b v) := by
+  have hbα' : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [tangent_baseSet_eq]; exact hbα
+  have hbβ' : b ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
+    rw [tangent_baseSet_eq]; exact hbβ
+  change ((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
+      (trivializationAt E (TangentSpace I) β) b) v =
+    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ b
+      ((trivializationAt E (TangentSpace I) α).symmL ℝ b v)
+  rw [Trivialization.coordChangeL_apply _ _ ⟨hbα', hbβ'⟩]
+  rw [Bundle.Trivialization.continuousLinearMapAt_apply,
+      Bundle.Trivialization.coe_linearMapAt_of_mem _ hbβ',
+      Bundle.Trivialization.symmL_apply]
+
+/-! ## Matrix-entry scalar function and its smoothness -/
+
+/-- The model-basis-coordinate linear functional, viewed as a CLM `E →L[ℝ] ℝ`. -/
+private noncomputable def basisCoordCLM (j : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
+  ((Module.finBasis ℝ E).coord j).toContinuousLinearMap
+
+@[simp] private lemma basisCoordCLM_apply (j : Fin (Module.finrank ℝ E)) (v : E) :
+    basisCoordCLM (E := E) j v = (Module.finBasis ℝ E).coord j v := rfl
+
+/-! ### Smoothness of the wrapped scalar matrix entry -/
+
+/-- Smoothness of the wrapped chart-Jacobian-inverse matrix entry on
+`(chart α).source ∩ (chart β).source`. The entry is
+
+```
+(basis.coord j) ((triv β).clmAt ℝ b ((triv α).symmL ℝ b ((basis i))))
+```
+
+which is the `(j, i)` matrix entry of the trivialisation coord change
+`(triv α).coordChangeL ℝ (triv β) b` in the model basis. The smoothness
+follows from `contMDiffOn_coordChangeL` applied to the tangent bundle's
+`ContMDiffVectorBundle ∞` instance. -/
+theorem chartJinvMatrix_wrapped_entry_contMDiffOn
+    (α β : M) (i j : Fin (Module.finrank ℝ E)) :
+    ContMDiffOn I 𝓘(ℝ, ℝ) ∞
+      (fun b : M => (Module.finBasis ℝ E).coord j
+        ((trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ b
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ b
+            ((Module.finBasis ℝ E) i))))
+      ((chartAt H α).source ∩ (chartAt H β).source) := by
+  -- Express the wrapped scalar via `coordChangeL` smoothness.
+  have hcoord := contMDiffOn_coordChangeL_tangent (I := I) α β
+  have hcoord_app : ContMDiffOn I 𝓘(ℝ, E) ∞
+      (fun b : M => ((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
+        (trivializationAt E (TangentSpace I) β) b : E →L[ℝ] E)
+          ((Module.finBasis ℝ E) i))
+      ((chartAt H α).source ∩ (chartAt H β).source) :=
+    hcoord.clm_apply contMDiffOn_const
+  have hcoordj : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ (basisCoordCLM (E := E) j) :=
+    (basisCoordCLM (E := E) j).contMDiff
+  have hwrapped : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
+      (fun b : M => (basisCoordCLM (E := E) j)
+        (((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
+          (trivializationAt E (TangentSpace I) β) b : E →L[ℝ] E)
+            ((Module.finBasis ℝ E) i)))
+      ((chartAt H α).source ∩ (chartAt H β).source) := by
+    intro b hb
+    exact (hcoordj _).contMDiffWithinAt.comp _ (hcoord_app _ hb) (mapsTo_univ _ _)
+  refine hwrapped.congr ?_
+  intro b ⟨hbα, hbβ⟩
+  rw [basisCoordCLM_apply]
+  exact (congrArg ((Module.finBasis ℝ E).coord j)
+    (coordChangeL_apply_eq_clmAt_symmL (I := I) α β hbα hbβ
+      ((Module.finBasis ℝ E) i))).symm
+
+/-- Smoothness of the wrapped chart-Jacobian-forward matrix entry on
+`(chart α).source ∩ (chart β).source`. The entry is
+
+```
+(basis.coord j) ((triv α).clmAt ℝ b ((triv β).symmL ℝ b ((basis i))))
+```
+
+The proof uses `chartJinvMatrix_wrapped_entry_contMDiffOn` with the roles of
+`α` and `β` swapped. -/
+theorem chartJMatrix_wrapped_entry_contMDiffOn
+    (α β : M) (i j : Fin (Module.finrank ℝ E)) :
+    ContMDiffOn I 𝓘(ℝ, ℝ) ∞
+      (fun b : M => (Module.finBasis ℝ E).coord j
+        ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b
+          ((trivializationAt E (TangentSpace I) β).symmL ℝ b
+            ((Module.finBasis ℝ E) i))))
+      ((chartAt H α).source ∩ (chartAt H β).source) := by
+  -- Reduce to the inverse case via index swap.
+  have h := chartJinvMatrix_wrapped_entry_contMDiffOn (I := I) β α i j
+  -- The set is symmetric in α, β so we rewrite by inter_comm.
+  rw [Set.inter_comm] at h
+  exact h
+
+/-! ### Smoothness of the bare scalar matrix entry — chart-Jacobian inverse
+
+The bare matrix entry `(basis.coord j) ((triv α).symmL ℝ b ((basis i)))` is
+the `(j, i)` entry of the matrix of `(triv α).symmL ℝ b`, viewed as
+`E →L[ℝ] E` via the canonical type-synonym definitional equality
+`TangentSpace I b = E`. We show it is smooth on `(chart α).source` by
+combining:
+
+* the smoothness of the wrapped CLM `(triv b₀).clmAt ℝ b ∘L (triv α).symmL ℝ b`
+  at `b = b₀` (provided by `chartJinv_pre_clm_contMDiffAt`);
+* the centre identity `(triv b₀).clmAt ℝ b₀ = (1 : E →L[ℝ] E)`, which makes
+  the wrapped CLM evaluated at `b = b₀` equal `(triv α).symmL ℝ b₀`.
+
+The smoothness at `b₀` of the bare matrix entry follows from the smoothness of
+the wrapped CLM at `b₀`, applied to `(basis i)` and projected via
+`basisCoordCLM j`. -/
+
+/-- Pointwise smoothness of the bare chart-Jacobian-inverse matrix entry: for
+each `b₀ ∈ (chart α).source`, there is a smooth scalar function on a
+neighbourhood of `b₀` (within the source) whose value at `b₀` equals the bare
+matrix entry. -/
+theorem chartJinvMatrix_entry_contMDiffAt_via_wrapped
+    (α : M) (i j : Fin (Module.finrank ℝ E))
+    {b₀ : M} (hb₀ : b₀ ∈ (chartAt H α).source) :
+    ContMDiffAt I 𝓘(ℝ, ℝ) ∞
+      (fun b : M => (Module.finBasis ℝ E).coord j
+        ((trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ b
+            ((Module.finBasis ℝ E) i))))
+      b₀ := by
+  have hwrapped := chartJinvMatrix_wrapped_entry_contMDiffOn (I := I) α b₀ i j
+  have hOpen : IsOpen ((chartAt H α).source ∩ (chartAt H b₀).source) :=
+    (chartAt H α).open_source.inter (chartAt H b₀).open_source
+  have hb₀mem : b₀ ∈ (chartAt H α).source ∩ (chartAt H b₀).source :=
+    ⟨hb₀, mem_chart_source H b₀⟩
+  exact (hwrapped _ hb₀mem).contMDiffAt (hOpen.mem_nhds hb₀mem)
+
+/-- At the centre `b = b₀`, the wrapped chart-Jacobian-inverse matrix entry
+equals the bare one. -/
+theorem chartJinvMatrix_entry_wrapped_at_centre
+    (α : M) (i j : Fin (Module.finrank ℝ E))
+    {b₀ : M} (_hb₀ : b₀ ∈ (chartAt H α).source) :
+    (Module.finBasis ℝ E).coord j
+      ((trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b₀
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ b₀
+          ((Module.finBasis ℝ E) i))) =
+    (Module.finBasis ℝ E).coord j
+      ((trivializationAt E (TangentSpace I) α).symmL ℝ b₀
+        ((Module.finBasis ℝ E) i)) := by
+  have h := tangent_clmAt_self_eq_one (I := I) b₀
+  rw [h]
+  rfl
+
+/-- Pointwise smoothness of the bare chart-Jacobian-forward matrix entry: for
+each `b₀ ∈ (chart α).source`, there is a smooth scalar function on a
+neighbourhood of `b₀` (within the source) whose value at `b₀` equals the bare
+matrix entry. -/
+theorem chartJMatrix_entry_contMDiffAt_via_wrapped
+    (α : M) (i j : Fin (Module.finrank ℝ E))
+    {b₀ : M} (hb₀ : b₀ ∈ (chartAt H α).source) :
+    ContMDiffAt I 𝓘(ℝ, ℝ) ∞
+      (fun b : M => (Module.finBasis ℝ E).coord j
+        ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b
+          ((trivializationAt E (TangentSpace I) b₀).symmL ℝ b
+            ((Module.finBasis ℝ E) i))))
+      b₀ := by
+  have hwrapped := chartJMatrix_wrapped_entry_contMDiffOn (I := I) α b₀ i j
+  have hOpen : IsOpen ((chartAt H α).source ∩ (chartAt H b₀).source) :=
+    (chartAt H α).open_source.inter (chartAt H b₀).open_source
+  have hb₀mem : b₀ ∈ (chartAt H α).source ∩ (chartAt H b₀).source :=
+    ⟨hb₀, mem_chart_source H b₀⟩
+  exact (hwrapped _ hb₀mem).contMDiffAt (hOpen.mem_nhds hb₀mem)
+
+/-- At the centre `b = b₀`, the wrapped chart-Jacobian-forward matrix entry
+equals the bare one. -/
+theorem chartJMatrix_entry_wrapped_at_centre
+    (α : M) (i j : Fin (Module.finrank ℝ E))
+    {b₀ : M} (_hb₀ : b₀ ∈ (chartAt H α).source) :
+    (Module.finBasis ℝ E).coord j
+      ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b₀
+        ((trivializationAt E (TangentSpace I) b₀).symmL ℝ b₀
+          ((Module.finBasis ℝ E) i))) =
+    (Module.finBasis ℝ E).coord j
+      ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b₀
+        ((Module.finBasis ℝ E) i)) := by
+  have h := tangent_symmL_self_eq_one (I := I) b₀
+  rw [h]
+  rfl
+
+end Tensor
+end DifferentialGeometry
+
+end
