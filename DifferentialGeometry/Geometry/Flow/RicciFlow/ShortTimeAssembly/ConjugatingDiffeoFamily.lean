@@ -103,6 +103,11 @@ theorem conjugating_diffeo_family
         ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) x) (Set.Ici (0 : ℝ)) 0) ∧
       (∀ (x : M) (v : TangentSpace I x),
         ContinuousWithinAt (fun s : ℝ => (mfderiv I I (Φ_fam s : M → M) x v : E))
+          (Set.Ici (0 : ℝ)) 0) ∧
+      (∀ (x : M) (v : TangentSpace I x),
+        ContinuousWithinAt
+          (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) x)
+            (mfderiv I I (Φ_fam s : M → M) x v) : TangentBundle I M))
           (Set.Ici (0 : ℝ)) 0) := by
   set X_DT : ℝ → ∀ x : M, TangentSpace I x :=
     fun s x => -(deTurckVF (I := I) (g_DT s) g_bg x) with hXDT
@@ -130,7 +135,7 @@ theorem conjugating_diffeo_family
       rw [hcr, fderiv_fun_neg]
     rw [hfun]
     exact (h_grad0 α).neg
-  obtain ⟨Φ, hΦ0, hdiffeo, hflow, hΦcont0, hΦmfderiv0⟩ :=
+  obtain ⟨Φ, hΦ0, hdiffeo, hflow, hΦcont0, hΦmfderiv0, hΦbundle0⟩ :=
     forward_flow_existence_onesided_of_jointsmooth_field (I := I) X_DT T_DT hDT hint hcont0 hgrad0
   obtain ⟨Φ_fam, hfam0, hfameq, hfamode⟩ :=
     time_dependent_vf_bare_flow_family (I := I) X_DT T_DT hDT Φ hΦ0
@@ -142,7 +147,7 @@ theorem conjugating_diffeo_family
     rcases eq_or_lt_of_le hs.1 with h0 | h0
     · rw [← h0, hfam0, hΦ0]; rfl
     · exact hfameq s h0 hs.2 y
-  refine ⟨T_DT, hDT, le_refl _, Φ_fam, hfam0, ?_, ?_, ?_⟩
+  refine ⟨T_DT, hDT, le_refl _, Φ_fam, hfam0, ?_, ?_, ?_, ?_⟩
   · intro x s hs
     exact hfamode s hs.1 hs.2 x
   · intro x
@@ -166,6 +171,25 @@ theorem conjugating_diffeo_family
       (Filter.eventuallyEq_of_mem (Ico_mem_nhdsGE hDT) hmfeq) ?_
     change (mfderiv I I (Φ_fam 0 : M → M) x v : E)
       = (mfderiv I I (fun y : M => Φ 0 y) x v : E)
+    rw [hfun_eqOn 0 ⟨le_rfl, hDT⟩]
+  · intro x v
+    have hbundleeq : Set.EqOn
+        (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) x)
+          (mfderiv I I (Φ_fam s : M → M) x v) : TangentBundle I M))
+        (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
+          (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M)) (Set.Ico 0 T_DT) := by
+      intro s hs
+      change (TotalSpace.mk' E ((Φ_fam s : M → M) x)
+          (mfderiv I I (Φ_fam s : M → M) x v) : TangentBundle I M)
+        = (TotalSpace.mk' E (Φ s x)
+            (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M)
+      rw [hfun_eqOn s hs]
+    refine (hΦbundle0 x v).congr_of_eventuallyEq
+      (Filter.eventuallyEq_of_mem (Ico_mem_nhdsGE hDT) hbundleeq) ?_
+    change (TotalSpace.mk' E ((Φ_fam 0 : M → M) x)
+        (mfderiv I I (Φ_fam 0 : M → M) x v) : TangentBundle I M)
+      = (TotalSpace.mk' E (Φ 0 x)
+          (mfderiv I I (fun y : M => Φ 0 y) x v) : TangentBundle I M)
     rw [hfun_eqOn 0 ⟨le_rfl, hDT⟩]
 
 end DifferentialGeometry.PDE.RicciFlow

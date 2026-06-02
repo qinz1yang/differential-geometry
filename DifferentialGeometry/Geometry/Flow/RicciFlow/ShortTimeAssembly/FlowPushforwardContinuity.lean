@@ -77,7 +77,7 @@ theorem flow_pushforward_continuous_in_time
     (∀ (x : M) (v : TangentSpace I x), ContinuousOn
       (fun s : ℝ => (mfderiv I I (Φ_fam s : M → M) x v : E)) (Set.Ico 0 T))
     ∧ (∀ x : M, ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) x) (Set.Ici (0 : ℝ)) 0) := by
-  obtain ⟨Φ, hΦ0', hdiffeo, hΦflow, hΦcont0, hΦmfderiv0⟩ :=
+  obtain ⟨Φ, hΦ0', hdiffeo, hΦflow, hΦcont0, hΦmfderiv0, _⟩ :=
     forward_flow_existence_onesided_of_jointsmooth_field X T hT hint hcont0 hgrad0
   have hΦfam_ode : ∀ s ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => (Φ_fam u : M → M) x) (Set.Ioo (0 : ℝ) T) s

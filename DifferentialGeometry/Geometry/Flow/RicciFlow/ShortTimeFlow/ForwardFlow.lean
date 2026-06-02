@@ -570,8 +570,14 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
       (∀ x : M, ContinuousWithinAt (fun s : ℝ => Φ s x) (Set.Ici (0 : ℝ)) 0) ∧
       (∀ (x : M) (v : TangentSpace I x),
         ContinuousWithinAt (fun s : ℝ => (mfderiv I I (fun y : M => Φ s y) x v : E))
+          (Set.Ici (0 : ℝ)) 0) ∧
+      (∀ (x : M) (v : TangentSpace I x),
+        ContinuousWithinAt
+          (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
+            (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M))
           (Set.Ici (0 : ℝ)) 0) := by
-  obtain ⟨Φ, hΦ0, hdiffeo, hflow, hpicard, hvarpicard, hJbound, _, _⟩ :=
+  obtain ⟨Φ, hΦ0, hdiffeo, hflow, hpicard, hvarpicard, hJbound,
+      hvarpicardBundle, hJboundBundle⟩ :=
     interior_forward_bare_flow_from_zero (I := I) X_DT T hT hint hcont0 hgrad0
   have hinterior : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) (Set.Ici (0 : ℝ)) t
@@ -579,51 +585,13 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
   obtain ⟨hcont4, hcont5⟩ :=
     flow_t0_continuity_extension (I := I) X_DT T hT Φ hΦ0 hcont0 hgrad0
       hinterior hpicard hvarpicard hJbound
-  exact ⟨Φ, hΦ0, hdiffeo, hflow, hcont4, hcont5⟩
-
-/-- **Standalone bundle moving-Jacobian right-continuity at `t = 0` for the forward flow.**
-
-The additive `TangentBundle`-valued companion of
-`forward_flow_existence_onesided_of_jointsmooth_field`.  Under the same field hypotheses
-(`hint`/`hcont0`/`hgrad0`), the forward flow `Φ` produced by
-`interior_forward_bare_flow_from_zero` (the very same flow, recovered by the orbit
-right-continuity / bare-velocity clauses, hence the conclusion is stated through a
-flow with `Φ 0 = id`, the per-time diffeomorphisms, and the bare velocity, exactly as the
-non-bundle producer) additionally has, for every `x` and `v`, right-continuity at `0` of
-the **bundle** moving Jacobian `s ↦ ⟨Φ s x, mfderiv I I (Φ s) x v⟩ : TangentBundle I M`.
-
-This is kept as a separate declaration (rather than a sixth clause of
-`forward_flow_existence_onesided_of_jointsmooth_field`) so that the existing positional
-destructurings of that theorem in downstream files remain valid; downstream consumers that
-need the bundle form call this lemma additively on the *same* flow `Φ`.  The bundle
-continuity is obtained from `flow_mfderiv_bundle_continuousWithinAt_zero` applied to the
-producer's chart-Picard / fixed-chart variational anchors. -/
-theorem forward_flow_bundle_mfderiv_continuousWithinAt_zero
-    (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
-    (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
-      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    (hcont0 : ContinuousOn
-      (fun q : ℝ × M => (X_DT q.1 q.2 : TangentSpace I q.2))
-      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
-    (hgrad0 : ∀ α : M,
-      ContinuousOn
-        (fun q : ℝ × M =>
-          fderiv ℝ (chartRawRepr (I := I) α (X_DT q.1)) (extChartAt I α q.2))
-        (Set.Icc (0 : ℝ) T ×ˢ Set.univ)) :
-    ∃ Φ : ℝ → M → M, (∀ x : M, Φ 0 x = x) ∧
-      (∀ t ∈ Set.Ioo (0 : ℝ) T, ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x) ∧
-      (∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x)
-        (Set.Ici (0 : ℝ)) t ((1 : ℝ →L[ℝ] ℝ).smulRight (X_DT t (Φ t x)))) ∧
-      (∀ (x : M) (v : TangentSpace I x),
-        ContinuousWithinAt
-          (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
-            (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M))
-          (Set.Ici (0 : ℝ)) 0) := by
-  obtain ⟨Φ, hΦ0, hdiffeo, hflow, hpicard, _, _, hvarpicardBundle, hJboundBundle⟩ :=
-    interior_forward_bare_flow_from_zero (I := I) X_DT T hT hint hcont0 hgrad0
-  refine ⟨Φ, hΦ0, hdiffeo, hflow, ?_⟩
-  exact flow_mfderiv_bundle_continuousWithinAt_zero (I := I) X_DT T hT Φ hΦ0 hcont0 hgrad0
-    hpicard hvarpicardBundle hJboundBundle
+  have hcont6 : ∀ (x : M) (v : TangentSpace I x),
+      ContinuousWithinAt
+        (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
+          (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M))
+        (Set.Ici (0 : ℝ)) 0 :=
+    flow_mfderiv_bundle_continuousWithinAt_zero (I := I) X_DT T hT Φ hΦ0 hcont0 hgrad0
+      hpicard hvarpicardBundle hJboundBundle
+  exact ⟨Φ, hΦ0, hdiffeo, hflow, hcont4, hcont5, hcont6⟩
 
 end DifferentialGeometry.PDE.RicciFlow

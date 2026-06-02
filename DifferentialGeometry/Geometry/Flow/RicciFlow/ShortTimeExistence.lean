@@ -117,7 +117,7 @@ theorem ricci_flow_short_time_existence
         HasDerivWithinAt (fun s : ℝ => (g_DT s).inner x v w)
           (deTurckRicciRHS (I := I) g₀ (g_DT t) x v w)
           (Set.Ici 0) t := hDT_deriv
-    obtain ⟨T, hT0, hT_le, Φ_fam, hΦ0, hΦode, hΦorbit0, hΦmfderiv0⟩ :=
+    obtain ⟨T, hT0, hT_le, Φ_fam, hΦ0, hΦode, hΦorbit0, hΦmfderiv0, _⟩ :=
       conjugating_diffeo_family
         (I := I) g_DT g₀ T_DT hT_DT_pos h_reg h_cont0 h_grad0
     have hΦode' : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
