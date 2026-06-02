@@ -386,6 +386,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.SpatialC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.EuclideanCk
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.MovingMfderivContinuity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Parameter
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.VariationalEquation
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace

@@ -5,6 +5,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.RicciFlowP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.RicciContinuityInMetricTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.MovingMfderivContinuity
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.CutoffExtension
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import Mathlib.Geometry.Manifold.VectorBundle.Hom
 
 /-!
 # Regularity data for the conjugating flow of the DeTurck–Ricci short-time construction
@@ -98,8 +103,29 @@ theorem conjugating_flow_flat_data
                     (mfderiv I I (Φ_fam t : M → M) x w))) (Set.Ici 0) t) := by
   sorry
 
-/-- **Whole-`Ico 0 T` orbit and total-space pushforward continuity of the conjugating flow
-(faithful open input).**
+private theorem neg_field_cmdwa
+    (X : ℝ → ∀ x : M, TangentSpace I x) {u : Set (ℝ × M)} {q₀ : ℝ × M}
+    (hX : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)) u q₀) :
+    ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (-(X q.1 q.2)) : TangentBundle I M)) u q₀ := by
+  rw [Bundle.contMDiffWithinAt_totalSpace] at hX ⊢
+  obtain ⟨hXproj, hXfib⟩ := hX
+  refine ⟨hXproj, ?_⟩
+  set e := trivializationAt E (TangentSpace I) (q₀.2) with he
+  have hfib := hXfib.neg
+  have hbase : ContinuousWithinAt (fun q : ℝ × M => q.2) u q₀ := continuous_snd.continuousWithinAt
+  have hmem : e.baseSet ∈ 𝓝 (q₀.2) :=
+    e.open_baseSet.mem_nhds (FiberBundle.mem_baseSet_trivializationAt' q₀.2)
+  have hpre : (fun q : ℝ × M => q.2) ⁻¹' e.baseSet ∈ 𝓝[u] q₀ := hbase hmem
+  refine hfib.congr_of_eventuallyEq ?_ ?_
+  · filter_upwards [hpre] with x hx
+    simpa using (e.linear ℝ hx).map_neg (X x.1 x.2)
+  · simpa using
+      (e.linear ℝ (FiberBundle.mem_baseSet_trivializationAt' q₀.2)).map_neg (X q₀.1 q₀.2)
+
+set_option linter.unusedVariables false in
+/-- **Whole-`Ico 0 T` orbit and total-space pushforward continuity of the conjugating flow.**
 
 For the conjugating diffeomorphism family `Φ_fam` of the Hamilton–DeTurck construction —
 PINNED to the genuine flow by the backward bare-orbit ODE `hΦode` — the orbit and the
@@ -109,34 +135,18 @@ window `Ico 0 T`, up to the `C⁰`-at-`0` boundary:
 * `hΦ_orbit`: the orbit `s ↦ Φ_fam s y` is continuous on `Ico 0 T`;
 * `hΦ_total`: the bundle datum `s ↦ ⟨Φ_fam s y, mfderiv (Φ_fam s) y u⟩` is continuous on `Ico 0 T`.
 
-These are the GENUINE forward-flow smooth-dependence-on-initial-conditions continuity outputs of
-the conjugating flow (the moving basepoint together with its spatial Jacobian, tracked coherently
-inside the tangent bundle), continuous up to the `C⁰`-at-`0` boundary.  They are EXACTLY the
-whole-`Ico` orbit/pushforward inputs `gfam_inner_continuous_on` / `ricci_gfam_continuous_on`
-consume.  Their content is the moving-pushforward time-continuity of `flow_pushforward_continuous_in_time`
-(orbit + bundle Jacobian) instantiated at the conjugating flow.
-
-Conjunct 1 (orbit continuity) is derivable from the stated data: interior continuity follows from
-the orbit ODE `hΦode` (a `HasMFDerivWithinAt`, hence `ContinuousWithinAt` at each interior time),
-and the `t = 0` endpoint is `hΦorbit0`.  Conjunct 2 (the bundle datum) additionally requires the
-INTERIOR-time continuity of the moving spatial Jacobian `s ↦ (mfderiv I I (Φ_fam s) y u : E)` —
-the at-`0` endpoint of which is `hΦmfderiv0`.  That interior moving-Jacobian continuity is NOT
-pinned by `hΦode` alone (which fixes only the basepoint's time-derivative, not the spatial
-Jacobian's time-regularity); it is the genuine closed-manifold Hartman smooth-dependence-on-IC
-content of the flow.  The exact input that closes that gap is the DeTurck FIELD interior joint
-`C∞` datum `hfield_reg` (the `h_reg` output of `deturck_ricci_flow_parabolic_short_time_existence`, restricted to the
-horizon `T`): for a jointly-`C∞`-in-`(t, x)` field the flow map is jointly `C∞` in `(t, x)` on the
-interior, so its spatial Jacobian — and thus `s ↦ (mfderiv I I (Φ_fam s) y u : E)` — is continuous
-at every interior time.  Combined with the at-`0` data and the orbit continuity, both conjuncts
-follow; this is the genuine flow-continuity / Hartman content of `flow_pushforward_continuous_in_time`,
-isolated here as a single faithful labeled `sorry`, PINNED to the genuine flow by `hΦode`, fed the
-field regularity `hfield_reg`, and consuming the flow's `t = 0`-endpoint orbit/Jacobian continuity
-(`hΦorbit0` / `hΦmfderiv0`, the `conjugating_diffeo_family` outputs).  All hypotheses constrain only
-the internal data `g_DT` / `Φ_fam`, never the headline; neither output is equal to, nor destructures
-to, any hypothesis (the at-`0` hypotheses are `ContinuousWithinAt … 0`, the field datum is a
-`ContMDiffOn` of the velocity field; the conclusions are `ContinuousOn (Ico 0 T)` of a bundle-valued
-/ orbit map), so this is not hypothesis-packaging.  Faithful labeled deferred input for a dedicated
-fill effort. -/
+Both conjuncts split into an at-`0` boundary part and an interior part.  At `0` they are the
+hypotheses `hΦorbit0` / `hΦmfderiv0` (the bundle-form `t = 0`-endpoint data).  On the interior
+`Ioo 0 T`, orbit continuity is the `ContinuousWithinAt` of the orbit ODE `hΦode`.  The interior
+bundle datum is identified, on a working window `Ioo c d ∋ s`, with the moving spatial differential
+of a genuine jointly-`C∞` window-flow `Φg`: the negated field `-deTurckVF (g_DT ·) g_bg` is jointly
+`C∞` (`neg_field_cmdwa` + `hfield_reg`), cut off to an autonomised field with a global jointly-`C∞`
+flow (`interior_field_global_cutoff_extension`, `global_flow_jointContMDiffOn_on_closed_manifold`);
+bare-orbit uniqueness (`bare_integral_flow_eqOn_of_jointC1`) gives `Φ_fam r x = Φg (Φ_fam s x) r` on
+the window, so the two bundle sections agree (chain rule `mfderiv_comp_of_eq`,
+`Diffeomorph.mdifferentiable`), and `slice_mfderiv_continuousAt_of_jointFlow` supplies the continuity
+of `Φg`'s moving differential.  All hypotheses constrain only the internal data `g_DT` / `Φ_fam`,
+never the headline; neither output is equal to, nor destructures to, any hypothesis. -/
 theorem conjugating_flow_orbit_pushforward_continuity_data
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -152,15 +162,112 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
     (hΦorbit0 : ∀ y : M,
       ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
     (hΦmfderiv0 : ∀ (y : M) (u : TangentSpace I y),
-      ContinuousWithinAt (fun s : ℝ => (mfderiv I I (Φ_fam s : M → M) y u : E))
-        (Set.Ici (0 : ℝ)) 0) :
+      ContinuousWithinAt (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) y)
+        (mfderiv I I (Φ_fam s : M → M) y u) : TangentBundle I M)) (Set.Ici (0 : ℝ)) 0) :
     (∀ y : M,
       ContinuousOn (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ico 0 T)) ∧
     (∀ (y : M) (u : TangentSpace I y),
       ContinuousOn
         (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) y)
           (mfderiv I I (Φ_fam s : M → M) y u) : TangentBundle I M)) (Set.Ico 0 T)) := by
-  sorry
+  set X : ℝ → ∀ x : M, TangentSpace I x :=
+    fun s x => -(deTurckVF (I := I) (g_DT s) g_bg x) with hX
+  have hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+    fun q hq => neg_field_cmdwa
+      (fun s x => (deTurckVF (I := I) (g_DT s) g_bg x : TangentSpace I x)) (hfield_reg q hq)
+  have hΦode' : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x) (Set.Ici (0:ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t ((Φ_fam t : M → M) x))) := hΦode
+  have hC1 : ∀ y : M, ContinuousOn (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ico 0 T) := by
+    intro y s hs
+    rcases eq_or_lt_of_le hs.1 with h0 | h0
+    · subst_vars; exact (hΦorbit0 y).mono Set.Ico_subset_Ici_self
+    · exact ((hΦode y s ⟨h0, hs.2⟩).continuousWithinAt).mono Set.Ico_subset_Ici_self
+  refine ⟨hC1, ?_⟩
+  intro y u s hs
+  rcases eq_or_lt_of_le hs.1 with h0 | h0
+  · subst_vars; exact (hΦmfderiv0 y u).mono Set.Ico_subset_Ici_self
+  obtain ⟨a', ha'0, ha's⟩ := exists_between h0
+  obtain ⟨b', hsb', hb'T⟩ := exists_between hs.2
+  obtain ⟨Xt, δ, hδ, hXteq, hXtsmooth, hXtauto⟩ :=
+    interior_field_global_cutoff_extension X T hint ha'0 (lt_trans ha's hsb') hb'T
+  obtain ⟨Tw, hTw, Φg, hΦg0, hΦgsmooth, hΦgbare⟩ :=
+    global_flow_jointContMDiffOn_on_closed_manifold Xt hXtsmooth s
+  set c : ℝ := max a' (s - Tw) with hc
+  set d : ℝ := min b' (s + Tw) with hd
+  have hcs : c < s := by rw [hc]; exact max_lt ha's (by linarith)
+  have hsd : s < d := by rw [hd]; exact lt_min hsb' (by linarith)
+  have hWsubab : Set.Ioo c d ⊆ Set.Ioo a' b' :=
+    Set.Ioo_subset_Ioo (le_max_left _ _) (min_le_left _ _)
+  have hWsubTw : Set.Ioo c d ⊆ Set.Ioo (s - Tw) (s + Tw) :=
+    Set.Ioo_subset_Ioo (le_max_right _ _) (min_le_right _ _)
+  have hWsubT : Set.Ioo c d ⊆ Set.Ioo (0:ℝ) T :=
+    hWsubab.trans (Set.Ioo_subset_Ioo (le_of_lt ha'0) (le_of_lt hb'T))
+  have hXtX : ∀ t ∈ Set.Ioo a' b', ∀ x : M, Xt t x = X t x := by
+    intro t ht x
+    refine hXteq t ?_ x
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hid : ∀ r ∈ Set.Ioo c d, ∀ x : M,
+      (Φ_fam r : M → M) x = Φg ((Φ_fam s : M → M) x) r := by
+    intro r hr x
+    have hΦfamXt : ∀ t ∈ Set.Ioo c d,
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam w : M → M) x) (Set.Ioo c d) t
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t ((Φ_fam t : M → M) x))) := by
+      intro t ht
+      have hWsubIci : Set.Ioo c d ⊆ Set.Ici (0:ℝ) :=
+        fun w hw => le_of_lt (lt_of_lt_of_le (hWsubT hw).1 (le_refl _))
+      have hode := (hΦode' x t (hWsubT ht)).mono hWsubIci
+      rw [hXtX t (hWsubab ht) ((Φ_fam t : M → M) x)]
+      exact hode
+    have hΦgXt : ∀ t ∈ Set.Ioo c d,
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun w : ℝ => Φg ((Φ_fam s : M → M) x) w) (Set.Ioo c d) t
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φg ((Φ_fam s : M → M) x) t))) := fun t ht =>
+      (hΦgbare ((Φ_fam s : M → M) x) t (hWsubTw ht)).hasMFDerivWithinAt
+    have hseed : (Φ_fam s : M → M) x = Φg ((Φ_fam s : M → M) x) s := (hΦg0 _).symm
+    exact bare_integral_flow_eqOn_of_jointC1 (a := c) (b := d) (t₀ := s)
+      Xt hXtauto (fun w : ℝ => (Φ_fam w : M → M)) (fun w p => Φg p w) x ((Φ_fam s : M → M) x)
+      ⟨hcs, hsd⟩ hΦfamXt hΦgXt hseed r hr
+  set p₀ : M := (Φ_fam s : M → M) y with hp₀
+  set u₀ : TangentSpace I p₀ := mfderiv I I (Φ_fam s : M → M) y u with hu₀
+  have hLeaf : ContinuousAt (fun r : ℝ => (TotalSpace.mk' E (Φg p₀ r)
+      (mfderiv I I (fun x => Φg x r) p₀ u₀) : TangentBundle I M)) s :=
+    slice_mfderiv_continuousAt_of_jointFlow (I := I) Φg (O := Set.Ioo (s - Tw) (s + Tw))
+      isOpen_Ioo ⟨by linarith, by linarith⟩ hΦgsmooth p₀ u₀
+  have hsecEq : Set.EqOn
+      (fun r : ℝ => (TotalSpace.mk' E (Φg p₀ r)
+        (mfderiv I I (fun x => Φg x r) p₀ u₀) : TangentBundle I M))
+      (fun r : ℝ => (TotalSpace.mk' E ((Φ_fam r : M → M) y)
+        (mfderiv I I (Φ_fam r : M → M) y u) : TangentBundle I M))
+      (Set.Ioo c d) := by
+    intro r hr
+    have hfun : (Φ_fam r : M → M) = (fun x => Φg x r) ∘ (Φ_fam s : M → M) := by
+      funext x; exact hid r hr x
+    have hbase : (Φ_fam r : M → M) y = Φg p₀ r := hid r hr y
+    have hmdiff_g : MDifferentiableAt I I (fun x => Φg x r) p₀ := by
+      have hcomp : ContMDiffAt I (𝓘(ℝ, ℝ).prod I) ∞ (fun x : M => (r, x)) p₀ :=
+        contMDiffAt_const.prodMk contMDiffAt_id
+      exact ((hΦgsmooth.contMDiffAt ((isOpen_Ioo.prod isOpen_univ).mem_nhds
+        ⟨hWsubTw hr, Set.mem_univ _⟩)).comp p₀ hcomp).mdifferentiableAt (by decide)
+    have hmdiff_fam : MDifferentiableAt I I (Φ_fam s : M → M) y :=
+      ((Φ_fam s).mdifferentiable (by decide)) y
+    have hmfd : mfderiv I I (Φ_fam r : M → M) y u
+        = mfderiv I I (fun x => Φg x r) p₀ u₀ := by
+      have := mfderiv_comp_of_eq (I := I) (I' := I) (I'' := I)
+        (f := (Φ_fam s : M → M)) (g := fun x => Φg x r) (x := y) (y := p₀)
+        hmdiff_g hmdiff_fam hp₀.symm
+      have hcongr : mfderiv I I (Φ_fam r : M → M) y
+          = mfderiv I I ((fun x => Φg x r) ∘ (Φ_fam s : M → M)) y := by rw [hfun]
+      rw [hcongr, this]; rfl
+    change (TotalSpace.mk' E (Φg p₀ r) (mfderiv I I (fun x => Φg x r) p₀ u₀))
+      = (TotalSpace.mk' E ((Φ_fam r : M → M) y) (mfderiv I I (Φ_fam r : M → M) y u))
+    rw [hmfd, hbase]
+  have hWnhds : Set.Ioo c d ∈ 𝓝 s := isOpen_Ioo.mem_nhds ⟨hcs, hsd⟩
+  have hCAt : ContinuousAt (fun r : ℝ => (TotalSpace.mk' E ((Φ_fam r : M → M) y)
+      (mfderiv I I (Φ_fam r : M → M) y u) : TangentBundle I M)) s :=
+    hLeaf.congr (Filter.eventuallyEq_of_mem hWnhds hsecEq)
+  exact hCAt.continuousWithinAt
 
 set_option linter.unusedVariables false in
 /-- **`t = 0`-endpoint continuity data of the conjugating flow (now PROVEN from its providers).**

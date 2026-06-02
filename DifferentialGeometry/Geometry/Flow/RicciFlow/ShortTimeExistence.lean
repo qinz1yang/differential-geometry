@@ -117,7 +117,7 @@ theorem ricci_flow_short_time_existence
         HasDerivWithinAt (fun s : ℝ => (g_DT s).inner x v w)
           (deTurckRicciRHS (I := I) g₀ (g_DT t) x v w)
           (Set.Ici 0) t := hDT_deriv
-    obtain ⟨T, hT0, hT_le, Φ_fam, hΦ0, hΦode, hΦorbit0, hΦmfderiv0, _⟩ :=
+    obtain ⟨T, hT0, hT_le, Φ_fam, hΦ0, hΦode, hΦorbit0, _, hΦmfderiv0_bundle⟩ :=
       conjugating_diffeo_family
         (I := I) g_DT g₀ T_DT hT_DT_pos h_reg h_cont0 h_grad0
     have hΦode' : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
@@ -167,7 +167,7 @@ theorem ricci_flow_short_time_existence
       h_reg.mono (Set.prod_mono_left (Set.Ioo_subset_Ioo_right hT_le))
     obtain ⟨hΦ_orbit, hΦ_total⟩ :=
       conjugating_flow_orbit_pushforward_continuity_data (I := I) g_DT g₀ T hT0 Φ_fam hΦode'
-        h_reg_T hΦorbit0 hΦmfderiv0
+        h_reg_T hΦorbit0 hΦmfderiv0_bundle
     obtain ⟨h_gram_fam, h_gram0_fam⟩ :=
       conjugating_flow_pullback_jointGram_data (I := I) g_DT g₀ T Φ_fam hΦode'
         h_gram_DT_T h_gram0_DT_T
