@@ -136,6 +136,39 @@ theorem sectionAlongCurve_continuousWithinAt_totalSpace
     hV.continuousAt.continuousWithinAt
   exact hcont.congr_of_eventuallyEq heq (heq.eq_of_nhdsWithin hx₀)
 
+/-- **Total-space continuity at a point (within a set), from continuity of the chart
+representation.** The continuity-hypothesis sibling of
+`sectionAlongCurve_continuousWithinAt_totalSpace`: for a curve `γ` continuous within `s`
+at `x₀` and a section `V` along `γ` whose pinned chart-`(γ x₀)`-coordinate representation
+`chartRepAt γ V x₀` is merely `ContinuousWithinAt` (not necessarily differentiable) at
+`x₀`, the bundle-valued map `t ↦ ⟨γ t, V t⟩` is `ContinuousWithinAt` into
+`TangentBundle I M` at `x₀`. The proof is identical to the differentiable version except
+that the fibre continuity is supplied directly by `hV`. -/
+theorem sectionAlongCurve_continuousWithinAt_totalSpace_of_continuousWithinAt
+    (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) {s : Set ℝ} {x₀ : ℝ}
+    (hx₀ : x₀ ∈ s)
+    (hγ : ContinuousWithinAt γ s x₀)
+    (hV : ContinuousWithinAt (chartRepAt (I := I) γ V x₀) s x₀) :
+    ContinuousWithinAt
+      (fun t => (TotalSpace.mk' E (γ t) (V t) : TangentBundle I M)) s x₀ := by
+  rw [FiberBundle.continuousWithinAt_totalSpace]
+  refine ⟨hγ, ?_⟩
+  have hbase₀ : γ x₀ ∈ (trivializationAt E (TangentSpace I) (γ x₀)).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ x₀)
+  have hopen : IsOpen (trivializationAt E (TangentSpace I) (γ x₀)).baseSet :=
+    (trivializationAt E (TangentSpace I) (γ x₀)).open_baseSet
+  have hpre : γ ⁻¹' (trivializationAt E (TangentSpace I) (γ x₀)).baseSet ∈ 𝓝[s] x₀ :=
+    hγ.preimage_mem_nhdsWithin (hopen.mem_nhds hbase₀)
+  have heq :
+      (fun t => ((trivializationAt E (TangentSpace I) (γ x₀))
+        (TotalSpace.mk' E (γ t) (V t))).2)
+        =ᶠ[𝓝[s] x₀] chartRepAt (I := I) γ V x₀ := by
+    filter_upwards [hpre] with t ht
+    rw [chartRepAt_apply]
+    rw [(trivializationAt E (TangentSpace I) (γ x₀)).continuousLinearMapAt_apply (R := ℝ)]
+    rw [(trivializationAt E (TangentSpace I) (γ x₀)).coe_linearMapAt_of_mem ht]
+  exact hV.congr_of_eventuallyEq heq (heq.eq_of_nhdsWithin hx₀)
+
 /-- **Total-space continuity on a set.** For a curve `γ` continuous on `s`
 and a section `V` along `γ` whose pinned chart-`(γ t)`-coordinate
 representations `chartRepAt γ V t` are differentiable at every `t ∈ s`, the
