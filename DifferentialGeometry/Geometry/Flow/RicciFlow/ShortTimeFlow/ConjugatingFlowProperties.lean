@@ -3182,6 +3182,138 @@ theorem flow_orbit_pushforward_jointContinuousOn_upto0
       (isOpen_Ioo.prod (trivializationAt E (TangentSpace I) x₀).open_baseSet).mem_nhds hpIoo
     exact mem_nhdsWithin_of_mem_nhds hopen
 
+namespace MetricCLMSectionAux
+
+/-- For a metric `g` and a base point `α`, the value of the metric bilinear-CLM section read
+in coordinates at the chart-`α` trivialization (centred at `α`, same base point `x ∈ baseSet`),
+evaluated on two fixed model-space test vectors `v, w : E`, expands as the chart-Gram bilinear
+sum: it is `∑ᵢⱼ (repr v)ᵢ (repr w)ⱼ · chartGramMatrix g α x i j`.  The matrix entries are exactly
+the chart-Gram entries, so a joint-in-`(t, x)` smoothness of `chartGramMatrix (g_DT ·) α · i j`
+transports to joint smoothness of this scalar (with `v, w` fixed). -/
+private lemma inCoordinates_metric_eq_chartGram_sum
+    (g : SmoothRiemannianMetric I M) (α : M) {x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v w : E) :
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+        (fun y : M => TangentSpace I y →L[ℝ] ℝ) α x α x (g.inner x) v w =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
+          Integral.Measure.chartGramMatrix (I := I) g α x i j := by
+  classical
+  have hxR : x ∈ (trivializationAt ℝ (Bundle.Trivial M ℝ) α).baseSet := Set.mem_univ x
+  rw [inCoordinates_apply_eq₂ (𝕜 := ℝ)
+    (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
+    (x₀ := α) (x := x) (ϕ := g.inner x) (v := v) (w := w) hx hx hxR]
+  rw [(trivializationAt ℝ (Bundle.Trivial M ℝ) α).coe_linearMapAt_of_mem hxR]
+  set e := trivializationAt E (TangentSpace I) α with he
+  change g.inner x (e.symmL ℝ x v) (e.symmL ℝ x w) = _
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb
+  have hvdec : v = ∑ i, b.repr v i • b i := (b.sum_repr v).symm
+  have hwdec : w = ∑ j, b.repr w j • b j := (b.sum_repr w).symm
+  have hsymm_v : e.symmL ℝ x v = ∑ i, b.repr v i • chartBasisVecFiber (I := I) α i x := by
+    conv_lhs => rw [hvdec]
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [map_smul]; rfl
+  have hsymm_w : e.symmL ℝ x w = ∑ j, b.repr w j • chartBasisVecFiber (I := I) α j x := by
+    conv_lhs => rw [hwdec]
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    rw [map_smul]; rfl
+  rw [hsymm_v, hsymm_w]
+  have hL :
+      g.inner x (∑ i, b.repr v i • chartBasisVecFiber (I := I) α i x)
+        = ∑ i, b.repr v i • g.inner x (chartBasisVecFiber (I := I) α i x) := by
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [map_smul]
+  rw [hL, ContinuousLinearMap.sum_apply]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_sum, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [map_smul, smul_eq_mul, Integral.Connection.g_inner_eq_chartGramMatrix_basis]
+  ring
+
+end MetricCLMSectionAux
+
+set_option linter.unusedVariables false in
+/-- **Joint `(t, b)` smoothness of the metric bilinear-CLM bundle section from chart-Gram data.**
+
+The metric family's bilinear-CLM bundle section `(t, b) ↦ ⟨b, (g_DT t).inner b⟩` — the operator
+section of the `Hom(TM, Hom(TM, ℝ))`-bundle carrying the per-time metric — is jointly `C∞` in
+`(t, b)` on `Ioo 0 T ×ˢ univ`, given that every chart-Gram matrix entry
+`p ↦ chartGramMatrix (g_DT p.1) x₀ p.2 i j` is jointly `C∞` (`hgram_DT`).
+
+This is the converse readoff of `ContMDiffOn.clm_bundle_apply₂`: at each interior point `q₀` the
+Hom-bundle section's smoothness is read in coordinates (`contMDiffAt_hom_bundle`) and reduced via
+`contMDiffAt_clm_of_pointwise` (twice, once per bilinear slot) to the scalar coordinate entries,
+which — by `inCoordinates_metric_eq_chartGram_sum` — are finite `(repr · ·)`-weighted sums of the
+chart-Gram entries `chartGramMatrix (g_DT ·) q₀.2 · i j`, each jointly `C∞` by `hgram_DT` at the
+chart centred at `q₀.2`.  Discharges the `hgInnerBase` hypothesis of
+`metric_clm_section_jointContMDiffOn_along_orbit`. -/
+theorem metricCLMSection_jointContMDiffOn_of_chartGram
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
+    (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+        (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
+        ((g_DT q.1).inner q.2)))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
+  classical
+  open MetricCLMSectionAux in
+  intro q₀ hq₀
+  refine (?_ : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+    (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+      (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
+      ((g_DT q.1).inner q.2))) q₀).contMDiffWithinAt
+  set α : M := q₀.2 with hα
+  -- A neighbourhood (within the open product) on which `q.2 ∈ baseSet α`.
+  have hbase0 : α ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [hα]; exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+  rw [contMDiffAt_hom_bundle]
+  refine ⟨contMDiffAt_snd, ?_⟩
+  -- Reduce the operator-valued `inCoordinates` smoothness to per-slot scalar smoothness.
+  apply contMDiffAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro v
+  apply contMDiffAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro w
+  -- The scalar `inCoordinates(...)(v)(w)` is, near `q₀`, the chart-Gram bilinear sum.
+  have hgram_sum : ∀ i j : Fin (Module.finrank ℝ E),
+      ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) q₀ := by
+    intro i j
+    have hmem : q₀ ∈ Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet := by
+      refine ⟨hq₀.1, ?_⟩
+      rw [hα]; exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+    have hopen : IsOpen (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+      isOpen_Ioo.prod (trivializationAt E (TangentSpace I) α).open_baseSet
+    exact ((hgram_DT α i j) q₀ hmem).contMDiffAt (hopen.mem_nhds hmem)
+  have hscalar : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+      (fun p : ℝ × M => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
+          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) q₀ := by
+    refine ContMDiffAt.sum (fun i _ => ?_)
+    refine ContMDiffAt.sum (fun j _ => ?_)
+    exact (contMDiffAt_const (c := ((chartModelBasis E).repr v i *
+      (chartModelBasis E).repr w j : ℝ))).mul (hgram_sum i j)
+  -- Identify the two functions on a neighbourhood within the open product where `q.2 ∈ baseSet α`.
+  refine hscalar.congr_of_eventuallyEq ?_
+  have hnhds : (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds q₀.2 :=
+    (trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hbase0
+  have hpre : (fun q : ℝ × M => q.2) ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds q₀ :=
+    (continuous_snd.continuousAt (x := q₀)).preimage_mem_nhds hnhds
+  filter_upwards [hpre] with p hp
+  change ((ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+      (fun y : M => TangentSpace I y →L[ℝ] ℝ) α p.2 α p.2 ((g_DT p.1).inner p.2)) v) w = _
+  exact inCoordinates_metric_eq_chartGram_sum (I := I) (g_DT p.1) α hp v w
+
 set_option linter.unusedVariables false in
 /-- **Interior joint-`C∞` of the metric bilinear-CLM section along the orbit.**
 
@@ -3295,6 +3427,34 @@ theorem pullbackGram_jointContMDiffOn_interior
   rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
   exact hpx.2
 
+namespace PullbackGramJointAux
+
+/-- Joint-domain within-at continuity of a finite sum of within-at-continuous functions on
+`ℝ × M` (the `ℝ × M`-source analogue of the `ℝ`-source `cwa_finset_sum`). -/
+private lemma cwa_finset_sum_prod {ι : Type*} {N : Type*} [AddCommMonoid N] [TopologicalSpace N]
+    [ContinuousAdd N] {f : ι → ℝ × M → N} (s : Finset ι) {t : Set (ℝ × M)} {p : ℝ × M}
+    (h : ∀ i ∈ s, ContinuousWithinAt (f i) t p) :
+    ContinuousWithinAt (fun q : ℝ × M => ∑ i ∈ s, f i q) t p := by
+  classical
+  induction s using Finset.induction with
+  | empty => simpa using continuousWithinAt_const
+  | insert i s hi ih =>
+      simp only [Finset.sum_insert hi]
+      exact (h i (Finset.mem_insert_self i s)).add
+        (ih (fun k hk => h k (Finset.mem_insert_of_mem hk)))
+
+/-- A model-basis `repr`-coordinate of a within-at-continuous `E`-valued function on `ℝ × M` is
+within-at-continuous (the `ℝ × M`-source analogue of `repr_continuousWithinAt`). -/
+private lemma repr_jointContinuousWithinAt {S : Set (ℝ × M)} {p₀ : ℝ × M} {f : ℝ × M → E}
+    (hf : ContinuousWithinAt f S p₀) (k : Fin (Module.finrank ℝ E)) :
+    ContinuousWithinAt (fun q : ℝ × M => ((chartModelBasis E).repr (f q)) k) S p₀ := by
+  have hlin : Continuous (fun y : E => ((chartModelBasis E).repr y) k) :=
+    ((Finsupp.lapply (R := ℝ) (M := ℝ) (α := Fin (Module.finrank ℝ E)) k).comp
+      (chartModelBasis E).repr.toLinearMap).continuous_of_finiteDimensional
+  exact hlin.continuousWithinAt.comp hf (Set.mapsTo_univ _ _)
+
+end PullbackGramJointAux
+
 set_option linter.unusedVariables false in
 /-- **Joint up-to-`0` continuity of the pullback chart-Gram entry.**
 
@@ -3321,8 +3481,128 @@ theorem pullbackGram_jointContinuousOn_upto0
       (fun p : ℝ × M =>
         Integral.Measure.chartGramMatrix (I := I)
           (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
-      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
-  sorry
+      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+  classical
+  open MovingPushforwardAux PullbackGramJointAux in
+  -- Rewrite the pullback chart-Gram entry to the moving bilinear form at the moving orbit point,
+  -- applied to the two moving pushforward vectors.
+  have hrw : Set.EqOn
+      (fun p : ℝ × M =>
+        Integral.Measure.chartGramMatrix (I := I)
+          (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
+      (fun p : ℝ × M =>
+        (g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2)
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2)))
+      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+    intro q _
+    change Integral.Measure.chartGramMatrix (I := I)
+        (Diffeomorph.pullbackMetric (g_DT q.1) (Φ_fam q.1)) x₀ q.2 i j = _
+    rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+  refine ContinuousOn.congr ?_ hrw
+  intro p₀ hp₀
+  obtain ⟨hp₀t, hp₀x⟩ := hp₀
+  set α : M := (Φ_fam p₀.1 : M → M) p₀.2 with hα
+  set e := trivializationAt E (TangentSpace I) α with he
+  have hbase0 : (Φ_fam p₀.1 : M → M) p₀.2 ∈ e.baseSet := by
+    rw [he, hα]; exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+  have hsrc0 : (Φ_fam p₀.1 : M → M) p₀.2 ∈ (extChartAt I α).source := by
+    rw [hα]; exact mem_extChartAt_source (I := I) α
+  -- Orbit continuity-within-at at `p₀`, on `Ico ×ˢ baseSet x₀` (a subset of `Ico ×ˢ univ`).
+  have horbit : ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ :=
+    (hΦorbit p₀ ⟨hp₀t, Set.mem_univ _⟩).mono
+      (Set.prod_mono_right (Set.subset_univ _))
+  -- Chart-`α` coordinate continuity of each moving pushforward vector, then its model-basis `repr`.
+  have hcoordI : ∀ a : Fin (Module.finrank ℝ E),
+      ContinuousWithinAt
+        (fun p : ℝ × M => ((chartModelBasis E).repr
+          (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+            (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2)))) a)
+        (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ := by
+    intro a
+    refine repr_jointContinuousWithinAt ?_ a
+    exact moving_chartCoord_jointContinuousWithinAt (I := I) Φ_fam x₀ i α _ p₀ hbase0 horbit
+      ((hΦpush x₀ i).continuousWithinAt ⟨hp₀t, hp₀x⟩)
+  have hcoordJ : ∀ b : Fin (Module.finrank ℝ E),
+      ContinuousWithinAt
+        (fun p : ℝ × M => ((chartModelBasis E).repr
+          (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+            (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2)))) b)
+        (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ := by
+    intro b
+    refine repr_jointContinuousWithinAt ?_ b
+    exact moving_chartCoord_jointContinuousWithinAt (I := I) Φ_fam x₀ j α _ p₀ hbase0 horbit
+      ((hΦpush x₀ j).continuousWithinAt ⟨hp₀t, hp₀x⟩)
+  -- Chart-`α` Gram-entry continuity at the moving orbit point, via `hg_jointE` precomposed with
+  -- the joint orbit map `(t, x) ↦ (t, Φ_fam t x)`.
+  have hgram : ∀ a b : Fin (Module.finrank ℝ E),
+      ContinuousWithinAt
+        (fun p : ℝ × M => Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT p.1) α a b
+          (extChartAt I α ((Φ_fam p.1 : M → M) p.2)))
+        (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ := by
+    intro a b
+    have hpair : ContinuousWithinAt (fun p : ℝ × M => (p.1, (Φ_fam p.1 : M → M) p.2))
+        (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ :=
+      (continuousWithinAt_fst).prodMk horbit
+    have hmaps : Set.MapsTo (fun p : ℝ × M => (p.1, (Φ_fam p.1 : M → M) p.2))
+        (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ) := by
+      intro q hq
+      exact ⟨⟨hq.1.1, le_of_lt hq.1.2⟩, Set.mem_univ _⟩
+    have hg : ContinuousWithinAt
+        (fun q : ℝ × M => Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α a b
+          (extChartAt I α q.2)) (Set.Icc (0 : ℝ) T ×ˢ Set.univ)
+        (p₀.1, (Φ_fam p₀.1 : M → M) p₀.2) :=
+      (hg_jointE α a b).continuousWithinAt (hmaps ⟨hp₀t, hp₀x⟩)
+    have hcomp := hg.comp_of_eq hpair hmaps rfl
+    simpa only [Function.comp_def] using hcomp
+  -- Assemble the chart-sum, with continuity from the products of coordinate/Gram factors.
+  have hsumcont : ContinuousWithinAt
+      (fun p : ℝ × M => ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr
+          (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+            (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2)))) a *
+        ((chartModelBasis E).repr
+          (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+            (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2)))) b *
+        Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT p.1) α a b
+          (extChartAt I α ((Φ_fam p.1 : M → M) p.2)))
+      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p₀ := by
+    refine cwa_finset_sum_prod _ (fun a _ => ?_)
+    refine cwa_finset_sum_prod _ (fun b _ => ?_)
+    exact ((hcoordI a).mul (hcoordJ b)).mul (hgram a b)
+  -- The chart-sum identity (`g_inner_eq_chart_sum`) on a neighbourhood within the domain.
+  have hsum : ∀ p : ℝ × M, (Φ_fam p.1 : M → M) p.2 ∈ e.baseSet →
+      (Φ_fam p.1 : M → M) p.2 ∈ (extChartAt I α).source →
+      (g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2)
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2))
+        = ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+            ((chartModelBasis E).repr
+              (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+                (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2)))) a *
+            ((chartModelBasis E).repr
+              (e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+                (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2)))) b *
+            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT p.1) α a b
+              (extChartAt I α ((Φ_fam p.1 : M → M) p.2)) := by
+    intro p hb hsr
+    exact g_inner_eq_chart_sum (I := I) (g_DT p.1) α hb hsr
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2))
+  refine hsumcont.congr_of_eventuallyEq ?_ (hsum p₀ hbase0 hsrc0)
+  have hbnhds : e.baseSet ∈ nhds ((Φ_fam p₀.1 : M → M) p₀.2) := e.open_baseSet.mem_nhds hbase0
+  have hsrcnhds : (extChartAt I α).source ∈ nhds ((Φ_fam p₀.1 : M → M) p₀.2) :=
+    (isOpen_extChartAt_source (I := I) α).mem_nhds hsrc0
+  have hpb : (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) ⁻¹' e.baseSet
+      ∈ nhdsWithin p₀ (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+    horbit.preimage_mem_nhdsWithin hbnhds
+  have hps : (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) ⁻¹' (extChartAt I α).source
+      ∈ nhdsWithin p₀ (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+    horbit.preimage_mem_nhdsWithin hsrcnhds
+  filter_upwards [hpb, hps] with p hb hsr
+  exact hsum p hb hsr
 
 set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` chart-Gram regularity of the pulled-back metric family.**
