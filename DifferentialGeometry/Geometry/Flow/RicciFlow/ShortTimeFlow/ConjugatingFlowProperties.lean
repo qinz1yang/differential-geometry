@@ -368,8 +368,91 @@ theorem conjugating_flow_jointContMDiffOn_interior
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
       (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
+  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  set X : ℝ → ∀ x : M, TangentSpace I x :=
+    fun s x => -(deTurckVF (I := I) (g_DT s) g_bg x) with hX
+  have hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
-  sorry
+    fun q hq => neg_field_cmdwa
+      (fun s x => (deTurckVF (I := I) (g_DT s) g_bg x : TangentSpace I x)) (hfield_reg q hq)
+  have hΦode' : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x) (Set.Ici (0:ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t ((Φ_fam t : M → M) x))) := hΦode
+  intro p hp
+  obtain ⟨hps, -⟩ := hp
+  set s : ℝ := p.1 with hs
+  set y : M := p.2 with hy
+  obtain ⟨a', ha'0, ha's⟩ := exists_between hps.1
+  obtain ⟨b', hsb', hb'T⟩ := exists_between hps.2
+  obtain ⟨Xt, δ, hδ, hXteq, hXtsmooth, hXtauto⟩ :=
+    interior_field_global_cutoff_extension X T hint ha'0 (lt_trans ha's hsb') hb'T
+  obtain ⟨Tw, hTw, Φg, hΦg0, hΦgsmooth, hΦgbare⟩ :=
+    global_flow_jointContMDiffOn_on_closed_manifold Xt hXtsmooth s
+  set c : ℝ := max a' (s - Tw) with hc
+  set d : ℝ := min b' (s + Tw) with hd
+  have hcs : c < s := by rw [hc]; exact max_lt ha's (by linarith)
+  have hsd : s < d := by rw [hd]; exact lt_min hsb' (by linarith)
+  have hWsubab : Set.Ioo c d ⊆ Set.Ioo a' b' :=
+    Set.Ioo_subset_Ioo (le_max_left _ _) (min_le_left _ _)
+  have hWsubTw : Set.Ioo c d ⊆ Set.Ioo (s - Tw) (s + Tw) :=
+    Set.Ioo_subset_Ioo (le_max_right _ _) (min_le_right _ _)
+  have hWsubT : Set.Ioo c d ⊆ Set.Ioo (0:ℝ) T :=
+    hWsubab.trans (Set.Ioo_subset_Ioo (le_of_lt ha'0) (le_of_lt hb'T))
+  have hXtX : ∀ t ∈ Set.Ioo a' b', ∀ x : M, Xt t x = X t x := by
+    intro t ht x
+    refine hXteq t ?_ x
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hid : ∀ r ∈ Set.Ioo c d, ∀ x : M,
+      (Φ_fam r : M → M) x = Φg ((Φ_fam s : M → M) x) r := by
+    intro r hr x
+    have hΦfamXt : ∀ t ∈ Set.Ioo c d,
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam w : M → M) x) (Set.Ioo c d) t
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t ((Φ_fam t : M → M) x))) := by
+      intro t ht
+      have hWsubIci : Set.Ioo c d ⊆ Set.Ici (0:ℝ) :=
+        fun w hw => le_of_lt (lt_of_lt_of_le (hWsubT hw).1 (le_refl _))
+      have hode := (hΦode' x t (hWsubT ht)).mono hWsubIci
+      rw [hXtX t (hWsubab ht) ((Φ_fam t : M → M) x)]
+      exact hode
+    have hΦgXt : ∀ t ∈ Set.Ioo c d,
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun w : ℝ => Φg ((Φ_fam s : M → M) x) w) (Set.Ioo c d) t
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φg ((Φ_fam s : M → M) x) t))) := fun t ht =>
+      (hΦgbare ((Φ_fam s : M → M) x) t (hWsubTw ht)).hasMFDerivWithinAt
+    have hseed : (Φ_fam s : M → M) x = Φg ((Φ_fam s : M → M) x) s := (hΦg0 _).symm
+    exact bare_integral_flow_eqOn_of_jointC1 (a := c) (b := d) (t₀ := s)
+      Xt hXtauto (fun w : ℝ => (Φ_fam w : M → M)) (fun w q => Φg q w) x ((Φ_fam s : M → M) x)
+      ⟨hcs, hsd⟩ hΦfamXt hΦgXt hseed r hr
+  have hWnhds : Set.Ioo c d ×ˢ (Set.univ : Set M) ∈ 𝓝 (p : ℝ × M) := by
+    rw [show (p : ℝ × M) = (s, y) from Prod.ext hs hy]
+    exact (isOpen_Ioo.prod isOpen_univ).mem_nhds ⟨⟨hcs, hsd⟩, Set.mem_univ _⟩
+  have hcompMDiff : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun q : ℝ × M => Φg ((Φ_fam s : M → M) q.2) q.1) (p : ℝ × M) := by
+    have hfst : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun q : ℝ × M => q.1) (p : ℝ × M) := contMDiffAt_fst
+    have hsnd : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+        (fun q : ℝ × M => (Φ_fam s : M → M) q.2) (p : ℝ × M) :=
+      ((Φ_fam s).contMDiff.contMDiffAt).comp (p : ℝ × M) contMDiffAt_snd
+    have hf : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun q : ℝ × M => (q.1, (Φ_fam s : M → M) q.2)) (p : ℝ × M) := hfst.prodMk hsnd
+    have hmem : ((s, (Φ_fam s : M → M) y) : ℝ × M)
+        ∈ Set.Ioo (s - Tw) (s + Tw) ×ˢ (Set.univ : Set M) :=
+      ⟨⟨by linarith, by linarith⟩, Set.mem_univ _⟩
+    have hg : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+        (fun q : ℝ × M => Φg q.2 q.1)
+        ((s, (Φ_fam s : M → M) y) : ℝ × M) :=
+      hΦgsmooth.contMDiffAt ((isOpen_Ioo.prod isOpen_univ).mem_nhds hmem)
+    have hfval : (fun q : ℝ × M => (q.1, (Φ_fam s : M → M) q.2)) (p : ℝ × M)
+        = ((s, (Φ_fam s : M → M) y) : ℝ × M) := Prod.ext hs (by rw [hy])
+    have hcomp := (hfval ▸ hg).comp (p : ℝ × M) hf
+    exact hcomp
+  have hgoalAt : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (p : ℝ × M) := by
+    refine hcompMDiff.congr_of_eventuallyEq ?_
+    filter_upwards [hWnhds] with q hq
+    exact hid q.1 hq.1 q.2
+  exact hgoalAt.contMDiffWithinAt
 
 /-- **Chart-`y`-frame velocity field of the conjugating flow.**
 
