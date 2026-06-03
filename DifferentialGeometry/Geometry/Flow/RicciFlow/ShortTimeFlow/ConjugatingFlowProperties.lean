@@ -1240,6 +1240,60 @@ private theorem conjugating_orbit_jointContWithinAt_at_zero
   rw [hval]; rw [hL] at hgoal; exact hgoal
 
 set_option linter.unusedVariables false in
+/-- **Joint `(t, x)` chart-`y` Jacobian continuity at the `t = 0` boundary slice (variational
+Grönwall content).**
+
+The chart-`y` Jacobian of the conjugating orbit applied to the moving chart-`x₀` frame —
+`p ↦ mfderiv (extChartAt I y ∘ Φ_fam p.1) p.2 (chartBasisVecFiber x₀ i p.2)` — is jointly
+`(t, x)`-continuous up to `(0, y)` on `Ici 0 ×ˢ baseSet x₀`.
+
+This is the genuine uniform-in-`x` *variational* continuous-dependence-up-to-`0` datum, the
+linearized analog of the orbit confinement `conjugating_orbit_jointContWithinAt_at_zero`.  Writing
+`D(t, x) := ∂_x [extChartAt I y (Φ_fam t x)]`, on the interior `D` solves the LINEAR variational
+ODE `D'(t) = A(t, c_x(t)) · D(t)` whose coefficient `A` is the spatial Fréchet derivative of the
+chart-frame velocity `conjugatingChartVelocityField` (`conjugatingChartVelocityField_hasFDerivAt`),
+uniformly bounded on the chart ball by `Hfderiv`; the orbit stays confined by
+`conjugating_flow_uniform_chart_confinement` (consuming `Hcomp`).  A uniform variational Grönwall on
+this linear ODE — with the cross-term `‖(A(c_x) − A(c_y)) · D_x‖ → 0` controlled by the orbit
+trajectories `c_x → c_y` (conjunct 1) and `A` continuous — combined with `hΦ0` (at `t = 0`,
+`Φ_fam 0 = id`, so `D(0, x) = ∂_x (extChartAt I y) = trivToE y x`) drives the joint limit.  All
+hypotheses constrain only the internal `g_DT` / `Φ_fam` / the chart-frame field; the conclusion is
+the chart-coordinate Jacobian, neither equal to nor destructuring to any hypothesis.
+
+POSITED node: the manifold variational ODE/Grönwall up to the initial time is the analytic input
+threaded/discharged from the genuine conjugating flow (`conjugating_diffeo_family`); it is a
+recursion target, not a sanctioned permanent gap. -/
+private theorem flow_chartJacobian_jointContWithinAt_at_zero
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) :
+    ContinuousWithinAt
+      (fun p : ℝ × M => mfderiv I 𝓘(ℝ, E)
+        (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) p.2
+        (chartBasisVecFiber (I := I) x₀ i p.2))
+      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
+  sorry
+
+set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` continuity of the conjugating orbit and its moving pushforward at the
 `t = 0` boundary slice.**
 
@@ -1288,8 +1342,93 @@ theorem conjugating_flow_jointContWithinAt_at_zero
       ContinuousWithinAt (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
         (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
         : TangentBundle I M))
-      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y)) :=
-  sorry
+      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y)) := by
+  classical
+  refine ⟨fun y =>
+    conjugating_orbit_jointContWithinAt_at_zero (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0
+      hΦorbit0 Hcomp Hfderiv y, ?_⟩
+  intro x₀ i y
+  set s : Set (ℝ × M) :=
+    Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet with hs
+  set f : ℝ × M → TangentBundle I M := fun p : ℝ × M =>
+    (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+      : TangentBundle I M) with hf
+  -- Base projection of the seed equals `y` (since `Φ_fam 0 = id`).
+  have hproj0 : (f (0, y)).proj = y := by
+    show (Φ_fam 0 : M → M) y = y
+    rw [hΦ0, Diffeomorph.coe_refl, id]
+  rw [FiberBundle.continuousWithinAt_totalSpace E f]
+  constructor
+  · -- Base continuity: the orbit (conjunct 1), restricted to the chart-`x₀` base set.
+    have hbase : ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+        (Set.Ici (0 : ℝ) ×ˢ Set.univ) (0, y) :=
+      conjugating_orbit_jointContWithinAt_at_zero (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0
+        hΦorbit0 Hcomp Hfderiv y
+    exact hbase.mono (Set.prod_mono_right (Set.subset_univ _))
+  · -- Fibre continuity: the trivialized fibre equals the chart-`y` Jacobian near `(0, y)`.
+    rw [hproj0]
+    -- The orbit eventually stays in the chart source of `y`, where the trivialization bridge holds.
+    have hbase : ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) s (0, y) :=
+      (conjugating_orbit_jointContWithinAt_at_zero (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0
+        hΦorbit0 Hcomp Hfderiv y).mono (Set.prod_mono_right (Set.subset_univ _))
+    have hsrc_open : IsOpen (chartAt H y).source := (chartAt H y).open_source
+    have hy_src : y ∈ (chartAt H y).source := mem_chart_source H y
+    have hsrc_nhds : (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) ⁻¹' (chartAt H y).source ∈ 𝓝[s] (0, y) :=
+      hbase.preimage_mem_nhdsWithin (by
+        have hval : (Φ_fam (0, y).1 : M → M) (0, y).2 = y := by
+          show (Φ_fam 0 : M → M) y = y; rw [hΦ0, Diffeomorph.coe_refl, id]
+        rw [hval]; exact hsrc_open.mem_nhds hy_src)
+    -- The chart-`y` Jacobian section, the target of the variational continuity.
+    set J : ℝ × M → E := fun p : ℝ × M => mfderiv I 𝓘(ℝ, E)
+      (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) p.2
+      (chartBasisVecFiber (I := I) x₀ i p.2) with hJ
+    have hJcont : ContinuousWithinAt J s (0, y) :=
+      flow_chartJacobian_jointContWithinAt_at_zero (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0
+        hΦorbit0 Hcomp Hfderiv x₀ i y
+    refine hJcont.congr_of_eventuallyEq ?_ ?_
+    · -- Eventual equality of the trivialized fibre with the chart-`y` Jacobian on the source.
+      filter_upwards [hsrc_nhds] with p hp
+      have hFx_src : (Φ_fam p.1 : M → M) p.2 ∈ (chartAt H y).source := hp
+      have hFx_base : (Φ_fam p.1 : M → M) p.2 ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]; exact hFx_src
+      have hmdiff : MDifferentiableAt I I (Φ_fam p.1 : M → M) p.2 :=
+        ((Φ_fam p.1).mdifferentiable (by decide)) p.2
+      have htriv2 : trivToE (I := I) y ((Φ_fam p.1 : M → M) p.2)
+              (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          = ((trivializationAt E (TangentSpace I) y) (f p)).2 := by
+        change ((trivializationAt E (TangentSpace I) y).continuousLinearMapAt ℝ
+            ((Φ_fam p.1 : M → M) p.2))
+            (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2)) = _
+        rw [Trivialization.continuousLinearMapAt_apply,
+          Trivialization.coe_linearMapAt_of_mem _ hFx_base]
+      rw [← htriv2]
+      exact trivToE_mfderiv_eq_chartFderiv_apply (I := I)
+        (Φ_fam p.1 : M → M) y (chartBasisVecFiber (I := I) x₀ i p.2) hmdiff hFx_src
+    · -- Value match at `(0, y)`: both equal `trivToE y y (chartBasisVecFiber x₀ i y)`.
+      have hy_base : y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]; exact hy_src
+      have hΦ0y : (Φ_fam 0 : M → M) y = y := by rw [hΦ0, Diffeomorph.coe_refl, id]
+      have hmdiff0 : MDifferentiableAt I I (Φ_fam 0 : M → M) y :=
+        ((Φ_fam 0).mdifferentiable (by decide)) y
+      have hFx_src0 : (Φ_fam 0 : M → M) y ∈ (chartAt H y).source := by rw [hΦ0y]; exact hy_src
+      have hFx_base0 : (Φ_fam 0 : M → M) y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]; exact hFx_src0
+      have hlhs : trivToE (I := I) y ((Φ_fam 0 : M → M) y)
+              (mfderiv I I (Φ_fam 0 : M → M) y (chartBasisVecFiber (I := I) x₀ i y))
+          = ((trivializationAt E (TangentSpace I) y) (f (0, y))).2 := by
+        change ((trivializationAt E (TangentSpace I) y).continuousLinearMapAt ℝ
+            ((Φ_fam 0 : M → M) y))
+            (mfderiv I I (Φ_fam 0 : M → M) y (chartBasisVecFiber (I := I) x₀ i y)) = _
+        rw [Trivialization.continuousLinearMapAt_apply,
+          Trivialization.coe_linearMapAt_of_mem _ hFx_base0]
+      have hrhs : J (0, y)
+          = trivToE (I := I) y ((Φ_fam 0 : M → M) y)
+              (mfderiv I I (Φ_fam 0 : M → M) y (chartBasisVecFiber (I := I) x₀ i y)) := by
+        rw [hJ]
+        exact (trivToE_mfderiv_eq_chartFderiv_apply (I := I)
+          (Φ_fam 0 : M → M) y (chartBasisVecFiber (I := I) x₀ i y) hmdiff0 hFx_src0).symm
+      rw [← hlhs, hrhs]
 
 set_option linter.unusedVariables false in
 /-- **Joint up-to-`0` continuity of the conjugating orbit and its moving pushforward.**
