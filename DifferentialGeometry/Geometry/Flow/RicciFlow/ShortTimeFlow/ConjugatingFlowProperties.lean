@@ -1322,6 +1322,184 @@ private theorem conjugating_orbit_jointContWithinAt_at_zero
     change (Φ_fam 0 : M → M) y = y; rw [hΦ0, Diffeomorph.coe_refl, id]
   rw [hval]; rw [hL] at hgoal; exact hgoal
 
+/-- The affine line `rr ↦ z + rr • δ` has derivative `δ` at `0`. -/
+private theorem hasDerivAt_affine_line {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (z δ : E) : HasDerivAt (fun rr : ℝ => z + rr • δ) δ 0 := by
+  have h1 : HasDerivAt (fun rr : ℝ => rr • δ) δ 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).smul_const δ
+  have h2 : HasDerivAt (fun rr : ℝ => z + rr • δ) (0 + δ) 0 :=
+    (hasDerivAt_const (0 : ℝ) z).add h1
+  simpa using h2
+
+/-- **Euclidean operator-valued spatial-variational ODE from a jointly `C∞` flow + its flow ODE.**
+
+For a jointly `C∞` Euclidean flow `Φ_E : E → ℝ → E` of a time-dependent field `V`, at an interior
+time `t`, the spatial Fréchet derivative `s ↦ fderiv ℝ (Φ_E · s) z₀` satisfies the linearised-flow
+operator ODE
+
+  `HasDerivAt (fun s => fderiv ℝ (Φ_E · s) z₀)
+     ((fderiv ℝ (V t) (Φ_E z₀ t)).comp (fderiv ℝ (Φ_E · t) z₀)) t`,
+
+i.e. `∂_s (D_z Φ_E) = (D_w V)(Φ_E) · (D_z Φ_E)`.  This is the apply-initial-free analogue of
+`IsLocalFlow.hasDerivAt_partial_spatial_fderiv` (`VariationalODE/EuclideanVariationalODE.lean`):
+joint `C∞` of `Φ_E` at `(z₀, t)` makes its second Fréchet derivative symmetric (Clairaut,
+`ContDiffAt.isSymmSndFDerivAt`), which swaps a spatial derivative past the temporal one; the flow
+ODE `hflow` (the time-derivative of the orbit at the fixed interior time `t`, for spatial points
+near `z₀`) supplies the temporal slot, and the chain rule on the moving point gives the displayed
+`A · D`.  The only inputs are the joint `C∞` jet, the per-spatial-point flow ODE near `z₀`, and the
+spatial differentiability of the field at the orbit point — none of which is, or destructures to,
+the operator-valued `HasDerivAt` conclusion. -/
+private theorem hasDerivAt_partial_spatial_fderiv_of_jointContDiffAt
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [FiniteDimensional ℝ E]
+    (Φ : E × ℝ → E) (V : ℝ → E → E) (z₀ : E) (t : ℝ)
+    (hΦ_cd : ContDiffAt ℝ ∞ Φ (z₀, t))
+    (hflow : ∀ᶠ z : E in nhds z₀,
+      HasDerivAt (fun u : ℝ => Φ (z, u)) (V t (Φ (z, t))) t)
+    (hV_diff : DifferentiableAt ℝ (V t) (Φ (z₀, t))) :
+    HasDerivAt (fun s : ℝ => fderiv ℝ (fun y : E => Φ (y, s)) z₀)
+      ((fderiv ℝ (V t) (Φ (z₀, t))).comp (fderiv ℝ (fun y : E => Φ (y, t)) z₀)) t := by
+  have hΦ_cd1 : ContDiffAt ℝ (1 : WithTop ℕ∞) Φ (z₀, t) :=
+    hΦ_cd.of_le (by exact_mod_cast le_top)
+  have hΦ_diff_nhds : ∀ᶠ q : E × ℝ in nhds (z₀, t), DifferentiableAt ℝ Φ q := by
+    have hev : ∀ᶠ q : E × ℝ in nhds (z₀, t), ContDiffAt ℝ (1 : WithTop ℕ∞) Φ q :=
+      hΦ_cd1.eventually (by decide)
+    filter_upwards [hev] with q hq using hq.differentiableAt (by norm_num)
+  have hΦ_diff_xs : DifferentiableAt ℝ Φ (z₀, t) := hΦ_cd.differentiableAt (by simp)
+  -- the partial spatial Fréchet derivative as the joint one precomposed with `inl`.
+  have hpartial : ∀ {z : E} {s : ℝ}, DifferentiableAt ℝ Φ (z, s) →
+      fderiv ℝ (fun y : E => Φ (y, s)) z
+        = (fderiv ℝ Φ (z, s)).comp (ContinuousLinearMap.inl ℝ E ℝ) := by
+    intro z s hdiff
+    have hslice : HasFDerivAt (fun y : E => Φ (y, s))
+        ((fderiv ℝ Φ (z, s)).comp (ContinuousLinearMap.inl ℝ E ℝ)) z :=
+      hdiff.hasFDerivAt.comp z (hasFDerivAt_prodMk_left z s)
+    exact hslice.fderiv
+  -- the second Fréchet derivative is symmetric (Clairaut).
+  have hone_one_le : (1 + 1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by decide
+  have hsndDiff : DifferentiableAt ℝ (fderiv ℝ Φ) (z₀, t) :=
+    (hΦ_cd.fderiv_right (m := 1) hone_one_le).differentiableAt (by simp)
+  have hsndHas : HasFDerivAt (fderiv ℝ Φ) (fderiv ℝ (fderiv ℝ Φ) (z₀, t)) (z₀, t) :=
+    hsndDiff.hasFDerivAt
+  set B := fderiv ℝ (fderiv ℝ Φ) (z₀, t) with hB
+  have hsymm : IsSymmSndFDerivAt ℝ Φ (z₀, t) := by
+    refine hΦ_cd.isSymmSndFDerivAt ?_
+    rw [minSmoothness_of_isRCLikeNormedField]; decide
+  -- the spatial slice is differentiable in time, with some operator-valued derivative `D'`.
+  set Lsp : E × ℝ → (E →L[ℝ] E) :=
+    fun q => (fderiv ℝ Φ q).comp (ContinuousLinearMap.inl ℝ E ℝ) with hLsp
+  have hLspSmooth : ContDiffAt ℝ ∞ Lsp (z₀, t) := by
+    have hfderivSmooth : ContDiffAt ℝ ∞ (fderiv ℝ Φ) (z₀, t) :=
+      hΦ_cd.fderiv_right (m := ∞) (by simp)
+    have hpost : ContDiffAt ℝ ∞
+        (fun L : E × ℝ →L[ℝ] E => L.comp (ContinuousLinearMap.inl ℝ E ℝ)) (fderiv ℝ Φ (z₀, t)) :=
+      (ContinuousLinearMap.compL ℝ E (E × ℝ) E |>.flip
+        (ContinuousLinearMap.inl ℝ E ℝ)).contDiff.contDiffAt
+    exact hpost.comp _ hfderivSmooth
+  have hLspTimeDiff : DifferentiableAt ℝ (fun u : ℝ => Lsp (z₀, u)) t :=
+    (hLspSmooth.comp t (contDiffAt_const.prodMk contDiffAt_id)).differentiableAt (by simp)
+  set D' : E →L[ℝ] E := deriv (fun u : ℝ => Lsp (z₀, u)) t with hD'
+  have hLspDeriv : HasDerivAt (fun u : ℝ => Lsp (z₀, u)) D' t := hLspTimeDiff.hasDerivAt
+  have hUx_nhds : ∀ᶠ u : ℝ in nhds t, DifferentiableAt ℝ Φ (z₀, u) := by
+    have hcont : ContinuousAt (fun u : ℝ => (z₀, u)) t := by fun_prop
+    exact hcont.eventually hΦ_diff_nhds
+  have hSliceEq : (fun u : ℝ => Lsp (z₀, u))
+      =ᶠ[nhds t] (fun u : ℝ => fderiv ℝ (fun y : E => Φ (y, u)) z₀) := by
+    filter_upwards [hUx_nhds] with u hu
+    rw [hLsp, hpartial hu]
+  have hSliceDeriv : HasDerivAt (fun u : ℝ => fderiv ℝ (fun y : E => Φ (y, u)) z₀) D' t :=
+    hSliceEq.hasDerivAt_iff.mp hLspDeriv
+  set RHS : E →L[ℝ] E :=
+    (fderiv ℝ (V t) (Φ (z₀, t))).comp (fderiv ℝ (fun y : E => Φ (y, t)) z₀) with hRHS
+  -- per-direction Clairaut identification `D' δ = RHS δ`.
+  have hDeq : D' = RHS := by
+    apply ContinuousLinearMap.ext
+    intro δ
+    set eX : E × ℝ := ContinuousLinearMap.inl ℝ E ℝ δ with heX
+    set eT : E × ℝ := ContinuousLinearMap.inr ℝ E ℝ 1 with heT
+    -- LHS: differentiate the (joint) spatial slice in time, evaluated at `δ`.
+    have hcurveT : HasDerivAt (fun u : ℝ => (z₀, u)) eT t := by
+      have : HasDerivAt (fun u : ℝ => (z₀, u)) ((0 : E), (1 : ℝ)) t := by
+        simpa using (hasDerivAt_const t z₀).prodMk (hasDerivAt_id t)
+      simpa [heT, ContinuousLinearMap.inr_apply] using this
+    have hfderivCurve : HasDerivAt (fun u : ℝ => fderiv ℝ Φ (z₀, u)) (B eT) t :=
+      hsndHas.comp_hasDerivAt t hcurveT
+    have hslopeApply : HasDerivAt (fun u : ℝ => fderiv ℝ Φ (z₀, u) eX) (B eT eX) t := by
+      have := (ContinuousLinearMap.apply ℝ E eX).hasFDerivAt.comp_hasDerivAt t hfderivCurve
+      simpa [ContinuousLinearMap.apply_apply] using this
+    have hEvEq : (fun u : ℝ => fderiv ℝ Φ (z₀, u) eX)
+        =ᶠ[nhds t] (fun u : ℝ => fderiv ℝ (fun y : E => Φ (y, u)) z₀ δ) := by
+      filter_upwards [hUx_nhds] with u hu
+      rw [hpartial hu]
+      simp [heX, ContinuousLinearMap.comp_apply]
+    have hLHS : HasDerivAt (fun u : ℝ => fderiv ℝ (fun y : E => Φ (y, u)) z₀ δ) (B eT eX) t :=
+      hEvEq.hasDerivAt_iff.mp hslopeApply
+    -- the apply path is also `D' δ`.
+    have hcurveδ : HasDerivAt (fun u : ℝ => fderiv ℝ (fun y : E => Φ (y, u)) z₀ δ) (D' δ) t := by
+      have := (ContinuousLinearMap.apply ℝ E δ).hasFDerivAt.comp_hasDerivAt t hSliceDeriv
+      simpa [ContinuousLinearMap.apply_apply] using this
+    have hD'δ : D' δ = B eT eX := hcurveδ.unique hLHS
+    -- RHS: Clairaut swap, then differentiate the flow ODE in space along a line.
+    have hswap : B eT eX = B eX eT := hsymm eT eX
+    have hlineCurve : HasDerivAt (fun rr : ℝ => (z₀ + rr • δ, t)) eX 0 := by
+      have hline : HasDerivAt (fun rr : ℝ => z₀ + rr • δ) δ 0 := hasDerivAt_affine_line z₀ δ
+      have : HasDerivAt (fun rr : ℝ => (z₀ + rr • δ, t)) (δ, (0 : ℝ)) 0 := by
+        simpa using hline.prodMk (hasDerivAt_const (0 : ℝ) t)
+      simpa [heX, ContinuousLinearMap.inl_apply] using this
+    have hcompLine :
+        HasDerivAt (fun rr : ℝ => fderiv ℝ Φ (z₀ + rr • δ, t) eT) (B eX eT) 0 := by
+      have h1 : HasDerivAt (fun rr : ℝ => fderiv ℝ Φ (z₀ + rr • δ, t)) (B eX) 0 :=
+        hsndHas.comp_hasDerivAt_of_eq 0 hlineCurve (by simp)
+      have := (ContinuousLinearMap.apply ℝ E eT).hasFDerivAt.comp_hasDerivAt 0 h1
+      simpa [ContinuousLinearMap.apply_apply] using this
+    -- on the line near `0`, `fderiv Φ (z₀+rr•δ, t) eT = V t (Φ (z₀+rr•δ, t))` (flow ODE).
+    have hline_nhds : ∀ᶠ rr : ℝ in nhds 0,
+        fderiv ℝ Φ (z₀ + rr • δ, t) eT = V t (Φ (z₀ + rr • δ, t)) := by
+      have hmap : Filter.Tendsto (fun rr : ℝ => z₀ + rr • δ) (nhds 0) (nhds z₀) := by
+        have hc : ContinuousAt (fun rr : ℝ => z₀ + rr • δ) 0 := by fun_prop
+        have := hc.tendsto
+        simpa using this
+      have hev1 : ∀ᶠ rr : ℝ in nhds 0, HasDerivAt (fun u : ℝ => Φ (z₀ + rr • δ, u))
+          (V t (Φ (z₀ + rr • δ, t))) t := hmap.eventually hflow
+      have hmap2 : Filter.Tendsto (fun rr : ℝ => (z₀ + rr • δ, t)) (nhds 0) (nhds (z₀, t)) := by
+        have hc : ContinuousAt (fun rr : ℝ => (z₀ + rr • δ, t)) 0 := by fun_prop
+        have := hc.tendsto
+        simpa using this
+      have hev2 : ∀ᶠ rr : ℝ in nhds 0, DifferentiableAt ℝ Φ (z₀ + rr • δ, t) :=
+        hmap2.eventually hΦ_diff_nhds
+      filter_upwards [hev1, hev2] with rr hrr1 hrr2
+      have hcurveTrr : HasDerivAt (fun u : ℝ => (z₀ + rr • δ, u)) eT t := by
+        have : HasDerivAt (fun u : ℝ => (z₀ + rr • δ, u)) ((0 : E), (1 : ℝ)) t := by
+          simpa using (hasDerivAt_const t (z₀ + rr • δ)).prodMk (hasDerivAt_id t)
+        simpa [heT, ContinuousLinearMap.inr_apply] using this
+      have hjointTime : HasDerivAt (fun u : ℝ => Φ (z₀ + rr • δ, u))
+          (fderiv ℝ Φ (z₀ + rr • δ, t) eT) t :=
+        hrr2.hasFDerivAt.comp_hasDerivAt t hcurveTrr
+      exact hjointTime.unique hrr1
+    have hRHSline :
+        HasDerivAt (fun rr : ℝ => V t (Φ (z₀ + rr • δ, t))) (B eX eT) 0 :=
+      (Filter.eventuallyEq_of_mem hline_nhds (fun _ h => h)).hasDerivAt_iff.mp hcompLine
+    -- chain rule: the same line-derivative is `(D_w V)(Φ z₀ t) (D_z Φ · δ)`.
+    have hRHSchain :
+        HasDerivAt (fun rr : ℝ => V t (Φ (z₀ + rr • δ, t)))
+          (fderiv ℝ (V t) (Φ (z₀, t)) (fderiv ℝ (fun y : E => Φ (y, t)) z₀ δ)) 0 := by
+      have hinner : HasDerivAt (fun rr : ℝ => Φ (z₀ + rr • δ, t))
+          (fderiv ℝ (fun y : E => Φ (y, t)) z₀ δ) 0 := by
+        have hsliceDiff : DifferentiableAt ℝ (fun y : E => Φ (y, t)) z₀ := by
+          have hslice : HasFDerivAt (fun y : E => Φ (y, t))
+              ((fderiv ℝ Φ (z₀, t)).comp (ContinuousLinearMap.inl ℝ E ℝ)) z₀ :=
+            hΦ_diff_xs.hasFDerivAt.comp z₀ (hasFDerivAt_prodMk_left z₀ t)
+          exact hslice.differentiableAt
+        have hline : HasDerivAt (fun rr : ℝ => z₀ + rr • δ) δ 0 := hasDerivAt_affine_line z₀ δ
+        have := hsliceDiff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hline (by simp)
+        simpa using this
+      have := hV_diff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hinner (by simp)
+      simpa using this
+    have hBval : B eX eT = fderiv ℝ (V t) (Φ (z₀, t)) (fderiv ℝ (fun y : E => Φ (y, t)) z₀ δ) :=
+      hRHSline.unique hRHSchain
+    rw [hD'δ, hswap, hBval, hRHS, ContinuousLinearMap.comp_apply]
+  rw [← hDeq]
+  exact hSliceDeriv
+
 set_option linter.unusedVariables false in
 /-- **Operator-valued interior linearised-flow ODE for the chart-`y`-conjugated orbit (POSITED
 Euclidean Clairaut node).**
@@ -1364,7 +1542,7 @@ private theorem flow_chartCloseFderiv_hasDerivAt_interior
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    (y : M) (x : M)
+    (y : M) (x : M) (hx_src : x ∈ (extChartAt I y).source)
     (a c : ℝ) (hac : 0 ≤ a) (hcT : c ≤ T)
     (t : ℝ) (ht : t ∈ Set.Ioo a c)
     (hgood : ∀ s ∈ Set.Ioo a c,
@@ -1373,8 +1551,181 @@ private theorem flow_chartCloseFderiv_hasDerivAt_interior
       ((fderiv ℝ (fun w : E =>
           -conjugatingChartVelocityField (I := I) g_DT g_bg y t w)
           (extChartAt I y ((Φ_fam t : M → M) x))).comp
-        (chartCloseFderiv (I := I) Φ_fam y x t)) t :=
-  sorry
+        (chartCloseFderiv (I := I) Φ_fam y x t)) t := by
+  classical
+  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  -- The chart-`y`-conjugated Euclidean flow and the chart-`y`-frame velocity field.
+  set Φ_eucl : E → ℝ → E :=
+    fun z s => extChartAt I y ((Φ_fam s : M → M) ((extChartAt I y).symm z)) with hΦeucl
+  set z₀ : E := extChartAt I y x with hz₀
+  -- `t` is interior, so `0 < t < T`, and the orbit at `t` is in the good set.
+  obtain ⟨hat, htc⟩ := ht
+  have ht0 : 0 < t := lt_of_le_of_lt hac hat
+  have htT : t < T := lt_of_lt_of_le htc hcT
+  have ht_mem : t ∈ Set.Ioo (0 : ℝ) T := ⟨ht0, htT⟩
+  have hgood_t : (Φ_fam t : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y := hgood t ⟨hat, htc⟩
+  have hx_chart : x ∈ (chartAt H y).source := by rwa [extChartAt_source] at hx_src
+  have hsymm_z₀ : (extChartAt I y).symm z₀ = x := (extChartAt I y).left_inv hx_src
+  -- The orbit point at `t` lies in the chart-`y` target interior.
+  have horbit_t_src : (Φ_fam t : M → M) x ∈ (extChartAt I y).source :=
+    chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hgood_t
+  have hΦeucl_t_pt : Φ_eucl z₀ t = extChartAt I y ((Φ_fam t : M → M) x) := by
+    rw [hΦeucl]; simp only [hsymm_z₀]
+  -- The interior joint-`C∞` orbit (the threaded `hT` / `hfield_reg`).
+  have hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+    conjugating_flow_jointContMDiffOn_interior (I := I) g_DT g_bg T hT Φ_fam hΦode hfield_reg
+  have hjoint_at : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (t, x) :=
+    hjoint.contMDiffAt ((isOpen_Ioo.prod isOpen_univ).mem_nhds ⟨ht_mem, Set.mem_univ _⟩)
+  -- Joint `C∞` of the chart-`y`-conjugated Euclidean flow at `(z₀, t)`.
+  have hΦeucl_cd : ContDiffAt ℝ ∞ (fun q : E × ℝ => Φ_eucl q.1 q.2) (z₀, t) := by
+    have hz₀_tgt : z₀ ∈ (extChartAt I y).target :=
+      (extChartAt I y).map_source hx_src
+    -- source map `(z, s) ↦ (s, (extChartAt y).symm z)` is `ContMDiffAt` into `ℝ × M`.
+    have hsymm_cmdo : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I y).symm (extChartAt I y).target :=
+      contMDiffOn_extChartAt_symm y
+    have hsymm_cma : ContMDiffAt 𝓘(ℝ, E) I ∞ (extChartAt I y).symm z₀ :=
+      hsymm_cmdo.contMDiffAt (isOpen_extChartAt_target (I := I) y |>.mem_nhds hz₀_tgt)
+    have hfst : ContMDiffAt 𝓘(ℝ, E × ℝ) 𝓘(ℝ, E) ∞
+        (fun q : E × ℝ => q.1) (z₀, t) := contMDiffAt_iff_contDiffAt.mpr contDiffAt_fst
+    have hsnd : ContMDiffAt 𝓘(ℝ, E × ℝ) 𝓘(ℝ, ℝ) ∞
+        (fun q : E × ℝ => q.2) (z₀, t) := contMDiffAt_iff_contDiffAt.mpr contDiffAt_snd
+    have hsrcmap : ContMDiffAt 𝓘(ℝ, E × ℝ) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun q : E × ℝ => (q.2, (extChartAt I y).symm q.1)) (z₀, t) :=
+      hsnd.prodMk (hsymm_cma.comp (z₀, t) hfst)
+    have hsrcmap_pt : (fun q : E × ℝ => (q.2, (extChartAt I y).symm q.1)) (z₀, t) = (t, x) := by
+      simp only [hsymm_z₀]
+    -- orbit composed with the source map.
+    have horbit_comp : ContMDiffAt 𝓘(ℝ, E × ℝ) I ∞
+        (fun q : E × ℝ => (Φ_fam q.2 : M → M) ((extChartAt I y).symm q.1)) (z₀, t) := by
+      have hcomp := hjoint_at.comp_of_eq hsrcmap hsrcmap_pt
+      simpa [Function.comp] using hcomp
+    -- post-compose with `extChartAt y`, smooth at the orbit point.
+    have hext_cmdo : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I y) (chartAt H y).source :=
+      contMDiffOn_extChartAt
+    have hext_cma : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I y) ((Φ_fam t : M → M) x) := by
+      have hsrc : (Φ_fam t : M → M) x ∈ (chartAt H y).source := by
+        rwa [extChartAt_source] at horbit_t_src
+      exact hext_cmdo.contMDiffAt ((chartAt H y).open_source.mem_nhds hsrc)
+    have horbit_comp_pt :
+        (fun q : E × ℝ => (Φ_fam q.2 : M → M) ((extChartAt I y).symm q.1)) (z₀, t)
+          = (Φ_fam t : M → M) x := by simp only [hsymm_z₀]
+    have hcomp2 : ContMDiffAt 𝓘(ℝ, E × ℝ) 𝓘(ℝ, E) ∞
+        (fun q : E × ℝ => Φ_eucl q.1 q.2) (z₀, t) := by
+      have := hext_cma.comp_of_eq horbit_comp horbit_comp_pt
+      simpa [hΦeucl, Function.comp] using this
+    exact contMDiffAt_iff_contDiffAt.mp hcomp2
+  -- The flow ODE for the chart-`y`-conjugated Euclidean flow near `z₀` (good-set orbit).
+  have hflow : ∀ᶠ z : E in nhds z₀,
+      HasDerivAt (fun u : ℝ => Φ_eucl z u)
+        (-conjugatingChartVelocityField (I := I) g_DT g_bg y t (Φ_eucl z t)) t := by
+    -- nearby `z`: the orbit `Φ_fam t (symm z)` stays in the open good set.
+    set ψ : E → M := fun z => (Φ_fam t : M → M) ((extChartAt I y).symm z) with hψ
+    have hψ_cont : ContinuousAt ψ z₀ := by
+      have hjca : ContinuousAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (t, x) :=
+        hjoint_at.continuousAt
+      have hsymm_contAt : ContinuousAt (extChartAt I y).symm z₀ :=
+        continuousAt_extChartAt_symm'' (I := I) ((extChartAt I y).map_source hx_src)
+      have hpair : ContinuousAt (fun z : E => (t, (extChartAt I y).symm z)) z₀ :=
+        continuousAt_const.prodMk hsymm_contAt
+      have hpair_pt : (fun z : E => (t, (extChartAt I y).symm z)) z₀ = (t, x) := by
+        simp only [hsymm_z₀]
+      have hcomp := hjca.comp_of_eq hpair hpair_pt
+      exact hcomp
+    have hgood_open : IsOpen (chartLeviCivitaGoodSet (I := I) y) :=
+      chartLeviCivitaGoodSet_isOpen (I := I) y
+    have hgood_z₀ : ψ z₀ ∈ chartLeviCivitaGoodSet (I := I) y := by
+      rw [hψ]; simp only [hsymm_z₀]; exact hgood_t
+    have hpre : ψ ⁻¹' (chartLeviCivitaGoodSet (I := I) y) ∈ nhds z₀ :=
+      hψ_cont (hgood_open.mem_nhds hgood_z₀)
+    filter_upwards [hpre] with z hz_good
+    -- the orbit `Φ_fam · (symm z)` solves the manifold ODE at `t` (two-sided, interior).
+    set p : M := (extChartAt I y).symm z with hp
+    have hode_within : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) p)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) p)))) :=
+      hΦode p t ht_mem
+    have hpgood : (Φ_fam t : M → M) p ∈ chartLeviCivitaGoodSet (I := I) y := hz_good
+    have hchart_within : HasDerivWithinAt (fun s : ℝ => extChartAt I y ((Φ_fam s : M → M) p))
+        (-conjugatingChartVelocityField (I := I) g_DT g_bg y t (extChartAt I y ((Φ_fam t : M → M) p)))
+        (Set.Ici (0 : ℝ)) t :=
+      chart_conjugating_orbit_hasDerivWithinAt (I := I) g_DT g_bg y
+        (fun s : ℝ => (Φ_fam s : M → M) p) t hpgood hode_within
+    -- upgrade to a two-sided `HasDerivAt` (since `t > 0`, `Ici 0 ∈ 𝓝 t`).
+    have hIci_nhds : Set.Ici (0 : ℝ) ∈ nhds t := Ici_mem_nhds ht0
+    have hda := hchart_within.hasDerivAt hIci_nhds
+    have hΦeucl_z_eq : (fun u : ℝ => Φ_eucl z u)
+        = (fun s : ℝ => extChartAt I y ((Φ_fam s : M → M) p)) := rfl
+    have hΦeucl_z_t : Φ_eucl z t = extChartAt I y ((Φ_fam t : M → M) p) := rfl
+    rw [hΦeucl_z_eq, hΦeucl_z_t]
+    exact hda
+  -- Spatial differentiability of the velocity field at the orbit point.
+  have hV_diff : DifferentiableAt ℝ
+      (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w) (Φ_eucl z₀ t) := by
+    rw [hΦeucl_t_pt]
+    have hz_int : extChartAt I y ((Φ_fam t : M → M) x) ∈ interior (extChartAt I y).target := by
+      rw [mem_chartLeviCivitaGoodSet_iff] at hgood_t; exact hgood_t.2.2
+    exact (conjugatingChartVelocityField_hasFDerivAt (I := I) g_DT g_bg y t hz_int).differentiableAt.neg
+  -- The Euclidean operator-valued spatial-variational ODE (Helper 1, Clairaut).
+  have heucl := hasDerivAt_partial_spatial_fderiv_of_jointContDiffAt
+    (fun q : E × ℝ => Φ_eucl q.1 q.2)
+    (fun s z => -conjugatingChartVelocityField (I := I) g_DT g_bg y s z) z₀ t
+    hΦeucl_cd hflow hV_diff
+  -- The producer turns it into the operator-valued `HasDerivAt` for `chartCloseFderiv`.
+  -- chart-conjugation agreement near `x`, valid for every `s` (not just `t`).
+  have hagree : ∀ᶠ s : ℝ in nhds t,
+      (fun p : M => extChartAt I y ((Φ_fam s : M → M) p))
+        =ᶠ[nhds x] (fun p : M => Φ_eucl (extChartAt I y p) s) := by
+    filter_upwards [Filter.univ_mem] with s _
+    have hsrc_nhds : (extChartAt I y).source ∈ nhds x :=
+      isOpen_extChartAt_source (I := I) y |>.mem_nhds hx_src
+    filter_upwards [hsrc_nhds] with p hp
+    change extChartAt I y ((Φ_fam s : M → M) p)
+      = extChartAt I y ((Φ_fam s : M → M) ((extChartAt I y).symm (extChartAt I y p)))
+    rw [(extChartAt I y).left_inv hp]
+  -- differentiability of the Euclidean spatial slice near `t`.
+  have heucl_diff : ∀ᶠ s : ℝ in nhds t,
+      DifferentiableAt ℝ (fun z : E => Φ_eucl z s) z₀ := by
+    have hΦeucl_cd1 : ContDiffAt ℝ (1 : WithTop ℕ∞) (fun q : E × ℝ => Φ_eucl q.1 q.2) (z₀, t) :=
+      hΦeucl_cd.of_le (by exact_mod_cast le_top)
+    have hΦeucl_nhds : ∀ᶠ q : E × ℝ in nhds (z₀, t),
+        ContDiffAt ℝ (1 : WithTop ℕ∞) (fun q : E × ℝ => Φ_eucl q.1 q.2) q :=
+      hΦeucl_cd1.eventually (by decide)
+    have hmap : Filter.Tendsto (fun s : ℝ => (z₀, s)) (nhds t) (nhds (z₀, t)) := by
+      have hc : ContinuousAt (fun s : ℝ => (z₀, s)) t := by fun_prop
+      simpa using hc.tendsto
+    have hev : ∀ᶠ s : ℝ in nhds t,
+        ContDiffAt ℝ (1 : WithTop ℕ∞) (fun q : E × ℝ => Φ_eucl q.1 q.2) (z₀, s) :=
+      hmap.eventually hΦeucl_nhds
+    filter_upwards [hev] with s hs
+    have hdiff : DifferentiableAt ℝ (fun q : E × ℝ => Φ_eucl q.1 q.2) (z₀, s) :=
+      hs.differentiableAt (by norm_num)
+    have hincl : DifferentiableAt ℝ (fun z : E => (z, s)) z₀ :=
+      differentiableAt_id.prodMk (differentiableAt_const s)
+    have hgoal_eq : (fun z : E => Φ_eucl z s)
+        = (fun q : E × ℝ => Φ_eucl q.1 q.2) ∘ (fun z : E => (z, s)) := rfl
+    rw [hgoal_eq]
+    exact hdiff.comp z₀ hincl
+  -- Assemble via the chart-conjugation producer.
+  have hprod := chartCloseFderiv_hasDerivAt_of_eucl (I := I) Φ_fam y x t Φ_eucl hx_chart
+    heucl heucl_diff hagree
+  -- Rewrite the producer's `D'_eucl.comp trivToE` as `A.comp (chartCloseFderiv ... t)`.
+  have hchartT : chartCloseFderiv (I := I) Φ_fam y x t
+      = (fderiv ℝ (fun z : E => Φ_eucl z t) z₀).comp (trivToE (I := I) y x) := by
+    refine chartCloseFderiv_eq_eucl_comp_trivToE (I := I) Φ_fam y x t Φ_eucl hx_chart ?_ ?_
+    · exact heucl_diff.self_of_nhds
+    · exact hagree.self_of_nhds
+  -- the producer's `D'_eucl.comp trivToE` equals the target derivative value.
+  refine hprod.congr_deriv ?_
+  change ((fderiv ℝ (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w)
+            (Φ_eucl z₀ t)).comp (fderiv ℝ (fun z : E => Φ_eucl z t) z₀)).comp
+          (trivToE (I := I) y x)
+      = (fderiv ℝ (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w)
+          (extChartAt I y ((Φ_fam t : M → M) x))).comp (chartCloseFderiv (I := I) Φ_fam y x t)
+  rw [hchartT, hΦeucl_t_pt]
+  exact ContinuousLinearMap.comp_assoc _ _ _
 
 set_option linter.unusedVariables false in
 /-- **Interior linearised variational ODE for the chart-`y` Jacobian along the moving frame.**
@@ -1414,6 +1765,7 @@ private theorem flow_chartJacobian_variational_interior
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) (x : M)
+    (hx_src : x ∈ (extChartAt I y).source)
     (a c : ℝ) (hac : 0 ≤ a) (hcT : c ≤ T)
     (t : ℝ) (ht : t ∈ Set.Ioo a c)
     (hgood : ∀ s ∈ Set.Ioo a c,
@@ -1431,13 +1783,13 @@ private theorem flow_chartJacobian_variational_interior
       (Set.Ici (0 : ℝ)) t := by
   -- Operator-valued linearised-flow ODE for the chart-`y` spatial derivative (POSITED node).
   have hop := flow_chartCloseFderiv_hasDerivAt_interior (I := I) g_DT g_bg T hT Φ_fam hΦode
-    hfield_reg y x a c hac hcT t ht hgood
+    hfield_reg y x hx_src a c hac hcT t ht hgood
   -- Apply the operator `HasDerivAt` to the fixed chart-`x₀` frame fibre.
   have happ := (ContinuousLinearMap.apply ℝ E (chartBasisVecFiber (I := I) x₀ i x)).hasFDerivAt.comp_hasDerivAt
     t hop
   -- `chartCloseFderiv Φ_fam y x s = mfderiv (extChartAt I y ∘ Φ_fam s) x`, so the applied operator
   -- path is the chart-`y` Jacobian, and the applied derivative value is the variational term.
-  simp only [ContinuousLinearMap.apply_apply, ContinuousLinearMap.comp_apply] at happ
+  simp only [ContinuousLinearMap.apply_apply] at happ
   exact happ.hasDerivWithinAt
 
 set_option linter.unusedVariables false in
@@ -1983,7 +2335,7 @@ private theorem flow_chartJacobian_uniform_variational_tendsto
       have hgood : ∀ u ∈ Set.Ioo (0 : ℝ) b, (Φ_fam u : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y :=
         fun u hu => hgoodx x hx_src hx_ball u ⟨le_of_lt hu.1, hu.2⟩
       exact flow_chartJacobian_variational_interior (I := I) g_DT g_bg T hT Φ_fam hΦode hfield_reg
-        x₀ i y x 0 b (le_refl 0) hb_le_T s ⟨hs0, hsb⟩ hgood
+        x₀ i y x hx_src 0 b (le_refl 0) hb_le_T s ⟨hs0, hsb⟩ hgood
     -- Continuity of `D · x` on `Icc 0 r` for confined `x` and `r < b`.
     have hDcont : ∀ x : M, x ∈ (extChartAt I y).source →
         extChartAt I y x ∈ Metric.ball c₀ ρ →
