@@ -809,6 +809,28 @@ private lemma moving_chartCoord_continuousWithinAt
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hbase0,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hbase0]
 
+/-- **Joint `(t, x)` chart-`α` trivialization-coordinate continuity of the moving pushforward.**
+
+The joint (`ℝ × M`-domain) generalization of `moving_chartCoord_continuousWithinAt`: from the
+joint continuity of the moving-pushforward bundle section `p ↦ ⟨Φ_fam p.1 p.2, dΦ·(cbvf x₀ i p.2)⟩`
+(`htotal`, with image base point in the open base set of the chart-`α` trivialization via
+`hbase0`/`horbit`), the trivialization-`α` coordinate `continuousLinearMapAt` of
+`dΦ·(cbvf x₀ i p.2)` is jointly continuous within `S` at `p₀`. -/
+theorem moving_chartCoord_jointContinuousWithinAt
+    (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x₀ : M) (i : Fin (Module.finrank ℝ E)) (α : M)
+    (S : Set (ℝ × M)) (p₀ : ℝ × M)
+    (hbase0 : (Φ_fam p₀.1 : M → M) p₀.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (horbit : ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) S p₀)
+    (htotal : ContinuousWithinAt
+      (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          : TangentBundle I M)) S p₀) :
+    ContinuousWithinAt
+      (fun p : ℝ × M => (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
+        ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))) S p₀ :=
+  sorry
+
 /-- Within-at continuity of a finite sum of within-at-continuous functions (Mathlib has the
 `Continuous`/`ContinuousOn` variants but not this `ContinuousWithinAt` one). -/
 private lemma cwa_finset_sum {ι : Type*} {N : Type*} [AddCommMonoid N] [TopologicalSpace N]

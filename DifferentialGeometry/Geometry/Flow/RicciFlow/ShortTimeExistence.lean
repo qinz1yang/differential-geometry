@@ -168,8 +168,20 @@ theorem ricci_flow_short_time_existence
     obtain ⟨hΦ_orbit, hΦ_total⟩ :=
       conjugating_flow_orbit_pushforward_continuity_data (I := I) g_DT g₀ T hT0 Φ_fam hΦode'
         h_reg_T hΦorbit0 hΦmfderiv0_bundle
+    have h_cont0_T : ContinuousOn
+        (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g₀ q.2 : TangentSpace I q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ) :=
+      h_cont0.mono (Set.prod_mono_left (Set.Icc_subset_Icc_right hT_le))
+    have h_grad0_T : ∀ α : M,
+        ContinuousOn
+          (fun q : ℝ × M =>
+            fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g₀ x))
+              (extChartAt I α q.2))
+          (Set.Icc (0 : ℝ) T ×ˢ Set.univ) := fun α =>
+      (h_grad0 α).mono (Set.prod_mono_left (Set.Icc_subset_Icc_right hT_le))
     obtain ⟨h_gram_fam, h_gram0_fam⟩ :=
-      conjugating_flow_pullback_jointGram_data (I := I) g_DT g₀ T Φ_fam hΦode'
+      conjugating_flow_pullback_jointGram_data (I := I) g_DT g₀ T Φ_fam hT0 hΦ0 hΦode'
+        h_reg_T h_cont0_T h_grad0_T hΦorbit0 hΦmfderiv0_bundle h_gramOnE0_T
         h_gram_DT_T h_gram0_DT_T
     refine ⟨T, hT0, fun s => Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s),
       ?_, h_gram_fam, h_gram0_fam, ?_⟩

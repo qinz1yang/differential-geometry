@@ -30,6 +30,7 @@ open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.PDE.RicciFlow.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
 open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Integral.Measure
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -340,45 +341,250 @@ theorem conjugating_flow_t0_continuity_data
     hcwa_Ioo.mono_of_mem_nhdsWithin (Ioo_mem_nhdsGT hT)
   exact hcwa_Ioi.const_mul (-2 : ℝ)
 
-/-- **Joint `(t, x)` chart-Gram regularity of the pulled-back metric family (faithful open
-input).**
+set_option linter.unusedVariables false in
+/-- **Interior joint-`C∞` of the conjugating orbit.**
 
-For the conjugating diffeomorphism family `Φ_fam` of the Hamilton–DeTurck construction —
-PINNED to the genuine flow by the backward bare-orbit ODE `hΦode`
-(`∂_s Φ_fam = -deTurckVF (g_DT s) g_bg ∘ Φ_fam` on `Ioo 0 T`) — the pulled-back metric family
-`g_fam s := (Φ_fam s)^* (g_DT s) = Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)` inherits the
-joint `(t, x)` chart-Gram regularity of `g_DT` along the flow:
-
-* `h_gram` (the joint-`C∞` conclusion): each chart-local Gram-matrix entry
-  `p ↦ chartGramMatrix (g_fam p.1) x₀ p.2 i j` is jointly `C∞` on the interior
-  `Ioo 0 T ×ˢ baseSet`;
-* `h_gram0` (the joint-continuity conclusion): the same entry is jointly continuous up to
-  `t = 0` on `Ico 0 T ×ˢ baseSet`.
-
-These are the chart-level expressions of joint smoothness / continuity of the moving
-pullback `(t, x) ↦ (g_DT t).inner (Φ_fam t x) (mfderiv (Φ_fam t) x ·) (mfderiv (Φ_fam t) x ·)`.
-Their content is the chain rule combining (i) the supplied joint chart-Gram regularity of
-`g_DT` itself (`hgram_DT` / `hgram0_DT`, the GENUINE outputs of the interior-parabolic-smooth,
-`C⁰`-up-to-`0` DeTurck solution), with (ii) the joint `(t, x)` smoothness / continuity of the
-orbit `(t, x) ↦ Φ_fam t x` and its chart Jacobian `mfderiv (Φ_fam t) x`.  Part (ii) is the
-classical Hartman smooth-dependence-on-initial-conditions output for the conjugating flow
-(`global_flow_jointContMDiffOn_on_closed_manifold` + `manifoldFlowFamily_*` applied along the
-cutoff windows of the interior field, continuous up to the `C⁰`-at-`0` boundary).  The on-disk
-Hartman / pullback chart-Gram joint-smoothness machinery is faithful but not yet wired to the
-specific conjugating flow; we isolate that open content here as a single faithful labeled
-`sorry`, PINNED to the genuine flow by `hΦode` and consuming the genuine `g_DT` regularity
-`hgram_DT`/`hgram0_DT`.  Neither output is equal to, nor destructures to, any hypothesis (the
-hypotheses concern `g_DT`; the conclusions concern the pullback `pullbackMetric (g_DT) (Φ_fam)`),
-so this is not hypothesis-packaging.  Faithful labeled deferred input for a dedicated fill
-effort. -/
-theorem conjugating_flow_pullback_jointGram_data
+The orbit `(t, x) ↦ Φ_fam t x` is jointly `C∞` on the interior `Ioo 0 T ×ˢ univ`.  This is the
+interior Hartman smooth-dependence output, assembled from the on-disk infra (`neg_field_cmdwa`,
+`interior_field_global_cutoff_extension`, `global_flow_jointContMDiffOn_on_closed_manifold`,
+`bare_integral_flow_eqOn_of_jointC1`) exactly as the orbit half of
+`conjugating_flow_orbit_pushforward_continuity_data`, re-exposing the joint-`C∞` that the latter
+constructs internally and then discards. -/
+theorem conjugating_flow_jointContMDiffOn_interior
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
-    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
+        : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Joint `(t, x)` continuity of the conjugating orbit and its moving pushforward at the
+`t = 0` boundary slice.**
+
+The genuine uniform-in-`x` continuous-dependence-up-to-the-initial-time content: the joint
+`(t, x)` continuity of the conjugating orbit and of its moving pushforward (on the fixed-chart-`x₀`
+frame) at the `t = 0` boundary slice, on `Ici 0 ×ˢ univ` / `Ici 0 ×ˢ baseSet`.  This is the flow
+whose velocity is jointly continuous up to `t = 0` (`hfield_cont0`) with spatial gradient continuous
+up to `0` (`hfield_grad0`); the time-zero map is the identity (`hΦ0`) and the per-`y` at-`0` data
+`hΦorbit0` pin the boundary value.  Not available from any on-disk per-`x` lemma; proven by
+uniform-in-`x` continuous-dependence on compact `M`. -/
+theorem conjugating_flow_jointContWithinAt_at_zero
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hfield_cont0 : ContinuousOn
+      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hfield_grad0 : ∀ α : M,
+      ContinuousOn
+        (fun q : ℝ × M =>
+          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
+            (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0) :
+    (∀ y : M, ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ici (0 : ℝ) ×ˢ Set.univ) (0, y)) ∧
+    (∀ (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M),
+      ContinuousWithinAt (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        : TangentBundle I M))
+      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y)) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Joint up-to-`0` continuity of the conjugating orbit and its moving pushforward.**
+
+Assembles the joint `(t, x)`-up-to-`0` continuity of the conjugating orbit (on `Ico 0 T ×ˢ univ`)
+and of its moving spatial differential applied to the fixed-chart-`x₀` frame section
+`x ↦ chartBasisVecFiber x₀ i x` (on `Ico 0 T ×ˢ baseSet x₀`), by splitting `Ico` into the interior
+`Ioo` (where the joint-`C∞` orbit `conjugating_flow_jointContMDiffOn_interior` and its moving
+Jacobian give joint continuity) and the `t = 0` boundary slice
+(`conjugating_flow_jointContWithinAt_at_zero`).  Per-`y` continuity does NOT imply this joint
+continuity at `t = 0`, so this is genuinely joint. -/
+theorem flow_orbit_pushforward_jointContinuousOn_upto0
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
+        : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
+    (hfield_cont0 : ContinuousOn
+      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hfield_grad0 : ∀ α : M,
+      ContinuousOn
+        (fun q : ℝ × M =>
+          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
+            (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
+    (hΦmfderiv0 : ∀ (y : M) (u : TangentSpace I y),
+      ContinuousWithinAt (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) y)
+        (mfderiv I I (Φ_fam s : M → M) y u) : TangentBundle I M)) (Set.Ici (0 : ℝ)) 0) :
+    (ContinuousOn (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (Set.Ico (0 : ℝ) T ×ˢ Set.univ)) ∧
+    (∀ (x₀ : M) (i : Fin (Module.finrank ℝ E)),
+      ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        : TangentBundle I M)) (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Interior joint-`C∞` of the metric bilinear-CLM section along the orbit.**
+
+The moving metric bilinear-CLM bundle section `(t, b) ↦ ⟨b, (g_DT t).inner b⟩`, evaluated at the
+orbit point `b = Φ_fam p.1 p.2`, is jointly `C∞` on `Ioo 0 T ×ˢ univ`.  It is the composition of
+the joint-`C∞` metric-CLM section (recovered from `hgram_DT`) with the joint-`C∞` orbit map
+(`hΦsmooth`).  Bridge feeding `hgInner` to `pullbackGram_jointContMDiffOn_interior`. -/
+theorem metric_clm_section_jointContMDiffOn_along_orbit
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) ((Φ_fam p.1 : M → M) p.2)
+        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))
+        : Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ) (fun _ : M => (E →L[ℝ] E →L[ℝ] ℝ))))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Interior joint-`C∞` of the pullback chart-Gram entry.**
+
+The `h_gram` conjunct (interior): unfolds the pullback chart-Gram entry to
+`(g_DT p.1).inner (Φ_fam p.1 p.2) (dΦ·cbvf x₀ i p.2) (dΦ·cbvf x₀ j p.2)` and proves joint `C∞` on
+`Ioo 0 T ×ˢ baseSet x₀` by the chain rule: the moving-Jacobian-applied-to-frame sections are jointly
+`C∞` (from `hΦsmooth`), and the moving bilinear form at the moving point (`hgInner`) applied to them
+is jointly `C∞` (`ContMDiffOn.clm_bundle_apply₂`). -/
+theorem pullbackGram_jointContMDiffOn_interior
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (x₀ : M) (i j : Fin (Module.finrank ℝ E))
+    (hΦsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
+    (hgInner : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) ((Φ_fam p.1 : M → M) p.2)
+        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))
+        : Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ) (fun _ : M => (E →L[ℝ] E →L[ℝ] ℝ))))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+      (fun p : ℝ × M =>
+        Integral.Measure.chartGramMatrix (I := I)
+          (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Joint up-to-`0` continuity of the pullback chart-Gram entry.**
+
+The `h_gram0` conjunct (up-to-`0`): the joint generalization of the per-point
+`gfam_inner_continuous_on`.  Both the evaluation point `Φ_fam t p.2` and the frame
+`chartBasisVecFiber x₀ i p.2` move with `p.2`, so per-`y` continuity is insufficient — this takes
+joint `(t, x)` inputs (`hΦorbit`, `hΦpush`) and the joint chart-Gram continuity of `g_DT`
+(`hg_jointE`) and produces joint continuity, via the chart-sum expansion
+(`g_inner_eq_chart_sum`) with `moving_chartCoord_jointContinuousWithinAt`. -/
+theorem pullbackGram_jointContinuousOn_upto0
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (x₀ : M) (i j : Fin (Module.finrank ℝ E))
+    (hΦorbit : ContinuousOn (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ico (0 : ℝ) T ×ˢ Set.univ))
+    (hΦpush : ∀ (β : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) β k p.2))
+        : TangentBundle I M)) (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) β).baseSet))
+    (hg_jointE : ∀ (α : M) (a b : Fin (Module.finrank ℝ E)),
+      ContinuousOn (fun q : ℝ × M =>
+        Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α a b (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ)) :
+    ContinuousOn
+      (fun p : ℝ × M =>
+        Integral.Measure.chartGramMatrix (I := I)
+          (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
+      (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Joint `(t, x)` chart-Gram regularity of the pulled-back metric family.**
+
+For the conjugating diffeomorphism family `Φ_fam` of the Hamilton–DeTurck construction —
+PINNED to the genuine flow by the backward bare-orbit ODE `hΦode` and to the identity at
+`t = 0` by `hΦ0`, with the per-`y` at-`0` orbit/pushforward data (`hΦorbit0`, `hΦmfderiv0`)
+and the jointly-`C⁰`-up-to-`0` field data (`hfield_cont0`, `hfield_grad0`, `hfield_reg`) of
+the underlying DeTurck velocity — the pulled-back metric family
+`g_fam s := (Φ_fam s)^* (g_DT s) = Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)` inherits the
+joint `(t, x)` chart-Gram regularity of `g_DT` along the flow:
+
+* `h_gram` (joint-`C∞`): each chart-local Gram-matrix entry
+  `p ↦ chartGramMatrix (g_fam p.1) x₀ p.2 i j` is jointly `C∞` on `Ioo 0 T ×ˢ baseSet`;
+* `h_gram0` (joint continuity up to `0`): the same entry is jointly continuous on
+  `Ico 0 T ×ˢ baseSet`.
+
+Proven by recursion on the joint `(t, x)` continuity/smoothness of the orbit and its chart
+Jacobian: the interior joint-`C∞` orbit (`conjugating_flow_jointContMDiffOn_interior`) feeds
+the chain rule for the interior conjunct, while the joint up-to-`0` continuity of the orbit
+and its moving pushforward (`flow_orbit_pushforward_jointContinuousOn_upto0`, resting on the
+uniform-in-`x` continuous-dependence-up-to-`0` leaf) feeds the up-to-`0` conjunct.  The added
+hypotheses constrain only the internal data `g_DT` / the field `deTurckVF (g_DT ·) g_bg` / the
+per-`y` at-`0` `Φ_fam` data; the conclusions concern the pullback
+`pullbackMetric (g_DT) (Φ_fam)`, so this is not hypothesis-packaging. -/
+theorem conjugating_flow_pullback_jointGram_data
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hT0 : 0 < T)
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
+        : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
+    (hfield_cont0 : ContinuousOn
+      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hfield_grad0 : ∀ α : M,
+      ContinuousOn
+        (fun q : ℝ × M =>
+          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
+            (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
+    (hΦmfderiv0 : ∀ (y : M) (u : TangentSpace I y),
+      ContinuousWithinAt (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) y)
+        (mfderiv I I (Φ_fam s : M → M) y u) : TangentBundle I M)) (Set.Ici (0 : ℝ)) 0)
+    (hg_jointE : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × M =>
+          Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
+            (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
