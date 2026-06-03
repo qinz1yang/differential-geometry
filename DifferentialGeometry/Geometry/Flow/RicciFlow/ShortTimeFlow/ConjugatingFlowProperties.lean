@@ -1323,6 +1323,118 @@ private theorem conjugating_orbit_jointContWithinAt_at_zero
   rw [hval]; rw [hL] at hgoal; exact hgoal
 
 set_option linter.unusedVariables false in
+/-- **Interior linearised variational ODE for the chart-`y` Jacobian along the moving frame
+(POSITED analytic node).**
+
+Writing `D(s, x) := mfderiv (extChartAt I y ∘ Φ_fam s) x (chartBasisVecFiber x₀ i x)` for the
+chart-`y` Jacobian of the conjugating orbit along the fixed-chart-`x₀` frame, and
+`A(t, z) := fderiv ℝ (fun w => -conjugatingChartVelocityField g_DT g_bg y t w) z` for the spatial
+Fréchet derivative of the (negated) chart-`y`-frame velocity field, the chart-`y` Jacobian
+solves, on the open time interval and at every basepoint `x` whose orbit is confined to the
+chart-`y` interior, the linear variational ODE
+
+  `D'(t, x) = A(t, c_x(t)) · D(t, x)`,    `c_x(t) := extChartAt I y (Φ_fam t x)`,
+
+as a within-`Ici t` right-derivative.  This is the linearisation in `x` of the chart-`y` orbit ODE
+`c_x'(t) = -conjugatingChartVelocityField (c_x t)` (`chart_conjugating_orbit_hasDerivWithinAt`):
+the interior joint-`C∞` orbit `conjugating_flow_jointContMDiffOn_interior` makes `c_x` jointly
+`C∞`, so `D = ∂_x c_x` is jointly `C¹` and the mixed `(t, x)`-derivative swaps (Clairaut), turning
+the `x`-differentiated orbit ODE into the displayed variational ODE.
+
+POSITED recursion target: the Clairaut/variational-ODE content threaded from the genuine
+conjugating flow; reference only the internal `g_DT` / `Φ_fam` / the chart-frame field.  The
+conclusion is a `HasDerivWithinAt`, never any hypothesis. -/
+private theorem flow_chartJacobian_variational_interior
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) (x : M)
+    (a c : ℝ) (hac : 0 ≤ a) (hcT : c ≤ T)
+    (t : ℝ) (ht : t ∈ Set.Ioo a c)
+    (hgood : ∀ s ∈ Set.Ioo a c,
+      (Φ_fam s : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y) :
+    HasDerivWithinAt
+      (fun s : ℝ => mfderiv I 𝓘(ℝ, E)
+        (fun z : M => extChartAt I y ((Φ_fam s : M → M) z)) x
+        (chartBasisVecFiber (I := I) x₀ i x))
+      ((fderiv ℝ (fun w : E =>
+          -conjugatingChartVelocityField (I := I) g_DT g_bg y t w)
+          (extChartAt I y ((Φ_fam t : M → M) x)))
+        (mfderiv I 𝓘(ℝ, E)
+          (fun z : M => extChartAt I y ((Φ_fam t : M → M) z)) x
+          (chartBasisVecFiber (I := I) x₀ i x)))
+      (Set.Ici (0 : ℝ)) t :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **Per-basepoint slice right-continuity at `t = 0` of the chart-`y` Jacobian (POSITED analytic
+node).**
+
+With `D(s, x) := mfderiv (extChartAt I y ∘ Φ_fam s) x (chartBasisVecFiber x₀ i x)`, the chart-`y`
+Jacobian along the moving frame is, at EVERY basepoint `x`, right-continuous in `s` at `t = 0`:
+
+  `∀ x, ContinuousWithinAt (fun s => D(s, x)) (Ici 0) 0`.
+
+This is the linearised analog of the per-point orbit datum `hΦorbit0`: the chart-`y` Jacobian of
+the conjugating orbit at the basepoint `x` approaches, as `t → 0⁺`, its value at `t = 0`
+(`D(0, x) = mfderiv (extChartAt I y) x (chartBasisVecFiber x₀ i x)`, since `Φ_fam 0 = id`).  It is
+the boundary (initial-time) datum of the variational integral equation for `D(·, x)`, the
+linearised companion of the orbit `hΦorbit0`; the interior ODE
+`flow_chartJacobian_variational_interior` alone does not pin the initial-time limit (the constant
+of integration), so this is genuinely separate analytic content.  The `x = y` instance is the
+per-`y` slice limit feeding the second conjunct.
+
+POSITED recursion target: the variational continuous-dependence-up-to-`0` datum at the basepoint;
+reference only the internal `g_DT` / `Φ_fam` / the chart-frame field.  The conclusion is a
+`ContinuousWithinAt`, never any hypothesis. -/
+private theorem flow_chartJacobian_pery_continuousWithinAt_zero
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) :
+    ∀ x : M, ContinuousWithinAt
+      (fun s : ℝ => mfderiv I 𝓘(ℝ, E)
+        (fun z : M => extChartAt I y ((Φ_fam s : M → M) z)) x
+        (chartBasisVecFiber (I := I) x₀ i x))
+      (Set.Ici (0 : ℝ)) 0 :=
+  sorry
+
+set_option linter.unusedVariables false in
+/-- **`t = 0` spatial-`x` continuity of the chart-`y` Jacobian along the moving frame (POSITED
+analytic node).**
+
+At the initial time `t = 0` (where `Φ_fam 0 = id`), the chart-`y` Jacobian along the moving frame
+reduces to `D(0, x) = mfderiv (extChartAt I y) x (chartBasisVecFiber x₀ i x)`, the forward
+chart-`y` trivialisation `chartJ y x` applied to the chart-`x₀` frame fibre.  As a function of the
+basepoint `x`, this is continuous within the chart-`x₀` base set at `y`:
+
+  `ContinuousWithinAt (fun x => mfderiv (extChartAt I y) x (chartBasisVecFiber x₀ i x))
+     (baseSet x₀) y`.
+
+It is the `t = 0` slice of the joint cross-difference (at `t = 0` the cross difference is exactly
+`dist (D(0, x)) (D(0, y))`).  Genuine chart-Jacobian / bundle-coordinate continuity content
+(`chartJ` CLM smoothness `chartJ_pre_clm_contMDiffAt` composed with the smooth frame section
+`chartBasisVec_contMDiffOn`); reference only the chart `y` and the frame.  The conclusion is a
+`ContinuousWithinAt`, never any hypothesis. -/
+private theorem flow_chartJacobian_zero_continuousWithinAt_basepoint
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) :
+    ContinuousWithinAt
+      (fun x : M => mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) x
+        (chartBasisVecFiber (I := I) x₀ i x))
+      (trivializationAt E (TangentSpace I) x₀).baseSet y :=
+  sorry
+
+set_option linter.unusedVariables false in
+set_option maxHeartbeats 4000000 in
 /-- **Uniform-in-`x` variational Grönwall datum for the chart-`y` Jacobian.**
 
 The analytic variational input feeding `flow_chartJacobian_jointContWithinAt_at_zero`, the
@@ -1389,8 +1501,646 @@ private theorem flow_chartJacobian_uniform_variational_tendsto
             (chartBasisVecFiber (I := I) x₀ i y))
         (𝓝[Set.Ici (0 : ℝ)] 0)
         (𝓝 (mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
-          (chartBasisVecFiber (I := I) x₀ i y))) :=
-  sorry
+          (chartBasisVecFiber (I := I) x₀ i y))) := by
+  classical
+  -- The chart-`y` Jacobian along the moving frame, as a function of `(s, x)`.
+  set D : ℝ → M → E := fun s x => mfderiv I 𝓘(ℝ, E)
+    (fun z : M => extChartAt I y ((Φ_fam s : M → M) z)) x
+    (chartBasisVecFiber (I := I) x₀ i x) with hD
+  set Dval : E := mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+    (chartBasisVecFiber (I := I) x₀ i y) with hDval
+  -- Per-basepoint right-continuity at `0` of `s ↦ D s x` (posited variational at-`0` node).
+  have hpery0 : ∀ x : M, ContinuousWithinAt (fun s : ℝ => D s x) (Set.Ici (0 : ℝ)) 0 :=
+    flow_chartJacobian_pery_continuousWithinAt_zero (I := I) g_DT g_bg T Φ_fam hΦode hΦ0 x₀ i y
+  -- `D 0 x = mfderiv (extChartAt I y) x (chartBasisVecFiber x₀ i x)` (since `Φ_fam 0 = id`).
+  have hD0 : ∀ x : M, D 0 x
+      = mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) x
+        (chartBasisVecFiber (I := I) x₀ i x) := by
+    intro x
+    have hfuneq : (fun z : M => extChartAt I y ((Φ_fam 0 : M → M) z))
+        = (fun z : M => extChartAt I y z) := by
+      funext z; rw [hΦ0, Diffeomorph.coe_refl, id]
+    have hmfeq : mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam 0 : M → M) z)) x
+        = mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) x :=
+      Filter.EventuallyEq.mfderiv_eq (Filter.EventuallyEq.of_eq hfuneq)
+    exact DFunLike.congr_fun hmfeq (chartBasisVecFiber (I := I) x₀ i x)
+  have hD0y : D 0 y = Dval := by rw [hD0 y, hDval]
+  refine ⟨?_, ?_⟩
+  · -- ============ CONJUNCT (a): the cross-difference Grönwall ============
+    set c₀ : E := extChartAt I y y with hc₀
+    obtain ⟨b, ρ, hb_pos, hb_le_T, hρ_pos, hball3_int, hconf⟩ :=
+      conjugating_flow_uniform_chart_confinement (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0 hΦorbit0 y
+        (Hcomp y)
+    have hball2_sub_int : Metric.closedBall c₀ (2 * ρ) ⊆ interior (extChartAt I y).target :=
+      subset_trans (Metric.closedBall_subset_closedBall (by linarith)) hball3_int
+    -- Uniform Lipschitz constant `K` of the chart-`y`-frame velocity field on the `2ρ`-ball.
+    obtain ⟨K, hK⟩ := conjugatingChartVelocityField_lipschitz_uniform (I := I) g_DT g_bg y T c₀ (2 * ρ)
+      hball2_sub_int (Hfderiv y)
+    -- The variational operator `A t z := fderiv (-conjugatingChartVelocityField y t ·) z`.
+    set A : ℝ → E → (E →L[ℝ] E) := fun t z =>
+      fderiv ℝ (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w) z with hA
+    -- Good-set reconstruction from confinement.
+    have hgoodset_of_ball : ∀ p : M, p ∈ (extChartAt I y).source →
+        extChartAt I y p ∈ Metric.ball c₀ (3 * ρ) → p ∈ chartLeviCivitaGoodSet (I := I) y := by
+      intro p hp hpz
+      rw [mem_chartLeviCivitaGoodSet_iff]
+      refine ⟨hp, ?_, hball3_int (Metric.ball_subset_closedBall hpz)⟩
+      rw [TangentBundle.trivializationAt_baseSet, ← extChartAt_source (I := I)]
+      exact hp
+    -- Operator norm bound `‖A t z‖ ≤ K` on the open `2ρ`-ball, uniform in `t ∈ Icc 0 T`.
+    have hAbound : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ z ∈ Metric.ball c₀ (2 * ρ), ‖A t z‖ ≤ (K : ℝ) := by
+      intro t ht z hz
+      have hlipneg : LipschitzOnWith K
+          (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w)
+          (Metric.closedBall c₀ (2 * ρ)) := (hK t ht).neg
+      have hnhds : Metric.closedBall c₀ (2 * ρ) ∈ 𝓝 z := by
+        refine Metric.mem_nhds_iff.mpr ⟨2 * ρ - dist z c₀, ?_, fun w hw => ?_⟩
+        · rw [Metric.mem_ball] at hz; linarith
+        · rw [Metric.mem_ball] at hw
+          rw [Metric.mem_closedBall]
+          have h1 : dist w c₀ ≤ dist w z + dist z c₀ := dist_triangle _ _ _
+          linarith [hw]
+      exact norm_fderiv_le_of_lipschitzOn ℝ hnhds hlipneg
+    -- Joint continuity of the operator `A` on the compact `Icc 0 T ×ˢ closedBall c₀ 2ρ`.
+    have hAcont : ContinuousOn (fun q : ℝ × E => A q.1 q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ)) := by
+      have hfeq : ∀ q ∈ Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ),
+          A q.1 q.2 = -(∑ k : Fin (Module.finrank ℝ E),
+            (fderiv ℝ (fun w : E =>
+                DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg y k w) q.2).smulRight
+              ((chartModelBasis E) k : E)) := by
+        rintro ⟨t, z⟩ hq
+        have hzint : z ∈ interior (extChartAt I y).target := hball2_sub_int hq.2
+        have hfd := (conjugatingChartVelocityField_hasFDerivAt (I := I) g_DT g_bg y t hzint)
+        show fderiv ℝ (fun w : E => -conjugatingChartVelocityField (I := I) g_DT g_bg y t w) z = _
+        exact hfd.neg.fderiv
+      refine ContinuousOn.congr ?_ hfeq
+      refine ContinuousOn.neg ?_
+      refine continuousOn_finset_sum _ (fun k _ => ?_)
+      have hcontk : ContinuousOn (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg y k w) q.2)
+          (Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ)) :=
+        (Hfderiv y k).mono (Set.prod_mono_right hball2_sub_int)
+      exact ((ContinuousLinearMap.smulRightL ℝ E E).flip ((chartModelBasis E) k : E)).continuous.comp_continuousOn hcontk
+    -- Heine–Cantor: `A` is uniformly continuous on the compact set.
+    have hAcompact : IsCompact (Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ)) :=
+      isCompact_Icc.prod (isCompact_closedBall c₀ (2 * ρ))
+    have hAunif : UniformContinuousOn (fun q : ℝ × E => A q.1 q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ)) :=
+      hAcompact.uniformContinuousOn_of_continuous hAcont
+    -- The chart-`y` orbit from a confined basepoint, and the orbit Grönwall comparison.
+    set cc : M → ℝ → E := fun x s => extChartAt I y ((Φ_fam s : M → M) x) with hcc
+    have hy_src : y ∈ (extChartAt I y).source := mem_extChartAt_source y
+    have hy_ball : extChartAt I y y ∈ Metric.ball c₀ ρ := by
+      rw [hc₀, Metric.mem_ball, dist_self]; exact hρ_pos
+    -- For confined `x`: chart orbits in the `2ρ`-ball, with the chart-orbit Grönwall comparison.
+    have horbit_ball : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ s ∈ Set.Ico (0 : ℝ) b, cc x s ∈ Metric.ball c₀ (2 * ρ) :=
+      fun x hx hxb s hs => (hconf x hx hxb s hs).2
+    have horbit_src : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) x ∈ (extChartAt I y).source :=
+      fun x hx hxb s hs => (hconf x hx hxb s hs).1
+    have hgoodx : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y :=
+      fun x hx hxb s hs => hgoodset_of_ball _ (horbit_src x hx hxb s hs)
+        (Metric.ball_subset_ball (by linarith) (horbit_ball x hx hxb s hs))
+    -- The chart-`y` orbit Grönwall comparison `dist (cc x r) (cc y r) ≤ dist (φ x) c₀ · exp (K b)`.
+    have horbit_gronwall : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ r ∈ Set.Ico (0 : ℝ) b,
+          dist (cc x r) (cc y r) ≤ dist (extChartAt I y x) c₀ * Real.exp ((K : ℝ) * b) := by
+      intro x hx_src hx_ball r hr
+      set s2 : ℝ → Set E := fun _ => Metric.closedBall c₀ (2 * ρ) with hs2
+      set V : ℝ → E → E := fun s z => -conjugatingChartVelocityField (I := I) g_DT g_bg y s z with hV
+      have hcont_orbit : ∀ z : M, (∀ s ∈ Set.Ico (0 : ℝ) b,
+            (Φ_fam s : M → M) z ∈ (extChartAt I y).source) →
+          ContinuousOn (fun s : ℝ => extChartAt I y ((Φ_fam s : M → M) z)) (Set.Icc 0 r) := by
+        intro z hz
+        set gz : ℝ → M := fun u : ℝ => (Φ_fam u : M → M) z with hgz
+        intro t ht
+        have htb : t ∈ Set.Ico (0 : ℝ) b := ⟨ht.1, lt_of_le_of_lt ht.2 hr.2⟩
+        have htsrc : gz t ∈ (extChartAt I y).source := hz t htb
+        have hgcwa : ContinuousWithinAt gz (Set.Icc 0 r) t := by
+          rcases eq_or_lt_of_le ht.1 with h0 | h0
+          · rw [← h0]; exact (hΦorbit0 z).mono (fun u hu => hu.1)
+          · have : t ∈ Set.Ioo (0 : ℝ) T := ⟨h0, lt_of_lt_of_le htb.2 hb_le_T⟩
+            exact ((hΦode z t this).continuousWithinAt).mono (fun u hu => hu.1)
+        exact (continuousAt_extChartAt' (I := I) htsrc).comp_continuousWithinAt hgcwa
+      have hderiv_orbit : ∀ z : M,
+          (∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) z ∈ chartLeviCivitaGoodSet (I := I) y) →
+          ∀ s : ℝ, 0 < s → s < r →
+            HasDerivWithinAt (fun u : ℝ => extChartAt I y ((Φ_fam u : M → M) z))
+              (V s (extChartAt I y ((Φ_fam s : M → M) z))) (Set.Ici s) s := by
+        intro z hz s hs0 hsr
+        have hsb : s ∈ Set.Ico (0 : ℝ) b := ⟨le_of_lt hs0, lt_trans hsr hr.2⟩
+        have hzgood : (Φ_fam s : M → M) z ∈ chartLeviCivitaGoodSet (I := I) y := hz s hsb
+        have hsode : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => (Φ_fam u : M → M) z)
+            (Set.Ici (0 : ℝ)) s
+            ((1 : ℝ →L[ℝ] ℝ).smulRight
+              (-(deTurckVF (I := I) (g_DT s) g_bg ((Φ_fam s : M → M) z)))) :=
+          hΦode z s ⟨hs0, lt_of_lt_of_le hsb.2 hb_le_T⟩
+        have hdw := chart_conjugating_orbit_hasDerivWithinAt (I := I) g_DT g_bg y
+          (fun u : ℝ => (Φ_fam u : M → M) z) s hzgood hsode
+        rw [hV]
+        exact hdw.mono (fun u hu => le_trans (le_of_lt hs0) hu)
+      have hlip : ∀ s ∈ Set.Ico (0 : ℝ) r, LipschitzOnWith K (V s) (s2 s) := by
+        intro s hs
+        have hsT : s ∈ Set.Icc (0 : ℝ) T :=
+          ⟨hs.1, le_trans (le_of_lt (lt_of_lt_of_le hs.2 (le_of_lt hr.2))) hb_le_T⟩
+        rw [hV, hs2]; exact (hK s hsT).neg
+      have hcompare : ∀ a' : ℝ, 0 < a' → a' < r →
+          dist (cc x r) (cc y r) ≤ dist (cc x a') (cc y a') * Real.exp ((K : ℝ) * (r - a')) := by
+        intro a' ha'0 ha'r
+        have hfcont : ContinuousOn (cc x) (Set.Icc a' r) :=
+          (hcont_orbit x (fun s hs => horbit_src x hx_src hx_ball s hs)).mono
+            (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, hu.2⟩)
+        have hgcont : ContinuousOn (cc y) (Set.Icc a' r) :=
+          (hcont_orbit y (fun s hs => horbit_src y hy_src hy_ball s hs)).mono
+            (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, hu.2⟩)
+        have hfderiv : ∀ s ∈ Set.Ico a' r, HasDerivWithinAt (cc x) (V s (cc x s)) (Set.Ici s) s :=
+          fun s hs => hderiv_orbit x (hgoodx x hx_src hx_ball) s (lt_of_lt_of_le ha'0 hs.1) hs.2
+        have hgderiv : ∀ s ∈ Set.Ico a' r, HasDerivWithinAt (cc y) (V s (cc y s)) (Set.Ici s) s :=
+          fun s hs => hderiv_orbit y (hgoodx y hy_src hy_ball) s (lt_of_lt_of_le ha'0 hs.1) hs.2
+        have hfs : ∀ s ∈ Set.Ico a' r, cc x s ∈ s2 s := fun s hs => by
+          have hsb : s ∈ Set.Ico (0 : ℝ) b := ⟨le_trans (le_of_lt ha'0) hs.1, lt_trans hs.2 hr.2⟩
+          rw [hs2]; exact Metric.ball_subset_closedBall (horbit_ball x hx_src hx_ball s hsb)
+        have hgs : ∀ s ∈ Set.Ico a' r, cc y s ∈ s2 s := fun s hs => by
+          have hsb : s ∈ Set.Ico (0 : ℝ) b := ⟨le_trans (le_of_lt ha'0) hs.1, lt_trans hs.2 hr.2⟩
+          rw [hs2]; exact Metric.ball_subset_closedBall (horbit_ball y hy_src hy_ball s hsb)
+        have hlip' : ∀ s ∈ Set.Ico a' r, LipschitzOnWith K (V s) (s2 s) :=
+          fun s hs => hlip s ⟨le_trans (le_of_lt ha'0) hs.1, hs.2⟩
+        exact dist_le_of_trajectories_ODE_of_mem (a := a') (b := r) (K := K) (v := V) (s := s2)
+          hlip' hfcont hfderiv hfs hgcont hgderiv hgs (le_refl _) r
+          (Set.right_mem_Icc.mpr (le_of_lt ha'r))
+      have hccx0 : cc x 0 = extChartAt I y x := by
+        rw [hcc]; simp only [hΦ0, Diffeomorph.coe_refl, id]
+      have hccy0 : cc y 0 = c₀ := by
+        rw [hcc]; simp only [hΦ0, Diffeomorph.coe_refl, id]; exact hc₀.symm
+      rcases eq_or_lt_of_le hr.1 with hr0 | hr0
+      · have hgoal : dist (cc x r) (cc y r) = dist (extChartAt I y x) c₀ := by
+          rw [← hr0, ← hccx0, ← hccy0]
+        rw [hgoal]
+        nlinarith [dist_nonneg (x := extChartAt I y x) (y := c₀),
+          Real.one_le_exp (show (0 : ℝ) ≤ (K : ℝ) * b by positivity)]
+      · have hccx_cont0 : ContinuousWithinAt (cc x) (Set.Ici 0) 0 := by
+          have h1 : ContinuousWithinAt (fun u : ℝ => (Φ_fam u : M → M) x) (Set.Ici 0) 0 :=
+            hΦorbit0 x
+          exact ContinuousAt.comp_continuousWithinAt_of_eq
+            (continuousAt_extChartAt' (I := I) hx_src) h1
+            (by simp only [hΦ0, Diffeomorph.coe_refl, id])
+        have hccy_cont0 : ContinuousWithinAt (cc y) (Set.Ici 0) 0 := by
+          have h1 : ContinuousWithinAt (fun u : ℝ => (Φ_fam u : M → M) y) (Set.Ici 0) 0 :=
+            hΦorbit0 y
+          exact ContinuousAt.comp_continuousWithinAt_of_eq
+            (continuousAt_extChartAt' (I := I) hy_src) h1
+            (by simp only [hΦ0, Diffeomorph.coe_refl, id])
+        have hIoo_ne : (𝓝[Set.Ioo (0 : ℝ) r] 0).NeBot := by
+          rw [nhdsWithin_Ioo_eq_nhdsGT hr0]; exact nhdsGT_neBot 0
+        have htend_rhs : Filter.Tendsto
+            (fun a' : ℝ => dist (cc x a') (cc y a') * Real.exp ((K : ℝ) * (r - a')))
+            (𝓝[Set.Ioo (0 : ℝ) r] 0)
+            (𝓝 (dist (extChartAt I y x) c₀ * Real.exp ((K : ℝ) * r))) := by
+          have hsub : Set.Ioo (0 : ℝ) r ⊆ Set.Ici 0 := fun u hu => le_of_lt hu.1
+          have hcxd : Filter.Tendsto (cc x) (𝓝[Set.Ioo (0 : ℝ) r] 0)
+              (𝓝 (extChartAt I y x)) := by
+            rw [← hccx0]; exact hccx_cont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+          have hcyd : Filter.Tendsto (cc y) (𝓝[Set.Ioo (0 : ℝ) r] 0) (𝓝 c₀) := by
+            rw [← hccy0]; exact hccy_cont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+          have hdistd : Filter.Tendsto (fun a' : ℝ => dist (cc x a') (cc y a'))
+              (𝓝[Set.Ioo (0 : ℝ) r] 0) (𝓝 (dist (extChartAt I y x) c₀)) :=
+            (continuous_dist.continuousAt).tendsto.comp (hcxd.prodMk_nhds hcyd)
+          have hexpd : Filter.Tendsto (fun a' : ℝ => Real.exp ((K : ℝ) * (r - a')))
+              (𝓝[Set.Ioo (0 : ℝ) r] 0) (𝓝 (Real.exp ((K : ℝ) * r))) := by
+            have : Filter.Tendsto (fun a' : ℝ => Real.exp ((K : ℝ) * (r - a'))) (𝓝 0)
+                (𝓝 (Real.exp ((K : ℝ) * (r - 0)))) :=
+              ((Real.continuous_exp.comp (continuous_const.mul
+                (continuous_const.sub continuous_id))).tendsto 0)
+            simpa using this.mono_left nhdsWithin_le_nhds
+          exact hdistd.mul hexpd
+        have hbound_le : dist (cc x r) (cc y r)
+            ≤ dist (extChartAt I y x) c₀ * Real.exp ((K : ℝ) * b) := by
+          haveI := hIoo_ne
+          have hr_bound : dist (cc x r) (cc y r)
+              ≤ dist (extChartAt I y x) c₀ * Real.exp ((K : ℝ) * r) := by
+            refine ge_of_tendsto htend_rhs ?_
+            filter_upwards [self_mem_nhdsWithin] with a' ha'
+            exact hcompare a' ha'.1 ha'.2
+          refine le_trans hr_bound ?_
+          refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) dist_nonneg
+          have : (K : ℝ) * r ≤ (K : ℝ) * b :=
+            mul_le_mul_of_nonneg_left (le_of_lt hr.2) (NNReal.coe_nonneg K)
+          linarith
+        exact hbound_le
+    -- The interior variational ODE for `D · x`, on the confinement window `Ioo 0 b`, for confined `x`.
+    have hDode : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ s : ℝ, 0 < s → s < b →
+          HasDerivWithinAt (fun u : ℝ => D u x) (A s (cc x s) (D s x)) (Set.Ici (0 : ℝ)) s := by
+      intro x hx_src hx_ball s hs0 hsb
+      have hgood : ∀ u ∈ Set.Ioo (0 : ℝ) b, (Φ_fam u : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y :=
+        fun u hu => hgoodx x hx_src hx_ball u ⟨le_of_lt hu.1, hu.2⟩
+      exact flow_chartJacobian_variational_interior (I := I) g_DT g_bg T Φ_fam hΦode x₀ i y x
+        0 b (le_refl 0) hb_le_T s ⟨hs0, hsb⟩ hgood
+    -- Continuity of `D · x` on `Icc 0 r` for confined `x` and `r < b`.
+    have hDcont : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ r : ℝ, r < b → ContinuousOn (fun u : ℝ => D u x) (Set.Icc 0 r) := by
+      intro x hx_src hx_ball r hrb u hu
+      rcases eq_or_lt_of_le hu.1 with h0 | h0
+      · rw [← h0]; exact ((hpery0 x).mono (fun w hw => hw.1))
+      · have hub : u < b := lt_of_le_of_lt hu.2 hrb
+        exact ((hDode x hx_src hx_ball u h0 hub).continuousWithinAt).mono (fun w hw => hw.1)
+    -- The integrand bound `‖A u (cc x u) w‖ ≤ K ‖w‖` along confined orbits, uniform in time.
+    have hAintegrand : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ u ∈ Set.Ico (0 : ℝ) b, ‖A u (cc x u)‖ ≤ (K : ℝ) := by
+      intro x hx_src hx_ball u hu
+      have huT : u ∈ Set.Icc (0 : ℝ) T :=
+        ⟨hu.1, le_trans (le_of_lt (lt_of_lt_of_le hu.2 hb_le_T)) (le_refl T)⟩
+      exact hAbound u huT (cc x u) (horbit_ball x hx_src hx_ball u hu)
+    -- Grönwall a-priori bound from a positive start `a'`: `‖D r' x‖ ≤ ‖D a' x‖ · exp (K (r'−a'))`.
+    have hDcompare : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ a' r' : ℝ, 0 < a' → a' ≤ r' → r' < b →
+          ‖D r' x‖ ≤ ‖D a' x‖ * Real.exp ((K : ℝ) * (r' - a')) := by
+      intro x hx_src hx_ball a' r' ha'0 ha'r' hr'b
+      have hcont : ContinuousOn (fun u : ℝ => D u x) (Set.Icc a' r') :=
+        (hDcont x hx_src hx_ball r' hr'b).mono
+          (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, hu.2⟩)
+      have hderiv : ∀ u ∈ Set.Ico a' r',
+          HasDerivWithinAt (fun w : ℝ => D w x) (A u (cc x u) (D u x)) (Set.Ici u) u := by
+        intro u hu
+        have hu0 : 0 < u := lt_of_lt_of_le ha'0 hu.1
+        exact (hDode x hx_src hx_ball u hu0 (lt_trans hu.2 hr'b)).mono
+          (fun w hw => le_trans (le_of_lt hu0) hw)
+      have hbnd : ∀ u ∈ Set.Ico a' r', ‖A u (cc x u) (D u x)‖ ≤ (K : ℝ) * ‖D u x‖ + 0 := by
+        intro u hu
+        have hub : u ∈ Set.Ico (0 : ℝ) b :=
+          ⟨le_trans (le_of_lt ha'0) hu.1, lt_trans hu.2 hr'b⟩
+        have hAu : ‖A u (cc x u)‖ ≤ (K : ℝ) := hAintegrand x hx_src hx_ball u hub
+        calc ‖A u (cc x u) (D u x)‖ ≤ ‖A u (cc x u)‖ * ‖D u x‖ :=
+              ContinuousLinearMap.le_opNorm _ _
+          _ ≤ (K : ℝ) * ‖D u x‖ := by gcongr
+          _ = (K : ℝ) * ‖D u x‖ + 0 := by ring
+      have hgb := norm_le_gronwallBound_of_norm_deriv_right_le hcont hderiv (le_refl ‖D a' x‖) hbnd
+      have := hgb r' (Set.right_mem_Icc.mpr ha'r')
+      rw [gronwallBound_ε0] at this
+      exact this
+    -- Uniform Jacobian bound: take the start `a' → 0⁺` limit of `hDcompare`.
+    have hDboundU : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        ∀ s ∈ Set.Ico (0 : ℝ) b, ‖D s x‖ ≤ ‖D 0 x‖ * Real.exp ((K : ℝ) * b) := by
+      intro x hx_src hx_ball s hs
+      rcases eq_or_lt_of_le hs.1 with h0 | h0
+      · rw [← h0]
+        have : (1 : ℝ) ≤ Real.exp ((K : ℝ) * b) :=
+          Real.one_le_exp (by positivity)
+        nlinarith [norm_nonneg (D 0 x)]
+      · -- `s > 0`: from `hDcompare` with start `a' → 0⁺`.
+        obtain ⟨r', hsr', hr'b⟩ := exists_between hs.2
+        have hbound_a' : ∀ a' : ℝ, 0 < a' → a' ≤ s →
+            ‖D s x‖ ≤ ‖D a' x‖ * Real.exp ((K : ℝ) * (s - a')) := by
+          intro a' ha'0 ha's
+          have := hDcompare x hx_src hx_ball a' s ha'0 ha's (lt_trans hsr' hr'b)
+          exact this
+        have hcont0 : ContinuousWithinAt (fun a' : ℝ => D a' x) (Set.Ici 0) 0 := hpery0 x
+        have hIoo_ne : (𝓝[Set.Ioo (0 : ℝ) s] 0).NeBot := by
+          rw [nhdsWithin_Ioo_eq_nhdsGT h0]; exact nhdsGT_neBot 0
+        have hsub : Set.Ioo (0 : ℝ) s ⊆ Set.Ici 0 := fun u hu => le_of_lt hu.1
+        have hDtend : Filter.Tendsto (fun a' : ℝ => D a' x)
+            (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 (D 0 x)) :=
+          hcont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+        have hRHStend : Filter.Tendsto
+            (fun a' : ℝ => ‖D a' x‖ * Real.exp ((K : ℝ) * (s - a')))
+            (𝓝[Set.Ioo (0 : ℝ) s] 0)
+            (𝓝 (‖D 0 x‖ * Real.exp ((K : ℝ) * s))) := by
+          have hnorm : Filter.Tendsto (fun a' : ℝ => ‖D a' x‖)
+              (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 ‖D 0 x‖) :=
+            (continuous_norm.continuousAt).tendsto.comp hDtend
+          have hexp : Filter.Tendsto (fun a' : ℝ => Real.exp ((K : ℝ) * (s - a')))
+              (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 (Real.exp ((K : ℝ) * s))) := by
+            have : Filter.Tendsto (fun a' : ℝ => Real.exp ((K : ℝ) * (s - a'))) (𝓝 0)
+                (𝓝 (Real.exp ((K : ℝ) * (s - 0)))) :=
+              ((Real.continuous_exp.comp (continuous_const.mul
+                (continuous_const.sub continuous_id))).tendsto 0)
+            simpa using this.mono_left nhdsWithin_le_nhds
+          exact hnorm.mul hexp
+        haveI := hIoo_ne
+        have hle_s : ‖D s x‖ ≤ ‖D 0 x‖ * Real.exp ((K : ℝ) * s) := by
+          refine ge_of_tendsto hRHStend ?_
+          filter_upwards [self_mem_nhdsWithin] with a' ha'
+          exact hbound_a' a' ha'.1 (le_of_lt ha'.2)
+        calc ‖D s x‖ ≤ ‖D 0 x‖ * Real.exp ((K : ℝ) * s) := hle_s
+          _ ≤ ‖D 0 x‖ * Real.exp ((K : ℝ) * b) := by
+              refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+              have : (K : ℝ) * s ≤ (K : ℝ) * b :=
+                mul_le_mul_of_nonneg_left (le_of_lt hs.2) (NNReal.coe_nonneg K)
+              linarith
+    -- `D 0 ·` continuity at `y` on the chart-`x₀` base set (posited node 3).
+    have hD0cont : Filter.Tendsto (fun x : M => D 0 x)
+        (𝓝[(trivializationAt E (TangentSpace I) x₀).baseSet] y) (𝓝 (D 0 y)) := by
+      have hcwa := flow_chartJacobian_zero_continuousWithinAt_basepoint (I := I) x₀ i y
+      have heq : ∀ x : M, (fun x : M => mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) x
+          (chartBasisVecFiber (I := I) x₀ i x)) x = D 0 x := fun x => (hD0 x).symm
+      rw [ContinuousWithinAt] at hcwa
+      have hcwa' : Filter.Tendsto (fun x : M => D 0 x)
+          (𝓝[(trivializationAt E (TangentSpace I) x₀).baseSet] y)
+          (𝓝 (mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+            (chartBasisVecFiber (I := I) x₀ i y))) := by
+        refine hcwa.congr (fun x => heq x)
+      rw [show mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+          (chartBasisVecFiber (I := I) x₀ i y) = D 0 y from (hD0 y) ▸ rfl] at hcwa'
+      exact hcwa'
+    -- The cross difference vanishes uniformly (the operator-valued variational Grönwall).
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    set L : Filter (ℝ × M) :=
+      𝓝[Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet] (0, y) with hL
+    -- uniform Jacobian bound near `y`: `‖D u x‖ ≤ B` for confined `x`.
+    set B : ℝ := (‖D 0 y‖ + 1) * Real.exp ((K : ℝ) * b) with hB
+    have hB_nonneg : 0 ≤ B := by positivity
+    -- choose the operator-defect tolerance `η`.
+    have hexp_pos : (0 : ℝ) < Real.exp ((K : ℝ) * b) := Real.exp_pos _
+    set Kpos : ℝ := (K : ℝ) + 1 with hKpos
+    have hKpos_pos : (0 : ℝ) < Kpos := by rw [hKpos]; positivity
+    set η : ℝ := (ε / 2) * Kpos / ((B + 1) * (Real.exp (Kpos * b) + 1)) with hη
+    have hη_pos : 0 < η := by
+      rw [hη]; positivity
+    -- uniform continuity of `A` supplies `δ_A` controlling the operator defect by `η`.
+    rw [Metric.uniformContinuousOn_iff] at hAunif
+    obtain ⟨δA, hδA_pos, hδA⟩ := hAunif η hη_pos
+    -- Clean upper bound for the Grönwall bound at `Kpos > 0`.
+    have hgronwall_le : ∀ δ' ε' x' : ℝ, 0 ≤ δ' → 0 ≤ ε' → 0 ≤ x' →
+        gronwallBound δ' Kpos ε' x' ≤ (δ' + ε' / Kpos) * Real.exp (Kpos * x') := by
+      intro δ' ε' x' hδ' hε' hx'
+      rw [gronwallBound_of_K_ne_0 (ne_of_gt hKpos_pos)]
+      have hexp_ge : (1 : ℝ) ≤ Real.exp (Kpos * x') := Real.one_le_exp (by positivity)
+      have h1 : ε' / Kpos * (Real.exp (Kpos * x') - 1) ≤ ε' / Kpos * Real.exp (Kpos * x') := by
+        refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+        linarith
+      calc δ' * Real.exp (Kpos * x') + ε' / Kpos * (Real.exp (Kpos * x') - 1)
+          ≤ δ' * Real.exp (Kpos * x') + ε' / Kpos * Real.exp (Kpos * x') := by linarith
+        _ = (δ' + ε' / Kpos) * Real.exp (Kpos * x') := by ring
+    -- The cross-difference Grönwall bound for a single confined `x` with small operator defect.
+    have hcrossGr : ∀ x : M, x ∈ (extChartAt I y).source →
+        extChartAt I y x ∈ Metric.ball c₀ ρ →
+        (∀ u ∈ Set.Ico (0 : ℝ) b, ‖A u (cc x u) - A u (cc y u)‖ ≤ η) →
+        (∀ u ∈ Set.Ico (0 : ℝ) b, ‖D u x‖ ≤ B) →
+        ∀ s ∈ Set.Ico (0 : ℝ) b,
+          ‖D s x - D s y‖ ≤ gronwallBound ‖D 0 x - D 0 y‖ Kpos (η * B) s := by
+      intro x hx_src hx_ball hdefect hDx s hs
+      set Δ : ℝ → E := fun u => D u x - D u y with hΔ
+      rcases eq_or_lt_of_le hs.1 with h0 | h0
+      · rw [← h0, gronwallBound_x0]
+      · -- positive `s`: Grönwall on `[a', r']` with start `a' → 0⁺`.
+        obtain ⟨r', hsr', hr'b⟩ := exists_between hs.2
+        have hΔ_deriv : ∀ u : ℝ, 0 < u → u < b →
+            HasDerivWithinAt Δ (A u (cc x u) (D u x) - A u (cc y u) (D u y)) (Set.Ici (0 : ℝ)) u := by
+          intro u hu0 hub
+          exact (hDode x hx_src hx_ball u hu0 hub).sub (hDode y hy_src hy_ball u hu0 hub)
+        have hΔ_cont : ∀ r₂ : ℝ, r₂ < b → ContinuousOn Δ (Set.Icc 0 r₂) := by
+          intro r₂ hr₂ u hu
+          exact ((hDcont x hx_src hx_ball r₂ hr₂) u hu).sub ((hDcont y hy_src hy_ball r₂ hr₂) u hu)
+        have hbound_a' : ∀ a' : ℝ, 0 < a' → a' ≤ s →
+            ‖Δ s‖ ≤ gronwallBound ‖Δ a'‖ Kpos (η * B) (s - a') := by
+          intro a' ha'0 ha's
+          have hcont : ContinuousOn Δ (Set.Icc a' s) :=
+            (hΔ_cont r' hr'b).mono
+              (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, le_trans hu.2 (le_of_lt hsr')⟩)
+          have hderiv : ∀ u ∈ Set.Ico a' s,
+              HasDerivWithinAt Δ (A u (cc x u) (D u x) - A u (cc y u) (D u y)) (Set.Ici u) u := by
+            intro u hu
+            have hu0 : 0 < u := lt_of_lt_of_le ha'0 hu.1
+            exact (hΔ_deriv u hu0 (lt_trans hu.2 hs.2)).mono
+              (fun w hw => le_trans (le_of_lt hu0) hw)
+          have hbnd : ∀ u ∈ Set.Ico a' s,
+              ‖A u (cc x u) (D u x) - A u (cc y u) (D u y)‖ ≤ Kpos * ‖Δ u‖ + η * B := by
+            intro u hu
+            have hub : u ∈ Set.Ico (0 : ℝ) b :=
+              ⟨le_trans (le_of_lt ha'0) hu.1, lt_trans hu.2 hs.2⟩
+            have huT : u ∈ Set.Icc (0 : ℝ) T :=
+              ⟨hub.1, le_trans (le_of_lt (lt_of_lt_of_le hub.2 hb_le_T)) (le_refl T)⟩
+            -- split: `A_x D_x − A_y D_y = A_y (D_x − D_y) + (A_x − A_y) D_x`.
+            have hsplit : A u (cc x u) (D u x) - A u (cc y u) (D u y)
+                = A u (cc y u) (Δ u) + (A u (cc x u) - A u (cc y u)) (D u x) := by
+              rw [hΔ]
+              simp only [ContinuousLinearMap.sub_apply, map_sub]
+              abel
+            rw [hsplit]
+            have hAy : ‖A u (cc y u)‖ ≤ (K : ℝ) :=
+              hAbound u huT (cc y u) (horbit_ball y hy_src hy_ball u hub)
+            have hterm1 : ‖A u (cc y u) (Δ u)‖ ≤ Kpos * ‖Δ u‖ := by
+              calc ‖A u (cc y u) (Δ u)‖ ≤ ‖A u (cc y u)‖ * ‖Δ u‖ :=
+                    ContinuousLinearMap.le_opNorm _ _
+                _ ≤ (K : ℝ) * ‖Δ u‖ := by gcongr
+                _ ≤ Kpos * ‖Δ u‖ := by
+                    refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+                    rw [hKpos]; linarith
+            have hterm2 : ‖(A u (cc x u) - A u (cc y u)) (D u x)‖ ≤ η * B := by
+              calc ‖(A u (cc x u) - A u (cc y u)) (D u x)‖
+                  ≤ ‖A u (cc x u) - A u (cc y u)‖ * ‖D u x‖ := ContinuousLinearMap.le_opNorm _ _
+                _ ≤ η * B := by
+                    have hd := hdefect u hub
+                    have hDxb := hDx u hub
+                    have hηnn : 0 ≤ η := le_of_lt hη_pos
+                    exact mul_le_mul hd hDxb (norm_nonneg _) hηnn
+            calc ‖A u (cc y u) (Δ u) + (A u (cc x u) - A u (cc y u)) (D u x)‖
+                ≤ ‖A u (cc y u) (Δ u)‖ + ‖(A u (cc x u) - A u (cc y u)) (D u x)‖ :=
+                  norm_add_le _ _
+              _ ≤ Kpos * ‖Δ u‖ + η * B := add_le_add hterm1 hterm2
+          have hgb := norm_le_gronwallBound_of_norm_deriv_right_le hcont hderiv
+            (le_refl ‖Δ a'‖) hbnd
+          exact hgb s (Set.right_mem_Icc.mpr ha's)
+        -- take `a' → 0⁺`.
+        have hcont0 : ContinuousWithinAt Δ (Set.Ici 0) 0 := by
+          have := (hpery0 x).sub (hpery0 y)
+          exact this
+        have hIoo_ne : (𝓝[Set.Ioo (0 : ℝ) s] 0).NeBot := by
+          rw [nhdsWithin_Ioo_eq_nhdsGT h0]; exact nhdsGT_neBot 0
+        have hsub : Set.Ioo (0 : ℝ) s ⊆ Set.Ici 0 := fun u hu => le_of_lt hu.1
+        have hΔtend : Filter.Tendsto Δ (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 (Δ 0)) :=
+          hcont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+        have hRHStend : Filter.Tendsto
+            (fun a' : ℝ => gronwallBound ‖Δ a'‖ Kpos (η * B) (s - a'))
+            (𝓝[Set.Ioo (0 : ℝ) s] 0)
+            (𝓝 (gronwallBound ‖Δ 0‖ Kpos (η * B) s)) := by
+          have hnorm : Filter.Tendsto (fun a' : ℝ => ‖Δ a'‖)
+              (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 ‖Δ 0‖) :=
+            (continuous_norm.continuousAt).tendsto.comp hΔtend
+          have hgcont : Continuous fun q : ℝ × ℝ =>
+              gronwallBound q.1 Kpos (η * B) q.2 := by
+            simp only [gronwallBound_of_K_ne_0 (ne_of_gt hKpos_pos)]
+            fun_prop
+          have hsa : Filter.Tendsto (fun a' : ℝ => ((‖Δ a'‖ : ℝ), (s - a')))
+              (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 (‖Δ 0‖, s)) := by
+            have hsnd : Filter.Tendsto (fun a' : ℝ => s - a')
+                (𝓝[Set.Ioo (0 : ℝ) s] 0) (𝓝 (s - 0)) :=
+              ((continuous_const.sub continuous_id).continuousAt).tendsto.mono_left
+                nhdsWithin_le_nhds
+            simpa using hnorm.prodMk_nhds (by simpa using hsnd)
+          have := (hgcont.continuousAt).tendsto.comp hsa
+          simpa using this
+        haveI := hIoo_ne
+        refine ge_of_tendsto hRHStend ?_
+        filter_upwards [self_mem_nhdsWithin] with a' ha'
+        exact hbound_a' a' ha'.1 (le_of_lt ha'.2)
+    -- Assemble the squeeze: find the eventually-true neighbourhood and bound.
+    have htoll : (0 : ℝ) < ε / 2 / Real.exp (Kpos * b) := by positivity
+    have hball_close : (fun p : ℝ × M => dist (extChartAt I y p.2) c₀ * Real.exp ((K : ℝ) * b))
+        ⁻¹' Set.Iio δA ∈ L := by
+      have hcont : ContinuousWithinAt
+          (fun p : ℝ × M => dist (extChartAt I y p.2) c₀ * Real.exp ((K : ℝ) * b))
+          (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) := by
+        have hsnd : ContinuousWithinAt (fun p : ℝ × M => extChartAt I y p.2)
+            (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
+          (continuousAt_extChartAt' (I := I) (mem_extChartAt_source y)).comp_continuousWithinAt
+            (continuous_snd.continuousWithinAt)
+        have hd : ContinuousWithinAt (fun p : ℝ × M => dist (extChartAt I y p.2) c₀)
+            (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
+          (continuous_dist.continuousAt).comp_continuousWithinAt
+            (hsnd.prodMk_nhds continuousWithinAt_const)
+        exact hd.mul continuousWithinAt_const
+      have hval : (fun p : ℝ × M => dist (extChartAt I y p.2) c₀ * Real.exp ((K : ℝ) * b)) (0, y)
+          = 0 := by simp [hc₀]
+      have hmem : Set.Iio δA ∈ 𝓝 ((fun p : ℝ × M =>
+          dist (extChartAt I y p.2) c₀ * Real.exp ((K : ℝ) * b)) (0, y)) := by
+        rw [hval]; exact Iio_mem_nhds hδA_pos
+      exact hcont.preimage_mem_nhdsWithin hmem
+    have hΔ0tend : Filter.Tendsto (fun p : ℝ × M => ‖D 0 p.2 - D 0 y‖) L (𝓝 0) := by
+      have hsnd : Filter.Tendsto (fun p : ℝ × M => p.2) L
+          (𝓝[(trivializationAt E (TangentSpace I) x₀).baseSet] y) := by
+        rw [hL]
+        have hcwa : ContinuousWithinAt (fun p : ℝ × M => p.2)
+            (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
+          continuous_snd.continuousWithinAt
+        exact hcwa.tendsto_nhdsWithin (fun p hp => hp.2)
+      have hcomp : Filter.Tendsto (fun p : ℝ × M => D 0 p.2) L (𝓝 (D 0 y)) :=
+        hD0cont.comp hsnd
+      have hsub : Filter.Tendsto (fun p : ℝ × M => D 0 p.2 - D 0 y) L (𝓝 0) := by
+        have := hcomp.sub (tendsto_const_nhds (x := D 0 y) (f := L))
+        simpa using this
+      have := (continuous_norm.continuousAt).tendsto.comp hsub
+      simpa using this
+    have hδ_close : (fun p : ℝ × M => ‖D 0 p.2 - D 0 y‖)
+        ⁻¹' Set.Iio (ε / 2 / Real.exp (Kpos * b)) ∈ L :=
+      hΔ0tend (Iio_mem_nhds htoll)
+    have hδ_close1 : (fun p : ℝ × M => ‖D 0 p.2 - D 0 y‖)
+        ⁻¹' Set.Iio (1 : ℝ) ∈ L :=
+      hΔ0tend (Iio_mem_nhds one_pos)
+    have hsrc_nhds : (fun p : ℝ × M => p.2) ⁻¹' (extChartAt I y).source ∈ L := by
+      have hopen : IsOpen (extChartAt I y).source := isOpen_extChartAt_source y
+      have : (extChartAt I y).source ∈ 𝓝 y := hopen.mem_nhds (mem_extChartAt_source y)
+      exact (continuous_snd.continuousWithinAt (x := ((0, y) : ℝ × M))).preimage_mem_nhdsWithin this
+    have hball_nhds : (fun p : ℝ × M => extChartAt I y p.2) ⁻¹' Metric.ball c₀ ρ ∈ L := by
+      have hcontsnd : ContinuousWithinAt (fun p : ℝ × M => extChartAt I y p.2)
+          (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
+        (continuousAt_extChartAt' (I := I) (mem_extChartAt_source y)).comp_continuousWithinAt
+          (continuous_snd.continuousWithinAt)
+      have hmem : Metric.ball c₀ ρ ∈ 𝓝 (extChartAt I y ((0, y) : ℝ × M).2) := by
+        simpa [hc₀] using Metric.ball_mem_nhds c₀ hρ_pos
+      exact hcontsnd.preimage_mem_nhdsWithin hmem
+    have htime_nhds : (fun p : ℝ × M => p.1) ⁻¹' Set.Iio b ∈ L := by
+      have : Set.Iio b ∈ 𝓝 (0 : ℝ) := Iio_mem_nhds hb_pos
+      exact (continuous_fst.continuousWithinAt (x := ((0, y) : ℝ × M))).preimage_mem_nhdsWithin this
+    have hge0 : ∀ᶠ p : ℝ × M in L, 0 ≤ p.1 := by
+      rw [hL]; filter_upwards [self_mem_nhdsWithin] with p hp using hp.1
+    filter_upwards [hball_close, hδ_close, hδ_close1, hsrc_nhds, hball_nhds, htime_nhds, hge0]
+      with p hpclose hpδ hpδ1 hpsrc hpball hptime hpge
+    have hpsrc' : p.2 ∈ (extChartAt I y).source := hpsrc
+    have hpball' : extChartAt I y p.2 ∈ Metric.ball c₀ ρ := hpball
+    have hptime' : p.1 < b := hptime
+    have hs_mem : p.1 ∈ Set.Ico (0 : ℝ) b := ⟨hpge, hptime'⟩
+    -- operator defect ≤ η along this orbit.
+    have hdefect : ∀ u ∈ Set.Ico (0 : ℝ) b,
+        ‖A u (cc p.2 u) - A u (cc y u)‖ ≤ η := by
+      intro u hu
+      have hxz : cc p.2 u ∈ Metric.closedBall c₀ (2 * ρ) :=
+        Metric.ball_subset_closedBall (horbit_ball p.2 hpsrc' hpball' u hu)
+      have hyz : cc y u ∈ Metric.closedBall c₀ (2 * ρ) :=
+        Metric.ball_subset_closedBall (horbit_ball y hy_src hy_ball u hu)
+      have huT : u ∈ Set.Icc (0 : ℝ) T :=
+        ⟨hu.1, le_trans (le_of_lt (lt_of_lt_of_le hu.2 hb_le_T)) (le_refl T)⟩
+      have hqx : (u, cc p.2 u) ∈ Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ) := ⟨huT, hxz⟩
+      have hqy : (u, cc y u) ∈ Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c₀ (2 * ρ) := ⟨huT, hyz⟩
+      have hdistlt : dist (u, cc p.2 u) (u, cc y u) < δA := by
+        rw [Prod.dist_eq]
+        have h1 : dist u u = 0 := dist_self u
+        have h2 : dist (cc p.2 u) (cc y u) < δA := by
+          have := horbit_gronwall p.2 hpsrc' hpball' u hu
+          exact lt_of_le_of_lt this hpclose
+        simp only [h1, max_lt_iff]
+        exact ⟨hδA_pos, h2⟩
+      have hlt := hδA (u, cc p.2 u) hqx (u, cc y u) hqy hdistlt
+      simp only at hlt
+      rw [dist_eq_norm] at hlt
+      exact le_of_lt hlt
+    -- Jacobian bound `B` along this orbit.
+    have hDxbound : ∀ u ∈ Set.Ico (0 : ℝ) b, ‖D u p.2‖ ≤ B := by
+      intro u hu
+      have h1 := hDboundU p.2 hpsrc' hpball' u hu
+      have h2 : ‖D 0 p.2‖ ≤ ‖D 0 y‖ + 1 := by
+        have hsmall : ‖D 0 p.2 - D 0 y‖ < 1 := hpδ1
+        have htri : ‖D 0 p.2‖ ≤ ‖D 0 y‖ + ‖D 0 p.2 - D 0 y‖ := by
+          have hkey : ‖D 0 p.2‖ - ‖D 0 y‖ ≤ ‖D 0 p.2 - D 0 y‖ := norm_sub_norm_le _ _
+          linarith
+        linarith
+      have hKbb : (K : ℝ) * b ≤ Kpos * b := by
+        refine mul_le_mul_of_nonneg_right ?_ (le_of_lt hb_pos)
+        rw [hKpos]; linarith
+      calc ‖D u p.2‖ ≤ ‖D 0 p.2‖ * Real.exp ((K : ℝ) * b) := h1
+        _ ≤ (‖D 0 y‖ + 1) * Real.exp ((K : ℝ) * b) :=
+            mul_le_mul_of_nonneg_right h2 (le_of_lt hexp_pos)
+        _ = B := by rw [hB]
+    -- apply the cross-difference Grönwall bound and estimate.
+    have hcross := hcrossGr p.2 hpsrc' hpball' hdefect hDxbound p.1 hs_mem
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg dist_nonneg]
+    rw [dist_eq_norm]
+    refine lt_of_le_of_lt hcross ?_
+    refine lt_of_le_of_lt (hgronwall_le ‖D 0 p.2 - D 0 y‖ (η * B) p.1
+      (norm_nonneg _) (by positivity) hpge) ?_
+    -- `(‖Δ₀‖ + ηB/Kpos) · exp(Kpos·p.1) < ε`.
+    have hp1b : p.1 ≤ b := le_of_lt hptime'
+    have hexp_mono : Real.exp (Kpos * p.1) ≤ Real.exp (Kpos * b) :=
+      Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hp1b (le_of_lt hKpos_pos))
+    have hδlt : ‖D 0 p.2 - D 0 y‖ < ε / 2 / Real.exp (Kpos * b) := hpδ
+    have hexpKpos_pos : (0 : ℝ) < Real.exp (Kpos * b) := Real.exp_pos _
+    have hηB : η * B / Kpos * Real.exp (Kpos * b) < ε / 2 := by
+      -- `η * (B+1)/Kpos * (exp+1) = ε/2`, and `B·exp < (B+1)(exp+1)`.
+      have hkey : η * (B + 1) / Kpos * (Real.exp (Kpos * b) + 1) = ε / 2 := by
+        rw [hη]
+        field_simp
+      have hstrict : η * B / Kpos * Real.exp (Kpos * b)
+          < η * (B + 1) / Kpos * (Real.exp (Kpos * b) + 1) := by
+        have hηK : 0 < η / Kpos := by positivity
+        have h1 : η * B / Kpos * Real.exp (Kpos * b)
+            = (η / Kpos) * (B * Real.exp (Kpos * b)) := by ring
+        have h2 : η * (B + 1) / Kpos * (Real.exp (Kpos * b) + 1)
+            = (η / Kpos) * ((B + 1) * (Real.exp (Kpos * b) + 1)) := by ring
+        rw [h1, h2]
+        refine mul_lt_mul_of_pos_left ?_ hηK
+        have hBnn : 0 ≤ B := hB_nonneg
+        nlinarith [hexpKpos_pos]
+      rw [hkey] at hstrict; exact hstrict
+    calc (‖D 0 p.2 - D 0 y‖ + η * B / Kpos) * Real.exp (Kpos * p.1)
+        ≤ (‖D 0 p.2 - D 0 y‖ + η * B / Kpos) * Real.exp (Kpos * b) := by
+          refine mul_le_mul_of_nonneg_left hexp_mono ?_
+          have : 0 ≤ η * B / Kpos := by positivity
+          linarith [norm_nonneg (D 0 p.2 - D 0 y)]
+      _ = ‖D 0 p.2 - D 0 y‖ * Real.exp (Kpos * b) + η * B / Kpos * Real.exp (Kpos * b) := by ring
+      _ < ε / 2 / Real.exp (Kpos * b) * Real.exp (Kpos * b) + ε / 2 := by
+          refine add_lt_add ?_ hηB
+          exact mul_lt_mul_of_pos_right hδlt hexpKpos_pos
+      _ = ε / 2 + ε / 2 := by
+          rw [div_mul_cancel₀]; exact ne_of_gt hexpKpos_pos
+      _ = ε := by ring
+  · -- ============ CONJUNCT (b): the per-`y` slice limit ============
+    have h := (hpery0 y).tendsto
+    rw [hD0y] at h
+    exact h
 
 set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` chart-`y` Jacobian continuity at the `t = 0` boundary slice (variational
