@@ -3610,7 +3610,7 @@ set_option linter.unusedVariables false in
 For the conjugating diffeomorphism family `Φ_fam` of the Hamilton–DeTurck construction —
 PINNED to the genuine flow by the backward bare-orbit ODE `hΦode` and to the identity at
 `t = 0` by `hΦ0`, with the per-`y` at-`0` orbit/pushforward data (`hΦorbit0`, `hΦmfderiv0`)
-and the jointly-`C⁰`-up-to-`0` field data (`hfield_cont0`, `hfield_grad0`, `hfield_reg`) of
+and the jointly-`C⁰`-up-to-`0` chart-frame field data (`Hcomp`, `Hfderiv`, `hfield_reg`) of
 the underlying DeTurck velocity — the pulled-back metric family
 `g_fam s := (Φ_fam s)^* (g_DT s) = Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)` inherits the
 joint `(t, x)` chart-Gram regularity of `g_DT` along the flow:
@@ -3624,8 +3624,9 @@ Proven by recursion on the joint `(t, x)` continuity/smoothness of the orbit and
 Jacobian: the interior joint-`C∞` orbit (`conjugating_flow_jointContMDiffOn_interior`) feeds
 the chain rule for the interior conjunct, while the joint up-to-`0` continuity of the orbit
 and its moving pushforward (`flow_orbit_pushforward_jointContinuousOn_upto0`, resting on the
-uniform-in-`x` continuous-dependence-up-to-`0` leaf) feeds the up-to-`0` conjunct.  The added
-hypotheses constrain only the internal data `g_DT` / the field `deTurckVF (g_DT ·) g_bg` / the
+uniform-in-`x` continuous-dependence-up-to-`0` leaf, fed by the chart-frame field data
+`Hcomp`/`Hfderiv`) feeds the up-to-`0` conjunct.  The added hypotheses constrain only the
+internal data `g_DT` / the chart-frame components of the field `deTurckVF (g_DT ·) g_bg` / the
 per-`y` at-`0` `Φ_fam` data; the conclusions concern the pullback
 `pullbackMetric (g_DT) (Φ_fam)`, so this is not hypothesis-packaging. -/
 theorem conjugating_flow_pullback_jointGram_data
@@ -3642,15 +3643,17 @@ theorem conjugating_flow_pullback_jointGram_data
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    (hfield_cont0 : ContinuousOn
-      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
-      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
-    (hfield_grad0 : ∀ α : M,
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M =>
-          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
-            (extChartAt I α q.2))
-        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
     (hΦorbit0 : ∀ y : M,
       ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
     (hΦmfderiv0 : ∀ (y : M) (u : TangentSpace I y),
@@ -3684,6 +3687,16 @@ theorem conjugating_flow_pullback_jointGram_data
           Integral.Measure.chartGramMatrix (I := I)
             (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
-  sorry
+  have hΦsmooth := conjugating_flow_jointContMDiffOn_interior (I := I) g_DT g_bg T hT0 Φ_fam
+    hΦode hfield_reg
+  have hgInner := metric_clm_section_jointContMDiffOn_along_orbit (I := I) g_DT T Φ_fam hΦsmooth
+    (metricCLMSection_jointContMDiffOn_of_chartGram (I := I) g_DT T hgram_DT)
+  refine ⟨fun x₀ i j => ?_, fun x₀ i j => ?_⟩
+  · exact pullbackGram_jointContMDiffOn_interior (I := I) g_DT T Φ_fam x₀ i j hΦsmooth hgInner
+  · obtain ⟨hΦorbit_joint, hΦpush_joint⟩ :=
+      flow_orbit_pushforward_jointContinuousOn_upto0 (I := I) g_DT g_bg T hT0 Φ_fam hΦode
+        hfield_reg Hcomp Hfderiv hΦ0 hΦorbit0 hΦmfderiv0
+    exact pullbackGram_jointContinuousOn_upto0 (I := I) g_DT T Φ_fam x₀ i j hΦorbit_joint
+      hΦpush_joint hg_jointE
 
 end DifferentialGeometry.PDE.RicciFlow
