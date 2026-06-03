@@ -1240,6 +1240,76 @@ private theorem conjugating_orbit_jointContWithinAt_at_zero
   rw [hval]; rw [hL] at hgoal; exact hgoal
 
 set_option linter.unusedVariables false in
+/-- **Uniform-in-`x` variational Grönwall datum for the chart-`y` Jacobian.**
+
+The analytic variational input feeding `flow_chartJacobian_jointContWithinAt_at_zero`, the
+operator-valued (`E`-valued, here applied to the moving frame) sibling of the orbit Grönwall in
+`conjugating_orbit_jointContWithinAt_at_zero`.  Writing
+`D(t, x) := mfderiv (extChartAt I y ∘ Φ_fam t) x (chartBasisVecFiber x₀ i x)` for the chart-`y`
+Jacobian along the moving frame, this packages the two genuine variational-dependence facts:
+
+* `hcross` — the joint cross-difference `dist (D(p.1, p.2)) (D(p.1, y)) → 0` as `(p.1, p.2) → (0, y)`
+  within `Ici 0 ×ˢ baseSet x₀`.  On the interior `D` solves the linear variational ODE
+  `D'(t) = (D_z conjugatingChartVelocityField)(t, c_x(t)) · D(t)` (the spatial Fréchet derivative of
+  the chart-frame velocity, `conjugatingChartVelocityField_hasFDerivAt`, uniformly bounded by
+  `Hfderiv`), with the orbit `c_x(t) = extChartAt I y (Φ_fam t x)` confined to a chart ball by
+  `conjugating_flow_uniform_chart_confinement`.  A uniform variational Grönwall
+  (`dist_le_of_approx_trajectories_ODE_of_mem`) compares `D(·, x)` against `D(·, y)`: the comparison
+  defect `‖(A(c_x) − A(c_y)) · D(·, y)‖` is driven to `0` by `c_x → c_y` (conjunct 1,
+  `conjugating_orbit_jointContWithinAt_at_zero`) with `A` continuous (`Hfderiv`), so the cross
+  difference vanishes uniformly in `t`.
+* `hpery` — the per-`y` continuous-dependence-up-to-`0` `D(p.1, y) → D(0, y)` as `p.1 → 0⁺`
+  (the `y`-slice variational limit; the window-flow Jacobian-at-`0` datum).
+
+`hΦ0` pins `Φ_fam 0 = id`, so `D(0, y) = mfderiv (extChartAt I y) y (chartBasisVecFiber x₀ i y)`.
+All hypotheses constrain only the internal `g_DT` / `Φ_fam` / the chart-frame field; the
+conclusion is the chart-coordinate Jacobian, never equal to nor destructuring to any hypothesis.
+
+POSITED node: the manifold variational ODE/Grönwall up to the initial time, threaded from the
+genuine conjugating flow.  It is a recursion target (`D'=A·D` rests on the interior joint-`C∞`
+orbit `conjugating_flow_jointContMDiffOn_interior` + Clairaut, then a uniform variational
+Grönwall), not a sanctioned permanent gap. -/
+private theorem flow_chartJacobian_uniform_variational_tendsto
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (y : M) :
+    Filter.Tendsto
+      (fun p : ℝ × M =>
+        dist
+          (mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) p.2
+            (chartBasisVecFiber (I := I) x₀ i p.2))
+          (mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) y
+            (chartBasisVecFiber (I := I) x₀ i y)))
+      (𝓝[Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet] (0, y)) (𝓝 0)
+    ∧ Filter.Tendsto
+        (fun t : ℝ =>
+          mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam t : M → M) z)) y
+            (chartBasisVecFiber (I := I) x₀ i y))
+        (𝓝[Set.Ici (0 : ℝ)] 0)
+        (𝓝 (mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+          (chartBasisVecFiber (I := I) x₀ i y))) :=
+  sorry
+
+set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` chart-`y` Jacobian continuity at the `t = 0` boundary slice (variational
 Grönwall content).**
 
@@ -1249,20 +1319,13 @@ The chart-`y` Jacobian of the conjugating orbit applied to the moving chart-`x�
 
 This is the genuine uniform-in-`x` *variational* continuous-dependence-up-to-`0` datum, the
 linearized analog of the orbit confinement `conjugating_orbit_jointContWithinAt_at_zero`.  Writing
-`D(t, x) := ∂_x [extChartAt I y (Φ_fam t x)]`, on the interior `D` solves the LINEAR variational
-ODE `D'(t) = A(t, c_x(t)) · D(t)` whose coefficient `A` is the spatial Fréchet derivative of the
-chart-frame velocity `conjugatingChartVelocityField` (`conjugatingChartVelocityField_hasFDerivAt`),
-uniformly bounded on the chart ball by `Hfderiv`; the orbit stays confined by
-`conjugating_flow_uniform_chart_confinement` (consuming `Hcomp`).  A uniform variational Grönwall on
-this linear ODE — with the cross-term `‖(A(c_x) − A(c_y)) · D_x‖ → 0` controlled by the orbit
-trajectories `c_x → c_y` (conjunct 1) and `A` continuous — combined with `hΦ0` (at `t = 0`,
-`Φ_fam 0 = id`, so `D(0, x) = ∂_x (extChartAt I y) = trivToE y x`) drives the joint limit.  All
-hypotheses constrain only the internal `g_DT` / `Φ_fam` / the chart-frame field; the conclusion is
-the chart-coordinate Jacobian, neither equal to nor destructuring to any hypothesis.
-
-POSITED node: the manifold variational ODE/Grönwall up to the initial time is the analytic input
-threaded/discharged from the genuine conjugating flow (`conjugating_diffeo_family`); it is a
-recursion target, not a sanctioned permanent gap. -/
+`D(t, x) := ∂_x [extChartAt I y (Φ_fam t x)]`, the joint limit splits via the triangle inequality
+into the joint cross-difference `dist (D(t, x)) (D(t, y)) → 0` (uniform in `t`, the variational
+Grönwall comparison) and the per-`y` slice limit `D(t, y) → D(0, y)`, both supplied by the
+variational datum `flow_chartJacobian_uniform_variational_tendsto`; `hΦ0` (`Φ_fam 0 = id`) computes
+`D(0, y) = ∂_x (extChartAt I y) at y`.  All hypotheses constrain only the internal
+`g_DT` / `Φ_fam` / the chart-frame field; the conclusion is the chart-coordinate Jacobian, neither
+equal to nor destructuring to any hypothesis. -/
 private theorem flow_chartJacobian_jointContWithinAt_at_zero
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -1290,8 +1353,63 @@ private theorem flow_chartJacobian_jointContWithinAt_at_zero
       (fun p : ℝ × M => mfderiv I 𝓘(ℝ, E)
         (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) p.2
         (chartBasisVecFiber (I := I) x₀ i p.2))
-      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) :=
-  sorry
+      (Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (0, y) := by
+  classical
+  set D : ℝ × M → E := fun p : ℝ × M =>
+    mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) p.2
+      (chartBasisVecFiber (I := I) x₀ i p.2) with hD
+  set s : Set (ℝ × M) :=
+    Set.Ici (0 : ℝ) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet with hs
+  set Dval : E := mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+    (chartBasisVecFiber (I := I) x₀ i y) with hDval
+  -- The variational datum: the joint cross-difference and the per-`y` slice limit.
+  obtain ⟨hcross, hpery⟩ :=
+    flow_chartJacobian_uniform_variational_tendsto (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0
+      hΦorbit0 Hcomp Hfderiv x₀ i y
+  -- Target value at `(0, y)`: since `Φ_fam 0 = id`, `D (0, y) = Dval`.
+  have hfuneq : (fun z : M => extChartAt I y ((Φ_fam 0 : M → M) z))
+      = (fun z : M => extChartAt I y z) := by
+    funext z; rw [hΦ0, Diffeomorph.coe_refl, id]
+  have hmfeq : mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam 0 : M → M) z)) y
+      = mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y :=
+    Filter.EventuallyEq.mfderiv_eq (Filter.EventuallyEq.of_eq hfuneq)
+  have hval0 : D (0, y) = Dval := by
+    change mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam (0, y).1 : M → M) z)) (0, y).2
+        (chartBasisVecFiber (I := I) x₀ i (0, y).2)
+      = mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y z) y
+        (chartBasisVecFiber (I := I) x₀ i y)
+    exact DFunLike.congr_fun hmfeq (chartBasisVecFiber (I := I) x₀ i y)
+  rw [ContinuousWithinAt, hval0]
+  -- Reduce the goal to a `𝓝 Dval` limit of `D` over `𝓝[s] (0, y)`.
+  -- Rewrite `D p = D(p) - D(p.1, y) + D(p.1, y)`, the cross part `→ 0`, the `y`-slice `→ Dval`.
+  set Dy : ℝ × M → E := fun p : ℝ × M =>
+    mfderiv I 𝓘(ℝ, E) (fun z : M => extChartAt I y ((Φ_fam p.1 : M → M) z)) y
+      (chartBasisVecFiber (I := I) x₀ i y) with hDy
+  -- the `y`-slice tends to `Dval` over `𝓝[s] (0, y)`, pulled back from `𝓝[Ici 0] 0`.
+  have hfst : Filter.Tendsto (fun p : ℝ × M => p.1)
+      (𝓝[s] (0, y)) (𝓝[Set.Ici (0 : ℝ)] (0 : ℝ)) := by
+    have hcwa : ContinuousWithinAt (fun p : ℝ × M => p.1) s (0, y) :=
+      continuous_fst.continuousWithinAt
+    have hmaps : Set.MapsTo (fun p : ℝ × M => p.1) s (Set.Ici (0 : ℝ)) :=
+      fun p hp => hp.1
+    exact hcwa.tendsto_nhdsWithin hmaps
+  have hDy_tend : Filter.Tendsto Dy (𝓝[s] (0, y)) (𝓝 Dval) := by
+    rw [hDval]
+    exact hpery.comp hfst
+  -- the cross part tends to `0` (the variational Grönwall datum, restated as `D p - Dy p → 0`).
+  have hcross' : Filter.Tendsto (fun p : ℝ × M => D p - Dy p) (𝓝[s] (0, y)) (𝓝 0) := by
+    have hnorm : Filter.Tendsto (fun p : ℝ × M => ‖D p - Dy p‖) (𝓝[s] (0, y)) (𝓝 0) := by
+      have hdist : (fun p : ℝ × M => dist (D p) (Dy p))
+          = (fun p : ℝ × M => ‖D p - Dy p‖) := by
+        funext p; rw [dist_eq_norm]
+      rw [← hdist]; exact hcross
+    rw [← tendsto_zero_iff_norm_tendsto_zero] at hnorm
+    exact hnorm
+  -- combine: `D p = (D p - Dy p) + Dy p → 0 + Dval = Dval`.
+  have hsum : Filter.Tendsto (fun p : ℝ × M => (D p - Dy p) + Dy p)
+      (𝓝[s] (0, y)) (𝓝 (0 + Dval)) := hcross'.add hDy_tend
+  simp only [zero_add, sub_add_cancel] at hsum
+  exact hsum
 
 set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` continuity of the conjugating orbit and its moving pushforward at the
