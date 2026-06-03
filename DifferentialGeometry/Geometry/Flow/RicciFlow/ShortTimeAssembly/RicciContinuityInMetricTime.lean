@@ -828,8 +828,36 @@ theorem moving_chartCoord_jointContinuousWithinAt
     ContinuousWithinAt
       (fun p : ℝ × M => (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
         ((Φ_fam p.1 : M → M) p.2)
-        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))) S p₀ :=
-  sorry
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))) S p₀ := by
+  classical
+  set e := trivializationAt E (TangentSpace I) α with he
+  set F : ℝ × M → TangentBundle I M := fun p : ℝ × M =>
+    (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        : TangentBundle I M) with hF
+  have hsrc0 : F p₀ ∈ e.source := by
+    rw [he, Bundle.Trivialization.mem_source]; exact hbase0
+  have hcontTriv : ContinuousWithinAt (fun b : TangentBundle I M => (e b).2) e.source (F p₀) :=
+    (e.continuousOn.continuousWithinAt hsrc0).snd
+  have hpre : F ⁻¹' e.source ∈ nhdsWithin p₀ S :=
+    htotal.preimage_mem_nhdsWithin (e.open_source.mem_nhds hsrc0)
+  have hcomp : ContinuousWithinAt (fun p : ℝ × M => (e (F p)).2) S p₀ :=
+    hcontTriv.comp_of_preimage_mem_nhdsWithin htotal hpre
+  refine hcomp.congr_of_eventuallyEq ?_ ?_
+  · have hbnhds : e.baseSet ∈ nhds ((Φ_fam p₀.1 : M → M) p₀.2) := e.open_baseSet.mem_nhds hbase0
+    have hpb : (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) ⁻¹' e.baseSet ∈ nhdsWithin p₀ S :=
+      horbit.preimage_mem_nhdsWithin hbnhds
+    filter_upwards [hpb] with p hs
+    change e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          = (e (F p)).2
+    rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hs,
+      e.coe_continuousLinearEquivAt_eq (R := ℝ) hs]
+  · change e.continuousLinearMapAt ℝ ((Φ_fam p₀.1 : M → M) p₀.2)
+        (mfderiv I I (Φ_fam p₀.1 : M → M) p₀.2 (chartBasisVecFiber (I := I) x₀ i p₀.2))
+          = (e (F p₀)).2
+    rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hbase0,
+      e.coe_continuousLinearEquivAt_eq (R := ℝ) hbase0]
 
 /-- Within-at continuity of a finite sum of within-at-continuous functions (Mathlib has the
 `Continuous`/`ContinuousOn` variants but not this `ContinuousWithinAt` one). -/
