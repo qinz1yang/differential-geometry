@@ -516,6 +516,7 @@ theorem conjugating_flow_uniform_chart_confinement
           DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg y k q.2)
         (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I y).target)) :
     ∃ b ρ : ℝ, 0 < b ∧ b ≤ T ∧ 0 < ρ ∧
+      Metric.closedBall (extChartAt I y y) (3 * ρ) ⊆ interior (extChartAt I y).target ∧
       ∀ x : M, x ∈ (extChartAt I y).source →
         extChartAt I y x ∈ Metric.ball (extChartAt I y y) ρ →
         ∀ r ∈ Set.Ico (0 : ℝ) b,
@@ -587,7 +588,9 @@ theorem conjugating_flow_uniform_chart_confinement
       extChartAt I y p ∈ Ball2 → p ∈ Ball2_M := by
     intro p hp hpz
     exact ⟨extChartAt I y p, hpz, (extChartAt I y).left_inv hp⟩
-  refine ⟨b, ρ, hb_pos, hb_le_T, hρ_pos, ?_⟩
+  refine ⟨b, ρ, hb_pos, hb_le_T, hρ_pos, ?_, ?_⟩
+  · show Metric.closedBall c₀ (3 * ρ) ⊆ interior (extChartAt I y).target
+    rw [← hBall3]; exact hBall3_sub_int
   intro x hx_src hx_ball r hr
   set g_x : ℝ → M := fun s => (Φ_fam s : M → M) x with hg_x
   set φ_x : ℝ → E := fun s => extChartAt I y (g_x s) with hφ_x
@@ -806,17 +809,457 @@ theorem conjugating_flow_uniform_chart_confinement
     _ ≤ ρ + ρ := by linarith [hKb_le_ρ]
     _ = 2 * ρ := by ring
 
+omit [CompactSpace M] [I.Boundaryless] in
+/-- At an interior chart-target point `z`, the chart-`y`-frame velocity field
+`conjugatingChartVelocityField g_DT g_bg y r ·` is differentiable, with Fréchet derivative the
+basis-weighted sum of the component derivatives. -/
+theorem conjugatingChartVelocityField_hasFDerivAt
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (y : M) (r : ℝ) {z : E} (hz : z ∈ interior (extChartAt I y).target) :
+    HasFDerivAt (fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w)
+      (∑ k : Fin (Module.finrank ℝ E),
+        (fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w) z).smulRight
+          ((chartModelBasis E) k : E)) z := by
+  classical
+  have hcomp : ∀ k : Fin (Module.finrank ℝ E),
+      HasFDerivAt (fun w : E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w)
+        (fderiv ℝ (fun w : E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w) z) z := by
+    intro k
+    have hdiff : DifferentiableAt ℝ
+        (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k) z :=
+      ((DeTurckLinearization.chartDeTurckVFComp_contDiffOn_interior (I := I)
+        (g_DT r) g_bg y k).contDiffAt (isOpen_interior.mem_nhds hz)).differentiableAt (by simp)
+    exact hdiff.hasFDerivAt
+  have := HasFDerivAt.sum (u := (Finset.univ : Finset (Fin (Module.finrank ℝ E))))
+    (A := fun k (w : E) =>
+      DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w •
+        ((chartModelBasis E) k : E))
+    (A' := fun k =>
+      (fderiv ℝ (fun w : E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w) z).smulRight
+        ((chartModelBasis E) k : E))
+    (fun k _ => (hcomp k).smul_const ((chartModelBasis E) k : E))
+  have hfun : (∑ k : Fin (Module.finrank ℝ E), fun w : E =>
+        DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w •
+          ((chartModelBasis E) k : E))
+      = fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w := by
+    funext w; rw [Finset.sum_apply]; rfl
+  rw [hfun] at this
+  exact this
+
+omit [CompactSpace M] [I.Boundaryless] in
+/-- **Uniform spatial Lipschitz constant of the chart-`y`-frame velocity field on a chart ball.**
+From the joint continuity of the component spatial derivatives (`Hfderiv`) and the
+differentiability of the components on the chart-target interior, the chart-`y`-frame velocity
+field `conjugatingChartVelocityField g_DT g_bg y r ·` is uniformly `LipschitzOnWith K` on any
+closed ball lying inside the chart-target interior, with `K` independent of the time `r ∈ Icc 0 T`. -/
+theorem conjugatingChartVelocityField_lipschitz_uniform
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (y : M) (T : ℝ) (c : E) (R : ℝ)
+    (hball : Metric.closedBall c R ⊆ interior (extChartAt I y).target)
+    (Hfderiv : ∀ k : Fin (Module.finrank ℝ E),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg y k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I y).target)) :
+    ∃ K : NNReal, ∀ r ∈ Set.Icc (0 : ℝ) T,
+      LipschitzOnWith K
+        (fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w)
+        (Metric.closedBall c R) := by
+  classical
+  have hball_compact : IsCompact (Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c R) :=
+    isCompact_Icc.prod (isCompact_closedBall c R)
+  have hball_sub : Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c R
+      ⊆ Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I y).target :=
+    Set.prod_mono_right hball
+  have hbound : ∀ k : Fin (Module.finrank ℝ E), ∃ Ck : ℝ, ∀ q ∈ Set.Icc (0 : ℝ) T ×ˢ Metric.closedBall c R,
+      ‖fderiv ℝ (fun w : E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg y k w) q.2‖ ≤ Ck := by
+    intro k
+    exact hball_compact.exists_bound_of_continuousOn ((Hfderiv k).mono hball_sub)
+  choose Cf hCf using hbound
+  set K0 : ℝ := ∑ k : Fin (Module.finrank ℝ E), |Cf k| * ‖((chartModelBasis E) k : E)‖ with hK0
+  have hK0_nonneg : 0 ≤ K0 := by
+    rw [hK0]; exact Finset.sum_nonneg (fun k _ => mul_nonneg (abs_nonneg _) (norm_nonneg _))
+  refine ⟨⟨K0, hK0_nonneg⟩, ?_⟩
+  intro r hr
+  have hconvex : Convex ℝ (Metric.closedBall c R) := convex_closedBall c R
+  have hdiff : ∀ z ∈ Metric.closedBall c R, DifferentiableAt ℝ
+      (fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w) z := by
+    intro z hz
+    exact (conjugatingChartVelocityField_hasFDerivAt (I := I) g_DT g_bg y r
+      (hball hz)).differentiableAt
+  have hfbound : ∀ z ∈ Metric.closedBall c R,
+      ‖fderiv ℝ (fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w) z‖₊
+        ≤ (⟨K0, hK0_nonneg⟩ : NNReal) := by
+    intro z hz
+    rw [← NNReal.coe_le_coe]
+    have hfd : fderiv ℝ (fun w : E => conjugatingChartVelocityField (I := I) g_DT g_bg y r w) z
+        = ∑ k : Fin (Module.finrank ℝ E),
+          (fderiv ℝ (fun w : E =>
+              DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w) z).smulRight
+            ((chartModelBasis E) k : E) :=
+      (conjugatingChartVelocityField_hasFDerivAt (I := I) g_DT g_bg y r (hball hz)).fderiv
+    rw [hfd, coe_nnnorm]
+    refine le_trans (norm_sum_le _ _) ?_
+    refine Finset.sum_le_sum (fun k _ => ?_)
+    rw [ContinuousLinearMap.norm_smulRight_apply]
+    have hCfk : ‖fderiv ℝ (fun w : E =>
+        DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT r) g_bg y k w) z‖ ≤ |Cf k| :=
+      le_trans (hCf k (r, z) ⟨hr, hz⟩) (le_abs_self _)
+    exact mul_le_mul hCfk (le_refl _) (norm_nonneg _) (abs_nonneg _)
+  exact Convex.lipschitzOnWith_of_nnnorm_fderiv_le (hdiff) hfbound hconvex
+
+set_option maxHeartbeats 2000000 in
+set_option linter.unusedVariables false in
+/-- **Joint orbit continuity of the conjugating flow at the `t = 0` boundary slice.**
+
+For a fixed `y`, the orbit `(t, x) ↦ Φ_fam t x` is jointly continuous at `(0, y)` within
+`Ici 0 ×ˢ univ`.  The chart-`y` orbit `r ↦ extChartAt I y (Φ_fam r x)` solves the chart-`y` ODE
+with field `-conjugatingChartVelocityField`; uniform chart confinement
+(`conjugating_flow_uniform_chart_confinement`, consuming the chart-frame value-continuity `Hcomp`)
+keeps it in a chart ball, on which the field is uniformly `LipschitzOnWith K`
+(`conjugatingChartVelocityField_lipschitz_uniform`, consuming the chart-frame spatial-derivative
+continuity `Hfderiv`).  The Grönwall comparison `dist (chart orbit_x r) (chart orbit_y r) ≤
+dist (extChartAt I y x) (extChartAt I y y) · exp (K r)` then drives the chart orbit from `x` to
+`extChartAt I y y` as `(r, x) → (0, y)`, using the per-`y` at-`0` orbit datum `hΦorbit0 y` for the
+`y`-orbit; applying `(extChartAt I y).symm` (continuous at `extChartAt I y y`) gives `Φ_fam r x → y`. -/
+private theorem conjugating_orbit_jointContWithinAt_at_zero
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
+        (Set.Ici (0 : ℝ)) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight
+          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
+    (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
+    (hΦorbit0 : ∀ y : M,
+      ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (y : M) :
+    ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ici (0 : ℝ) ×ˢ Set.univ) (0, y) := by
+  classical
+  set c₀ : E := extChartAt I y y with hc₀
+  obtain ⟨b, ρ, hb_pos, hb_le_T, hρ_pos, hball3_int, hconf⟩ :=
+    conjugating_flow_uniform_chart_confinement (I := I) g_DT g_bg T hT Φ_fam hΦode hΦ0 hΦorbit0 y
+      (Hcomp y)
+  have hball2_sub_int : Metric.closedBall c₀ (2 * ρ) ⊆ interior (extChartAt I y).target :=
+    subset_trans (Metric.closedBall_subset_closedBall (by linarith)) hball3_int
+  -- The uniform Lipschitz constant of the chart-`y`-frame velocity field on the `2ρ`-ball.
+  obtain ⟨K, hK⟩ := conjugatingChartVelocityField_lipschitz_uniform (I := I) g_DT g_bg y T c₀ (2 * ρ)
+    hball2_sub_int (Hfderiv y)
+  -- Good-set reconstruction from confinement: in source with chart image in the `3ρ`-ball.
+  have hgoodset_of_ball : ∀ p : M, p ∈ (extChartAt I y).source →
+      extChartAt I y p ∈ Metric.ball c₀ (3 * ρ) → p ∈ chartLeviCivitaGoodSet (I := I) y := by
+    intro p hp hpz
+    rw [mem_chartLeviCivitaGoodSet_iff]
+    refine ⟨hp, ?_, hball3_int (Metric.ball_subset_closedBall hpz)⟩
+    rw [TangentBundle.trivializationAt_baseSet, ← extChartAt_source (I := I)]
+    exact hp
+  -- The chart-`y` field, as the right-hand side of the chart ODE.
+  set V : ℝ → E → E := fun r z => -conjugatingChartVelocityField (I := I) g_DT g_bg y r z with hV
+  -- For a confined orbit, the chart-`y` orbit solves the chart ODE, stays in the ball, and the
+  -- Grönwall comparison against the chart-`y` orbit from `y` holds up to time `b`.
+  have hgronwall : ∀ x : M, x ∈ (extChartAt I y).source →
+      extChartAt I y x ∈ Metric.ball c₀ ρ →
+      ∀ r ∈ Set.Ico (0 : ℝ) b,
+        dist (extChartAt I y ((Φ_fam r : M → M) x))
+            (extChartAt I y ((Φ_fam r : M → M) y))
+          ≤ dist (extChartAt I y x) c₀ * Real.exp (K * b) := by
+    intro x hx_src hx_ball r hr
+    set cx : ℝ → E := fun s => extChartAt I y ((Φ_fam s : M → M) x) with hcx
+    set cy : ℝ → E := fun s => extChartAt I y ((Φ_fam s : M → M) y) with hcy
+    set s2 : ℝ → Set E := fun _ => Metric.closedBall c₀ (2 * ρ) with hs2
+    -- both orbits stay in the `2ρ`-ball (confinement).
+    have hy_src : y ∈ (extChartAt I y).source := mem_extChartAt_source y
+    have hy_ball : extChartAt I y y ∈ Metric.ball c₀ ρ := by
+      rw [hc₀, Metric.mem_ball, dist_self]; exact hρ_pos
+    have hconfx : ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) x ∈ (extChartAt I y).source ∧
+        cx s ∈ Metric.ball c₀ (2 * ρ) := fun s hs => hconf x hx_src hx_ball s hs
+    have hconfy : ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) y ∈ (extChartAt I y).source ∧
+        cy s ∈ Metric.ball c₀ (2 * ρ) := fun s hs => hconf y hy_src hy_ball s hs
+    have hgoodx : ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) x ∈ chartLeviCivitaGoodSet (I := I) y :=
+      fun s hs => hgoodset_of_ball _ (hconfx s hs).1
+        (Metric.ball_subset_ball (by linarith) (hconfx s hs).2)
+    have hgoody : ∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) y ∈ chartLeviCivitaGoodSet (I := I) y :=
+      fun s hs => hgoodset_of_ball _ (hconfy s hs).1
+        (Metric.ball_subset_ball (by linarith) (hconfy s hs).2)
+    -- continuity on `Icc 0 r` of both chart orbits.
+    have hcont_orbit : ∀ z : M, (∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) z ∈ (extChartAt I y).source) →
+        ContinuousOn (fun s : ℝ => extChartAt I y ((Φ_fam s : M → M) z)) (Set.Icc 0 r) := by
+      intro z hz
+      set gz : ℝ → M := fun u : ℝ => (Φ_fam u : M → M) z with hgz
+      intro t ht
+      have htb : t ∈ Set.Ico (0 : ℝ) b := ⟨ht.1, lt_of_le_of_lt ht.2 hr.2⟩
+      have htsrc : gz t ∈ (extChartAt I y).source := hz t htb
+      have hgcwa : ContinuousWithinAt gz (Set.Icc 0 r) t := by
+        rcases eq_or_lt_of_le ht.1 with h0 | h0
+        · rw [← h0]
+          exact (hΦorbit0 z).mono (fun u hu => hu.1)
+        · have : t ∈ Set.Ioo (0:ℝ) T := ⟨h0, lt_of_lt_of_le htb.2 hb_le_T⟩
+          exact ((hΦode z t this).continuousWithinAt).mono (fun u hu => hu.1)
+      exact (continuousAt_extChartAt' (I := I) htsrc).comp_continuousWithinAt hgcwa
+    -- both chart orbits solve the chart ODE on the open interior `Ioo a' r`.
+    have hderiv_orbit : ∀ z : M,
+        (∀ s ∈ Set.Ico (0 : ℝ) b, (Φ_fam s : M → M) z ∈ chartLeviCivitaGoodSet (I := I) y) →
+        ∀ s : ℝ, 0 < s → s < r →
+          HasDerivWithinAt (fun u : ℝ => extChartAt I y ((Φ_fam u : M → M) z))
+            (V s (extChartAt I y ((Φ_fam s : M → M) z))) (Set.Ici s) s := by
+      intro z hz s hs0 hsr
+      have hsb : s ∈ Set.Ico (0 : ℝ) b := ⟨le_of_lt hs0, lt_trans hsr hr.2⟩
+      have hzgood : (Φ_fam s : M → M) z ∈ chartLeviCivitaGoodSet (I := I) y := hz s hsb
+      have hsode : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => (Φ_fam u : M → M) z)
+          (Set.Ici (0:ℝ)) s
+          ((1 : ℝ →L[ℝ] ℝ).smulRight
+            (-(deTurckVF (I := I) (g_DT s) g_bg ((Φ_fam s : M → M) z)))) :=
+        hΦode z s ⟨hs0, lt_of_lt_of_le hsb.2 hb_le_T⟩
+      have hdw := chart_conjugating_orbit_hasDerivWithinAt (I := I) g_DT g_bg y
+        (fun u : ℝ => (Φ_fam u : M → M) z) s hzgood hsode
+      rw [hV]
+      exact hdw.mono (fun u hu => le_trans (le_of_lt hs0) hu)
+    -- Lipschitz bound of the field on the confinement set, uniform in time.
+    have hlip : ∀ s ∈ Set.Ico (0 : ℝ) r, LipschitzOnWith K (V s) (s2 s) := by
+      intro s hs
+      have hsT : s ∈ Set.Icc (0:ℝ) T :=
+        ⟨hs.1, le_trans (le_of_lt (lt_of_lt_of_le hs.2 (le_of_lt hr.2))) hb_le_T⟩
+      rw [hV, hs2]
+      exact (hK s hsT).neg
+    -- the comparison bound on `Icc a' r` for a positive starting time `a'`.
+    have hcompare : ∀ a' : ℝ, 0 < a' → a' < r →
+        dist (cx r) (cy r) ≤ dist (cx a') (cy a') * Real.exp (K * (r - a')) := by
+      intro a' ha'0 ha'r
+      have hfcont : ContinuousOn cx (Set.Icc a' r) :=
+        (hcont_orbit x (fun s hs => (hconfx s hs).1)).mono
+          (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, hu.2⟩)
+      have hgcont : ContinuousOn cy (Set.Icc a' r) :=
+        (hcont_orbit y (fun s hs => (hconfy s hs).1)).mono
+          (fun u hu => ⟨le_trans (le_of_lt ha'0) hu.1, hu.2⟩)
+      have hfderiv : ∀ s ∈ Set.Ico a' r, HasDerivWithinAt cx (V s (cx s)) (Set.Ici s) s :=
+        fun s hs => hderiv_orbit x hgoodx s (lt_of_lt_of_le ha'0 hs.1) hs.2
+      have hgderiv : ∀ s ∈ Set.Ico a' r, HasDerivWithinAt cy (V s (cy s)) (Set.Ici s) s :=
+        fun s hs => hderiv_orbit y hgoody s (lt_of_lt_of_le ha'0 hs.1) hs.2
+      have hfs : ∀ s ∈ Set.Ico a' r, cx s ∈ s2 s := fun s hs => by
+        have hsb : s ∈ Set.Ico (0:ℝ) b := ⟨le_trans (le_of_lt ha'0) hs.1, lt_trans hs.2 hr.2⟩
+        rw [hs2]; exact Metric.ball_subset_closedBall (hconfx s hsb).2
+      have hgs : ∀ s ∈ Set.Ico a' r, cy s ∈ s2 s := fun s hs => by
+        have hsb : s ∈ Set.Ico (0:ℝ) b := ⟨le_trans (le_of_lt ha'0) hs.1, lt_trans hs.2 hr.2⟩
+        rw [hs2]; exact Metric.ball_subset_closedBall (hconfy s hsb).2
+      have hlip' : ∀ s ∈ Set.Ico a' r, LipschitzOnWith K (V s) (s2 s) :=
+        fun s hs => hlip s ⟨le_trans (le_of_lt ha'0) hs.1, hs.2⟩
+      have := dist_le_of_trajectories_ODE_of_mem (a := a') (b := r) (K := K) (v := V) (s := s2)
+        hlip' hfcont hfderiv hfs hgcont hgderiv hgs (le_refl _) r (Set.right_mem_Icc.mpr (le_of_lt ha'r))
+      exact this
+    -- take the limit `a' → 0⁺`: `dist (cx a') (cy a') → dist (extChartAt y x) c₀`.
+    have hΦ0x : (Φ_fam 0 : M → M) x = x := by rw [hΦ0, Diffeomorph.coe_refl, id]
+    have hΦ0y : (Φ_fam 0 : M → M) y = y := by rw [hΦ0, Diffeomorph.coe_refl, id]
+    have hcx0v : cx 0 = extChartAt I y x := by rw [hcx]; simp only [hΦ0x]
+    have hcy0v : cy 0 = c₀ := by rw [hcy]; simp only [hΦ0y]; exact hc₀.symm
+    rcases eq_or_lt_of_le hr.1 with hr0 | hr0
+    · -- `r = 0`: the comparison is `dist (cx 0) (cy 0) = dist (extChartAt y x) c₀`.
+      have hgoal : dist (extChartAt I y ((Φ_fam r : M → M) x))
+          (extChartAt I y ((Φ_fam r : M → M) y)) = dist (extChartAt I y x) c₀ := by
+        rw [← hr0]; simp only [hΦ0x, hΦ0y]; rw [hc₀]
+      rw [hgoal]
+      have hexp_nonneg : (1 : ℝ) ≤ Real.exp (K * b) :=
+        Real.one_le_exp (by positivity)
+      nlinarith [dist_nonneg (x := extChartAt I y x) (y := c₀), hexp_nonneg]
+    · -- `r > 0`: limit of the comparison bound as `a' → 0⁺`.
+      have hcx_cont0 : ContinuousWithinAt cx (Set.Ici 0) 0 := by
+        have h1 : ContinuousWithinAt (fun u : ℝ => (Φ_fam u : M → M) x) (Set.Ici 0) 0 := hΦorbit0 x
+        exact ContinuousAt.comp_continuousWithinAt_of_eq
+          (continuousAt_extChartAt' (I := I) hx_src) h1 hΦ0x
+      have hcy_cont0 : ContinuousWithinAt cy (Set.Ici 0) 0 := by
+        have h1 : ContinuousWithinAt (fun u : ℝ => (Φ_fam u : M → M) y) (Set.Ici 0) 0 := hΦorbit0 y
+        exact ContinuousAt.comp_continuousWithinAt_of_eq
+          (continuousAt_extChartAt' (I := I) hy_src) h1 hΦ0y
+      have hIoo_ne : (𝓝[Set.Ioo (0:ℝ) r] 0).NeBot := by
+        rw [nhdsWithin_Ioo_eq_nhdsGT hr0]; exact nhdsGT_neBot 0
+      have htend_rhs : Filter.Tendsto
+          (fun a' : ℝ => dist (cx a') (cy a') * Real.exp (K * (r - a')))
+          (𝓝[Set.Ioo (0:ℝ) r] 0)
+          (𝓝 (dist (extChartAt I y x) c₀ * Real.exp (K * r))) := by
+        have hsub : Set.Ioo (0:ℝ) r ⊆ Set.Ici 0 := fun u hu => le_of_lt hu.1
+        have hcxd : Filter.Tendsto cx (𝓝[Set.Ioo (0:ℝ) r] 0) (𝓝 (extChartAt I y x)) := by
+          rw [← hcx0v]
+          exact hcx_cont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+        have hcyd : Filter.Tendsto cy (𝓝[Set.Ioo (0:ℝ) r] 0) (𝓝 c₀) := by
+          rw [← hcy0v]
+          exact hcy_cont0.tendsto.mono_left (nhdsWithin_mono 0 hsub)
+        have hdistd : Filter.Tendsto (fun a' : ℝ => dist (cx a') (cy a'))
+            (𝓝[Set.Ioo (0:ℝ) r] 0) (𝓝 (dist (extChartAt I y x) c₀)) :=
+          (continuous_dist.continuousAt).tendsto.comp (hcxd.prodMk_nhds hcyd)
+        have hexpd : Filter.Tendsto (fun a' : ℝ => Real.exp (K * (r - a')))
+            (𝓝[Set.Ioo (0:ℝ) r] 0) (𝓝 (Real.exp (K * r))) := by
+          have : Filter.Tendsto (fun a' : ℝ => Real.exp (K * (r - a'))) (𝓝 0)
+              (𝓝 (Real.exp (K * (r - 0)))) :=
+            ((Real.continuous_exp.comp (continuous_const.mul
+              (continuous_const.sub continuous_id))).tendsto 0)
+          simpa using this.mono_left nhdsWithin_le_nhds
+        exact hdistd.mul hexpd
+      have hbound_le : dist (cx r) (cy r)
+          ≤ dist (extChartAt I y x) c₀ * Real.exp (K * r) := by
+        haveI := hIoo_ne
+        refine ge_of_tendsto htend_rhs ?_
+        filter_upwards [self_mem_nhdsWithin] with a' ha'
+        exact hcompare a' ha'.1 ha'.2
+      calc dist (cx r) (cy r) ≤ dist (extChartAt I y x) c₀ * Real.exp (K * r) := hbound_le
+        _ ≤ dist (extChartAt I y x) c₀ * Real.exp (K * b) := by
+            refine mul_le_mul_of_nonneg_left ?_ dist_nonneg
+            exact Real.exp_le_exp.mpr (by
+              have : (K : ℝ) * r ≤ (K : ℝ) * b :=
+                mul_le_mul_of_nonneg_left (le_of_lt hr.2) (NNReal.coe_nonneg K)
+              linarith)
+  -- Assemble: the chart orbit tends to `c₀`, then apply the chart inverse, continuous at `c₀`.
+  set F : ℝ × M → E := fun p => extChartAt I y ((Φ_fam p.1 : M → M) p.2) with hF
+  set L : Filter (ℝ × M) := 𝓝[Set.Ici (0 : ℝ) ×ˢ Set.univ] (0, y) with hL
+  -- the source and chart-ball region are eventually entered.
+  have hsrc_nhds : (fun p : ℝ × M => p.2) ⁻¹' (extChartAt I y).source ∈ L := by
+    have hopen : IsOpen (extChartAt I y).source := isOpen_extChartAt_source y
+    have : (extChartAt I y).source ∈ 𝓝 y := hopen.mem_nhds (mem_extChartAt_source y)
+    exact (continuous_snd.continuousWithinAt (x := ((0, y) : ℝ × M))).preimage_mem_nhdsWithin this
+  have hball_nhds : (fun p : ℝ × M => extChartAt I y p.2) ⁻¹' Metric.ball c₀ ρ ∈ L := by
+    have hcontsnd : ContinuousWithinAt (fun p : ℝ × M => extChartAt I y p.2)
+        (Set.Ici (0:ℝ) ×ˢ Set.univ) (0, y) :=
+      (continuousAt_extChartAt' (I := I) (mem_extChartAt_source y)).comp_continuousWithinAt
+        (continuous_snd.continuousWithinAt)
+    have hmem : Metric.ball c₀ ρ ∈ 𝓝 c₀ := Metric.ball_mem_nhds c₀ hρ_pos
+    have : Metric.ball c₀ ρ ∈ 𝓝 (extChartAt I y ((0, y) : ℝ × M).2) := by
+      simpa [hc₀] using hmem
+    exact hcontsnd.preimage_mem_nhdsWithin this
+  have htime_nhds : (fun p : ℝ × M => p.1) ⁻¹' Set.Iio b ∈ L := by
+    have : Set.Iio b ∈ 𝓝 (0 : ℝ) := Iio_mem_nhds hb_pos
+    exact (continuous_fst.continuousWithinAt (x := ((0, y) : ℝ × M))).preimage_mem_nhdsWithin this
+  have hge0 : ∀ᶠ p : ℝ × M in L, 0 ≤ p.1 := by
+    rw [hL]; filter_upwards [self_mem_nhdsWithin] with p hp using hp.1
+  -- the chart orbit tends to `c₀`.
+  have hFtend : Filter.Tendsto F L (𝓝 c₀) := by
+    have hxtend : Filter.Tendsto (fun p : ℝ × M => extChartAt I y p.2) L (𝓝 c₀) := by
+      have hcontsnd : ContinuousWithinAt (fun p : ℝ × M => extChartAt I y p.2)
+          (Set.Ici (0:ℝ) ×ˢ Set.univ) (0, y) :=
+        (continuousAt_extChartAt' (I := I) (mem_extChartAt_source y)).comp_continuousWithinAt
+          (continuous_snd.continuousWithinAt)
+      have := hcontsnd.tendsto
+      simpa [hc₀, hL] using this
+    have hΦ0y' : extChartAt I y ((Φ_fam 0 : M → M) y) = c₀ := by
+      rw [hΦ0, Diffeomorph.coe_refl, id]
+    have hytend : Filter.Tendsto (fun p : ℝ × M => extChartAt I y ((Φ_fam p.1 : M → M) y)) L (𝓝 c₀) := by
+      have h1 : ContinuousWithinAt (fun u : ℝ => (Φ_fam u : M → M) y) (Set.Ici 0) 0 := hΦorbit0 y
+      have h2 : ContinuousWithinAt (fun u : ℝ => extChartAt I y ((Φ_fam u : M → M) y))
+          (Set.Ici 0) 0 :=
+        ContinuousAt.comp_continuousWithinAt_of_eq
+          (continuousAt_extChartAt' (I := I) (mem_extChartAt_source y)) h1
+          (by rw [hΦ0, Diffeomorph.coe_refl, id])
+      have h3 : Filter.Tendsto (fun u : ℝ => extChartAt I y ((Φ_fam u : M → M) y))
+          (𝓝[Set.Ici 0] 0) (𝓝 c₀) := by
+        have ht := h2.tendsto; rw [hΦ0y'] at ht; exact ht
+      have hfst : Filter.Tendsto (fun p : ℝ × M => p.1) L (𝓝[Set.Ici 0] (0 : ℝ)) := by
+        rw [hL]
+        have hcwa : ContinuousWithinAt (fun p : ℝ × M => p.1) (Set.Ici (0:ℝ) ×ˢ Set.univ) (0, y) :=
+          continuous_fst.continuousWithinAt
+        have := hcwa.tendsto_nhdsWithin (t := Set.Ici (0:ℝ)) (fun p hp => hp.1)
+        simpa using this
+      exact h3.comp hfst
+    -- squeeze: `dist (F p) c₀ ≤ dist (extChartAt y p.2) c₀ * exp(K b) + dist (extChartAt y (Φ_fam p.1 y)) c₀`.
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hRHStend : Filter.Tendsto
+        (fun p : ℝ × M => dist (extChartAt I y p.2) c₀ * Real.exp (K * b)
+          + dist (extChartAt I y ((Φ_fam p.1 : M → M) y)) c₀) L (𝓝 0) := by
+      have hA : Filter.Tendsto (fun p : ℝ × M => dist (extChartAt I y p.2) c₀ * Real.exp (K * b))
+          L (𝓝 0) := by
+        have hd : Filter.Tendsto (fun p : ℝ × M => dist (extChartAt I y p.2) c₀) L (𝓝 0) := by
+          have := (continuous_dist.continuousAt).tendsto.comp (hxtend.prodMk_nhds (tendsto_const_nhds (x := c₀)))
+          simpa [dist_self] using this
+        have := hd.mul (tendsto_const_nhds (x := Real.exp (K * b)))
+        simpa using this
+      have hB : Filter.Tendsto (fun p : ℝ × M => dist (extChartAt I y ((Φ_fam p.1 : M → M) y)) c₀)
+          L (𝓝 0) := by
+        have := (continuous_dist.continuousAt).tendsto.comp (hytend.prodMk_nhds (tendsto_const_nhds (x := c₀)))
+        simpa [dist_self] using this
+      have := hA.add hB
+      simpa using this
+    rw [Metric.tendsto_nhds] at hRHStend
+    filter_upwards [hRHStend ε hε, hsrc_nhds, hball_nhds, htime_nhds, hge0] with p hpRHS hpsrc hpball hptime hpge
+    have hpsrc' : p.2 ∈ (extChartAt I y).source := hpsrc
+    have hpball' : extChartAt I y p.2 ∈ Metric.ball c₀ ρ := hpball
+    have hptime' : p.1 < b := hptime
+    have hr_mem : p.1 ∈ Set.Ico (0 : ℝ) b := ⟨hpge, hptime'⟩
+    have hgb := hgronwall p.2 hpsrc' hpball' p.1 hr_mem
+    have htri : dist (F p) c₀
+        ≤ dist (extChartAt I y ((Φ_fam p.1 : M → M) p.2))
+            (extChartAt I y ((Φ_fam p.1 : M → M) y))
+          + dist (extChartAt I y ((Φ_fam p.1 : M → M) y)) c₀ := dist_triangle _ _ _
+    have hkey : dist (F p) c₀
+        ≤ dist (extChartAt I y p.2) c₀ * Real.exp (K * b)
+          + dist (extChartAt I y ((Φ_fam p.1 : M → M) y)) c₀ := by
+      refine le_trans htri ?_
+      exact add_le_add hgb (le_refl _)
+    have hRHSlt : dist (extChartAt I y p.2) c₀ * Real.exp (K * b)
+        + dist (extChartAt I y ((Φ_fam p.1 : M → M) y)) c₀ < ε := by
+      have := hpRHS; rwa [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg (by positivity)] at this
+    exact lt_of_le_of_lt hkey hRHSlt
+  -- apply the chart inverse, continuous at `c₀`.
+  have hc₀_tgt : c₀ ∈ (extChartAt I y).target :=
+    (extChartAt I y).map_source (mem_extChartAt_source y)
+  have hsymm_cont : ContinuousAt (extChartAt I y).symm c₀ :=
+    continuousAt_extChartAt_symm'' (I := I) hc₀_tgt
+  have hcomp : Filter.Tendsto (fun p : ℝ × M => (extChartAt I y).symm (F p)) L (𝓝 y) := by
+    have : Filter.Tendsto (fun p : ℝ × M => (extChartAt I y).symm (F p)) L
+        (𝓝 ((extChartAt I y).symm c₀)) := hsymm_cont.tendsto.comp hFtend
+    rwa [show (extChartAt I y).symm c₀ = y by rw [hc₀]; exact extChartAt_to_inv y] at this
+  -- on the source region, `(extChartAt y).symm (F p) = Φ_fam p.1 p.2`.
+  have hEqOn : (fun p : ℝ × M => (extChartAt I y).symm (F p)) =ᶠ[L]
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) := by
+    filter_upwards [hsrc_nhds, hball_nhds, htime_nhds, hge0] with p hpsrc hpball hptime hpge
+    have hr_mem : p.1 ∈ Set.Ico (0 : ℝ) b := ⟨hpge, hptime⟩
+    have hgb := hgronwall p.2 hpsrc hpball p.1 hr_mem
+    have horbsrc : (Φ_fam p.1 : M → M) p.2 ∈ (extChartAt I y).source :=
+      (hconf p.2 hpsrc hpball p.1 hr_mem).1
+    change (extChartAt I y).symm (extChartAt I y ((Φ_fam p.1 : M → M) p.2)) = _
+    exact (extChartAt I y).left_inv horbsrc
+  have hgoal : Filter.Tendsto (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) L (𝓝 y) :=
+    hcomp.congr' hEqOn
+  rw [ContinuousWithinAt]
+  have hval : (Φ_fam (((0 : ℝ), y) : ℝ × M).1 : M → M) (((0 : ℝ), y) : ℝ × M).2 = y := by
+    change (Φ_fam 0 : M → M) y = y; rw [hΦ0, Diffeomorph.coe_refl, id]
+  rw [hval]; rw [hL] at hgoal; exact hgoal
+
 set_option linter.unusedVariables false in
 /-- **Joint `(t, x)` continuity of the conjugating orbit and its moving pushforward at the
 `t = 0` boundary slice.**
 
 The genuine uniform-in-`x` continuous-dependence-up-to-the-initial-time content: the joint
 `(t, x)` continuity of the conjugating orbit and of its moving pushforward (on the fixed-chart-`x₀`
-frame) at the `t = 0` boundary slice, on `Ici 0 ×ˢ univ` / `Ici 0 ×ˢ baseSet`.  This is the flow
-whose velocity is jointly continuous up to `t = 0` (`hfield_cont0`) with spatial gradient continuous
-up to `0` (`hfield_grad0`); the time-zero map is the identity (`hΦ0`) and the per-`y` at-`0` data
-`hΦorbit0` pin the boundary value.  Not available from any on-disk per-`x` lemma; proven by
-uniform-in-`x` continuous-dependence on compact `M`. -/
+frame) at the `t = 0` boundary slice, on `Ici 0 ×ˢ univ` / `Ici 0 ×ˢ baseSet`.
+
+The orbit conjunct is the chart-`y` continuous-dependence-up-to-`0`: the chart-`y` orbit
+`r ↦ extChartAt I y (Φ_fam r x)` solves the chart-`y` ODE whose field is the chart-`y`-frame
+velocity `conjugatingChartVelocityField` (the corrected velocity, NOT the raw-fibre
+representation), uniformly confined to a chart ball by `conjugating_flow_uniform_chart_confinement`
+(consuming the chart-frame component value-continuity `Hcomp`).  Bounding that field's spatial
+Lipschitz constant uniformly via `Hfderiv` (the chart-frame component spatial-derivative
+continuity) gives a Grönwall comparison `dist (chart orbit from x, chart orbit from y) ≤
+dist (x, y) · exp (K r)`, which, combined with the per-`y` at-`0` orbit datum `hΦorbit0 y`, yields
+the joint orbit continuity at `(0, y)`.  `Hcomp` / `Hfderiv` are exactly the two conjuncts of
+`deturck_vf_continuous_up_to_zero` (the chart-`y`-frame component value- and spatial-derivative
+continuity up to `t = 0`); `hΦode` / `hΦ0` pin the flow to the genuine one.  All hypotheses
+constrain only the internal `g_DT` / `Φ_fam` / the chart-frame field, never the headline;
+neither conjunct is, nor destructures to, any hypothesis. -/
 theorem conjugating_flow_jointContWithinAt_at_zero
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -825,15 +1268,17 @@ theorem conjugating_flow_jointContWithinAt_at_zero
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (hfield_cont0 : ContinuousOn
-      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
-      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
-    (hfield_grad0 : ∀ α : M,
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M =>
-          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
-            (extChartAt I α q.2))
-        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
     (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
     (hΦorbit0 : ∀ y : M,
       ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0) :
