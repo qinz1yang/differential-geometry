@@ -2998,15 +2998,111 @@ theorem conjugating_flow_jointContWithinAt_at_zero
       rw [← hlhs, hrhs]
 
 set_option linter.unusedVariables false in
+/-- **Interior joint-`C∞` of the conjugating orbit's moving spatial pushforward of the
+chart-`x₀` frame.**
+
+From the joint-`C∞` orbit `hΦsmooth` (the interior smooth-dependence output `C2`), the moving
+spatial differential of the orbit applied to the fixed-chart-`x₀` frame section
+`m ↦ chartBasisVecFiber x₀ i m`, packaged inside the tangent bundle as
+`(t, m) ↦ ⟨Φ_fam t m, mfderiv (Φ_fam t ·) m (chartBasisVecFiber x₀ i m)⟩`, is jointly `C∞` on
+`Ioo 0 T ×ˢ baseSet x₀`.  The moving spatial differential is `C∞` in `(t, m)` by
+`ContMDiffWithinAt.mfderivWithin` (read in tangent coordinates), and applying that `C∞` family of
+differentials to the `C∞` moving frame `chartBasisVec x₀ i` is `C∞` by
+`ContMDiffWithinAt.clm_apply_of_inCoordinates`; the frame's source base set restricts the domain to
+`baseSet x₀`.  This is the smooth companion of the slice-wise continuity
+`slice_mfderiv_continuousAt_of_jointFlow`; it feeds the chain rule for the pullback chart-Gram
+entry (`pullbackGram_jointContMDiffOn_interior`) and the interior conjunct of the up-to-`0`
+continuity (`flow_orbit_pushforward_jointContinuousOn_upto0`). -/
+private theorem flow_pushforward_jointContMDiffOn_interior
+    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (hΦsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+  intro p hp
+  obtain ⟨hps, hpb⟩ := hp
+  -- The orbit map `f q = Φ_fam q.1` parametrised by the joint parameter `q = (t, m)`, with the
+  -- differentiation base point `g q = q.2`.  `Function.uncurry f ((t, m), x) = Φ_fam t x` is
+  -- jointly `C∞` (it ignores `m`), obtained from `hΦsmooth` precomposed with `((t,m),x) ↦ (t,x)`.
+  have hproj : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod I) (𝓘(ℝ, ℝ).prod I) ∞
+      (fun r : (ℝ × M) × M => (r.1.1, r.2))
+      ((Set.Ioo (0 : ℝ) T ×ˢ Set.univ) ×ˢ Set.univ) (p, p.2) :=
+    (contMDiffWithinAt_fst.fst).prodMk contMDiffWithinAt_snd
+  have hmaps' : Set.MapsTo (fun r : (ℝ × M) × M => (r.1.1, r.2))
+      ((Set.Ioo (0 : ℝ) T ×ˢ Set.univ) ×ˢ Set.univ) (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+    fun r hr => ⟨hr.1.1, Set.mem_univ _⟩
+  have hf : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod I) I ∞
+      (Function.uncurry (fun q : ℝ × M => fun x : M => (Φ_fam q.1 : M → M) x))
+      ((Set.Ioo (0 : ℝ) T ×ˢ Set.univ) ×ˢ Set.univ) (p, p.2) :=
+    (hΦsmooth p ⟨hps, Set.mem_univ _⟩).comp (p, p.2) hproj hmaps'
+  -- The differentiation base point `g q = q.2`, jointly `C∞`.
+  have hg : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun q : ℝ × M => q.2) (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) p :=
+    contMDiffWithinAt_snd
+  -- The moving spatial differential of the orbit, read in tangent coordinates, is `C∞`.
+  have hmf := ContMDiffWithinAt.mfderivWithin (I := I) (I' := I)
+    (N := ℝ × M) (J := 𝓘(ℝ, ℝ).prod I) (M := M) (M' := M)
+    (n := ∞) (m := ∞)
+    (f := fun q : ℝ × M => fun x : M => (Φ_fam q.1 : M → M) x)
+    (g := fun q : ℝ × M => q.2)
+    (t := Set.Ioo (0 : ℝ) T ×ˢ Set.univ) (u := Set.univ)
+    hf hg ⟨hps, Set.mem_univ _⟩ (Set.mapsTo_univ _ _) (le_refl _) uniqueMDiffOn_univ
+  -- The moving frame section `chartBasisVec x₀ i`, jointly `C∞` on `Ioo ×ˢ baseSet`.
+  have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (chartBasisVecFiber (I := I) x₀ i q.2)
+        : TangentBundle I M))
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p := by
+    have hcb := (chartBasisVec_contMDiffOn (I := I) x₀ i) p.2 hpb
+    have hsnd : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I ∞
+        (fun q : ℝ × M => q.2)
+        (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p :=
+      contMDiffWithinAt_snd
+    have := hcb.comp p hsnd
+      (fun q hq => hq.2)
+    exact this
+  -- The base map `p ↦ Φ_fam p.1 p.2`, jointly `C∞` on the restricted domain.
+  have hb₂ : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) p :=
+    (hΦsmooth p ⟨hps, Set.mem_univ _⟩).mono
+      (Set.prod_mono_right (Set.subset_univ _))
+  -- Restrict the moving-differential coordinate smoothness to the frame's base set.
+  have hmf' := hmf.mono (Set.prod_mono_right
+    (fun x (_ : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) => Set.mem_univ x))
+  -- Apply the `C∞` family of differentials to the `C∞` moving frame, tracked in coordinates.
+  have happ := ContMDiffWithinAt.clm_apply_of_inCoordinates
+    (F₁ := E) (E₁ := TangentSpace I (M := M)) (F₂ := E) (E₂ := TangentSpace I (M := M))
+    (IB₁ := I) (IB₂ := I) (IM := 𝓘(ℝ, ℝ).prod I) (n := ∞)
+    (b₁ := fun q : ℝ × M => q.2) (b₂ := fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
+    (m₀ := p)
+    (ϕ := fun q : ℝ × M => mfderivWithin I I (Φ_fam q.1 : M → M) Set.univ q.2)
+    (v := fun q : ℝ × M => chartBasisVecFiber (I := I) x₀ i q.2)
+    (s := Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
+    hmf' hv hb₂
+  simp only [mfderivWithin_univ] at happ
+  exact happ
+
+set_option linter.unusedVariables false in
 /-- **Joint up-to-`0` continuity of the conjugating orbit and its moving pushforward.**
 
 Assembles the joint `(t, x)`-up-to-`0` continuity of the conjugating orbit (on `Ico 0 T ×ˢ univ`)
 and of its moving spatial differential applied to the fixed-chart-`x₀` frame section
 `x ↦ chartBasisVecFiber x₀ i x` (on `Ico 0 T ×ˢ baseSet x₀`), by splitting `Ico` into the interior
 `Ioo` (where the joint-`C∞` orbit `conjugating_flow_jointContMDiffOn_interior` and its moving
-Jacobian give joint continuity) and the `t = 0` boundary slice
-(`conjugating_flow_jointContWithinAt_at_zero`).  Per-`y` continuity does NOT imply this joint
-continuity at `t = 0`, so this is genuinely joint. -/
+Jacobian — packaged via `flow_pushforward_jointContMDiffOn_interior` — give joint continuity) and the
+`t = 0` boundary slice (`conjugating_flow_jointContWithinAt_at_zero`).  Per-`y` continuity does NOT
+imply this joint continuity at `t = 0`, so this is genuinely joint.
+
+The signature threads exactly the hypotheses of the two split providers: `hΦode` / `hfield_reg`
+feed the interior joint-`C∞` orbit (`conjugating_flow_jointContMDiffOn_interior`), and
+`hΦode` / `Hcomp` / `Hfderiv` / `hΦ0` / `hΦorbit0` / `hΦmfderiv0` / `hfield_reg` feed the `t = 0`
+slice (`conjugating_flow_jointContWithinAt_at_zero`); the pushforward conjunct's `t = 0` slice
+discharges its `y ∈ baseSet x₀` premise from the conjunct's own domain `Ico 0 T ×ˢ baseSet x₀`. -/
 theorem flow_orbit_pushforward_jointContinuousOn_upto0
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -3019,15 +3115,17 @@ theorem flow_orbit_pushforward_jointContinuousOn_upto0
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
-    (hfield_cont0 : ContinuousOn
-      (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
-      (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
-    (hfield_grad0 : ∀ α : M,
+    (Hcomp : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M =>
-          fderiv ℝ (chartRawRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x))
-            (extChartAt I α q.2))
-        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+        (fun q : ℝ × E =>
+          DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
+    (Hfderiv : ∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E =>
+            DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
     (hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
     (hΦorbit0 : ∀ y : M,
       ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ici (0 : ℝ)) 0)
@@ -3038,28 +3136,96 @@ theorem flow_orbit_pushforward_jointContinuousOn_upto0
     (∀ (x₀ : M) (i : Fin (Module.finrank ℝ E)),
       ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
         (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
-        : TangentBundle I M)) (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :=
-  sorry
+        : TangentBundle I M)) (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
+  -- The interior joint-`C∞` orbit (`C2`) and the `t = 0` slice (`C1b`).
+  have hInt : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+    conjugating_flow_jointContMDiffOn_interior (I := I) g_DT g_bg T hT Φ_fam hΦode hfield_reg
+  have hZero := conjugating_flow_jointContWithinAt_at_zero (I := I) g_DT g_bg T hT Φ_fam hΦode
+    Hcomp Hfderiv hΦ0 hΦorbit0 hΦmfderiv0 hfield_reg
+  obtain ⟨hZeroOrbit, hZeroPush⟩ := hZero
+  -- Orbit continuity on `Ico ×ˢ univ`.
+  have hOrbit : ContinuousOn (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ico (0 : ℝ) T ×ˢ Set.univ) := by
+    intro p hp
+    obtain ⟨hp1, hp2⟩ := hp
+    rcases eq_or_lt_of_le hp1.1 with h0 | h0
+    · -- `t = 0`: use the boundary slice, with `(0, p.2)` and the domain inclusion `Ico ⊆ Ici`.
+      have hp0 : p = (0, p.2) := Prod.ext h0.symm rfl
+      rw [hp0]
+      exact (hZeroOrbit p.2).mono (Set.prod_mono_left
+        (fun t (ht : t ∈ Set.Ico (0 : ℝ) T) => ht.1))
+    · -- `t > 0`: use the interior joint-`C∞` orbit; `Ioo ×ˢ univ` is a nhd of `p` within `Ico ×ˢ univ`.
+      have hpIoo : p ∈ Set.Ioo (0 : ℝ) T ×ˢ Set.univ := ⟨⟨h0, hp1.2⟩, Set.mem_univ _⟩
+      exact (hInt.continuousOn.continuousWithinAt hpIoo).mono_of_mem_nhdsWithin
+        (mem_nhdsWithin_of_mem_nhds ((isOpen_Ioo.prod isOpen_univ).mem_nhds hpIoo))
+  refine ⟨hOrbit, ?_⟩
+  intro x₀ i
+  -- Pushforward continuity on `Ico ×ˢ baseSet x₀`.
+  have hPushInt := flow_pushforward_jointContMDiffOn_interior (I := I) T Φ_fam hInt x₀ i
+  intro p hp
+  obtain ⟨hp1, hp2⟩ := hp
+  rcases eq_or_lt_of_le hp1.1 with h0 | h0
+  · -- `t = 0`: the boundary slice, discharging `p.2 ∈ baseSet x₀` from the domain.
+    have hp0 : p = (0, p.2) := Prod.ext h0.symm rfl
+    rw [hp0]
+    exact (hZeroPush x₀ i p.2 hp2).mono (Set.prod_mono_left
+      (fun t (ht : t ∈ Set.Ico (0 : ℝ) T) => ht.1))
+  · -- `t > 0`: the interior pushforward smoothness; `Ioo ×ˢ baseSet` is a nhd of `p` within
+    -- `Ico ×ˢ baseSet` (the first factor `Ioo` is open and contains `p.1`, the second is shared).
+    have hpIoo : p ∈ Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet :=
+      ⟨⟨h0, hp1.2⟩, hp2⟩
+    refine (hPushInt.continuousOn.continuousWithinAt hpIoo).mono_of_mem_nhdsWithin ?_
+    have hopen : (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
+        ∈ 𝓝 p :=
+      (isOpen_Ioo.prod (trivializationAt E (TangentSpace I) x₀).open_baseSet).mem_nhds hpIoo
+    exact mem_nhdsWithin_of_mem_nhds hopen
 
 set_option linter.unusedVariables false in
 /-- **Interior joint-`C∞` of the metric bilinear-CLM section along the orbit.**
 
 The moving metric bilinear-CLM bundle section `(t, b) ↦ ⟨b, (g_DT t).inner b⟩`, evaluated at the
 orbit point `b = Φ_fam p.1 p.2`, is jointly `C∞` on `Ioo 0 T ×ˢ univ`.  It is the composition of
-the joint-`C∞` metric-CLM section (recovered from `hgram_DT`) with the joint-`C∞` orbit map
-(`hΦsmooth`).  Bridge feeding `hgInner` to `pullbackGram_jointContMDiffOn_interior`. -/
+the joint-`C∞` base metric-CLM section `hgInnerBase` (the operator-bundle section
+`(t, b) ↦ ⟨b, (g_DT t).inner b⟩`, jointly `C∞` in `(t, b)` — the genuine joint-in-time regularity
+of the metric family, recovered from the joint chart-Gram smoothness `hgram_DT` of the headline)
+with the joint-`C∞` orbit map `(t, m) ↦ (t, Φ_fam t m)` (`hΦsmooth`, the interior smooth-dependence
+output `C2`), via `ContMDiffOn.comp`.  Bridge feeding `hgInner` to
+`pullbackGram_jointContMDiffOn_interior`.
+
+`hgInnerBase` is the metric family's joint-in-`(t, b)` operator-section smoothness — it is the
+analytic input carrying the time-regularity of `g_DT` (the per-time `g.contMDiff` is NOT enough for
+the joint statement, and `hΦsmooth` constrains only the orbit), supplied by the headline from its
+`hgram_DT`; it is not the conclusion (which lives over the moving orbit point), so this is not
+hypothesis-packaging. -/
 theorem metric_clm_section_jointContMDiffOn_along_orbit
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
       (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
+    (hgInnerBase : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
+        ((g_DT q.1).inner q.2)))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I)
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
-      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) ((Φ_fam p.1 : M → M) p.2)
-        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))
-        : Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ) (fun _ : M => (E →L[ℝ] E →L[ℝ] ℝ))))
+      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
+        ((Φ_fam p.1 : M → M) p.2)
+        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
+  -- The orbit base map `(t, m) ↦ (t, Φ_fam t m)`, jointly `C∞`, mapping `Ioo ×ˢ univ` into itself.
+  have hφ : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
+      (fun p : ℝ × M => (p.1, (Φ_fam p.1 : M → M) p.2))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
-  sorry
+    (contMDiffOn_fst).prodMk hΦsmooth
+  have hmaps : Set.MapsTo (fun p : ℝ × M => (p.1, (Φ_fam p.1 : M → M) p.2))
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+    fun p hp => ⟨hp.1, Set.mem_univ _⟩
+  exact hgInnerBase.comp hφ hmaps
 
 set_option linter.unusedVariables false in
 /-- **Interior joint-`C∞` of the pullback chart-Gram entry.**
@@ -3077,16 +3243,57 @@ theorem pullbackGram_jointContMDiffOn_interior
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
     (hgInner : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
-      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) ((Φ_fam p.1 : M → M) p.2)
-        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))
-        : Bundle.TotalSpace (E →L[ℝ] E →L[ℝ] ℝ) (fun _ : M => (E →L[ℝ] E →L[ℝ] ℝ))))
+      (fun p : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
+        ((Φ_fam p.1 : M → M) p.2)
+        ((g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
       (fun p : ℝ × M =>
         Integral.Measure.chartGramMatrix (I := I)
           (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
-      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
-  sorry
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+  -- The two moving-Jacobian-applied-to-frame sections, jointly `C∞` (from `hΦsmooth` = `C2`).
+  have hPushI := flow_pushforward_jointContMDiffOn_interior (I := I) T Φ_fam hΦsmooth x₀ i
+  have hPushJ := flow_pushforward_jointContMDiffOn_interior (I := I) T Φ_fam hΦsmooth x₀ j
+  -- The moving bilinear form (`hgInner` = `C7`), restricted to the frame's base set.
+  have hgInner' := hgInner.mono
+    (show Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
+        ⊆ Set.Ioo (0 : ℝ) T ×ˢ Set.univ from
+      fun q hq => ⟨hq.1, Set.mem_univ _⟩)
+  -- Rewrite the pullback chart-Gram entry to the moving bilinear form applied to the two
+  -- moving pushforward vectors (`chartGramMatrix_apply` + `pullbackMetric_inner_eq_inner_mfderiv`).
+  have hcongr : Set.EqOn
+      (fun p : ℝ × M =>
+        Integral.Measure.chartGramMatrix (I := I)
+          (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
+      (fun p : ℝ × M =>
+        (g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2)
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+          (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2)))
+      (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+    intro q hq
+    change Integral.Measure.chartGramMatrix (I := I)
+        (Diffeomorph.pullbackMetric (g_DT q.1) (Φ_fam q.1)) x₀ q.2 i j = _
+    rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+  refine ContMDiffOn.congr ?_ hcongr
+  -- Apply the moving bilinear form to the two moving pushforward sections; the result is a `C∞`
+  -- section of the scalar trivial bundle, whose fibre is the desired inner-mfderiv scalar.
+  have happ := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+    (E₃ := Bundle.Trivial M ℝ)
+    (b := fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
+    (s := Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
+    (ψ := fun p : ℝ × M => (g_DT p.1).inner ((Φ_fam p.1 : M → M) p.2))
+    (v := fun p : ℝ × M =>
+      mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+    (w := fun p : ℝ × M =>
+      mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ j p.2))
+    hgInner' hPushI hPushJ
+  intro p hp
+  have hpx := happ p hp
+  rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
+  exact hpx.2
 
 set_option linter.unusedVariables false in
 /-- **Joint up-to-`0` continuity of the pullback chart-Gram entry.**
