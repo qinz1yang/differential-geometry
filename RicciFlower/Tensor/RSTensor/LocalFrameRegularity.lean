@@ -53,6 +53,31 @@ theorem tensor0SConstInChart_contMDiffAt_of_mem {r : ℕ}
     (e.continuousLinearMapAt_symmL (R := 𝕜) hp β)
 
 set_option backward.isDefEq.respectTransparency false in
+/-- A chart-constant `(0,r)` tensor section is smooth on the base set of the
+tensor-bundle trivialization at the chart center.
+
+This is the `ContMDiffOn` bridge version of
+`tensor0SConstInChart_contMDiffAt_of_mem`.  It is deliberately stated in the
+expanded total-space form rather than via `T%`, so callers can use `change` to
+discharge `CMDiff[u] n (T% s)` goals without asking elaboration to guess the
+bundle model. -/
+theorem tensor0SConstInChart_contMDiffOn_baseSet {r : ℕ}
+    (x₀ : M) (β : Tensor0SModel r 𝕜 E) :
+    ContMDiffOn I (I.prod 𝓘(𝕜, Tensor0SModel r 𝕜 E)) (∞ : WithTop ℕ∞)
+      (fun p : M =>
+        (⟨p, Tensor0SSpace.constInChart
+          (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x₀ β p⟩ :
+          TotalSpace (Tensor0SModel r 𝕜 E)
+            (fun p : M => Tensor0SSpace r I p)))
+      ((trivializationAt (Tensor0SModel r 𝕜 E)
+        (fun p : M => Tensor0SSpace r I p) x₀).baseSet) := by
+  intro x hx
+  exact
+    (tensor0SConstInChart_contMDiffAt_of_mem
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (r := r) x₀ β hx).contMDiffWithinAt
+
+set_option backward.isDefEq.respectTransparency false in
 theorem tensor0SConstInChart_contMDiffAt {r : ℕ}
     (x₀ : M) (β : Tensor0SModel r 𝕜 E) :
     ContMDiffAt I (I.prod 𝓘(𝕜, Tensor0SModel r 𝕜 E)) (∞ : WithTop ℕ∞)

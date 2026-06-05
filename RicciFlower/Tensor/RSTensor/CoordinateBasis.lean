@@ -155,6 +155,46 @@ theorem component0S_apply
     component0S (I := I) basis A slots = A (fun a => basis (slots a)) :=
   rfl
 
+/-- Expanding one updated slot in a tangent basis gives the corresponding
+component contraction formula. -/
+theorem component0S_update_basis_sum
+    (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
+    (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) (a : Fin s)
+    (w : TangentSpace I x) :
+    A (Function.update (fun b : Fin s => basis (slots b)) a w) =
+      ∑ k : Idx, basis.coord k w *
+        component0S (I := I) basis A (Function.update slots a k) := by
+  classical
+  have hw : w = ∑ k : Idx, basis.coord k w • basis k := by
+    exact (basis.sum_repr w).symm
+  calc
+    A (Function.update (fun b : Fin s => basis (slots b)) a w) =
+        A (Function.update (fun b : Fin s => basis (slots b)) a
+          (∑ k : Idx, basis.coord k w • basis k)) := by
+          conv_lhs => rw [hw]
+    _ = ∑ k : Idx,
+        A (Function.update (fun b : Fin s => basis (slots b)) a
+          (basis.coord k w • basis k)) := by
+          have h := A.toMultilinearMap.map_update_sum
+            (Finset.univ : Finset Idx) a
+            (fun k : Idx => basis.coord k w • basis k)
+            (fun b : Fin s => basis (slots b))
+          simpa using h
+    _ = ∑ k : Idx, basis.coord k w *
+        component0S (I := I) basis A (Function.update slots a k) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          have hslots :
+              Function.update (fun b : Fin s => basis (slots b)) a (basis k) =
+                fun b : Fin s => basis (Function.update slots a k b) := by
+            funext b
+            by_cases hb : b = a
+            · subst hb
+              simp
+            · simp [Function.update, hb]
+          rw [A.map_update_smul]
+          rw [hslots]
+          rfl
+
 /-- Evaluation commutes with finite sums of covariant tensors. -/
 theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
     (T : ι -> Tensor0SSpace s I x) (v : Fin s -> TangentSpace I x) :
@@ -234,6 +274,96 @@ theorem basisTensor0S_component
     if slots = slots' then 1 else 0
   rw [continuousMultilinearMapBasis_apply]
   exact continuousMultilinearMapBasisElem_apply basis s slots slots'
+
+/-- Finite-index delta identity for changing the updated slot from the input
+multi-index to the output multi-index. -/
+theorem update_delta_sum_comm
+    (A : Idx -> Idx -> 𝕜)
+    (upper lower : Fin s -> Idx) (a : Fin s) :
+    (∑ k : Idx,
+        A k (lower a) *
+          (if upper = Function.update lower a k then (1 : 𝕜) else 0)) =
+      ∑ k : Idx,
+        A (upper a) k *
+          (if Function.update upper a k = lower then (1 : 𝕜) else 0) := by
+  classical
+  by_cases hout : ∀ b : Fin s, b ≠ a -> upper b = lower b
+  · have hleft_update : upper = Function.update lower a (upper a) := by
+      funext b
+      by_cases hb : b = a
+      · subst hb
+        simp
+      · simp [Function.update, hb, hout b hb]
+    have hright_update : Function.update upper a (lower a) = lower := by
+      funext b
+      by_cases hb : b = a
+      · subst hb
+        simp
+      · simp [Function.update, hb, hout b hb]
+    have hleft :
+        (∑ k : Idx,
+          A k (lower a) *
+            (if upper = Function.update lower a k then (1 : 𝕜) else 0)) =
+          A (upper a) (lower a) := by
+      rw [Finset.sum_eq_single (upper a)]
+      · rw [if_pos hleft_update]
+        simp
+      · intro k _ hk
+        have hne : upper ≠ Function.update lower a k := by
+          intro h
+          have ha := congrFun h a
+          simp at ha
+          exact hk ha.symm
+        rw [if_neg hne]
+        simp
+      · intro hnot
+        exact False.elim (hnot (Finset.mem_univ _))
+    have hright :
+        (∑ k : Idx,
+          A (upper a) k *
+            (if Function.update upper a k = lower then (1 : 𝕜) else 0)) =
+          A (upper a) (lower a) := by
+      rw [Finset.sum_eq_single (lower a)]
+      · rw [if_pos hright_update]
+        simp
+      · intro k _ hk
+        have hne : Function.update upper a k ≠ lower := by
+          intro h
+          have ha : k = lower a := by
+            simpa using congrFun h a
+          exact hk ha
+        rw [if_neg hne]
+        simp
+      · intro hnot
+        exact False.elim (hnot (Finset.mem_univ _))
+    rw [hleft, hright]
+  · push Not at hout
+    rcases hout with ⟨b, hb, hneq⟩
+    have hleft_zero :
+        (∑ k : Idx,
+          A k (lower a) *
+            (if upper = Function.update lower a k then (1 : 𝕜) else 0)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro k _
+      have hne : upper ≠ Function.update lower a k := by
+        intro h
+        have hb_eq : upper b = lower b := by
+          simpa [Function.update, hb] using congrFun h b
+        exact hneq hb_eq
+      simp [hne]
+    have hright_zero :
+        (∑ k : Idx,
+          A (upper a) k *
+            (if Function.update upper a k = lower then (1 : 𝕜) else 0)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro k _
+      have hne : Function.update upper a k ≠ lower := by
+        intro h
+        have hb_eq : upper b = lower b := by
+          simpa [Function.update, hb] using congrFun h b
+        exact hneq hb_eq
+      simp [hne]
+    rw [hleft_zero, hright_zero]
 
 /-- The basis covariant tensor indexed by `slots` evaluates as the product of
 the corresponding tangent-basis coordinate functions. -/

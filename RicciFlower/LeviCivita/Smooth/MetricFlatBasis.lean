@@ -1,5 +1,6 @@
 import RicciFlower.LeviCivita.Torsion
 import RicciFlower.LeviCivita.Uniqueness
+import RicciFlower.Coordinates.MetricCompatibility.Covariant
 import RicciFlower.VectorBundle.LocalFrameRegularity
 import RicciFlower.Tensor.RSTensor.Basis
 import RicciFlower.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
@@ -320,7 +321,7 @@ theorem localMetricFlatBasis_contMDiffAt {ι : Type*} [Fintype ι]
 
 /-- Inverse metric coefficients in a fixed local-frame basis, obtained by
 inverting the local-frame Gram operator. -/
-private noncomputable def localInvMetricCoeff {ι : Type*} [Fintype ι]
+noncomputable def localInvMetricCoeff {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) (k l : ι) (y : M) : Real :=
@@ -354,7 +355,7 @@ private theorem localInvMetricCoeff_contMDiffAt_of_isInvertible {ι : Type*} [Fi
   simpa [localInvMetricCoeff, εk, εl, coordCLM] using
     (contMDiffAt_const (c := εk)).clm_apply happ
 
-private theorem localInvMetricCoeff_contMDiffAt {ι : Type*} [Fintype ι]
+theorem localInvMetricCoeff_contMDiffAt {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
     (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet) (k l : ι) :
@@ -454,6 +455,188 @@ private theorem basis_coord_eq_sum_localInvMetric_flat {ι : Type*} [Fintype ι]
           apply Finset.sum_congr rfl
           intro l _
           simp [A, localInvMetricCoeff, mul_comm]
+
+theorem localMetricFlatBasis_symm {ι : Type*} [Fintype ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (v w : E) :
+    localMetricFlatBasis (I := I) e b g x v w =
+      localMetricFlatBasis (I := I) e b g x w v := by
+  rw [localMetricFlatBasis_eq_inner (I := I) e b g hx]
+  rw [localMetricFlatBasis_eq_inner (I := I) e b g hx]
+  exact g.symm x (e.symmL Real x v) (e.symmL Real x w)
+
+theorem localInvMetricCoeff_left_inv_flat {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    (∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        localMetricFlatBasis (I := I) e b g x (b k) (b j)) =
+      (if i = j then 1 else 0) := by
+  classical
+  have hcoord :=
+    basis_coord_eq_sum_localInvMetric_flat (I := I) e b g hx i (b j)
+  calc
+    (∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        localMetricFlatBasis (I := I) e b g x (b k) (b j))
+        =
+      ∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        localMetricFlatBasis (I := I) e b g x (b j) (b k) := by
+          apply Finset.sum_congr rfl
+          intro k _
+          rw [localMetricFlatBasis_symm (I := I) e b g hx (b k) (b j)]
+    _ = b.coord i (b j) := hcoord.symm
+    _ = (if i = j then 1 else 0) := by
+          by_cases hij : i = j
+          · subst hij
+            simp
+          · simp [hij]
+
+theorem localInvMetricCoeff_right_inv_flat {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    (∑ k : ι, localMetricFlatBasis (I := I) e b g x (b i) (b k) *
+        localInvMetricCoeff (I := I) e b g k j x) =
+      (if i = j then 1 else 0) := by
+  classical
+  let A : E →L[Real] (E →L[Real] Real) :=
+    localMetricFlatBasis (I := I) e b g x
+  let ε : ι -> E →L[Real] Real := fun a => coordCLM (E := E) b a
+  have hInv := localMetricFlatBasis_isInvertible (I := I) e b g hx
+  have hsum :
+      (∑ k : ι, localInvMetricCoeff (I := I) e b g k j x • b k) =
+        A.inverse (ε j) := by
+    rw [← b.sum_repr (A.inverse (ε j))]
+    apply Finset.sum_congr rfl
+    intro k _
+    simp [A, ε, localInvMetricCoeff]
+  calc
+    (∑ k : ι, localMetricFlatBasis (I := I) e b g x (b i) (b k) *
+        localInvMetricCoeff (I := I) e b g k j x)
+        =
+      A (b i)
+        (∑ k : ι, localInvMetricCoeff (I := I) e b g k j x • b k) := by
+          rw [map_sum]
+          apply Finset.sum_congr rfl
+          intro k _
+          simp [A, smul_eq_mul, mul_comm]
+    _ = A (b i) (A.inverse (ε j)) := by
+          rw [hsum]
+    _ = A (A.inverse (ε j)) (b i) := by
+          exact localMetricFlatBasis_symm (I := I) e b g hx (b i) (A.inverse (ε j))
+    _ = (ε j) (b i) := by
+          rw [hInv.self_apply_inverse]
+    _ = (if i = j then 1 else 0) := by
+          by_cases hij : i = j
+          · subst hij
+            simp [ε, coordCLM]
+          · have hji : j ≠ i := fun h => hij h.symm
+            simp [ε, coordCLM, hij, hji]
+
+theorem localInvMetricCoeff_metricComp_left_inv {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    (∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) x k j) =
+      (if i = j then 1 else 0) := by
+  classical
+  have hflat := localInvMetricCoeff_left_inv_flat (I := I) e b g hx i j
+  calc
+    (∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) x k j)
+        =
+      ∑ k : ι, localInvMetricCoeff (I := I) e b g i k x *
+        localMetricFlatBasis (I := I) e b g x (b k) (b j) := by
+          apply Finset.sum_congr rfl
+          intro k _
+          have hk : e.symmL Real x (b k) = e.localFrame b k x := by
+            rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
+            simp [Bundle.Trivialization.basisAt]
+          have hj : e.symmL Real x (b j) = e.localFrame b j x := by
+            rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
+            simp [Bundle.Trivialization.basisAt]
+          rw [localMetricFlatBasis_eq_inner (I := I) e b g hx (b k) (b j), hk, hj]
+          rfl
+    _ = (if i = j then 1 else 0) := hflat
+
+theorem localInvMetricCoeff_metricComp_right_inv {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    (∑ k : ι,
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) x i k *
+        localInvMetricCoeff (I := I) e b g k j x) =
+      (if i = j then 1 else 0) := by
+  classical
+  have hflat := localInvMetricCoeff_right_inv_flat (I := I) e b g hx i j
+  calc
+    (∑ k : ι,
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) x i k *
+        localInvMetricCoeff (I := I) e b g k j x)
+        =
+      ∑ k : ι, localMetricFlatBasis (I := I) e b g x (b i) (b k) *
+        localInvMetricCoeff (I := I) e b g k j x := by
+          apply Finset.sum_congr rfl
+          intro k _
+          have hi : e.symmL Real x (b i) = e.localFrame b i x := by
+            rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
+            simp [Bundle.Trivialization.basisAt]
+          have hk : e.symmL Real x (b k) = e.localFrame b k x := by
+            rw [e.localFrame_apply_of_mem_baseSet (b := b) hx]
+            simp [Bundle.Trivialization.basisAt]
+          rw [localMetricFlatBasis_eq_inner (I := I) e b g hx (b i) (b k), hi, hk]
+          rfl
+    _ = (if i = j then 1 else 0) := hflat
+
+theorem localInvMetricCoeff_metricComp_left_inv_eventually
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    (fun y : M => ∑ k : ι, localInvMetricCoeff (I := I) e b g i k y *
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) y k j) =ᶠ[nhds x]
+      fun _ : M => if i = j then 1 else 0 := by
+  filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
+  exact localInvMetricCoeff_metricComp_left_inv (I := I) e b g hy i j
+
+theorem localFrame_metricComp_mdiff {ι : Type*}
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M =>
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) y i j) x := by
+  simpa [metricCompForMetricInFrame, localMetricCoeff] using
+    (localMetricCoeff_contMDiffAt (I := I) e b g hx i j).mdifferentiableAt
+      (by simp)
+
+/-- Metric components in a fixed tangent trivialization frame are smooth. -/
+theorem localFrame_metricComp_contMDiffAt {ι : Type*}
+    (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M -> Type _) -> M))
+    [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
+    (g : SmoothRiemannianMetric I M) {x : M} (hx : x ∈ e.baseSet)
+    (i j : ι) :
+    ContMDiffAt I 𝓘(Real, Real) ∞
+      (fun y : M =>
+        metricCompForMetricInFrame (I := I) g
+          (fun a y => e.localFrame b a y) y i j) x := by
+  simpa [metricCompForMetricInFrame, localMetricCoeff] using
+    localMetricCoeff_contMDiffAt (I := I) e b g hx i j
 
 private theorem localFrame_coeff_eq_sum_localInvMetric_inner {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))

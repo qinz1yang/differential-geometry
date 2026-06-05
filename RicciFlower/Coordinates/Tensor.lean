@@ -1,5 +1,8 @@
 import RicciFlower.Coordinates.Basic
+import RicciFlower.Coordinates.CoordinateFrame
 import RicciFlower.Tensor.RSTensor.Components
+import RicciFlower.Tensor.RSTensor.Basis
+import RicciFlower.Tensor.RSTensor.CotangentRiemannian
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -158,6 +161,69 @@ def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
         (Tensor0SBundle.basisTensor0S (I := I) (hframe.toBasisAt hx) upper))
         (fun a => hframe.toBasisAt hx (lower a)) := by
   rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- On the coordinate-frame domain, the fixed tensor-bundle basis section
+`Tensor0SSpace.constInChart` is the basis tensor of the coordinate local frame.
+
+This lower coordinate-tensor normalization lets `(0,s)` coordinate derivative
+proofs use fixed-chart covectors without importing the mixed-tensor input
+expansion file. -/
+theorem constInChart_eq_basis0S_coordFrame {r : Nat}
+    [IsManifold I ∞ M]
+    (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E) :
+    Tensor0SBundle.Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) r x₀
+        ((continuousMultilinearMap_basis
+          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x =
+      Tensor0SBundle.basisTensor0S (I := I)
+        (coordinateFrameAt_basis (I := I) x₀ hx) upper := by
+  classical
+  let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+  have hxE : x ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
+  rw [Tensor0SBundle.Tensor0SSpace.constInChart]
+  rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
+    (F := E) (E := TangentSpace I) x₀ x hxE]
+  ext v
+  simp [Tensor0SBundle.basisTensor0S, Tensor0SBundle.tensor0SBasis,
+    Tensor0SBundle.continuousMultilinearMapBasis_apply,
+    Tensor0SBundle.continuousMultilinearMapBasisElem, continuousMultilinearMap_basis,
+    continuousMultilinearMap_basisElem, Tensor0SBundle.coframeOfBasis,
+    ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    basisRepr_eq_triv, coordinateTrivializationAt]
+
+/-- At the chart center, a fixed-chart coordinate covector evaluates as the
+coordinate-frame coefficient functional. -/
+theorem constInChart_one_eval_coordCoeff
+    [IsManifold I ∞ M]
+    (x₀ : M) (i : CoordinateIdx (𝕜 := 𝕜) E)
+    (W : TangentSpace I x₀) :
+    Tensor0SBundle.Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) 1 x₀
+        ((continuousMultilinearMap_basis
+          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) 1) (fun _ : Fin 1 => i)) x₀
+        (fun _ : Fin 1 => W) =
+      (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff i x₀ W := by
+  have hconst :=
+    constInChart_eq_basis0S_coordFrame (𝕜 := 𝕜) (I := I) (M := M)
+      (r := 1) x₀ (coordinateFrameAt_mem (I := I) x₀) (fun _ : Fin 1 => i)
+  calc
+    Tensor0SBundle.Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) 1 x₀
+        ((continuousMultilinearMap_basis
+          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) 1) (fun _ : Fin 1 => i)) x₀
+        (fun _ : Fin 1 => W)
+        =
+      Tensor0SBundle.basisTensor0S (I := I)
+        (coordinateFrameAt_basis (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀))
+        (fun _ : Fin 1 => i) (fun _ : Fin 1 => W) := by
+        rw [hconst]
+    _ = (coordinateFrameAt_toBasis (I := I) x₀).coord i W := by
+      simp [coordinateFrameAt_toBasis, Tensor0SBundle.basisTensor0S_apply]
+    _ = (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff i x₀ W := by
+      exact (coordinateFrameAt_coeff_eq_toBasis_coord (I := I) x₀ W i).symm
 
 /-- Two lower component slots. -/
 def slots2 (i j : Idx) : Fin 2 -> Idx :=
@@ -318,6 +384,44 @@ def tensor13CompInFrame [Fintype Idx] [DecidableEq Idx]
         (Tensor0SBundle.basisTensor0S (I := I) (hframe.toBasisAt hx) (upperIdx1 a)))
         (fun q => hframe.toBasisAt hx (slots3 i j k q)) := by
   rfl
+
+end
+
+end Coordinates
+end RicciFlower
+
+namespace RicciFlower
+namespace Coordinates
+
+noncomputable section
+
+open Bundle Module
+open scoped Manifold
+
+variable
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+  {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners Real E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ⊤ M]
+  {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+  {n : WithTop ℕ∞}
+  {u : Set M}
+
+/-- The local-frame coframe covector is the one-slot covariant basis tensor at
+points of the frame domain. -/
+theorem coframe_eq_basis0S
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E n frame u)
+    {x : M} (hx : x ∈ u) (i : Idx) :
+    Tensor0SBundle.dualToCotangent (I := I)
+        (coframeInFrame frame hframe x i) =
+      Tensor0SBundle.basisTensor0S (I := I) (hframe.toBasisAt hx)
+        (fun _ : Fin 1 => i) := by
+  apply Tensor0SBundle.cotangentToDualLinear_injective (I := I)
+  ext v
+  simp [coframeInFrame, Tensor0SBundle.basisTensor0S_apply,
+    IsLocalFrameOn.coeff, hx]
 
 end
 

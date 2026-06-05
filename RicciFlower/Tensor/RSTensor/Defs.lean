@@ -83,6 +83,129 @@ def TensorRSModel (r s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedFiel
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [Module.Finite 𝕜 E] [FiniteDimensional 𝕜 E] :=
   (Tensor0SModel r 𝕜 E) →L[𝕜] (Tensor0SModel s 𝕜 E)
 
+namespace Tensor0SModel
+
+/-- Evaluate a model `(0,0)` tensor at its unique empty slot. -/
+noncomputable def eval0 :
+    Tensor0SModel 0 𝕜 E →L[𝕜] 𝕜 :=
+  (continuousMultilinearCurryFin0 𝕜 E 𝕜).toContinuousLinearEquiv.toContinuousLinearMap
+
+@[simp]
+theorem eval0_apply (T : Tensor0SModel 0 𝕜 E) :
+    eval0 (𝕜 := 𝕜) (E := E) T = T Fin.elim0 := by
+  change (continuousMultilinearCurryFin0 𝕜 E 𝕜) T = T Fin.elim0
+  rw [continuousMultilinearCurryFin0_apply]
+  exact congrArg T (Subsingleton.elim _ _)
+
+/-- Embed a model covariant tensor as a mixed model tensor with zero upper slots. -/
+noncomputable def toRS0 {s : ℕ}
+    (T : Tensor0SModel s 𝕜 E) :
+    TensorRSModel 0 s 𝕜 E :=
+  (eval0 (𝕜 := 𝕜) (E := E)).smulRight T
+
+/-- The zero-upper-slot embedding of covariant model tensors as a continuous
+linear map. -/
+noncomputable def toRS0L {s : ℕ} :
+    Tensor0SModel s 𝕜 E →L[𝕜] TensorRSModel 0 s 𝕜 E :=
+  ContinuousLinearMap.smulRightL 𝕜
+    (Tensor0SModel 0 𝕜 E) (Tensor0SModel s 𝕜 E)
+    (eval0 (𝕜 := 𝕜) (E := E))
+
+@[simp]
+theorem toRS0_apply {s : ℕ}
+    (T : Tensor0SModel s 𝕜 E) (c : Tensor0SModel 0 𝕜 E) :
+    toRS0 (𝕜 := 𝕜) (E := E) T c =
+      c Fin.elim0 • T := by
+  rw [toRS0, ContinuousLinearMap.smulRight_apply, eval0_apply]
+
+@[simp] theorem toRS0L_apply {s : ℕ}
+    (T : Tensor0SModel s 𝕜 E) :
+    toRS0L (𝕜 := 𝕜) (E := E) T =
+      toRS0 (𝕜 := 𝕜) (E := E) T := by
+  rfl
+
+/-- The unit model `(0,0)` tensor. -/
+def one0 : Tensor0SModel 0 𝕜 E :=
+  ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E) (1 : 𝕜)
+
+@[simp]
+theorem one0_apply (v : Fin 0 → E) :
+    one0 (𝕜 := 𝕜) (E := E) v = (1 : 𝕜) := by
+  rw [one0, ContinuousMultilinearMap.constOfIsEmpty_apply]
+
+/-- A model `(0,0)` tensor is its scalar value times the unit `(0,0)` tensor. -/
+theorem eq_smul_one0 (c : Tensor0SModel 0 𝕜 E) :
+    c = c Fin.elim0 • one0 (𝕜 := 𝕜) (E := E) := by
+  ext v
+  change c v = c Fin.elim0 * (one0 (𝕜 := 𝕜) (E := E) v)
+  rw [one0_apply, mul_one]
+  exact congrArg c (Subsingleton.elim v Fin.elim0)
+
+/-- Evaluate a zero-upper-slot mixed model tensor on the unit `(0,0)` tensor. -/
+noncomputable def fromRS0L {s : ℕ} :
+    TensorRSModel 0 s 𝕜 E →L[𝕜] Tensor0SModel s 𝕜 E :=
+  ContinuousLinearMap.apply 𝕜 (Tensor0SModel s 𝕜 E)
+    (one0 (𝕜 := 𝕜) (E := E))
+
+@[simp]
+theorem fromRS0L_apply {s : ℕ} (T : TensorRSModel 0 s 𝕜 E) :
+    fromRS0L (𝕜 := 𝕜) (E := E) T =
+      T (one0 (𝕜 := 𝕜) (E := E)) := by
+  rfl
+
+/-- The natural continuous linear equivalence
+`Tensor0SModel s ≃L TensorRSModel 0 s`.
+
+It sends a covariant tensor `T` to the mixed tensor `c ↦ c() • T`; the inverse
+evaluates a zero-upper-slot mixed tensor on the unit `(0,0)` tensor. -/
+noncomputable def rs0Equiv {s : ℕ} :
+    Tensor0SModel s 𝕜 E ≃L[𝕜] TensorRSModel 0 s 𝕜 E where
+  toFun := toRS0 (𝕜 := 𝕜) (E := E)
+  invFun := fun T => T (one0 (𝕜 := 𝕜) (E := E))
+  left_inv := by
+    intro T
+    change toRS0 (𝕜 := 𝕜) (E := E) T (one0 (𝕜 := 𝕜) (E := E)) = T
+    rw [toRS0_apply, one0_apply, one_smul]
+  right_inv := by
+    intro T
+    apply ContinuousLinearMap.ext
+    intro c
+    change toRS0 (𝕜 := 𝕜) (E := E)
+        (T (one0 (𝕜 := 𝕜) (E := E))) c = T c
+    rw [toRS0_apply]
+    calc
+      c Fin.elim0 • T (one0 (𝕜 := 𝕜) (E := E)) =
+          T (c Fin.elim0 • one0 (𝕜 := 𝕜) (E := E)) := by
+            exact (map_smul T (c Fin.elim0) (one0 (𝕜 := 𝕜) (E := E))).symm
+      _ = T c := by
+            rw [← eq_smul_one0 (𝕜 := 𝕜) (E := E) c]
+  map_add' := by
+    intro T U
+    apply ContinuousLinearMap.ext
+    intro c
+    simp [toRS0_apply, smul_add]
+  map_smul' := by
+    intro a T
+    apply ContinuousLinearMap.ext
+    intro c
+    simp [toRS0_apply, smul_smul, mul_comm]
+  continuous_toFun := (toRS0L (𝕜 := 𝕜) (E := E)).continuous
+  continuous_invFun := (fromRS0L (𝕜 := 𝕜) (E := E)).continuous
+
+@[simp]
+theorem rs0Equiv_apply {s : ℕ} (T : Tensor0SModel s 𝕜 E) :
+    rs0Equiv (𝕜 := 𝕜) (E := E) T =
+      toRS0 (𝕜 := 𝕜) (E := E) T := by
+  rfl
+
+@[simp]
+theorem rs0Equiv_symm_apply {s : ℕ} (T : TensorRSModel 0 s 𝕜 E) :
+    (rs0Equiv (𝕜 := 𝕜) (E := E) (s := s)).symm T =
+      T (one0 (𝕜 := 𝕜) (E := E)) := by
+  rfl
+
+end Tensor0SModel
+
 /-!
 ## Point-wise Fibers
 -/
@@ -253,6 +376,39 @@ def toModelL (s : ℕ) (x : M) :
     Tensor0SSpace s I x →L[𝕜] ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜 :=
   (tensor0SSpace_continuousLinearEquiv s x).toContinuousLinearMap
 
+/-- Evaluate a `(0,0)` tensor fiber at its unique empty slot, as a continuous
+linear functional. -/
+noncomputable def eval0 (x : M) :
+    Tensor0SSpace 0 I x →L[𝕜] 𝕜 :=
+  (continuousMultilinearCurryFin0 𝕜 E 𝕜).toContinuousLinearEquiv.toContinuousLinearMap.comp
+    (toModelL 0 x)
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem eval0_apply {x : M} (T : Tensor0SSpace 0 I x) :
+    eval0 (𝕜 := 𝕜) (E := E) (I := I) x T = T Fin.elim0 := by
+  change (continuousMultilinearCurryFin0 𝕜 E 𝕜)
+      (Tensor0SSpace.toModel (I := I) T) = T Fin.elim0
+  rw [continuousMultilinearCurryFin0_apply]
+  exact congrArg T (Subsingleton.elim _ _)
+
+/-- Embed a covariant tensor fiber as a mixed tensor with zero upper slots.
+
+The resulting continuous linear map sends a `(0,0)` input `c` to
+`eval0 c • T`. -/
+noncomputable def toRS0 {s : ℕ} {x : M}
+    (T : Tensor0SSpace s I x) :
+    TensorRSSpace 0 s I x :=
+  (eval0 (𝕜 := 𝕜) (E := E) (I := I) x).smulRight T
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem toRS0_apply {s : ℕ} {x : M}
+    (T : Tensor0SSpace s I x) (c : Tensor0SSpace 0 I x) :
+    toRS0 (𝕜 := 𝕜) (E := E) (I := I) T c =
+      c Fin.elim0 • T := by
+  rw [toRS0, ContinuousLinearMap.smulRight_apply, eval0_apply]
+
 /-- Construct a `Tensor0SSpace` fiber element from a model fiber element.
 This is the inverse of `Tensor0SSpace.toModel`. -/
 def ofModel {s : ℕ} {x : M}
@@ -271,11 +427,13 @@ theorem toModel_add {s : ℕ} {x : M} (T₁ T₂ : Tensor0SSpace s I x) :
     toModel (T₁ + T₂) = toModel T₁ + toModel T₂ :=
   map_add (tensor0SSpace_continuousLinearEquiv s x) T₁ T₂
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_smul {s : ℕ} {x : M} (c : 𝕜) (T : Tensor0SSpace s I x) :
     toModel (c • T) = c • toModel T :=
   map_smul (tensor0SSpace_continuousLinearEquiv s x) c T
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_zero {s : ℕ} {x : M} :
     toModel (0 : Tensor0SSpace s I x) = 0 :=
@@ -304,6 +462,14 @@ theorem toModel_ofModel {s : ℕ} {x : M}
     toModel (ofModel (I := I) (x := x) f) = f :=
   (tensor0SSpace_continuousLinearEquiv s x).apply_symm_apply f
 
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem cle_ofModel {s : ℕ} {x : M}
+    (f : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) :
+    tensor0SSpace_continuousLinearEquiv (I := I) s x
+        (ofModel (I := I) (x := x) f) = f :=
+  toModel_ofModel (I := I) (x := x) f
+
 omit [FiniteDimensional 𝕜 E] in
 theorem toModel_continuous {s : ℕ} {x : M} :
     Continuous (fun T : Tensor0SSpace s I x => toModel T) :=
@@ -323,6 +489,26 @@ omit [FiniteDimensional 𝕜 E] in
 theorem toModel_bijective {s : ℕ} {x : M} :
     Function.Bijective (fun T : Tensor0SSpace s I x => toModel T) :=
   (tensor0SSpace_continuousLinearEquiv s x).bijective
+
+/-- The unit `(0,0)` tensor in a pointwise tensor fiber. -/
+def one0 (x : M) : Tensor0SSpace 0 I x :=
+  ContinuousMultilinearMap.constOfIsEmpty 𝕜
+    (fun _ : Fin 0 => TangentSpace I x) (1 : 𝕜)
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem one0_apply {x : M} (v : Fin 0 → TangentSpace I x) :
+    one0 (𝕜 := 𝕜) (I := I) x v = (1 : 𝕜) := by
+  rw [one0, ContinuousMultilinearMap.constOfIsEmpty_apply]
+
+omit [FiniteDimensional 𝕜 E] in
+/-- A pointwise `(0,0)` tensor is its scalar value times the unit `(0,0)` tensor. -/
+theorem eq_smul_one0 {x : M} (c : Tensor0SSpace 0 I x) :
+    c = c Fin.elim0 • one0 (𝕜 := 𝕜) (I := I) x := by
+  ext v
+  change c v = c Fin.elim0 * (one0 (𝕜 := 𝕜) (I := I) x v)
+  rw [one0_apply, mul_one]
+  exact congrArg c (Subsingleton.elim v Fin.elim0)
 
 end Tensor0SSpace
 
@@ -622,6 +808,81 @@ omit [FiniteDimensional 𝕜 E] in
 /-- The inverse CLE coerces to `id` on the underlying carrier. -/
 theorem tensor0SSpace_continuousLinearEquiv_symm_coe (s : ℕ) (x : M) :
     ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) s x).symm : _ → _) = id := rfl
+
+/-- Applying the mixed-tensor CLE to a tensor and then to the model version of a
+covariant input agrees with applying the tensor first and then passing the
+output through the covariant CLE. -/
+theorem tensorRSSpace_continuousLinearEquiv_apply_apply
+    (r s : ℕ) (x : M) (T : TensorRSSpace r s I x)
+    (input : Tensor0SSpace r I x) :
+    tensorRSSpace_continuousLinearEquiv (I := I) (M := M) r s x T
+        (Tensor0SSpace.toModel (I := I) input) =
+      Tensor0SSpace.toModel (I := I) (T input) := by
+  rfl
+
+/-- Applying the inverse mixed-tensor CLE to a model tensor and then to a
+covariant input agrees with applying the model tensor to the model input and
+then returning through the covariant inverse CLE. -/
+theorem tensorRSSpace_continuousLinearEquiv_symm_apply_apply
+    (r s : ℕ) (x : M) (T : TensorRSModel r s 𝕜 E)
+    (input : Tensor0SSpace r I x) :
+    ((tensorRSSpace_continuousLinearEquiv (I := I) (M := M) r s x).symm T)
+        input =
+      Tensor0SSpace.ofModel (I := I) (x := x)
+        (T (Tensor0SSpace.toModel (I := I) input)) := by
+  rfl
+
+namespace Tensor0SSpace
+
+@[simp]
+theorem toModel_one0 {x : M} :
+    toModel (I := I) (one0 (𝕜 := 𝕜) (I := I) x) =
+      Tensor0SModel.one0 (𝕜 := 𝕜) (E := E) := by
+  rfl
+
+/-- The natural continuous linear equivalence
+`Tensor0SSpace s I x ≃L TensorRSSpace 0 s I x`, obtained by transporting the
+model-fiber equivalence through the existing fiber/model equivalences. -/
+noncomputable def rs0Equiv {s : ℕ} {x : M} :
+    Tensor0SSpace s I x ≃L[𝕜] TensorRSSpace 0 s I x :=
+  (tensor0SSpace_continuousLinearEquiv (I := I) s x).trans
+    ((Tensor0SModel.rs0Equiv (𝕜 := 𝕜) (E := E) (s := s)).trans
+      (tensorRSSpace_continuousLinearEquiv (I := I) (M := M) 0 s x).symm)
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem rs0Equiv_apply {s : ℕ} {x : M} (T : Tensor0SSpace s I x) :
+    rs0Equiv (𝕜 := 𝕜) (E := E) (I := I) (M := M) T =
+      toRS0 (𝕜 := 𝕜) (E := E) (I := I) T := by
+  apply ContinuousLinearMap.ext
+  intro c
+  apply toModel_injective (I := I)
+  suffices h :
+      ofModel (I := I) (x := x) (toModel (I := I) (c Fin.elim0 • T)) =
+        c Fin.elim0 • T by
+    simpa [rs0Equiv, tensorRSSpace_continuousLinearEquiv_symm_apply_apply,
+      Tensor0SModel.toRS0_apply, toRS0_apply, toModel,
+      tensor0SSpace_continuousLinearEquiv_apply] using h
+  exact ofModel_toModel (I := I) (T := c Fin.elim0 • T)
+
+end Tensor0SSpace
+
+set_option linter.unnecessarySimpa false in
+/-- The canonical scalar action on a mixed-tensor fiber is pointwise scalar
+action on the underlying continuous-linear-map model. -/
+theorem tensorRSSpace_smul_apply
+    {r s : ℕ} {x : M} (c : 𝕜) (T : TensorRSSpace r s I x)
+    (input : Tensor0SSpace r I x) :
+    (c • T) input = c • T input := by
+  apply Tensor0SSpace.toModel_injective (I := I)
+  have h :=
+    congrArg
+      (fun F : TensorRSModel r s 𝕜 E =>
+        F (Tensor0SSpace.toModel (I := I) input))
+      (TensorRSSpace.toModel_smul (I := I) (x := x) c T)
+  simpa [TensorRSSpace.toModel, Tensor0SSpace.toModel,
+    tensorRSSpace_continuousLinearEquiv_apply_apply,
+    ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul] using h
 
 end
 end Tensor0SBundle

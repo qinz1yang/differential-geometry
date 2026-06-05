@@ -112,6 +112,32 @@ set_option linter.unusedSectionVars false in
         (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) r s cov X T x := rfl
 
+/-- The public directional mixed-tensor covariant derivative commutes with the
+zero-upper-slot embedding of covariant tensor fields. -/
+theorem nablaRSFun_toRS0 (s : ℕ)
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (x : M) :
+    nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        0 s cov X
+        (tensor0SField_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+          (∞ : WithTop ℕ∞) α) x =
+      Tensor0SSpace.toRS0 (𝕜 := 𝕜) (E := E) (I := I)
+        (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+          s cov X α x) := by
+  unfold nablaRSFun nabla0SFun
+  unfold TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
+    TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection
+    TensorLieDeriv.mcovariantDeriv_tensorRSWithinFromConnection
+    TensorLieDeriv.mcovariantDeriv_tensor0SWithinFromConnection
+  exact TensorLieDeriv.mcovariantDeriv_tensorRS_toRS0
+    (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    (n := (∞ : WithTop ℕ∞)) s X
+    (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x)
+    α x (by simp)
+
 /-- Regularity predicate for the raw covariant derivative of a covariant tensor field.
 
 This is kept explicit so `nabla0S` never hides the analytic smoothness proof. -/

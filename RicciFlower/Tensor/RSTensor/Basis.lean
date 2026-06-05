@@ -1,5 +1,6 @@
 import RicciFlower.Tensor.RSTensor.Defs
 import RicciFlower.Tensor.Multilinear.Basis
+import RicciFlower.VectorBundle.TangentConst
 
 /-!
 # Coordinate bases for realized tensor models
@@ -188,6 +189,52 @@ theorem continuousLinearMapAt_apply (s : ℕ)
         (fun x => Tensor0SSpace s I x) x₀ ⟨x, y⟩).2 from
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := 𝕜) hx]
   rfl
+
+/-- A tensor section that is constant in a fixed chart evaluates on
+chart-constant tangent slots as the fixed model tensor.
+
+This is the tensor contraction analogue of the tautology `θ(e_i) = const` in a
+coordinate trivialization. -/
+theorem constInChart_apply_tangentConstInChart (s : ℕ) (x₀ : M)
+    (β : Tensor0SModel s 𝕜 E) {x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
+    (v : Fin s → E) :
+    Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) s x₀ β x
+        (fun a : Fin s =>
+          TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (v a) x) =
+      β v := by
+  let eT := trivializationAt (Tensor0SModel s 𝕜 E)
+    (fun x => Tensor0SSpace s I x) x₀
+  have hxT : x ∈ eT.baseSet := by
+    simpa [eT] using hx
+  have htriv :=
+    Tensor0SSpace.trivializationAt_apply
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (x₀ := x₀) (x := x) s hx
+      (Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) s x₀ β x) v
+  have hconst :
+      (eT ⟨x,
+        Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+          (I := I) (M := M) s x₀ β x⟩).2 = β := by
+    have hcoe : ⇑(eT.linearMapAt 𝕜 x) = fun z => (eT ⟨x, z⟩).2 :=
+      eT.coe_linearMapAt_of_mem (R := 𝕜) hxT
+    change (eT ⟨x, eT.symmL 𝕜 x β⟩).2 = β
+    simpa [Bundle.Trivialization.continuousLinearMapAt_apply, hcoe] using
+      eT.continuousLinearMapAt_symmL (R := 𝕜) hxT β
+  calc
+    Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) s x₀ β x
+        (fun a : Fin s =>
+          TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (v a) x)
+        =
+      (eT ⟨x,
+        Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+          (I := I) (M := M) s x₀ β x⟩).2 v := by
+        simpa [eT, TensorLieDeriv.tangentConstInChart] using htriv.symm
+    _ = β v := by
+      rw [hconst]
 
 end Tensor0SSpace
 

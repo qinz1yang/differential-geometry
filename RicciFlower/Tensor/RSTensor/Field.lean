@@ -385,23 +385,71 @@ theorem Tensor0SField.toScalarField_smulByFun [CompleteSpace 𝕜]
   simp only [Tensor0SField.toScalarField, tensor0SField_smulByFun_apply,
     Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, Pi.mul_apply, smul_eq_mul]
 
-/-!
-## Embedding (0,s)-tensor fields as (0,s)-valued TensorRS fields  (DEAD CODE — no callers)
+/-- Embed a smooth covariant `(0,s)` tensor field as a smooth mixed tensor field
+with zero upper slots.
 
-A `Tensor0SSpace s I x` element `T` embeds into `TensorRSSpace 0 s I x`
-(= `Tensor0SSpace 0 I x →L[𝕜] Tensor0SSpace s I x`) by sending
-`c ↦ (toModel c Fin.elim0) • T`, i.e. extracting the scalar from the
-(0,0)-tensor `c` and scaling `T`.
+Fiberwise this is `Tensor0SSpace.toRS0`: a `(0,0)` input is evaluated as a
+scalar and then used to scale the covariant tensor value. -/
+noncomputable def tensor0SField_toRS0 [CompleteSpace 𝕜] {s : ℕ}
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0 s
+  refine ⟨fun x => Tensor0SSpace.toRS0 (𝕜 := 𝕜) (E := E) (I := I) (α x), ?_⟩
+  intro x₀
+  rw [contMDiffAt_section]
+  have hα := α.contMDiff x₀
+  rw [contMDiffAt_section] at hα
+  refine ((contMDiffAt_const
+    (c := ContinuousLinearMap.smulRightL 𝕜
+      (Tensor0SModel 0 𝕜 E) (Tensor0SModel s 𝕜 E)
+      (continuousMultilinearCurryFin0 𝕜 E 𝕜).toContinuousLinearMap)).clm_apply
+    hα).congr_of_eventuallyEq ?_
+  filter_upwards
+    [(trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
+      (mem_baseSet_trivializationAt E (TangentSpace I) x₀)] with x hx
+  apply ContinuousLinearMap.ext
+  intro ω₀
+  apply ContinuousMultilinearMap.ext
+  intro m
+  rw [TensorRSSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
+    (x₀ := x₀) (x := x) 0 s hx]
+  rw [Tensor0SSpace.toRS0_apply]
+  rw [ContinuousLinearMap.smulRightL_apply_apply,
+    ContinuousLinearMap.smulRight_apply, ContinuousMultilinearMap.smul_apply]
+  rw [Bundle.continuousMultilinearMap.triv_zero_symmL_apply_elim0
+    (F := E) (E := TangentSpace I) x₀ x hx ω₀]
+  congr 2
 
-This old specialized sketch is not kept as commented Lean code, because it is
-easy for stub audits to mistake it for an active obligation. The live general
-version is `MixedSection.fromMultilinearSection` in `RicciFlower.Tensor.Mixed.Field`:
-it constructs the same fiberwise map
-`c ↦ (eval₀ x c) • T` and proves smoothness by trivializing both multilinear
-bundles, reducing the `0`-multilinear coordinate to evaluation at `Fin.elim0`,
-and applying a constant `ContinuousLinearMap.smulRightL` to the smooth
-multilinear section.
--/
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem tensor0SField_toRS0_apply [CompleteSpace 𝕜] {s : ℕ}
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (x : M) :
+    tensor0SField_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n α x =
+      Tensor0SSpace.toRS0 (𝕜 := 𝕜) (E := E) (I := I) (α x) := by
+  rfl
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem tensorRSField_applyInput_toRS0_one0 [CompleteSpace 𝕜] {s : ℕ}
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) n
+        (tensor0SField_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n α)
+        (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n) =
+      α := by
+  apply ContMDiffSection.ext
+  intro x
+  rw [tensorRSField_applyInput_apply, tensor0SField_toRS0_apply,
+    Tensor0SSpace.toRS0_apply]
+  have hone :
+      (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) n x : Tensor0SSpace 0 I x) Fin.elim0 = (1 : 𝕜) := by
+    simpa [Tensor0SSpace.toModel] using
+      (Tensor0SField.one0_apply (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) n x Fin.elim0)
+  rw [hone, one_smul]
 
 end
 end Tensor0SBundle
@@ -456,6 +504,51 @@ noncomputable def tensor0SField_product
     simp_rw [Bundle.continuousMultilinearMap.triv_coord_product b σ x₀ _ (α _) (β _)]
     exact (contMDiffAt_const (c := ContinuousLinearMap.mul 𝕜 𝕜).clm_apply
       (hα (σ ∘ Fin.castAdd q) x₀)).clm_apply (hβ (σ ∘ Fin.natAdd s) x₀)⟩
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem tensor0SField_product_apply
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (β : Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (x : M) :
+    tensor0SField_product (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n α β x =
+      (α x).product_fun (β x) := rfl
+
+/-- Permute the covariant slots of a smooth `(0,s)` tensor field.
+
+This is the field-level counterpart of the pointwise `domDomCongr` operation.
+It is needed by product-rule statements where the derivative direction is
+normalized to the leading lower slot. -/
+noncomputable def tensor0SField_permute {s q : ℕ}
+    (e : Fin s ≃ Fin q)
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
+    Tensor0SField n q (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) q
+  ⟨fun x => (α x).domDomCongr e, by
+    let d := Module.finrank 𝕜 E
+    let b : Module.Basis (Fin d) 𝕜 E := Module.finBasis 𝕜 E
+    rw [contMDiff_multilinearSection_iff_coord (TangentSpace I) n b]
+    intro σ x₀
+    have hα := ((contMDiff_multilinearSection_iff_coord (TangentSpace I) n b
+      (fun x => (α x : Tensor0SSpace s I x))).mp α.contMDiff)
+    refine (hα (σ ∘ e) x₀).congr_of_eventuallyEq ?_
+    have hbase := (trivializationAt (Tensor0SModel q 𝕜 E)
+      (fun x => Tensor0SSpace q I x) x₀).open_baseSet.mem_nhds
+      (mem_baseSet_trivializationAt _ _ x₀)
+    filter_upwards [hbase] with x hx
+    simp only [continuousMultilinearMap_basis_repr]
+    rfl⟩
+
+set_option linter.unusedSectionVars false in
+@[simp]
+theorem tensor0SField_permute_apply {s q : ℕ}
+    (e : Fin s ≃ Fin q)
+    (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
+    (x : M) :
+    tensor0SField_permute (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        n e α x =
+      (α x).domDomCongr e := rfl
 
 end
 end Tensor0SBundle

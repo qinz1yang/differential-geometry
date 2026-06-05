@@ -2,6 +2,7 @@ import RicciFlower.Metric.Basic
 import RicciFlower.Tensor.RSTensor.Defs
 import RicciFlower.Tensor.RSTensor.Field
 import RicciFlower.Tensor.Multilinear.BundleSmoothEval
+import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 set_option autoImplicit false
@@ -209,6 +210,146 @@ def eval02
   by_cases hi : i = 0
   · simp [hi]
   · simp [hi]
+
+private theorem coord_sq_eq_inner
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M}
+    (g : SmoothRiemannianMetric I M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) g x basis (Tensor0SBundle.identityInvMetric (Idx := Idx)))
+    (v : TangentSpace I x) :
+    (∑ i : Idx, (basis.coord i v) ^ 2) = g.inner x v v := by
+  classical
+  have hv : v = ∑ i : Idx, basis.coord i v • basis i :=
+    (basis.sum_repr v).symm
+  have horth :
+      forall i j : Idx,
+        g.inner x (basis i) (basis j) = if i = j then 1 else 0 := by
+    intro i j
+    have h := (hinv i j).1
+    simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]
+      using h
+  calc
+    (∑ i : Idx, (basis.coord i v) ^ 2)
+        = ∑ i : Idx, basis.coord i v * g.inner x (basis i) v := by
+            apply Finset.sum_congr rfl
+            intro i _
+            have hcoord :=
+              Tensor0SBundle.coord_eq_invInner
+                (I := I) g x basis
+                (Tensor0SBundle.identityInvMetric (Idx := Idx)) hinv i v
+            simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric,
+              pow_two, g.symm x (basis i) v] using congrArg (fun a => basis.coord i v * a) hcoord
+    _ = g.inner x (∑ i : Idx, basis.coord i v • basis i) v := by
+            rw [map_sum]
+            simp [map_smul, smul_eq_mul]
+    _ = g.inner x v v := by rw [← hv]
+
+private theorem abs_quad02_id_le
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M}
+    (g : SmoothRiemannianMetric I M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      Tensor0SBundle.MetricInverseInBasis
+        (I := I) g x basis (Tensor0SBundle.identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (v : TangentSpace I x) :
+    |quad02 (I := I) (M := M) A v| <=
+      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2 A) *
+        g.inner x v v := by
+  classical
+  let c : Idx -> Real := fun i => basis.coord i v
+  let coeff : (Fin 2 -> Idx) -> Real := fun slots =>
+    Tensor0SBundle.component0S (I := I) basis A slots
+  let weight : (Fin 2 -> Idx) -> Real := fun slots =>
+    ∏ a : Fin 2, c (slots a)
+  have hquad :
+      quad02 (I := I) (M := M) A v =
+        ∑ slots : Fin 2 -> Idx, coeff slots * weight slots := by
+    simpa [quad02, coeff, weight]
+      using Tensor0SBundle.tensor0S_apply_eq_sum
+        (I := I) basis A (fun _ : Fin 2 => v)
+  have hnorm :
+      Tensor0SBundle.normSq0S (I := I) g x 2 A =
+        ∑ slots : Fin 2 -> Idx, (coeff slots) ^ 2 := by
+    simpa [coeff]
+      using Tensor0SBundle.normSq0S_identity_eq_sum_sq
+        (I := I) g x 2 basis hinv A
+  have hweight :
+      ∑ slots : Fin 2 -> Idx, (weight slots) ^ 2 =
+        (g.inner x v v) ^ 2 := by
+    have hsum :
+        ∑ slots : Fin 2 -> Idx, (weight slots) ^ 2 =
+          (∑ i : Idx, (c i) ^ 2) * (∑ j : Idx, (c j) ^ 2) := by
+      rw [sum_fin_two_fun]
+      simp [weight, c, pow_two, Finset.mul_sum, mul_left_comm, mul_comm]
+    rw [hsum, coord_sq_eq_inner (I := I) g basis hinv v]
+    ring
+  have hcs :
+      |∑ slots : Fin 2 -> Idx, coeff slots * weight slots| <=
+        Real.sqrt (∑ slots : Fin 2 -> Idx, (coeff slots) ^ 2) *
+          Real.sqrt (∑ slots : Fin 2 -> Idx, (weight slots) ^ 2) := by
+    have hpos :
+        0 <= ∑ slots : Fin 2 -> Idx, |coeff slots| * |weight slots| := by
+      exact Finset.sum_nonneg fun _ _ =>
+        mul_nonneg (abs_nonneg _) (abs_nonneg _)
+    calc
+      |∑ slots : Fin 2 -> Idx, coeff slots * weight slots|
+          <= ∑ slots : Fin 2 -> Idx, |coeff slots * weight slots| :=
+            Finset.abs_sum_le_sum_abs _ _
+      _ = ∑ slots : Fin 2 -> Idx, |coeff slots| * |weight slots| := by
+            apply Finset.sum_congr rfl
+            intro slots _
+            rw [abs_mul]
+      _ <= Real.sqrt (∑ slots : Fin 2 -> Idx, (|coeff slots|) ^ 2) *
+            Real.sqrt (∑ slots : Fin 2 -> Idx, (|weight slots|) ^ 2) := by
+            simpa using
+              Real.sum_mul_le_sqrt_mul_sqrt
+                (Finset.univ : Finset (Fin 2 -> Idx))
+                (fun slots => |coeff slots|) (fun slots => |weight slots|)
+      _ = Real.sqrt (∑ slots : Fin 2 -> Idx, (coeff slots) ^ 2) *
+            Real.sqrt (∑ slots : Fin 2 -> Idx, (weight slots) ^ 2) := by
+            simp [sq_abs]
+  calc
+    |quad02 (I := I) (M := M) A v|
+        = |∑ slots : Fin 2 -> Idx, coeff slots * weight slots| := by rw [hquad]
+    _ <= Real.sqrt (∑ slots : Fin 2 -> Idx, (coeff slots) ^ 2) *
+          Real.sqrt (∑ slots : Fin 2 -> Idx, (weight slots) ^ 2) := hcs
+    _ = Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2 A) *
+          Real.sqrt ((g.inner x v v) ^ 2) := by rw [hnorm, hweight]
+    _ = Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2 A) *
+          g.inner x v v := by
+          have hnonneg : 0 <= g.inner x v v := by
+            by_cases hv : v = 0
+            · subst v
+              simp
+            · exact le_of_lt (g.pos x v hv)
+          rw [Real.sqrt_sq_eq_abs, abs_of_nonneg hnonneg]
+
+/-- The sharp Cauchy--Schwarz estimate for evaluating a covariant two-tensor
+twice on the same tangent vector. -/
+theorem abs_quad02_le_norm
+    {x : M}
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (v : TangentSpace I x) :
+    |quad02 (I := I) (M := M) A v| <=
+      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2 A) *
+        g.inner x v v := by
+  classical
+  have hequiv :
+      forall w : TangentSpace I x,
+        (1 : Real)⁻¹ * g.inner x w w <= g.inner x w w /\
+          g.inner x w w <= (1 : Real) * g.inner x w w := by
+    intro w
+    simp
+  obtain ⟨_mu, basis, hginv, _hhinv, _hmu_nonneg, _hmu_le⟩ :=
+    Tensor0SBundle.exists_diagInv_of_equiv
+      (I := I) g g x (by norm_num : (1 : Real) <= 1) hequiv
+  exact abs_quad02_id_le (I := I) (M := M) g basis hginv A v
 
 private theorem eval02_slots_eq
     {x : M}

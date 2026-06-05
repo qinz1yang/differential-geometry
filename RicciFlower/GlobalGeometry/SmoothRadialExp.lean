@@ -1,4 +1,4 @@
-import RicciFlower.Coordinates.Normal.Frontier.SmoothChart
+import RicciFlower.Coordinates.Normal.Frontier.SmoothEndpoint
 import RicciFlower.GlobalGeometry.Jacobi.Variation
 
 set_option autoImplicit false
@@ -691,61 +691,175 @@ end SmoothRadialExp
 
 /-- The remaining producer frontier for `SmoothRadialExp`.
 
-This is the precise missing bridge: identify the selected smooth exponential
-endpoint with the spray-backed radial geodesic for every vector in the chosen
-ball, then convert the coordinate geodesic equation to intrinsic pullback
-acceleration.  The package statement above keeps those facts explicit instead
-of deriving them from the weaker endpoint relation. -/
-private theorem radial_exp_bridge_of_localDiffeomorph
+This is the precise missing bridge: use the retained projected model-flow data
+for the selected smooth endpoint to identify its radial curves with
+spray-backed radial geodesics, then convert the coordinate geodesic equation to
+intrinsic pullback acceleration.  The package statement above keeps those facts
+explicit instead of deriving them from the weaker relation-valued endpoint. -/
+private theorem radial_exp_bridge_of_smoothEndpoint
     [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (x : M)
-    (D : NormalExpLocalDiffeomorphData (I := I) g x)
+    {R τ : Real}
+    (Ψ :
+      (ModelPhase (E := E) × ModelLin (E := E)) -> Real ->
+        ModelPhase (E := E) × ModelLin (E := E))
+    (_hzero :
+      manifoldEnd (I := I) (varModelFlow (E := E) Ψ) τ x
+          (0 : TangentSpace I x) = x)
+    (_hchart : ∀ v ∈ Metric.ball (0 : TangentSpace I x) R,
+      extChartAt I x
+          (manifoldEnd (I := I) (varModelFlow (E := E) Ψ) τ x v) =
+        chartEnd (I := I) (varModelFlow (E := E) Ψ) τ x v)
+    {a rModel : NNReal}
+    (_hrModel : 0 < rModel)
+    (_hflow : ∀ z ∈ Metric.closedBall
+        (extChartAt I.tangent (phaseZero (I := I) x)
+          (phaseZero (I := I) x)) rModel,
+      varModelFlow (E := E) Ψ z 0 = z ∧
+        ∀ t ∈ Set.Icc (-(2 * τ)) (2 * τ),
+          HasDerivWithinAt
+            (varModelFlow (E := E) Ψ z)
+            (modelSpray (I := I) g x
+              (varModelFlow (E := E) Ψ z t))
+            (Set.Icc (-(2 * τ)) (2 * τ)) t)
+    (_hbound : ∀ z ∈ Metric.closedBall
+        (extChartAt I.tangent (phaseZero (I := I) x)
+          (phaseZero (I := I) x)) rModel,
+      ∀ t : Real,
+        varModelFlow (E := E) Ψ z t ∈
+          Metric.closedBall
+            (extChartAt I.tangent (phaseZero (I := I) x)
+              (phaseZero (I := I) x)) a)
+    (_hsrc : ∀ z ∈ Metric.closedBall
+        (extChartAt I.tangent (phaseZero (I := I) x)
+          (phaseZero (I := I) x)) rModel,
+      ∀ t ∈ Set.Icc (-(2 * τ)) (2 * τ),
+        varModelFlow (E := E) Ψ z t ∈
+          (extChartAt I.tangent (phaseZero (I := I) x)).target ∧
+          (phaseOfModel (I := I) x
+            (varModelFlow (E := E) Ψ z t)).proj ∈
+            (extChartAt I x).source)
     {r : Real}
-    (hrsub : Metric.ball (0 : TangentSpace I x) r ⊆ D.expLD.source) :
+    (hrsub : Metric.ball (0 : TangentSpace I x) r ⊆
+      Metric.ball (0 : TangentSpace I x) R)
+    (_hinitSmall : ∀ v ∈ Metric.ball (0 : TangentSpace I x) r,
+      initPhase (I := I) x (τ⁻¹ • v) ∈
+        Metric.closedBall
+          (extChartAt I.tangent (phaseZero (I := I) x)
+            (phaseZero (I := I) x)) rModel) :
     (∀ u ∈ Metric.ball (0 : TangentSpace I x) r,
-      curveVelocity I (fun t : Real => D.expLD (t • u)) 0 = u) ∧
+      curveVelocity I
+        (fun t : Real =>
+          manifoldEnd (I := I) (varModelFlow (E := E) Ψ) τ x (t • u)) 0 = u) ∧
     (∀ u : TangentSpace I x, ∀ t : Real,
       t • u ∈ Metric.ball (0 : TangentSpace I x) r →
         HasPBCovAccelAt (I := I)
           (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
-          (fun s : Real => D.expLD (s • u)) t 0) := by
-  -- Frontier: use `exists_sprayRadial` plus spray rescaling to show
-  -- `D.expLD (t • u)` equals the spray-backed radial segment, then prove the
-  -- missing coordinate-to-pullback acceleration bridge.
+          (fun s : Real =>
+            manifoldEnd (I := I) (varModelFlow (E := E) Ψ) τ x (s • u)) t 0) := by
+  -- Frontier: use the retained `varModelFlow` data plus homogeneous scaling
+  -- to identify the displayed radial curve with the model-flow trajectory
+  -- from `initPhase x (τ⁻¹ • u)` at time `s * τ`; then convert the resulting
+  -- fixed-chart coordinate geodesic equation to intrinsic pullback
+  -- acceleration.
   sorry
 
 /-- Existence of a ball-based smooth radial exponential package.
 
-The smooth endpoint and ball source are obtained from the smooth local
-exponential diffeomorphism.  The only remaining frontier is the radial
-scaling/geodesic bridge isolated in
-`radial_exp_bridge_of_localDiffeomorph`. -/
+The smooth endpoint and ball source are obtained from the flow-retaining smooth
+endpoint package.  The only remaining frontier is the radial scaling/geodesic
+bridge isolated in `radial_exp_bridge_of_smoothEndpoint`. -/
 theorem exists_smoothRadialExp
     [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (x : M) :
     Nonempty (SmoothRadialExp (I := I) g x) := by
   classical
-  obtain ⟨D⟩ := expAt_localDiffeomorph (I := I) g x
-  have hnhds : D.expLD.source ∈ 𝓝 (0 : TangentSpace I x) :=
-    D.expLD.open_source.mem_nhds D.zero_mem_source
+  obtain ⟨R, hR, τ, hτ, Ψ, hzero, hreal, hchart,
+    hmodelData, chartLD, hzero_src, hsrc_ball, hchartLD⟩ :=
+    exists_varFlow_smooth_endpoint (I := I) g x
+  rcases hchartLD with ⟨hchartLD, _hchartDeriv⟩
+  rcases hmodelData with
+    ⟨a, rModel, hrModel, hinitSmallR, hflow, hbound, hsrc⟩
+  have hnhds : chartLD.source ∈ 𝓝 (0 : TangentSpace I x) :=
+    chartLD.open_source.mem_nhds hzero_src
   rw [Metric.mem_nhds_iff] at hnhds
-  let r : Real := Classical.choose hnhds
-  have hr : 0 < r := (Classical.choose_spec hnhds).1
-  have hrsub :
-      Metric.ball (0 : TangentSpace I x) r ⊆ D.expLD.source :=
+  let rChart : Real := Classical.choose hnhds
+  have hrChart : 0 < rChart := (Classical.choose_spec hnhds).1
+  have hrChartSub :
+      Metric.ball (0 : TangentSpace I x) rChart ⊆ chartLD.source :=
     (Classical.choose_spec hnhds).2
+  let r : Real := rChart / 2
+  have hr : 0 < r := by
+    dsimp [r]
+    linarith
+  have hr_le_chart : r ≤ rChart := by
+    dsimp [r]
+    linarith
+  have hrsubChart :
+      Metric.ball (0 : TangentSpace I x) r ⊆ chartLD.source := by
+    exact fun v hv => hrChartSub (Metric.ball_subset_ball hr_le_chart hv)
+  have hrsubR :
+      Metric.ball (0 : TangentSpace I x) r ⊆
+        Metric.ball (0 : TangentSpace I x) R := by
+    exact fun v hv => hsrc_ball (hrsubChart hv)
+  have hinitSmall :
+      ∀ v ∈ Metric.ball (0 : TangentSpace I x) r,
+        initPhase (I := I) x (τ⁻¹ • v) ∈
+          Metric.closedBall
+            (extChartAt I.tangent (phaseZero (I := I) x)
+              (phaseZero (I := I) x)) rModel := by
+    intro v hv
+    exact hinitSmallR v (hrsubR hv)
+  let exp : TangentSpace I x -> M :=
+    manifoldEnd (I := I) (varModelFlow (E := E) Ψ) τ x
   have hbridge :=
-    radial_exp_bridge_of_localDiffeomorph (I := I) g x D hrsub
+    radial_exp_bridge_of_smoothEndpoint (I := I) g x Ψ hzero hchart hrModel
+      hflow hbound hsrc hrsubR hinitSmall
   refine ⟨{
     radius := r
     radius_pos := hr
-    exp := D.expLD
+    exp := exp
     exp_smoothOn := ?_
-    exp_zero := D.map_zero
+    exp_zero := by simpa [exp] using hzero
     radial_velocity0 := hbridge.1
     radial_geodesic_mem := hbridge.2
   }⟩
-  exact D.expLD.contMDiffOn_toFun.mono hrsub
+  let extTarget : Set (TangentSpace I x) := (extChartAt I x).target
+  let symmT : TangentSpace I x -> M := fun w => (extChartAt I x).symm w
+  let candidate : TangentSpace I x -> M := fun v => symmT (chartLD v)
+  have hchartLD_ext :
+      ∀ v, v ∈ Metric.ball (0 : TangentSpace I x) r ->
+        chartLD v = extChartAt I x (exp v) := by
+    intro v hv
+    have hvsrc : v ∈ chartLD.source := hrsubChart hv
+    rw [hchartLD v hvsrc]
+    exact (hchart v (hrsubR hv)).symm
+  have hchart_maps :
+      ∀ v, v ∈ Metric.ball (0 : TangentSpace I x) r -> chartLD v ∈ extTarget := by
+    intro v hv
+    rw [hchartLD_ext v hv]
+    exact (extChartAt I x).map_source (by
+      have hcoord : exp v ∈ coordinateFrameSet (I := I) x :=
+        expAt_mem_source (I := I) (hreal v (hrsubR hv))
+      simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source, exp] using hcoord)
+  have hsymmT : ContMDiffOn
+      (modelWithCornersSelf Real (TangentSpace I x)) I
+      (∞ : WithTop ℕ∞) symmT extTarget := by
+    change ContMDiffOn (modelWithCornersSelf Real E) I
+      (∞ : WithTop ℕ∞) (extChartAt I x).symm (extChartAt I x).target
+    exact contMDiffOn_extChartAt_symm (I := I) (x := x) (n := (∞ : WithTop ℕ∞))
+  have hcand : ContMDiffOn
+      (modelWithCornersSelf Real (TangentSpace I x)) I
+      (∞ : WithTop ℕ∞) candidate (Metric.ball (0 : TangentSpace I x) r) := by
+    exact hsymmT.comp (chartLD.contMDiffOn_toFun.mono hrsubChart) hchart_maps
+  exact hcand.congr (by
+    intro v hv
+    change exp v = (extChartAt I x).symm (chartLD v)
+    rw [hchartLD_ext v hv]
+    exact ((extChartAt I x).left_inv (by
+      have hcoord : exp v ∈ coordinateFrameSet (I := I) x :=
+        expAt_mem_source (I := I) (hreal v (hrsubR hv))
+      simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source, exp] using hcoord)).symm)
 
 end GlobalGeometry
 end RicciFlower

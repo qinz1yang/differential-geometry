@@ -238,6 +238,85 @@ noncomputable def mcovariantDeriv_tensorRS (r s : ℕ)
     (x₀ : M) : TensorRSSpace r s I x₀ :=
   mcovariantDeriv_tensorRSWithin (n := n) r s X ΓX T univ x₀
 
+/-- The supplied-connection raw covariant derivative commutes with the
+zero-upper-slot embedding of covariant tensor fields in the pointwise, unrestricted
+domain case.  The differentiability assumption `hn` is the honest chain-rule
+input needed to compare the two chart representatives. -/
+theorem mcovariantDeriv_tensorRS_toRS0 (s : ℕ)
+    (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
+    (ΓX : E → E →L[𝕜] E)
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
+    (x₀ : M) (hn : n ≠ 0) :
+    mcovariantDeriv_tensorRS (n := n) 0 s X ΓX
+        (tensor0SField_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n α)
+        x₀ =
+      Tensor0SSpace.toRS0 (𝕜 := 𝕜) (E := E) (I := I)
+        (mcovariantDeriv_tensor0S (n := n) s X ΓX α x₀) := by
+  let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
+  let A : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
+    tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      s x₀ (fun x => α x)
+  let T : E → TensorRSModel 0 s 𝕜 E :=
+    tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      0 s x₀
+      (fun x =>
+        tensor0SField_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n α x)
+  let z₀ : E := extChartAt I x₀ x₀
+  let S : Set E := ((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ range I
+  have hzRange : z₀ ∈ range I :=
+    extChartAt_target_subset_range x₀ (mem_extChartAt_target (I := I) x₀)
+  have hzS : z₀ ∈ S := by
+    simp [S, hzRange]
+  have huniq : UniqueDiffWithinAt 𝕜 S z₀ := by
+    simpa [S] using I.uniqueDiffOn z₀ hzRange
+  have hA : DifferentiableWithinAt 𝕜 A S z₀ := by
+    have hcont := tensor0SModelInChart_contMDiffWithinAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := n) s x₀ α
+    have hcont' : ContDiffWithinAt 𝕜 n A S z₀ := by
+      simpa [A, S, z₀] using hcont.contDiffWithinAt
+    exact hcont'.differentiableWithinAt hn
+  have hT_eventual :
+      T =ᶠ[𝓝[S] z₀]
+        (fun y => Tensor0SModel.toRS0 (𝕜 := 𝕜) (E := E) (A y)) := by
+    have h := tensorRSModelInChart_toRS0_eventually
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x₀
+      (fun x => α x)
+    simpa [T, A, S, z₀] using h
+  have hT_deriv :
+      fderivWithin 𝕜 T S z₀ =
+        fderivWithin 𝕜
+          (fun y => Tensor0SModel.toRS0 (𝕜 := 𝕜) (E := E) (A y)) S z₀ :=
+    hT_eventual.fderivWithin_eq_of_mem hzS
+  have hT_value :
+      T z₀ = Tensor0SModel.toRS0 (𝕜 := 𝕜) (E := E) (A z₀) :=
+    hT_eventual.self_of_nhdsWithin hzS
+  have hmodel :
+      covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) 0 s X' ΓX T S z₀ =
+        Tensor0SModel.toRS0 (𝕜 := 𝕜) (E := E)
+          (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s X' ΓX A S z₀) := by
+    have hmodel_toRS0 :=
+      covariantDeriv_tensorRSModelWithin_toRS0 (𝕜 := 𝕜) (E := E) s
+        X' ΓX A S z₀ hA huniq
+    unfold covariantDeriv_tensorRSModelWithin
+    rw [hT_deriv, hT_value]
+    exact hmodel_toRS0
+  unfold mcovariantDeriv_tensorRS mcovariantDeriv_tensor0S
+  unfold mcovariantDeriv_tensorRSWithin mcovariantDeriv_tensor0SWithin
+  change
+    (trivializationAt (TensorRSModel 0 s 𝕜 E)
+        (fun x => TensorRSSpace 0 s I x) x₀).symm x₀
+      (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) 0 s X' ΓX T S z₀) =
+      Tensor0SSpace.toRS0 (𝕜 := 𝕜) (E := E) (I := I)
+        ((trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
+          (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M → Type _)) x₀).symm
+          x₀
+          (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s X' ΓX A S z₀))
+  rw [hmodel]
+  exact tensorRS_trivializationAt_symm_toRS0 (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+    (M := M) s x₀
+    (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s X' ΓX A S z₀)
+
 section ExtractedConnection
 
 variable [IsManifold I 2 M]

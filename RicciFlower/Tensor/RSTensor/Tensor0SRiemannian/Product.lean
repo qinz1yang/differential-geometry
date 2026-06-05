@@ -1,4 +1,4 @@
-import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
+import RicciFlower.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -23,8 +23,43 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-/-- Inner product of a pointwise `(0,1) ⊗ (0,2)` tensor product splits into
-the product of the induced tensor inner products. -/
+/-- Split a multi-index on `Fin (s + q)` into its left and right blocks. -/
+private def finAppendSlotsEquiv
+    (Idx : Type*) (s q : Nat) :
+    (Fin (s + q) -> Idx) ≃ (Fin s -> Idx) × (Fin q -> Idx) where
+  toFun slots := (slots ∘ Fin.castAdd q, slots ∘ Fin.natAdd s)
+  invFun slots := Fin.addCases slots.1 slots.2
+  left_inv := by
+    intro slots
+    funext i
+    exact Fin.addCases
+      (motive := fun i => Fin.addCases (fun a : Fin s => slots (Fin.castAdd q a))
+          (fun b : Fin q => slots (Fin.natAdd s b)) i = slots i)
+      (fun a => by simp [Fin.addCases_left])
+      (fun b => by simp [Fin.addCases_right])
+      i
+  right_inv := by
+    intro slots
+    ext i <;> simp [Fin.addCases_left, Fin.addCases_right]
+
+/-- Reindex component slots by a permutation of tensor arguments. -/
+private def slotPermEquiv
+    (Idx : Type*) {s : Nat} (sigma : Fin s ≃ Fin s) :
+    (Fin s -> Idx) ≃ (Fin s -> Idx) where
+  toFun slots := slots ∘ sigma
+  invFun slots := slots ∘ sigma.symm
+  left_inv := by
+    intro slots
+    funext i
+    simp
+  right_inv := by
+    intro slots
+    funext i
+    simp
+
+/-- Inner product of a pointwise `(0,1) tensor (0,2)` tensor product splits
+into the product of the induced tensor inner products. -/
+
 theorem inner0S_product_one_two
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothMetric I M) (x : M)
@@ -60,6 +95,130 @@ theorem inner0S_product_one_two
   apply Finset.sum_congr rfl
   intro j _
   ring
+
+/-- Squared norm of a pointwise `(0,1) ⊗ (0,2)` tensor product splits into
+the product of the squared norms. -/
+theorem normSq0S_product_one_two
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (alpha : Tensor0SSpace 1 I x)
+    (A : Tensor0SSpace 2 I x) :
+    normSq0S (I := I) g x 3
+        (Bundle.continuousMultilinearMap.product_fun
+          (s := 1) (q := 2) alpha A) =
+      normSq0S (I := I) g x 1 alpha *
+        normSq0S (I := I) g x 2 A := by
+  simpa [normSq0S] using
+    inner0S_product_one_two (I := I) g x basis gInv hinv alpha alpha A A
+
+/-- Norm of a pointwise `(0,1) ⊗ (0,2)` tensor product splits into the product
+of the induced tensor norms. -/
+theorem sqrt_normSq0S_product_one_two
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (alpha : Tensor0SSpace 1 I x)
+    (A : Tensor0SSpace 2 I x) :
+    Real.sqrt
+        (normSq0S (I := I) g x 3
+          (Bundle.continuousMultilinearMap.product_fun
+            (s := 1) (q := 2) alpha A)) =
+      Real.sqrt (normSq0S (I := I) g x 1 alpha) *
+        Real.sqrt (normSq0S (I := I) g x 2 A) := by
+  rw [normSq0S_product_one_two (I := I) g x basis gInv hinv alpha A]
+  exact Real.sqrt_mul (normSq0S_nonneg (I := I) g x 1 alpha)
+    (normSq0S (I := I) g x 2 A)
+
+/-- Permuting covariant tensor slots preserves the metric-induced squared
+norm. -/
+theorem normSq0S_permute0S
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (sigma : Fin s ≃ Fin s) (A : Tensor0SSpace s I x) :
+    normSq0S (I := I) g x s (permute0S (I := I) sigma A) =
+      normSq0S (I := I) g x s A := by
+  classical
+  rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv
+      (permute0S (I := I) sigma A),
+    normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A]
+  rw [Fintype.sum_equiv (slotPermEquiv Idx sigma)
+    (fun slots : Fin s -> Idx =>
+      (component0S (I := I) basis (permute0S (I := I) sigma A) slots) ^ 2)
+    (fun slots : Fin s -> Idx =>
+      (component0S (I := I) basis A slots) ^ 2)]
+  intro slots
+  change
+    (component0S (I := I) basis (permute0S (I := I) sigma A) slots) ^ 2 =
+      (component0S (I := I) basis A (slots ∘ sigma)) ^ 2
+  rw [component0S_permute0S]
+
+/-- Squared norm of a pointwise product of covariant tensors splits as the
+product of the squared norms in an orthonormal basis. -/
+theorem normSq0S_product
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s q : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x) :
+    normSq0S (I := I) g x (s + q)
+        (Bundle.continuousMultilinearMap.product_fun A B) =
+      normSq0S (I := I) g x s A * normSq0S (I := I) g x q B := by
+  classical
+  rw [normSq0S_identity_eq_sum_sq (I := I) g x (s + q) basis hinv
+      (Bundle.continuousMultilinearMap.product_fun A B),
+    normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A,
+    normSq0S_identity_eq_sum_sq (I := I) g x q basis hinv B]
+  rw [Fintype.sum_equiv (finAppendSlotsEquiv Idx s q)
+    (fun slots : Fin (s + q) -> Idx =>
+      (component0S (I := I) basis
+        (Bundle.continuousMultilinearMap.product_fun A B) slots) ^ 2)
+    (fun slots : (Fin s -> Idx) × (Fin q -> Idx) =>
+      (component0S (I := I) basis
+        (Bundle.continuousMultilinearMap.product_fun A B)
+          (Fin.addCases slots.1 slots.2)) ^ 2)]
+  · rw [Fintype.sum_prod_type]
+    simp_rw [component0S_product]
+    simp only [component0S_apply, Function.comp_apply, Fin.addCases_left,
+      Fin.addCases_right]
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun left _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun right _ => ?_
+    ring
+  · intro slots
+    congr 1
+    exact congrArg
+      (fun f : Fin (s + q) -> Idx =>
+        component0S (I := I) basis
+          (Bundle.continuousMultilinearMap.product_fun A B) f)
+      ((finAppendSlotsEquiv Idx s q).left_inv slots).symm
+
+/-- Norm of a pointwise product of covariant tensors splits as the product of
+the induced tensor norms. -/
+theorem sqrt_normSq0S_product
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M) (s q : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x) :
+    Real.sqrt
+        (normSq0S (I := I) g x (s + q)
+          (Bundle.continuousMultilinearMap.product_fun A B)) =
+      Real.sqrt (normSq0S (I := I) g x s A) *
+        Real.sqrt (normSq0S (I := I) g x q B) := by
+  rw [normSq0S_product (I := I) g x s q basis hinv A B]
+  exact Real.sqrt_mul (normSq0S_nonneg (I := I) g x s A)
+    (normSq0S (I := I) g x q B)
 
 /-- Contracting a `(0,3)` tensor against a product `alpha tensor A` is the
 same as raising `alpha` and contracting the first slot of the `(0,3)` tensor. -/

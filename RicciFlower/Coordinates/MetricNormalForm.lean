@@ -1,4 +1,6 @@
 import RicciFlower.Coordinates.MetricCompatibility
+import RicciFlower.Coordinates.MetricNormalFormJet
+import RicciFlower.LeviCivita.Torsion
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -42,7 +44,7 @@ structure MetricNormalFormAt
     (g : SmoothRiemannianMetric I M) (x : M) where
   u : Set M
   frame : Idx -> (y : M) -> TangentSpace I y
-  hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u
+  hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u
   isOpen_u : IsOpen u
   mem_base : x ∈ u
   bracket_zero :
@@ -58,13 +60,31 @@ structure MetricNormalFormAt
 
 namespace MetricNormalFormAt
 
+/-- The smooth stored local frame, viewed at the `C^1` regularity needed by
+Christoffel-symbol APIs. -/
+def hframe_one
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (N : MetricNormalFormAt (I := I) (Idx := Idx) g x) :
+    IsLocalFrameOn I E (1 : WithTop ℕ∞) N.frame N.u where
+  linearIndependent hx := N.hframe.linearIndependent hx
+  generating hx := N.hframe.generating hx
+  contMDiffOn i := (N.hframe.contMDiffOn i).of_le (by norm_num)
+
+/-- The stored metric-normal frame is orthonormal at the base point. -/
+theorem orthonormal
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (N : MetricNormalFormAt (I := I) (Idx := Idx) g x)
+    (i j : Idx) :
+    g.inner x (N.frame i x) (N.frame j x) = if i = j then 1 else 0 := by
+  simpa [metricCompForMetricInFrame] using N.metric_at i j
+
 /-- Christoffel coefficient of a connection in the stored first-order normal
 frame. -/
 def gamma {g : SmoothRiemannianMetric I M} {x : M}
     (N : MetricNormalFormAt (I := I) (Idx := Idx) g x)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) : Real :=
-  christoffelSymbolInFrame cov N.frame N.hframe x i j k
+  christoffelSymbolInFrame cov N.frame N.hframe_one x i j k
 
 private theorem gamma_skew_last
     {g : SmoothRiemannianMetric I M} {x : M}
@@ -76,13 +96,13 @@ private theorem gamma_skew_last
   classical
   have hraw :=
     metricCompForMetricInFrame_extDerivFun_eq_christoffel
-      (I := I) g cov hmc N.frame N.hframe N.isOpen_u N.mem_base d a b
+      (I := I) g cov hmc N.frame N.hframe_one N.isOpen_u N.mem_base d a b
   have h :
       (∑ p : Idx,
-          christoffelSymbolInFrame cov N.frame N.hframe x d a p *
+          christoffelSymbolInFrame cov N.frame N.hframe_one x d a p *
             metricCompForMetricInFrame (I := I) g N.frame x p b) +
         (∑ p : Idx,
-          christoffelSymbolInFrame cov N.frame N.hframe x d b p *
+          christoffelSymbolInFrame cov N.frame N.hframe_one x d b p *
             metricCompForMetricInFrame (I := I) g N.frame x a p) = 0 := by
     rw [← hraw]
     exact N.metric_deriv d a b
@@ -96,14 +116,14 @@ private theorem gamma_symm_first
     (i j k : Idx) :
     N.gamma cov i j k = N.gamma cov j i k := by
   have hi : MDiffAt (T% (N.frame i)) x :=
-    ((N.hframe.contMDiffAt N.isOpen_u N.mem_base i).mdifferentiableAt (by simp))
+    ((N.hframe_one.contMDiffAt N.isOpen_u N.mem_base i).mdifferentiableAt (by simp))
   have hj : MDiffAt (T% (N.frame j)) x :=
-    ((N.hframe.contMDiffAt N.isOpen_u N.mem_base j).mdifferentiableAt (by simp))
+    ((N.hframe_one.contMDiffAt N.isOpen_u N.mem_base j).mdifferentiableAt (by simp))
   have hskew :=
     torsion_coeff_eq_christoffel_skew
-      (I := I) cov N.frame N.hframe i j k hi hj
+      (I := I) cov N.frame N.hframe_one i j k hi hj
   have hzero :
-      N.hframe.coeff k x (cov.torsion x (N.frame i x) (N.frame j x)) = 0 := by
+      N.hframe_one.coeff k x (cov.torsion x (N.frame i x) (N.frame j x)) = 0 := by
     rw [htor i j]
     simp
   rw [hzero, N.bracket_zero i j] at hskew
@@ -137,9 +157,39 @@ theorem isNormalFrame
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     (hmc : RicciFlower.Connection.IsMetricCompatible (I := I) cov g)
     (htor : ∀ i j : Idx, cov.torsion x (N.frame i x) (N.frame j x) = 0) :
-    IsNormalFrameForConnectionAt cov N.frame N.hframe x := by
+    IsNormalFrameForConnectionAt cov N.frame N.hframe_one x := by
   intro i j k
   exact N.gamma_eq_zero hmc htor i j k
+
+/-- In a first-order metric-normal frame, the Levi-Civita Christoffel
+coefficients vanish at the base point. -/
+theorem gamma_lc_eq_zero
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (N : MetricNormalFormAt (I := I) (Idx := Idx) g x)
+    (i j k : Idx) :
+    N.gamma (LeviCivita.leviCivitaConnectionOfMetric (I := I) g) i j k = 0 := by
+  refine N.gamma_eq_zero
+    (LeviCivita.leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
+    ?_ i j k
+  intro a b
+  have htf := LeviCivita.leviCivitaConnectionOfMetric_isTorsionFree (I := I) g
+  have hzero :
+      (LeviCivita.leviCivitaConnectionOfMetric (I := I) g).torsion x = 0 :=
+    htf x
+  rw [hzero]
+  simp
+
+/-- The metric-normal frame is a normal frame for the Levi-Civita connection. -/
+theorem isNormalFrame_lc
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    {g : SmoothRiemannianMetric I M} {x : M}
+    (N : MetricNormalFormAt (I := I) (Idx := Idx) g x) :
+    IsNormalFrameForConnectionAt
+      (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+      N.frame N.hframe_one x := by
+  intro i j k
+  exact N.gamma_lc_eq_zero i j k
 
 end MetricNormalFormAt
 
@@ -154,6 +204,23 @@ theorem exists_metricNormal
     Nonempty (MetricNormalFormAt (I := I)
       (Idx := CoordinateIdx (𝕜 := Real) E) g x) := by
   sorry
+
+/-- Existence-form consumer package: at every point there is a first-order
+metric-normal frame which is orthonormal at the point and normal for the
+Levi-Civita connection.
+
+The only remaining proof frontier is the producer `exists_metricNormal`; this
+theorem does not introduce a second existence gap. -/
+theorem exists_lcNormalFrame
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    ∃ N : MetricNormalFormAt (I := I)
+        (Idx := CoordinateIdx (𝕜 := Real) E) g x,
+      IsNormalFrameForConnectionAt
+        (LeviCivita.leviCivitaConnectionOfMetric (I := I) g)
+        N.frame N.hframe_one x := by
+  rcases exists_metricNormal (I := I) g x with ⟨N⟩
+  exact ⟨N, N.isNormalFrame_lc⟩
 
 end Coordinates
 end RicciFlower

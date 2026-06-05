@@ -1,4 +1,5 @@
 import RicciFlower.Coordinates.NablaComponents.Basic
+import RicciFlower.Coordinates.Tensor
 import RicciFlower.VectorBundle.PartialMfderiv
 
 /-!
@@ -991,6 +992,179 @@ set_option backward.isDefEq.respectTransparency false in
       nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s cov X α p := by
   rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Covariant derivative of the chart-constant coordinate coframe.
+
+This is the local coordinate form of
+`(∇_X θ^i)(e_j) = - θ^i(∇_X e_j) = - Γ^i_j(X)`.  It is stated for
+`localCovariantDerivTensor0SAt`, so no global coframe section is introduced. -/
+theorem constCoframe_nabla
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (x₀ : M) (i j : CoordinateIdx (𝕜 := 𝕜) E) :
+    (localCovariantDerivTensor0SAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+      (fun y : M =>
+        Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+          (I := I) (M := M) 1 x₀
+          ((continuousMultilinearMap_basis
+            (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) 1)
+            (fun _ : Fin 1 => i)) y) x₀)
+      (fun _ : Fin 1 =>
+        TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
+          ((Module.finBasis 𝕜 E) j) x₀) =
+      - christoffelAlongInFrame cov (coordinateFrameAt (I := I) x₀)
+          (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+          x₀ (X x₀) j i := by
+  classical
+  let β : Tensor0SModel 1 𝕜 E :=
+    (continuousMultilinearMap_basis
+      (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) 1) (fun _ : Fin 1 => i)
+  let βsec : (y : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) 1 y :=
+    fun y : M =>
+      Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) 1 x₀ β y
+  let V : Fin 1 -> (y : M) -> TangentSpace I y :=
+    fun _ y =>
+      TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
+        ((Module.finBasis 𝕜 E) j) y
+  let pair : M -> 𝕜 := fun y : M => βsec y (fun a : Fin 1 => V a y)
+  have hpair_ev :
+      pair =ᶠ[𝓝 x₀] fun _ : M => β (fun _ : Fin 1 => (Module.finBasis 𝕜 E) j) := by
+    let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+    have hx₀ : x₀ ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt' x₀
+    filter_upwards [e.open_baseSet.mem_nhds hx₀] with y hy
+    simpa [pair, βsec, V, e] using
+      Tensor0SSpace.constInChart_apply_tangentConstInChart
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        1 x₀ β hy (fun _ : Fin 1 => (Module.finBasis 𝕜 E) j)
+  have hpair : MDifferentiableAt I 𝓘(𝕜, 𝕜) pair x₀ :=
+    hpair_ev.mdifferentiableAt_iff.mpr mdifferentiableAt_const
+  have hβsec_cont :
+      ContMDiffAt I (I.prod 𝓘(𝕜, Tensor0SModel 1 𝕜 E))
+        (∞ : WithTop ℕ∞)
+        (fun y : M =>
+          (⟨y, βsec y⟩ :
+            TotalSpace (Tensor0SModel 1 𝕜 E)
+              (fun y : M => Tensor0SSpace 1 I y))) x₀ := by
+    simpa [βsec] using
+      tensor0SConstInChart_contMDiffAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) x₀ β
+  have hβmodel :
+      DifferentiableWithinAt 𝕜
+        (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+          (M := M) 1 x₀ βsec)
+        (Set.range I) (extChartAt I x₀ x₀) :=
+    tensor0SModelInChart_differentiableWithinAt_center_of_contMDiffAt
+      (I := I) βsec x₀ hβsec_cont
+  have hV_at :
+      ∀ a : Fin 1,
+        ContMDiffAt I (I.prod 𝓘(𝕜, E)) (∞ : WithTop ℕ∞)
+          (fun y : M => (⟨y, V a y⟩ :
+            TotalSpace E (TangentSpace I : M -> Type _))) x₀ := by
+    intro a
+    let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
+    have hx₀ : x₀ ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt' x₀
+    have hconst_on :
+        CMDiff[e.baseSet] (∞ : WithTop ℕ∞) (T% (V a)) := by
+      simpa [e, V] using
+        (tangentConstInChart_contMDiffOn_baseSet
+          (𝕜 := 𝕜) (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+          x₀ ((Module.finBasis 𝕜 E) j))
+    exact (hconst_on x₀ hx₀).contMDiffAt (e.open_baseSet.mem_nhds hx₀)
+  have hV : ∀ a : Fin 1, MDiffAt (T% (V a)) x₀ :=
+    fun a => (hV_at a).mdifferentiableAt (by simp)
+  have hVmodel : ∀ a : Fin 1,
+      DifferentiableWithinAt 𝕜
+        (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a))
+        (Set.range I) (extChartAt I x₀ x₀) :=
+    fun a =>
+      tangentFieldModelInChart_differentiableWithinAt_center_of_contMDiffAt
+        (I := I) (V a) x₀ (hV_at a)
+  have hcoord : ∀ a : Fin 1, ∀ k : CoordinateIdx (𝕜 := 𝕜) E,
+      MDifferentiableAt I 𝓘(𝕜, 𝕜)
+        (fun y : M =>
+          (Module.finBasis 𝕜 E).coord k
+            (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a)
+              (extChartAt I x₀ y))) x₀ :=
+    fun a k =>
+      tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
+        (I := I) (V a) x₀ (hV_at a) k
+  have hraw :=
+    localCovariantDerivTensor0SAt_eval_moving_raw
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (r := 1) cov X βsec V x₀ hpair hβmodel hV hVmodel hcoord
+  have hderiv_zero :
+      extDerivFun (I := I) pair x₀ (X x₀) = 0 := by
+    have hmf := Filter.EventuallyEq.mfderiv_eq
+      (I := I) (I' := 𝓘(𝕜, 𝕜)) hpair_ev
+    unfold extDerivFun
+    rw [hmf]
+    simp
+  have hcorr :
+      βsec x₀
+          (Function.update (fun b : Fin 1 => V b x₀) 0
+            ((cov (V 0) x₀) (X x₀))) =
+        christoffelAlongInFrame cov (coordinateFrameAt (I := I) x₀)
+          (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+          x₀ (X x₀) j i := by
+    have hframe :
+        MDiffAt (T% (coordinateFrameAt (I := I) x₀ j)) x₀ :=
+      ((coordinateFrameAt_isLocalFrame_one (I := I) x₀).contMDiffAt
+        (coordinateFrameSet_open (I := I) x₀)
+        (coordinateFrameAt_mem (I := I) x₀) j).mdifferentiableAt one_ne_zero
+    have hcov :
+        cov (V 0) x₀ = cov (coordinateFrameAt (I := I) x₀ j) x₀ :=
+      cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq (hV 0) hframe
+        (by simp)
+        (by
+          simpa [V] using
+            tangentConstInChart_eq_coordinateFrame_eventually (I := I) x₀ j)
+    have hupdate :
+        Function.update (fun b : Fin 1 => V b x₀) 0 ((cov (V 0) x₀) (X x₀)) =
+          fun _ : Fin 1 => ((cov (V 0) x₀) (X x₀)) := by
+      funext q
+      fin_cases q
+      simp
+    rw [hupdate]
+    rw [constInChart_one_eval_coordCoeff (I := I) x₀ i]
+    rw [hcov]
+    rfl
+  calc
+    (localCovariantDerivTensor0SAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+      (fun y : M =>
+        Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
+          (I := I) (M := M) 1 x₀
+          ((continuousMultilinearMap_basis
+            (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) 1)
+            (fun _ : Fin 1 => i)) y) x₀)
+      (fun _ : Fin 1 =>
+        TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x₀
+          ((Module.finBasis 𝕜 E) j) x₀)
+        =
+      extDerivFun (I := I) pair x₀ (X x₀) -
+        ∑ a : Fin 1,
+          βsec x₀
+            (Function.update (fun b : Fin 1 => V b x₀) a
+              ((cov (V a) x₀) (X x₀))) := by
+        change
+          ((localCovariantDerivTensor0SAt
+            (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+            1 cov X βsec x₀) (fun a : Fin 1 => V a x₀)) =
+            extDerivFun (I := I) pair x₀ (X x₀) -
+              ∑ a : Fin 1,
+                βsec x₀
+                  (Function.update (fun b : Fin 1 => V b x₀) a
+                    ((cov (V a) x₀) (X x₀)))
+        exact hraw
+    _ = - christoffelAlongInFrame cov (coordinateFrameAt (I := I) x₀)
+          (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+          x₀ (X x₀) j i := by
+      rw [hderiv_zero]
+      simp [hcorr]
 
 end Coordinates
 end RicciFlower

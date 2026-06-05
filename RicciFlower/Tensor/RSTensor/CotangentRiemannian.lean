@@ -416,6 +416,34 @@ theorem basisInvMetric_real {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
             · have hji : j ≠ i := fun h => hij h.symm
               simp [hij, hji]
 
+/-- Inverse-metric components in a fixed basis are unique. -/
+theorem MetricInverseInBasis.eq_of {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    {gInv gInv' : Idx -> Idx -> Real}
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
+    (hinv' : MetricInverseInBasis (I := I) g x basis gInv') :
+    gInv = gInv' := by
+  classical
+  let A : Matrix Idx Idx Real := fun i j => gInv i j
+  let B : Matrix Idx Idx Real := fun i j => gInv' i j
+  let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
+  have hAG : A * G = 1 := by
+    ext i j
+    simpa [A, G, Matrix.mul_apply] using (hinv i j).1
+  have hGB : G * B = 1 := by
+    ext i j
+    simpa [B, G, Matrix.mul_apply] using (hinv' i j).2
+  have hAB : A = B := by
+    calc
+      A = A * 1 := by simp
+      _ = A * (G * B) := by rw [hGB]
+      _ = (A * G) * B := by rw [Matrix.mul_assoc]
+      _ = 1 * B := by rw [hAG]
+      _ = B := by simp
+  funext i j
+  exact congrArg (fun C : Matrix Idx Idx Real => C i j) hAB
+
 /-- Inverse-metric components in a basis are symmetric. -/
 theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothMetric I M) (x : M)

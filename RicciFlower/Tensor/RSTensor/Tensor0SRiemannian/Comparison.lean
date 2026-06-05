@@ -233,6 +233,52 @@ theorem normSq0S_identity_eq_sum_sq
   intro slots _
   rfl
 
+set_option linter.unusedDecidableInType false in
+/-- A single covariant-tensor component is bounded by the full component
+`l^2` sum in the same basis. -/
+theorem component0S_sq_le_sum
+    (s : Nat) (A : Tensor0SSpace s I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (slots : Fin s -> Idx) :
+    (component0S (I := I) basis A slots) ^ 2 <=
+      ∑ slots' : Fin s -> Idx,
+        (component0S (I := I) basis A slots') ^ 2 := by
+  exact Finset.single_le_sum
+    (fun slots' _ => sq_nonneg (component0S (I := I) basis A slots'))
+    (by simp)
+
+/-- In an orthonormal-coordinate basis, the absolute value of a single
+covariant-tensor component is bounded by the metric-induced tensor norm. -/
+theorem abs_component0S_le_sqrt_normSq0S
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasis (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
+    |component0S (I := I) basis A slots| <=
+      Real.sqrt (normSq0S (I := I) g x s A) := by
+  classical
+  have hsum_nonneg :
+      0 <= ∑ slots' : Fin s -> Idx,
+        (component0S (I := I) basis A slots') ^ 2 := by
+    exact Finset.sum_nonneg
+      (fun slots' _ => sq_nonneg (component0S (I := I) basis A slots'))
+  have hnorm_nonneg :
+      0 <= normSq0S (I := I) g x s A := by
+    rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A]
+    exact hsum_nonneg
+  have hsq :
+      |component0S (I := I) basis A slots| ^ 2 <=
+        (Real.sqrt (normSq0S (I := I) g x s A)) ^ 2 := by
+    rw [sq_abs, Real.sq_sqrt hnorm_nonneg,
+      normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A]
+    exact component0S_sq_le_sum (I := I) s A basis slots
+  have hsq_no_abs :
+      (component0S (I := I) basis A slots) ^ 2 <=
+        (Real.sqrt (normSq0S (I := I) g x s A)) ^ 2 := by
+    simpa [sq_abs] using hsq
+  exact abs_le_of_sq_le_sq hsq_no_abs (Real.sqrt_nonneg _)
+
 /-- The `(0,3)` specialization of `normSq0S_identity_eq_sum_sq`, with the
 first slot separated as the derivative direction. -/
 theorem normSq0S_three_identity_eq_sum

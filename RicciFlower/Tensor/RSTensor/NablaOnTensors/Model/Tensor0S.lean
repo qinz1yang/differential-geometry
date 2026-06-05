@@ -54,6 +54,40 @@ omit [CompleteSpace 𝕜] in
       dα_X - lieDeriv_correction s ΓX α := by
   rfl
 
+/-- The continuous linear map on model covariant tensors induced by a slot permutation. -/
+noncomputable def tensor0SModelDomDomCongrL {s q : ℕ} (e : Fin s ≃ Fin q) :
+    Tensor0SModel (𝕜 := 𝕜) (E := E) s →L[𝕜]
+      Tensor0SModel (𝕜 := 𝕜) (E := E) q :=
+  (ContinuousMultilinearMap.domDomCongrₗᵢ 𝕜 E 𝕜 e).toContinuousLinearEquiv
+
+@[simp]
+theorem tensor0SModelDomDomCongrL_apply {s q : ℕ} (e : Fin s ≃ Fin q)
+    (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s) :
+    tensor0SModelDomDomCongrL (𝕜 := 𝕜) (E := E) e α = α.domDomCongr e := rfl
+
+/-- Differentiating a slot-permuted model tensor field permutes the ordinary
+model derivative. -/
+theorem fderivWithin_tensor0SModelDomDomCongrL_apply {s q : ℕ}
+    (e : Fin s ≃ Fin q)
+    (α : E -> Tensor0SModel (𝕜 := 𝕜) (E := E) s)
+    {u : Set E} {y : E}
+    (hα : DifferentiableWithinAt 𝕜 α u y)
+    (hu : UniqueDiffWithinAt 𝕜 u y) :
+    fderivWithin 𝕜
+        (fun z : E => tensor0SModelDomDomCongrL (𝕜 := 𝕜) (E := E) e (α z))
+        u y =
+      (tensor0SModelDomDomCongrL (𝕜 := 𝕜) (E := E) e).comp
+        (fderivWithin 𝕜 α u y) := by
+  let L := tensor0SModelDomDomCongrL (𝕜 := 𝕜) (E := E) e
+  have hlin : DifferentiableAt 𝕜 (fun w => L w) (α y) := L.differentiableAt
+  have hcomp :=
+    fderivWithin_comp (x := y) (f := α) (g := fun w => L w)
+      (s := u) (t := Set.univ)
+      (by simpa using hlin.differentiableWithinAt)
+      hα (by intro z hz; simp) hu
+  rw [L.fderivWithin (s := Set.univ) (x := α y) uniqueDiffWithinAt_univ] at hcomp
+  simpa [L, Function.comp_def] using hcomp
+
 /-- Model-space covariant derivative of a covariant tensor field.
 
 This is the chart-level formula
@@ -93,6 +127,40 @@ theorem covariantDeriv_tensor0SModelAt_apply_slots {s : ℕ}
   · subst hb
     simp
   · simp [Function.update, hb]
+
+/-- Model covariant differentiation commutes with a covariant-slot permutation,
+provided the ordinary derivative term has already been permuted. -/
+theorem covariantDeriv_tensor0SModelAt_domDomCongr_apply_slots {s q : ℕ}
+    (e : Fin s ≃ Fin q)
+    (dα_X : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
+    (dβ_X : Tensor0SModel (𝕜 := 𝕜) (E := E) q)
+    (ΓX : E →L[𝕜] E)
+    (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
+    (hD : ∀ slots : Fin q -> E, dβ_X slots = dα_X (fun a : Fin s => slots (e a)))
+    (slots : Fin q -> E) :
+    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) q dβ_X ΓX
+        (α.domDomCongr e) slots =
+      covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α
+        (fun a : Fin s => slots (e a)) := by
+  classical
+  rw [covariantDeriv_tensor0SModelAt_apply_slots,
+    covariantDeriv_tensor0SModelAt_apply_slots, hD slots]
+  congr 1
+  symm
+  refine Fintype.sum_equiv e
+    (fun a : Fin s =>
+      α (Function.update (fun a : Fin s => slots (e a)) a (ΓX (slots (e a)))))
+    (fun b : Fin q =>
+      (α.domDomCongr e) (Function.update slots b (ΓX (slots b)))) ?_
+  intro a
+  simp only [ContinuousMultilinearMap.domDomCongr_apply]
+  congr 1
+  funext c
+  by_cases hca : c = a
+  · subst c
+    simp
+  · have hne : e c ≠ e a := fun h => hca (e.injective h)
+    simp [Function.update_of_ne, hca, hne]
 
 theorem covariantDeriv_tensor0SModelWithin_apply_slots {s : ℕ}
     (X : E → E) (ΓX : E → E →L[𝕜] E)

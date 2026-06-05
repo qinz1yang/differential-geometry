@@ -107,9 +107,410 @@ theorem nabla0SFun_one_eval_smooth_slots
     (fun j =>
       (coordinateFrame_coeff_contMDiffAt (I := I) Z x₀ j).mdifferentiableAt
         (by simp))
-    (fun j =>
-      (oneForm_eval_coordinateFrame_contMDiffAt (I := I) α x₀ j).mdifferentiableAt
+      (fun j =>
+        (oneForm_eval_coordinateFrame_contMDiffAt (I := I) α x₀ j).mdifferentiableAt
         (by simp))]
+
+/-- If the scalar pairing `α(Z)` is locally constant, then the one-form
+covariant derivative is just the correction term
+`(∇_X α)(Z) = - α(∇_X Z)`.
+
+This is the reusable derivation-on-contraction step behind the local coframe
+identity `∇ θ^i = -Γ^i_j θ^j`. -/
+theorem nabla0SFun_one_eval_of_pair_eventually_const
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (x₀ : M) (c : 𝕜)
+    (hpair :
+      (fun y : M => α y (fun _ : Fin 1 => Z y)) =ᶠ[𝓝 x₀]
+        fun _ : M => c) :
+    (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
+      -α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
+  rw [nabla0SFun_one_eval_smooth_slots (I := I) cov X Z α x₀]
+  have hderiv_zero :
+      extDerivFun (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y))
+          x₀ (X x₀) = 0 := by
+    have hmf := Filter.EventuallyEq.mfderiv_eq
+      (I := I) (I' := 𝓘(𝕜, 𝕜)) hpair
+    unfold extDerivFun
+    rw [hmf, mfderiv_const]
+    rfl
+  simp [hderiv_zero]
+
+/-- Local-frame form of `nabla0SFun_one_eval_of_pair_eventually_const`.
+
+If `Z` agrees near `x₀` with a local-frame vector `e_j`, the pairing
+`α(Z)` is locally constant, and `α_{x₀}` is the `i`-th dual coframe at `x₀`,
+then `(∇_X α)(e_j) = -Γ^i_j(X)`. -/
+theorem nabla0SFun_one_eval_localFrame_dual
+    {Idx : Type*} {u : Set M}
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hu : IsOpen u) {x₀ : M} (hx₀ : x₀ ∈ u) (i j : Idx) (c : 𝕜)
+    (hZ : (fun y : M => Z y) =ᶠ[𝓝 x₀] fun y : M => frame j y)
+    (hpair :
+      (fun y : M => α y (fun _ : Fin 1 => Z y)) =ᶠ[𝓝 x₀]
+        fun _ : M => c)
+    (hα_eval : ∀ W : TangentSpace I x₀,
+      α x₀ (fun _ : Fin 1 => W) = hframe.coeff i x₀ W) :
+    (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
+      -christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+  rw [nabla0SFun_one_eval_of_pair_eventually_const
+    (I := I) cov X Z α x₀ c hpair]
+  have hZ_mdiff : MDiffAt (T% (fun y : M => Z y)) x₀ :=
+    Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hframe_mdiff : MDiffAt (T% (frame j)) x₀ :=
+    (hframe.contMDiffAt hu hx₀ j).mdifferentiableAt one_ne_zero
+  have hcov :
+      cov (fun y : M => Z y) x₀ = cov (frame j) x₀ :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hZ_mdiff hframe_mdiff (by simp) hZ
+  rw [hcov]
+  simp [christoffelAlongInFrame, hα_eval]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Unbundled one-form version of
+`nabla0SFun_one_eval_of_pair_eventually_const`.
+
+This is the form consumed by the mixed-tensor moving-slot bridge, whose upper
+input correction is written with `localCovariantDerivTensor0SAt`. -/
+theorem localCovariantDerivTensor0SAt_one_eval_of_pair_eventually_const
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (x₀ : M) (c : 𝕜)
+    (hpair :
+      (fun y : M => α y (fun _ : Fin 1 => Z y)) =ᶠ[𝓝 x₀]
+        fun _ : M => c) :
+    (localCovariantDerivTensor0SAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+      (fun y : M => α y) x₀) (fun _ : Fin 1 => Z x₀) =
+      -α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
+  let β : (y : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) 1 y := fun y => α y
+  let V : Fin 1 -> (y : M) -> TangentSpace I y := fun _ y => Z y
+  have hpair_mdiff : MDifferentiableAt I 𝓘(𝕜, 𝕜)
+      (fun y : M => β y (fun a : Fin 1 => V a y)) x₀ := by
+    have hpair' :
+        (fun y : M => β y (fun a : Fin 1 => V a y)) =ᶠ[𝓝 x₀]
+          fun _ : M => c := by
+      simpa [β, V] using hpair
+    exact hpair'.mdifferentiableAt_iff.mpr mdifferentiableAt_const
+  have hβ_cont :
+      ContMDiffAt I (I.prod 𝓘(𝕜, Tensor0SModel 1 𝕜 E))
+        (∞ : WithTop ℕ∞)
+        (fun y : M =>
+          (⟨y, β y⟩ :
+            TotalSpace (Tensor0SModel 1 𝕜 E)
+              (fun y : M => Tensor0SSpace 1 I y))) x₀ := by
+    simpa [β] using α.contMDiff x₀
+  have hβmodel :
+      DifferentiableWithinAt 𝕜
+        (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+          (M := M) 1 x₀ β)
+        (Set.range I) (extChartAt I x₀ x₀) :=
+    tensor0SModelInChart_differentiableWithinAt_center_of_contMDiffAt
+      (I := I) β x₀ hβ_cont
+  have hV_at : ∀ a : Fin 1,
+      ContMDiffAt I (I.prod 𝓘(𝕜, E)) (∞ : WithTop ℕ∞)
+        (fun y : M =>
+          (⟨y, V a y⟩ : TotalSpace E (TangentSpace I : M -> Type _))) x₀ := by
+    intro a
+    simpa [V] using Z.contMDiff.contMDiffAt
+  have hV : ∀ a : Fin 1, MDiffAt (T% (V a)) x₀ :=
+    fun a => (hV_at a).mdifferentiableAt (by simp)
+  have hVmodel : ∀ a : Fin 1,
+      DifferentiableWithinAt 𝕜
+        (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a))
+        (Set.range I) (extChartAt I x₀ x₀) :=
+    fun a =>
+      tangentFieldModelInChart_differentiableWithinAt_center_of_contMDiffAt
+        (I := I) (V a) x₀ (hV_at a)
+  have hcoord : ∀ a : Fin 1, ∀ i : Fin (Module.finrank 𝕜 E),
+      MDifferentiableAt I 𝓘(𝕜, 𝕜)
+        (fun y : M =>
+          (Module.finBasis 𝕜 E).coord i
+            (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ (V a)
+              (extChartAt I x₀ y))) x₀ :=
+    fun a i =>
+      tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
+        (I := I) (V a) x₀ (hV_at a) i
+  have hraw :=
+    localCovariantDerivTensor0SAt_eval_moving_raw
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (r := 1) cov X β V x₀ hpair_mdiff hβmodel hV hVmodel hcoord
+  have hderiv_zero :
+      extDerivFun (I := I) (fun y : M => β y (fun a : Fin 1 => V a y))
+          x₀ (X x₀) = 0 := by
+    have hpair' :
+        (fun y : M => β y (fun a : Fin 1 => V a y)) =ᶠ[𝓝 x₀]
+          fun _ : M => c := by
+      simpa [β, V] using hpair
+    have hmf := Filter.EventuallyEq.mfderiv_eq
+      (I := I) (I' := 𝓘(𝕜, 𝕜)) hpair'
+    unfold extDerivFun
+    rw [hmf, mfderiv_const]
+    rfl
+  have hupdate :
+      Function.update (fun b : Fin 1 => Z x₀) 0
+          ((cov (fun y : M => Z y) x₀) (X x₀)) =
+        fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀) := by
+    funext q
+    fin_cases q
+    simp
+  calc
+    (localCovariantDerivTensor0SAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+      (fun y : M => α y) x₀) (fun _ : Fin 1 => Z x₀)
+        = extDerivFun (I := I) (fun y : M => β y (fun a : Fin 1 => V a y))
+            x₀ (X x₀) -
+          ∑ a : Fin 1,
+            β x₀
+              (Function.update (fun b : Fin 1 => V b x₀) a
+                ((cov (V a) x₀) (X x₀))) := by
+          simpa [β, V] using hraw
+    _ = -α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
+          simp [β, V, hderiv_zero, hupdate]
+
+/-- Unbundled local-frame coframe formula:
+`(∇_X θ^i)(e_j) = -Γ^i_j(X)`.
+
+This is the same statement as `nabla0SFun_one_eval_localFrame_dual`, but in
+the `localCovariantDerivTensor0SAt` form used by the mixed-tensor moving-slot
+component theorem. -/
+theorem localCovariantDerivTensor0SAt_one_eval_localFrame_dual
+    {Idx : Type*} {u : Set M}
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hu : IsOpen u) {x₀ : M} (hx₀ : x₀ ∈ u) (i j : Idx) (c : 𝕜)
+    (hZ : (fun y : M => Z y) =ᶠ[𝓝 x₀] fun y : M => frame j y)
+    (hpair :
+      (fun y : M => α y (fun _ : Fin 1 => Z y)) =ᶠ[𝓝 x₀]
+        fun _ : M => c)
+    (hα_eval : ∀ W : TangentSpace I x₀,
+      α x₀ (fun _ : Fin 1 => W) = hframe.coeff i x₀ W) :
+    (localCovariantDerivTensor0SAt
+      (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+      (fun y : M => α y) x₀) (fun _ : Fin 1 => Z x₀) =
+      -christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+  rw [localCovariantDerivTensor0SAt_one_eval_of_pair_eventually_const
+    (I := I) cov X Z α x₀ c hpair]
+  have hZ_mdiff : MDiffAt (T% (fun y : M => Z y)) x₀ :=
+    Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hframe_mdiff : MDiffAt (T% (frame j)) x₀ :=
+    (hframe.contMDiffAt hu hx₀ j).mdifferentiableAt one_ne_zero
+  have hcov :
+      cov (fun y : M => Z y) x₀ = cov (frame j) x₀ :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hZ_mdiff hframe_mdiff (by simp) hZ
+  rw [hcov]
+  simp [christoffelAlongInFrame, hα_eval]
+
+/-- A one-form section which pairs with local frame extensions as the `i`-th
+Kronecker delta is locally the `i`-th dual coframe.
+
+The statement is total as a section-valued eventual equality; on the frame
+domain it identifies `α y` with the tensor-basis covector supplied by
+`hframe.toBasisAt`. -/
+theorem oneForm_eventually_eq_localFrame_dual
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
+    (Z : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    {x₀ : M} (i : Idx)
+    (hZ : ∀ j : Idx,
+      (fun y : M => Z j y) =ᶠ[𝓝 x₀] fun y : M => frame j y)
+    (hpair : ∀ j : Idx,
+      (fun y : M => α y (fun _ : Fin 1 => Z j y)) =ᶠ[𝓝 x₀]
+        fun _ : M => if j = i then (1 : 𝕜) else 0) :
+    ∀ᶠ y in 𝓝 x₀, ∀ hy : y ∈ u,
+      α y =
+        basisTensor0S (I := I) (hframe.toBasisAt hy) (fun _ : Fin 1 => i) := by
+  classical
+  have hZall : ∀ᶠ y in 𝓝 x₀, ∀ j : Idx, Z j y = frame j y := by
+    exact Filter.eventually_all.mpr hZ
+  have hpairall : ∀ᶠ y in 𝓝 x₀, ∀ j : Idx,
+      α y (fun _ : Fin 1 => Z j y) = if j = i then (1 : 𝕜) else 0 := by
+    exact Filter.eventually_all.mpr hpair
+  filter_upwards [hZall, hpairall] with y hZy hpairy
+  intro hy
+  apply ext0S_basis (I := I) (hframe.toBasisAt hy)
+  intro slots
+  let j := slots 0
+  have hslots_frame :
+      (fun a : Fin 1 => frame (slots a) y) =
+        fun _ : Fin 1 => frame j y := by
+    funext q
+    fin_cases q
+    rfl
+  have hbasis_slots :
+      (fun a : Fin 1 => hframe.toBasisAt hy (slots a)) =
+        fun a : Fin 1 => frame (slots a) y := by
+    funext q
+    simp [IsLocalFrameOn.toBasisAt_coe]
+  have hleft :
+      component0S (I := I) (hframe.toBasisAt hy) (α y) slots =
+        if j = i then (1 : 𝕜) else 0 := by
+    rw [component0S_apply, hbasis_slots, hslots_frame]
+    simpa [j, hZy j] using hpairy j
+  have hdelta :
+      (if j = i then (1 : 𝕜) else 0) =
+        (if (fun _ : Fin 1 => i) = slots then (1 : 𝕜) else 0) := by
+    by_cases hji : j = i
+    · have hslots : (fun _ : Fin 1 => i) = slots := by
+        funext q
+        fin_cases q
+        simpa [j] using hji.symm
+      simp [hji, hslots]
+    · have hslots : (fun _ : Fin 1 => i) ≠ slots := by
+        intro h
+        have hij : i = j := by
+          simpa [j] using congrFun h 0
+        exact hji hij.symm
+      simp [hji, hslots]
+  calc
+    component0S (I := I) (hframe.toBasisAt hy) (α y) slots
+        = if j = i then (1 : 𝕜) else 0 := hleft
+    _ = if (fun _ : Fin 1 => i) = slots then (1 : 𝕜) else 0 := hdelta
+    _ = component0S (I := I) (hframe.toBasisAt hy)
+        (basisTensor0S (I := I) (hframe.toBasisAt hy)
+          (fun _ : Fin 1 => i)) slots := by
+          rw [basisTensor0S_component]
+
+/-- Local-frame coframe derivative as a full one-form identity.
+
+If `α` is the `i`-th dual coframe at `x₀` and the sections `Z j` locally
+realize the frame vectors with the expected dual pairings, then
+`∇_X α = -∑_p Γ^i_p(X) θ^p` at `x₀`.  This is the tensor-level form consumed by
+mixed-tensor moving-slot arguments. -/
+theorem localCovariantDerivTensor0SAt_one_localFrame_dual_eq
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+    (Z : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _))
+    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 1)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hu : IsOpen u) {x₀ : M} (hx₀ : x₀ ∈ u) (i : Idx)
+    (hZ : ∀ j : Idx,
+      (fun y : M => Z j y) =ᶠ[𝓝 x₀] fun y : M => frame j y)
+    (hpair : ∀ j : Idx,
+      (fun y : M => α y (fun _ : Fin 1 => Z j y)) =ᶠ[𝓝 x₀]
+        fun _ : M => if j = i then (1 : 𝕜) else 0)
+    (hα_eval : ∀ W : TangentSpace I x₀,
+      α x₀ (fun _ : Fin 1 => W) = hframe.coeff i x₀ W) :
+    localCovariantDerivTensor0SAt
+        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+        (fun y : M => α y) x₀ =
+      -∑ p : Idx,
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) p i •
+          basisTensor0S (I := I) (hframe.toBasisAt hx₀)
+            (fun _ : Fin 1 => p) := by
+  classical
+  let basis := hframe.toBasisAt hx₀
+  apply ext0S_basis (I := I) basis
+  intro slots
+  let j := slots 0
+  have hZx : Z j x₀ = frame j x₀ := by
+    exact (hZ j).eq_of_nhds
+  have hleft :=
+    localCovariantDerivTensor0SAt_one_eval_localFrame_dual
+      (I := I) cov X (Z j) α frame hframe hu hx₀ i j
+      (if j = i then (1 : 𝕜) else 0) (hZ j) (hpair j) hα_eval
+  have hslots_frame :
+      (fun a : Fin 1 => frame (slots a) x₀) =
+        fun _ : Fin 1 => frame j x₀ := by
+    funext q
+    fin_cases q
+    rfl
+  have hbasis_slots :
+      (fun a : Fin 1 => basis (slots a)) =
+        fun a : Fin 1 => frame (slots a) x₀ := by
+    funext q
+    simp [basis, IsLocalFrameOn.toBasisAt_coe]
+  have hleft_comp :
+      component0S (I := I) basis
+          (localCovariantDerivTensor0SAt
+            (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+            (fun y : M => α y) x₀) slots =
+        -christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+    rw [component0S_apply, hbasis_slots, hslots_frame]
+    simpa [basis, j, hZx] using hleft
+  have hsum :
+      (∑ p : Idx,
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) p i *
+          (if (fun _ : Fin 1 => p) = slots then (1 : 𝕜) else 0)) =
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+    rw [Finset.sum_eq_single j]
+    · have heq : (fun _ : Fin 1 => j) = slots := by
+        funext q
+        fin_cases q
+        rfl
+      simp [heq]
+    · intro p _ hp
+      have hne : (fun _ : Fin 1 => p) ≠ slots := by
+        intro h
+        have hpj : p = j := by
+          simpa [j] using congrFun h 0
+        exact hp hpj
+      simp [hne]
+    · intro hnot
+      exact False.elim (hnot (Finset.mem_univ j))
+  have hsum_eval :
+      (∑ p : Idx,
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) p i *
+          (basisTensor0S (I := I) basis (fun _ : Fin 1 => p))
+            (fun a : Fin 1 => basis (slots a))) =
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+    rw [Finset.sum_eq_single j]
+    · simp [basisTensor0S_apply, j]
+    · intro p _ hp
+      have hzero :
+          (basisTensor0S (I := I) basis (fun _ : Fin 1 => p))
+              (fun a : Fin 1 => basis (slots a)) = 0 := by
+        simp [basisTensor0S_apply, j, hp]
+      rw [hzero]
+      simp
+    · intro hnot
+      exact False.elim (hnot (Finset.mem_univ j))
+  have hright_apply :
+      ((∑ p : Idx,
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) p i •
+          basisTensor0S (I := I) basis (fun _ : Fin 1 => p))
+          (fun a : Fin 1 => basis (slots a))) =
+        christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := by
+    rw [tensor0S_sum_apply]
+    simpa [ContinuousMultilinearMap.smul_apply] using hsum_eval
+  calc
+    component0S (I := I) basis
+        (localCovariantDerivTensor0SAt
+          (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 1 cov X
+          (fun y : M => α y) x₀) slots
+        = -christoffelAlongInFrame cov frame hframe x₀ (X x₀) j i := hleft_comp
+    _ = component0S (I := I) basis
+        (-∑ p : Idx,
+          christoffelAlongInFrame cov frame hframe x₀ (X x₀) p i •
+            basisTensor0S (I := I) basis (fun _ : Fin 1 => p)) slots := by
+          rw [component0S_apply]
+          simpa using (congrArg Neg.neg hright_apply).symm
 
 private theorem coordinateFrame_covariantDeriv_apply_contMDiffAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

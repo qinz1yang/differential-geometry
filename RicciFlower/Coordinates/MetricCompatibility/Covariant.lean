@@ -86,6 +86,54 @@ def inverseMetricCovDerivForMetricCompAlongInFrame
     (∑ a : Idx,
       christoffelAlongInFrame cov frame hframe x X a l * gInv x k a)
 
+/-- Covariant derivative components of a metric with respect to an arbitrary
+connection in a local frame. -/
+def metricCovDerivForMetricCompInFrame
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (d a b : Idx) : Real :=
+  extDerivFun (I := I)
+      (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
+      x (frame d x) -
+    (∑ p : Idx,
+      christoffelSymbolInFrame cov frame hframe x d a p *
+        metricCompForMetricInFrame (I := I) g frame x p b) -
+    (∑ p : Idx,
+      christoffelSymbolInFrame cov frame hframe x d b p *
+        metricCompForMetricInFrame (I := I) g frame x a p)
+
+/-- Second covariant derivative components of a metric with respect to an
+arbitrary connection in a local frame.
+
+The slot order is the derivative direction `d`, followed by the three slots
+`a b c` of `nabla g`.  This is the coordinate object needed for the
+differentiated Christoffel-difference formula used in MSM135 Chapter 4 F3. -/
+def metricCovDeriv2ForMetricCompInFrame
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (x : M) (d a b c : Idx) : Real :=
+  extDerivFun (I := I)
+      (fun y : M =>
+        metricCovDerivForMetricCompInFrame
+          (I := I) g cov frame hframe y a b c)
+      x (frame d x) -
+    (∑ p : Idx,
+      christoffelSymbolInFrame cov frame hframe x d a p *
+        metricCovDerivForMetricCompInFrame
+          (I := I) g cov frame hframe x p b c) -
+    (∑ p : Idx,
+      christoffelSymbolInFrame cov frame hframe x d b p *
+        metricCovDerivForMetricCompInFrame
+          (I := I) g cov frame hframe x a p c) -
+    (∑ p : Idx,
+      christoffelSymbolInFrame cov frame hframe x d c p *
+        metricCovDerivForMetricCompInFrame
+          (I := I) g cov frame hframe x a b p)
+
 private theorem metric_localFrame_mdiffAt
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -389,6 +437,40 @@ theorem extDerivFun_mul_real
   simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
     using hprod
 
+/-- Directional derivative of a sum of scalar functions. -/
+theorem extDerivFun_add_real
+    {f g : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
+    extDerivFun (I := I) (fun y : M => f y + g y) x v =
+      extDerivFun (I := I) f x v + extDerivFun (I := I) g x v := by
+  have hadd := congr($(extDerivFun_add
+    (I := I) (g := f) (g' := g) (x := x) hf hg) v)
+  simpa [Pi.add_apply] using hadd
+
+/-- Directional derivative of the negative of a scalar function. -/
+theorem extDerivFun_neg_real
+    {f : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    extDerivFun (I := I) (fun y : M => -f y) x v =
+      -extDerivFun (I := I) f x v := by
+  have h := congrArg (fun L : TangentSpace I x →L[Real] Real => L v)
+    (RicciFlower.extDerivFun_const_mul (I := I) (c := (-1 : Real)) (f := f)
+      (x := x) hf)
+  simpa using h
+
+/-- Directional derivative of a difference of scalar functions. -/
+theorem extDerivFun_sub_real
+    {f g : M -> Real} {x : M} (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
+    extDerivFun (I := I) (fun y : M => f y - g y) x v =
+      extDerivFun (I := I) f x v - extDerivFun (I := I) g x v := by
+  have hneg := extDerivFun_neg_real (I := I) (f := g) (x := x) v hg
+  have hadd := extDerivFun_add_real (I := I) (f := f) (g := fun y : M => -g y)
+    (x := x) v hf hg.neg
+  simpa [sub_eq_add_neg, hneg] using hadd
+
 theorem deriv_congr_nhds
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[𝓝 x] g) :
@@ -506,6 +588,580 @@ theorem inverseMetric_derivative_solve
                           refine Finset.sum_congr rfl fun b _hb => ?_
                           rw [hsymm b j]
                           ring
+
+/-- Algebraic derivative of an inverse metric matrix.
+
+If `gInv` is the two-sided inverse of `metric` and the derivative of the
+identity `gInv * metric = 1` is encoded by `hrow`, then the derivative of
+`gInv` is `- gInv * dMetric * gInv`.  This is the connection-agnostic form of
+`inverseMetric_derivative_solve`. -/
+theorem invDeriv_solve
+    [DecidableEq Idx]
+    (metric dMetric gInv dInv : Idx -> Idx -> Real)
+    (i : Idx)
+    (hrow : forall j : Idx,
+      (∑ a : Idx, (dInv i a * metric a j + gInv i a * dMetric a j)) = 0)
+    (hleft : forall a b : Idx,
+      (∑ k : Idx, gInv a k * metric k b) = (if a = b then 1 else 0))
+    (hright : forall a b : Idx,
+      (∑ k : Idx, metric a k * gInv k b) = (if a = b then 1 else 0))
+    (hmetric_symm : forall a b : Idx, metric a b = metric b a)
+    (j : Idx) :
+    dInv i j =
+      - (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * dMetric a b) := by
+  classical
+  have hsolve := inverseMetric_derivative_solve
+    (metric := metric)
+    (ric := fun a b : Idx => (-1 / 2 : Real) * dMetric a b)
+    (gInv := gInv)
+    (gInvDt := dInv)
+    i
+    (by
+      intro m
+      calc
+        (∑ a : Idx,
+            (dInv i a * metric a m +
+              gInv i a * ((-2 : Real) * ((-1 / 2 : Real) * dMetric a m)))) =
+            ∑ a : Idx, (dInv i a * metric a m + gInv i a * dMetric a m) := by
+              refine Finset.sum_congr rfl fun a _ha => ?_
+              ring
+        _ = 0 := hrow m)
+    hleft hright hmetric_symm j
+  calc
+    dInv i j =
+        2 * (∑ a : Idx, ∑ b : Idx,
+          gInv i a * gInv j b * ((-1 / 2 : Real) * dMetric a b)) := hsolve
+    _ = - (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * dMetric a b) := by
+          calc
+            2 * (∑ a : Idx, ∑ b : Idx,
+              gInv i a * gInv j b * ((-1 / 2 : Real) * dMetric a b))
+                =
+              ∑ a : Idx, ∑ b : Idx,
+                2 * (gInv i a * gInv j b * ((-1 / 2 : Real) * dMetric a b)) := by
+                  rw [Finset.mul_sum]
+                  refine Finset.sum_congr rfl fun a _ha => ?_
+                  rw [Finset.mul_sum]
+            _ = ∑ a : Idx, ∑ b : Idx,
+                - (gInv i a * gInv j b * dMetric a b) := by
+                  refine Finset.sum_congr rfl fun a _ha => ?_
+                  refine Finset.sum_congr rfl fun b _hb => ?_
+                  ring
+            _ = - (∑ a : Idx, ∑ b : Idx,
+                gInv i a * gInv j b * dMetric a b) := by
+                  rw [← Finset.sum_neg_distrib]
+                  refine Finset.sum_congr rfl fun a _ha => ?_
+                  rw [← Finset.sum_neg_distrib]
+
+/-- Covariant derivative of the inverse metric with respect to an arbitrary
+connection.
+
+This is the component formula `∇ g^{-1} = - g^{-1} * (∇ g) * g^{-1}` in a
+local frame.  No metric-compatibility of `cov` is assumed. -/
+theorem invMetricCovDeriv_eq
+    [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M)
+    (gInv : M -> Idx -> Idx -> Real)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hinv : InverseMetricComponentsForMetricInFrameOn (I := I) g gInv frame)
+    {x : M}
+    (hginv_mdiff : ∀ a b : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)
+    (hmetric_mdiff : ∀ a b : Idx,
+      MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b) x)
+    (d k l : Idx) :
+    inverseMetricCovDerivForMetricCompInFrame
+        (I := I) gInv cov frame hframe x d k l =
+      - (∑ a : Idx, ∑ b : Idx,
+        gInv x k a * gInv x l b *
+          metricCovDerivForMetricCompInFrame (I := I) g cov frame hframe x d a b) := by
+  classical
+  let G : Idx -> Idx -> Real := fun a b =>
+    metricCompForMetricInFrame (I := I) g frame x a b
+  let U : Idx -> Idx -> Real := fun a b => gInv x a b
+  let DG : Idx -> Idx -> Real := fun a b =>
+    extDerivFun (I := I)
+      (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
+      x (frame d x)
+  let DU : Idx -> Idx -> Real := fun a b =>
+    extDerivFun (I := I) (fun y : M => gInv y a b) x (frame d x)
+  let Γ : Idx -> Idx -> Real := fun a b =>
+    christoffelSymbolInFrame cov frame hframe x d a b
+  have hsymm : ∀ x i j, gInv x i j = gInv x j i :=
+    gInvForMetric_symm (I := I) g gInv frame hinv
+  have hrow : ∀ m : Idx,
+      (∑ a : Idx, (DU k a * G a m + U k a * DG a m)) = 0 := by
+    intro m
+    let F : Idx -> M -> Real := fun a y =>
+      gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m
+    have hF_mdiff : ∀ a ∈ (Finset.univ : Finset Idx),
+        MDifferentiableAt I 𝓘(Real, Real) (F a) x := by
+      intro a _ha
+      exact MDifferentiableAt.mul (hginv_mdiff k a) (hmetric_mdiff a m)
+    have hsum :
+        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) =
+          ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
+      simpa using extDerivFun_finset_sum_real
+        (I := I) (t := (Finset.univ : Finset Idx)) F (frame d x) hF_mdiff
+    have hprod : ∀ a : Idx,
+        extDerivFun (I := I) (F a) x (frame d x) =
+          U k a * DG a m + DU k a * G a m := by
+      intro a
+      simpa [F, DG, DU, G, U, mul_comm, mul_left_comm, mul_assoc] using
+        extDerivFun_mul_real (I := I) (x := x) (frame d x)
+          (hginv_mdiff k a) (hmetric_mdiff a m)
+    have hconst :
+        (fun y : M => ∑ a : Idx,
+          gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m) =
+        (fun _ : M => if k = m then 1 else 0) := by
+      funext y
+      exact (hinv y k m).1
+    have hderiv := congrArg
+      (fun F : M -> Real => extDerivFun (I := I) F x (frame d x)) hconst
+    have hzero_raw :
+        extDerivFun (I := I)
+          (fun y : M => ∑ a : Idx,
+            gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m)
+          x (frame d x) = 0 := by
+      simpa using hderiv
+    have hF_eq :
+        ((Finset.univ : Finset Idx).sum F) =
+          (fun y : M => ∑ a : Idx,
+            gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m) := by
+      funext y
+      simp [F]
+    have hzero :
+        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) = 0 := by
+      rw [hF_eq]
+      exact hzero_raw
+    calc
+      (∑ a : Idx, (DU k a * G a m + U k a * DG a m))
+          = ∑ a : Idx, (U k a * DG a m + DU k a * G a m) := by
+              refine Finset.sum_congr rfl fun a _ha => ?_
+              ring
+      _ = ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
+              refine Finset.sum_congr rfl fun a _ha => ?_
+              rw [hprod a]
+      _ = extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) := hsum.symm
+      _ = 0 := hzero
+  have hDU := invDeriv_solve
+    (metric := G)
+    (dMetric := DG)
+    (gInv := U)
+    (dInv := DU)
+    k
+    hrow
+    (by
+      intro a b
+      simpa [G, U] using (hinv x a b).1)
+    (by
+      intro a b
+      simpa [G, U] using (hinv x a b).2)
+    (by
+      intro a b
+      simpa [G, metricCompForMetricInFrame] using g.symm x (frame a x) (frame b x))
+    l
+  have hUG_left : ∀ p : Idx,
+      (∑ a : Idx, U k a * G a p) = (if k = p then 1 else 0) := by
+    intro p
+    simpa [U, G] using (hinv x k p).1
+  have hUG_right_sym : ∀ p : Idx,
+      (∑ b : Idx, U l b * G p b) = (if p = l then 1 else 0) := by
+    intro p
+    calc
+      (∑ b : Idx, U l b * G p b)
+          = ∑ b : Idx, G p b * U b l := by
+              refine Finset.sum_congr rfl fun b _hb => ?_
+              change gInv x l b * G p b = G p b * gInv x b l
+              rw [hsymm x l b]
+              ring
+      _ = (if p = l then 1 else 0) := by
+              simpa [U, G] using (hinv x p l).2
+  have hterm1 :
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ a p * G p b)) =
+        ∑ a : Idx, Γ a l * U k a := by
+    calc
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ a p * G p b))
+          =
+        ∑ a : Idx, ∑ p : Idx, U k a * Γ a p *
+          (∑ b : Idx, U l b * G p b) := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            calc
+              (∑ b : Idx, U k a * U l b *
+                (∑ p : Idx, Γ a p * G p b))
+                  =
+                ∑ b : Idx, ∑ p : Idx,
+                  U k a * U l b * (Γ a p * G p b) := by
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    rw [Finset.mul_sum]
+              _ = ∑ p : Idx, ∑ b : Idx,
+                  U k a * U l b * (Γ a p * G p b) := by
+                    rw [Finset.sum_comm]
+              _ = ∑ p : Idx, U k a * Γ a p *
+                  (∑ b : Idx, U l b * G p b) := by
+                    refine Finset.sum_congr rfl fun p _hp => ?_
+                    rw [Finset.mul_sum]
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    ring
+      _ = ∑ a : Idx, ∑ p : Idx,
+          U k a * Γ a p * (if p = l then 1 else 0) := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            refine Finset.sum_congr rfl fun p _hp => ?_
+            rw [hUG_right_sym p]
+      _ = ∑ a : Idx, U k a * Γ a l := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            simp
+      _ = ∑ a : Idx, Γ a l * U k a := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            ring
+  have hterm2 :
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ b p * G a p)) =
+        ∑ a : Idx, Γ a k * U a l := by
+    calc
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ b p * G a p))
+          =
+        ∑ b : Idx, ∑ p : Idx, U l b * Γ b p *
+          (∑ a : Idx, U k a * G a p) := by
+            calc
+              (∑ a : Idx, ∑ b : Idx,
+                U k a * U l b * (∑ p : Idx, Γ b p * G a p))
+                  =
+                ∑ b : Idx, ∑ a : Idx,
+                  U k a * U l b * (∑ p : Idx, Γ b p * G a p) := by
+                    rw [Finset.sum_comm]
+              _ = ∑ b : Idx, ∑ p : Idx, U l b * Γ b p *
+                  (∑ a : Idx, U k a * G a p) := by
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    calc
+                      (∑ a : Idx, U k a * U l b *
+                        (∑ p : Idx, Γ b p * G a p))
+                          =
+                        ∑ a : Idx, ∑ p : Idx,
+                          U k a * U l b * (Γ b p * G a p) := by
+                            refine Finset.sum_congr rfl fun a _ha => ?_
+                            rw [Finset.mul_sum]
+                      _ = ∑ p : Idx, ∑ a : Idx,
+                          U k a * U l b * (Γ b p * G a p) := by
+                            rw [Finset.sum_comm]
+                      _ = ∑ p : Idx, U l b * Γ b p *
+                          (∑ a : Idx, U k a * G a p) := by
+                            refine Finset.sum_congr rfl fun p _hp => ?_
+                            rw [Finset.mul_sum]
+                            refine Finset.sum_congr rfl fun a _ha => ?_
+                            ring
+      _ = ∑ b : Idx, ∑ p : Idx,
+          U l b * Γ b p * (if k = p then 1 else 0) := by
+            refine Finset.sum_congr rfl fun b _hb => ?_
+            refine Finset.sum_congr rfl fun p _hp => ?_
+            rw [hUG_left p]
+      _ = ∑ b : Idx, U l b * Γ b k := by
+            refine Finset.sum_congr rfl fun b _hb => ?_
+            simp
+      _ = ∑ a : Idx, Γ a k * U a l := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            change gInv x l a * Γ a k = Γ a k * gInv x a l
+            rw [hsymm x l a]
+            ring
+  unfold inverseMetricCovDerivForMetricCompInFrame
+  change DU k l + (∑ a : Idx, Γ a k * U a l) +
+      (∑ a : Idx, Γ a l * U k a) =
+    - (∑ a : Idx, ∑ b : Idx,
+      U k a * U l b *
+        metricCovDerivForMetricCompInFrame (I := I) g cov frame hframe x d a b)
+  rw [hDU]
+  unfold metricCovDerivForMetricCompInFrame
+  change
+    - (∑ a : Idx, ∑ b : Idx, U k a * U l b * DG a b) +
+        (∑ a : Idx, Γ a k * U a l) +
+        (∑ a : Idx, Γ a l * U k a) =
+      - (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b *
+          (DG a b - (∑ p : Idx, Γ a p * G p b) -
+            (∑ p : Idx, Γ b p * G a p)))
+  rw [← hterm2, ← hterm1]
+  simp only [mul_sub, Finset.sum_sub_distrib]
+  ring
+
+/-- Local form of `invMetricCovDeriv_eq`.
+
+This version only needs the inverse identities at the base point and the row
+inverse identity eventually near that point.  It is the right interface for
+local frames which are genuine frames only on a neighborhood. -/
+theorem invMetricCovDeriv_eq_local
+    [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M)
+    (gInv : M -> Idx -> Idx -> Real)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    {x : M}
+    (hinvX : forall i j : Idx,
+      (∑ k : Idx, gInv x i k * metricCompForMetricInFrame (I := I) g frame x k j) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx, metricCompForMetricInFrame (I := I) g frame x i k * gInv x k j) =
+          (if i = j then 1 else 0))
+    (hinvN : forall i j : Idx,
+      (fun y : M => ∑ k : Idx,
+          gInv y i k * metricCompForMetricInFrame (I := I) g frame y k j) =ᶠ[𝓝 x]
+        fun _ : M => if i = j then 1 else 0)
+    (hginv_mdiff : forall a b : Idx,
+      MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)
+    (hmetric_mdiff : forall a b : Idx,
+      MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b) x)
+    (d k l : Idx) :
+    inverseMetricCovDerivForMetricCompInFrame
+        (I := I) gInv cov frame hframe x d k l =
+      - (∑ a : Idx, ∑ b : Idx,
+        gInv x k a * gInv x l b *
+          metricCovDerivForMetricCompInFrame (I := I) g cov frame hframe x d a b) := by
+  classical
+  let G : Idx -> Idx -> Real := fun a b =>
+    metricCompForMetricInFrame (I := I) g frame x a b
+  let U : Idx -> Idx -> Real := fun a b => gInv x a b
+  let DG : Idx -> Idx -> Real := fun a b =>
+    extDerivFun (I := I)
+      (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
+      x (frame d x)
+  let DU : Idx -> Idx -> Real := fun a b =>
+    extDerivFun (I := I) (fun y : M => gInv y a b) x (frame d x)
+  let Γ : Idx -> Idx -> Real := fun a b =>
+    christoffelSymbolInFrame cov frame hframe x d a b
+  have hsymmX : forall i j : Idx, gInv x i j = gInv x j i := by
+    intro i j
+    let A : Matrix Idx Idx Real := fun i j => gInv x i j
+    let Gm : Matrix Idx Idx Real := fun i j =>
+      metricCompForMetricInFrame (I := I) g frame x i j
+    have hAG : A * Gm = 1 := by
+      ext a b
+      simpa [A, Gm, Matrix.mul_apply] using (hinvX a b).1
+    have hGA : Gm * A = 1 := by
+      ext a b
+      simpa [A, Gm, Matrix.mul_apply] using (hinvX a b).2
+    have hGt : Matrix.transpose Gm = Gm := by
+      ext a b
+      simpa [Gm, metricCompForMetricInFrame] using
+        g.symm x (frame b x) (frame a x)
+    have hAtG : Matrix.transpose A * Gm = 1 := by
+      calc
+        Matrix.transpose A * Gm = Matrix.transpose A * Matrix.transpose Gm := by rw [hGt]
+        _ = Matrix.transpose (Gm * A) := by rw [Matrix.transpose_mul]
+        _ = 1 := by rw [hGA]; simp
+    have hAt : Matrix.transpose A = A := by
+      calc
+        Matrix.transpose A = Matrix.transpose A * 1 := by simp
+        _ = Matrix.transpose A * (Gm * A) := by rw [hGA]
+        _ = (Matrix.transpose A * Gm) * A := by rw [← Matrix.mul_assoc]
+        _ = 1 * A := by rw [hAtG]
+        _ = A := by simp
+    have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
+    simpa [A] using hentry
+  have hrow : ∀ m : Idx,
+      (∑ a : Idx, (DU k a * G a m + U k a * DG a m)) = 0 := by
+    intro m
+    let F : Idx -> M -> Real := fun a y =>
+      gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m
+    have hF_mdiff : ∀ a ∈ (Finset.univ : Finset Idx),
+        MDifferentiableAt I 𝓘(Real, Real) (F a) x := by
+      intro a _ha
+      exact MDifferentiableAt.mul (hginv_mdiff k a) (hmetric_mdiff a m)
+    have hsum :
+        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x (frame d x) =
+          ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
+      simpa using extDerivFun_finset_sum_real
+        (I := I) (t := (Finset.univ : Finset Idx)) F (frame d x) hF_mdiff
+    have hprod : ∀ a : Idx,
+        extDerivFun (I := I) (F a) x (frame d x) =
+          U k a * DG a m + DU k a * G a m := by
+      intro a
+      simpa [F, DG, DU, G, U, mul_comm, mul_left_comm, mul_assoc] using
+        extDerivFun_mul_real (I := I) (x := x) (frame d x)
+          (hginv_mdiff k a) (hmetric_mdiff a m)
+    have hzero_raw :
+        extDerivFun (I := I)
+          (fun y : M => ∑ a : Idx,
+            gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m)
+          x (frame d x) = 0 := by
+      calc
+        extDerivFun (I := I)
+            (fun y : M => ∑ a : Idx,
+              gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m)
+            x (frame d x)
+            =
+          extDerivFun (I := I) (fun _ : M => if k = m then 1 else 0) x
+              (frame d x) :=
+            deriv_congr_nhds (I := I) (frame d x) (hinvN k m)
+        _ = 0 := by
+            simp [extDerivFun]
+    have hF_eq :
+        ((Finset.univ : Finset Idx).sum F) =
+          (fun y : M => ∑ a : Idx,
+            gInv y k a * metricCompForMetricInFrame (I := I) g frame y a m) := by
+      funext y
+      simp [F]
+    have hzero :
+        extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x
+            (frame d x) = 0 := by
+      rw [hF_eq]
+      exact hzero_raw
+    calc
+      (∑ a : Idx, (DU k a * G a m + U k a * DG a m))
+          = ∑ a : Idx, (U k a * DG a m + DU k a * G a m) := by
+              refine Finset.sum_congr rfl fun a _ha => ?_
+              ring
+      _ = ∑ a : Idx, extDerivFun (I := I) (F a) x (frame d x) := by
+              refine Finset.sum_congr rfl fun a _ha => ?_
+              rw [hprod a]
+      _ = extDerivFun (I := I) ((Finset.univ : Finset Idx).sum F) x
+            (frame d x) := hsum.symm
+      _ = 0 := hzero
+  have hDU := invDeriv_solve
+    (metric := G)
+    (dMetric := DG)
+    (gInv := U)
+    (dInv := DU)
+    k
+    hrow
+    (by
+      intro a b
+      simpa [G, U] using (hinvX a b).1)
+    (by
+      intro a b
+      simpa [G, U] using (hinvX a b).2)
+    (by
+      intro a b
+      simpa [G, metricCompForMetricInFrame] using g.symm x (frame a x) (frame b x))
+    l
+  have hUG_left : ∀ p : Idx,
+      (∑ a : Idx, U k a * G a p) = (if k = p then 1 else 0) := by
+    intro p
+    simpa [U, G] using (hinvX k p).1
+  have hUG_right_sym : ∀ p : Idx,
+      (∑ b : Idx, U l b * G p b) = (if p = l then 1 else 0) := by
+    intro p
+    calc
+      (∑ b : Idx, U l b * G p b)
+          = ∑ b : Idx, G p b * U b l := by
+              refine Finset.sum_congr rfl fun b _hb => ?_
+              change gInv x l b * G p b = G p b * gInv x b l
+              rw [hsymmX l b]
+              ring
+      _ = (if p = l then 1 else 0) := by
+              simpa [U, G] using (hinvX p l).2
+  have hterm1 :
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ a p * G p b)) =
+        ∑ a : Idx, Γ a l * U k a := by
+    calc
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ a p * G p b))
+          =
+        ∑ a : Idx, ∑ p : Idx, U k a * Γ a p *
+          (∑ b : Idx, U l b * G p b) := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            calc
+              (∑ b : Idx, U k a * U l b *
+                (∑ p : Idx, Γ a p * G p b))
+                  =
+                ∑ b : Idx, ∑ p : Idx,
+                  U k a * U l b * (Γ a p * G p b) := by
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    rw [Finset.mul_sum]
+              _ = ∑ p : Idx, ∑ b : Idx,
+                  U k a * U l b * (Γ a p * G p b) := by
+                    rw [Finset.sum_comm]
+              _ = ∑ p : Idx, U k a * Γ a p *
+                  (∑ b : Idx, U l b * G p b) := by
+                    refine Finset.sum_congr rfl fun p _hp => ?_
+                    rw [Finset.mul_sum]
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    ring
+      _ = ∑ a : Idx, ∑ p : Idx,
+          U k a * Γ a p * (if p = l then 1 else 0) := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            refine Finset.sum_congr rfl fun p _hp => ?_
+            rw [hUG_right_sym p]
+      _ = ∑ a : Idx, U k a * Γ a l := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            simp
+      _ = ∑ a : Idx, Γ a l * U k a := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            ring
+  have hterm2 :
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ b p * G a p)) =
+        ∑ a : Idx, Γ a k * U a l := by
+    calc
+      (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b * (∑ p : Idx, Γ b p * G a p))
+          =
+        ∑ b : Idx, ∑ p : Idx, U l b * Γ b p *
+          (∑ a : Idx, U k a * G a p) := by
+            calc
+              (∑ a : Idx, ∑ b : Idx,
+                U k a * U l b * (∑ p : Idx, Γ b p * G a p))
+                  =
+                ∑ b : Idx, ∑ a : Idx,
+                  U k a * U l b * (∑ p : Idx, Γ b p * G a p) := by
+                    rw [Finset.sum_comm]
+              _ = ∑ b : Idx, ∑ p : Idx, U l b * Γ b p *
+                  (∑ a : Idx, U k a * G a p) := by
+                    refine Finset.sum_congr rfl fun b _hb => ?_
+                    calc
+                      (∑ a : Idx, U k a * U l b *
+                        (∑ p : Idx, Γ b p * G a p))
+                          =
+                        ∑ a : Idx, ∑ p : Idx,
+                          U k a * U l b * (Γ b p * G a p) := by
+                            refine Finset.sum_congr rfl fun a _ha => ?_
+                            rw [Finset.mul_sum]
+                      _ = ∑ p : Idx, ∑ a : Idx,
+                          U k a * U l b * (Γ b p * G a p) := by
+                            rw [Finset.sum_comm]
+                      _ = ∑ p : Idx, U l b * Γ b p *
+                          (∑ a : Idx, U k a * G a p) := by
+                            refine Finset.sum_congr rfl fun p _hp => ?_
+                            rw [Finset.mul_sum]
+                            refine Finset.sum_congr rfl fun a _ha => ?_
+                            ring
+      _ = ∑ b : Idx, ∑ p : Idx,
+          U l b * Γ b p * (if k = p then 1 else 0) := by
+            refine Finset.sum_congr rfl fun b _hb => ?_
+            refine Finset.sum_congr rfl fun p _hp => ?_
+            rw [hUG_left p]
+      _ = ∑ b : Idx, U l b * Γ b k := by
+            refine Finset.sum_congr rfl fun b _hb => ?_
+            simp
+      _ = ∑ a : Idx, Γ a k * U a l := by
+            refine Finset.sum_congr rfl fun a _ha => ?_
+            change gInv x l a * Γ a k = Γ a k * gInv x a l
+            rw [hsymmX l a]
+            ring
+  unfold inverseMetricCovDerivForMetricCompInFrame
+  change DU k l + (∑ a : Idx, Γ a k * U a l) +
+      (∑ a : Idx, Γ a l * U k a) =
+    - (∑ a : Idx, ∑ b : Idx,
+      U k a * U l b *
+        metricCovDerivForMetricCompInFrame (I := I) g cov frame hframe x d a b)
+  rw [hDU]
+  unfold metricCovDerivForMetricCompInFrame
+  change
+    - (∑ a : Idx, ∑ b : Idx, U k a * U l b * DG a b) +
+        (∑ a : Idx, Γ a k * U a l) +
+        (∑ a : Idx, Γ a l * U k a) =
+      - (∑ a : Idx, ∑ b : Idx,
+        U k a * U l b *
+          (DG a b - (∑ p : Idx, Γ a p * G p b) -
+            (∑ p : Idx, Γ b p * G a p)))
+  rw [← hterm2, ← hterm1]
+  simp only [mul_sub, Finset.sum_sub_distrib]
+  ring
 
 /-- Metric compatibility in coordinates for the inverse metric:
 `nabla_d g^{kl} = 0`. -/

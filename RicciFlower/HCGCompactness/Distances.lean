@@ -8,9 +8,9 @@ set_option autoImplicit false
 # Distance Consequence Of Approximate Isometries
 
 This file contains the metric-space ball-inclusion step in MSM135 Chapter 4,
-Proposition `lbl367` ("Distances").  The remaining Riemannian producer is the
-length/distance estimate that turns a `(eps,0)` pre-approximate isometry into
-the Lipschitz hypothesis used here.
+Proposition "Distances".  The remaining Riemannian producer is the chain-rule
+speed estimate that turns a concrete `(eps,0)` pre-approximate isometry into the
+tangent-path hypothesis used here.
 -/
 
 namespace RicciFlower
@@ -19,15 +19,16 @@ namespace HCGCompactness
 open Bundle Manifold
 open scoped Manifold ContDiff ENNReal
 
-/-- MSM135 Chapter 4, Proposition `lbl367`, length-infimum bridge.
+/-- MSM135 Chapter 4, Proposition "Distances", length-infimum bridge.
 
 If every smooth source path from `x` to `y` can be sent to a smooth target path
 from `F x` to `F y` whose Riemannian length is at most `K` times the source
 length, then the Riemannian extended distance between the images is at most
 `K` times the source Riemannian extended distance.
 
-The remaining geometric producer for F2 is the tangent-vector length comparison
-coming from the `(eps,0)` pre-approximate-isometry metric bound. -/
+The remaining geometric producer for the book-facing map statement is the
+tangent-vector speed comparison coming from the `(eps,0)` pre-approximate
+isometry metric bound. -/
 theorem edist_le_of_path_comp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -63,7 +64,39 @@ theorem edist_le_of_path_comp
       exact (iInf_le _ η).trans (iInf_le _ hη)
   exact htarget.trans hlen
 
-/-- MSM135 Chapter 4, Proposition `lbl367`, pointwise distance estimate from
+/-- Pointwise path-speed comparison implies the path-length comparison consumed
+by MSM135 Chapter 4, Proposition "Distances". -/
+theorem pathComp_tangent
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M N : Type*}
+    [TopologicalSpace M] [ChartedSpace H M] [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M]
+    [TopologicalSpace N] [ChartedSpace H N] [PseudoEMetricSpace N]
+    [RiemannianBundle (fun x : N => TangentSpace I x)]
+    [IsRiemannianManifold I N]
+    (F : M -> N) {A : ENNReal} (hA_ne_top : A ≠ ⊤)
+    (hspeed :
+      forall {x y : M}, forall γ : Path x y, CMDiff 1 γ ->
+        exists η : Path (F x) (F y), CMDiff 1 η /\
+          forall t : Set.Icc (0 : Real) 1,
+            ‖mfderiv% η t 1‖ₑ <= A * ‖mfderiv% γ t 1‖ₑ) :
+    forall {x y : M}, forall γ : Path x y, CMDiff 1 γ ->
+        exists η : Path (F x) (F y), CMDiff 1 η /\
+          (∫⁻ t, ‖mfderiv% η t 1‖ₑ) <=
+            A * (∫⁻ t, ‖mfderiv% γ t 1‖ₑ) := by
+  intro x y γ hγ
+  rcases hspeed γ hγ with ⟨η, hη, hη_speed⟩
+  refine ⟨η, hη, ?_⟩
+  calc
+    (∫⁻ t, ‖mfderiv% η t 1‖ₑ)
+        <= ∫⁻ t, A * ‖mfderiv% γ t 1‖ₑ :=
+          MeasureTheory.lintegral_mono hη_speed
+    _ = A * (∫⁻ t, ‖mfderiv% γ t 1‖ₑ) := by
+          rw [MeasureTheory.lintegral_const_mul' A _ hA_ne_top]
+
+/-- MSM135 Chapter 4, Proposition "Distances", pointwise distance estimate from
 the checked path-length comparison layer. -/
 theorem dist_le_of_path_comp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -94,8 +127,33 @@ theorem dist_le_of_path_comp
       simpa [ENNReal.ofReal, Real.toNNReal_of_nonneg (Real.sqrt_nonneg (1 + eps))] using hraw
   simpa using hF.dist_le_mul x y
 
+/-- MSM135 Chapter 4, Proposition "Distances", pointwise distance estimate from
+a checked path-speed comparison layer. -/
+theorem dist_le_tangent
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M N : Type*}
+    [TopologicalSpace M] [ChartedSpace H M] [PseudoMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M]
+    [TopologicalSpace N] [ChartedSpace H N] [PseudoMetricSpace N]
+    [RiemannianBundle (fun x : N => TangentSpace I x)]
+    [IsRiemannianManifold I N]
+    (F : M -> N) {eps : Real} (heps : 0 < 1 + eps)
+    (hspeed :
+      forall {x y : M}, forall γ : Path x y, CMDiff 1 γ ->
+        exists η : Path (F x) (F y), CMDiff 1 η /\
+          forall t : Set.Icc (0 : Real) 1,
+            ‖mfderiv% η t 1‖ₑ <=
+              ENNReal.ofReal (Real.sqrt (1 + eps)) *
+                ‖mfderiv% γ t 1‖ₑ)
+    (x y : M) :
+    dist (F x) (F y) <= Real.sqrt (1 + eps) * dist x y := by
+  exact dist_le_of_path_comp (I := I) F heps
+    (pathComp_tangent (I := I) F ENNReal.ofReal_ne_top hspeed) x y
+
 /-- Package the pointwise distance estimate in the proof of MSM135 Chapter 4,
-Proposition `lbl367`, as a Lipschitz bound with constant `sqrt (1 + eps)`.
+Proposition "Distances", as a Lipschitz bound with constant `sqrt (1 + eps)`.
 
 The remaining Riemannian step is to prove the hypothesis `hdist` from the
 metric comparison along curves. -/
@@ -107,7 +165,7 @@ theorem lipschitz_sqrt_of_dist_le
     LipschitzWith ⟨Real.sqrt (1 + eps), Real.sqrt_nonneg (1 + eps)⟩ F := by
   exact LipschitzWith.of_dist_le_mul hdist
 
-/-- MSM135 Chapter 4, Proposition `lbl367`, metric-space endpoint:
+/-- MSM135 Chapter 4, Proposition "Distances", metric-space endpoint:
 if the map has Lipschitz constant `sqrt (1 + eps)`, then it sends a metric ball
 of radius `r` into the corresponding enlarged metric ball.
 
@@ -162,6 +220,32 @@ theorem image_ball_subset_of_path_comp
           (by simp [Real.sqrt_pos.2 heps]) ENNReal.ofReal_ne_top hpath x y
       simpa [ENNReal.ofReal, Real.toNNReal_of_nonneg (Real.sqrt_nonneg (1 + eps))] using hraw
   exact image_ball_subset_of_lipschitz_sqrt F heps hF x0 r
+
+/-- MSM135 Chapter 4, Proposition "Distances", ball inclusion from the
+path-speed comparison layer. -/
+theorem image_ball_tangent
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M N : Type*}
+    [TopologicalSpace M] [ChartedSpace H M] [PseudoMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M]
+    [TopologicalSpace N] [ChartedSpace H N] [PseudoMetricSpace N]
+    [RiemannianBundle (fun x : N => TangentSpace I x)]
+    [IsRiemannianManifold I N]
+    (F : M -> N) {eps : Real} (heps : 0 < 1 + eps)
+    (hspeed :
+      forall {x y : M}, forall γ : Path x y, CMDiff 1 γ ->
+        exists η : Path (F x) (F y), CMDiff 1 η /\
+          forall t : Set.Icc (0 : Real) 1,
+            ‖mfderiv% η t 1‖ₑ <=
+              ENNReal.ofReal (Real.sqrt (1 + eps)) *
+                ‖mfderiv% γ t 1‖ₑ)
+    (x0 : M) (r : Real) :
+    F '' Metric.ball x0 r ⊆
+      Metric.ball (F x0) (Real.sqrt (1 + eps) * r) := by
+  exact image_ball_subset_of_path_comp (I := I) F heps
+    (pathComp_tangent (I := I) F ENNReal.ofReal_ne_top hspeed) x0 r
 
 end HCGCompactness
 end RicciFlower

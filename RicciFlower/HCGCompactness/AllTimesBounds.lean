@@ -34,7 +34,7 @@ universe u uE uH
 namespace RicciFlower
 namespace HCGCompactness
 
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology
 
 section ScalarLogDerivative
 
@@ -908,6 +908,544 @@ theorem gammaL2_le_of_christoffel
   · intro s hs i j k
     exact RicciFlow.christoffelRHS_id
       (M := M) gInv nablaRic (hinv_id s hs) i j k
+
+set_option linter.unusedDecidableInType false in
+/-- Component bridge from the HCG first metric covariant derivative to the
+coordinate/local-frame covariant derivative of metric components. -/
+theorem metricCov1_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
+    (g h : SmoothRiemannianMetric I M)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (hu : IsOpen u) {x : M} (hx : x ∈ u)
+    (d a b : Idx) :
+    Tensor0SBundle.component0S (I := I) (hframe.toBasisAt hx)
+        (metricCovDeriv (I := I) g h 1 x)
+        (Fin.cons d (fun q : Fin 2 => if q = 0 then a else b) :
+          Fin 3 -> Idx) =
+      Coordinates.metricCovDerivForMetricCompInFrame
+        (I := I) g
+        (LeviCivita.leviCivitaConnectionOfMetric (I := I) h)
+        frame (localFrameOneOfInf (I := I) frame hframe) x d a b := by
+  let cov := LeviCivita.leviCivitaConnectionOfMetric (I := I) h
+  let hframe1 : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u :=
+    localFrameOneOfInf (I := I) frame hframe
+  rw [metricCovDeriv_one_component_localFrame
+    (I := I) (h := g) (gRef := h) frame hframe hu hx d a b]
+  unfold Coordinates.metricCovDerivForMetricCompInFrame
+    Coordinates.metricCompForMetricInFrame
+  have ha :
+      (cov (frame a) x) (frame d x) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+            frame p x :=
+    Coordinates.covariantDerivative_eq_sum_christoffel
+      (I := I) cov frame hframe1 hx d a
+  have hb :
+      (cov (frame b) x) (frame d x) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+            frame p x :=
+    Coordinates.covariantDerivative_eq_sum_christoffel
+      (I := I) cov frame hframe1 hx d b
+  rw [ha, hb]
+  simp [map_sum, map_smul, cov]
+  ring
+
+/-- Smooth-slot expansion of the second background covariant derivative of a
+metric tensor.  The first slot is the new derivative direction; the remaining
+three slots are the slots of `nabla h`. -/
+theorem metricCovDeriv_two_eval_smooth_slots
+    (h gRef : SmoothRiemannianMetric I M)
+    (X :
+      ContMDiffSection I E (∞ : WithTop ℕ∞)
+        (TangentSpace I : M -> Type _))
+    (V : Fin 3 ->
+      ContMDiffSection I E (∞ : WithTop ℕ∞)
+        (TangentSpace I : M -> Type _))
+    (x : M) :
+    metricCovDeriv (I := I) h gRef 2 x
+        (Fin.cons (X x) (fun a : Fin 3 => V a x)) =
+      extDerivFun (I := I)
+          (fun p : M =>
+            metricCovDeriv (I := I) h gRef 1 p
+              (fun a : Fin 3 => V a p)) x (X x) -
+        ∑ a : Fin 3,
+          metricCovDeriv (I := I) h gRef 1 x
+            (Function.update (fun b : Fin 3 => V b x) a
+              (((LeviCivita.leviCivitaConnectionOfMetric (I := I) gRef)
+                  (fun p : M => V a p) x) (X x))) := by
+  classical
+  haveI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  haveI : IsManifold I 2 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞)
+      (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    change IsManifold I ∞ M
+    infer_instance
+  let cov :=
+    LeviCivita.leviCivitaConnectionOfMetric (I := I) gRef
+  let A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3 :=
+    metricCovDeriv (I := I) h gRef 1
+  let hcov :
+      CovariantDerivative.ContMDiffCovariantDerivativeLocally
+        (I := I) (E := E) (M := M) cov (∞ : WithTop ℕ∞) := by
+    simpa [cov] using
+      LeviCivita.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+        (I := I) (M := M) gRef
+  let hreg :=
+    Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+      (I := I) (M := M) 3 cov hcov A
+  have hreal :
+      Tensor0SBundle.TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov A
+        (Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
+          (I := I) (M := M) 3 cov A hreg) := by
+    exact Tensor0SBundle.totalNabla0S_realizes
+      (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 cov A hreg
+  have hmain :=
+    Tensor0SBundle.TotalNabla0SRealizes.eval_smooth_slots
+      (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      hreal X V x
+  change
+    (Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov A hreg x)
+        (Fin.cons (X x) (fun a : Fin 3 => V a x)) =
+      extDerivFun (I := I) (fun p : M => A p (fun a : Fin 3 => V a p))
+        x (X x) -
+        ∑ a : Fin 3,
+          A x
+            (Function.update (fun b : Fin 3 => V b x) a
+              ((cov (fun p : M => V a p) x) (X x)))
+  exact hmain
+
+set_option linter.unusedDecidableInType false in
+/-- Component bridge from the second HCG metric covariant derivative to the
+coordinate/local-frame second covariant derivative of metric components. -/
+theorem metricCov2_coord
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
+    (g h : SmoothRiemannianMetric I M)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (hu : IsOpen u) {x : M} (hx : x ∈ u)
+    (d a b c : Idx) :
+    Tensor0SBundle.component0S (I := I) (hframe.toBasisAt hx)
+        (metricCovDeriv (I := I) g h 2 x)
+        (Fin.cons d (Coordinates.slots3 a b c) : Fin 4 -> Idx) =
+      Coordinates.metricCovDeriv2ForMetricCompInFrame
+        (I := I) g
+        (LeviCivita.leviCivitaConnectionOfMetric (I := I) h)
+        frame (localFrameOneOfInf (I := I) frame hframe) x d a b c := by
+  classical
+  let cov := LeviCivita.leviCivitaConnectionOfMetric (I := I) h
+  let hframe1 : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u :=
+    localFrameOneOfInf (I := I) frame hframe
+  obtain ⟨sec, hsec⟩ :=
+    hframe.exists_contMDiffSection_eqOn_nhd hu hx
+  let X :
+      ContMDiffSection I E (∞ : WithTop ℕ∞)
+        (TangentSpace I : M -> Type _) := sec d
+  let V : Fin 3 ->
+      ContMDiffSection I E (∞ : WithTop ℕ∞)
+        (TangentSpace I : M -> Type _) :=
+    fun q => sec (Coordinates.slots3 a b c q)
+  have hsec_ev (i : Idx) :
+      (fun y : M => sec i y) =ᶠ[𝓝 x] frame i :=
+    hsec.mono fun y hy => hy i
+  have hsec_x (i : Idx) : sec i x = frame i x :=
+    (hsec_ev i).self_of_nhds
+  have hXx : X x = frame d x := hsec_x d
+  have hVx (q : Fin 3) : V q x = frame (Coordinates.slots3 a b c q) x :=
+    hsec_x (Coordinates.slots3 a b c q)
+  have slots3_cons (i j k : Idx) :
+      (Fin.cons i (fun q : Fin 2 => if q = 0 then j else k) :
+        Fin 3 -> Idx) =
+        Coordinates.slots3 i j k := by
+    funext q
+    cases q using Fin.cases with
+    | zero =>
+        simp [Coordinates.slots3]
+    | succ q =>
+        rw [Fin.cons_succ]
+        fin_cases q <;> simp [Coordinates.slots3]
+  have hslots :
+      (fun q : Fin 4 =>
+          hframe.toBasisAt hx
+            ((Fin.cons d (Coordinates.slots3 a b c) : Fin 4 -> Idx) q)) =
+        Fin.cons (X x) (fun q : Fin 3 => V q x) := by
+    funext q
+    cases q using Fin.cases with
+    | zero =>
+        simpa [X, IsLocalFrameOn.toBasisAt_coe] using hXx.symm
+    | succ q =>
+        simpa [V, IsLocalFrameOn.toBasisAt_coe] using (hVx q).symm
+  rw [Tensor0SBundle.component0S_apply]
+  rw [hslots]
+  have hmain :=
+    metricCovDeriv_two_eval_smooth_slots (I := I) g h X V x
+  rw [hmain]
+  have hscalar :
+      (fun y : M =>
+          metricCovDeriv (I := I) g h 1 y
+            (fun q : Fin 3 => V q y)) =ᶠ[𝓝 x]
+        (fun y : M =>
+          Coordinates.metricCovDerivForMetricCompInFrame
+            (I := I) g cov frame hframe1 y a b c) := by
+    filter_upwards [hsec_ev a, hsec_ev b, hsec_ev c, hu.mem_nhds hx]
+      with y hsa hsb hsc hy
+    have hVy :
+        (fun q : Fin 3 => V q y) =
+          fun q : Fin 3 => frame (Coordinates.slots3 a b c q) y := by
+      funext q
+      fin_cases q <;> simp [V, Coordinates.slots3, hsa, hsb, hsc]
+    have hslot3 :
+        (Fin.cons a (fun q : Fin 2 => if q = 0 then b else c) :
+          Fin 3 -> Idx) =
+          Coordinates.slots3 a b c := by
+      exact slots3_cons a b c
+    have hcomp :=
+      metricCov1_coord (I := I) g h frame hframe hu hy a b c
+    rw [Tensor0SBundle.component0S_apply] at hcomp
+    simpa [hVy, hslot3, IsLocalFrameOn.toBasisAt_coe, cov, hframe1] using hcomp
+  have hext :
+      extDerivFun (I := I)
+          (fun p : M =>
+            metricCovDeriv (I := I) g h 1 p
+              (fun q : Fin 3 => V q p)) x (X x) =
+        extDerivFun (I := I)
+          (fun y : M =>
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 y a b c) x (frame d x) := by
+    calc
+      extDerivFun (I := I)
+          (fun p : M =>
+            metricCovDeriv (I := I) g h 1 p
+              (fun q : Fin 3 => V q p)) x (X x)
+          =
+        extDerivFun (I := I)
+          (fun y : M =>
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 y a b c) x (X x) := by
+          exact Coordinates.extDerivFun_congr_eventually
+            (I := I) (X x) hscalar
+      _ =
+        extDerivFun (I := I)
+          (fun y : M =>
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 y a b c) x (frame d x) := by
+          rw [hXx]
+  have hcov_slot (i : Idx) :
+      (cov (frame i) x) (frame d x) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d i p •
+            frame p x :=
+    Coordinates.covariantDerivative_eq_sum_christoffel
+      (I := I) cov frame hframe1 hx d i
+  have hcorr0 :
+      metricCovDeriv (I := I) g h 1 x
+        (Function.update (fun q : Fin 3 => V q x) 0
+          ((cov (fun y : M => V 0 y) x) (X x))) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x p b c := by
+    have hcov0 :
+        (cov (fun y : M => V 0 y) x) (X x) =
+          ∑ p : Idx,
+            Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+              frame p x := by
+      have hV0 : MDiffAt (T% (fun y : M => V 0 y)) x :=
+        (V 0).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+      have hframea : MDiffAt (T% (frame a)) x :=
+        (hframe.contMDiffAt hu hx a).mdifferentiableAt (by simp)
+      have hcov_eq :
+          (cov (fun y : M => V 0 y) x) (X x) =
+            (cov (frame a) x) (frame d x) := by
+        have hV0_ev : (fun y : M => V 0 y) =ᶠ[𝓝 x] frame a := by
+          simpa [V, Coordinates.slots3] using hsec_ev a
+        have hcov_congr :=
+          cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+            hV0 hframea (by simp) hV0_ev
+        rw [hXx]
+        rw [hcov_congr]
+      rw [hcov_eq, hcov_slot a]
+    let A := metricCovDeriv (I := I) g h 1 x
+    let slots : Fin 3 -> TangentSpace I x := fun q => V q x
+    calc
+      A
+          (Function.update slots 0
+            ((cov (fun y : M => V 0 y) x) (X x)))
+          =
+        A
+          (Function.update slots 0
+            (∑ p : Idx,
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+                frame p x)) := by
+          rw [hcov0]
+      _ =
+        ∑ p : Idx,
+          A
+            (Function.update slots 0
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+                frame p x)) := by
+          have hsum :=
+            A.toMultilinearMap.map_update_sum
+              (Finset.univ : Finset Idx) (0 : Fin 3)
+              (fun p : Idx =>
+                Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+                  frame p x) slots
+          simpa [A, slots] using hsum
+      _ =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x p b c := by
+          refine Finset.sum_congr rfl ?_
+          intro p _
+          have hcomp :=
+            metricCov1_coord (I := I) g h frame hframe hu hx p b c
+          rw [Tensor0SBundle.component0S_apply] at hcomp
+          have hsmul :=
+            A.map_update_smul slots (0 : Fin 3)
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p)
+              (frame p x)
+          have hslots0 :
+              Function.update slots 0 (frame p x) =
+                fun q : Fin 3 =>
+                  frame
+                    ((Fin.cons p (fun q : Fin 2 => if q = 0 then b else c) :
+                      Fin 3 -> Idx) q) x := by
+            rw [slots3_cons p b c]
+            funext q
+            fin_cases q <;>
+              simp [slots, V, Coordinates.slots3, Function.update, hsec_x b, hsec_x c]
+          have hframeComp :
+              A (Function.update slots 0 (frame p x)) =
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x p b c := by
+            rw [hslots0]
+            simpa [A, cov, hframe1, IsLocalFrameOn.toBasisAt_coe] using hcomp
+          calc
+            A
+                (Function.update slots 0
+                  (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p •
+                    frame p x))
+                =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p *
+                A (Function.update slots 0 (frame p x)) := by
+                rw [hsmul]
+                simp [smul_eq_mul]
+            _ =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d a p *
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x p b c := by
+                rw [hframeComp]
+  have hcorr1 :
+      metricCovDeriv (I := I) g h 1 x
+        (Function.update (fun q : Fin 3 => V q x) 1
+          ((cov (fun y : M => V 1 y) x) (X x))) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x a p c := by
+    have hcov1 :
+        (cov (fun y : M => V 1 y) x) (X x) =
+          ∑ p : Idx,
+            Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+              frame p x := by
+      have hV1 : MDiffAt (T% (fun y : M => V 1 y)) x :=
+        (V 1).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+      have hframeb : MDiffAt (T% (frame b)) x :=
+        (hframe.contMDiffAt hu hx b).mdifferentiableAt (by simp)
+      have hcov_eq :
+          (cov (fun y : M => V 1 y) x) (X x) =
+            (cov (frame b) x) (frame d x) := by
+        have hV1_ev : (fun y : M => V 1 y) =ᶠ[𝓝 x] frame b := by
+          simpa [V, Coordinates.slots3] using hsec_ev b
+        have hcov_congr :=
+          cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+            hV1 hframeb (by simp) hV1_ev
+        rw [hXx]
+        rw [hcov_congr]
+      rw [hcov_eq, hcov_slot b]
+    let A := metricCovDeriv (I := I) g h 1 x
+    let slots : Fin 3 -> TangentSpace I x := fun q => V q x
+    calc
+      A
+          (Function.update slots 1
+            ((cov (fun y : M => V 1 y) x) (X x)))
+          =
+        A
+          (Function.update slots 1
+            (∑ p : Idx,
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+                frame p x)) := by
+          rw [hcov1]
+      _ =
+        ∑ p : Idx,
+          A
+            (Function.update slots 1
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+                frame p x)) := by
+          have hsum :=
+            A.toMultilinearMap.map_update_sum
+              (Finset.univ : Finset Idx) (1 : Fin 3)
+              (fun p : Idx =>
+                Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+                  frame p x) slots
+          simpa [A, slots] using hsum
+      _ =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x a p c := by
+          refine Finset.sum_congr rfl ?_
+          intro p _
+          have hcomp :=
+            metricCov1_coord (I := I) g h frame hframe hu hx a p c
+          rw [Tensor0SBundle.component0S_apply] at hcomp
+          have hsmul :=
+            A.map_update_smul slots (1 : Fin 3)
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p)
+              (frame p x)
+          have hslots1 :
+              Function.update slots 1 (frame p x) =
+                fun q : Fin 3 =>
+                  frame
+                    ((Fin.cons a (fun q : Fin 2 => if q = 0 then p else c) :
+                      Fin 3 -> Idx) q) x := by
+            rw [slots3_cons a p c]
+            funext q
+            fin_cases q <;>
+              simp [slots, V, Coordinates.slots3, Function.update, hsec_x a, hsec_x c]
+          have hframeComp :
+              A (Function.update slots 1 (frame p x)) =
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x a p c := by
+            rw [hslots1]
+            simpa [A, cov, hframe1, IsLocalFrameOn.toBasisAt_coe] using hcomp
+          calc
+            A
+                (Function.update slots 1
+                  (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p •
+                    frame p x))
+                =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p *
+                A (Function.update slots 1 (frame p x)) := by
+                rw [hsmul]
+                simp [smul_eq_mul]
+            _ =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d b p *
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x a p c := by
+                rw [hframeComp]
+  have hcorr2 :
+      metricCovDeriv (I := I) g h 1 x
+        (Function.update (fun q : Fin 3 => V q x) 2
+          ((cov (fun y : M => V 2 y) x) (X x))) =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x a b p := by
+    have hcov2 :
+        (cov (fun y : M => V 2 y) x) (X x) =
+          ∑ p : Idx,
+            Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p •
+              frame p x := by
+      have hV2 : MDiffAt (T% (fun y : M => V 2 y)) x :=
+        (V 2).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+      have hframec : MDiffAt (T% (frame c)) x :=
+        (hframe.contMDiffAt hu hx c).mdifferentiableAt (by simp)
+      have hcov_eq :
+          (cov (fun y : M => V 2 y) x) (X x) =
+            (cov (frame c) x) (frame d x) := by
+        have hV2_ev : (fun y : M => V 2 y) =ᶠ[𝓝 x] frame c := by
+          simpa [V, Coordinates.slots3] using hsec_ev c
+        have hcov_congr :=
+          cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+            hV2 hframec (by simp) hV2_ev
+        rw [hXx]
+        rw [hcov_congr]
+      rw [hcov_eq, hcov_slot c]
+    let A := metricCovDeriv (I := I) g h 1 x
+    let slots : Fin 3 -> TangentSpace I x := fun q => V q x
+    calc
+      A
+          (Function.update slots 2
+            ((cov (fun y : M => V 2 y) x) (X x)))
+          =
+        A
+          (Function.update slots 2
+            (∑ p : Idx,
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p •
+                frame p x)) := by
+          rw [hcov2]
+      _ =
+        ∑ p : Idx,
+          A
+            (Function.update slots 2
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p •
+                frame p x)) := by
+          have hsum :=
+            A.toMultilinearMap.map_update_sum
+              (Finset.univ : Finset Idx) (2 : Fin 3)
+              (fun p : Idx =>
+                Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p •
+                  frame p x) slots
+          simpa [A, slots] using hsum
+      _ =
+        ∑ p : Idx,
+          Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p *
+            Coordinates.metricCovDerivForMetricCompInFrame
+              (I := I) g cov frame hframe1 x a b p := by
+          refine Finset.sum_congr rfl ?_
+          intro p _
+          have hcomp :=
+            metricCov1_coord (I := I) g h frame hframe hu hx a b p
+          rw [Tensor0SBundle.component0S_apply] at hcomp
+          have hsmul :=
+            A.map_update_smul slots (2 : Fin 3)
+              (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p)
+              (frame p x)
+          have hslots2 :
+              Function.update slots 2 (frame p x) =
+                fun q : Fin 3 =>
+                  frame
+                    ((Fin.cons a (fun q : Fin 2 => if q = 0 then b else p) :
+                      Fin 3 -> Idx) q) x := by
+            rw [slots3_cons a b p]
+            funext q
+            fin_cases q <;>
+              simp [slots, V, Coordinates.slots3, Function.update, hsec_x a, hsec_x b]
+          have hframeComp :
+              A (Function.update slots 2 (frame p x)) =
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x a b p := by
+            rw [hslots2]
+            simpa [A, cov, hframe1, IsLocalFrameOn.toBasisAt_coe] using hcomp
+          calc
+            A
+                (Function.update slots 2
+                  (Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p •
+                    frame p x))
+                =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p *
+                A (Function.update slots 2 (frame p x)) := by
+                rw [hsmul]
+                simp [smul_eq_mul]
+            _ =
+              Coordinates.christoffelSymbolInFrame cov frame hframe1 x d c p *
+                Coordinates.metricCovDerivForMetricCompInFrame
+                  (I := I) g cov frame hframe1 x a b p := by
+                rw [hframeComp]
+  rw [hext]
+  rw [Fin.sum_univ_three]
+  rw [hcorr0, hcorr1, hcorr2]
+  unfold Coordinates.metricCovDeriv2ForMetricCompInFrame
+  ring
 
 /-- Canonical realized metric family with the Levi-Civita connection attached
 to each time slice.
