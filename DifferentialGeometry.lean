@@ -1169,6 +1169,7 @@ import DifferentialGeometry.Geometry.Flow.ConnectionDifference
 import DifferentialGeometry.Geometry.Flow.DeTurckOperator
 import DifferentialGeometry.Geometry.Flow.DeTurckVFChartCoord
 import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothness
+import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothnessUpToZero
 import DifferentialGeometry.Geometry.Flow.LieDerivativeChartFrameIdentity
 import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
 import DifferentialGeometry.Geometry.Flow.MetricTrace

@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.ChartGramJointSmoothness
 import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothness
+import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothnessUpToZero
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
@@ -81,23 +82,6 @@ theorem deturck_ricci_smooth_solution_engine
           (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
           q.2 ((g_DT q.1).inner q.2))
         (Set.Icc 0 T ×ˢ Set.univ) :=
-  sorry
-
-/-- **L_vf (Icc) — readout: the DeTurck vector field is jointly `(t, x)`-`C∞` up to and
-including `t = 0`.** -/
-theorem deTurckVF_jointContMDiffOn_Icc
-    (g_bg : SmoothRiemannianMetric I M)
-    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (hT : 0 < T)
-    (h_gDT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M =>
-          Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) x₀ i j
-            (extChartAt I x₀ q.2))
-        (Set.Icc (0 : ℝ) T ×ˢ (chartAt H x₀).source)) :
-    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
-        : TangentBundle I M))
-      (Set.Icc (0 : ℝ) T ×ˢ Set.univ) :=
   sorry
 
 /-- **L_jet — readout: the `k ≤ 2` spatial Fréchet jets of `chartGramOnE` are jointly
