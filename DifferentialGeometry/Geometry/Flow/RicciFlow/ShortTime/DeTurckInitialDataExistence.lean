@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.ChartGramJointSmoothness
+import DifferentialGeometry.Geometry.Metric.ChartGramSpatialJets
 import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothness
 import DifferentialGeometry.Geometry.Flow.DeTurckVFJointSmoothnessUpToZero
 import DifferentialGeometry.Geometry.Operator.Hessian
@@ -82,23 +83,6 @@ theorem deturck_ricci_smooth_solution_engine
           (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
           q.2 ((g_DT q.1).inner q.2))
         (Set.Icc 0 T ×ˢ Set.univ) :=
-  sorry
-
-/-- **L_jet — readout: the `k ≤ 2` spatial Fréchet jets of `chartGramOnE` are jointly
-`(t, x)`-continuous up to and including `t = 0`.** -/
-theorem chartGramOnE_jets_jointContinuousOn_of_innerSmooth
-    (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ) (hk : k ≤ 2)
-    (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (hT : 0 < T)
-    (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
-      (fun q : ℝ × M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
-        (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
-        q.2 ((g_DT q.1).inner q.2))
-      (Set.Icc 0 T ×ˢ Set.univ)) :
-    ContinuousOn
-      (fun q : ℝ × M => iteratedFDeriv ℝ k
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
-        (extChartAt I α q.2))
-      (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α) :=
   sorry
 
 /-- **Parabolic short-time existence + interior regularity bundle.** -/
