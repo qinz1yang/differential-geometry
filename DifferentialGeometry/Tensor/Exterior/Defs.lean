@@ -28,9 +28,9 @@ variable {E F F' F'' G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 /-- A smooth (C∞) differential n-form on `E` with values in `F`. -/
 structure DifferentialForm (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] where
-  /-- The underlying smooth function -/
+
   toFun : E → E [⋀^Fin n]→L[ℝ] F
-  /-- The underlying function is smooth -/
+
   smooth : ContDiff ℝ ⊤ toFun
 
 /-- Notation for smooth differential n-forms from `E` to `F`. -/

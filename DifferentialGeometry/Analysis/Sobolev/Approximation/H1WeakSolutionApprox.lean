@@ -492,25 +492,18 @@ uniform bound on `‖f_n‖_{L²(E)}`. This bundle exposes the bound as an
 explicit hypothesis to keep the construction modular. -/
 structure H1WeakSolutionData
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (u f : E → ℝ) where
-  /-- `u` is in `L²(E)`. -/
+
   hu_l2 : MemLp u 2 (volume : Measure E)
-  /-- `f` is in `L²(E)`. -/
+
   hf_l2 : MemLp f 2 (volume : Measure E)
-  /-- For each coordinate `j`, a global weak partial derivative of `u`
-  on the whole space, in `L²(E)`. -/
+
   weakPartial : Fin d → (E → ℝ)
   weakPartial_l2 : ∀ j, MemLp (weakPartial j) 2 (volume : Measure E)
   weakPartial_isWeak : ∀ j,
     DeGiorgi.HasWeakPartialDeriv (d := d) j (weakPartial j) u Set.univ
-  /-- `(u, f)` is a weak solution of `B(u, ·) = ⟨f, ·⟩` on `Ω`. -/
-  isWeakSolution : B.IsWeakSolution u f
-  /-- The uniform `L²(E)` bound on `f_n := classicalApply B u_n`,
-  where `u_n := mollifyEps (1/(n+2)) u`. The constant `M_F ≥ 0` is the
-  uniform bound; it is finite by the Friedrichs commutator analysis
-  applied to the divergence-form operator.
 
-  The implicit `n + 2` (rather than `n + 1`) is used so that `1/(n+2)`
-  is always strictly positive and at most `1/2` for all `n ∈ ℕ`. -/
+  isWeakSolution : B.IsWeakSolution u f
+
   fseq_l2_bound : ℝ
   fseq_l2_bound_nn : 0 ≤ fseq_l2_bound
   fseq_l2_bounded : ∀ n : ℕ,

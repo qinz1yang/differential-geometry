@@ -1060,6 +1060,83 @@ theorem msm110_ch4_scalar_linear_reaction
     simpa [J] using hJ_nonneg t ht x
   exact (mul_nonneg_iff_of_pos_left (Real.exp_pos (-C * t))).mp hprod
 
+/-- A scalar field with reaction equation `P u = beta * u` stays nonnegative
+when `beta` has a uniform upper bound and the initial field is nonnegative.
+
+Unlike `msm110_ch4_scalar_linear_reaction`, this theorem performs the
+negative-region calculation from the equation and the coefficient bound. -/
+theorem linear_react_nonneg
+    [I.Boundaryless]
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (T : Real) (hT : 0 <= T)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (u : Real -> M -> Real) (beta : Real -> M -> Real) (C : Real)
+    (hbeta : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      beta t x <= C)
+    (hJ_cont : ContinuousOn
+      (fun p : Real × M => Real.exp (-C * p.1) * u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hJ_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => Real.exp (-C * s) * u s x) (Set.Icc 0 T) t)
+    (hJ_mdiff : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => Real.exp (-C * t) * u t y) x)
+    (hJ_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t)
+          (fun z : M => Real.exp (-C * t) * u t z) y) x)
+    (hu_time : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => u s x) (Set.Icc 0 T) t)
+    (hu_space : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real) (u t) y)
+    (hu_grad : forall t : Real, t ∈ Set.Icc 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hreaction : forall t : Real, t ∈ Set.Icc 0 T -> forall x : M,
+      parabolicOperatorWithDrift (I := I) G T X u t x =
+        beta t x * u t x)
+    (hinit : forall x : M, 0 <= u 0 x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= u t x := by
+  refine msm110_ch4_scalar_linear_reaction (I := I) G T hT X u beta C hbeta
+    hJ_cont hJ_time hJ_mdiff hJ_grad hinit ?_
+  intro t ht x hJneg
+  by_cases hTpos : 0 < T
+  · have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
+      uniqueDiffOn_Icc hTpos t ht
+    have hscale :
+        DifferentiableWithinAt Real (fun s : Real => Real.exp (-C * s))
+          (Set.Icc 0 T) t := by
+      have hlinear :
+          DifferentiableWithinAt Real (fun s : Real => -C * s)
+            (Set.Icc 0 T) t := by
+        simpa using
+          (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-C)
+      exact hlinear.exp
+    rw [parabolic_exp_rescale_identity (I := I) G T C X u t ht huniq
+      (hu_space t ht) x (hu_grad t ht x) (hu_time t ht x) hscale]
+    rw [hreaction t ht x]
+    have hu_neg : u t x < 0 :=
+      lt_of_mul_lt_mul_left (by simpa using hJneg) (Real.exp_pos (-C * t)).le
+    apply mul_nonneg (Real.exp_pos (-C * t)).le
+    calc
+      beta t x * u t x - C * u t x = (beta t x - C) * u t x := by ring
+      _ >= 0 := mul_nonneg_of_nonpos_of_nonpos
+        (sub_nonpos.mpr (hbeta t ht x)) hu_neg.le
+  · have hT0 : T = 0 := le_antisymm (le_of_not_gt hTpos) hT
+    have ht0 : t = 0 := by
+      apply le_antisymm
+      · simpa [hT0] using ht.2
+      · exact ht.1
+    have hu_neg : u 0 x < 0 := by
+      rw [ht0] at hJneg
+      exact lt_of_mul_lt_mul_left (by simpa using hJneg)
+        (Real.exp_pos (-C * 0)).le
+    exact False.elim (not_lt_of_ge (hinit x) hu_neg)
+
 /-- Hamilton Theorem 7.1 with a time-dependent reaction bound and a supplied
 positive weight.
 

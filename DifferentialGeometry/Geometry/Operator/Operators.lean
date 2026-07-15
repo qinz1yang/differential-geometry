@@ -126,6 +126,14 @@ theorem inner_metricSharp
     LinearEquiv.apply_symm_apply (metricFlatEquiv (I := I) g x) alpha
   exact congrArg (fun L : Module.Dual Real (TangentSpace I x) => L w) h
 
+/-- Symmetric form of the sharp identity: `g_x(w, sharp α) = α w`. -/
+theorem inner_metricSharp_right
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (alpha : Module.Dual Real (TangentSpace I x)) (w : TangentSpace I x) :
+    g.inner x w (metricSharp (I := I) g x alpha) = alpha w := by
+  rw [g.symm x w (metricSharp (I := I) g x alpha)]
+  exact inner_metricSharp (I := I) g x alpha w
+
 /-! ## Gradient, divergence, and Laplacian -/
 
 /-- Pointwise gradient of a scalar function with respect to a realized metric. -/
@@ -149,6 +157,18 @@ theorem inner_gradientFun
     inner_metricSharp (I := I) g x
       (mfderiv I 𝓘(Real, Real) f x).toLinearMap v
 
+/-- If the manifold derivative is the metric-flat covector of `v`, then the
+realized gradient is `v`. -/
+theorem gradientFun_eq_of_flat
+    (g : SmoothRiemannianMetric I M) {f : M -> Real} {x : M}
+    {v : TangentSpace I x}
+    (hf : (mfderiv I 𝓘(Real, Real) f x).toLinearMap =
+      metricFlatEquiv (I := I) g x v) :
+    gradientFun (I := I) g f x = v := by
+  unfold gradientFun metricSharp
+  rw [hf]
+  exact LinearEquiv.symm_apply_apply (metricFlatEquiv (I := I) g x) v
+
 /-- The gradient vanishes if the manifold derivative vanishes. -/
 theorem gradientFun_eq_zero_of_mfderiv_eq_zero
     (g : SmoothRiemannianMetric I M) (f : M -> Real) {x : M}
@@ -162,6 +182,41 @@ theorem gradientFun_eq_zero_of_mfderiv_eq_zero
     rfl
   rw [hto]
   exact LinearEquiv.map_zero (metricFlatEquiv (I := I) g x).symm
+
+/-- At a local minimum of a differentiable scalar on a boundaryless manifold,
+the realized gradient vanishes. -/
+theorem gradientFun_eq_zero_of_isLocalMin
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M}
+    (hmin : IsLocalMin f x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    gradientFun (I := I) g f x = 0 := by
+  apply gradientFun_eq_zero_of_mfderiv_eq_zero
+  have hmin_chart :
+      IsLocalMin (fun y : E => f ((extChartAt I x).symm y))
+        ((extChartAt I x) x) := by
+    have hmin' :
+        IsLocalMin f ((extChartAt I x).symm ((extChartAt I x) x)) := by
+      simpa only [mfld_simps] using hmin
+    simpa only [Function.comp_apply] using
+      hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+  have hderiv_chart :
+      fderiv Real (fun y : E => f ((extChartAt I x).symm y))
+        ((extChartAt I x) x) = 0 :=
+    hmin_chart.fderiv_eq_zero
+  have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
+    rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
+    exact Filter.univ_mem
+  calc
+    mfderiv I 𝓘(Real, Real) f x =
+        fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          (Set.range I) ((extChartAt I x) x) := by
+      exact hf.mfderiv
+    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          ((extChartAt I x) x) := by
+      exact fderivWithin_of_mem_nhds hrange
+    _ = 0 := by
+      simpa [writtenInExtChartAt] using hderiv_chart
 
 /-- The gradient of a spatial constant vanishes. -/
 @[simp] theorem gradientFun_const
@@ -199,6 +254,59 @@ theorem gradientFun_add
   let e := (metricFlatEquiv (I := I) g x).symm
   exact e.map_add (mfderiv I 𝓘(Real, Real) f x).toLinearMap
     (mfderiv I 𝓘(Real, Real) h x).toLinearMap
+
+/-- The gradient of a finite sum is the finite sum of the gradients. -/
+theorem gradientFun_sum {κ : Type}
+    (g : SmoothRiemannianMetric I M) (s : Finset κ)
+    {f : κ -> M -> Real} {x : M}
+    (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
+    gradientFun (I := I) g (∑ i ∈ s, f i) x =
+      ∑ i ∈ s, gradientFun (I := I) g (f i) x := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      change gradientFun (I := I) g (fun _ : M => (0 : Real)) x = 0
+      exact gradientFun_const (I := I) g 0 x
+  | insert a s ha ih =>
+      have hfa : MDifferentiableAt I 𝓘(Real, Real) (f a) x :=
+        hf a (Finset.mem_insert_self a s)
+      have hfs : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x := by
+        intro i hi
+        exact hf i (Finset.mem_insert_of_mem hi)
+      have htail : MDifferentiableAt I 𝓘(Real, Real) (∑ i ∈ s, f i) x :=
+        MDifferentiableAt.sum (𝕜 := Real) (I := I) (E' := Real)
+          (t := s) (f := f) (z := x) hfs
+      rw [Finset.sum_insert ha, Finset.sum_insert ha]
+      calc
+        gradientFun (I := I) g (f a + ∑ i ∈ s, f i) x
+            = gradientFun (I := I) g (f a) x +
+                gradientFun (I := I) g (∑ i ∈ s, f i) x := by
+              change gradientFun (I := I) g
+                (fun y : M => f a y + (∑ i ∈ s, f i) y) x = _
+              rw [gradientFun_add (I := I) g hfa htail]
+        _ = gradientFun (I := I) g (f a) x +
+              ∑ i ∈ s, gradientFun (I := I) g (f i) x := by
+              rw [ih hfs]
+
+/-- The gradient of a finite weighted sum is the weighted sum of the gradients. -/
+theorem gradientFun_sum_smul {κ : Type}
+    (g : SmoothRiemannianMetric I M) (s : Finset κ) (c : κ -> Real)
+    {f : κ -> M -> Real} {x : M}
+    (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
+    gradientFun (I := I) g (∑ i ∈ s, c i • f i) x =
+      ∑ i ∈ s, c i • gradientFun (I := I) g (f i) x := by
+  classical
+  have hsum := gradientFun_sum (I := I) g s
+    (f := fun i => c i • f i) (x := x) (by
+      intro i hi
+      exact (hf i hi).const_smul (c i))
+  calc
+    gradientFun (I := I) g (∑ i ∈ s, c i • f i) x
+        = ∑ i ∈ s, gradientFun (I := I) g (c i • f i) x := hsum
+    _ = ∑ i ∈ s, c i • gradientFun (I := I) g (f i) x := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          exact gradientFun_const_smul (I := I) g (c i) (hf i hi)
 
 /-- The gradient is linear under subtraction. -/
 theorem gradientFun_sub

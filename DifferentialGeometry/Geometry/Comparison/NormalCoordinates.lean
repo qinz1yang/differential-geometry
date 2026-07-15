@@ -86,17 +86,23 @@ variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 underlying function agrees with `v ↦ expMap g p v` on the source. -/
 def expMapDiffeo (g : SmoothRiemannianMetric I M) (p : M) :
     PartialDiffeomorph 𝓘(ℝ, E) I E M 1 :=
-  Classical.choose (exists_open_nhds_expMap_diffeoOn (I := I) g p)
+  Classical.choose (exists_exp_pd_chart (I := I) g p)
 
 lemma zero_mem_expMapDiffeo_source (g : SmoothRiemannianMetric I M) (p : M) :
     (0 : E) ∈ (expMapDiffeo (I := I) g p).source :=
-  (Classical.choose_spec (exists_open_nhds_expMap_diffeoOn (I := I) g p)).1
+  (Classical.choose_spec (exists_exp_pd_chart (I := I) g p)).1
 
 lemma expMapDiffeo_apply_eq (g : SmoothRiemannianMetric I M) (p : M)
     {v : E} (hv : v ∈ (expMapDiffeo (I := I) g p).source) :
     expMapDiffeo (I := I) g p v =
       (expMap (I := I) g p (show TangentSpace I p from v) : M) :=
-  (Classical.choose_spec (exists_open_nhds_expMap_diffeoOn (I := I) g p)).2 v hv
+  (Classical.choose_spec (exists_exp_pd_chart (I := I) g p)).2.1 v hv
+
+/-- The selected exponential partial diffeomorphism remains inside the base
+chart used to construct it. -/
+lemma exp_target_sub_chart (g : SmoothRiemannianMetric I M) (p : M) :
+    (expMapDiffeo (I := I) g p).target ⊆ (chartAt H p).source :=
+  (Classical.choose_spec (exists_exp_pd_chart (I := I) g p)).2.2
 
 /-- The exponential-side partial diffeomorphism maps `0` to `p`. -/
 lemma expMapDiffeo_zero (g : SmoothRiemannianMetric I M) (p : M) :

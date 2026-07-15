@@ -84,23 +84,20 @@ minimal strengthening (and is automatic for any family arising from a smooth
 Ricci-flow solution or any other jointly-smooth source). -/
 structure MetricFamilyRegularAt
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t₀ : ℝ) : Prop where
-  /-- Each chart-local Gram-matrix entry is time-differentiable at every time,
-  per base point in the chart base set. -/
+
   hasDerivAt_chartGramMatrix :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)) {x : M},
       x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet →
       ∀ t : ℝ,
         HasDerivAt (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ x i j)
           (deriv (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ x i j) t) t
-  /-- Joint `(t, x)` continuity of each chart-local Gram-matrix entry on
-  `Set.univ ×ˢ (trivializationAt ... x₀).baseSet`. -/
+
   continuousOn_chartGramMatrix :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
-  /-- Joint `(t, x)` continuity of the time-derivative of each chart-local
-  Gram-matrix entry on `Set.univ ×ˢ (trivializationAt ... x₀).baseSet`. -/
+
   continuousOn_deriv_chartGramMatrix :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
@@ -126,12 +123,12 @@ The parametric-integral theorem used downstream requires differentiability in a
 neighbourhood of `t₀`; supplying it at every time is the natural minimal
 strengthening (and is automatic for any jointly-smooth source). -/
 structure FunctionRegularAt (f : ℝ → M → ℝ) (t₀ : ℝ) : Prop where
-  /-- Pointwise time-differentiability at every time, per spatial point. -/
+
   hasDerivAt_time :
     ∀ (x : M) (t : ℝ), HasDerivAt (fun s : ℝ => f s x) (deriv (fun s : ℝ => f s x) t) t
-  /-- Joint `(t, x)`-continuity of `f`. -/
+
   continuous_joint : Continuous (fun p : ℝ × M => f p.1 p.2)
-  /-- Joint `(t, x)`-continuity of the pointwise time-derivative. -/
+
   continuous_deriv_joint :
     Continuous (fun p : ℝ × M => deriv (fun s : ℝ => f s p.2) p.1)
 

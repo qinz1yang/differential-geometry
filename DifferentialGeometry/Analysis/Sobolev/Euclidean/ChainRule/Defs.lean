@@ -35,35 +35,35 @@ The bounds and determinant lower bound are required to be **global** (not
 just on `Ω`) — this avoids fragile cutoff constructions and is the natural
 hypothesis for chart transitions in atlases of bounded geometry. -/
 structure SmoothDiffeoBounded (d : ℕ) (Ω Ω' : Set (EuclideanSpace ℝ (Fin d))) where
-  /-- The forward map. -/
+
   toFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-  /-- The inverse map. -/
+
   invFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-  /-- Smoothness of the forward map. -/
+
   toFun_smooth : ContDiff ℝ (⊤ : ℕ∞) toFun
-  /-- Smoothness of the inverse map. -/
+
   invFun_smooth : ContDiff ℝ (⊤ : ℕ∞) invFun
-  /-- The forward map sends `Ω` bijectively onto `Ω'`. -/
+
   bijOn : Set.BijOn toFun Ω Ω'
-  /-- The inverse map sends `Ω'` bijectively onto `Ω`. -/
+
   invFun_bijOn : Set.BijOn invFun Ω' Ω
-  /-- Left inverse on `Ω`. -/
+
   left_inv : Set.LeftInvOn invFun toFun Ω
-  /-- Right inverse on `Ω'`. -/
+
   right_inv : Set.RightInvOn invFun toFun Ω'
-  /-- Uniform upper bound for iterated derivatives of both directions. -/
+
   deriv_bound : ℝ
-  /-- The bound is strictly positive. -/
+
   deriv_bound_pos : 0 < deriv_bound
-  /-- All iterated derivatives of `toFun` are globally bounded by `deriv_bound`. -/
+
   iter_deriv_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k toFun x‖ ≤ deriv_bound
-  /-- All iterated derivatives of `invFun` are globally bounded by `deriv_bound`. -/
+
   iter_deriv_invFun_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k invFun x‖ ≤ deriv_bound
-  /-- Uniform positive lower bound for `|det DΦ|` on `Ω`. -/
+
   jacobian_lower_bound : ℝ
-  /-- The Jacobian lower bound is strictly positive. -/
+
   jacobian_lower_bound_pos : 0 < jacobian_lower_bound
-  /-- `|det DΦ(x)| ≥ jacobian_lower_bound` for `x ∈ Ω`. -/
+
   jacobian_lower : ∀ x ∈ Ω, jacobian_lower_bound ≤ |(fderiv ℝ toFun x).det|
 
 namespace SmoothDiffeoBounded

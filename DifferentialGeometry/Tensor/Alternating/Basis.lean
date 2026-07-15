@@ -46,25 +46,22 @@ noncomputable def elementaryCovector
     (b : Module.Basis (Fin n) 𝕜 (E →L[𝕜] 𝕜))
     (ι : Fin k → Fin n) :
     E [⋀^Fin k]→L[𝕜] 𝕜 :=
-  -- φ : E →ₗ[𝕜] (Fin k → 𝕜) sends x ↦ (j ↦ b (ι j) x).
-  -- detRowAlternating (φ ∘ v) = det(r,c ↦ b(ι c)(v r)) = det(i,j ↦ b(ι i)(v j))ᵀ
-  -- which equals det(i,j ↦ b(ι i)(v j)) since det = det of transpose.
+
   let φ : E →ₗ[𝕜] (Fin k → 𝕜) := LinearMap.pi (fun i => (b (ι i)).toLinearMap)
   (Matrix.detRowAlternating.compLinearMap φ).mkContinuous
     ((k.factorial : ℝ) * ∏ i : Fin k, ‖b (ι i)‖)
     (fun v => by
-      -- Use `change` to rewrite via definitional equality:
-      -- (detRowAlternating.compLinearMap φ) v = detRowAlternating (fun r c => b(ι c)(v r))
+
       change ‖Matrix.detRowAlternating (R := 𝕜) (n := Fin k)
             (fun r c => b (ι c) (v r))‖ ≤
           ((k.factorial : ℝ) * ∏ i : Fin k, ‖b (ι i)‖) * ∏ i : Fin k, ‖v i‖
-      -- det(r,c ↦ b(ι c)(v r)) = det(i,j ↦ b(ι i)(v j)) since the two matrices are transposes
+
       rw [show Matrix.detRowAlternating (R := 𝕜) (n := Fin k) (fun r c => b (ι c) (v r)) =
             Matrix.det (fun i j : Fin k => b (ι i) (v j)) from by
           change Matrix.det (fun r c : Fin k => b (ι c) (v r)) =
             Matrix.det (fun i j : Fin k => b (ι i) (v j))
           rw [← Matrix.det_transpose]; rfl]
-      -- Bound via Leibniz: |∑_σ sign(σ) • ∏_i b(ι(σ i))(v i)| ≤ k! * ∏_i ‖b(ι i)‖ * ∏_i ‖v i‖
+
       rw [Matrix.det_apply]
       calc ‖∑ σ : Equiv.Perm (Fin k),
                 Equiv.Perm.sign σ • ∏ i : Fin k, b (ι (σ i)) (v i)‖
@@ -100,8 +97,7 @@ theorem elementaryCovector_apply
     (ι : Fin k → Fin n)
     (v : Fin k → E) :
     elementaryCovector b ι v = Matrix.det (fun i j => b (ι i) (v j)) := by
-  -- By definitional equality, elementaryCovector b ι v reduces to
-  -- detRowAlternating (fun r c => b(ι c)(v r)) = det(fun i j => b(ι i)(v j))
+
   change Matrix.det (fun r c : Fin k => b (ι c) (v r)) =
     Matrix.det (fun i j : Fin k => b (ι i) (v j))
   rw [← Matrix.det_transpose]; rfl
@@ -230,7 +226,7 @@ theorem elementaryCovector_linearIndependent
   simp only [ContinuousAlternatingMap.sum_apply,
     ContinuousAlternatingMap.smul_apply,
     elementaryCovector_basis_eval B b dual] at heval
-  -- multiKroneckerDelta ι J = if ι = J then 1 else 0
+
   have hkron : ∀ ι : Fin k ↪o Fin n,
       Fin.multiKroneckerDelta (⇑ι) (⇑J) =
         if ι = J then (1 : 𝕜) else 0 := fun ι => by
@@ -261,15 +257,14 @@ theorem elementaryCovector_span
   apply ContinuousAlternatingMap.toAlternatingMap_injective
   apply B.ext_alternating
   intro v hv
-  -- .toAlternatingMap (fun i => B (v i)) = . (B ∘ v) by rfl
+
   have key : ∀ g : E [⋀^Fin k]→L[𝕜] 𝕜,
       g.toAlternatingMap (fun i => B (v i)) =
         g (B ∘ v) := fun _ => rfl
   simp only [key, ContinuousAlternatingMap.sum_apply,
     ContinuousAlternatingMap.smul_apply, smul_eq_mul,
     elementaryCovector_basis_eval B b dual]
-  -- Goal: ∑ F(B∘ι) * δ(ι,v) = F(B∘v)
-  -- Factor v = ι₀ ∘ σ using Finset.orderEmbOfFin
+
   set s := Finset.image v Finset.univ
   have hs_card : s.card = k := by
     rw [Finset.card_image_of_injective _ hv,
@@ -277,7 +272,7 @@ theorem elementaryCovector_span
   set ι₀ := s.orderEmbOfFin hs_card
   have hv_mem : ∀ i, v i ∈ s := fun i =>
     Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩
-  -- Build the permutation σ with v = ι₀ ∘ σ
+
   let f : Fin k → Fin k := fun i =>
     (s.orderIsoOfFin hs_card).symm ⟨v i, hv_mem i⟩
   have hf_inj : Function.Injective f := fun a b h => by
@@ -296,7 +291,7 @@ theorem elementaryCovector_span
       ext j; rfl
     rw [this, Function.comp_apply,
       OrderIso.apply_symm_apply]
-  -- For ι ≠ ι₀: delta vanishes
+
   have hvanish : ∀ ι : Fin k ↪o Fin n, ι ≠ ι₀ →
       Fin.multiKroneckerDelta (R := 𝕜) (⇑ι) v = 0 := by
     intro ι hne
@@ -306,13 +301,13 @@ theorem elementaryCovector_span
     have := congr_arg Set.range h
     simp [Set.range_comp] at this
     exact this.symm
-  -- For ι₀: delta = sign(σ)
+
   have hι₀_term :
       Fin.multiKroneckerDelta (R := 𝕜) (⇑ι₀) v =
         (Equiv.Perm.sign σ : 𝕜) := by
     rw [hσ, Fin.multiKroneckerDelta_symm (R := 𝕜),
       Fin.multiKroneckerDelta_comp_perm ι₀.injective]
-  -- F(B ∘ v) = sign(σ) * F(B ∘ ι₀)
+
   have hF_perm : F (B ∘ v) =
       (Equiv.Perm.sign σ : 𝕜) * F (B ∘ ι₀) := by
     conv_lhs => rw [hσ]
@@ -322,7 +317,7 @@ theorem elementaryCovector_span
       ContinuousAlternatingMap.coe_toAlternatingMap]
       at this
     rw [this, Units.smul_def, zsmul_eq_mul]
-  -- Collapse the sum to the single ι₀ term
+
   symm; rw [hF_perm, Finset.sum_eq_single ι₀]
   · rw [hι₀_term, mul_comm]
   · intro ι _ hne; rw [hvanish ι hne, mul_zero]
@@ -355,7 +350,7 @@ theorem finrank_continuousAlternatingMap :
   let B : Module.Basis (Fin d) 𝕜 E := Module.finBasis 𝕜 E
   rw [Module.finrank_eq_card_basis
       (elementaryCovectorBasis (k := k) B)]
-  -- Fintype.card (Fin k ↪o Fin d) = d.choose k
+
   rw [Fintype.card_congr
     (Set.powersetCard.ofFinEmbEquiv
       (I := Fin d) (n := k))]

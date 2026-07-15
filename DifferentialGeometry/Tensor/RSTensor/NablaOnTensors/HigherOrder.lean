@@ -106,8 +106,9 @@ noncomputable def totalNabla0SFun (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
-    (x₀ : M) : Tensor0SSpace (s + 1) I x₀ :=
-  (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
+    (x₀ : M) : Tensor0SSpace (s + 1) I x₀ := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (s + 1)
+  exact (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
     (fun x : M => Tensor0SSpace (s + 1) I x) x₀).symm x₀
     (totalCovDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
       (fderivWithin 𝕜
@@ -887,7 +888,21 @@ theorem nabla0SFun_add [T2Space M] {s : ℕ}
         (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           s cov X β x) (fun a : Fin s => V a x)
   rw [hsum, hα, hβ, hext]
-  simp [Finset.sum_add_distrib]
+  have hcorr :
+      (∑ a : Fin s,
+        ((α + β) x)
+          (Function.update (fun b : Fin s => V b x) a
+            ((cov (V a) x) (X x)))) =
+        (∑ a : Fin s,
+          α x (Function.update (fun b : Fin s => V b x) a
+            ((cov (V a) x) (X x)))) +
+        ∑ a : Fin s,
+          β x (Function.update (fun b : Fin s => V b x) a
+            ((cov (V a) x) (X x))) := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rfl
+  rw [hcorr]
   ring
 
 /-- The directional covariant derivative of covariant tensor fields is
@@ -948,9 +963,19 @@ theorem nabla0SFun_smul [T2Space M] {s : ℕ}
           s cov X α x) (fun a : Fin s => V a x)
   rw [hsmul, hα, hext]
   simp only [coe_comp', ContinuousLinearEquiv.coe_coe, Function.comp_apply,
-    ContMDiffSection.coe_smul, Pi.smul_apply, ContinuousMultilinearMap.smul_apply,
-    smul_eq_mul]
-  rw [← Finset.mul_sum]
+    ContMDiffSection.coe_smul, Pi.smul_apply]
+  have hcorr :
+      (∑ a : Fin s,
+        (c • α x)
+          (Function.update (fun b : Fin s => V b x) a
+            ((cov (V a) x) (X x)))) =
+        c * ∑ a : Fin s,
+          α x (Function.update (fun b : Fin s => V b x) a
+            ((cov (V a) x) (X x))) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rfl
+  rw [hcorr]
   ring
 
 /-- Total covariant derivative realizations are additive in the tensor field. -/

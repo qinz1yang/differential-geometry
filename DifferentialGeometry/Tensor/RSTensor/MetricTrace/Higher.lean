@@ -526,9 +526,11 @@ private theorem middleFreezeNabla
         funext a
         fin_cases a <;> rfl
       rw [hV2p, hV4p]
-      simp only [B, freezeMiddle04Field_apply, freezeFirstTwo0S_apply,
-        ContinuousMultilinearMap.domDomCongr_apply, metricTrace_input_vec2_eq_vec4]
-      congr 1
+      simp only [B, freezeMiddle04Field_apply, freezeFirstTwo0S_apply]
+      rw [metricTrace_input_vec2_eq_vec4]
+      change (A p) (fun i =>
+        vec4 (I := I) (Usec p) (Vsec p) (Y p) (Z p) (trace04Perm i)) = _
+      apply congrArg (A p)
       funext q
       fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Integral.Connection.vec4]
     rw [hfun]

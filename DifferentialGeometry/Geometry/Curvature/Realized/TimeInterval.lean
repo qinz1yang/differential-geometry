@@ -121,6 +121,7 @@ structure RealTimeInterval where
   initial : Real
   initial_mem : initial ∈ carrier
   regular_subset : regular ⊆ carrier
+  regular_isOpen : IsOpen regular
   regular_mem_nhds : ∀ {t : Real}, t ∈ regular -> carrier ∈ 𝓝 t
 
 namespace RealTimeInterval
@@ -194,6 +195,8 @@ def timeShift (D : RealTimeInterval) (τ : Real) : RealTimeInterval where
   regular_subset := by
     intro s hs
     exact D.regular_subset hs
+  regular_isOpen := by
+    exact D.regular_isOpen.preimage (continuous_id.add continuous_const)
   regular_mem_nhds := by
     intro s hs
     simpa [Set.preimage] using
@@ -246,6 +249,18 @@ def ofEndpoints
     exact
       ⟨TimeEndpoint.lowerLt_to_mem lowerClosed ht.1,
         TimeEndpoint.upperLt_to_mem upperClosed ht.2⟩
+  regular_isOpen := by
+    have h1 : IsOpen {t : Real | TimeEndpoint.lowerLt a t} := by
+      cases a with
+      | negInf => simp [TimeEndpoint.lowerLt]
+      | finite s => simpa [TimeEndpoint.lowerLt] using isOpen_Ioi
+      | posInf => simp [TimeEndpoint.lowerLt]
+    have h2 : IsOpen {t : Real | TimeEndpoint.upperLt t b} := by
+      cases b with
+      | negInf => simp [TimeEndpoint.upperLt]
+      | finite s => simpa [TimeEndpoint.upperLt] using isOpen_Iio
+      | posInf => simp [TimeEndpoint.upperLt]
+    exact h1.inter h2
   regular_mem_nhds := by
     intro t ht
     exact endpointCarrier_mem_nhds a b lowerClosed upperClosed ht
@@ -259,6 +274,7 @@ def closed (a b : Real) (hab : a ≤ b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ⟨le_of_lt ht.1, le_of_lt ht.2⟩
+  regular_isOpen := isOpen_Ioo
   regular_mem_nhds := by
     intro t ht
     exact Icc_mem_nhds ht.1 ht.2
@@ -272,6 +288,7 @@ def closedOpen (a b : Real) (hab : a < b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ⟨le_of_lt ht.1, ht.2⟩
+  regular_isOpen := isOpen_Ioo
   regular_mem_nhds := by
     intro t ht
     exact Ico_mem_nhds ht.1 ht.2
@@ -313,6 +330,7 @@ def openInterval (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioo a b) : RealTimeInte
   regular_subset := by
     intro t ht
     exact ht
+  regular_isOpen := isOpen_Ioo
   regular_mem_nhds := by
     intro t ht
     exact Ioo_mem_nhds ht.1 ht.2
@@ -326,6 +344,7 @@ def openClosed (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioc a b) : RealTimeInterv
   regular_subset := by
     intro t ht
     exact ⟨ht.1, le_of_lt ht.2⟩
+  regular_isOpen := isOpen_Ioo
   regular_mem_nhds := by
     intro t ht
     exact Ioc_mem_nhds ht.1 ht.2
@@ -340,6 +359,7 @@ def closedInfinite (a : Real) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact Set.mem_Ici.mpr (le_of_lt (Set.mem_Ioi.mp ht))
+  regular_isOpen := isOpen_Ioi
   regular_mem_nhds := by
     intro t ht
     exact Ici_mem_nhds (Set.mem_Ioi.mp ht)
@@ -353,6 +373,7 @@ def openInfinite (a t₀ : Real) (ht₀ : a < t₀) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_isOpen := isOpen_Ioi
   regular_mem_nhds := by
     intro t ht
     exact Ioi_mem_nhds ht
@@ -366,6 +387,7 @@ def infiniteClosed (b t₀ : Real) (ht₀ : t₀ ≤ b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact Set.mem_Iic.mpr (le_of_lt (Set.mem_Iio.mp ht))
+  regular_isOpen := isOpen_Iio
   regular_mem_nhds := by
     intro t ht
     exact Iic_mem_nhds (Set.mem_Iio.mp ht)
@@ -379,6 +401,7 @@ def infiniteOpen (b t₀ : Real) (ht₀ : t₀ < b) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_isOpen := isOpen_Iio
   regular_mem_nhds := by
     intro t ht
     exact Iio_mem_nhds ht
@@ -392,6 +415,7 @@ def univ (t₀ : Real) : RealTimeInterval where
   regular_subset := by
     intro t ht
     exact ht
+  regular_isOpen := isOpen_univ
   regular_mem_nhds := by
     intro t ht
     simp

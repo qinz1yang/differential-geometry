@@ -52,9 +52,9 @@ underlying data fields; its role is solely to make `SmoothScalar g` a
 different Lean type for each metric, so that downstream files can attach
 metric-dependent inner-product / norm instances cleanly. -/
 structure SmoothScalar (g : SmoothRiemannianMetric I M) where
-  /-- The underlying function. -/
+
   toFun : M → ℝ
-  /-- The function is smooth. -/
+
   smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ toFun
 
 namespace SmoothScalar

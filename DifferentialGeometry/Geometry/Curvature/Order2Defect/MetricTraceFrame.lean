@@ -293,6 +293,248 @@ theorem hpt_to_unconditional_bound
           tensorL2Norm (I := I) (M := M) g 0 2 T₀.toFun ^ 2) :=
   secondCovGrad_l2NormSq_le_rawConnLap_of_pointwise_curv_bound (I := I) (M := M) g T₀ C₀ hC₀ hpt
 
+section ChartInvGramBilinearTrace
+
+/-! ### The frame-independent metric trace in a `non-centred` chart basis
+
+The committed `orthonormal_basis_bilin_trace` (`Bochner/OrthonormalFrameTrace.lean`) expresses the
+`g_x`-orthonormal-frame trace `∑ᵢ Hb(Bᵢ, Bᵢ)` of a continuous bilinear form `Hb` as the inverse-Gram
+trace against the *centred* model basis `chartModelBasis E` (i.e. the chart `α = x`). For the
+chart-coordinate expansion of the rough Laplacian one needs the same trace read against the chart-`α`
+coordinate frame `∂ₖ := chartBasisVecFiber α k` at a generic good-set point `b ≠ α`. This section
+ships that **non-centred** chart-basis version; it is the exact frame-free machinery that makes the
+metric trace basis-independent against `chartBasisVecFiber α · b`.
+-/
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- The change-of-coordinates from a frame `B : Fin n → T_b M` to the chart-`α` coordinate frame
+`∂ₖ := chartBasisVecFiber α k b`. The `(i, k)`-entry is the `k`-th model-basis coordinate of `B i`
+read through the chart-`α` trivialization, i.e. `(chartModelBasis E).repr (trivToE α b (B i)) k`. -/
+private noncomputable def coBchangeChartα (α : M) {b : M}
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b) :
+    Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+  Matrix.of fun i k => (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- Each frame vector `B i` decomposes against the chart-`α` coordinate frame `∂ₖ` with the
+change-of-coordinate entries `coBchangeChartα`. Valid at a base-set point `b`, where the chart-`α`
+trivialization is a linear isomorphism `T_b M ≃ E`. -/
+private lemma decompose_in_chartBasisα (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b) (i : Fin (Module.finrank ℝ E)) :
+    B i = ∑ k : Fin (Module.finrank ℝ E),
+      coBchangeChartα (I := I) α B i k •
+        chartBasisVecFiber (I := I) α k b := by
+  classical
+  have hrepr : trivToE (I := I) α b (B i) =
+      ∑ k : Fin (Module.finrank ℝ E),
+        (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
+          ((chartModelBasis E) k : E) :=
+    ((chartModelBasis E).sum_repr (trivToE (I := I) α b (B i))).symm
+  calc B i = trivFromE (I := I) α b (trivToE (I := I) α b (B i)) :=
+            (trivFromE_trivToE (I := I) α hb (B i)).symm
+    _ = trivFromE (I := I) α b
+          (∑ k : Fin (Module.finrank ℝ E),
+            (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
+              ((chartModelBasis E) k : E)) := by rw [← hrepr]
+    _ = ∑ k : Fin (Module.finrank ℝ E),
+          coBchangeChartα (I := I) α B i k •
+            chartBasisVecFiber (I := I) α k b := by
+          rw [map_sum]
+          refine Finset.sum_congr rfl (fun k _ => ?_)
+          rw [map_smul]
+          rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- Bilinear expansion of an `A`-valued continuous bilinear form `Hb(B i, B j)` against the chart-`α`
+coordinate frame `∂ₖ`, with the change-of-coordinate entries `coBchangeChartα` as scalar weights. -/
+private lemma bilin_expand_chartBasisα {A : Type*} [AddCommGroup A] [Module ℝ A]
+    [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousSMul ℝ A]
+    (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (Hb : TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] A)
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b) (i j : Fin (Module.finrank ℝ E)) :
+    Hb (B i) (B j) =
+      ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
+        (coBchangeChartα (I := I) α B i k *
+            coBchangeChartα (I := I) α B j l) •
+          Hb (chartBasisVecFiber (I := I) α k b)
+            (chartBasisVecFiber (I := I) α l b) := by
+  classical
+  have hBi := decompose_in_chartBasisα (I := I) α hb B i
+  have hBj := decompose_in_chartBasisα (I := I) α hb B j
+  rw [show Hb (B i) = ∑ k : Fin (Module.finrank ℝ E),
+        coBchangeChartα (I := I) α B i k •
+          Hb (chartBasisVecFiber (I := I) α k b) from by
+    rw [show Hb (B i) = Hb (∑ k : Fin (Module.finrank ℝ E),
+          coBchangeChartα (I := I) α B i k •
+            chartBasisVecFiber (I := I) α k b) from congrArg Hb hBi]
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    exact Hb.map_smul _ _]
+  rw [ContinuousLinearMap.sum_apply]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [ContinuousLinearMap.smul_apply]
+  rw [show Hb (chartBasisVecFiber (I := I) α k b) (B j) =
+        ∑ l : Fin (Module.finrank ℝ E),
+          coBchangeChartα (I := I) α B j l •
+            Hb (chartBasisVecFiber (I := I) α k b)
+              (chartBasisVecFiber (I := I) α l b) from by
+    rw [show Hb (chartBasisVecFiber (I := I) α k b) (B j) =
+          Hb (chartBasisVecFiber (I := I) α k b)
+            (∑ l : Fin (Module.finrank ℝ E),
+              coBchangeChartα (I := I) α B j l •
+                chartBasisVecFiber (I := I) α l b) from
+      congrArg (Hb (chartBasisVecFiber (I := I) α k b)) hBj]
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun l _ => ?_)
+    rw [(Hb (chartBasisVecFiber (I := I) α k b)).map_smul]]
+  rw [Finset.smul_sum]
+  refine Finset.sum_congr rfl (fun l _ => ?_)
+  rw [smul_smul]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- Matrix form of orthonormality against the chart-`α` Gram matrix. If `(B i)` is
+`g_b`-orthonormal, then `A G Aᵀ = I` with `A := coBchangeChartα` and `G := chartGramMatrix g α b`. -/
+private lemma orthonormal_matrix_form_chartα
+    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b)
+    (hB : ∀ i j : Fin (Module.finrank ℝ E),
+      g.inner b (B i) (B j) = if i = j then (1 : ℝ) else 0) :
+    coBchangeChartα (I := I) α B *
+        chartGramMatrix (I := I) g α b *
+          (coBchangeChartα (I := I) α B).transpose =
+      (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ) := by
+  classical
+  ext i j
+  have hg : g.inner b (B i) (B j) =
+      ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
+        coBchangeChartα (I := I) α B i k *
+          coBchangeChartα (I := I) α B j l *
+            chartGramMatrix (I := I) g α b k l := by
+    rw [bilin_expand_chartBasisα (I := I) α hb (g.inner b) B i j]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    refine Finset.sum_congr rfl (fun l _ => ?_)
+    rw [smul_eq_mul, ← chartGramMatrix_apply (I := I) g α b k l, mul_assoc]
+  rw [hB i j] at hg
+  rw [Matrix.mul_apply]
+  rw [show (∑ k, (coBchangeChartα (I := I) α B *
+        chartGramMatrix (I := I) g α b) i k *
+      (coBchangeChartα (I := I) α B).transpose k j) =
+    ∑ k, ∑ l,
+      coBchangeChartα (I := I) α B i l *
+          chartGramMatrix (I := I) g α b l k *
+          coBchangeChartα (I := I) α B j k from
+    Finset.sum_congr rfl (fun k _ => by
+      rw [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul])]
+  rw [show (1 : Matrix (Fin (Module.finrank ℝ E))
+      (Fin (Module.finrank ℝ E)) ℝ) i j = (if i = j then (1 : ℝ) else 0) from by
+    rw [Matrix.one_apply]]
+  rw [hg, Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun l₀ _ => ?_)
+  refine Finset.sum_congr rfl (fun k₀ _ => ?_)
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- For a `g_b`-orthonormal frame `(B i)`, the `i`-sum of products of change-of-coordinate entries
+equals the chart-`α` inverse-Gram entry `g^{kl} = chartInvGramMatrix g α b k l`. -/
+private lemma sum_coBchangeChartα_eq_invGram
+    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b)
+    (hB : ∀ i j : Fin (Module.finrank ℝ E),
+      g.inner b (B i) (B j) = if i = j then (1 : ℝ) else 0)
+    (k l : Fin (Module.finrank ℝ E)) :
+    ∑ i : Fin (Module.finrank ℝ E),
+      coBchangeChartα (I := I) α B i k *
+        coBchangeChartα (I := I) α B i l =
+      DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b k l := by
+  classical
+  set A : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+    coBchangeChartα (I := I) α B with hA_def
+  set G : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+    chartGramMatrix (I := I) g α b with hG_def
+  have hAGA : A * G * A.transpose = 1 := by
+    rw [hA_def, hG_def]; exact orthonormal_matrix_form_chartα (I := I) g α hb B hB
+  have hAGA_right : A * (G * A.transpose) = 1 := by rw [← Matrix.mul_assoc]; exact hAGA
+  have hA_left_inv : (G * A.transpose) * A = 1 := (mul_eq_one_comm).mp hAGA_right
+  rw [Matrix.mul_assoc] at hA_left_inv
+  have hAtA_eq_Ginv : A.transpose * A = G⁻¹ := (Matrix.inv_eq_right_inv hA_left_inv).symm
+  have hGinv_eq : G⁻¹ =
+      DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b := by
+    have hmul : DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+        (I := I) g α b * G = 1 := by
+      rw [hG_def]
+      exact DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix_mul_chartGramMatrix
+        (I := I) g α hb
+    exact (Matrix.inv_eq_left_inv hmul).symm
+  have heval : (A.transpose * A) k l = G⁻¹ k l := by rw [hAtA_eq_Ginv]
+  rw [Matrix.mul_apply] at heval
+  rw [show ∑ i, A.transpose k i * A i l = ∑ i, A i k * A i l from
+    Finset.sum_congr rfl (fun i _ => by rw [Matrix.transpose_apply])] at heval
+  rw [heval, hGinv_eq]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+/-- **Orthonormal-frame metric trace in the chart-`α` coordinate basis.** For any `A`-valued
+continuous bilinear form `Hb : T_b M →L T_b M →L A` (`A` a real topological module), any
+`g_b`-orthonormal frame `(B i)` of `T_b M`, and any base-set point `b ∈ baseSet α`, the diagonal frame
+sum equals the chart-`α` inverse-Gram-weighted trace against the chart-`α` coordinate frame
+`∂ₖ := chartBasisVecFiber α k`:
+$$
+  \sum_i Hb(B_i,\, B_i) = \sum_{k l} g^{kl}(α, b) \bullet Hb(\partial_k,\, \partial_l),
+$$
+with `g^{kl} = chartInvGramMatrix g α b k l`. This is the non-centred (`α ≠ b`), general-codomain
+chart-basis analogue of `orthonormal_basis_bilin_trace`; the metric trace is basis-independent, so the
+diagonal sum on the left does not depend on the choice of `g_b`-orthonormal frame. Post-composing both
+sides with a continuous linear functional recovers the scalar form. -/
+theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Module ℝ A]
+    [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousSMul ℝ A]
+    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (Hb : TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] A)
+    (B : Fin (Module.finrank ℝ E) → TangentSpace I b)
+    (hB : ∀ i j : Fin (Module.finrank ℝ E),
+      g.inner b (B i) (B j) = if i = j then (1 : ℝ) else 0) :
+    ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
+      ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
+        DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b k l •
+          Hb (chartBasisVecFiber (I := I) α k b)
+            (chartBasisVecFiber (I := I) α l b) := by
+  classical
+  rw [show ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
+      ∑ i : Fin (Module.finrank ℝ E),
+        ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
+          (coBchangeChartα (I := I) α B i k *
+              coBchangeChartα (I := I) α B i l) •
+            Hb (chartBasisVecFiber (I := I) α k b)
+              (chartBasisVecFiber (I := I) α l b) from
+    Finset.sum_congr rfl (fun i _ =>
+      bilin_expand_chartBasisα (I := I) α hb Hb B i i)]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun l _ => ?_)
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+        (coBchangeChartα (I := I) α B i k *
+            coBchangeChartα (I := I) α B i l) •
+          Hb (chartBasisVecFiber (I := I) α k b)
+            (chartBasisVecFiber (I := I) α l b)) =
+      (∑ i : Fin (Module.finrank ℝ E),
+        coBchangeChartα (I := I) α B i k *
+          coBchangeChartα (I := I) α B i l) •
+        Hb (chartBasisVecFiber (I := I) α k b)
+          (chartBasisVecFiber (I := I) α l b) from by rw [← Finset.sum_smul]]
+  rw [sum_coBchangeChartα_eq_invGram (I := I) g α hb B hB k l]
+
+end ChartInvGramBilinearTrace
+
 end Connection
 end Integral
 end DifferentialGeometry

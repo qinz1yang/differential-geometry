@@ -88,7 +88,7 @@ pre-Hilbert structure) and from `SmoothCcTensorH1` (which carries the `H^1`
 pre-Hilbert structure). The regularity order `k` is part of the type so that
 different orders live in different Hilbert spaces. -/
 structure SmoothCcTensorHs (g : SmoothRiemannianMetric I M) (r s k : ℕ) where
-  /-- The underlying smooth, compactly-supported `(r, s)`-tensor section. -/
+
   toCcTensor : SmoothCcTensor g r s
 
 namespace SmoothCcTensorHs

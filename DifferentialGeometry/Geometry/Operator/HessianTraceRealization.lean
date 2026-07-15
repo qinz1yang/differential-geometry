@@ -13,6 +13,7 @@ import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Tensor.RicciIdentity.MixedComponents
 import DifferentialGeometry.Bundle.LocalFrameRegularity
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.ConnectionDifference
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -326,6 +327,65 @@ theorem hessianSec_nabla
     fin_cases a <;> rfl
   rw [← hslots]
   simpa [hessianSec, nablaDuAt] using h
+
+/-- Changing the connection changes the scalar Hessian by minus the
+connection-difference tensor contracted with the differential. -/
+theorem hess_sub_conn
+    [T2Space M]
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (hcov' : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov'
+      (∞ : WithTop ℕ∞))
+    (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
+    (x : M) :
+    hessianSec (I := I) cov hcov u hu x -
+        hessianSec (I := I) cov' hcov' u hu x =
+      -connectionDifferenceOutput (I := I)
+        (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
+  classical
+  let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+      (TangentSpace I x) :=
+    Module.finBasis Real (TangentSpace I x)
+  apply ext0S_basis (I := I) basis
+  intro slots
+  let X : ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    (ContMDiffSection.exists_eq_at_gen
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+      x (basis (slots 0))).choose
+  let Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M -> Type _) :=
+    (ContMDiffSection.exists_eq_at_gen
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+      x (basis (slots 1))).choose
+  have hX : X x = basis (slots 0) :=
+    (ContMDiffSection.exists_eq_at_gen
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+      x (basis (slots 0))).choose_spec
+  have hY : Y x = basis (slots 1) :=
+    (ContMDiffSection.exists_eq_at_gen
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+      x (basis (slots 1))).choose_spec
+  have hslots :
+      (fun a : Fin 2 => basis (slots a)) = vec2 (I := I) (X x) (Y x) := by
+    funext a
+    fin_cases a <;> simp [vec2, hX, hY]
+  have hdiff :=
+    nabla0SFun_sub_cov (I := I) cov cov' X (fun _ : Fin 1 => Y)
+      (duSec (I := I) u hu) x
+  simp only [component0S_apply]
+  rw [hslots]
+  change
+    hessianSec (I := I) cov hcov u hu x (vec2 (I := I) (X x) (Y x)) -
+        hessianSec (I := I) cov' hcov' u hu x (vec2 (I := I) (X x) (Y x)) =
+      -(connectionDifferenceOutput (I := I)
+        (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)
+          (vec2 (I := I) (X x) (Y x)))
+  rw [(hessianSec_nabla (I := I) cov hcov u hu) x X (Y x),
+    (hessianSec_nabla (I := I) cov' hcov' u hu) x X (Y x)]
+  rw [connectionDifferenceOutput_apply]
+  simpa [vec2] using hdiff
 
 /-- Pointwise Hessian realization for the canonical Hessian section. -/
 theorem hessianSec_realizesAt
@@ -818,6 +878,61 @@ theorem scalarLap_smooth
       (hessianSec (I := I) cov hcov f hf x) := by
   exact scalarLap_canon (I := I) cov hcov g hmc f hf
     (gradientFun_mdiffAt (I := I) g hf x)
+
+/-- The difference of two scalar Laplacians splits into the change of metric
+trace on the reference Hessian and the connection-difference correction. -/
+theorem lap_sub_conn
+    [T2Space M]
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
+      (∞ : WithTop ℕ∞))
+    (hcov' : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov'
+      (∞ : WithTop ℕ∞))
+    (g g' : SmoothRiemannianMetric I M)
+    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen
+      (I := I) cov g)
+    (hmc' : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen
+      (I := I) cov' g')
+    (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
+    (x : M) :
+    laplacian (I := I) cov g u x - laplacian (I := I) cov' g' u x =
+      (scalarLapTraceAt (I := I) g
+          (hessianSec (I := I) cov' hcov' u hu x) -
+        scalarLapTraceAt (I := I) g'
+          (hessianSec (I := I) cov' hcov' u hu x)) -
+      scalarLapTraceAt (I := I) g
+        (connectionDifferenceOutput (I := I)
+          (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)) := by
+  have hlap :
+      laplacian (I := I) cov g u x =
+        scalarLapTraceAt (I := I) g (hessianSec (I := I) cov hcov u hu x) :=
+    (scalarLap_smooth (I := I) cov hcov g hmc (x := x) u hu).eq_trace
+  have hlap' :
+      laplacian (I := I) cov' g' u x =
+        scalarLapTraceAt (I := I) g' (hessianSec (I := I) cov' hcov' u hu x) :=
+    (scalarLap_smooth (I := I) cov' hcov' g' hmc' (x := x) u hu).eq_trace
+  have hh := hess_sub_conn (I := I) cov cov' hcov hcov' u hu x
+  have hHess :
+      hessianSec (I := I) cov hcov u hu x =
+        hessianSec (I := I) cov' hcov' u hu x -
+          connectionDifferenceOutput (I := I)
+            (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
+    calc
+      hessianSec (I := I) cov hcov u hu x =
+          (hessianSec (I := I) cov hcov u hu x -
+            hessianSec (I := I) cov' hcov' u hu x) +
+              hessianSec (I := I) cov' hcov' u hu x := by abel
+      _ = -(connectionDifferenceOutput (I := I)
+            (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)) +
+              hessianSec (I := I) cov' hcov' u hu x := by rw [hh]
+      _ = hessianSec (I := I) cov' hcov' u hu x -
+          connectionDifferenceOutput (I := I)
+            (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
+        abel
+  rw [hlap, hlap', hHess]
+  simp only [scalarLapTraceAt, metricTracePair0SAt, inner0S,
+    MetricFiberData.inner, map_sub]
+  ring
 
 /-- Global direct-object scalar Laplacian trace theorem.
 

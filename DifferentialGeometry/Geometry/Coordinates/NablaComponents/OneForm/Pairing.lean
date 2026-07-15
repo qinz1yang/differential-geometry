@@ -68,27 +68,15 @@ theorem oneForm_pair_coordFrame_eventually
           fin_cases q
           exact hZ
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-          α y (Function.update (fun _ : Fin 1 => Z y) (0 : Fin 1)
-            (hframe.coeff j y (Z y) • coordinateFrameAt (I := I) x₀ j y)) := by
+          hframe.coeff j y (Z y) *
+            α y (Function.update (fun _ : Fin 1 => Z y) (0 : Fin 1)
+              (coordinateFrameAt (I := I) x₀ j y)) := by
           simpa using hmap
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           hframe.coeff j y (Z y) *
             α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y) := by
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [hupdate]
-          have hconst :
-              (fun _ : Fin 1 =>
-                  hframe.coeff j y (Z y) • coordinateFrameAt (I := I) x₀ j y) =
-                Function.update
-                  (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y)
-                  (0 : Fin 1)
-                  (hframe.coeff j y (Z y) • coordinateFrameAt (I := I) x₀ j y) := by
-            funext q
-            fin_cases q
-            simp
-          rw [hconst]
-          rw [(α y).map_update_smul]
-          simp [smul_eq_mul]
 
 /-- Product rule for the scalar pairing `p ↦ α_p (Z_p)` in the coordinate
 frame.  This is the previously external `hpair` input for the moving-slot

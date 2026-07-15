@@ -190,12 +190,26 @@ noncomputable def connectionDifferenceTensorAt
         intro α β
         apply ContinuousMultilinearMap.ext
         intro v
-        simp [connectionDifferenceOutput_apply]
+        rw [connectionDifferenceOutput_apply]
+        change (α + β) (fun _ : Fin 1 =>
+            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) =
+          connectionDifferenceOutput (I := I)
+              (CovariantDerivative.difference cov cov' x) α v +
+            connectionDifferenceOutput (I := I)
+              (CovariantDerivative.difference cov cov' x) β v
+        rw [connectionDifferenceOutput_apply, connectionDifferenceOutput_apply]
+        rfl
       map_smul' := by
         intro c α
         apply ContinuousMultilinearMap.ext
         intro v
-        simp [connectionDifferenceOutput_apply] }
+        rw [connectionDifferenceOutput_apply]
+        change (c • α) (fun _ : Fin 1 =>
+            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) =
+          c • connectionDifferenceOutput (I := I)
+            (CovariantDerivative.difference cov cov' x) α v
+        rw [connectionDifferenceOutput_apply]
+        rfl }
 
 @[simp]
 theorem connectionDifferenceTensorAt_apply

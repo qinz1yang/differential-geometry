@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSSmoothQuasilinear
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.ConnectionLaplacianMaximalRegularity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.PointwiseDeriv
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckInitialDataExistence
 
 /-!
 # Short-time existence for the Ricci–DeTurck flow
@@ -31,7 +32,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
+  [SigmaCompactSpace M]
 
 /-- **Short-time existence for the Ricci–DeTurck flow on a closed manifold.**
 
@@ -46,19 +48,35 @@ is the DeTurck-modified Ricci operator, where `W(g, g_bg)` is the DeTurck
 vector field; this modification makes the otherwise only weakly-parabolic
 Ricci flow strictly parabolic.
 
-The proof instantiates the abstract quasilinear parabolic short-time existence
-theorem `quasilinear_parabolic_metric_short_time_existence` with the two witnesses
-that `deTurckRicciRHS g_bg` is strictly parabolic at `g₀`
-(`deTurckRicciRHS_isStrictlyParabolic_at_self`) and has smooth quasi-linear
-dependence on `(g, ∇g, ∇²g)` (`deTurckRicciRHS_isSmoothQuasilinear`). -/
+This is the genuine quasi-linear parabolic short-time existence for the concrete
+DeTurck–Ricci operator. Its inputs are that `deTurckRicciRHS g_bg` is strictly
+parabolic at every metric (`deTurckRicciRHS_isStrictlyParabolic_at_self`), has
+smooth quasi-linear dependence on `(g, ∇g, ∇²g)`
+(`deTurckRicciRHS_isSmoothQuasilinear`), and is value-symmetric
+(`deTurckRicciRHS_symm` — this keeps the conclusion, a curve of symmetric metrics,
+satisfiable).
+
+The proof is the trivial projection onto the existence conjunct: the single honest
+analytic input `deturck_ricci_flow_parabolic_short_time_existence`
+(`Geometry/Flow/RicciFlow/ShortTime/DeTurckInitialDataExistence.lean`) supplies a
+time `T` and a flow `g_DT` whose FIRST conjunct is exactly this
+`IsQuasilinearMetricParabolicSolution` datum (existence + the closed-interval
+`Ico 0 T` one-sided derivative), bundled with the up-to-`t = 0` regularity the
+Ricci-flow pullback needs; here we read off that existence conjunct. That input is
+the deferred classical analytic result (strictly-parabolic smooth-quasilinear
+existence + interior regularity from smooth data); it remains `sorry`, so consumers
+transitively depend on `sorryAx`.
+
+There is intentionally no abstract free-operator version: that statement is false
+as written (the conclusion forces value-symmetry that a free operator binder does
+not carry), so the existence content lives here, at the symmetric DeTurck operator. -/
 theorem deTurckRicci_shortTime_existence_of_closed
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
       IsQuasilinearMetricParabolicSolution (I := I)
-        (deTurckRicciRHS (I := I) g_bg) g₀ T g_DT :=
-  DifferentialGeometry.PDE.quasilinear_parabolic_metric_short_time_existence
-    (deTurckRicciRHS (I := I) g_bg) g₀
-    (deTurckRicciRHS_isStrictlyParabolic_at_self g₀ g_bg)
-    (deTurckRicciRHS_isSmoothQuasilinear g_bg)
+        (deTurckRicciRHS (I := I) g_bg) g₀ T g_DT := by
+  obtain ⟨T, g_DT, hbundle⟩ :=
+    deturck_ricci_flow_parabolic_short_time_existence (I := I) g₀ g_bg
+  exact ⟨T, g_DT, hbundle.1⟩
 
 end DifferentialGeometry.PDE.RicciFlow

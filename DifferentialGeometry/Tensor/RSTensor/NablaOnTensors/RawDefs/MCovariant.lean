@@ -30,6 +30,32 @@ section SmoothVectorFieldRSNabla
 variable [IsManifold I 1 M] [IsManifold I (n + 1) M]
 
 
+/-- The fixed-chart model of the raw mixed covariant derivative is the direct
+model-space covariant derivative.  This is the public projection lemma for
+consumers that need to cross the mixed-tensor bundle trivialization without
+unfolding its Hom implementation. -/
+theorem modelAt_mcovRS {r s : ℕ}
+    (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
+    (ΓX : E → E →L[𝕜] E)
+    (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+      (n := n) r s)
+    (u : Set M) (x₀ : M) :
+    tensorRSModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        r s x₀ x₀
+        (mcovariantDeriv_tensorRSWithin (𝕜 := 𝕜) (E := E) (H := H)
+          (I := I) (M := M) (n := n) r s X ΓX T u x₀) =
+      covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+          X (Set.range I))
+        ΓX
+        (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+          (M := M) r s x₀ (fun x => T x))
+        ((extChartAt I x₀).symm ⁻¹' u ∩ Set.range I)
+        (extChartAt I x₀ x₀) := by
+  unfold mcovariantDeriv_tensorRSWithin
+  rw [tensorRSModelAt_trivializationAt_symm]
+  rfl
+
 
 theorem mcovariantDeriv_tensor0SWithin_apply_slots {s : ℕ}
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))

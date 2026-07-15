@@ -93,7 +93,7 @@ theorem tensor0SSpace_sum_apply {ι : Type*} [Fintype ι] {s : ℕ}
           (∑ i ∈ S, (T i : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real))) v) =
         (T a : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v +
           ∑ i ∈ S, (T i : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v
-      rw [ContinuousMultilinearMap.add_apply, ih]
+      rw [Tensor0SSpace.add_apply, ih]
 
 private theorem basisTensor0S_empty_eq_scalarOne
     (basis : Module.Basis Idx Real (TangentSpace I x))

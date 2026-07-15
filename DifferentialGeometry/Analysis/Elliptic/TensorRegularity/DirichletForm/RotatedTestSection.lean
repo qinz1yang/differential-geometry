@@ -485,6 +485,62 @@ theorem rotatedTestSection_chartComp
   · intro hQ
     exact absurd (Finset.mem_univ Q) hQ
 
+/-- **Chart-frame fibre reconstruction.** The fibre value `S.toSection b` of a
+smooth compactly-supported `(r, s)`-tensor section, read on the chart-`α` source,
+is the finite sum over component multi-indices `Q` of its raw chart-frame scalar
+component `tensorChartComponentRaw g r s S α Q.1 Q.2 b` times the chart-`α`-frame
+constant basis fibre section `chartBasisFiberSection r s α Q b`. The proof
+expands `S.toSection b` through the chart trivialization at `b`: the model value
+`tensorTrivProj g r s S α b` decomposes over the component basis
+(`tensorRSModel_eq_sum_basis`) with the raw chart components as coefficients, and
+the (continuous-linear) trivialization inverse `rsTriv.symmL ℝ b` carries that
+decomposition back to the fibre, basis element by basis element. -/
+theorem toSection_eq_sum_chartBasisFiberSection
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) (α : M)
+    {b : M} (hb : b ∈ (chartAt H α).source) :
+    S.toSection b = ∑ Q : CompIdx E r s,
+      tensorChartComponentRaw (I := I) (M := M) g r s S α Q.1 Q.2 b •
+        chartBasisFiberSection (I := I) (M := M) r s α Q b := by
+  classical
+  have hb' : b ∈ (rsTriv (I := I) (M := M) r s α).baseSet := by
+    rw [rsTriv_baseSet (I := I) (M := M) r s α]; exact hb
+  have hmodel := tensorRSModel_eq_sum_basis (E := E) r s
+    (tensorTrivProj (I := I) (M := M) g r s S α b)
+  calc S.toSection b
+      = (rsTriv (I := I) (M := M) r s α).symmL ℝ b
+          ((rsTriv (I := I) (M := M) r s α).continuousLinearMapAt ℝ b
+            (S.toSection b)) :=
+        ((rsTriv (I := I) (M := M) r s α).symmL_continuousLinearMapAt
+          hb' (S.toSection b)).symm
+    _ = (rsTriv (I := I) (M := M) r s α).symmL ℝ b
+          (tensorTrivProj (I := I) (M := M) g r s S α b) := rfl
+    _ = (rsTriv (I := I) (M := M) r s α).symmL ℝ b
+          (∑ Idx, ∑ Jdx,
+            tensorChartComponentProjection (E := E) r s Idx Jdx
+                (tensorTrivProj (I := I) (M := M) g r s S α b) •
+              tensorChartBasisElement (E := E) r s Idx Jdx) := by
+        rw [← hmodel]
+    _ = ∑ Idx, ∑ Jdx,
+          tensorChartComponentProjection (E := E) r s Idx Jdx
+              (tensorTrivProj (I := I) (M := M) g r s S α b) •
+            (rsTriv (I := I) (M := M) r s α).symmL ℝ b
+              (tensorChartBasisElement (E := E) r s Idx Jdx) := by
+        rw [map_sum]
+        refine Finset.sum_congr rfl (fun Idx _ => ?_)
+        rw [map_sum]
+        refine Finset.sum_congr rfl (fun Jdx _ => ?_)
+        rw [map_smul]
+    _ = ∑ Q : CompIdx E r s,
+          tensorChartComponentRaw (I := I) (M := M) g r s S α Q.1 Q.2 b •
+            chartBasisFiberSection (I := I) (M := M) r s α Q b := by
+        rw [Fintype.sum_prod_type'
+          (f := fun Idx Jdx =>
+            tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx b •
+              chartBasisFiberSection (I := I) (M := M) r s α (Idx, Jdx) b)]
+        refine Finset.sum_congr rfl (fun Idx _ => ?_)
+        refine Finset.sum_congr rfl (fun Jdx _ => ?_)
+        rfl
+
 /-- **The Gram / inverse-Gram collapse.** On the Euclidean chart target the
 component-wise contraction of the chart-frame tensor-metric Gram against the
 inverse Gram is the identity: for component multi-indices `P, P₀`,

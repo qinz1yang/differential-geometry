@@ -209,6 +209,113 @@ theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual
   rw [hswap]
   abel
 
+/-! ### General-valence rank-`(0, s)` trace-discrepancy decomposition
+
+The two declarations below port the `(0, 2)`-locked frame-trace discrepancy and the headline
+unconditional curried curvature-defect identity to an arbitrary covariant valence `(0, s)`. Each
+generalises its `s = 2` original verbatim with `2 ↦ s`, `tensor0S_curry 2 ↦ tensor0S_curry s`,
+`Tensor3rdCurv g 0 2 ↦ Tensor3rdCurv g 0 s`, `covGrad g 0 2 ↦ covGrad g 0 s`, citing the
+general-valence currying tower built in `CurvatureDefect.lean`
+(`covGradRoughLapCurv_gen`, `covGrad_rawConnLap_unit_eval_curry_gen`,
+`frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen`,
+`covGradRoughLapMovingFrameResidual_gen`) and `GradientField.lean`
+(`covGrad_apply_unit_eval_genVal`, `curry_covGrad_unit_eval_genVal`,
+`tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal`). This is the currying-identity tower
+of the leaf-`A` genuine/bracket split. -/
+
+/-- **The frame-trace discrepancy (general valence).** General-valence analogue of
+`covGradRoughLapTraceDiscrepancy` (its `s = 2` instance). With `Δ_∇(∇T₀) = rawTensorConnLapSmooth
+g 0 (s + 1) (covGrad g 0 s T₀)`, `B_i := smoothOrthoFrame g x i`, and `W := smoothExtensionTangent
+x w`, the `(0, s)`-tensor difference of the curried unit-evaluation of `Δ_∇(∇T₀)` and the bare
+fixed-frame iterated trace:
+```
+covGradRoughLapTraceDiscrepancy_gen g s T₀ x w
+  := tensor0S_curry s x (Δ_∇(∇T₀) x (unit)) w
+       − (∑ᵢ ∇_{Bᵢ}∇_{Bᵢ}(∇_W T₀))(x)(unit).
+``` -/
+noncomputable def covGradRoughLapTraceDiscrepancy_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    Tensor0SSpace s I x :=
+  tensor0S_curry (I := I) (M := M) s x
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+        (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
+          (covGrad (I := I) (M := M) g 0 s T₀)).toSection x)
+        (unitZeroSec (I := I) (M := M) x)) w -
+    (∑ i : Fin (Module.finrank ℝ E),
+        (tensorCov (I := I) g 0 s).toFun
+          (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+            (covApply (tensorCov (I := I) g 0 s)
+              (smoothExtensionTangent (I := I) x w) (fun y : M => T₀.toSection y))) x
+          (smoothOrthoFrame (I := I) g x i x))
+      (unitZeroSec (I := I) (M := M) x)
+
+/-- Defining identity for `covGradRoughLapTraceDiscrepancy_gen`. -/
+lemma covGradRoughLapTraceDiscrepancy_gen_def
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s T₀ x w =
+      tensor0S_curry (I := I) (M := M) s x
+          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+            (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
+              (covGrad (I := I) (M := M) g 0 s T₀)).toSection x)
+            (unitZeroSec (I := I) (M := M) x)) w -
+        (∑ i : Fin (Module.finrank ℝ E),
+            (tensorCov (I := I) g 0 s).toFun
+              (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+                (covApply (tensorCov (I := I) g 0 s)
+                  (smoothExtensionTangent (I := I) x w) (fun y : M => T₀.toSection y))) x
+              (smoothOrthoFrame (I := I) g x i x))
+          (unitZeroSec (I := I) (M := M) x) := rfl
+
+/-- **Headline: the unconditional curried curvature-defect identity (general valence).**
+General-valence analogue of `covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual` (its
+`s = 2` instance). The curried unit-`(0, 0)`-evaluation of the canonical commutator defect
+`covGradRoughLapCurv_gen g s T₀ = Δ_∇(∇T₀) − ∇(Δ_∇ T₀)`, along the gradient direction `w`, equals
+the frame-trace discrepancy plus the explicit curvature field `Tensor3rdCurv g 0 s W T₀ x (unit)`
+(with `W := smoothExtensionTangent x w`) minus the moving-frame residual
+`covGradRoughLapMovingFrameResidual_gen g s T₀ x w`:
+```
+tensor0S_curry s x (covGradRoughLapCurv_gen g s T₀ x (unit)) w
+  = covGradRoughLapTraceDiscrepancy_gen g s T₀ x w
+    + Tensor3rdCurv g 0 s W T₀ x (unit)
+    − covGradRoughLapMovingFrameResidual_gen g s T₀ x w.
+```
+The proof ports verbatim: it splits the defect via `SmoothCcTensor.toSection_sub`, leaves the
+`Δ_∇(∇T₀)` term as the curried unit-evaluation, reads the `∇(Δ_∇ T₀)` term through
+`covGrad_rawConnLap_unit_eval_curry_gen`, substitutes the general-valence frame-trace swap
+`frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen`, and recombines with the
+definition of the discrepancy by `abel`. It is **unconditional** — no slot-`0` matching is
+assumed; the discrepancy is carried explicitly. -/
+theorem covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    tensor0S_curry (I := I) (M := M) s x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          (covGradRoughLapCurv_gen (I := I) (M := M) g s T₀).toSection x)
+          (unitZeroSec (I := I) (M := M) x)) w =
+      covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s T₀ x w +
+        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+          Tensor3rdCurv (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
+            (fun y : M => T₀.toSection y) x)
+          (unitZeroSec (I := I) (M := M) x) -
+        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w := by
+  have hdef : (covGradRoughLapCurv_gen (I := I) (M := M) g s T₀).toSection x =
+      (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
+          (covGrad (I := I) (M := M) g 0 s T₀)).toSection x -
+        (covGrad (I := I) (M := M) g 0 s
+          (rawTensorConnLapSmooth (I := I) g 0 s T₀)).toSection x := by
+    rw [covGradRoughLapCurv_gen, SmoothCcTensor.toSection_sub]; rfl
+  rw [hdef]
+  rw [ContinuousLinearMap.sub_apply, map_sub, ContinuousLinearMap.sub_apply]
+  rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w]
+  have hswap := frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen
+    (I := I) (M := M) g s T₀ x w
+  rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w] at hswap
+  rw [covGradRoughLapTraceDiscrepancy_gen_def (I := I) (M := M) g s T₀ x w]
+  rw [hswap]
+  abel
+
 end Connection
 end Integral
 end DifferentialGeometry

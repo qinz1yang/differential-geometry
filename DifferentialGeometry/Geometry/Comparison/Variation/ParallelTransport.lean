@@ -306,18 +306,18 @@ source on the closed interval. Bundling these keeps the
 `parallelTransport` section and its specification lemmas readable. -/
 structure ParallelSegmentData [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) (a b t₀ : ℝ) : Prop where
-  /-- The interval is nondegenerate. -/
+
   hab : a ≤ b
-  /-- The base time lies in the open interval. -/
+
   ht₀ : t₀ ∈ Set.Ioo a b
-  /-- The chart-curve velocity is continuous on the closed interval. -/
+
   huCont : ContinuousOn (fun t => deriv (chartCurve (I := I) α γ) t) (Set.Icc a b)
-  /-- The chart-curve is continuous on the closed interval. -/
+
   huCurveCont : ContinuousOn (chartCurve (I := I) α γ) (Set.Icc a b)
-  /-- The chart-curve is differentiable on the open interval. -/
+
   huDeriv : ∀ t ∈ Set.Ioo a b,
     HasDerivAt (chartCurve (I := I) α γ) (deriv (chartCurve (I := I) α γ) t) t
-  /-- `γ` stays in the chart source on the closed interval. -/
+
   hsource : ∀ t ∈ Set.Icc a b, γ t ∈ (chartAt H α).source
 
 /-- **parallel-section-packaging (def).** The parallel transport of
@@ -624,7 +624,8 @@ across `[a, b]`. The section's fibre value is `(triv α).symmL (γ s)` of the
 single-chart ODE solution `Y s`. -/
 theorem exists_piece_parallel_section [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {a b t₀ : ℝ} (hab : a < b)
+    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)
+    {a b t₀ : ℝ} (hab : a < b)
     (ht₀ : t₀ ∈ Set.Icc a b)
     (hsrc : ∀ t ∈ Set.Icc a b, γ t ∈ (chartAt H α).source)
     (v₀ : TangentSpace I (γ t₀)) :
@@ -638,17 +639,19 @@ theorem exists_piece_parallel_section [I.Boundaryless]
     chartCurve_continuousOn_of_mapsTo (I := I) α γ hγ.continuous hsrc
   set U : Set ℝ := γ ⁻¹' (chartAt H α).source with hU_def
   have hU_open : IsOpen U := (chartAt H α).open_source.preimage hγ.continuous
-  have hUcd : ContDiffOn ℝ ∞ (AlongCurve.chartCurve (I := I) α γ) U := by
-    have h_comp_mdiff : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ ((extChartAt I α) ∘ γ) U := by
-      have hφ : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
-        contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)
+  have hUcd : ContDiffOn ℝ (N : ℕ∞) (AlongCurve.chartCurve (I := I) α γ) U := by
+    have h_comp_mdiff : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (N : ℕ∞) ((extChartAt I α) ∘ γ) U := by
+      have hφ : ContMDiffOn I 𝓘(ℝ, E) (N : ℕ∞) (extChartAt I α) (chartAt H α).source :=
+        (contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)).of_le (by exact_mod_cast le_top)
       exact hφ.comp hγ.contMDiffOn (fun s hs => hs)
     have hfun : (AlongCurve.chartCurve (I := I) α γ) = ((extChartAt I α) ∘ γ) := rfl
     rw [hfun]; exact contMDiffOn_iff_contDiffOn.mp h_comp_mdiff
   have hIcc_sub_U : Set.Icc a b ⊆ U := fun t ht => hsrc t ht
   have huPrimeCont : ContinuousOn uPrime (Set.Icc a b) := by
-    have hderiv_cd : ContDiffOn ℝ ∞ (deriv (AlongCurve.chartCurve (I := I) α γ)) U :=
-      hUcd.deriv_of_isOpen hU_open (by exact_mod_cast (le_refl (∞ : WithTop ℕ∞)))
+    have hderiv_cd : ContDiffOn ℝ (0 : ℕ∞) (deriv (AlongCurve.chartCurve (I := I) α γ)) U :=
+      hUcd.deriv_of_isOpen hU_open (by
+        have : (1 : ℕ) ≤ N := le_trans one_le_two hN
+        exact_mod_cast this)
     exact (hderiv_cd.continuousOn).mono hIcc_sub_U
   have hγa_src : γ t₀ ∈ (chartAt H α).source := hsrc t₀ ht₀
   set y₀ : E := (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ t₀) v₀ with hy₀_def
@@ -664,7 +667,8 @@ theorem exists_piece_parallel_section [I.Boundaryless]
     intro t ht
     have ht_U : t ∈ U := hIcc_sub_U (Set.mem_Icc_of_Ioo ht)
     have : DifferentiableAt ℝ (AlongCurve.chartCurve (I := I) α γ) t :=
-      (hUcd.differentiableOn (by simp) t ht_U).differentiableAt (hU_open.mem_nhds ht_U)
+      (hUcd.differentiableOn (by exact_mod_cast (show N ≠ 0 by omega)) t ht_U).differentiableAt
+        (hU_open.mem_nhds ht_U)
     exact this.hasDerivAt
   have hY_par_Ioo : IsParallelChart (I := I) g α γ uPrime Y (Set.Ioo a b) := by
     refine ⟨fun t ht => hcurveDeriv t ht, ?_⟩
@@ -765,7 +769,8 @@ product `t ↦ g(γ t)(V t, W t)` is constant on `Icc lo hi`, equal to its value
 both sections are parallel. -/
 theorem parallel_transport_preserves_inner_product [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {lo hi : ℝ} (hlohi : lo ≤ hi)
+    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)
+    {lo hi : ℝ} (hlohi : lo ≤ hi)
     (V W : ∀ t, TangentSpace I (γ t))
     (hVdiff : ∀ t ∈ Set.Icc lo hi,
       DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t)
@@ -821,13 +826,13 @@ theorem parallel_transport_preserves_inner_product [I.Boundaryless]
       rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def, hinv]
     have hu_hasDerivAt : HasDerivAt (chartCurve (I := I) α γ)
         (deriv (chartCurve (I := I) α γ) t₀) t₀ := by
-      have hcd : ContDiffAt ℝ ∞ (chartCurve (I := I) α γ) t₀ := by
-        have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ ((extChartAt I α) ∘ γ) t₀ := by
-          have hφ : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) (γ t₀) :=
-            contMDiffAt_extChartAt (I := I) (x := α) (n := ∞)
+      have hcd : ContDiffAt ℝ (N : ℕ∞) (chartCurve (I := I) α γ) t₀ := by
+        have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (N : ℕ∞) ((extChartAt I α) ∘ γ) t₀ := by
+          have hφ : ContMDiffAt I 𝓘(ℝ, E) (N : ℕ∞) (extChartAt I α) (γ t₀) :=
+            (contMDiffAt_extChartAt (I := I) (x := α) (n := ∞)).of_le (by exact_mod_cast le_top)
           exact hφ.comp t₀ (hγ.contMDiffAt)
         exact contMDiffAt_iff_contDiffAt.mp hmdiff
-      exact (hcd.differentiableAt (by simp)).hasDerivAt
+      exact (hcd.differentiableAt (by exact_mod_cast (show N ≠ 0 by omega))).hasDerivAt
     have hmem_int : chartCurve (I := I) α γ t₀ ∈ interior (extChartAt I α).target := by
       have hxsrc : γ t₀ ∈ (extChartAt I α).source := by
         rw [extChartAt_source]; exact mem_chart_source H (γ t₀)
@@ -881,7 +886,8 @@ and differentiable chart representations there, and `V t₀ = W t₀` at some
 forces it to vanish everywhere by positive-definiteness of `g`. -/
 theorem parallel_transport_unique_of_eq_at_point [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {lo hi : ℝ} (hlohi : lo ≤ hi)
+    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)
+    {lo hi : ℝ} (hlohi : lo ≤ hi)
     (V W : ∀ t, TangentSpace I (γ t))
     (hVdiff : ∀ t ∈ Set.Icc lo hi,
       DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t)
@@ -917,7 +923,7 @@ theorem parallel_transport_unique_of_eq_at_point [I.Boundaryless]
     rw [hVpar t ht, hWpar t ht]
     simp
   have hDt₀ : D t₀ = 0 := by rw [hD_def]; simp only; rw [hagree]; abel
-  have hconst := parallel_transport_preserves_inner_product (I := I) g γ hγ hlohi D D
+  have hconst := parallel_transport_preserves_inner_product (I := I) g γ hN hγ hlohi D D
     hDdiff hDdiff hDpar hDpar
   intro t ht
   have hzero_t₀ : g.inner (γ t₀) (D t₀) (D t₀) = 0 := by
@@ -1013,7 +1019,8 @@ but on an *open neighbourhood* `Ioo (-δ) (L + δ)` of it (`δ > 0`). The closed
 `exists_parallel_transport_on_Icc` is the immediate corollary. -/
 theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ,ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L) (v₀ : TangentSpace I (γ 0)) :
+    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ,ℝ) I (N : ℕ∞) γ)
+    {L : ℝ} (hL : 0 < L) (v₀ : TangentSpace I (γ 0)) :
     ∃ (δ : ℝ) (_ : 0 < δ) (V : ∀ t, TangentSpace I (γ t)),
       V 0 = v₀ ∧
       (∀ t ∈ Set.Ioo (-δ) (L + δ), DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) ∧
@@ -1062,7 +1069,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     have hlt : p - step < p + 2 * step := by linarith [hstep_pos]
     have hp_mem : p ∈ Set.Icc (p - step) (p + 2 * step) := ⟨by linarith [hstep_pos], by linarith [hstep_pos]⟩
     obtain ⟨Vp, hVp_init, hVp_diff, hVp_par⟩ :=
-      exists_piece_parallel_section (I := I) g α γ hγ hlt hp_mem hsrc' w
+      exists_piece_parallel_section (I := I) g α γ hN hγ hlt hp_mem hsrc' w
     exact ⟨Vp, hVp_init, hVp_diff, hVp_par⟩
   have hc0 : c 0 = 0 := by
     change min L ((0 : ℕ) * step) = 0
@@ -1111,7 +1118,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
         rw [hov_lo] at hs
         refine ⟨by linarith [hs.1, hstep_pos], by linarith [hs.2, hstep_pos]⟩
       have hagree : ∀ s ∈ Set.Icc ov_lo (c n), Vn s = Vp s := by
-        refine parallel_transport_unique_of_eq_at_point (I := I) g γ hγ hov_lo_lt Vn Vp
+        refine parallel_transport_unique_of_eq_at_point (I := I) g γ hN hγ hov_lo_lt Vn Vp
           (fun s hs => hVn_diff s (hVn_dom hs)) (fun s hs => hVp_diff s (hVp_dom hs))
           (fun s hs => hVn_par s (hVn_dom hs)) (fun s hs => hVp_par s (hVp_dom hs))
           ⟨hov_lo_lt, le_refl _⟩ ?_
@@ -1190,13 +1197,14 @@ vanishes on `Icc 0 L`. This is the closed-interval corollary of
 window `Ioo (-δ) (L + δ)` to `Icc 0 L`. -/
 theorem exists_parallel_transport_on_Icc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (hγ : ContMDiff 𝓘(ℝ,ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L) (v₀ : TangentSpace I (γ 0)) :
+    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ,ℝ) I (N : ℕ∞) γ)
+    {L : ℝ} (hL : 0 < L) (v₀ : TangentSpace I (γ 0)) :
     ∃ V : ∀ t, TangentSpace I (γ t),
       V 0 = v₀ ∧
       (∀ t ∈ Set.Icc (0:ℝ) L, DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) ∧
       (∀ t ∈ Set.Icc (0:ℝ) L, covDerivAlong (I := I) g γ V t = 0) := by
   obtain ⟨δ, hδ_pos, V, hV0, hVdiff, hVpar⟩ :=
-    exists_global_parallel_transport_on_Ioo (I := I) g γ hγ hL v₀
+    exists_global_parallel_transport_on_Ioo (I := I) g γ hN hγ hL v₀
   have hsub : Set.Icc (0 : ℝ) L ⊆ Set.Ioo (-δ) (L + δ) := by
     intro t ht
     exact ⟨by linarith [ht.1, hδ_pos], by linarith [ht.2, hδ_pos]⟩

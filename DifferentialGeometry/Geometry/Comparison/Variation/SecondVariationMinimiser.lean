@@ -238,13 +238,14 @@ theorem mdifferentiableAt_expMapIntrinsic_zero
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- **Exponential-map construction of a smooth endpoint-fixed variation.**
+/-- **Exponential-map construction of a smooth variation realising a field.**
 Given a smooth curve `γ`, a bundle-smooth field of launch directions
-`t ↦ (γ t, V t)` (a smooth section of `TM` along `γ`) vanishing at the endpoints
-`0` and `L`, there exists a two-parameter variation `f` that is jointly smooth
+`t ↦ (γ t, V t)` (a smooth section of `TM` along `γ`), there exists a
+two-parameter variation `f` that is jointly smooth
 (`IsSmoothVariation`), whose central curve is `γ` (`f 0 t = γ t`), whose
-`s`-velocity at `s = 0` realises `V` on `[0, L]`, and which keeps both endpoints
-fixed (`f s 0 = γ 0`, `f s L = γ L`).
+`s`-velocity at `s = 0` realises `V` on `[0, L]`. Endpoint fixing is returned
+conditionally: if `V` vanishes at an endpoint, the corresponding endpoint of the
+variation is fixed.
 
 The construction is the intrinsic geodesic exponential map of a cut-off of the
 field, `f s t := exp_{γ t}(η s • χ t • V t)`, where `χ` is a compactly supported
@@ -252,9 +253,9 @@ cut-off equal to `1` on `[0, L]` (giving the carrier a compact `t`-range over wh
 the per-point joint smoothness of the exponential map can be uniformised by the
 tube lemma) and `η` is a bounded smooth reparametrisation with `η 0 = 0`,
 `η'(0) = 1` (keeping the launch parameter inside the smallness window everywhere).
-The hypotheses `hV0`, `hVL` (`V` vanishing at the endpoints) are what make the
-endpoints fixed. -/
-theorem exists_variation_realising_field_via_exp
+This is the reusable moving-start variant needed by the first-variation
+distance-gradient bridge; the older endpoint-fixed theorem below is a wrapper. -/
+theorem exists_expVar_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -262,14 +263,14 @@ theorem exists_variation_realising_field_via_exp
     (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
     (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
-    (hV0 : V 0 = 0) (hVL : V L = 0) :
+      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t)))) :
     ∃ f : ℝ → ℝ → M,
       IsSmoothVariation (I := I) f ∧
       (∀ t : ℝ, f 0 t = γ t) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) L,
         (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) = V t) ∧
-      (∀ s : ℝ, f s 0 = γ 0) ∧ (∀ s : ℝ, f s L = γ L) := by
+      (V 0 = 0 → ∀ s : ℝ, f s 0 = γ 0) ∧
+      (V L = 0 → ∀ s : ℝ, f s L = γ L) := by
   classical
   obtain ⟨χ, hχ_cd, hχ_one, hχ_zero, hχ_Icc⟩ := exists_cutoff_one_on_Icc L
   set Vc : ℝ → E := fun t => χ t • V t with hVc_def
@@ -317,8 +318,6 @@ theorem exists_variation_realising_field_via_exp
     refine hδ'_ball ?_
     rw [Metric.mem_ball, Real.dist_eq, sub_zero]
     exact abs_reparam_lt δ' hδ'_pos s
-  have hVc0 : Vc 0 = 0 := by simp only [hVc_def, hV0, smul_zero]
-  have hVcL : Vc L = 0 := by simp only [hVc_def, hVL, smul_zero]
   have hΦη : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ∞)
       (fun p : ℝ × ℝ => (η p.1, p.2)) := by
     have hηM : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (8 : ℕ∞) η := by
@@ -398,20 +397,123 @@ theorem exists_variation_realising_field_via_exp
     rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
       ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.one_apply, one_smul]
     exact hVct
-  · intro s
+  · intro hV0 s
+    have hVc0 : Vc 0 = 0 := by simp only [hVc_def, hV0, smul_zero]
     change expMapIntrinsic (I := I) g hEnorm (γ 0)
       ((η s • (V₀ (0 : ℝ)).snd : E) : TangentSpace I (γ 0)) = γ 0
     have harg : (η s • (V₀ (0 : ℝ)).snd : E) = (0 : E) := by
       rw [hV₀snd, hVc0]; exact smul_zero _
     rw [harg]
     exact expMapIntrinsic_zero (I := I) g hEnorm (γ 0)
-  · intro s
+  · intro hVL s
+    have hVcL : Vc L = 0 := by simp only [hVc_def, hVL, smul_zero]
     change expMapIntrinsic (I := I) g hEnorm (γ L)
       ((η s • (V₀ L).snd : E) : TangentSpace I (γ L)) = γ L
     have harg : (η s • (V₀ L).snd : E) = (0 : E) := by
       rw [hV₀snd, hVcL]; exact smul_zero _
     rw [harg]
     exact expMapIntrinsic_zero (I := I) g hEnorm (γ L)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Moving-start, fixed-final form of `exists_expVar_field`. If the launch field
+vanishes at `L`, the exponential variation fixes the final endpoint while
+allowing the initial endpoint to move. -/
+theorem exists_expVar_fixEnd
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
+    (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
+    (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
+    (hVL : V L = 0) :
+    ∃ f : ℝ → ℝ → M,
+      IsSmoothVariation (I := I) f ∧
+      (∀ t : ℝ, f 0 t = γ t) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) L,
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) = V t) ∧
+      (∀ s : ℝ, f s L = γ L) := by
+  obtain ⟨f, hf, hcentral, hderiv, _hfix0, hfixL⟩ :=
+    exists_expVar_field (I := I) g hEnorm γ V L hγ hVbundle
+  exact ⟨f, hf, hcentral, hderiv, hfixL hVL⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Field-level form of the half-squared-distance derivative. The exponential
+variation constructor supplies a smooth moving-start, fixed-final variation
+realising `V`; the only remaining geometric input is that its length locally
+realises the distance to the fixed final endpoint. -/
+theorem exists_sqDeriv_field
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    [PseudoMetricSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
+    (hγsmooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
+    (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
+    (hVL : V L = 0) (hL : 0 < L)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t)
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1) :
+    ∃ f : ℝ → ℝ → M,
+      IsSmoothVariation (I := I) f ∧
+      (∀ t : ℝ, f 0 t = γ t) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) L,
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) = V t) ∧
+      (∀ s : ℝ, f s L = γ L) ∧
+      (((fun s : ℝ => dist (f s 0) (γ L)) =ᶠ[nhds (0 : ℝ)]
+          (fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L)) →
+        dist (f 0 0) (γ L) = L →
+        HasDerivAt (fun s : ℝ => (1 / 2 : ℝ) * dist (f s 0) (γ L) ^ 2)
+          (L * (- g.inner (γ 0)
+              (show TangentSpace I (γ 0) from V 0)
+              (mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ)))) 0) := by
+  obtain ⟨f, hf, hcentral, hfield, hfixL⟩ :=
+    exists_expVar_fixEnd (I := I) g hEnorm γ V L hγsmooth hVbundle hVL
+  refine ⟨f, hf, hcentral, hfield, hfixL, ?_⟩
+  intro hdist hdist0
+  have hraw := halfSq_deriv_length (I := I) g γ f L hf hL hγ hcentral hfixL hUnit hdist hdist0
+  have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) L := ⟨le_rfl, le_of_lt hL⟩
+  have hfield0 :
+      mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s 0) 0 (1 : ℝ) =
+        (show TangentSpace I (γ 0) from V 0) := by
+    change (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s 0) 0 (1 : ℝ) : E) = V 0
+    exact hfield 0 h0mem
+  rwa [hfield0] at hraw
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- **Exponential-map construction of a smooth endpoint-fixed variation.**
+Given a smooth curve `γ`, a bundle-smooth field of launch directions
+`t ↦ (γ t, V t)` (a smooth section of `TM` along `γ`) vanishing at the endpoints
+`0` and `L`, there exists a two-parameter variation `f` that is jointly smooth,
+whose central curve is `γ`, whose `s`-velocity at `s = 0` realises `V` on
+`[0, L]`, and which keeps both endpoints fixed. -/
+theorem exists_variation_realising_field_via_exp
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
+    (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
+    (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
+    (hV0 : V 0 = 0) (hVL : V L = 0) :
+    ∃ f : ℝ → ℝ → M,
+      IsSmoothVariation (I := I) f ∧
+      (∀ t : ℝ, f 0 t = γ t) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) L,
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) = V t) ∧
+      (∀ s : ℝ, f s 0 = γ 0) ∧ (∀ s : ℝ, f s L = γ L) := by
+  obtain ⟨f, hf, hcentral, hderiv, hfix0, hfixL⟩ :=
+    exists_expVar_field (I := I) g hEnorm γ V L hγ hVbundle
+  exact ⟨f, hf, hcentral, hderiv, hfix0 hV0, hfixL hVL⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

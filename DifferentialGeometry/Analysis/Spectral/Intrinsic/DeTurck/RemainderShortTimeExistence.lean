@@ -95,6 +95,121 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+/-- **The Duhamel / mild-solution structural datum of a parabolic carrier.**
+
+For an anchor metric `g`, spectral Sobolev exponent `a`, horizon `T`, a pointwise
+carrier `u₂ : ℝ → H^{a+2}(g)`, a lower-order nonlinearity
+`N_cont : H^{a+1}(g) → Hᵃ(g)`, and a radius `R`, this predicate asserts that the
+carrier `u₂` *is* the Duhamel mild solution of the quasi-linear tensor heat equation
+`∂_t u = Δ_∇ u + N_cont(u)`, `u(0) = 0`, on `[0, T]`: there is a positive,
+`≤ 1` horizon witness and an `L²`-time forcing `gforce` with
+
+* `N_cont` continuous on the closed `H^{a+1}`-ball `closedBall (ι 0) R` (the genuine
+  ball-continuity of the engine nonlinearity — the smoothing-enabling datum);
+* the **pointwise mild-solution identity** `ι (u₂ s) = (maxRegDuhamelMap a … 0 gforce).toFun s`
+  for every `s ∈ [0, T]` — the carrier equals, value by value in time, the indefinite
+  Bochner integral representing `t ↦ e^{tΔ_∇} 0 + ∫₀ᵗ e^{(t−τ)Δ_∇} gforce(τ) dτ`;
+* the **forcing-reproduction** `gforce =ᵐ (fun t => N_cont (field_{a+1} t))` along the
+  `H^{a+1}`-view Duhamel field, i.e. `gforce` is `N_cont` evaluated on the solution
+  (the fixed-point equation of the construction);
+* the field stays a.e. in the radius-`R` ball (so `N_cont` is evaluated where it is
+  continuous);
+* the **trajectory identification** `gforce =ᵐ gtraj` of the forcing with the supplied
+  spectral forcing trajectory `gtraj : ℝ → Hᵃ(g)`.  This is the conjunct the per-mode time
+  bootstrap consumes: it ties the existential `L²`-time forcing `gforce` to the explicit
+  time-path `gtraj` whose `C^k`-in-time regularity is supplied externally (for the concrete
+  Ricci–DeTurck flow, `gtraj s = deTurckG0SpectralN g₀ a (deTurckRealizeRemainderOf g₀ g_bg
+  (T_s s))`, whose all-order time smoothness is the realized-remainder Nemytskii chain rule).
+  Because `gforce`'s own coordinate paths are `L²`-time elements whose per-mode convolutions
+  recover the carrier coordinates, this a.e. tie suffices to transport the `C^k`-in-time
+  regularity of `gtraj` to the per-mode bootstrap.
+
+This is exactly the engine's exported structure (`deTurckRemainder_strong_shortTime_exists`:
+`u = maxRegDuhamelMap … 0 gforce`, `gforce =ᵐ N(field)`, the stays-in-ball event) transported
+to the pointwise carrier through the bridge `ι (u₂ s) = u.toFun s`.  It is the **structural
+identity whose parabolic smoothing produces all time-derivative orders**, and it is genuinely
+stronger than any finite-order time-regularity statement: a single interior
+`HasDerivAt`/`HasDerivWithinAt` of the carrier (one time-derivative) is *implied* by this
+identity on the interior but does **not** imply it, and — crucially — cannot reject a
+`C¹`-not-`C²` family, whereas this identity does (see the litmus in the consuming nodes).
+
+The Duhamel solution is exhibited on a possibly-**larger** existential horizon `Te ≥ T` (with
+`0 < T ≤ Te ≤ 1`), with the carrier identity required only on `[0, T]` — this makes the datum
+**downward monotone in the horizon** `T` (a witness on `[0, Te]` restricts verbatim to any
+`0 < T' ≤ Te`), which is exactly what the realize-construction's repeated horizon-shrinks need.
+
+The hypotheses constrain `u₂`/`N_cont`/`gforce`; the predicate is **not** a joint-smoothness
+conclusion (it is a time-indexed integral identity in a Banach space, not a `ContMDiffOn` of a
+bundle section over `M`), so it never packages a consumer's conclusion. -/
+def DuhamelMildSolutionData (g : SmoothRiemannianMetric I M) (a : ℝ) (T : ℝ)
+    (u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      tensorHs (I := I) (M := M) g 0 2 a)
+    (R : ℝ)
+    (gtraj : ℝ → tensorHs (I := I) (M := M) g 0 2 a) : Prop :=
+  ∃ (Te : ℝ) (hT : 0 < T) (hTe : T ≤ Te) (hTe1 : Te ≤ 1)
+    (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) Te),
+    ContinuousOn N_cont
+      (Metric.closedBall
+        (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
+          (show (a + 1) ≤ a + 2 by linarith)
+          (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
+    (∀ s ∈ Set.Icc (0 : ℝ) T,
+      tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
+          (show a ≤ a + 2 by linarith) (u₂ s)
+        = timeH1.toFun
+            (maxRegDuhamelMap (I := I) (M := M) a (lt_of_lt_of_le hT hTe) hTe1
+              (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce) s) ∧
+    (gforce =ᵐ[timeMeasure Te]
+      (fun t => N_cont (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a
+        (lt_of_lt_of_le hT hTe) hTe1
+        (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t))) ∧
+    (∀ᵐ t ∂(timeMeasure Te),
+      maxRegDuhamelSolFieldHa1 (I := I) (M := M) a (lt_of_lt_of_le hT hTe) hTe1
+          (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t ∈
+        Metric.closedBall
+          (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
+            (show (a + 1) ≤ a + 2 by linarith)
+            (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
+    ((gforce : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+      =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj)
+
+/-- **Downward horizon-monotonicity of the Duhamel mild-solution datum.**  A Duhamel
+datum on `[0, T]` is, verbatim, a Duhamel datum on any shorter positive horizon
+`0 < T' ≤ T`: the exhibited solution horizon `Te` (`≥ T ≥ T'`) and forcing are reused, and
+the carrier identity, which holds on `[0, T] ⊇ [0, T']`, is restricted.  This is the
+restriction step the realize-construction's repeated horizon-shrinks consume. -/
+theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} {T T' : ℝ}
+    {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
+    {N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      tensorHs (I := I) (M := M) g 0 2 a}
+    {R : ℝ} {gtraj : ℝ → tensorHs (I := I) (M := M) g 0 2 a}
+    (hTT' : T' ≤ T) (hT' : 0 < T')
+    (h : DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj) :
+    DuhamelMildSolutionData (I := I) (M := M) g a T' u₂ N_cont R gtraj := by
+  obtain ⟨Te, _hT, hTe, hTe1, gforce, hN_cont, hid, hforce, hball, htraj⟩ := h
+  refine ⟨Te, hT', le_trans hTT' hTe, hTe1, gforce, hN_cont,
+    fun s hs => hid s ⟨hs.1, le_trans hs.2 hTT'⟩, hforce, hball, ?_⟩
+  exact ae_restrict_of_ae_restrict_of_subset (Set.Icc_subset_Icc le_rfl hTT') htraj
+
+/-- **A.e.-congruence of the Duhamel mild-solution datum in the forcing trajectory.**  A
+Duhamel datum with forcing trajectory `gtraj` is, for any `gtraj'` agreeing with `gtraj`
+a.e. on the slab `[0, T]`, a Duhamel datum with trajectory `gtraj'`: only the final
+trajectory-identification conjunct `gforce =ᵐ gtraj` is affected, and it transports by
+transitivity along `gtraj =ᵐ gtraj'`.  This is the step the realize-construction uses to
+swap the abstract forcing trajectory `N_cont ∘ field` for the concrete realized-remainder
+spectral path `s ↦ deTurckG0SpectralN g₀ a (deTurckRealizeRemainderOf g₀ g_bg (T_s s))`. -/
+theorem DuhamelMildSolutionData.congr_gtraj {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
+    {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
+    {N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      tensorHs (I := I) (M := M) g 0 2 a}
+    {R : ℝ} {gtraj gtraj' : ℝ → tensorHs (I := I) (M := M) g 0 2 a}
+    (hg : gtraj =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj')
+    (h : DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj) :
+    DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj' := by
+  obtain ⟨Te, hT, hTe, hTe1, gforce, hN_cont, hid, hforce, hball, htraj⟩ := h
+  exact ⟨Te, hT, hTe, hTe1, gforce, hN_cont, hid, hforce, hball, htraj.trans hg⟩
+
 /-- **Strong short-time existence for a Ricci–DeTurck first-order remainder.**
 
 Let `(M, g_bg)` be a closed Riemannian manifold (compact, boundaryless,
@@ -123,7 +238,10 @@ Concretely the data `u, gforce` satisfy:
   pointwise-in-time remainder along the `H^{a+1}`-view solution field;
 * `trace₀ u = ι u₀` — the initial value is `u₀`;
 * `∂_t u = Δ_∇ (field_{a+2}) + Ñ_R(field_{a+1})` — the equation, where the
-  truncated forcing reproduces `N` on the (proven) stays-in-ball event.
+  truncated forcing reproduces `N` on the (proven) stays-in-ball event;
+* `field_{a+1} t ∈ closedBall (ι u₀) R` a.e. — the stays-in-ball event itself,
+  exposed from the engine so downstream carrier transports can pin the carrier to
+  the engine ball.
 
 The resolvent-compactness hypothesis demanded by the engine is supplied
 **unconditionally** by `tensorResolventL2_isCompactOperator` (no
@@ -159,7 +277,12 @@ theorem deTurckRemainder_strong_shortTime_exists
                 (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
               nemytskiiHa1 (I := I) (M := M)
                 (truncatedNonlin_lipschitzWith (I := I) (M := M) hR.le hN)
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) :=
+                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) ∧
+          ∀ᵐ t ∂(timeMeasure T),
+            maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t ∈
+              Metric.closedBall
+                (tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
+                  (show (a + 1) ≤ a + 2 by linarith) u₀) R :=
   quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact
     (I := I) (M := M) (g := g_bg) (r := 0) (s := 2) (a := a)
     (N := N) (L_R := L_R) (R := R) hR
@@ -217,7 +340,9 @@ theorem firstOrderRemainderCLM_strong_shortTime_exists
   obtain ⟨T₀, hT₀_pos, hsol⟩ :=
     deTurckRemainder_strong_shortTime_exists (I := I) (M := M) g_bg
       (N := ⇑R) (L_R := ‖R‖₊) (R := (1 : ℝ)) one_pos u₀ hN
-  exact ⟨T₀, hT₀_pos, fun {T} hT hTT₀ hT1 => hsol hT hTT₀ hT1⟩
+  refine ⟨T₀, hT₀_pos, fun {T} hT hTT₀ hT1 => ?_⟩
+  obtain ⟨u, gforce, hduh, hforce, htrace, hderiv, _hball⟩ := hsol hT hTT₀ hT1
+  exact ⟨u, gforce, hduh, hforce, htrace, hderiv⟩
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

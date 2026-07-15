@@ -44,6 +44,29 @@ theorem covariantDeriv_vectorField_contMDiff
     (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
       (𝕜 := 𝕜) (I := I) (M := M) cov hcov X Y)
 
+/-- `∇_X Y` of `∞`-smooth tangent sections, packaged as an `∞`-smooth section.
+This is the slot-update input of covariant-derivative tower regularity
+inductions. -/
+noncomputable def covSection
+    [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivative cov (∞ : WithTop ℕ∞))
+    (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) :
+    ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) where
+  toFun := fun p : M => (cov (fun q : M => Y q) p) (X p)
+  contMDiff_toFun := by
+    simpa [covariantDeriv_vectorField] using
+      covariantDeriv_vectorField_contMDiff (I := I) cov hcov X Y
+
+@[simp] theorem covSection_apply
+    [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (hcov : CovariantDerivative.ContMDiffCovariantDerivative cov (∞ : WithTop ℕ∞))
+    (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (p : M) :
+    covSection (I := I) cov hcov X Y p = (cov (fun q : M => Y q) p) (X p) :=
+  rfl
+
 /-- Model representative of a tangent vector field in the fixed tangent-bundle
 trivialization centered at `x₀`. -/
 noncomputable def tangentFieldModelInChart (x₀ : M)

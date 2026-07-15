@@ -151,9 +151,9 @@ weighted `ℓ²`.
 The structure is intentionally topology-free: the `Hˢ` Hilbert topology
 is installed below via an `InnerProductSpace.Core`. -/
 structure scalarHs (g : SmoothRiemannianMetric I M) (σ : ℝ) where
-  /-- The eigenbasis-coordinate family. -/
+
   coeff : EigenIdx (I := I) (M := M) g → ℝ
-  /-- The weighted square-summability witness placing `coeff` in `Hˢ`. -/
+
   weighted_summable :
     Summable (fun i => scalarSobolevWeight (I := I) (M := M) i σ *
       (coeff i) ^ 2)

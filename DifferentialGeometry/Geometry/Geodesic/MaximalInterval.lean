@@ -492,13 +492,7 @@ for signature uniformity with `pathELength_eq_arcLength` and is not needed in
 the proof. -/
 lemma speedSqrt_integrableOn_Icc_of_C1
     (g : SmoothRiemannianMetric I M) {η : ℝ → M} {a b : ℝ} (hab : a ≤ b)
-    (hη : ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc a b))
-    (_hEnorm : ∀ t ∈ Set.Icc a b,
-        ‖mfderiv 𝓘(ℝ, ℝ) I η t (1 : ℝ)‖ₑ
-          = ENNReal.ofReal (Real.sqrt
-              (g.inner (η t)
-                (mfderiv 𝓘(ℝ, ℝ) I η t (1 : ℝ))
-                (mfderiv 𝓘(ℝ, ℝ) I η t (1 : ℝ))))) :
+    (hη : ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc a b)) :
     MeasureTheory.IntegrableOn
       (fun t : ℝ => Real.sqrt
         (g.inner (η t)
@@ -557,9 +551,16 @@ lemma speedSqrt_integrableOn_Icc_of_C1
       exact hAgree t ht
     exact hIntW.congr hae
 
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
 /-- Mathlib's `pathELength I γ a b` equals `ENNReal.ofReal (arcLength g γ a b)`
 for a curve `γ` on `[a, b]` with `a ≤ b`, given the pointwise enorm
 identification on `Icc a b`.
+
+This is stated in the `RiemannianBundle`-active norm world (project tangent-fibre
+norm instances locally suppressed), matching `riemMetricSpace`/`riemMetric_dist_eq`,
+so that the resulting `riemannianEDist`/`dist` bounds compose without an
+enorm-instance mismatch.
 
 The hypotheses:
 * `hab : a ≤ b` is the interval orientation.
@@ -659,6 +660,31 @@ theorem pathELength_eq_arcLength
     unfold DifferentialGeometry.Geometry.Riemannian.Variation.arcLength
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- **Distance is bounded by arc length.**  For a `C¹` curve `γ` on `[a, b]`
+(`a ≤ b`) whose pointwise velocity `g`-norm is identified with the model enorm,
+the Riemannian distance between the endpoints is at most the arc length:
+`riemannianEDist I (γ a) (γ b) ≤ ENNReal.ofReal (arcLength g γ a b)`.  Combines
+`riemannianEDist_le_pathELength` with `pathELength_eq_arcLength`.  Stated in the
+`RiemannianBundle`-active norm world so it composes with `riemMetric_dist_eq`. -/
+theorem riemannianEDist_le_arcLength
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b)
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc a b))
+    (hEnorm : ∀ t ∈ Set.Icc a b,
+        ‖mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)‖ₑ
+          = ENNReal.ofReal (Real.sqrt
+              (g.inner (γ t)
+                (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+                (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))))) :
+    riemannianEDist I (γ a) (γ b)
+      ≤ ENNReal.ofReal
+        (DifferentialGeometry.Geometry.Riemannian.Variation.arcLength (I := I) g γ a b) := by
+  have hle : riemannianEDist I (γ a) (γ b) ≤ pathELength I γ a b :=
+    riemannianEDist_le_pathELength hγ rfl rfl hab
+  rwa [pathELength_eq_arcLength (I := I) g hab
+    (speedSqrt_integrableOn_Icc_of_C1 (I := I) g hab hγ) hEnorm] at hle
 
 end ArcLengthBridge
 

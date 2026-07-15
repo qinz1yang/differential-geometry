@@ -57,6 +57,57 @@ theorem metricInvBasis_scale
             field_simp [hc0]
       _ = if i = k then 1 else 0 := (hinv i k).2
 
+/-- Squared covariant-tensor norms are quadratic in the tensor argument. -/
+theorem normSq0S_smul
+    (g : SmoothRiemannianMetric I M) {x : M} {s : Nat}
+    (c : Real) (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s x) :
+    normSq0S (I := I) g x s (c • A) = c ^ 2 * normSq0S (I := I) g x s A := by
+  let D := tensor0SMetricData (I := I) g x s
+  change D.flat (c • A) (c • A) = c ^ 2 * D.flat A A
+  calc
+    D.flat (c • A) (c • A) = (c • D.flat A) (c • A) := by
+      rw [D.flat.map_smul]
+    _ = c * D.flat A (c • A) := by rfl
+    _ = c * (c * D.flat A A) := by rw [(D.flat A).map_smul]; rfl
+    _ = c ^ 2 * D.flat A A := by ring
+
+/-- A covariant `s`-tensor squared norm gains one inverse scaling factor per
+covariant slot under `g ↦ c g`. -/
+theorem normSq0S_scale
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
+    {x : M} (s : Nat) (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s x) :
+    normSq0S (I := I) (scaleMetric (I := I) c hc g) x s A =
+      (c⁻¹) ^ s * normSq0S (I := I) g x s A := by
+  classical
+  let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx
+      (𝕜 := Real) E) Real (TangentSpace I x) :=
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun k l =>
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x k l (extChartAt I x x)
+  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+      (I := I) g x
+  have hinvScale :
+      MetricInverseInBasis_gen (I := I) (scaleMetric (I := I) c hc g) x basis
+        (fun i j => c⁻¹ * gInv i j) :=
+    metricInvBasis_scale (I := I) c hc g basis gInv hinv
+  rw [normSq0S_eq_coord (I := I) (scaleMetric (I := I) c hc g) x s basis
+      (fun i j => c⁻¹ * gInv i j) hinvScale A,
+    normSq0S_eq_coord (I := I) g x s basis gInv hinv A]
+  unfold coordInner0S
+  simp only [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _hi
+  apply Finset.sum_congr rfl
+  intro j _hj
+  ring
+
 /-- A `(0,2)` squared norm scales by two inverse-metric factors under
 `g ↦ c g`. -/
 theorem normSq0S_two_scale

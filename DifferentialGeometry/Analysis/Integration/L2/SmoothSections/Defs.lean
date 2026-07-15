@@ -131,10 +131,10 @@ solely to make `SmoothCcTensor g r s` a different Lean type for each
 metric, so that downstream files can attach metric-dependent
 inner-product / norm instances cleanly. -/
 structure SmoothCcTensor (g : SmoothRiemannianMetric I M) (r s : ℕ) where
-  /-- The underlying smooth section. -/
+
   toSection : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
     (fun x : M => TensorRSSpace r s I x)⟯
-  /-- The underlying map to the model fiber has compact support. -/
+
   hasCompactSupport :
     HasCompactSupport (fun x : M => TensorRSSpace.toModel (toSection x))
 

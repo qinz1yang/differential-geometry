@@ -183,11 +183,14 @@ def tensor04StdAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)
 
-/-- Output-first compatibility evaluation for a lowered Riemann four-tensor:
-`Rm04Out(W,X,Y,Z) = Rm04(X,Y,Z,W)`.
+/-- **⚠ SOFT-DEPRECATED — do not add new uses (eventual cleanup target).**
 
-This is the old slot order kept explicit during the convention
-migration. -/
+Output-first compatibility evaluation for a lowered Riemann four-tensor:
+`Rm04Out(W,X,Y,Z) = Rm04(X,Y,Z,W)`.  This is the OLD slot order, kept explicit only for its remaining
+legacy consumers during the convention migration.  Prefer the canonical standard-slot `tensor04StdAt`
+(`Rm04(X,Y,Z,W)`) in new code; this output-first eval is slated for removal once the consumers migrate.
+(The converter `tensor04StdOfOutAt`/`tensor04StdToOutPerm` are NOT deprecated — they are load-bearing in
+the canonical lowering `riemannCurvature04At`.)  See `CurvatureCanonicalization.md`. -/
 def tensor04OutAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)

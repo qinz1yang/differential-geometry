@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExpContinuity
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import Mathlib.Topology.Connected.PathConnected
 import Mathlib.Topology.UnitInterval
 
@@ -47,28 +48,15 @@ This is the star-shapedness of the small ball about its centre, established here
 `smallNormalBall_radial_confined`, and packaged as `joinedIn_centre_smallNormalBall`
 (every ball point is joined to the centre by a path inside the ball).
 
-## What is *not* established here
+## What remains for full two-point Whitehead convexity
 
-The full two-point Whitehead statement — that small normal balls are
-geodesically convex for a single global *two-point* selector — additionally
-requires the existence of a minimising geodesic between two arbitrary ball
-points (the velocity-identified Hopf–Rinow surjectivity, still pending) together
-with the positivity of the Hessian of the squared distance (the second-variation
-core).  The radial side proved here is the centre-star part of that statement.
-
-The two missing analytic inputs, stated precisely, are:
-
-* a two-point minimising selector
-  `join : M → M → ℝ → M` together with `riemannianEDist`-realisation, i.e. for
-  `a b` in the ball, a `C¹` curve `join a b` from `a` to `b` whose `pathELength`
-  equals `riemannianEDist I a b` (the velocity-identified Hopf–Rinow surjectivity);
-
-* the Hessian positivity `0 < ∇² (½ d(p, ·)²)` along geodesics inside the ball,
-  forcing the minimiser between two ball points to stay inside (the
-  second-variation / index-form positivity).
-
-Once these are available, `IsGeodesicallyConvexWith.joinedIn` and the radial
-confinement here assemble the full statement.
+The velocity-identified Hopf–Rinow theorem is now packaged below as the
+two-point selector `minJoin`, with its endpoint, continuity, and minimizing
+length facts.  The remaining analytic input is the positive Hessian comparison
+`0 < ∇² (½ d(p, ·)²)` on the controlled ball.  Its along-`minJoin` consequence
+must both confine the selected curve and give the strict convexity used by the
+center-of-mass construction.  Existing second-variation nonnegativity alone
+does not provide that uniform positive lower bound.
 -/
 
 open Set Bundle Manifold
@@ -186,7 +174,95 @@ lemma centre_mem_smallNormalBall (p : M) {ρ : ℝ} (hρ : 0 < ρ) :
   exact ENNReal.ofReal_pos.2 hρ
 
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+  [T2Space (TangentBundle I M)]
   [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+
+/-- A chosen tangent vector whose intrinsic exponential reaches `b` from `a`
+with length equal to the Riemannian distance. -/
+noncomputable def minimizingVec
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) : TangentSpace I a :=
+  Classical.choose
+    (hopf_rinow_expMapIntrinsic_surjective_minimizing
+      (I := I) g hEnorm a b)
+
+/-- The chosen minimizing vector exponentiates to its target. -/
+theorem minimizingVec_exp
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) :
+    expMapIntrinsic (I := I) g hEnorm a (minimizingVec (I := I) g hEnorm a b) = b :=
+  (Classical.choose_spec
+    (hopf_rinow_expMapIntrinsic_surjective_minimizing
+      (I := I) g hEnorm a b)).1
+
+/-- The chosen minimizing vector has length equal to the Riemannian distance. -/
+theorem minimizingVec_len
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) :
+    Real.sqrt (g.inner a (minimizingVec (I := I) g hEnorm a b)
+        (minimizingVec (I := I) g hEnorm a b)) =
+      (riemannianEDist I a b).toReal :=
+  (Classical.choose_spec
+    (hopf_rinow_expMapIntrinsic_surjective_minimizing
+      (I := I) g hEnorm a b)).2
+
+/-- The chosen minimizing-geodesic join from `a` to `b`. -/
+noncomputable def minJoin
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) (t : ℝ) : M :=
+  intrinsicGeodesic (I := I) g hEnorm a
+    (minimizingVec (I := I) g hEnorm a b) t
+
+/-- The chosen minimizing join starts at its first endpoint. -/
+@[simp] theorem minJoin_zero
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) : minJoin (I := I) g hEnorm a b 0 = a := by
+  exact intrinsicGeodesic_zero (I := I) g hEnorm a
+    (minimizingVec (I := I) g hEnorm a b)
+
+/-- The chosen minimizing join ends at its second endpoint. -/
+@[simp] theorem minJoin_one
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) : minJoin (I := I) g hEnorm a b 1 = b := by
+  change intrinsicGeodesic (I := I) g hEnorm a
+    (minimizingVec (I := I) g hEnorm a b) 1 = b
+  rw [← expMapIntrinsic_def, minimizingVec_exp]
+
+/-- The chosen minimizing join is continuous in its time parameter. -/
+theorem minJoin_cont
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) : Continuous (minJoin (I := I) g hEnorm a b) :=
+  intrinsicGeodesic_continuous (I := I) g hEnorm a
+    (minimizingVec (I := I) g hEnorm a b)
+
+/-- Along the standard `[0, 1]` parametrization of the chosen minimizing join, the
+displacement from the first endpoint is at most `t` times the endpoint
+distance. -/
+theorem minJoin_edist_le
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (a b : M) {t : ℝ} (ht : 0 ≤ t) :
+    riemannianEDist I a (minJoin (I := I) g hEnorm a b t) ≤
+      ENNReal.ofReal ((riemannianEDist I a b).toReal * t) := by
+  simpa only [minJoin, intrinsicGeodesic_zero, minimizingVec_len, sub_zero] using
+    intrinsicGeodesic_riemannianEDist_le
+      (I := I) g hEnorm a (minimizingVec (I := I) g hEnorm a b)
+        (s := 0) (t := t) ht
 
 /-- **Constant squared `g`-speed of the intrinsic geodesic.** Along
 `γ := intrinsicGeodesic g hEnorm p v`, the squared `g`-speed

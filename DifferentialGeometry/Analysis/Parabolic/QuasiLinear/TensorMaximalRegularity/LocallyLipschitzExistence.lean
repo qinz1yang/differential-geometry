@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzModulusOfContinuity
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionFieldLink
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceEnergy
 
 /-!
@@ -45,11 +46,11 @@ trace estimate** of the cross-scale field machinery
   `T → 0`.  Choosing the horizon so this is `≤ R²` makes the field stay in the
   ball, for **every** `t ∈ [0,T]`.
 
+The per-mode solution-field identity used below is supplied by the lower
+`SolutionFieldLink` module.
+
 ## Main results
 
-* `maxRegDuhamelSolField_coeff_ae` — the structural per-mode identity: the
-  `H^{a+2}` solution-field coordinate equals the indefinite `Hᵃ`-integral of the
-  carrier's derivative coordinate, started at `u₀.coeff i`.
 * `maxRegRecentredCrossScaleField` — the recentred cross-scale field.
 * `quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact`
   — the **fully unconditional cutoff**: no `hstay`.  For a locally-Lipschitz `N`
@@ -88,192 +89,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
-
-/-- **Per-mode FTC for the homogeneous flow.**  The homogeneous-flow coordinate
-`t ↦ e^{−λᵢ t} cᵢ` is the indefinite integral of its derivative coordinate
-`t ↦ −λᵢ e^{−λᵢ t} cᵢ`, started at `cᵢ = u₀.coeff i`:
-
-  `homModeCoeff u₀ i (t) = u₀.coeff i + ∫₀ᵗ homDerivModeCoeff u₀ i (s) ds`,
-
-for every `t`.  This is elementary scalar calculus on the continuous
-representatives. -/
-theorem homModeCoeff_eq_init_add_integral
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun t => (homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) t) =ᵐ[timeMeasure T]
-      fun t => u₀.coeff i + ∫ s in (0 : ℝ)..t,
-        (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s := by
-  set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
-  set c := u₀.coeff i with hc_def
-  have hmode : ⇑(homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) =ᵐ[timeMeasure T]
-      fun t => Real.exp (-lam * t) * c :=
-    TimeSobolev.coeFn_ofContinuousOn _
-  have hderiv : ⇑(homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) =ᵐ[timeMeasure T]
-      fun t => -lam * (Real.exp (-lam * t) * c) :=
-    TimeSobolev.coeFn_ofContinuousOn _
-  filter_upwards [hmode, ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht htmem
-  rw [ht]
-  have hint_congr : (∫ s in (0 : ℝ)..t,
-        (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s) =
-      ∫ s in (0 : ℝ)..t, -lam * (Real.exp (-lam * s) * c) := by
-    refine intervalIntegral.integral_congr_ae ?_
-    have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
-      (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc ⟨le_rfl, htmem.1.trans htmem.2⟩ htmem)
-    have hae := ae_restrict_of_ae_restrict_of_subset (μ := volume) hsub hderiv
-    rw [ae_restrict_iff' measurableSet_uIoc] at hae
-    filter_upwards [hae] with s hs using hs
-  rw [hint_congr]
-  have hF : ∀ s : ℝ, HasDerivAt (fun s => Real.exp (-lam * s) * c)
-      (-lam * (Real.exp (-lam * s) * c)) s := by
-    intro s
-    have hlin : HasDerivAt (fun s : ℝ => -lam * s) (-lam) s := by
-      simpa using (hasDerivAt_id s).const_mul (-lam)
-    have hexp : HasDerivAt (fun s => Real.exp (-lam * s))
-        (Real.exp (-lam * s) * (-lam)) s := hlin.exp
-    have := hexp.mul_const c
-    convert this using 1
-    ring
-  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hF s)
-    (by
-      apply Continuous.intervalIntegrable
-      fun_prop)]
-  simp only [mul_zero, Real.exp_zero, one_mul]
-  ring
-
-/-- **Per-mode FTC for the Duhamel flow.**  The maximal-regularity solution-field
-coordinate `solModeCoeff` is the indefinite integral of its derivative coordinate
-`derivModeCoeff`, started at `0`:
-
-  `solModeCoeff f i (t) = ∫₀ᵗ derivModeCoeff f i (s) ds`,
-
-for a.e. `t`.  This is the lifted per-mode fundamental theorem of calculus
-`perModeConvL2_eq_toFunL2`. -/
-theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun t => (solModeCoeff (I := I) (M := M) (a := a) hT f i) t) =ᵐ[timeMeasure T]
-      fun t => ∫ s in (0 : ℝ)..t,
-        (derivModeCoeff (I := I) (M := M) (a := a) hT f i) s := by
-  have hsol : solModeCoeff (I := I) (M := M) (a := a) hT f i =
-      TimeSobolev.timeH1.toFunL2
-        (TimeSobolev.timeH1.mk (0 : ℝ)
-          (derivModeCoeff (I := I) (M := M) (a := a) hT f i)) := by
-    rw [solModeCoeff, derivModeCoeff,
-      perModeConvL2_eq_toFunL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
-        (tensor_lambda_nonneg (I := I) (M := M) i) hT
-        (timeModeCoeff (I := I) (M := M) f i)]
-  rw [hsol]
-  have hcoe := TimeSobolev.coeFn_ofContinuousOn
-    (TimeSobolev.timeH1.mk (0 : ℝ)
-      (derivModeCoeff (I := I) (M := M) (a := a) hT f i)).continuousOn_toFun
-  refine hcoe.trans ?_
-  filter_upwards [] with t
-  rw [TimeSobolev.timeH1.toFun_apply, TimeSobolev.timeH1.init_mk,
-    TimeSobolev.timeH1.deriv_mk, zero_add]
-
-/-- The carrier derivative coordinate splits a.e. as the sum of the homogeneous
-and Duhamel derivative-mode coordinates. -/
-theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
-    (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun s => ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i)
-        =ᵐ[timeMeasure T]
-      fun s => (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s +
-        (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s := by
-  have hderiv := maxRegDuhamelMap_deriv (I := I) (M := M) (a := a) (T := T)
-    hT hT1 u₀ gforce
-  have hcoe := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv i
-  have hhom := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegHomogeneousDerivField (I := I) (M := M) a T u₀) i
-  have hduh := timeModeCoeff_coeFn (I := I) (M := M)
-    (maximalRegularityDerivField (I := I) (M := M) a hT.le gforce) i
-  have hsum : timeModeCoeff (I := I) (M := M)
-      (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv i =
-        homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i +
-          derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i := by
-    rw [hderiv, timeModeCoeff_add (I := I) (M := M),
-      maxRegHomogeneousDerivField_timeModeCoeff (I := I) (M := M) (a := a)
-        (T := T) hT.le u₀ i,
-      maximalRegularityDerivField_timeModeCoeff (I := I) (M := M)
-        (h_compact := h_compact) (a := a) hT.le gforce i]
-  have haddcoe := Lp.coeFn_add
-    (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)
-    (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i)
-  filter_upwards [hcoe, haddcoe] with s hs1 hs2
-  rw [← hs1, hsum, hs2, Pi.add_apply]
-
-/-- **The structural per-mode identity.**  The `H^{a+2}` Duhamel solution-field
-coordinate is the indefinite `Hᵃ`-integral of the carrier's time-derivative
-coordinate, started at `u₀.coeff i`:
-
-  `(maxRegDuhamelSolField … u₀ g t).coeff i =
-      u₀.coeff i + ∫₀ᵗ ((maxRegDuhamelMap … u₀ g).deriv s).coeff i ds`,
-
-for a.e. `t`.  Assembled mode by mode from `homModeCoeff_eq_init_add_integral`
-(homogeneous) and `solModeCoeff_eq_integral` (Duhamel). -/
-theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
-    (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    (fun t => (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce t).coeff i)
-        =ᵐ[timeMeasure T]
-      fun t => u₀.coeff i + ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
-  have hfield_coe := timeModeCoeff_coeFn (I := I) (M := M)
-    (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) i
-  have hsplit : timeModeCoeff (I := I) (M := M)
-      (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) i =
-        homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i +
-          solModeCoeff (I := I) (M := M) (a := a) hT.le gforce i := by
-    rw [maxRegDuhamelSolField, timeModeCoeff_add (I := I) (M := M),
-      maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M) (a := a)
-        (T := T) hT.le u₀ i,
-      maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
-        (h_compact := h_compact) (a := a) hT.le gforce i]
-  have haddcoe := Lp.coeFn_add
-    (homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)
-    (solModeCoeff (I := I) (M := M) (a := a) hT.le gforce i)
-  have hA := homModeCoeff_eq_init_add_integral (I := I) (M := M) (a := a) (T := T) u₀ i
-  have hB := solModeCoeff_eq_integral (I := I) (M := M) (a := a) hT.le gforce i
-  have hderiv_coe := maxRegDuhamelMap_deriv_coeff_ae (I := I) (M := M)
-    (h_compact := h_compact) (a := a) hT hT1 u₀ gforce i
-  filter_upwards [hfield_coe, haddcoe, hA, hB,
-    ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht1 ht2 htA htB htmem
-  rw [← ht1, hsplit, ht2, Pi.add_apply, htA, htB]
-  have htmem' : t ∈ Set.Icc (0 : ℝ) T := htmem
-  have hh0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T := ⟨le_rfl, htmem.1.trans htmem.2⟩
-  have hint_hom : IntervalIntegrable
-      (fun s => (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s)
-      volume 0 t := by
-    have := (TimeSobolev.integrableOn
-      (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)).mono_set
-      (uIcc_subset_Icc hh0 htmem')
-    exact this.intervalIntegrable
-  have hint_duh : IntervalIntegrable
-      (fun s => (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s)
-      volume 0 t := by
-    have := (TimeSobolev.integrableOn
-      (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i)).mono_set
-      (uIcc_subset_Icc hh0 htmem')
-    exact this.intervalIntegrable
-  rw [add_assoc, ← intervalIntegral.integral_add hint_hom hint_duh]
-  have hcongr : (∫ s in (0 : ℝ)..t,
-        ((homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) s +
-          (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) s)) =
-      ∫ s in (0 : ℝ)..t,
-        ((maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv s).coeff i := by
-    refine intervalIntegral.integral_congr_ae ?_
-    have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
-      (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc hh0 htmem')
-    have hae := ae_restrict_of_ae_restrict_of_subset (μ := volume) hsub hderiv_coe
-    rw [ae_restrict_iff' measurableSet_uIoc] at hae
-    filter_upwards [hae] with s hs hsmem
-    rw [hs hsmem]
-  rw [hcongr]
 
 /-- The lower-scale carrier of the recentred field: the time-`H¹` element with
 initial value `0` and time derivative the carrier's derivative. -/
@@ -868,7 +683,9 @@ the globally-Lipschitz truncated engine
 nonlinearity `Ñ_R` is globally bounded, so its fixed-point forcing is
 `√T`-small), then shrinks the horizon using the sharp Lions–Magenes parabolic
 trace estimate `maxRegDuhamelSolFieldHa1_stay` so the field stays a.e. in the
-ball, where `Ñ_R = N`. -/
+ball, where `Ñ_R = N`.  The final returned conjunct exposes that proven
+stays-in-ball event itself: the `H^{a+1}`-view Duhamel field
+`maxRegDuhamelSolFieldHa1 … u₀ gforce t` lies a.e. in `closedBall (ι u₀) R`. -/
 theorem quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
       tensorHs (I := I) (M := M) g r s a}
@@ -894,7 +711,12 @@ theorem quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_o
                 (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
               nemytskiiHa1 (I := I) (M := M)
                 (truncatedNonlin_lipschitzWith (I := I) (M := M) hR.le hN)
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) := by
+                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) ∧
+          ∀ᵐ t ∂(timeMeasure T),
+            maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t ∈
+              Metric.closedBall
+                (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+                  (show (a + 1) ≤ a + 2 by linarith) u₀) R := by
   set u₀' := tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
     (show (a + 1) ≤ a + 2 by linarith) u₀ with hu₀'
   set C : ℝ := ‖N u₀'‖ + (L_R : ℝ) * R with hC_def
@@ -931,7 +753,7 @@ theorem quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_o
       _ = R ^ 2 := mul_one _
   have hstay := maxRegDuhamelSolFieldHa1_stay (I := I) (M := M)
     (h_compact := h_compact) hT hT1 u₀ gforce hC_nn hR.le hgforce_small hhoriz
-  refine ⟨u, gforce, hu, ?_, htrace, hderiv⟩
+  refine ⟨u, gforce, hu, ?_, htrace, hderiv, hstay⟩
   conv_lhs => rw [hfix]
   exact nemytskiiHa1_truncated_eqOn_ball (I := I) (M := M) hR.le hN
     (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) hstay

@@ -25,7 +25,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 section Components
@@ -627,18 +627,15 @@ theorem coordCommAt
           x
       simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
         SolutionFamily.rm04, metricCov] using h
-    have hcovReg : ConnectionLocallySmoothOn (I := I) S := by
-      intro t
-      exact connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
     have hPair :=
       rm04PairSymm_regular (I := I) S hS S.base.rm13 S.base.rm04
-        hcovReg hRm13 hLower
+        hRm13 hLower
     have hOutput :=
       rm04OutputSkew_regular (I := I) S hS S.base.rm13 S.base.rm04
-        hcovReg hRm13 hLower
+        hRm13 hLower
     have hFirst :=
       rm04FirstBianchi_regular (I := I) S hS S.base.rm13 S.base.rm04
-        hcovReg hRm13 hLower
+        hRm13 hLower
     have hRic :
         ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M),
           x ∈ ({x₀} : Set M) -> ∀ i j : CoordinateIdx (𝕜 := Real) E,
@@ -716,9 +713,6 @@ theorem ricciEvolCore
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hmix :
@@ -738,7 +732,7 @@ theorem ricciEvolCore
     (ricciVarCore
       (I := I) S hS gInv nablaRic nabla2Ric Rm13 x₀ hGamma
       hginv_mdiff hN_mdiff hginv_zero hnabla2_at
-      hRicTrace hRm hcov hcurv hmix)
+      hRicTrace hRm hcurv hmix)
     hcomm
 
 /-- Local coordinate-frame Lemma 6.3 producer.
@@ -779,9 +773,6 @@ theorem ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_comm
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hmix :
@@ -799,7 +790,7 @@ theorem ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_comm
     nabla2Ric
     (ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
       (I := I) S hS gInv gInvDt nablaRic nabla2Ric Rm13 x₀ hmetricReg
-      hnablaReg hRicTrace hRm hcov hcurv hmix)
+      hnablaReg hRicTrace hRm hcurv hmix)
     hcomm
 
 /-- LaTeX Lemma 6.3, `lem:evol-ricci`, in the local coordinate-frame display
@@ -835,9 +826,6 @@ theorem evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hmix :
@@ -862,7 +850,7 @@ theorem evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
   have h :=
     ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_commutators
       (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg
-      hnablaReg hRicTrace hRm hcov hcurv hmix hcomm
+      hnablaReg hRicTrace hRm hcurv hmix hcomm
   have hAt := h t x₀ (by simp) i j
   simpa [ricciEvolutionRHSInFrame] using hAt
 
@@ -974,7 +962,6 @@ theorem coordRicciEvol
       hGamma hginv_mdiff hN_mdiff hginv_zero hnabla2_at
       (ricciTraceOfSol (I := I) S)
       (rm13OfSol (I := I) S)
-      (connSmoothOfSol (I := I) S hS)
       (connCurvOfSol (I := I) S hS x₀)
       hmix hcomm
   have hAt := hEvol t x₀ (by simp) i j

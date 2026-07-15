@@ -454,7 +454,7 @@ private def uhlenbeckPullbackRmDerivRHSInFrame
       (iotaDotInFrame iota Rup t x b j)
       (iotaDotInFrame iota Rup t x c k)
       (iotaDotInFrame iota Rup t x d l)
-      (roughLapRm04 t x i j k l +
+      (roughLapRm04 t x i j k l -
         2 * (B t x i j k l - B t x i j l k +
           B t x i k j l - B t x i l j k) -
         riemann04RicciDriftInFrame Rup Rm04 t x i j k l)
@@ -732,7 +732,7 @@ def Riemann04BTensorWithRicciDriftEvolutionInFrameOn
     (i j k l : Idx),
     HasDerivWithinAt
       (fun s : Real => Rm04 s x i j k l)
-      (roughLapRm04 (t : Real) x i j k l +
+      (roughLapRm04 (t : Real) x i j k l -
         2 * (B (t : Real) x i j k l - B (t : Real) x i j l k +
           B (t : Real) x i k j l - B (t : Real) x i l j k) -
         riemann04RicciDriftInFrame ricciOneUp Rm04 (t : Real) x i j k l)
@@ -743,7 +743,7 @@ def Riemann04BTensorWithRicciDriftEvolutionInFrameOn
 def uhlenbeckCurvatureEvolutionRHSInFrame
     (roughLapD B : FourComp M Idx)
     (t : Real) (x : M) (a b c d : Idx) : Real :=
-  roughLapD t x a b c d +
+  roughLapD t x a b c d -
     2 * (B t x a b c d - B t x a b d c +
       B t x a c b d - B t x a d b c)
 
@@ -852,14 +852,14 @@ private theorem pullbackDerivRHS_eq_evolutionRHS
   let E : Real :=
     ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
       iota t x a i * iota t x b j * iota t x c k * iota t x d l *
-        (roughLapRm04 t x i j k l +
+        (roughLapRm04 t x i j k l -
           2 * (Borig t x i j k l - Borig t x i j l k +
             Borig t x i k j l - Borig t x i l j k) -
           riemann04RicciDriftInFrame Rup Rm04 t x i j k l)
   have hraw :
       uhlenbeckPullbackRmDerivRHSInFrame iota Rm04 roughLapRm04 Borig Rup
           t x a b c d =
-        (I1 + I2 + I3 + I4) + (L + 2 * Q - Drift) := by
+        (I1 + I2 + I3 + I4) + (L - 2 * Q - Drift) := by
     have hprod :
         uhlenbeckPullbackRmDerivRHSInFrame iota Rm04 roughLapRm04 Borig Rup
             t x a b c d =
@@ -876,11 +876,11 @@ private theorem pullbackDerivRHS_eq_evolutionRHS
           (fun l => iotaDotInFrame iota Rup t x d l)
           (fun i j k l => Rm04 t x i j k l)
           (fun i j k l =>
-            roughLapRm04 t x i j k l +
+            roughLapRm04 t x i j k l -
               2 * (Borig t x i j k l - Borig t x i j l k +
                 Borig t x i k j l - Borig t x i l j k) -
               riemann04RicciDriftInFrame Rup Rm04 t x i j k l))
-    have hE : E = L + 2 * Q - Drift := by
+    have hE : E = L - 2 * Q - Drift := by
       dsimp [E, L, Q, Q1, Q2, Q3, Q4, Drift,
         uhlenbeckPullbackDriftInFrame]
       simp [sub_eq_add_neg, mul_add, mul_neg, Finset.sum_add_distrib,
@@ -975,8 +975,8 @@ private theorem pullbackDerivRHS_eq_evolutionRHS
   calc
     uhlenbeckPullbackRmDerivRHSInFrame iota Rm04 roughLapRm04 Borig Rup
         t x a b c d =
-      (I1 + I2 + I3 + I4) + (L + 2 * Q - Drift) := hraw
-    _ = L + 2 * Q := by
+      (I1 + I2 + I3 + I4) + (L - 2 * Q - Drift) := hraw
+    _ = L - 2 * Q := by
           rw [hiotaDrift]
           ring
     _ = uhlenbeckCurvatureEvolutionRHSInFrame roughLapD Bpull t x a b c d := by

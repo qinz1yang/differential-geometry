@@ -77,7 +77,15 @@ theorem tfRic_apply
     tfRic (I := I) G Ric scalar t x v =
       Ric t x v - (((1 : Real) / 3) * scalar t x) *
         (G t).inner x (v 0) (v 1) := by
-  simp [tfRic, mul_assoc]
+  unfold tfRic
+  calc
+    (Ric t x - (((1 : Real) / 3) * scalar t x) • metric02 (I := I) G t x) v =
+        Ric t x v -
+          ((((1 : Real) / 3) * scalar t x) • metric02 (I := I) G t x) v :=
+      Tensor0SSpace.sub_apply 2 x _ _ v
+    _ = _ := by
+      rw [Tensor0SSpace.smul_apply, metric02_apply]
+      simp only [smul_eq_mul]
 
 /-- Pointwise trace-free Ricci norm square from Definition 10.1:
 `|Ric°|² = |Ric|² - R²/3`. -/
@@ -627,22 +635,6 @@ def ricciCube
     (S : SolutionOn (I := I) (M := M) D) : Real -> M -> Real :=
   fun t x => ricciCubeInvAt (I := I) (S.base.metric t) (S.ricciAt t x)
 
-@[simp]
-theorem ricciPair04_apply {x : M}
-    (Ric : DifferentialGeometry.Integral.Connection.Tensor02At (I := I) (M := M) x)
-    (v : Fin 4 -> TangentSpace I x) :
-    ricciPair04 (I := I) Ric v =
-      Ric (fun a : Fin 2 => if a = 0 then v 0 else v 2) *
-        Ric (fun a : Fin 2 => if a = 0 then v 1 else v 3) := by
-  unfold ricciPair04
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
-  rw [Bundle.continuousMultilinearMap.product_fun_apply]
-  have hswap0 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 0 = 0 := by decide
-  have hswap1 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 1 = 2 := by decide
-  have hswap2 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 2 = 1 := by decide
-  have hswap3 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 3 = 3 := by decide
-  congr 2 <;> funext a <;> fin_cases a <;> simp [hswap0, hswap1, hswap2, hswap3]
-
 private theorem prod_delta4
     (I0 J0 : Fin 4 -> Fin 3) :
     (∏ a : Fin 4, DifferentialGeometry.Integral.Connection.delta3 (I0 a) (J0 a)) =
@@ -715,8 +707,18 @@ private theorem coordPair04 {x : M}
   unfold coordInner0S curvRicAt
   rw [sum_delta4]
   rw [sum4ikjl]
-  simp [tensor0SComponent, DifferentialGeometry.Integral.Connection.rm04CompAt, DifferentialGeometry.Integral.Connection.ricciCompAt,
-    DifferentialGeometry.Integral.Connection.slots4, DifferentialGeometry.Integral.Connection.slots2, ricciPair04_apply, mul_assoc]
+  have hpair : ∀ (v : Fin 4 → TangentSpace I x),
+      ricciPair04 (I := I) Ric v =
+        Ric (fun q : Fin 2 => if q = 0 then v 0 else v 2) *
+          Ric (fun q : Fin 2 => if q = 0 then v 1 else v 3) := by
+    intro v
+    rw [ricciPair04_apply]
+    congr 2
+  simp [tensor0SComponent, DifferentialGeometry.Integral.Connection.rm04CompAt,
+    DifferentialGeometry.Integral.Connection.ricciCompAt,
+    DifferentialGeometry.Integral.Connection.slots4,
+    DifferentialGeometry.Integral.Connection.slots2,
+    hpair, mul_assoc]
 
 theorem curvRic_inner {x : M}
     (g : SmoothMetric_gen I M)
@@ -1107,7 +1109,7 @@ theorem sec6_react_at
         DifferentialGeometry.Integral.Connection.rm04CompAt (I := I) basis (Rm04 t x) i k j l := by
     intro i j k l
     simp [DifferentialGeometry.Integral.Connection.rm04Comp, DifferentialGeometry.Integral.Connection.rm04Comp,
-      DifferentialGeometry.Integral.Connection.rm04CompAt_apply, DifferentialGeometry.Integral.Connection.vec4,
+      DifferentialGeometry.Integral.Connection.rm04CompAt_apply,
       hbasis i, hbasis k, hbasis j, hbasis l]
   unfold ricciNormCurvatureReactionInFrame reactAt
   congr 1

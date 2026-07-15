@@ -72,11 +72,11 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
 structure ChartPushedPartialLipschitz
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) where
-  /-- The Lipschitz constant. -/
+
   C : ℝ
-  /-- Non-negativity of the constant. -/
+
   C_nonneg : 0 ≤ C
-  /-- The bound on the chart-pushed-partial Lp norm. -/
+
   bound : ∀ v : SmoothScalar g,
     ‖chartPushedPartialLpLin (I := I) (M := M) g α j v‖ ≤ C * ‖v‖
 

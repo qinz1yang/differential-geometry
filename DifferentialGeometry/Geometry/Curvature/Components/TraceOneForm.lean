@@ -145,7 +145,7 @@ theorem rm13_dualCoord_apply_eq_sum_inv_flat
   rw [tensor0SSpace_sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smul]
-  rw [ContinuousMultilinearMap.smul_apply]
+  rw [Tensor0SSpace.smul_apply]
   simp [smul_eq_mul]
 
 theorem curvatureTraceOneFormEqRicVectorAt_of_metric_dual

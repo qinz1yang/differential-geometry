@@ -209,14 +209,26 @@ theorem ricciHeat_of_data
       h.timeDeriv
       h.laplacian
 
-private theorem pair04_apply {x : M}
+/-- Evaluate the pointwise Ricci-pair tensor in its canonical crossed slot order. -/
+@[simp]
+theorem ricciPair04_apply {x : M}
     (Ric : DifferentialGeometry.Integral.Connection.Tensor02At (I := I) (M := M) x)
     (v : Fin 4 -> TangentSpace I x) :
     ricciPair04 (I := I) Ric v =
       Ric (DifferentialGeometry.Integral.Connection.vec2 (I := I) (v 0) (v 2)) *
         Ric (DifferentialGeometry.Integral.Connection.vec2 (I := I) (v 1) (v 3)) := by
   unfold ricciPair04
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  have hdom :
+      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) (2 : Fin 4))
+        (Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+          (s := 2) (q := 2) (x := x) Ric Ric)) v =
+        (Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+          (s := 2) (q := 2) (x := x) Ric Ric)
+          (fun i => v ((Equiv.swap (1 : Fin 4) (2 : Fin 4)) i)) := by
+    with_unfolding_all rfl
+  refine hdom.trans ?_
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
   have hswap0 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 0 = 0 := by decide
   have hswap1 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 1 = 2 := by decide
@@ -294,7 +306,7 @@ private theorem pairSum_eq
     refine Finset.sum_congr rfl fun c _ => ?_
     refine Finset.sum_congr rfl fun b _ => ?_
     refine Finset.sum_congr rfl fun d _ => ?_
-    simp [slot4ikjl, pair04_apply, Fin.prod_univ_four, DifferentialGeometry.Integral.Connection.vec2]
+    simp [slot4ikjl, ricciPair04_apply, Fin.prod_univ_four]
     ring_nf
   · exact (sumPairProd
       (fun a c : Idx =>
@@ -463,7 +475,7 @@ theorem coordReact
   refine Finset.sum_congr rfl fun j _ => ?_
   refine Finset.sum_congr rfl fun k _ => ?_
   refine Finset.sum_congr rfl fun l _ => ?_
-  simp [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply, DifferentialGeometry.Integral.Connection.vec2, DifferentialGeometry.Integral.Connection.vec4]
+  simp [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
 
 /-- Produce intrinsic Ricci-norm heat data from pointwise coordinate-frame
 data.

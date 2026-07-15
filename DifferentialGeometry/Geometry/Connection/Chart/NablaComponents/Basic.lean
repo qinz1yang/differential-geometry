@@ -35,7 +35,14 @@ variable [IsManifold I (⊤ : WithTop ℕ∞) M]
 variable [IsManifold I ((⊤ : WithTop ℕ∞) + 1) M]
 variable [CompleteSpace Real]
 
-/-- The coordinate frame as a `C¹` local frame, for Christoffel-component APIs. -/
+/-- **⚠ SOFT-DEPRECATED — do not add new uses; do NOT add a third copy (eventual-merge target).**
+
+The coordinate frame as a `C¹` local frame, for Christoffel-component APIs.  This is a SECOND copy (in
+this local `Coordinates` namespace) of the canonical
+`DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one`, kept only to decouple the
+Chart/NablaComponents layer from the `Tensor.Coordinates` tree (merging now would couple them, risking an
+import cycle + a large rebuild).  Prefer the canonical `Tensor.Coordinates` one; this duplicate is an
+eventual-merge candidate.  See `Geometry/Curvature/CurvatureCanonicalization.md`. -/
 def coordinateFrameAt_isLocalFrame_one (x₀ : M) :
     IsLocalFrameOn I E (1 : WithTop ℕ∞)
       (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀) :=

@@ -36,9 +36,9 @@ theorem inner0S_product_one_two
     (A B : Tensor0SSpace 2 I x) :
     inner0S (I := I) g x 3
         (Bundle.continuousMultilinearMap.product_fun
-          (s := 1) (q := 2) α A)
+          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A)
         (Bundle.continuousMultilinearMap.product_fun
-          (s := 1) (q := 2) β B) =
+          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) β B) =
       inner0S (I := I) g x 1 α β *
         inner0S (I := I) g x 2 A B := by
   classical
@@ -47,9 +47,9 @@ theorem inner0S_product_one_two
     inner0S_eq_coord (I := I) g x 2 basis gInv hinv]
   rw [coordInner0S_succ_eq (I := I) 2 gInv
     (Bundle.continuousMultilinearMap.product_fun
-      (s := 1) (q := 2) α A)
+      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A)
     (Bundle.continuousMultilinearMap.product_fun
-      (s := 1) (q := 2) β B) basis]
+      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) β B) basis]
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_smul (I := I) 2 gInv A B basis]
   rw [coordInner0S_one_eq (I := I) gInv α β basis]
@@ -75,7 +75,7 @@ theorem inner0S_three_product_right
     (A : Tensor0SSpace 2 I x) :
     inner0S (I := I) g x 3 N
         (Bundle.continuousMultilinearMap.product_fun
-          (s := 1) (q := 2) α A) =
+          (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) =
       inner0S (I := I) g x 2
         ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x N)
           (cotangentSharp_gen (I := I) g x α))
@@ -85,7 +85,7 @@ theorem inner0S_three_product_right
     inner0S_eq_coord (I := I) g x 2 basis gInv hinv]
   rw [coordInner0S_succ_eq (I := I) 2 gInv N
     (Bundle.continuousMultilinearMap.product_fun
-      (s := 1) (q := 2) α A) basis]
+      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) basis]
   simp_rw [tensor0S_curry_product_one_two (I := I)]
   simp_rw [coordInner0S_smul_right (I := I) 2 gInv _ A basis]
   rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv α]
@@ -118,17 +118,20 @@ theorem normSq0S_smul_sub_product_one_two
     (A : Tensor0SSpace 2 I x) :
     normSq0S (I := I) g x 3
         (r • N -
-          Bundle.continuousMultilinearMap.product_fun
-            (s := 1) (q := 2) α A) =
+          (show Tensor0SSpace 3 I x from
+            Bundle.continuousMultilinearMap.product_fun
+              (𝕜 := Real) (F := E) (E := TangentSpace I)
+              (s := 1) (q := 2) α A)) =
       r ^ 2 * normSq0S (I := I) g x 3 N -
         2 * r * inner0S (I := I) g x 3 N
           (Bundle.continuousMultilinearMap.product_fun
-            (s := 1) (q := 2) α A) +
+            (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A) +
         inner0S (I := I) g x 1 α α *
           normSq0S (I := I) g x 2 A := by
   classical
   let P : Tensor0SSpace 3 I x :=
-    Bundle.continuousMultilinearMap.product_fun (s := 1) (q := 2) α A
+    Bundle.continuousMultilinearMap.product_fun
+      (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 1) (q := 2) α A
   have hprod :
       inner0S (I := I) g x 3 P P =
         inner0S (I := I) g x 1 α α *

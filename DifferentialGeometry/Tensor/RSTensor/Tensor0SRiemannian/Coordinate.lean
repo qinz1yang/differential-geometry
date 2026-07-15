@@ -690,11 +690,15 @@ theorem tensor0S_curry_product_one_two
     (X : TangentSpace I x) :
     (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
         (Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := Real) (F := E) (E := TangentSpace I)
           (s := 1) (q := 2) α A) X) =
       α (fun _ : Fin 1 => X) • A := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  rw [tensor0S_curry_apply_cons]
-  rw [Bundle.continuousMultilinearMap.product_fun_apply]
+  change (Bundle.continuousMultilinearMap.product_fun
+      (𝕜 := Real) (F := E) (E := TangentSpace I) α A) (Fin.cons X v) =
+    α (fun _ : Fin 1 => X) * A v
+  rw [Bundle.continuousMultilinearMap.product_fun_apply
+    (𝕜 := Real) (F := E) (E := TangentSpace I)]
   have hhead :
       (Fin.cons X v ∘ Fin.castAdd 2) = fun _ : Fin 1 => X := by
     funext a

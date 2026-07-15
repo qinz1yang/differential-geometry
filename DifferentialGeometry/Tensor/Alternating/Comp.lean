@@ -210,17 +210,17 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapL_continuous :
     Continuous (fun p : F₁ →L[𝕜] F₁ ↦
     (ContinuousAlternatingMap.compContinuousLinearMapCLM p :
     (F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂))) := by
-  -- Composition with inclusion into multilinear maps
+
   let φ : (F₁ [⋀^ι]→L[𝕜] F₂) →ₗᵢ[𝕜] _ := ContinuousAlternatingMap.toContinuousMultilinearMapLI
   let Φ : ((F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂)) →ₗᵢ[𝕜] _ := φ.compLeft _ (RingHom.id _)
   rw [← Φ.comp_continuous_iff]
-  -- Rewrite goal to using linear maps
+
   change Continuous (fun p : F₁ →L[𝕜] F₁ ↦
     (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ ↦ p) :
     ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁) F₂ →L[𝕜]
     ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁) F₂).comp
     (toContinuousMultilinearMapCLM 𝕜))
-  -- Prove multilinear version of goal
+
   exact (ContinuousMultilinearMap.compContinuousLinearMapL_diag_continuous 𝕜 ι F₁ F₂).clm_comp
     continuous_const
 
@@ -254,7 +254,7 @@ theorem ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff :
   let Φ : ((F₁ [⋀^ι]→L[𝕜] F₂) →L[𝕜] (F₁ [⋀^ι]→L[𝕜] F₂)) →ₗᵢ[𝕜]
       (F₁ [⋀^ι]→L[𝕜] F₂ →L[𝕜] ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ F₁) F₂) :=
     φ.compLeft _ (RingHom.id _)
-  -- TODO: These type instances should be pulled out as lemmas
+
   haveI : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ F₁) F₂)
     := FiniteDimensional.of_injective ContinuousMultilinearMap.toMultilinearMapLinear
       ContinuousMultilinearMap.toMultilinearMap_injective

@@ -115,7 +115,7 @@ theorem tensor0SRiemannianInner_smul_left
       c * tensor0SRiemannianInnerCLM (I := I) (M := M) g s b T S := by
   have h := ContinuousLinearMap.map_smul
     (innerBundleCLM (I := I) (M := M) g s b) c T
-  -- `(innerBundleCLM g s b) (c • T) = c • (innerBundleCLM g s b T)` as CLMs.
+
   change innerBundleCLM (I := I) (M := M) g s b (c • T) S = _
   rw [h]
   rfl
@@ -156,7 +156,7 @@ theorem tensor0SRiemannianInner_diagonal_continuous
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
     Continuous (fun v : Tensor0SSpace s I b =>
       tensor0SRiemannianInnerCLM (I := I) (M := M) g s b v v) := by
-  -- Express the bundle diagonal in terms of the model diagonal via `toModel`.
+
   have heq : (fun v : Tensor0SSpace s I b =>
       tensor0SRiemannianInnerCLM (I := I) (M := M) g s b v v) =
       (fun v : Tensor0SSpace s I b =>
@@ -222,9 +222,7 @@ private lemma innerModel_diagonal_sublevel_isBounded
     Bornology.IsBounded
       {T : Tensor0SModel s ℝ E |
         innerModelCLM (I := I) (M := M) g s b T T < 1} := by
-  -- We work in the project's namespace where the model fibre has its
-  -- canonical `NormedAddCommGroup` / `NormedSpace` / `FiniteDimensional`
-  -- instances visible.
+
   by_cases hNT : Nontrivial (Tensor0SModel s ℝ E)
   · haveI := hNT
     have hPD : ∀ v : Tensor0SModel s ℝ E,
@@ -282,17 +280,16 @@ theorem tensor0SRiemannianInner_isVonNBounded
     IsVonNBounded ℝ
       {v : Tensor0SSpace s I b |
         tensor0SRiemannianInnerCLM (I := I) (M := M) g s b v v < 1} := by
-  -- Pass through the CLE `tensor0SSpace_continuousLinearEquiv` to the
-  -- model fibre, where the boundedness has already been proved.
+
   set e : Tensor0SSpace s I b ≃L[ℝ] Tensor0SModel s ℝ E :=
     Tensor0SBundle.tensor0SSpace_continuousLinearEquiv
       (𝕜 := ℝ) (E := E) (I := I) (M := M) s b with he_def
   have hModel := innerModel_diagonal_sublevel_isVonNBounded
     (I := I) (M := M) g s b
-  -- Take the image under `e.symm.toContinuousLinearMap`.
+
   have hImg :=
     hModel.image (e.symm.toContinuousLinearMap)
-  -- Identify the bundle-side set with the image of the model-side set.
+
   have hSetEq :
       e.symm.toContinuousLinearMap ''
         {T : Tensor0SModel s ℝ E |

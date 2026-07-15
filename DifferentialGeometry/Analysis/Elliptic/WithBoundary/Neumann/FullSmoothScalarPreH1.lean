@@ -89,9 +89,9 @@ is solely to make `FullSmoothScalar g` a different Lean type for each
 metric, so that downstream files can attach metric-dependent
 inner-product / norm instances cleanly. -/
 structure FullSmoothScalar (g : SmoothRiemannianMetric (I_half n) M) where
-  /-- The underlying function. -/
+
   toFun : M → ℝ
-  /-- The function is smooth. -/
+
   smooth : ContMDiff (I_half n) 𝓘(ℝ, ℝ) ∞ toFun
 
 namespace FullSmoothScalar

@@ -29,7 +29,6 @@ variable [IsManifold I (∞ : WithTop ℕ∞) M]
 variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 
 
-set_option backward.isDefEq.respectTransparency false in
 /-- At the base point, mixed tensor model components in the fixed
 trivialization agree with coordinate-frame components. -/
 theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
@@ -57,36 +56,36 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) (r := r) (s := s)
     (bE := Module.finBasis 𝕜 E) hx T upper lower]
   congr 2
-  · change
-      (trivializationAt (Tensor0SModel r 𝕜 E)
-        (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x₀
-          ((continuousMultilinearMap_basis
-            (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) =
-        basisTensor0S (I := I) (coordinateFrameAt_toBasis (I := I) x₀) upper
-    ext v
+  · change Tensor0SSpace.constInChart (I := I) r x₀
+        ((continuousMultilinearMap_basis
+          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x₀ =
+      basisTensor0S (I := I) (coordinateFrameAt_toBasis (I := I) x₀) upper
+    have hxE : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
+      mem_baseSet_trivializationAt E (TangentSpace I) x₀
+    refine ext0S_basis (I := I) (coordinateFrameAt_toBasis (I := I) x₀) (fun slots => ?_)
+    rw [basisTensor0S_component, component0S_apply,
+      Tensor0SSpace.constInChart_apply (I := I) r hxE]
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
-    change
-      ((trivializationAt (Tensor0SModel r 𝕜 E)
-          (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x₀
-        ((continuousMultilinearMap_basis
-          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper)) v =
-        ((continuousMultilinearMap_basis
-          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) v
     have hx_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
-    have hmodel := congrArg (fun A : Tensor0SModel r 𝕜 E => A v)
-      (TensorLieDeriv.tensor0SModelAt_trivializationAt_symm
-        (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x₀
-        ((continuousMultilinearMap_basis
-          (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper))
-    dsimp at hmodel
-    rw [TensorLieDeriv.tensor0SModelAt_apply] at hmodel
-    conv at hmodel =>
-      lhs
-      arg 2
-      ext a
-      rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
-      rw [mfderivWithin_range_extChartAt_symm]
-    simpa [Trivialization.symmL_apply, mfderivWithin_range_extChartAt_symm] using hmodel
+    have hclm :
+        (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x₀ =
+          (tangentBundleCore I M).coordChange (achart H x₀) (achart H x₀) x₀ := by
+      exact TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
+        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := x₀) hx_src
+    have hcoord :
+        (tangentBundleCore I M).coordChange (achart H x₀) (achart H x₀) x₀ =
+          ContinuousLinearMap.id 𝕜 E := by
+      ext v
+      exact (tangentBundleCore I M).coordChange_self (achart H x₀) x₀ hx_src v
+    rw [hclm]
+    rw [hcoord]
+    change
+      ((continuousMultilinearMap_basis
+        (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper)
+          (fun i => (Module.finBasis 𝕜 E) (slots i)) =
+        if upper = slots then 1 else 0
+    rw [← continuousMultilinearMap_basis_repr (Module.finBasis 𝕜 E) r,
+      Module.Basis.repr_self, Finsupp.single_apply]
   · funext b
     have hx_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]

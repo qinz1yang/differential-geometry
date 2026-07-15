@@ -104,41 +104,33 @@ pointwise sup-norm bounds on the mollified sequence are not available
 structure SmoothApproximation
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     (_u _f : E → ℝ) where
-  /-- The smooth approximating sequence. -/
+
   u_seq : ℕ → E → ℝ
-  /-- The accompanying data. -/
+
   f_seq : ℕ → E → ℝ
-  /-- Each `u_n` is `C^∞`. -/
+
   u_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n)
-  /-- Each `(u_n, f_n)` is a smooth weak solution of the same equation `B`. -/
+
   is_smooth_weak_sol :
     ∀ n, B.IsSmoothWeakSolution (u_seq n) (f_seq n)
-  /-- The `L²`-loc condition required by `loc_smooth_solution` for each
-  `n`: the data `f_n` is in `L²` on every set with compact closure. This
-  follows automatically when `f_n` is continuous, e.g. when `f_n` is
-  produced as a mollification or as a classical Laplacian of a smooth
-  function. -/
+
   f_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (f_seq n) 2 (volume.restrict S)
-  /-- The `L²`-loc condition for `u_n`. Standard byproduct of continuity
-  of each `u_n` and finite volume on compact-closure subsets. -/
+
   u_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (u_seq n) 2 (volume.restrict S)
-  /-- The `L²`-loc condition for each gradient component of `u_n`. -/
+
   grad_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       ∀ j : Fin d,
         MemLp (fun y : E => (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1))
           2 (volume.restrict S)
-  /-- A nonneg master scalar capturing the uniform-in-`n` integrated
-  `H¹`+data energy of the sequence. -/
+
   data_bound : ℝ
   data_bound_nn : 0 ≤ data_bound
-  /-- For every precompact open `Ω'`, there is a finite constant
-  `C_{Ω'} ≥ 0` such that the integrated `H¹`+data energy of `u_n` on
-  `Ω'` is bounded by `C_{Ω'} · data_bound`, uniformly in `n`. -/
+
   data_integrated_bound :
     ∀ {Ω' : Set E}, IsOpen Ω' → IsCompact (closure Ω') →
       ∃ C : ℝ, 0 ≤ C ∧ ∀ n,

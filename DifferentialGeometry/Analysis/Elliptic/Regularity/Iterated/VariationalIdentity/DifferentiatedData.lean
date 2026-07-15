@@ -118,18 +118,16 @@ uses `Fin.cons i dir` to prepend the additional direction `i` innermost. -/
 structure IteratedDiffChartBilinearData
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ) where
-  /-- The `m`-direction multi-index. -/
+
   directions : Fin m → Fin (Module.finrank ℝ E)
-  /-- The effective `L²` source at level `m`. -/
+
   fChartEff : EuclN → ℝ
-  /-- The effective source is `MemLp 2` w.r.t. the chart-pulled weighted
-  measure restricted to `chartTargetEuclid α`. -/
+
   fChartEff_memLp_weighted :
     MemLp fChartEff 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-  /-- The `m`-times-differentiated variational identity, in the
-  `c · fChartEff · ψ` form. -/
+
   m_diff_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

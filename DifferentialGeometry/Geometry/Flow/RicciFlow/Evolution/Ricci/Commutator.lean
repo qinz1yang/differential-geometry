@@ -25,7 +25,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 section Components
@@ -940,7 +940,6 @@ theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
     (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hcov : ConnectionLocallySmoothOn (I := I) S)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -967,11 +966,11 @@ theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
     RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric := by
   have hOutput :=
-    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hcov hRm13 hLower
+    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
   have hFirst :=
-    rm04FirstBianchi_regular (I := I) S hS Rm13 Rm04 hcov hRm13 hLower
+    rm04FirstBianchi_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
   have hPair :=
-    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hcov hRm13 hLower
+    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
   have hInput :=
     rm04InputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hTrace : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M),

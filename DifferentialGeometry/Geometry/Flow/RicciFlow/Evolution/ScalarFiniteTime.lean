@@ -231,9 +231,9 @@ theorem positive_scalar_finite_time_of_scalarEvolution_closedOpen
     (K : Real -> NNReal)
     (hinit_min : InitialScalarMinimum (M := M) scalar c0)
     (hinit_pos : forall x : M, 0 < scalar 0 x)
-    (hscalar_cont : ContinuousOn
-      (fun p : Real × M => scalar p.1 p.2)
-      (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) (scalarBlowupTime n c0)))
+    (hscalar_cont : forall T : Real, 0 <= T -> T < omega ->
+      ContinuousOn (fun p : Real × M => scalar p.1 p.2)
+        (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T))
     (hreg : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime n c0 ->
         ScalarLowerBoundWMPRegularity (I := I) G T n c0 scalar (K T))
@@ -262,11 +262,17 @@ theorem positive_scalar_finite_time_of_scalarEvolution_closedOpen
       (I := I) h0ω G n c0 hn hc0 scalar scalarLap ricciNormSq K
       hreg hevol hlap hricci
       (InitialScalarMinimum.lowerBound (M := M) hinit_min) hF_lip
+  by_contra hnot
+  have hlt_omega : scalarBlowupTime n c0 < omega := lt_of_not_ge hnot
+  have hblow_pos : 0 < scalarBlowupTime n c0 :=
+    scalarBlowupTime_pos hn hc0
   have hbounded :
       ScalarBoundedAboveOnSlab (M := M) scalar (scalarBlowupTime n c0) :=
-    ScalarBoundedAboveOnSlab.of_continuousOn (M := M) hscalar_cont
-  exact scalar_endpoint_le_blowupTime_of_lower_barrier_bound
+    ScalarBoundedAboveOnSlab.of_continuousOn (M := M)
+      (hscalar_cont (scalarBlowupTime n c0) (le_of_lt hblow_pos) hlt_omega)
+  have hle := scalar_endpoint_le_blowupTime_of_lower_barrier_bound
     (M := M) hn hc0 hlower hbounded
+  exact hnot hle
 
 /-- Lemma 11.1 in the normalized scalar-evolution form.
 
@@ -283,9 +289,9 @@ theorem finiteTime3D
     (K : Real -> NNReal)
     (hinit_min : InitialScalarMinimum (M := M) scalar c0)
     (hinit_pos : forall x : M, 0 < scalar 0 x)
-    (hscalar_cont : ContinuousOn
-      (fun p : Real × M => scalar p.1 p.2)
-      (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) (scalarBlowupTime 3 c0)))
+    (hscalar_cont : forall T : Real, 0 <= T -> T < omega ->
+      ContinuousOn (fun p : Real × M => scalar p.1 p.2)
+        (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T))
     (hreg : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime 3 c0 ->
         ScalarLowerBoundWMPRegularity (I := I) G T 3 c0 scalar (K T))

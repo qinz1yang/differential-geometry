@@ -182,8 +182,9 @@ trivialization centered at `x₀`.
 This is the tensor analogue of `tangentConstInChart`; it is intentionally just a
 name for the inverse fixed trivialization on fibers. -/
 noncomputable def constInChart (s : ℕ) (x₀ : M)
-    (β : Tensor0SModel s 𝕜 E) (x : M) : Tensor0SSpace s I x :=
-  (trivializationAt (Tensor0SModel s 𝕜 E)
+    (β : Tensor0SModel s 𝕜 E) (x : M) : Tensor0SSpace s I x := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  exact (trivializationAt (Tensor0SModel s 𝕜 E)
     (fun x => Tensor0SSpace s I x) x₀).symmL 𝕜 x β
 
 /-- Fixed trivialization of a `(0,s)` tensor evaluates by applying the original
@@ -191,9 +192,11 @@ fiber tensor to the tangent slots transported from the fixed model fiber. -/
 theorem trivializationAt_apply (s : ℕ)
     (_hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : Tensor0SSpace s I x) (v : Fin s → E) :
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
     ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T⟩).2 v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   change (((trivializationAt E (TangentSpace I) x₀).continuousMultilinearMap 𝕜 s)
       ⟨x, T⟩).2 v =
     T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i))
@@ -205,12 +208,14 @@ tensor evaluates by applying the original fiber tensor to transported tangent
 slots. -/
 theorem continuousLinearEquivAt_apply (s : ℕ)
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
-    (hxT : x ∈ (trivializationAt (Tensor0SModel s 𝕜 E)
-        (fun x => Tensor0SSpace s I x) x₀).baseSet)
     (T : Tensor0SSpace s I x) (v : Fin s → E) :
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
     ((trivializationAt (Tensor0SModel s 𝕜 E)
-        (fun x => Tensor0SSpace s I x) x₀).continuousLinearEquivAt 𝕜 x hxT T) v =
+        (fun x => Tensor0SSpace s I x) x₀).continuousLinearEquivAt 𝕜 x
+          (show x ∈ (trivializationAt (Tensor0SModel s 𝕜 E)
+            (fun x => Tensor0SSpace s I x) x₀).baseSet from hx) T) v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   change ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T⟩).2 v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i))
@@ -222,9 +227,11 @@ model fiber. -/
 theorem continuousLinearMapAt_apply (s : ℕ)
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : Tensor0SSpace s I x) (v : Fin s → E) :
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
     (trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x T v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   rw [Bundle.Trivialization.continuousLinearMapAt_apply,
     show ⇑((trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).linearMapAt 𝕜 x) =
@@ -232,6 +239,33 @@ theorem continuousLinearMapAt_apply (s : ℕ)
         (fun x => Tensor0SSpace s I x) x₀ ⟨x, y⟩).2 from
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := 𝕜) hx]
   rfl
+
+/-- Evaluating the fixed-chart constant `(0,s)` tensor section `constInChart` on
+tangent slots transports each slot to the fixed model fiber and applies the model
+tensor. This is the theorem-form apply lemma for `constInChart`; downstream proofs
+should use it instead of unfolding the `symmL` trivialization internals. -/
+theorem constInChart_apply (s : ℕ)
+    (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
+    (β : Tensor0SModel s 𝕜 E) (v : Fin s → TangentSpace I x) :
+    (constInChart (𝕜 := 𝕜) (I := I) s x₀ β x) v =
+      β (fun i => (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x (v i)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let eT := trivializationAt (Tensor0SModel s 𝕜 E)
+    (fun x => Tensor0SSpace s I x) x₀
+  let e := trivializationAt E (TangentSpace I) x₀
+  have hxT : x ∈ eT.baseSet := hx
+  have hcoord := congrArg
+    (fun A : Tensor0SModel s 𝕜 E => A (fun i => e.continuousLinearMapAt 𝕜 x (v i)))
+    (eT.continuousLinearMapAt_symmL (R := 𝕜) hxT β)
+  unfold constInChart
+  dsimp only [eT, e] at hcoord ⊢
+  rw [continuousLinearMapAt_apply (𝕜 := 𝕜) (I := I)
+    (x₀ := x₀) (x := x) s hx] at hcoord
+  have hcancel : (fun i => e.symmL 𝕜 x (e.continuousLinearMapAt 𝕜 x (v i))) = v := by
+    funext i
+    exact e.symmL_continuousLinearMapAt (R := 𝕜) hx (v i)
+  rw [hcancel] at hcoord
+  exact hcoord
 
 end Tensor0SSpace
 
@@ -242,11 +276,17 @@ namespace TensorRSSpace
 theorem trivializationAt_apply (r s : ℕ)
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : TensorRSSpace r s I x) (β : Tensor0SModel r 𝕜 E) (v : Fin s → E) :
+    letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
     (((trivializationAt (TensorRSModel r s 𝕜 E)
         (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2 β) v =
       (T ((trivializationAt (Tensor0SModel r 𝕜 E)
         (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β))
         (fun a => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v a)) := by
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   have hxR : x ∈ (trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀).baseSet := hx
   have hxS : x ∈ (trivializationAt (Tensor0SModel s 𝕜 E)
@@ -267,7 +307,7 @@ theorem trivializationAt_apply (r s : ℕ)
           (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β := rfl
   rw [hβ]
   exact Tensor0SSpace.continuousLinearEquivAt_apply
-    (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) s hx hxS _ v
+    (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) s hx _ v
 
 /-- Basis-coordinate version of `TensorRSSpace.trivializationAt_apply`: an
 `(r,s)` fixed-trivialization coordinate is intrinsic application to the
@@ -277,6 +317,8 @@ theorem trivializationAt_basis_coord {d r s : ℕ}
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : TensorRSSpace r s I x)
     (ρ : Fin r → Fin d) (σ : Fin s → Fin d) :
+    letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
     (((trivializationAt (TensorRSModel r s 𝕜 E)
         (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2
         ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ))
@@ -285,6 +327,8 @@ theorem trivializationAt_basis_coord {d r s : ℕ}
         (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x
           ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ)))
         (fun a => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (bE (σ a))) := by
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   exact trivializationAt_apply (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) r s hx T
     ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ)
     (fun a : Fin s => bE (σ a))

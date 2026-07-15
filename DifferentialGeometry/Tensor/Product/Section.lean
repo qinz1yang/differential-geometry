@@ -151,17 +151,16 @@ noncomputable def ContMDiffSection.tensorProduct
     rw [contMDiffAt_section x₀]
     set e₁ := trivializationAt F₁ E₁ x₀
     set e₂ := trivializationAt F₂ E₂ x₀
-    -- Extract smoothness of the trivialized factor sections
+
     have hg₀ := (contMDiffAt_section x₀).mp (g.contMDiff x₀)
     have hh₀ := (contMDiffAt_section x₀).mp (h.contMDiff x₀)
-    -- Show the trivialized tensor section equals (triv₁ g) ⊗ₜ (triv₂ h) near x₀
+
     refine (hg₀.tmul hh₀).congr_of_eventuallyEq ?_
     have hbase : e₁.baseSet ∩ e₂.baseSet ∈ 𝓝 x₀ :=
       (e₁.open_baseSet.inter e₂.open_baseSet).mem_nhds
         ⟨mem_baseSet_trivializationAt F₁ E₁ x₀, mem_baseSet_trivializationAt F₂ E₂ x₀⟩
     filter_upwards [hbase] with x hx
-    -- Rewrite trivializationAt for the tensor product bundle as the tensor product
-    -- of the factor trivializations, then unfold factor-wise via map_tmul.
+
     simp only [Bundle.TensorProduct.tensorProduct_trivializationAt]
     change (Pretrivialization.tensorProduct 𝕜 e₁ e₂ ⟨x, g x ⊗ₜ[𝕜] h x⟩).2 =
       (e₁ ⟨x, g x⟩).2 ⊗ₜ[𝕜] (e₂ ⟨x, h x⟩).2

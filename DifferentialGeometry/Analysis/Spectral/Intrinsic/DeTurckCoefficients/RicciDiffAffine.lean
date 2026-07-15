@@ -79,6 +79,8 @@ private lemma abs_sub_le_abs_add_abs (a b : ℝ) : |a - b| ≤ |a| + |b| := by
     _ ≤ |a| + |(-b)| := abs_add_le _ _
     _ = |a| + |b| := by rw [abs_neg]
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 /-- A real function that is `C^∞` on the (open) chart-target interior is bounded in
 absolute value on a compact subset `K`. -/
 private lemma exists_bound_of_contDiffOn_int
@@ -95,6 +97,8 @@ private lemma exists_bound_of_contDiffOn_int
     exact ⟨|f y₀|, abs_nonneg _, fun y hy => hy₀max hy⟩
   · exact ⟨0, le_refl 0, fun y hy => absurd ⟨y, hy⟩ hKne⟩
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 set_option linter.unusedFintypeInType false in
 /-- A finite family of functions, each `C^∞` on the chart-target interior, admits a
 single uniform bound on a compact subset `K`. -/
@@ -114,6 +118,7 @@ private lemma exists_uniform_bound_of_int_family
   · intro y hy i
     exact (hC_bd i y hy).trans (Finset.le_sup' C (Finset.mem_univ i))
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 /-- The first partial of a function that is `C^∞` on the chart-target interior is
 again `C^∞` there. -/
 private lemma partialDeriv_contDiffOn_int_of_contDiffOn
@@ -270,6 +275,7 @@ def ricciDiffPrincipalSymbol (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
           (gramBracketDeriv (I := I) g₁ α k i j l y -
             gramBracketDeriv (I := I) g₂ α k i j l y))
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma ricciDiffPrincipalSymbol_def
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) (y : E) :
@@ -284,6 +290,7 @@ def ricciDiffPrincipalSymbol (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
               (gramBracketDeriv (I := I) g₁ α k i j l y -
                 gramBracketDeriv (I := I) g₂ α k i j l y)) := rfl
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- **Manifest linearity of the principal symbol in `∂²(g₁−g₂)`.**  The principal
 symbol is the `g₂`-inverse-Gram-weighted finite sum of the iterated second partials
 of the Gram-entry difference `G(g₁) − G(g₂)`.  Concretely, each `gramBracketDeriv`
@@ -352,6 +359,7 @@ def chartRicciDiffFirstOrderRemainder (g₁ g₂ : SmoothRiemannianMetric I M) (
       chartRicciSecondOrderTerm (I := I) g₂ α i k y) -
     ricciDiffPrincipalSymbol (I := I) g₁ g₂ α i k y
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- **Affine decomposition of the second-order-part difference.**  At every
 chart-coordinate point, the difference of second-order parts equals the principal
 symbol `ricciDiffPrincipalSymbol` (linear in `∂²(g₁−g₂)`) plus the first-order
@@ -427,6 +435,7 @@ private lemma exists_chartChristoffel_bound_on_compact
       hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy i j k => hC y hy ((i, j), k)⟩
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- **Per-point bound on the second-order (`∂Γ`) part of the Ricci difference.**  In
 terms of a uniform Christoffel-derivative Lipschitz constant `Cdiff` on `K`,
 `|secondOrderTerm g₁ − secondOrderTerm g₂| ≤ 2·n·Cdiff · chartMetricJet2DiffSup`. -/
@@ -472,6 +481,7 @@ theorem chartRicciSecondOrderTerm_sub_abs_le
     rw [show 2 * (Module.finrank ℝ E : ℝ) * Cdiff * jet2 =
           (Module.finrank ℝ E : ℝ) * (2 * Cdiff * jet2) by ring]
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- **Per-point bound on the first-order (`Γ·Γ`) part of the Ricci difference.**  In
 terms of a uniform Christoffel Lipschitz constant `Clip` on `K` and a uniform
 Christoffel bound `Mg`, `|firstOrderTerm g₁ − firstOrderTerm g₂| ≤
@@ -609,6 +619,127 @@ theorem chartRicciFirstOrderTerm_sub_abs_le
     rw [show 4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg * jet1 =
           (Module.finrank ℝ E : ℝ) *
             ((Module.finrank ℝ E : ℝ) * (4 * Clip * Mg * jet1)) by ring]
+
+/-- A metric-equivalent family with uniformly bounded first and second chart
+Gram partials has one Ricci-component Lipschitz constant on every active
+partition-of-unity chart support. -/
+theorem chartRicci_pou_lip
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    (gSeq : ι → SmoothRiemannianMetric I M)
+    (Λ : ℝ) (hΛ : 1 ≤ Λ)
+    (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
+      Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
+        (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
+    (Q₁ : ℝ) (hQ₁_nn : 0 ≤ Q₁)
+    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ k : ι, ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ m a c : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
+              (extChartAt I α b)| ≤ Q₁)
+    (Q₂ : ℝ) (hQ₂_nn : 0 ≤ Q₂)
+    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ k : ι, ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ c m a q : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) c
+            (partialDeriv (E := E) m
+              (chartGramOnE (I := I) (gSeq k) α a q)) (extChartAt I α b)| ≤ Q₂) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
+          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+          ∀ i k : Fin (Module.finrank ℝ E),
+            |chartRicciTensor (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+              chartRicciTensor (I := I) (gSeq k₂) α i k (extChartAt I α b)| ≤
+                C * chartMetricJet2DiffSup (I := I) (M := M)
+                  (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+  classical
+  obtain ⟨Clip, hClip_pos, hClip⟩ :=
+    christoffel_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁
+  obtain ⟨Cdiff, hCdiff_pos, hCdiff⟩ :=
+    christoffelD_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁ Q₂ hQ₂_nn hQ₂
+  obtain ⟨Mg, hMg_nn, hMg⟩ :=
+    christoffel_pou_bnd (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁
+  let C : ℝ := 2 * (Module.finrank ℝ E : ℝ) * Cdiff +
+    4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg + 1
+  have hC_pos : 0 < C := by
+    dsimp [C]
+    positivity
+  refine ⟨C, hC_pos, ?_⟩
+  intro α hα k₁ k₂ b hb i k
+  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    chartMetricJet2DiffSup_nonneg _ _ _ _
+  have hjet1_le_jet2 : chartMetricJet1DiffSup (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤
+        chartMetricJet2DiffSup (I := I) (M := M)
+          (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
+  have hCdiff' : ∀ m i j k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+          (chartChristoffel (I := I) (gSeq k₁) α i j k) (extChartAt I α b) -
+        partialDeriv (E := E) m
+          (chartChristoffel (I := I) (gSeq k₂) α i j k) (extChartAt I α b)| ≤
+        Cdiff * chartMetricJet2DiffSup (I := I) (M := M)
+          (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    fun m i j k => hCdiff α hα k₁ k₂ b hb m i j k
+  have hClip' : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) (gSeq k₁) α i j k (extChartAt I α b) -
+        chartChristoffel (I := I) (gSeq k₂) α i j k (extChartAt I α b)| ≤
+        Clip * chartMetricJet1DiffSup (I := I) (M := M)
+          (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    fun i j k => hClip α hα k₁ k₂ b hb i j k
+  have hMg1 : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) (gSeq k₁) α i j k (extChartAt I α b)| ≤ Mg :=
+    fun i j k => hMg α hα k₁ b hb i j k
+  have hMg2 : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) (gSeq k₂) α i j k (extChartAt I α b)| ≤ Mg :=
+    fun i j k => hMg α hα k₂ b hb i j k
+  have h2nd := chartRicciSecondOrderTerm_sub_abs_le (I := I) (M := M)
+    (gSeq k₁) (gSeq k₂) α hCdiff' i k
+  have h1st := chartRicciFirstOrderTerm_sub_abs_le (I := I) (M := M)
+    (gSeq k₁) (gSeq k₂) α hClip_pos.le hMg_nn hClip' hMg1 hMg2 i k
+  have hsplit :
+      chartRicciTensor (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+          chartRicciTensor (I := I) (gSeq k₂) α i k (extChartAt I α b) =
+        (chartRicciSecondOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+          chartRicciSecondOrderTerm (I := I) (gSeq k₂) α i k (extChartAt I α b)) +
+        (chartRicciFirstOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+          chartRicciFirstOrderTerm (I := I) (gSeq k₂) α i k (extChartAt I α b)) := by
+    rw [chartRicciTensor_eq_secondOrder_add_firstOrder
+        (I := I) (gSeq k₁) α i k (extChartAt I α b),
+      chartRicciTensor_eq_secondOrder_add_firstOrder
+        (I := I) (gSeq k₂) α i k (extChartAt I α b)]
+    ring
+  rw [hsplit]
+  refine (abs_add_le _ _).trans ?_
+  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M)
+    (gSeq k₁) (gSeq k₂) α (extChartAt I α b) with hjet2_def
+  have h1st' :
+      |chartRicciFirstOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+        chartRicciFirstOrderTerm (I := I) (gSeq k₂) α i k (extChartAt I α b)| ≤
+        4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg * jet2 := by
+    refine h1st.trans ?_
+    refine mul_le_mul_of_nonneg_left hjet1_le_jet2 ?_
+    positivity
+  calc
+    |chartRicciSecondOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+          chartRicciSecondOrderTerm (I := I) (gSeq k₂) α i k (extChartAt I α b)| +
+        |chartRicciFirstOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
+          chartRicciFirstOrderTerm (I := I) (gSeq k₂) α i k (extChartAt I α b)|
+      ≤ 2 * (Module.finrank ℝ E : ℝ) * Cdiff * jet2 +
+          4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg * jet2 :=
+        add_le_add h2nd h1st'
+    _ ≤ C * jet2 := by
+      dsimp [C]
+      rw [add_mul, add_mul, one_mul]
+      linarith
 
 /-- **Uniform Lipschitz dependence of the chart Ricci tensor on the chart `2`-jet of
 the metric difference, over a compact subset of the chart-target interior.**

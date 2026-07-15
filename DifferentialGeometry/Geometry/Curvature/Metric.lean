@@ -54,6 +54,19 @@ theorem metricCov_smooth (g : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
 
+/-- The metric Levi--Civita derivative at a point depends only on the germ of
+the differentiated tangent field. -/
+theorem metricCov_congr_nhds
+    (g : SmoothRiemannianMetric I M)
+    {Y Y' : (y : M) → TangentSpace I y} {x : M}
+    (hY : MDifferentiableAt I I.tangent (T% Y) x)
+    (hY' : MDifferentiableAt I I.tangent (T% Y') x)
+    (hEq : Y =ᶠ[nhds x] Y') :
+    (metricCov (I := I) (M := M) g).toFun Y x =
+      (metricCov (I := I) (M := M) g).toFun Y' x := by
+  exact (metricCov (I := I) (M := M) g).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hY hY' Filter.univ_mem hEq
+
 /-- The pointwise `(1,3)` Riemann tensor canonically associated to a metric. -/
 noncomputable def metricRm13At (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor13At (I := I) (M := M) x :=
@@ -82,6 +95,24 @@ noncomputable def metricScalarAt (g : SmoothRiemannianMetric I M) (x : M) :
     Real :=
   DifferentialGeometry.Integral.Connection.metricTracePair0SAt (I := I) g (metricRicciAt (I := I) (M := M) g x)
 
+/-- **Canonical trace identity: Ricci = trace of the `(1,3)` Riemann tensor.**  The metric Ricci
+tensor is the `0↔2` contraction of the metric `(1,3)` Riemann tensor `metricRm13At`.  This is the
+canonical metric-level "Ricci as a trace of Riemann" bridge (definitional: `metricRicciAt` is
+`ricciCurvatureAt (metricCov g)`, which is `ricciFromRm13At` of `metricRm13At`).  Use this instead of
+unfolding `metricRicciAt`/`ricciCurvatureAt`. -/
+theorem metricRicciAt_eq_trace (g : SmoothRiemannianMetric I M) (x : M) :
+    metricRicciAt (I := I) g x
+      = DifferentialGeometry.Integral.Connection.ricciFromRm13At
+          (metricRm13At (I := I) (M := M) g x) := rfl
+
+/-- **Canonical trace identity: scalar = metric trace of Ricci.**  Restates `metricScalarAt` as the
+metric trace pair of the canonical Ricci tensor, so downstream rewrites the canonical scalar without
+unfolding its definition. -/
+theorem metricScalarAt_def (g : SmoothRiemannianMetric I M) (x : M) :
+    metricScalarAt (I := I) g x
+      = DifferentialGeometry.Integral.Connection.metricTracePair0SAt (I := I) g
+          (metricRicciAt (I := I) (M := M) g x) := rfl
+
 /-- The lowered Riemann tensor section canonically associated to a metric. -/
 noncomputable def metricRm04 (g : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M) :=
@@ -106,12 +137,6 @@ noncomputable def metricRm04StdAt
     (X Y Z W : TangentSpace I x) : Real :=
   tensor04StdAt (I := I) (M := M)
     (metricRm04At (I := I) (M := M) g x) X Y Z W
-
-/-- The metric Riemann tensor as a raw four-tensor field in standard slot
-order. -/
-noncomputable def metricRm04Std (g : SmoothRiemannianMetric I M) :
-    RawFourTensorField (I := I) (M := M) :=
-  fun x X Y Z W => metricRm04StdAt (I := I) (M := M) g x X Y Z W
 
 /-- The Ricci tensor section canonically associated to a metric. -/
 noncomputable def metricRicci (g : SmoothRiemannianMetric I M) :
@@ -167,13 +192,6 @@ noncomputable def metricRm04LastDualAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
     metricRm04LastDualAt (I := I) (M := M) g x X Y Z W =
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W := by
-  rfl
-
-@[simp] theorem metricRm04Std_apply
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (X Y Z W : TangentSpace I x) :
-    metricRm04Std (I := I) (M := M) g x X Y Z W =
       metricRm04StdAt (I := I) (M := M) g x X Y Z W := by
   rfl
 
@@ -324,16 +342,8 @@ theorem nablaRic_ein3
             simp [df3, dScalarSec]
       _ = (1 / 3 : Real) * extDerivFun (I := I) scalar y v := by
             rw [DifferentialGeometry.Integral.Connection.differential1FormFun_apply_eq_extDerivFun]
-      _ = extDerivFun (I := I) f3 y v := by
-            simpa [f3, Pi.smul_apply, smul_eq_mul] using hv.symm
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) (s := 2)
-  letI := tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) (s := 2)
-  letI := tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) (s := 2)
-  letI := tensor0SBundle_smooth (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+       _ = extDerivFun (I := I) f3 y v := by
+             simpa [f3, Pi.smul_apply, smul_eq_mul] using hv.symm
   have hRicEq : Ric = smulSec := by
     apply DFunLike.ext
     intro y
@@ -344,10 +354,21 @@ theorem nablaRic_ein3
       fin_cases i <;> rfl
     have hEin_y := hEin y (slots 0) (slots 1)
     rw [hslots]
+    change metricRicciAt (I := I) (M := M) g y
+        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (slots 0) (slots 1)) =
+      f3 y * metricSec y
+        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (slots 0) (slots 1))
     simpa [Ric, smulSec, metricSec, f3, scalar, metricRicci_apply,
-      tensor0SField_smulByFun_apply, ContinuousMultilinearMap.smul_apply,
       smul_eq_mul, metricTensorField_apply, DifferentialGeometry.Integral.Connection.vec2, div_eq_mul_inv,
       mul_assoc, mul_comm, mul_left_comm] using hEin_y
+  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    (I := I) (M := M) (s := 2)
+  letI := tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
+    (I := I) (M := M) (s := 2)
+  letI := tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
+    (I := I) (M := M) (s := 2)
+  letI := tensor0SBundle_smooth (𝕜 := Real) (E := E) (H := H)
+    (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     (ContMDiffSection.exists_eq_at_gen
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose
@@ -411,8 +432,9 @@ theorem nablaRic_ein3
       funext i
       fin_cases i <;> rfl
     rw [hleft, hright]
-    simp [df3, dScalarSec, metricSec, slots, metricTensorField_apply,
-      DifferentialGeometry.Integral.Connection.vec2, DifferentialGeometry.Integral.Connection.vec2, mul_assoc]
+    simp only [df3, tensor0SField_smulByFun_apply]
+    change ((1 / 3 : Real) * dScalarSec x (fun _ : Fin 1 => A)) * metricSec x slots = _
+    simp [dScalarSec, metricSec, slots, DifferentialGeometry.Integral.Connection.vec2, mul_assoc]
   calc
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric x (DifferentialGeometry.Integral.Connection.vec3 (I := I) A B C)
@@ -537,14 +559,14 @@ theorem metricRicciSymm
             (DifferentialGeometry.Integral.Connection.vec4 (I := I) Z W X Y) := by
     simpa using
       (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-        (I := I) g hcov1 (metricRm04 (I := I) (M := M) g) K.h_rm04
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   have hOutput :
       DifferentialGeometry.Integral.Connection.Rm04OutputSkewAt (I := I)
         (metricRm04At (I := I) (M := M) g x) := by
     simpa using
       (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) g hcov1 (metricRm04 (I := I) (M := M) g) K.h_rm04
+        (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   have hInput :
       ∀ X Y Z W : TangentSpace I x,

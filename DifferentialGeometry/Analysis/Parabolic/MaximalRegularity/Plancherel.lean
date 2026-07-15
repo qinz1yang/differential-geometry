@@ -104,6 +104,17 @@ lemma countable_tensorEigenIdx
       (I := I) (M := M) g r s h_compact
   infer_instance
 
+/-- **Countable simultaneous-in-mode a.e. lift.**  Over a countable index `ι`, a
+family of per-mode a.e. agreements `gfam i =ᵐ[μ] f i` lifts to a single a.e.
+statement that is simultaneous in the index: `∀ᵐ t ∂μ, ∀ i, gfam i t = f i t`.
+This is `MeasureTheory.ae_all_iff` specialized to functional equality, the step
+that lets a per-eigenmode a.e. coordinate agreement be assembled into a single
+everywhere field. -/
+lemma ae_all_coeff_eq {ι : Type*} [Countable ι] {μ : Measure ℝ}
+    {gfam f : ι → ℝ → ℝ} (h : ∀ i, gfam i =ᵐ[μ] f i) :
+    ∀ᵐ t ∂μ, ∀ i, gfam i t = f i t :=
+  (MeasureTheory.ae_all_iff).2 h
+
 /-- The single-term lower bound from weighted Parseval: the `i`-th weighted
 square is at most the full weighted sum, i.e. at most `‖T‖²`. -/
 lemma tensorHsWeightMulCoeffSqLeNormSq {a : ℝ}

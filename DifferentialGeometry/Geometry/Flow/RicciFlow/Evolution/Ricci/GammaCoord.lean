@@ -25,7 +25,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 section Components
@@ -337,9 +337,6 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hvar : ChristoffelVariationEquationInFrameOn (I := I) S
@@ -372,7 +369,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
         DifferentialGeometry.Integral.Connection.christoffelRicciCoeffAt (I := I) (S.family.connection s) x₀ i j
     rw [hRicTrace s hs x₀]
     exact DifferentialGeometry.Integral.Connection.ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
-      (I := I) (S.family.connection s) (hcov s hs) (Rm13 s) x₀
+      (I := I) (S.family.connection s) (connSmoothOfSol (I := I) S hS s hs) (Rm13 s) x₀
       (hRm s hs) (hcurv s hs) i j
   exact hderiv.congr
     (fun s hs => hricci s hs)
@@ -734,9 +731,6 @@ theorem ricciVarCore
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hmix :
@@ -758,7 +752,7 @@ theorem ricciVarCore
   have hlocal :=
     ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
       (I := I) S hS (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
-      Rm13 x₀ hRicTrace hRm hcov hcurv hvar hmix
+      Rm13 x₀ hRicTrace hRm hcurv hvar hmix
   intro t x hx i j
   have hx_eq : x = x₀ := by
     simpa using hx
@@ -857,9 +851,6 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
       DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s) (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I) (S.family.connection s) (Rm13 s))
-    (hcov : ∀ s : Real, s ∈ D.carrier ->
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection s) (1 : WithTop ℕ∞))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I) (S.family.connection s) x₀)
     (hmix :
@@ -938,7 +929,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
   exact ricciVarCore
     (I := I) S hS gInv nablaRic nabla2Ric Rm13 x₀ hGamma
     hginv_mdiff hN_mdiff hginv_zero hnabla2_at
-    hRicTrace hRm hcov hcurv hmix
+    hRicTrace hRm hcurv hmix
 
 end CoordinateConnectionVariation
 

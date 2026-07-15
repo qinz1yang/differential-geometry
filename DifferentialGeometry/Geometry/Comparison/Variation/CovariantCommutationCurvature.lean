@@ -369,7 +369,7 @@ coordinate of the transverse velocity `∂_s f`, is `C²` jointly at `(0, t)`. N
 chart-pull `(u, v) ↦ extChartAt (f 0 t) (f u v)`, which is `C^∞`. The slot
 direction is `(1, 0)` (the `u`-partial), the transverse-velocity analogue of
 `chartCoord_longitudinalVelocity_contDiffAt`. -/
-private lemma chartCoord_transverseVelocity_contDiffAt
+lemma chartCoord_transverseVelocity_contDiffAt
     (f : ℝ → ℝ → M) (hf : IsSmoothVariation (I := I) f) (t : ℝ) :
     ContDiffAt ℝ 2 (fun p : ℝ × ℝ =>
         (trivializationAt E (TangentSpace I) (f 0 t)).continuousLinearMapAt ℝ (f p.1 p.2)
@@ -755,8 +755,14 @@ two-parameter variation `f`, the commutator of the transverse and longitudinal
 covariant derivatives of the longitudinal velocity field `∂_t f`, evaluated at the
 central curve `s = 0`, equals the Riemann curvature operator of the Levi-Civita
 connection applied to the transverse velocity `V := ∂_s f|_{s = 0}`, the
-longitudinal velocity `γ' := ∂_t f|_{s = 0}`, and `γ'`. -/
-private theorem commute_ds_dt_curvature
+longitudinal velocity `γ' := ∂_t f|_{s = 0}`, and `γ'`.
+
+The two regularity hypotheses `houterL`/`houterR` are chart-rep differentiability of
+the inner covariant-derivative fields; in the Jacobi-field application (radial
+geodesic variations of `expMap`) `houterL` is discharged by the geodesic equation
+(the inner field vanishes near `s = 0`) and `houterR` by the mixed-commutation
+symmetry plus `variationField_covDeriv_chartRep_differentiableAt`. -/
+theorem commute_ds_dt_curvature
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M)
     (hf : IsSmoothVariation (I := I) f) (t : ℝ)
     (houterL : DifferentiableAt ℝ (chartRepAt (I := I) (fun s : ℝ => f s t)

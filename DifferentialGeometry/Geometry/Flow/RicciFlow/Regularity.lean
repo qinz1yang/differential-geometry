@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RicciNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -46,10 +47,10 @@ metric Ricci-flow solution. -/
 theorem scalarContOfSol
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
-    (p : Real × M) :
-    ContinuousAt (fun q : Real × M => S.scalar q.1 q.2) p := by
-  exact hS.scalarCont p
+    (hS : IsSolutionOn (I := I) S) :
+    ContinuousOn (fun q : Real × M => S.scalar q.1 q.2)
+      (D.carrier ×ˢ (Set.univ : Set M)) := by
+  exact hS.scalarCont
 
 /-- Within-time differentiability of the canonical scalar curvature produced
 from a metric Ricci-flow solution. -/
@@ -70,7 +71,7 @@ theorem scalarRegOfSol
     CanonicalScalarRegularOn (I := I) (M := M) S := by
   classical
   refine
-    { scalar_continuousAt := ?_
+    { scalar_continuousOn := ?_
       scalar_time_within := ?_
       scalar_space := ?_
       scalar_grad := ?_
@@ -81,8 +82,7 @@ theorem scalarRegOfSol
       scalar_sq_div_grad := ?_
       scalar_grad_sub_const := ?_
       scalar_grad_const_mul_sub_const := ?_ }
-  · intro p
-    exact scalarContOfSol (I := I) S hS p
+  · exact scalarContOfSol (I := I) S hS
   · intro K t ht hK x
     exact scalarTimeOfSol (I := I) S hS ht hK x
   · intro t ht x
@@ -186,12 +186,12 @@ theorem ricciRegOfSol
   exact
     { ricci_cont := hS.ricciCont
       rm04_cont := hS.rm04Cont
-      nablaRic_cont := hS.nablaRicCont
       ricci_norm_space := hS.ricciNormSpace
       ricci_norm_grad := hS.ricciNormGrad }
 
 /-- Scalar evolution produced from a metric Ricci-flow solution. -/
 theorem scalarEvolOfSol
+    [I.Boundaryless]
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -209,7 +209,7 @@ theorem scalarEvolOfSol
               (S.ricci (t : Real) x))
           D.carrier
           (t : Real) := by
-  exact hS.scalarEvolution
+  exact scalarEvolution_of_isSolution (I := I) S hS
 
 /-- Coordinate inverse-metric evolution produced from a metric Ricci-flow
 solution. -/
@@ -422,7 +422,7 @@ theorem coordNab2_can
             nablaA x0
               (Function.update (fun b : Fin 3 => V b x0) (0 : Fin 3)
                 (Γ d a p • frame p x0)) := by
-          simpa using hsum
+          exact hsum
       _ = ∑ p : Idx, Γ d a p * N p i j := by
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [(nablaA x0).map_update_smul]
@@ -466,7 +466,7 @@ theorem coordNab2_can
             nablaA x0
               (Function.update (fun b : Fin 3 => V b x0) (1 : Fin 3)
                 (Γ d i p • frame p x0)) := by
-          simpa using hsum
+          exact hsum
       _ = ∑ p : Idx, Γ d i p * N a p j := by
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [(nablaA x0).map_update_smul]
@@ -510,7 +510,7 @@ theorem coordNab2_can
             nablaA x0
               (Function.update (fun b : Fin 3 => V b x0) (2 : Fin 3)
                 (Γ d j p • frame p x0)) := by
-          simpa using hsum
+          exact hsum
       _ = ∑ p : Idx, Γ d j p * N a i p := by
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [(nablaA x0).map_update_smul]

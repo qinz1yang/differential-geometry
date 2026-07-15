@@ -414,6 +414,19 @@ theorem ricciEigenBasis3
     rw [h22] at hnon
     simpa [ricciDiag3, l3] using hnon
 
+/-- **Existence of a `g`-orthonormal basis at a point** (dim 3).  Specialize
+`ricciEigenBasis3` to the zero Ricci tensor (trivially symmetric and nonnegative)
+to extract a `g`-orthonormal `Fin 3` basis with no curvature hypotheses. -/
+theorem exists_orthonormalBasisAt
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    exists basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+      OrthonormalBasisAt (I := I) g x basis := by
+  obtain ⟨basis, _, _, _, horth, _, _, _, _⟩ :=
+    ricciEigenBasis3 (I := I) g (0 : Tensor02At (I := I) (M := M) x) hdim
+      (fun _ _ => rfl) (fun _ => by simp)
+  exact ⟨basis, horth⟩
+
 /-- The metric trace of a `(0,2)` tensor is the ordinary trace of the
 endomorphism obtained by raising its first slot. -/
 theorem metricTrace_eq_ricciEnd
@@ -801,8 +814,10 @@ private theorem ricciDiagAt_neg
   · rfl
   · intro i j
     have hij := hric i j
-    fin_cases i <;> fin_cases j <;>
-      simpa [ricciCompAt_apply, ricciDiag3] using congrArg Neg.neg hij
+    change -(ricciCompAt (I := I) basis Ric i j) =
+      ricciDiag3 (-l1) (-l2) (-l3) i j
+    rw [hij]
+    fin_cases i <;> fin_cases j <;> simp [ricciDiag3]
 
 private theorem scalar_eq_of_signed_trace_diag
     {g : SmoothRiemannianMetric I M}

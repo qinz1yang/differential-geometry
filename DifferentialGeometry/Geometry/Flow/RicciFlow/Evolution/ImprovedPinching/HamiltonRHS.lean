@@ -127,7 +127,10 @@ def ricciGradCoupleAt {x : M}
     (dScalar : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 1 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 3 x :=
   scalar • nablaRic -
-    Bundle.continuousMultilinearMap.product_fun dScalar Ric
+    (show Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 3 x from
+      Bundle.continuousMultilinearMap.product_fun
+        (𝕜 := Real) (F := E) (E := TangentSpace I)
+        (s := 1) (q := 2) dScalar Ric)
 
 /-- Squared norm of `R ∇Ric - dR ⊗ Ric` for a time-dependent Ricci tensor and
 its total covariant derivative. -/
@@ -176,6 +179,7 @@ theorem ricciGradCoupleSq_exp_inner
         2 * scalar t x *
           inner0S (I := I) (G.metric t) x 3 (nablaRic t x)
             (Bundle.continuousMultilinearMap.product_fun
+              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
               (s := 1) (q := 2)
               (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
               (Ric t x)) +
@@ -235,6 +239,7 @@ theorem ricciMixed_eq_gradNorm
         duRicNorm) :
     2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
           (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
             (s := 1) (q := 2)
             (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
@@ -250,6 +255,7 @@ theorem ricciMixed_eq_gradNorm
   have hcontract :
       inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
           (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
             (s := 1) (q := 2)
             (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
@@ -295,6 +301,7 @@ theorem ricciMixed_eq_gradNorm
   calc
     2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
           (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
             (s := 1) (q := 2)
             (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
             (RicSec x))
@@ -359,6 +366,7 @@ theorem ricciMixed_eq_tfGrad
     2 * scalar t x *
         inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
           (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
             (s := 1) (q := 2)
             (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
@@ -428,12 +436,14 @@ theorem ricciMixed_eq_tfGrad
     2 * scalar t x *
         inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
           (Bundle.continuousMultilinearMap.product_fun
+            (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
             (s := 1) (q := 2)
             (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
             (RicSec x))
         = scalar t x *
             (2 * inner0S (I := I) (G.metric t) x 3 (nablaRicSec x)
               (Bundle.continuousMultilinearMap.product_fun
+                (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
                 (s := 1) (q := 2)
                 (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
                 (RicSec x))) := by ring
@@ -481,6 +491,7 @@ theorem ricciGradCoupleSq_exp_mixed
       2 * scalar t x *
           inner0S (I := I) (G.metric t) x 3 (nablaRic t x)
             (Bundle.continuousMultilinearMap.product_fun
+              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
               (s := 1) (q := 2)
               (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) (scalar t) x)
               (Ric t x)) =
@@ -887,6 +898,7 @@ theorem pinchEvol_book_of_mixed
           inner0S (I := I) (G.metric (t : Real)) x 3
             (nablaRic (t : Real) x)
             (Bundle.continuousMultilinearMap.product_fun
+              (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I) (x := x)
               (s := 1) (q := 2)
               (DifferentialGeometry.Integral.Connection.differential1FormFun (I := I)
                 (scalar (t : Real)) x)

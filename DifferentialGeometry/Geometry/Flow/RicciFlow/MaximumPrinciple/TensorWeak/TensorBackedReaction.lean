@@ -123,9 +123,7 @@ theorem tensor02OfRawAt_realizes
     Tensor02RealizesRawAt (I := I) (M := M) A x
       (tensor02OfRawAt (I := I) (M := M) A x hA) := by
   intro v w
-  simp [tensor02OfRawAt, rawCurriedCLM, rawCurriedLM,
-    ContinuousLinearMap.uncurryLeft_apply, rawRightTensor1_apply,
-    vec2, DifferentialGeometry.Integral.Connection.vec2, Fin.tail]
+  rfl
 
 /-- Realization extensionality for pointwise `(0,2)` tensors. -/
 theorem tensor02_realizes_ext

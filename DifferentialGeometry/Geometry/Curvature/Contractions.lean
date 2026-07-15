@@ -107,8 +107,7 @@ theorem rm13_oneForm_apply_eq_sum_inv_flat
           rw [tensor0SSpace_sum_apply]
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [map_smul]
-          rw [ContinuousMultilinearMap.smul_apply]
-          simp [smul_eq_mul]
+          rfl
 
 /-- Components of a `(0,2)` tensor with both indices raised. -/
 def raised02CompAt

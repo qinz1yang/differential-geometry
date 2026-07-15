@@ -885,6 +885,7 @@ noncomputable def mcovariantDeriv_tensorRSWithin (r s : ℕ)
     (ΓX : E → E →L[𝕜] E)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
   let T' : E → TensorRSModel r s 𝕜 E :=
     fun y =>

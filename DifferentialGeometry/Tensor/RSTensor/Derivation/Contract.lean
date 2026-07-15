@@ -251,8 +251,7 @@ noncomputable def contract_Tensor0SField (s : ℕ)
   rw [contMDiffAt_section] at hα
   have hX := X.contMDiff x₀
   rw [contMDiffAt_section] at hX
-  -- The trivialized image of `(ι_X α)(x)` equals `model_interior_bilinear 𝕜 E s g̃(x) f̃(x)`
-  -- on the trivialization base set, where `f̃` and `g̃` are trivialized α and X.
+
   have h_combine :
       ContMDiffAt I 𝓘(𝕜, Tensor0SModel s 𝕜 E) n
         (fun x => model_interior_bilinear 𝕜 E s
@@ -264,12 +263,9 @@ noncomputable def contract_Tensor0SField (s : ℕ)
   have hbase := (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
     (mem_baseSet_trivializationAt _ _ x₀)
   filter_upwards [hbase] with x hx
-  -- Equality of two model-fiber elements, prove via funext on `Fin s → E`.
+
   ext v
-  -- LHS unfolds to `(α x) (Fin.cons (X x) (symmL ∘ v))`
-  -- RHS unfolds to `(α x) (symmL ∘ Fin.cons g̃(x) v)`
-  -- These are equal because `symmL (g̃(x)) = X x` for `x` in the base set, and
-  -- `Fin.cons` commutes with composition.
+
   set symmL := (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x with hsymmL
   set gtilde : E := (trivializationAt E (TangentSpace I) x₀ ⟨x, X x⟩).2 with hgtilde
   change (α x) (@Fin.cons s (fun _ => E) (X x : E) (fun i => symmL (v i))) =
@@ -938,8 +934,7 @@ noncomputable def contract_covariantField (r s : ℕ)
   rw [contMDiffAt_section] at hα
   have hX := X.contMDiff x₀
   rw [contMDiffAt_section] at hX
-  -- Bilinear model operation: `biop X̃ T̃ = (mip X̃).comp T̃` post-composes a (r, s+1)
-  -- model section with the model interior product against `X̃ : E`.
+
   set biop :
       E →L[𝕜] (TensorRSModel r (s + 1) 𝕜 E →L[𝕜] TensorRSModel r s 𝕜 E) :=
     (ContinuousLinearMap.compL 𝕜
@@ -963,8 +958,7 @@ noncomputable def contract_covariantField (r s : ℕ)
   set gtilde : Tensor0SSpace r I x :=
     (trivializationAt (Tensor0SModel r 𝕜 E) (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x γ
     with hgtilde
-  -- Helper rewrites: on the trivialization base set, the (0, k) bundle's
-  -- `continuousLinearMapAt` evaluates to `T (fun i => sL (v i))`.
+
   have h_cLMAt_s : ∀ (T : Tensor0SSpace s I x) (v : Fin s → E),
       (trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x T v =
@@ -989,9 +983,7 @@ noncomputable def contract_covariantField (r s : ℕ)
           (fun x => Tensor0SSpace (s + 1) I x) x₀ ⟨x, y⟩).2 from
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := 𝕜) hx]
     rfl
-  -- Both sides of the goal reduce by definitional unfolding of the hom-bundle
-  -- trivialization (`continuousLinearMap_apply`) and the pointwise reductions
-  -- `contract_covariant ... = mip ∘ ...` and `biop = compL ∘ mib`.
+
   change (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x
       (model_interior_product s (X x : E)
@@ -1001,8 +993,7 @@ noncomputable def contract_covariantField (r s : ℕ)
       ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde)
       (Fin.cons Xtilde w)
   rw [h_cLMAt_s, h_cLMAt_s1]
-  -- After unfolding, both sides apply `(α x) gtilde` to a `Fin (s+1) → E` vector.
-  -- LHS uses `Fin.cons (X x) (sL ∘ w)`, RHS uses `sL ∘ Fin.cons Xtilde w`.
+
   change ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde :
         Tensor0SModel (s + 1) 𝕜 E)
       (@Fin.cons s (fun _ => E) (X x : E) (fun i => sL (w i))) =
@@ -1063,9 +1054,7 @@ noncomputable def contract_contravariantField (r s : ℕ)
   rw [contMDiffAt_section] at hα
   have hφ := φ.contMDiff x₀
   rw [contMDiffAt_section] at hφ
-  -- Bilinear packaging of `model_tensorWithCovector` in its covector argument. The
-  -- resulting linear map of `α̃` is continuous because `Tensor0SModel 1 𝕜 E` is
-  -- finite-dimensional.
+
   let mtwc_bilinear :
       Tensor0SModel 1 𝕜 E →L[𝕜] (Tensor0SModel r 𝕜 E →L[𝕜] Tensor0SModel (r + 1) 𝕜 E) :=
     LinearMap.toContinuousLinearMap
@@ -1085,9 +1074,7 @@ noncomputable def contract_contravariantField (r s : ℕ)
             Bundle.continuousMultilinearMap.modelProduct_apply,
             ContinuousMultilinearMap.smul_apply, smul_eq_mul, RingHom.id_apply]
           ring }
-  -- The bilinear model operation `biop_ctr α̃ T̃ = T̃.comp (model_tensorWithCovector r α̃)`
-  -- pre-composes the trivialized (r+1, s)-tensor `T̃` with the tensor-with-covector
-  -- embedding, yielding a trivialized (r, s)-tensor.
+
   set biop_ctr :
       Tensor0SModel 1 𝕜 E →L[𝕜] (TensorRSModel (r + 1) s 𝕜 E →L[𝕜] TensorRSModel r s 𝕜 E) :=
     (ContinuousLinearMap.compL 𝕜
@@ -1108,8 +1095,7 @@ noncomputable def contract_contravariantField (r s : ℕ)
   refine ContinuousLinearMap.ext fun β => ?_
   refine ContinuousMultilinearMap.ext fun v => ?_
   set sL := (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x with hsL
-  -- Helper rewrites: on the trivialization base set, the (0, k) bundle's
-  -- `continuousLinearMapAt` evaluates to `T (fun i => sL (v i))`.
+
   have h_cLMAt_s : ∀ (T : Tensor0SSpace s I x) (u : Fin s → E),
       (trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x T u =
@@ -1158,17 +1144,14 @@ noncomputable def contract_contravariantField (r s : ℕ)
           (fun x => Tensor0SSpace 1 I x) x₀ ⟨x, y⟩).2 from
       (trivializationAt _ _ x₀).coe_linearMapAt_of_mem (R := 𝕜) hx]
     rfl
-  -- Abbreviations for the two bundle-fiber elements we need to compare inside `(α x)`.
+
   set β_symm : Tensor0SSpace r I x :=
     (trivializationAt (Tensor0SModel r 𝕜 E) (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x β
     with hβ_symm
   set atilde_x : Tensor0SModel 1 𝕜 E :=
     (trivializationAt (Tensor0SModel 1 𝕜 E) (fun x => Tensor0SSpace 1 I x) x₀ ⟨x, φ x⟩).2
     with hatilde_x
-  -- Unfold the hom-bundle trivialization on both sides. LHS: `contract_contravariant` reduces
-  -- via the id-as-CLE `tRSeq` to `(α x) (mtwc r (toModel (φ x)) β_symm)`. RHS: `biop_ctr` unfolds
-  -- to `T̃.comp (mtwc r atilde_x) β = T̃ (mtwc r atilde_x β)`, and `T̃` further unfolds to
-  -- `cLMAt_s ∘ (α x) ∘ symmL_{r+1}`.
+
   change (trivializationAt (Tensor0SModel s 𝕜 E)
       (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x
       ((show Tensor0SSpace (r + 1) I x →L[𝕜] Tensor0SSpace s I x from α x)
@@ -1180,20 +1163,17 @@ noncomputable def contract_contravariantField (r s : ℕ)
           (fun x => Tensor0SSpace (r + 1) I x) x₀).symmL 𝕜 x
           (model_tensorWithCovector r atilde_x β))) v
   rw [h_cLMAt_s, h_cLMAt_s]
-  -- Both sides are now `(α x) Y_i (fun i => sL (v i))` for some `Y_i : Tensor0SSpace (r+1) I x`.
-  -- Reduce to `Y_1 = Y_2` at the `(r+1)` level (peel off the `v`-application then the `α x`).
+
   congr 1
   congr 1
-  -- LHS: `mtwc r (toModel (φ x)) β_symm`; RHS: `symmL_{r+1} (mtwc r atilde_x β)`.
-  -- `ContinuousMultilinearMap.ext` at `Fin (r+1) → TangentSpace I x` level, then cancel
-  -- `symmL ∘ cLMAt = id` on the RHS to reduce to a pure `modelProduct` equality.
+
   refine ContinuousMultilinearMap.ext fun w => ?_
   have hw : w = fun i => sL ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt
       𝕜 x (w i)) := by
     funext i
     exact ((trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt
       (R := 𝕜) hx (w i)).symm
-  -- Compute the RHS explicitly via a calc chain (bypasses higher-order `rw` matching).
+
   have hrhs :
       ((trivializationAt (Tensor0SModel (r + 1) 𝕜 E)
           (fun x => Tensor0SSpace (r + 1) I x) x₀).symmL 𝕜 x
@@ -1220,15 +1200,14 @@ noncomputable def contract_contravariantField (r s : ℕ)
           rw [(trivializationAt (Tensor0SModel (r + 1) 𝕜 E)
             (fun x => Tensor0SSpace (r + 1) I x) x₀).continuousLinearMapAt_symmL (R := 𝕜) hx]
   refine Eq.trans ?_ hrhs.symm
-  -- Now both sides are `modelProduct`-style expressions. Unfold via `modelProduct_apply`.
+
   change (Bundle.continuousMultilinearMap.modelProduct r 1 β_symm
       (Tensor0SSpace.toModel (φ x))) w =
     Bundle.continuousMultilinearMap.modelProduct r 1 β atilde_x
       (fun i => (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x (w i))
   rw [Bundle.continuousMultilinearMap.modelProduct_apply,
     Bundle.continuousMultilinearMap.modelProduct_apply]
-  -- Two factors to match. First factor: `β_symm (w ∘ castAdd 1) = β (fun i => cL (w ∘ castAdd 1 i))`.
-  -- Second factor: `toModel (φ x) (w ∘ natAdd r) = atilde_x (fun i => cL (w ∘ natAdd r i))`.
+
   congr 1
   · -- first factor: `β_symm (w ∘ castAdd 1) = β (fun i => cL (w ∘ castAdd 1 i))`
     -- Both unfold via the same cancellation (β_symm = symmL β, cLMAt ∘ symmL = id).

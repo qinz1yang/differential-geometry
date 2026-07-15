@@ -312,8 +312,9 @@ theorem scalarRegOfSmooth
   have hscalar_cont : ContinuousOn
       (fun p : Real × M => S.scalar p.1 p.2)
       (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T) := by
-    exact
-      (continuous_iff_continuousAt.mpr hreg.scalar_continuousAt).continuousOn
+    refine hreg.scalar_continuousOn.mono ?_
+    intro p hp
+    exact ⟨hsubset p.1 hp.1, trivial⟩
   have hbar_cont : ContinuousOn
       (fun p : Real × M => scalarLowerBarrier n c0 p.1)
       (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T) := by

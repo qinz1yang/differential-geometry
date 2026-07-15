@@ -1020,7 +1020,6 @@ import DifferentialGeometry.Geometry.Comparison.HopfRinow
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.LocalGeodesicSeed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Comparison.RadialSurjectivity
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 import DifferentialGeometry.Geometry.Comparison.TangentNormDiamond
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
@@ -1037,6 +1036,11 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
+import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
+import DifferentialGeometry.Geometry.Comparison.Volume.JacobianBounds
+import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
+import DifferentialGeometry.Geometry.Comparison.Volume.Packing
 import DifferentialGeometry.Geometry.Connection.Chart.Basic
 import DifferentialGeometry.Geometry.Connection.Chart.Christoffel
 import DifferentialGeometry.Geometry.Connection.Chart.CoordinateFrame
@@ -1276,6 +1280,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHSSection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckShortTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckSolutionC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckVFTimeFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.ChartTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.ConnectionTrace
@@ -1348,6 +1353,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.TensorBackedReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParabolicRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.Cancellation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationForm
@@ -1400,6 +1406,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.DeTurckVFSmoot
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.FlowVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.ForwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.InteriorLocalFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness
 import DifferentialGeometry.Geometry.Flow.VectorField
 import DifferentialGeometry.Geometry.Flow.VectorFieldSmooth
 import DifferentialGeometry.Geometry.Geodesic.AffineReparam
@@ -1457,6 +1464,7 @@ import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Geometry.Topology.FiniteAtlasIndexOnCompact
 import DifferentialGeometry.Geometry.Topology.SemilocallySimplyConnected
+import DifferentialGeometry.Geometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Topology.UniversalCover.Basic
 import DifferentialGeometry.Geometry.Topology.UniversalCover.ChartPullback
 import DifferentialGeometry.Geometry.Topology.UniversalCover.CompletenessPullback

@@ -654,6 +654,85 @@ theorem exists_expMapIntrinsic_eq_expMap_radius
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+/-- A named positive radius on which the realized normal-coordinate
+exponential and the intrinsic exponential agree.  The radius also lies below
+`expRadiusGp`, so its `g_p`-ball is contained in the source of
+`NormalCoordinates.expMapDiffeo`. -/
+noncomputable def expDiffeoRadius
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) : ℝ :=
+  min
+    (Classical.choose
+      (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p))
+    (expRadiusGp (I := I) g p)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- The named intrinsic/realized exponential agreement radius is positive. -/
+theorem expDiffeoRadius_pos
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) :
+    0 < expDiffeoRadius (I := I) g hEnorm p := by
+  rw [expDiffeoRadius, lt_min_iff]
+  exact ⟨(Classical.choose_spec
+      (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p)).1,
+    expRadiusGp_pos (I := I) g p⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- A vector inside `expDiffeoRadius` belongs to the source of the realized
+exponential partial diffeomorphism. -/
+theorem expDiffeo_mem_of_lt
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) {v : TangentSpace I p}
+    (hv : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expDiffeoRadius (I := I) g hEnorm p) :
+    (v : E) ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source := by
+  have hvGp : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expRadiusGp (I := I) g p :=
+    lt_of_lt_of_le hv (min_le_right _ _)
+  have hvNorm :=
+    norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p hvGp
+  exact mem_expMapDiffeo_source_of_norm_lt_radius (I := I) g p hvNorm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Inside `expDiffeoRadius`, the realized normal-coordinate exponential is
+the intrinsic exponential. -/
+theorem expDiffeo_eq_intr
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) {v : TangentSpace I p}
+    (hv : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expDiffeoRadius (I := I) g hEnorm p) :
+    NormalCoordinates.expMapDiffeo (I := I) g p (v : E) =
+      expMapIntrinsic (I := I) g hEnorm p v := by
+  have hvAgree : Real.sqrt (g.inner p (v : E) (v : E)) <
+      Classical.choose
+        (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p) :=
+    lt_of_lt_of_le hv (min_le_left _ _)
+  have hvSrc := expDiffeo_mem_of_lt (I := I) g hEnorm p hv
+  rw [NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hvSrc]
+  exact ((Classical.choose_spec
+    (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p)).2 hvAgree).symm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
 /-- **Radial Riemannian distance equals the radius (small radii).** For a `g`-unit
 vector `u` and `0 ≤ δ` with `δ` below the agreement and Gauss radii, the Riemannian
 distance from `p` to the radial point `expMapIntrinsic g hEnorm p (δ • u)` is

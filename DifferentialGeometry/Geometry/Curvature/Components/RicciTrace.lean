@@ -71,7 +71,7 @@ theorem ricciFromRm13_comp_eq_rm04_trace
   rw [tensor0SSpace_sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_smul]
-  rw [ContinuousMultilinearMap.smul_apply]
+  rw [Tensor0SSpace.smul_apply]
   simp only [smul_eq_mul]
   rw [← hLower (basis a) (basis i) (basis j) (basis k)]
   rw [rm04CompAt_apply]

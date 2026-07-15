@@ -80,7 +80,6 @@ private theorem coordinateFrameAt_basis_repr_eq_trivializationAt
   ext i
   exact (congrFun (e.repr_sum_self (fun i => b.repr v i)) i).symm
 
-set_option backward.isDefEq.respectTransparency false in
 /-- On the coordinate-frame domain, the fixed tensor-bundle basis section
 `Tensor0SSpace.constInChart` is the basis tensor of the coordinate local frame.
 
@@ -95,18 +94,14 @@ theorem constInChart_basisTensor0S_coordFrame {r : ℕ}
           (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x =
       basisTensor0S (I := I) (coordinateFrameAt_basis (I := I) x₀ hx) upper := by
   classical
-  let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
-  have hxE : x ∈ e.baseSet := by
-    simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
-  rw [Tensor0SSpace.constInChart]
-  rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
-    (F := E) (E := TangentSpace I) x₀ x hxE]
-  ext v
-  simp [basisTensor0S, tensor0SBasis, continuousMultilinearMapBasis_apply,
-    continuousMultilinearMapBasisElem, continuousMultilinearMap_basis,
-    continuousMultilinearMap_basisElem, coframeOfBasis,
-    ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    coordinateFrameAt_basis_repr_eq_trivializationAt]
+  have hxE : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
+  refine ext0S_basis (I := I) (coordinateFrameAt_basis (I := I) x₀ hx) (fun slots => ?_)
+  rw [basisTensor0S_component, component0S_apply,
+    Tensor0SSpace.constInChart_apply (I := I) r hxE]
+  simp only [coordinateFrameAt_basis_continuousLinearMapAt (I := I) x₀ hx]
+  rw [← continuousMultilinearMap_basis_repr (Module.finBasis 𝕜 E) r,
+    Module.Basis.repr_self, Finsupp.single_apply]
 
 private theorem coordFrameRSComp_at {r s : ℕ}
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)

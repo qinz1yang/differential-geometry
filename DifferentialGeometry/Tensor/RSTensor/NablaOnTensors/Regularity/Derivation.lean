@@ -429,6 +429,7 @@ private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_extDerivFun {r s
           (fun x => X x) (Set.range I) (extChartAt I x₀ x₀)) =
       extDerivFun (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
         x₀ (X x₀) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   letI : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) := inferInstance
   let φ : E -> 𝕜 :=
     fun y : E =>
@@ -477,8 +478,9 @@ noncomputable def localCovariantDerivTensor0SAt (r : ℕ)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r x)
-    (x₀ : M) : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x₀ :=
-  (trivializationAt (Tensor0SModel r 𝕜 E)
+    (x₀ : M) : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x₀ := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  exact (trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀).symm x₀
     (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
       (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
@@ -521,6 +523,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
           β x₀
             (Function.update (fun b : Fin r => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
@@ -665,6 +668,7 @@ private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
     (A : (x : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r s x)
     (βm : Tensor0SModel r 𝕜 E) (slots : Fin s -> E) (x₀ : M) :
+    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
     (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s x₀ A (extChartAt I x₀ x₀) βm) slots =
       (A x₀
@@ -673,6 +677,7 @@ private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
         (fun a : Fin s =>
           (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL 𝕜 x₀
             (slots a)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart, extChartAt_to_inv]
   exact TensorRSSpace.trivializationAt_apply
     (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) r s
@@ -698,6 +703,7 @@ private theorem tensorRSModelInChart_apply_update_modelOutputSlot_center {r s : 
           (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ W
             (extChartAt I x₀ x₀))) =
       (A x₀ (β x₀)) (Function.update (fun b : Fin s => V b x₀) a (W x₀)) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart_apply_modelSlots_center]
   have hβ :
       (trivializationAt (Tensor0SModel r 𝕜 E)
@@ -864,6 +870,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
           (T x₀ (β x₀))
             (Function.update (fun b : Fin s => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
+  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
@@ -941,17 +948,6 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
             (fun x => X x) (Set.range I))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := by
-    let eRS := trivializationAt (TensorRSModel r s 𝕜 E)
-      (fun x => TensorRSSpace r s I x) x₀
-    let F₀ : TensorRSSpace r s I x₀ :=
-      nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
-        r s cov X T x₀
-    let MRS : TensorRSModel r s 𝕜 E :=
-      covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
-        (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
-          (fun x => X x) (Set.range I))
-        (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
-        Tm (Set.range I) y₀
     have hβcenter :
         (trivializationAt (Tensor0SModel r 𝕜 E)
           (fun x => Tensor0SSpace r I x) x₀).symmL 𝕜 x₀ (βm y₀) =
@@ -968,36 +964,40 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       rw [hcoord]
       exact eβ.symmL_continuousLinearMapAt (R := 𝕜)
         (FiberBundle.mem_baseSet_trivializationAt' x₀) (β x₀)
-    have hcoordEval :
-        ((eRS ⟨x₀, F₀⟩).2 (βm y₀)) slots =
-          F₀ (β x₀) (fun a : Fin s => V a x₀) := by
-      have h := TensorRSSpace.trivializationAt_apply
-        (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) r s
-        (FiberBundle.mem_baseSet_trivializationAt' x₀) F₀ (βm y₀) slots
-      rw [hβcenter, hslots_center] at h
-      exact h
+    let F : (p : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H)
+        (I := I) (M := M) r s p := fun p =>
+      nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        r s cov X T p
     have hmodel :
-        (eRS ⟨x₀, F₀⟩).2 = MRS := by
-      unfold F₀ MRS nablaRSFun TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
+        tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+            r s x₀ F y₀ =
+          covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+            (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
+              (fun x => X x) (Set.range I))
+            (connectionEndomorphismInChart
+              (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
+            Tm (Set.range I) y₀ := by
+      unfold tensorRSModelInChart
+      dsimp only [y₀]
+      rw [extChartAt_to_inv]
+      dsimp only [F]
+      unfold nablaRSFun TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
         TensorLieDeriv.mcovariantDeriv_tensorRSWithinFromConnection
-        TensorLieDeriv.mcovariantDeriv_tensorRSWithin
-      change (eRS ⟨x₀, eRS.symm x₀
-        (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+      rw [TensorLieDeriv.modelAt_mcovRS]
+      simp only [Tm, Set.preimage_univ, Set.univ_inter]
+    calc
+      (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+        r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀) =
+          (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)
+            (I := I) (M := M) r s x₀ F y₀ (βm y₀)) slots := by
+            rw [tensorRSModelInChart_apply_modelSlots_center,
+              hβcenter, hslots_center]
+      _ = (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
           (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
             (fun x => X x) (Set.range I))
-          (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
-          (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
-            (M := M) r s x₀ (fun x => T x))
-          ((extChartAt I x₀).symm ⁻¹' Set.univ ∩ Set.range I)
-          (extChartAt I x₀ x₀))⟩).2 = MRS
-      rw [eRS.apply_mk_symm
-        (mem_baseSet_trivializationAt (TensorRSModel r s 𝕜 E)
-          (fun x => TensorRSSpace r s I x) x₀)]
-      simp [MRS, Tm, y₀]
-    calc
-      F₀ (β x₀) (fun a : Fin s => V a x₀)
-          = ((eRS ⟨x₀, F₀⟩).2 (βm y₀)) slots := hcoordEval.symm
-      _ = (MRS (βm y₀)) slots := by rw [hmodel]
+          (connectionEndomorphismInChart
+            (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
+          Tm (Set.range I) y₀ (βm y₀)) slots := by rw [hmodel]
   have hinput :
       (Tm y₀
         (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r

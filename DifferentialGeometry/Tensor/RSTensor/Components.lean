@@ -106,10 +106,31 @@ theorem component0S_add_gen
   rfl
 
 @[simp]
+theorem component0S_neg_gen
+    (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
+    component0S (I := I) basis (-A) slots =
+      -component0S (I := I) basis A slots := by
+  rfl
+
+@[simp]
+theorem component0S_sub_gen
+    (A B : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
+    component0S (I := I) basis (A - B) slots =
+      component0S (I := I) basis A slots - component0S (I := I) basis B slots := by
+  rfl
+
+@[simp]
 theorem component0S_smul_gen
     (c : 𝕜) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (c • A) slots =
       c * component0S (I := I) basis A slots := by
+  rfl
+
+@[simp]
+theorem component0S_nsmul
+    (n : ℕ) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
+    component0S (I := I) basis (n • A) slots =
+      n • component0S (I := I) basis A slots := by
   rfl
 
 /-- Component theorem for the pointwise product of covariant tensors. -/
@@ -117,11 +138,15 @@ theorem component0S_product_gen
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x)
     (slots : Fin (s + q) -> Idx) :
     component0S (I := I) basis
-        (Bundle.continuousMultilinearMap.product_fun A B) slots =
+        (Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := 𝕜) (F := E) (E := TangentSpace I) A B) slots =
       component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
         component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by
-  rw [component0S_apply, Bundle.continuousMultilinearMap.product_fun_apply]
-  rfl
+  have hP := Bundle.continuousMultilinearMap.product_fun_apply
+    (𝕜 := 𝕜) (F := E) (E := TangentSpace I) A B
+    (fun a => basis (slots a))
+  simp only [component0S_apply]
+  exact hP
 
 end Covariant
 
@@ -147,6 +172,16 @@ theorem componentRS_apply_gen
       (T (basisTensor0S (I := I) basis upper))
         (fun a => basis (lower a)) :=
   rfl
+
+/-- Rewrite the upper/lower slot maps of a mixed component under slot-map equalities, without
+unfolding `componentRS_gen` / `basisTensor0S` / `Fin.cons`. -/
+theorem componentRS_gen_congr_slots
+    (T : TensorRSSpace r s I x)
+    {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
+    (hu : upper = upper') (hl : lower = lower') :
+    componentRS_gen (I := I) basis T upper lower =
+      componentRS_gen (I := I) basis T upper' lower' := by
+  rw [hu, hl]
 
 /-- Expanding the Hom input of a mixed tensor in a basis gives the usual
 component contraction formula. -/
@@ -196,10 +231,19 @@ theorem extRS_basis_gen
   intro input
   apply ext0S_basis (I := I) basis
   intro lower
-  rw [componentRS_apply_input_eq_sum (I := I) basis A input lower,
-    componentRS_apply_input_eq_sum (I := I) basis B input lower]
-  refine Finset.sum_congr rfl fun upper _ => ?_
-  rw [h upper lower]
+  calc
+    component0S (I := I) basis (A input) lower =
+        ∑ upper : Fin r -> Idx,
+          component0S (I := I) basis input upper *
+            componentRS_gen (I := I) basis A upper lower :=
+      componentRS_apply_input_eq_sum (I := I) basis A input lower
+    _ = ∑ upper : Fin r -> Idx,
+          component0S (I := I) basis input upper *
+            componentRS_gen (I := I) basis B upper lower := by
+      refine Finset.sum_congr rfl fun upper _ => ?_
+      rw [h upper lower]
+    _ = component0S (I := I) basis (B input) lower :=
+      (componentRS_apply_input_eq_sum (I := I) basis B input lower).symm
 
 end Mixed
 

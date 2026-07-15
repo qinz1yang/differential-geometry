@@ -6,45 +6,45 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 
 /-!
-# Quasi-linear short-time existence for a parabolic operator on smooth metrics
+# Predicates for the quasi-linear parabolic metric flow, and the linear tensor heat equation
 
-The endpoint is a quasi-linear short-time existence theorem for an
-abstract second-order parabolic operator on smooth Riemannian metrics:
-given any operator `F : SmoothRiemannianMetric I M → pointwiseBilin I` which
-is strictly parabolic at the initial metric `g₀` and has the standard
-smooth dependence on `(g, ∇g, ∇²g)`, there is a positive existence time
-`T > 0` and a smooth-in-time family of Riemannian metrics
-`g_fam : ℝ → SmoothRiemannianMetric I M` with `g_fam 0 = g₀` and
-`∂_t g_fam(t) = F(g_fam(t))` for every `t ∈ [0, T)`.
+This file provides the abstract *data* of the quasi-linear parabolic flow
+`∂_t g = F(g)` on smooth Riemannian metrics, together with the existence theorem
+for its **linear** building block (the Duhamel mild solution).
 
-The DeTurck-Ricci right-hand side `g ↦ -2 Ric(g) + 𝓛_{X(g, g_bg)} g` is the
-intended instantiation of `F`; it is strictly parabolic by the existing
-`deTurckSymbol_isStrictlyParabolic_of_symm`.
+The **non-linear** short-time existence statement is recorded concretely, for the
+strictly-parabolic symmetric DeTurck–Ricci right-hand side `deTurckRicciRHS g_bg`,
+as `deTurckRicci_shortTime_existence_of_closed`
+(`Geometry/Flow/RicciFlow/DeTurckShortTime.lean`); that is the genuine leaf the
+Ricci-flow short-time-existence headline consumes.
+
+There is deliberately **no** abstract operator-level `∂_t g = F(g)` existence
+theorem here. Such a statement is *false as stated* for a free operator `F`:
+the conclusion is a curve of genuine — hence symmetric — Riemannian metrics, so by
+derivative uniqueness it forces `F g₀` to be value-symmetric, while a free `F`
+binder carries no symmetry hypothesis (adding any `g`-independent antisymmetric
+field to a valid right-hand side satisfies every hypothesis yet breaks the
+conclusion). The honest content is the concrete symmetric DeTurck–Ricci operator,
+whose value-symmetry is `deTurckRicciRHS_symm`.
 
 ## Layout
 
-* `IsStrictlyParabolicMetricRHS` — abstract strict-parabolicity data for an
-  operator `F` at a metric `g` (the existence of a principal symbol),
-  suitable for plugging into `quasilinear_parabolic_metric_short_time_existence`.
 * `IsQuasilinearMetricParabolicSolution F g₀ T g_fam` — the equation
-  `∂_t g_fam(t) = F(g_fam(t))` evaluated pointwise against tangent
-  vectors, with the initial condition `g_fam 0 = g₀` and the existence
-  time `T` recorded.
-* `IsLinearTensorParabolicMildSolution` — the analogous predicate for the
-  linear inhomogeneous tensor heat equation `∂_t u + L u = F(t)`,
-  expressed via the Duhamel formula. Used internally as the linearisation
-  of the quasi-linear case.
+  `∂_t g_fam(t) = F(g_fam(t))` evaluated pointwise against tangent vectors, with
+  the initial condition `g_fam 0 = g₀` and the existence time `T` recorded.
+* `IsStrictlyParabolicMetricRHS` — abstract strict-parabolicity data for an
+  operator `F` at a metric `g` (the existence of a principal symbol).
+* `IsSmoothQuasilinearMetricRHS` — smooth quasi-linear dependence on the chart
+  data `(g, ∇g, ∇²g)` plus strict parabolicity at every metric.
+* `IsLinearTensorParabolicMildSolution` — the predicate for the linear
+  inhomogeneous tensor heat equation `∂_t u + L u = F(t)`, via the Duhamel
+  formula; the linearisation of the quasi-linear case.
 
 ## Main theorems
 
-* `linear_tensor_parabolic_shortTime_exists` — existence of a mild
-  solution to the linear inhomogeneous tensor heat equation, stated
-  predicate-free and built directly from the Duhamel map of the abstract
-  bounded `C₀`-semigroup.
-* `quasilinear_parabolic_metric_short_time_existence` — short-time
-  existence for `∂_t g = F(g)`, by Banach fixed point on Duhamel iterates
-  seeded by the linearised semigroup. The proof of this endpoint is still
-  `sorry`-stubbed.
+* `linear_tensor_parabolic_shortTime_exists` — existence of a mild solution to the
+  linear inhomogeneous tensor heat equation, stated predicate-free and built
+  directly from the Duhamel map of the abstract bounded `C₀`-semigroup.
 -/
 
 namespace DifferentialGeometry
@@ -86,8 +86,9 @@ def IsQuasilinearMetricParabolicSolution
 Downstream callers supply concrete content by combining the existing
 `deTurckSymbol_isStrictlyParabolic_of_symm`
 (`Analysis/Parabolic/StrictParabolicity.lean`) with the linearisation
-infrastructure in `Analysis/Parabolic/DeTurckLinearization/`. The shape `Prop`
-is what `quasilinear_parabolic_metric_short_time_existence` consumes. -/
+infrastructure in `Analysis/Parabolic/DeTurckLinearization/`. The concrete
+instance is `deTurckRicciRHS_isStrictlyParabolic_at_self`, consumed by the
+DeTurck–Ricci short-time existence leaf `deTurckRicci_shortTime_existence_of_closed`. -/
 def IsStrictlyParabolicMetricRHS
     (F : SmoothRiemannianMetric I M →
          (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
@@ -122,33 +123,6 @@ def IsSmoothQuasilinearMetricRHS
             (DifferentialGeometry.Integral.Measure.chartModelBasis E j)))
         (chartAt H α).source)
     ∧ ∀ g : SmoothRiemannianMetric I M, IsStrictlyParabolicMetricRHS F g
-
-/-- **Short-time existence for a strictly parabolic quasi-linear PDE on smooth
-Riemannian metrics over a closed manifold.**
-
-For any smooth Riemannian metric `g₀` on a closed (compact, boundaryless)
-manifold `M` and any operator `F` on smooth Riemannian metrics that is
-strictly parabolic at `g₀` (`IsStrictlyParabolicMetricRHS F g₀`) and has smooth
-quasi-linear dependence on the chart data `(g, ∇g, ∇²g)`
-(`IsSmoothQuasilinearMetricRHS F`), the PDE `∂_t g = F(g)` admits a positive
-existence time `T > 0` and a time-solution `g_fam : ℝ → SmoothRiemannianMetric I M`
-with `g_fam 0 = g₀`, in the sense of `IsQuasilinearMetricParabolicSolution`.
-
-The DeTurck-Ricci right-hand side `F(g) := -2 Ric(g) + 𝓛_{X(g, g_bg)} g` is one
-intended instantiation; its strict-parabolicity witness is
-`deTurckSymbol_isStrictlyParabolic_of_symm`.
-
-The proof is currently `sorry`. -/
-theorem quasilinear_parabolic_metric_short_time_existence
-    [CompactSpace M]
-    (F : SmoothRiemannianMetric I M →
-         (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
-    (g₀ : SmoothRiemannianMetric I M)
-    (_hParabolic : IsStrictlyParabolicMetricRHS (I := I) F g₀)
-    (_hSmooth : IsSmoothQuasilinearMetricRHS (I := I) F) :
-    ∃ T : ℝ, ∃ g_fam : ℝ → SmoothRiemannianMetric I M,
-      IsQuasilinearMetricParabolicSolution (I := I) F g₀ T g_fam := by
-  sorry
 
 /-- A predicate stating that `u : ℝ → TensorL2 r s g` is the mild Duhamel solution
 of the linear inhomogeneous tensor heat equation `∂_t u + L u = F(t)` with initial

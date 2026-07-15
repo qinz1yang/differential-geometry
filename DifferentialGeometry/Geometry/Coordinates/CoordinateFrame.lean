@@ -825,6 +825,47 @@ theorem coordComponentRSAt_apply {r s : ℕ} {x₀ : M}
       componentRS_gen (I := I) (coordinateFrameAt_toBasis (I := I) x₀) T upper lower :=
   rfl
 
+/-- Rewrite the slot map of a coordinate-frame covariant component under a slot-map equality,
+without unfolding `coordComponent0SAt` / `component0S` / `Fin.cons`. -/
+theorem coordComponent0SAt_congr_slots {s : ℕ} {x₀ : M}
+    (A : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x₀)
+    {slots slots' : Fin s -> CoordinateIdx (𝕜 := 𝕜) E}
+    (h : slots = slots') :
+    coordComponent0SAt (I := I) A slots = coordComponent0SAt (I := I) A slots' := by
+  rw [h]
+
+/-- Rewrite the upper/lower slot maps of a coordinate-frame mixed component under slot-map
+equalities, without unfolding `coordComponentRSAt` / `componentRS_gen` / `basisTensor0S`. -/
+theorem coordComponentRSAt_congr_slots {r s : ℕ} {x₀ : M}
+    (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x₀)
+    {upper upper' : Fin r -> CoordinateIdx (𝕜 := 𝕜) E}
+    {lower lower' : Fin s -> CoordinateIdx (𝕜 := 𝕜) E}
+    (hu : upper = upper') (hl : lower = lower') :
+    coordComponentRSAt (I := I) T upper lower =
+      coordComponentRSAt (I := I) T upper' lower' := by
+  rw [hu, hl]
+
+/-- Coordinate-frame covariant-tensor extensionality: equal coordinate components ⇒ equal tensors.
+A thin wrapper over `ext0S_basis` at `coordinateFrameAt_toBasis`, so downstream proofs need not
+mention the underlying basis or unfold `coordComponent0SAt`. -/
+theorem coordExt0SAt {s : ℕ} {x₀ : M}
+    {A B : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x₀}
+    (h : ∀ slots : Fin s -> CoordinateIdx (𝕜 := 𝕜) E,
+      coordComponent0SAt (I := I) A slots = coordComponent0SAt (I := I) B slots) :
+    A = B :=
+  ext0S_basis (I := I) (coordinateFrameAt_toBasis (I := I) x₀) h
+
+/-- Coordinate-frame mixed-tensor extensionality: equal coordinate components ⇒ equal tensors.
+A thin wrapper over `extRS_basis_gen` at `coordinateFrameAt_toBasis`. -/
+theorem coordExtRSAt {r s : ℕ} {x₀ : M}
+    {A B : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x₀}
+    (h : ∀ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
+         ∀ lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E,
+      coordComponentRSAt (I := I) A upper lower =
+        coordComponentRSAt (I := I) B upper lower) :
+    A = B :=
+  extRS_basis_gen (I := I) (coordinateFrameAt_toBasis (I := I) x₀) h
+
 namespace LocalChartAt
 namespace Frame
 

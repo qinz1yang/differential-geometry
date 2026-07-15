@@ -432,7 +432,7 @@ theorem canRmSymm
       nabla4OutSkew (I := I) cov Asec Rm04 x
         (fun y =>
           DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-            (I := I) g hcov1 Rm04
+            (I := I) g Rm04
             (DifferentialGeometry.Integral.Connection.rm04Section_realizes
               (I := I) g cov hcov) (x := y))
         W X Y Z
@@ -508,7 +508,7 @@ theorem canRmSymm
       nabla4Pair (I := I) cov Asec Rm04 x
         (fun y =>
           DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-            (I := I) g hcov1 Rm04
+            (I := I) g Rm04
             (DifferentialGeometry.Integral.Connection.rm04Section_realizes
               (I := I) g cov hcov) (x := y))
         W X Y Z

@@ -124,17 +124,9 @@ theorem removeNone_inv_mul {α : Type*} [DecidableEq α]
   apply Equiv.optionCongr_injective
   have h12 : (σ₁⁻¹ * σ₂) none = none := by simp [Equiv.Perm.coe_mul, h₁, h₂]
   have h12 : (σ₁⁻¹ * σ₂) none = none := by simp [Equiv.Perm.coe_mul, h₁, h₂]
-  -- Strategy: show optionCongr of both sides are equal, then use optionCongr_injective.
-  -- But optionCongr_injective : (α ≃ β) → ... , and both sides are α ≃ α.
-  -- optionCongr(removeNone(σ₁⁻¹ * σ₂)) = σ₁⁻¹ * σ₂
-  -- optionCongr((removeNone σ₁)⁻¹ * removeNone σ₂)
-  --   = optionCongr((removeNone σ₁).symm.trans (removeNone σ₂))  -- by Perm.mul = Equiv.trans
-  -- But Perm.mul ≠ Equiv.trans definitionally. Need a bridge.
-  -- Just prove optionCongr of RHS = σ₁⁻¹ * σ₂ pointwise, then use injectivity.
+
   have h_lhs := optionCongr_removeNone_of_fix_none _ h12
-  -- h_lhs : (removeNone(σ₁⁻¹ * σ₂)).optionCongr = σ₁⁻¹ * σ₂
-  -- h_rhs: optionCongr of the RHS also equals σ₁⁻¹ * σ₂.
-  -- Key helper: for σ fixing none, some(removeNone σ b) = σ(some b).
+
   have h_oc : ∀ (σ : Equiv.Perm (Option α)) (hσ : σ none = none) (b : α),
       some (Equiv.removeNone σ b) = σ (some b) := by
     intro σ hσ b
@@ -154,27 +146,22 @@ theorem removeNone_inv_mul {α : Type*} [DecidableEq α]
         Function.comp_apply, Equiv.Perm.inv_def]
       show some ((Equiv.removeNone σ₁).symm ((Equiv.removeNone σ₂) a)) =
         σ₁.symm (σ₂ (some a))
-      -- Goal: some ((rn σ₁).symm ((rn σ₂) a)) = σ₁.symm (σ₂ (some a))
+
       rw [← h_oc σ₂ h₂ a]
-      -- Goal: some ((rn σ₁).symm ((rn σ₂) a)) = σ₁.symm (some ((rn σ₂) a))
-      -- From h_oc σ₁: some(rn σ₁ b) = σ₁(some b), so σ₁.symm(some(rn σ₁ b)) = some b
-      -- Applying σ₁.symm to both sides of h_oc: σ₁.symm(some(rn σ₁ b)) = some b
-      -- So some((rn σ₁).symm c) = σ₁.symm(some c) for any c (take b = (rn σ₁).symm c).
+
       have : ∀ c, some ((Equiv.removeNone σ₁).symm c) = σ₁.symm (some c) := by
         intro c
         apply σ₁.injective
         rw [Equiv.apply_symm_apply, ← h_oc σ₁ h₁, Equiv.apply_symm_apply]
       exact this _
-  -- Goal (after apply optionCongr_injective on line 124):
-  -- (removeNone(σ₁⁻¹*σ₂)).optionCongr = ((removeNone σ₁)⁻¹ * removeNone σ₂).optionCongr
+
   exact h_lhs.trans h_rhs.symm
 
 /-- For a permutation of `Option α` fixing `none`, `removeNone` preserves the sign. -/
 theorem removeNone_sign {α : Type*} [DecidableEq α] [Fintype α]
     (σ : Equiv.Perm (Option α)) (h : σ none = none) :
     Equiv.Perm.sign (Equiv.removeNone σ) = Equiv.Perm.sign σ := by
-  -- σ fixes none, so σ = (removeNone σ).optionCongr.
-  -- sign((removeNone σ).optionCongr) = sign(removeNone σ) by optionCongr_sign.
+
   conv_rhs => rw [← optionCongr_removeNone_of_fix_none σ h]
   exact (Equiv.optionCongr_sign _).symm
 

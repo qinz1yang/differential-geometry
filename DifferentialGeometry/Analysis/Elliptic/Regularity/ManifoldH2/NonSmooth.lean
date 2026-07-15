@@ -109,8 +109,7 @@ The chart-pushed function is taken with the canonical atlas partition of unity
 structure ChartH2NonSmoothPOUWitness
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (u : M → ℝ) (α : M) : Prop where
-  /-- The POU-cut chart-pushed function lies in `MemWkp 2 2` of the chart-target
-  image. -/
+
   memWkp_two : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
     (d := Module.finrank ℝ E) 2 2
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
@@ -252,21 +251,20 @@ is exactly this membership statement. -/
 structure ChartH2NonSmoothBridgeData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (u : M → ℝ) (α : M) where
-  /-- The chart-bilinear non-smooth weak-solution data structure. -/
+
   D : ChartBilinearH1ComplData (I := I) (M := M) g α
-  /-- A precompact open subdomain `Ω''` of `chartTargetEuclid α`. -/
+
   Omega'' : Set EuclN
   Omega''_open : IsOpen Omega''
   Omega''_compact_closure : IsCompact (closure Omega'')
-  /-- The room hypothesis: a thickening parameter `h₀ > 0` and the
-  cthickening hypothesis. -/
+
   h0 : ℝ
   h0_pos : 0 < h0
   room :
     Metric.cthickening h0 (closure Omega'') ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α
-  /-- The uniform difference-quotient bound. -/
+
   M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ
   M_bound_nn : ∀ i k, 0 ≤ M_bound i k
   uniform_diffQuot_bound :
@@ -277,8 +275,7 @@ structure ChartH2NonSmoothBridgeData
               (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
             ((volume : Measure EuclN).restrict Omega'')
           ≤ ENNReal.ofReal (M_bound i k)
-  /-- The downstream `MemWkp 2 2` membership of the POU-cut chart-pushed
-  function — the target object of the Leibniz / extension-by-zero packaging. -/
+
   memWkp_two_chartPushed :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2

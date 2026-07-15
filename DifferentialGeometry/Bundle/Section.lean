@@ -270,7 +270,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯)
     (σ₁ σ₂ : Cₛ^n⟮I; F₁, E₁⟯) (p : M) (hσ : σ₁ p = σ₂ p) :
     (F σ₁) p = (F σ₂) p := by
-  -- Derive C^1 vector bundle structure from C^n via monotonicity
+
   haveI : ContMDiffVectorBundle 1 F₁ E₁ I :=
     ContMDiffVectorBundle.of_le (show (1 : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) from
       WithTop.coe_le_coe.mpr h1n.out)
@@ -366,26 +366,23 @@ of smooth sections is induced by a smooth vector bundle homomorphism covering th
 noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
     ContMDiffVectorBundleHom ℝ I n F₁ E₁ F₂ E₂ := by
-  -- Derive C^1 structures from C^n via monotonicity
+
   haveI : ContMDiffVectorBundle 1 F₁ E₁ I :=
     ContMDiffVectorBundle.of_le (show (1 : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) from
       WithTop.coe_le_coe.mpr h1n.out)
   haveI : ContMDiffVectorBundle 1 F₂ E₂ I :=
     ContMDiffVectorBundle.of_le (show (1 : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) from
       WithTop.coe_le_coe.mpr h1n.out)
-  -- Use the extracted helper lemma acts_pointwise
+
   have acts_pointwise := ContMDiffVectorBundleHom.linearMap_acts_pointwise F
-  -- ===== Existence of global sections with prescribed value =====
+
   have exists_section : ∀ (p : M) (v : E₁ p),
       ∃ (σ : Cₛ^n⟮I; F₁, E₁⟯), σ p = v := ContMDiffSection.exists_eq_at
-  -- ===== Step 3: Define the fiberwise linear map =====
-  -- φ(x)(v) := F(σ')(x) where σ' is any global section with σ'(x) = v.
-  -- Well-defined by acts_pointwise, linear because F is linear.
+
   let φ : ∀ x : M, E₁ x →ₗ[ℝ] E₂ x := fun x =>
     { toFun := fun v => (F (exists_section x v).choose) x
       map_add' := fun v w => by
-        -- φ(v+w) = F(choose(v+w))(x) = F(choose(v) + choose(w))(x)
-        --        = F(choose(v))(x) + F(choose(w))(x) = φ(v) + φ(w)
+
         let σ_v := (exists_section x v).choose
         let σ_w := (exists_section x w).choose
         let σ_vw := (exists_section x (v + w)).choose
@@ -399,13 +396,13 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
           _ = (F σ_v) x + (F σ_w) x := by
                 rw [map_add, ContMDiffSection.coe_add, Pi.add_apply]
       map_smul' := fun c v => by
-        -- φ(c•v) = F(choose(c•v))(x) = F(c • choose(v))(x) = c • F(choose(v))(x)
+
         let σ_v := (exists_section x v).choose
         let σ_cv := (exists_section x (c • v)).choose
         have hv : σ_v x = v := (exists_section x v).choose_spec
         have h_smul : (c • σ_v) x = c • v := by
           simp [ContMDiffSection.coe_smul, Pi.smul_apply, hv]
-        -- Wrap c as a constant smooth function
+
         let c' : C^n⟮I, M; ℝ⟯ := ⟨fun _ => c, contMDiff_const⟩
         have hc_eq : c • σ_v = c' • σ_v := by
           ext y; simp [ContMDiffSection.coe_smulContMDiffMap, ContMDiffSection.coe_smul, c']
@@ -414,17 +411,15 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
                 ((exists_section x (c • v)).choose_spec ▸ h_smul ▸ rfl)
           _ = c • (F σ_v) x := by
                 rw [hc_eq, F.map_smul, ContMDiffSection.coe_smulContMDiffMap]; rfl }
-  -- φ agrees with F on sections: φ(x)(σ(x)) = F(σ)(x)
+
   have φ_spec : ∀ (σ : Cₛ^n⟮I; F₁, E₁⟯) (x : M), φ x (σ x) = (F σ) x :=
     fun σ x => acts_pointwise _ σ x (exists_section x (σ x)).choose_spec
-  -- ===== Step 4: The total space map is smooth =====
-  -- In local frames (σᵢ) for E₁ and (τⱼ) for E₂, the map is represented by the
-  -- smooth matrix Aⱼⁱ where F(σᵢ') = ∑ⱼ Aⱼⁱ • τⱼ.
+
   have Φ_smooth : ContMDiff (I.prod 𝓘(ℝ, F₁)) (I.prod 𝓘(ℝ, F₂)) n
       (fun p : TotalSpace F₁ E₁ => (⟨p.proj, φ p.proj p.2⟩ : TotalSpace F₂ E₂)) := by
-    -- Suffices to show ContMDiffAt at each point p₀ of the total space
+
     intro p₀
-    -- Decompose into base + fiber via contMDiffAt_totalSpace
+
     rw [contMDiffAt_totalSpace]
     refine ⟨?_, ?_⟩
     · -- Base component: fun p => p.proj is smooth (just projection)
@@ -437,12 +432,12 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
       have he₂ : p₀.proj ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ E₂ p₀.proj
       have hframe₁ := e₁.isLocalFrameOn_localFrame_baseSet I (↑n) b₁
       obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
-      -- Near p₀: (e₂ ⟨q, φ(q)(v)⟩).2 = ∑ᵢ b₁.repr((e₁ ⟨q,v⟩).2) i • (e₂ ⟨q, F(σᵢ')(q)⟩).2
+
       have hφ_eq : ∀ᶠ x in nhds p₀,
           (e₂ ⟨x.proj, φ x.proj x.2⟩).2 =
           ∑ i, b₁.repr (e₁ x).2 i •
             (e₂ ⟨x.proj, (F (σ' i)) x.proj⟩).2 := by
-        -- Need: q ∈ e₁.baseSet ∩ e₂.baseSet and σ'ᵢ(q) = localFrame b₁ i q
+
         have h_base : ∀ᶠ x in nhds p₀,
             x.proj ∈ e₁.baseSet ∧ x.proj ∈ e₂.baseSet :=
           (e₁.open_baseSet.inter e₂.open_baseSet).preimage
@@ -455,7 +450,7 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
         filter_upwards [h_base, h_σ'_pull] with ⟨q, v⟩ ⟨hq₁, hq₂⟩ hσ'q
         let le₁ := e₁.linearEquivAt ℝ q hq₁
         let le₂ := e₂.linearEquivAt ℝ q hq₂
-        -- v = ∑ᵢ b₁.repr(le₁ v)(i) • le₁⁻¹(bᵢ), so φ(q)(v) = ∑ᵢ ... • F(σ'ᵢ)(q)
+
         have hv_decomp : v = ∑ i, b₁.repr (le₁ v) i • le₁.symm (b₁ i) := by
           calc v = le₁.symm (le₁ v) := (le₁.symm_apply_apply v).symm
             _ = le₁.symm (∑ i, b₁.repr (le₁ v) i • b₁ i) := by rw [b₁.sum_repr]
@@ -470,7 +465,7 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
         rw [hφv]
         simp only [show ∀ w : E₂ q, (e₂ ⟨q, w⟩).2 = le₂ w from fun _ => rfl]
         rw [map_sum]; simp only [map_smul]; rfl
-      -- Step 2: The smooth function is ContMDiffAt
+
       refine ContMDiffAt.congr_of_eventuallyEq ?_ hφ_eq
       apply ContMDiffAt.sum
       intro i _
@@ -480,8 +475,7 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
         have h_e₁_snd : ContMDiffAt (I.prod 𝓘(ℝ, F₁)) 𝓘(ℝ, F₁) (↑n)
             (fun x => (e₁ x).2) p₀ :=
           (contMDiffAt_totalSpace (f := _root_.id)).mp contMDiffAt_id |>.2
-        -- b₁.repr (·) i is a continuous linear map F₁ → ℝ, hence smooth
-        -- Compose: x ↦ (e₁ x).2 ↦ b₁.repr((e₁ x).2) i
+
         have hcl : ContDiff ℝ (↑n) (fun w : F₁ => b₁.repr w i) :=
           (ContinuousLinearMap.proj i |>.comp
             b₁.equivFun.toContinuousLinearEquiv.toContinuousLinearMap).contDiff
@@ -492,9 +486,9 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
         have h_sect : ContMDiffAt I 𝓘(ℝ, F₂) (↑n)
             (fun q => (e₂ ⟨q, (F (σ' i)) q⟩).2) p₀.proj :=
           (contMDiffAt_section p₀.proj).mp (F (σ' i)).contMDiff.contMDiffAt
-        -- Compose with the projection x ↦ x.proj (smooth on total space)
+
         exact h_sect.comp _ (contMDiff_proj E₁).contMDiffAt
-  -- ===== Package everything =====
+
   exact ⟨_root_.id, fun p => ⟨p.proj, φ p.proj p.2⟩, Φ_smooth, φ, fun _ _ => rfl⟩
 
 /-- The bundle hom constructed by `ofLinearMapSection` covers the identity. -/
@@ -510,9 +504,7 @@ theorem ContMDiffVectorBundleHom.ofLinearMapSection_spec
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) (σ) :
     F σ = (ofLinearMapSection F).mapSection (ofLinearMapSection_baseMap F) σ := by
   ext x
-  -- (ofLinearMapSection F).mapSection σ x = (φ x) (σ x)
-  -- = F(choose(σ x))(x) by definition of ofLinearMapSection
-  -- = F(σ)(x) by acts_pointwise, since choose(σ x) and σ agree at x
+
   exact (linearMap_acts_pointwise F σ _ x
     (ContMDiffSection.exists_eq_at x (σ x)).choose_spec.symm)
 
@@ -525,9 +517,7 @@ theorem ContMDiffVectorBundleHom.ofLinearMapSection_mapSection
     (hΦ : Φ.baseMap = _root_.id) (hΨ : Ψ.baseMap = _root_.id)
     (h_eq : ∀ σ, Φ.mapSection hΦ σ = Ψ.mapSection hΨ σ) :
     Φ.toFun = Ψ.toFun := by
-  -- Suffices to show Φ.toFun p = Ψ.toFun p for all p
-  -- Use: Φ.toFun ⟨x,v⟩ = ⟨id x, φ x v⟩ and (mapSection σ)(x) = φ x (σ x) after subst
-  -- So for σ with σ(x) = v: Φ.toFun ⟨x,v⟩ = ⟨x, (mapSection σ)(x)⟩ = ⟨x, (Ψ.mapSection σ)(x)⟩ = Ψ.toFun ⟨x,v⟩
+
   funext ⟨x, v⟩
   obtain ⟨σ, rfl⟩ := ContMDiffSection.exists_eq_at (I := I) (F := F₁) (n := n) x v
   rw [Φ.mapSection_apply hΦ, Ψ.mapSection_apply hΨ, h_eq]
@@ -537,7 +527,7 @@ is induced by a smooth vector bundle equivalence covering the identity. -/
 noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSection
     (F : Cₛ^n⟮I; F₁, E₁⟯ ≃ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
     ContMDiffVectorBundleEquiv ℝ I n F₁ E₁ F₂ E₂ := by
-  -- Extract the bundle hom covering the identity from the characterization lemma
+
   let Φ := ContMDiffVectorBundleHom.ofLinearMapSection F.toLinearMap
   let hΦ : Φ.baseMap = _root_.id :=
     ContMDiffVectorBundleHom.ofLinearMapSection_baseMap F.toLinearMap
@@ -548,7 +538,7 @@ noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSection
     ContMDiffVectorBundleHom.ofLinearMapSection_baseMap F.symm.toLinearMap
   have hΨ_spec : ∀ σ, F.symm σ = Ψ.mapSection hΨ σ :=
     ContMDiffVectorBundleHom.ofLinearMapSection_spec F.symm.toLinearMap
-  -- Φ and Ψ are mutual inverses on the total space
+
   have hΨΦ : ∀ p, Ψ.toFun (Φ.toFun p) = p := by
     intro ⟨x, v⟩
     obtain ⟨σ, rfl⟩ := ContMDiffSection.exists_eq_at (I := I) (F := F₁) (n := n) x v
@@ -582,13 +572,12 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
     (hΨ_smooth : ∀ σ : Cₛ^n⟮I; F₁, E₁⟯,
       ContMDiff I (I.prod 𝓘(ℝ, F₂)) n (T% (Ψ ⇑σ))) :
     ContMDiffVectorBundleHom ℝ I n F₁ E₁ F₂ E₂ := by
-  -- Derive C^1 structures from C^n via monotonicity
+
   have h1n' : (1 : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) := WithTop.coe_le_coe.mpr h1n.out
   have hn_ne : (↑n : WithTop ℕ∞) ≠ 0 := (zero_lt_one.trans_le h1n').ne'
   haveI : ContMDiffVectorBundle 1 F₁ E₁ I := ContMDiffVectorBundle.of_le h1n'
   haveI : ContMDiffVectorBundle 1 F₂ E₂ I := ContMDiffVectorBundle.of_le h1n'
-  -- ===== Step 1: Define the fiberwise linear map via tensoriality =====
-  -- φ(x)(v) := Ψ(extend F₁ v)(x). Linear by TensorialAt + pointwise.
+
   let φ : ∀ x : M, E₁ x →ₗ[ℝ] E₂ x := fun x =>
     { toFun := fun v => Ψ (extend F₁ v) x
       map_add' := fun v₁ v₂ => by
@@ -602,11 +591,11 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
           (mdifferentiableAt_extend ..)]
         exact (hΨ x).pointwise (mdifferentiableAt_extend ..)
           (mdifferentiableAt_const.smul_section (mdifferentiableAt_extend ..)) (by simp) }
-  -- φ agrees with Ψ on smooth sections: φ(x)(σ(x)) = Ψ(σ)(x)
+
   have φ_spec : ∀ (σ : Cₛ^n⟮I; F₁, E₁⟯) (x : M), φ x (σ x) = Ψ (⇑σ) x :=
     fun σ x => (hΨ x).pointwise (mdifferentiableAt_extend ..)
       (σ.contMDiff.contMDiffAt.mdifferentiableAt hn_ne) (by simp)
-  -- ===== Step 2: The total space map is smooth =====
+
   have Φ_smooth : ContMDiff (I.prod 𝓘(ℝ, F₁)) (I.prod 𝓘(ℝ, F₂)) n
       (fun p : TotalSpace F₁ E₁ => (⟨p.proj, φ p.proj p.2⟩ : TotalSpace F₂ E₂)) := by
     intro p₀
@@ -619,7 +608,7 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
     have he₂ : p₀.proj ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ E₂ p₀.proj
     have hframe₁ := e₁.isLocalFrameOn_localFrame_baseSet I (↑n) b₁
     obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
-    -- Near p₀: (e₂ ⟨q, φ(q)(v)⟩).2 = ∑ᵢ b₁.repr((e₁ ⟨q,v⟩).2) i • (e₂ ⟨q, Ψ(σᵢ')(q)⟩).2
+
     have hφ_eq : ∀ᶠ x in nhds p₀,
         (e₂ ⟨x.proj, φ x.proj x.2⟩).2 =
         ∑ i, b₁.repr (e₁ x).2 i •
@@ -664,7 +653,7 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
           (fun q => (e₂ ⟨q, Ψ (⇑(σ' i)) q⟩).2) p₀.proj :=
         (contMDiffAt_section p₀.proj).mp (hΨ_smooth (σ' i)).contMDiffAt
       exact h_sect.comp _ (contMDiff_proj E₁).contMDiffAt
-  -- ===== Package everything =====
+
   exact ⟨_root_.id, fun p => ⟨p.proj, φ p.proj p.2⟩, Φ_smooth, φ, fun _ _ => rfl⟩
 
 end VBC

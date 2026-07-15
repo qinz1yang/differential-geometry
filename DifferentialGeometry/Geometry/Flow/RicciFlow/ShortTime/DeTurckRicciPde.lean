@@ -12,11 +12,12 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFr
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 
-/-! # DeTurck-Ricci-flow parabolic short-time existence and the metric PDE
+/-! # The realized DeTurck-Ricci metric PDE
 
-The short-time-existence endpoint `deturck_ricci_flow_parabolic_short_time_existence`
-for the DeTurck-Ricci flow on a closed manifold, together with the interior and
-initial-time forms of the realized metric PDE `∂_t g = -2 Ric(g) + 𝓛_X g`. -/
+Interior and initial-time forms of the realized metric PDE
+`∂_t g = -2 Ric(g) + 𝓛_X g`.  The canonical parabolic short-time-existence
+producer is `ShortTime.DeTurckInitialDataExistence`; it is intentionally not
+restated in this realization module. -/
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -44,88 +45,6 @@ variable
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-/-- **DeTurck–Ricci parabolic short-time existence (the single faithful classical input).**
-
-For initial and background metrics `g₀`, `g_bg` there exist a positive time `T` and a metric
-family `g_DT` solving the strictly parabolic DeTurck–Ricci flow
-`∂_t g_DT = -2 Ric(g_DT) + 𝓛_{X_DT} g_DT` (with `X_DT(t) = deTurckVF (g_DT t) g_bg`) on `[0, T]`,
-packaged as `IsQuasilinearMetricParabolicSolution (deTurckRicciRHS g_bg) g₀ T g_DT`.  The
-existential is ENRICHED to additionally provide the DeTurck-vector-field and metric regularity
-data that the conjugating-diffeomorphism construction consumes, all of which is genuinely TRUE
-of the interior-parabolic-smooth, `C⁰`-up-to-`0` DeTurck solution:
-
-* `h_reg` — interior joint-`C∞` of the field map `q ↦ ⟨q.2, deTurckVF (g_DT q.1) g_bg q.2⟩`
-  on `Ioo 0 T ×ˢ univ` (interior parabolic smoothness of the solution → smooth field);
-* `h_cont0` — continuity of the field up to `t = 0` on `Icc 0 T ×ˢ univ` (`C⁰`-up-to-`0`);
-* `h_grad0` — continuity of the field's spatial Fréchet derivative up to `t = 0`;
-* `h_smooth0` — joint `C∞` of the field `q ↦ ⟨q.2, deTurckVF (g_DT q.1) g_bg q.2⟩` up to AND
-  ACROSS `t = 0` on the CLOSED `Icc 0 T ×ˢ univ` (the genuine smoothness of the DeTurck
-  solution from smooth initial data, by parabolic regularity; subsumes `h_reg`/`h_cont0`/`h_grad0`);
-* `h_gram` — interior joint-`(t, x)` `C∞` of each chart-local Gram-matrix entry of `g_DT`
-  on `Ioo 0 T ×ˢ baseSet` (the canonical `chartGramMatrix` formulation of joint smoothness
-  of the metric family; TRUE of the interior-parabolic-smooth DeTurck solution);
-* `h_gram0` — joint-`(t, x)` continuity of each chart-local Gram-matrix entry of `g_DT`
-  up to `t = 0` on `Ico 0 T ×ˢ baseSet` (continuity-up-to-the-`C⁰`-at-`0`-boundary);
-* `h_gramOnE0` — joint-`(t, x)` continuity of each chart-Gram entry in the `chartGramOnE` /
-  `extChartAt` form on `Icc 0 T ×ˢ univ`, up to `t = 0`.  This is the `k = 0` value-continuity
-  in the exact shape `gfam_inner_continuous_on` consumes (`hg_joint`); a genuine `C⁰`-up-to-`0`
-  output of the smooth DeTurck solution;
-* `h_C2` — joint-`(t, x)` continuity of the spatial `k ≤ 2` iterated Fréchet jets of each
-  chart-Gram entry (in the `chartGramOnE` / `extChartAt` form, on `Icc 0 T ×ˢ goodSet`) up to
-  `t = 0`.  This is the GENUINE second-order-in-space regularity output of the DeTurck–Ricci
-  parabolic solution from SMOOTH initial data, which is `C^∞` up to `t = 0` (all spatial jets,
-  in particular the `k ≤ 2` ones controlling the Hessian/Ricci, vary continuously in time up to
-  `0`).  It is the exact `hC2` input of `ricci_gfam_continuous_on`, needed because the pullback
-  Ricci is a second-order spatial quantity that a `k = 0`-only datum cannot control up to `0`.
-
-These constrain only the internal `g_DT`/`X_DT`, never `g₀`/the headline statement, so the
-enrichment is non-leaking.  The body remains `sorry` — this is the single faithful
-"DeTurck–Ricci parabolic short-time existence" labeled classical input. -/
-theorem deturck_ricci_flow_parabolic_short_time_existence
-    (g₀ g_bg : SmoothRiemannianMetric I M) :
-    ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
-      IsQuasilinearMetricParabolicSolution (I := I)
-        (deTurckRicciRHS (I := I) g_bg) g₀ T g_DT ∧
-      ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-        (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
-          : TangentBundle I M))
-        (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) ∧
-      ContinuousOn
-        (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g_bg q.2 : TangentSpace I q.2))
-        (Set.Icc 0 T ×ˢ Set.univ) ∧
-      (∀ α : M,
-        ContinuousOn
-          (fun q : ℝ × M =>
-            fderiv ℝ (fun z => chartTrivRepr (I := I) α (fun x => deTurckVF (I := I) (g_DT q.1) g_bg x) z)
-              (extChartAt I α q.2))
-          (Set.Icc 0 T ×ˢ Set.univ)) ∧
-      ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-        (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
-          : TangentBundle I M))
-        (Set.Icc 0 T ×ˢ Set.univ) ∧
-      (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-        ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-          (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
-          (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
-      (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
-        ContinuousOn
-          (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
-          (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
-      (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
-        ContinuousOn
-          (fun q : ℝ × M =>
-            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
-              (extChartAt I α q.2))
-          (Set.Icc 0 T ×ˢ Set.univ)) ∧
-      (∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
-        ContinuousOn
-          (fun q : ℝ × M => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
-            (extChartAt I α q.2))
-          (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α)) := sorry
 
 set_option linter.unusedVariables false in
 /-- **Interior metric-level DeTurck–Ricci time-derivative (fully ungated).**

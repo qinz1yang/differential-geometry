@@ -324,6 +324,231 @@ theorem frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv
       rw [covGrad_rawConnLap_curry_eq_swap_add_residual (I := I) (M := M) g T₀ x w]
       rw [add_sub_cancel_right]]
 
+/-! ### General-valence rank-`(0, s) → (0, s + 1)` currying tower
+
+The declarations below port the `(0, 2) → (0, 3)`-locked moving-frame residual / fixed-frame
+swap / right-hand-side currying apparatus of this file to an arbitrary covariant valence
+`(0, s) → (0, s + 1)`. Each generalises its `s = 2` original verbatim with `2 ↦ s`,
+`covGrad g 0 2 ↦ covGrad g 0 s`, `tensor0S_curry 2 ↦ tensor0S_curry s`, `Tensor3rdCurv g 0 2 ↦
+Tensor3rdCurv g 0 s`, citing the on-disk general-valence currying lemma
+`curry_covGrad_unit_eval_genVal` (`GradientField.lean`) in place of the `s = 2`
+`curry_covGrad_unit_eval`, and the already-general `(r, s)` frame-trace swap
+`frame_trace_thirdCovDeriv_swap` (`TensorThirdOrderWeitzenbock.lean`). These unblock the
+general-valence headline `covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen`
+(`TraceDiscrepancyDecomposition.lean`), the currying tower of the leaf-`A` genuine/bracket
+split. -/
+
+/-- **The canonical commutator defect (general valence).** General-valence analogue of
+`covGradRoughLapCurv` (its `s = 2` instance): the difference of the rough Laplacian of the
+`(0, s + 1)`-tensor gradient field and the gradient of the rough Laplacian, as a smooth
+compactly-supported `(0, s + 1)`-tensor field:
+```
+covGradRoughLapCurv_gen g s T₀ := Δ_∇(∇T₀) − ∇(Δ_∇ T₀).
+``` -/
+noncomputable def covGradRoughLapCurv_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s) :
+    SmoothCcTensor g 0 (s + 1) :=
+  rawTensorConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s T₀) -
+    covGrad (I := I) (M := M) g 0 s (rawTensorConnLapSmooth (I := I) g 0 s T₀)
+
+/-- **Right-hand-side reading (general valence).** General-valence analogue of
+`covGrad_rawConnLap_unit_eval_curry` (its `s = 2` instance): the slot-`0` curry of the
+unit-evaluation of the gradient `covGrad g 0 s (Δ_∇ T₀)` along a tangent direction `w` is the
+directional covariant derivative of `Δ_∇ T₀ = rawTensorConnLapSmooth g 0 s T₀`, evaluated at
+the unit `(0, 0)`-tensor:
+```
+tensor0S_curry s x (∇(Δ_∇T₀) x (unit)) w = (∇_w Δ_∇T₀)(x)(unit).
+```
+The proof ports verbatim, citing the on-disk general-valence
+`curry_covGrad_unit_eval_genVal`. -/
+lemma covGrad_rawConnLap_unit_eval_curry_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    tensor0S_curry (I := I) (M := M) s x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          (covGrad (I := I) (M := M) g 0 s
+            (rawTensorConnLapSmooth g 0 s T₀)).toSection x)
+          (unitZeroSec (I := I) (M := M) x)) w =
+      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+        tensorCovDerivAt (I := I) (M := M) g 0 s
+          (rawTensorConnLapSmooth g 0 s T₀) x w)
+        (unitZeroSec (I := I) (M := M) x) :=
+  curry_covGrad_unit_eval_genVal (I := I) (M := M) g s
+    (rawTensorConnLapSmooth g 0 s T₀) x w
+
+/-- **The fixed-at-`x` swapped frame trace at the unit (general valence).** General-valence
+analogue of `fixedFrameSwapTraceUnit` (its `s = 2` instance). With `W := smoothExtensionTangent
+x w` and `B_i := smoothOrthoFrame g x i`, the unit-`(0, 0)`-evaluation of the fixed-frame trace
+`∑ᵢ ∇_W ∇_{Bᵢ}∇_{Bᵢ} T₀`. -/
+noncomputable def fixedFrameSwapTraceUnit_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    Tensor0SSpace s I x :=
+  (∑ i : Fin (Module.finrank ℝ E),
+      (tensorCov (I := I) g 0 s).toFun
+        (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+          (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+            (fun y : M => T₀.toSection y))) x
+        (smoothExtensionTangent (I := I) x w x))
+    (unitZeroSec (I := I) (M := M) x)
+
+/-- **The moving-frame residual at the unit (general valence).** General-valence analogue of
+`covGradRoughLapMovingFrameResidual` (its `s = 2` instance). With `W := smoothExtensionTangent
+x w`, `B_i := smoothOrthoFrame g x i`, and `Δ_∇ T₀ = rawTensorConnLapSmooth g 0 s T₀` the
+moving-frame rough Laplacian, the `(0, s)`-tensor difference of the moving-frame right-hand-side
+reading and the fixed-frame swapped trace:
+```
+covGradRoughLapMovingFrameResidual_gen g s T₀ x w
+  := (∇_w Δ_∇T₀)(x)(unit) − (∑ᵢ ∇_W ∇_{Bᵢ}∇_{Bᵢ} T₀)(x)(unit).
+``` -/
+noncomputable def covGradRoughLapMovingFrameResidual_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    Tensor0SSpace s I x :=
+  (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+      tensorCovDerivAt (I := I) (M := M) g 0 s
+        (rawTensorConnLapSmooth (I := I) g 0 s T₀) x w)
+      (unitZeroSec (I := I) (M := M) x) -
+    fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w
+
+/-- Defining identity for `covGradRoughLapMovingFrameResidual_gen`. -/
+lemma covGradRoughLapMovingFrameResidual_gen_def
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w =
+      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+          tensorCovDerivAt (I := I) (M := M) g 0 s
+            (rawTensorConnLapSmooth (I := I) g 0 s T₀) x w)
+          (unitZeroSec (I := I) (M := M) x) -
+        fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w := rfl
+
+/-- **Right-hand-side curried-unit decomposition (general valence).** General-valence analogue
+of `rhs_curry_eq_swap_add_residual` (its `s = 2` instance): the moving-frame right-hand-side
+reading `(∇_w Δ_∇T₀)(x)(unit)` equals the fixed-frame swapped trace plus the moving-frame
+residual. Pure algebra from `covGradRoughLapMovingFrameResidual_gen_def` and
+`sub_add_cancel`. -/
+theorem rhs_curry_eq_swap_add_residual_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+        tensorCovDerivAt (I := I) (M := M) g 0 s
+          (rawTensorConnLapSmooth (I := I) g 0 s T₀) x w)
+        (unitZeroSec (I := I) (M := M) x) =
+      fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w +
+        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w := by
+  rw [covGradRoughLapMovingFrameResidual_gen_def]
+  rw [add_comm]
+  rw [sub_add_cancel]
+
+/-- **Slot-`0` curry of the gradient of the rough Laplacian, via the residual (general
+valence).** General-valence analogue of `covGrad_rawConnLap_curry_eq_swap_add_residual` (its
+`s = 2` instance): the slot-`0` curry of the unit-`(0, 0)`-evaluation of `∇(Δ_∇ T₀) = covGrad g
+0 s (rawTensorConnLapSmooth g 0 s T₀)`, read along `w`, equals the fixed-frame swapped trace
+plus the moving-frame residual. This is `covGrad_rawConnLap_unit_eval_curry_gen` followed by
+`rhs_curry_eq_swap_add_residual_gen`. -/
+theorem covGrad_rawConnLap_curry_eq_swap_add_residual_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    tensor0S_curry (I := I) (M := M) s x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          (covGrad (I := I) (M := M) g 0 s
+            (rawTensorConnLapSmooth g 0 s T₀)).toSection x)
+          (unitZeroSec (I := I) (M := M) x)) w =
+      fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w +
+        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w := by
+  rw [covGrad_rawConnLap_unit_eval_curry_gen (I := I) (M := M) g s T₀ x w]
+  exact rhs_curry_eq_swap_add_residual_gen (I := I) (M := M) g s T₀ x w
+
+/-- **Frame-trace swap, unit-read (general valence).** General-valence analogue of
+`frame_trace_third_eq_swap_unit` (its `s = 2` instance). For `W := smoothExtensionTangent x w`,
+the unit-`(0, 0)`-evaluation of the rank-`(0, s)` frame-trace third covariant derivative
+`∑ᵢ ∇_{Bᵢ}∇_{Bᵢ}(∇_W T₀)` equals the unit-evaluation of the swapped frame trace
+`∑ᵢ ∇_W ∇_{Bᵢ}∇_{Bᵢ} T₀` plus the unit-read curvature defect `Tensor3rdCurv g 0 s W T₀ x`.
+This is the already-general `(r, s)` `frame_trace_thirdCovDeriv_swap` at rank `(0, s)`,
+evaluated at the unit `(0, 0)`-tensor. -/
+lemma frame_trace_third_eq_swap_unit_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    (∑ i : Fin (Module.finrank ℝ E),
+        (tensorCov (I := I) g 0 s).toFun
+          (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+            (covApply (tensorCov (I := I) g 0 s)
+              (smoothExtensionTangent (I := I) x w) (fun y : M => T₀.toSection y))) x
+          (smoothOrthoFrame (I := I) g x i x))
+        (unitZeroSec (I := I) (M := M) x) =
+      (∑ i : Fin (Module.finrank ℝ E),
+          (tensorCov (I := I) g 0 s).toFun
+            (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+              (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+                (fun y : M => T₀.toSection y))) x
+            (smoothExtensionTangent (I := I) x w x))
+          (unitZeroSec (I := I) (M := M) x) +
+        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+          Tensor3rdCurv (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
+            (fun y : M => T₀.toSection y) x)
+          (unitZeroSec (I := I) (M := M) x) := by
+  classical
+  have hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothExtensionTangent (I := I) x w)) :=
+    smoothExtensionTangent_contMDiff x w
+  have hT₀ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
+      (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
+        (E := fun z : M => TensorRSSpace 0 s I z) b (T₀.toSection b)) :=
+    T₀.toSection.contMDiff
+  have hswap := frame_trace_thirdCovDeriv_swap (I := I) g 0 s
+    (W := smoothExtensionTangent (I := I) x w) (T := fun y : M => T₀.toSection y) (x := x)
+    hW hT₀
+  have happ := congrArg
+    (fun (φ : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) =>
+      φ (unitZeroSec (I := I) (M := M) x)) hswap
+  simpa only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.add_apply] using happ
+
+/-- **Frame-trace of `∇_W T₀`, via the gradient-of-Laplacian reading (general valence).**
+General-valence analogue of `frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv`
+(its `s = 2` instance). With `W := smoothExtensionTangent x w` and `B_i := smoothOrthoFrame g x
+i`, the unit-`(0, 0)`-evaluation of the fixed-frame trace `∑ᵢ ∇_{Bᵢ}∇_{Bᵢ}(∇_W T₀)` equals the
+slot-`0` curry of the gradient-of-Laplacian reading minus the moving-frame residual, plus
+`Tensor3rdCurv`. This is `frame_trace_third_eq_swap_unit_gen` with the fixed-frame swapped trace
+rewritten by `covGrad_rawConnLap_curry_eq_swap_add_residual_gen`. -/
+theorem frame_trace_thirdW_eq_covGrad_rawConnLap_sub_residual_add_curv_gen
+    (g : SmoothRiemannianMetric I M) (s : ℕ) (T₀ : SmoothCcTensor g 0 s)
+    (x : M) (w : TangentSpace I x) :
+    (∑ i : Fin (Module.finrank ℝ E),
+        (tensorCov (I := I) g 0 s).toFun
+          (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+            (covApply (tensorCov (I := I) g 0 s)
+              (smoothExtensionTangent (I := I) x w) (fun y : M => T₀.toSection y))) x
+          (smoothOrthoFrame (I := I) g x i x))
+        (unitZeroSec (I := I) (M := M) x) =
+      tensor0S_curry (I := I) (M := M) s x
+          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+            (covGrad (I := I) (M := M) g 0 s
+              (rawTensorConnLapSmooth g 0 s T₀)).toSection x)
+            (unitZeroSec (I := I) (M := M) x)) w -
+        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w +
+        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+          Tensor3rdCurv (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
+            (fun y : M => T₀.toSection y) x)
+          (unitZeroSec (I := I) (M := M) x) := by
+  rw [frame_trace_third_eq_swap_unit_gen (I := I) (M := M) g s T₀ x w]
+  rw [show
+      (∑ i : Fin (Module.finrank ℝ E),
+          (tensorCov (I := I) g 0 s).toFun
+            (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+              (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
+                (fun y : M => T₀.toSection y))) x
+            (smoothExtensionTangent (I := I) x w x))
+          (unitZeroSec (I := I) (M := M) x) =
+        fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w from rfl]
+  rw [show fixedFrameSwapTraceUnit_gen (I := I) (M := M) g s T₀ x w =
+        tensor0S_curry (I := I) (M := M) s x
+            ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+              (covGrad (I := I) (M := M) g 0 s
+                (rawTensorConnLapSmooth g 0 s T₀)).toSection x)
+              (unitZeroSec (I := I) (M := M) x)) w -
+          covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s T₀ x w from by
+      rw [covGrad_rawConnLap_curry_eq_swap_add_residual_gen (I := I) (M := M) g s T₀ x w]
+      rw [add_sub_cancel_right]]
+
 end Connection
 end Integral
 end DifferentialGeometry

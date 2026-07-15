@@ -5,6 +5,7 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Normed.Operator.NormedSpace
 
 /-!
 # Pullback of a Riemannian metric along a diffeomorphism
@@ -52,6 +53,7 @@ noncomputable def Diffeomorph.pullbackInner
     ContinuousLinearMap.precomp ℝ (mfderiv I I Φ x)
   precompOp.comp step1
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem Diffeomorph.pullbackInner_symm
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v w : TangentSpace I x) :
@@ -61,6 +63,7 @@ theorem Diffeomorph.pullbackInner_symm
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.precomp_apply]
   exact g.symm (Φ x) _ _
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem Diffeomorph.pullbackInner_pos
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v : TangentSpace I x) (hv : v ≠ 0) :
@@ -80,6 +83,7 @@ theorem Diffeomorph.pullbackInner_pos
     rw [← h2]; exact fun h => h1 (by simpa [hcoe] using h)
   exact g.pos (Φ x) _ hvImg
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- The fiberwise inner product `g.inner` of the original metric, pulled back along the
 diffeomorphism `Φ` (i.e. evaluated at `Φ x`), is a smooth section of the bundle of
 continuous bilinear forms on `E`. -/
@@ -89,6 +93,7 @@ theorem inner_comp_smooth_along_diffeo
       ((fun b ↦ TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) b (g.inner b)) ∘ (Φ : M → M)) :=
   g.contMDiff.comp Φ.contMDiff
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem pullbackInner_eval
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (v w : TangentSpace I x) :
@@ -97,6 +102,7 @@ private theorem pullbackInner_eval
   unfold Diffeomorph.pullbackInner
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.precomp_apply]
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private theorem mfderiv_eq_mfderivCLE_apply
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) (v : TangentSpace I x) :
     Diffeomorph.mfderivToContinuousLinearEquiv Φ infty_ne_zero x v
@@ -104,6 +110,7 @@ private theorem mfderiv_eq_mfderivCLE_apply
   have h := Diffeomorph.mfderivToContinuousLinearEquiv_coe (Φ := Φ) (x := x) infty_ne_zero
   exact congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I (Φ x) => f v) h
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- For each base point `x`, the set `{v ∈ T_x M | pullbackInner g Φ x v v < 1}`
 is von-Neumann-bounded. -/
 theorem Diffeomorph.pullbackInner_isVonNBounded
@@ -141,6 +148,7 @@ theorem Diffeomorph.pullbackInner_isVonNBounded
   rw [hseteq]
   exact himg
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 /-- For a smooth diffeomorphism `Φ` and a smooth tangent section `Y`, the section
 `x ↦ ⟨Φ x, mfderiv I I Φ x (Y x)⟩` of the tangent bundle (with base map `Φ`) is smooth.
 Obtained from `tangentMap I I Φ` smoothness composed with the smooth tangent section `Y`. -/
@@ -270,6 +278,7 @@ theorem Diffeomorph.pullbackInner_contMDiff
         ((Diffeomorph.pullbackInner g Φ x : E →L[ℝ] E →L[ℝ] ℝ))) :=
   (Diffeomorph.pullbackMetric g Φ).contMDiff
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 /-- A diffeomorphism is smooth as a map `M → M`. This is the smoothness witness
 carried by the `Diffeomorph` structure. -/
 theorem Diffeomorph.mfderiv_contMDiff
@@ -277,6 +286,7 @@ theorem Diffeomorph.mfderiv_contMDiff
     ContMDiff I I ∞ (Φ : M → M) :=
   Φ.contMDiff
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 /-- The bilinear pullback `(B, L) ↦ B.bilinearComp L L` is smooth in `(B, L)` on the
 model normed space. The operation is a polynomial composition of (i) precomposition
 `(B, L) ↦ B.comp L`, (ii) `ContinuousLinearMap.flip` (a linear isometry equivalence,
@@ -298,10 +308,23 @@ theorem bilinear_pullback_bundle_smooth
       𝓘(ℝ, E →L[ℝ] E) ∞
       (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => p.2) :=
     contMDiff_snd
-  have hflipDiff : ContDiff ℝ ∞
-      ((ContinuousLinearMap.flipₗᵢ ℝ E E ℝ) :
+  have hflipDiff : ContDiff ℝ ∞ (ContinuousLinearMap.flip :
+      (E →L[ℝ] E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ)) := by
+    let A := E →L[ℝ] E →L[ℝ] ℝ
+    letI : SeminormedAddCommGroup A := NormedAddCommGroup.toSeminormedAddCommGroup
+    letI : NormedSpace ℝ A := inferInstance
+    let flipIso : A ≃ₗᵢ[ℝ] A := {
+      toFun := ContinuousLinearMap.flip
+      invFun := ContinuousLinearMap.flip
+      map_add' := ContinuousLinearMap.flip_add
+      map_smul' := ContinuousLinearMap.flip_smul
+      left_inv := ContinuousLinearMap.flip_flip
+      right_inv := ContinuousLinearMap.flip_flip
+      norm_map' := ContinuousLinearMap.opNorm_flip }
+    have h : ContDiff ℝ ∞ (flipIso :
         (E →L[ℝ] E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ)) :=
-    (ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).contDiff
+      LinearIsometryEquiv.contDiff (𝕜 := ℝ) (n := ∞) flipIso
+    simpa [flipIso] using h
   have h1 : ContMDiff
       (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
       𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
@@ -312,7 +335,7 @@ theorem bilinear_pullback_bundle_smooth
       𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
       (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) => (p.1.comp p.2).flip) := by
     have hcomp := hflipDiff.comp_contMDiff h1
-    simpa [ContinuousLinearMap.coe_flipₗᵢ, Function.comp_def] using hcomp
+    simpa [ContinuousLinearMap.flip_apply, Function.comp_def] using hcomp
   have h3 : ContMDiff
       (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
       𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
@@ -324,7 +347,7 @@ theorem bilinear_pullback_bundle_smooth
       (fun p : (E →L[ℝ] E →L[ℝ] ℝ) × (E →L[ℝ] E) =>
         ((p.1.comp p.2).flip.comp p.2).flip) := by
     have hcomp := hflipDiff.comp_contMDiff h3
-    simpa [ContinuousLinearMap.coe_flipₗᵢ, Function.comp_def] using hcomp
+    simpa [ContinuousLinearMap.flip_apply, Function.comp_def] using hcomp
   exact h4
 
 end DifferentialGeometry.PDE.RicciFlow.Pullback

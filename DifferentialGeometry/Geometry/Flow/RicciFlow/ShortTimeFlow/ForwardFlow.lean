@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonDeTurckPullbackFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationFormChainRule
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
@@ -6,9 +7,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Tensor
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.CorrectedChartAnchor
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.FieldTimeExtension
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
@@ -17,7 +17,13 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.
 # Forward (one-sided) flow of the DeTurck vector field
 
 Produces the forward integral flow of the time-dependent DeTurck vector field on `[0, T)` from a
-joint-`C¹` field hypothesis, together with the time-zero continuity extension used downstream.
+closed-slab joint-`C∞` field hypothesis (`hsmooth0`), together with the time-zero continuity
+extensions used downstream.  The field is smoothly extended across `t = 0` by `seeley_time_extend`
+and the closed-manifold full-interval flow engine is run on the extension, so the from-`0` corner
+machinery is no longer needed: the flow is jointly `C∞` on an *open* slab `Ioo lo hi` containing
+`[0, T]` (`lo < 0 < T < hi`), and every endpoint conjunct — including the up-to-`0` joint orbit and
+joint chart-basis pushforward bundle-section continuities — is read off this open-slab joint
+smoothness or the bundled tangent map of the joint flow.
 -/
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -33,6 +39,7 @@ open DifferentialGeometry.PDE.RicciFlow.Pullback
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
 open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -82,7 +89,6 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
         (⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩ : TangentBundle I M))
       (Set.Ici (0 : ℝ)) 0 := by
   classical
-  -- Source chart centred at `x`, target chart centred at `y₀ := Φ 0 x` (both fixed).
   set y₀ : M := Φ 0 x with hy₀
   set c : PartialEquiv M E := extChartAt I y₀ with hc
   have hmem0 : ((0 : ℝ), x) ∈ Set.Ioo lo hi ×ˢ (Set.univ : Set M) :=
@@ -91,32 +97,22 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
   have hf : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2) (0, x) :=
     (hΦsm _ hmem0).contMDiffAt (hopen.mem_nhds hmem0)
   have hg : ContMDiffAt 𝓘(ℝ, ℝ) I 0 (fun _ : ℝ => x) 0 := contMDiffAt_const
-  -- The chart-conjugated spatial derivative is continuous at `0` (`ContMDiffAt.mfderiv`, degree 0).
   have hP : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E →L[ℝ] E) 0
       (inTangentCoordinates I I (fun _ : ℝ => x) (fun s : ℝ => Φ s x)
         (fun s : ℝ => mfderiv I I (fun y : M => Φ s y) x) 0) 0 :=
     hf.mfderiv (fun s y => Φ s y) (fun _ => x) hg (by norm_num)
-  -- … hence its application to the fixed vector `v` is continuous at `0`.
   set P : ℝ → E := fun s => inTangentCoordinates I I (fun _ : ℝ => x) (fun s : ℝ => Φ s x)
       (fun s : ℝ => mfderiv I I (fun y : M => Φ s y) x) 0 s v with hP_def
   have hPcont : ContinuousAt P 0 := hP.continuousAt.clm_apply continuousAt_const
-  -- The orbit is continuous at `0` (the joint flow composed with `s ↦ (s, x)`).
   have horbit_cont : ContinuousAt (fun s : ℝ => Φ s x) 0 := by
     have hpair : ContMDiffAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) ∞ (fun s : ℝ => (s, x)) 0 :=
       contMDiffAt_id.prodMk contMDiffAt_const
     exact (hf.comp 0 hpair).continuousAt
-  -- Near `0`, the orbit stays in the target chart source.
   have hsrc_nhds : (fun s : ℝ => Φ s x) ⁻¹' (chartAt H y₀).source ∈ nhds (0 : ℝ) :=
     horbit_cont.preimage_mem_nhds ((chartAt H y₀).open_source.mem_nhds (mem_chart_source H y₀))
-  -- The bundle-valued target datum `⟨Φ s x, mfderiv I I (Φ s) x v⟩` is, on the chart
-  -- neighbourhood of `0`, the bundled tangent map of the fixed chart-inverse `c.symm` applied to
-  -- the continuous bundle path `s ↦ ⟨c (Φ s x), P s⟩` — the base by the chart round-trip
-  -- `c.symm (c (Φ s x)) = Φ s x`, the fibre by `inTangentCoordinates_eq_mfderiv_comp` cancelling
-  -- the `c`-derivative against the `c.symm`-derivative.
   have hctgt_open : IsOpen c.target := isOpen_extChartAt_target (I := I) y₀
   have hc0_tgt : c (Φ 0 x) ∈ c.target := by
     rw [show Φ 0 x = y₀ from rfl]; exact mem_extChartAt_target (I := I) y₀
-  -- base of the bundle path is continuous at `0` and stays in `c.target` near `0`.
   have hbase_cont : ContinuousAt (fun s : ℝ => c (Φ s x)) 0 := by
     have hcont_c : ContinuousAt c (Φ 0 x) := by
       rw [show Φ 0 x = y₀ from rfl]
@@ -124,18 +120,15 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
     exact ContinuousAt.comp (g := fun y : M => c y) (f := fun s : ℝ => Φ s x) hcont_c horbit_cont
   have hbase_nhds : (fun s : ℝ => c (Φ s x)) ⁻¹' c.target ∈ nhds (0 : ℝ) :=
     hbase_cont.preimage_mem_nhds (hctgt_open.mem_nhds hc0_tgt)
-  -- Per-point fibre identity (bare `E`): the tangent-map fibre equals the bare moving Jacobian.
   have hfib : ∀ s : ℝ, Φ s x ∈ (chartAt H y₀).source →
       mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x)) (P s)
         = mfderiv I I (fun y : M => Φ s y) x v := by
     intro s hs
     have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
     have hΦsrc : Φ s x ∈ (chartAt H y₀).source := hs
-    -- `inTangentCoordinates` written as a composition of chart derivatives.
     have hcomp := inTangentCoordinates_eq_mfderiv_comp (I := I) (I' := I)
       (f := fun _ : ℝ => x) (g := fun s : ℝ => Φ s x)
       (ϕ := fun s : ℝ => mfderiv I I (fun y : M => Φ s y) x) (x₀ := 0) (x := s) hxsrc hΦsrc
-    -- the source chart-inverse derivative is the identity (chart centred at the basepoint)
     have hS₀ : mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm (Set.range I) (extChartAt I x x)
         = ContinuousLinearMap.id ℝ (TangentSpace I x) :=
       mfderivWithin_range_extChartAt_symm (I := I) (x := x)
@@ -144,7 +137,6 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
       simp only [hP_def, hS₀] at hap ⊢
       rw [hap]
       rfl
-    -- replace `c.target` by `range I` (open, so the within-derivatives agree near `Φ s x`).
     have hΦtgt : c (Φ s x) ∈ c.target := by
       rw [hc]; exact (extChartAt I y₀).map_source (by rw [extChartAt_source]; exact hΦsrc)
     have heqd : mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x))
@@ -153,14 +145,12 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
         mfderivWithin_of_mem_nhds (Filter.mem_of_superset (hctgt_open.mem_nhds hΦtgt)
           (extChartAt_target_subset_range y₀))]
     rw [heqd, hPval]
-    -- cancel `c.symm`-derivative against `c`-derivative (chart round-trip at `Φ s x`)
     have hΦsrc' : Φ s x ∈ (extChartAt I y₀).source := by rw [extChartAt_source]; exact hΦsrc
     have hcancel := mfderivWithin_extChartAt_symm_comp_mfderiv_extChartAt' (I := I) (x := y₀)
       (y := Φ s x) hΦsrc'
     have := congrArg (fun L : TangentSpace I (Φ s x) →L[ℝ] TangentSpace I (Φ s x) =>
         L (mfderiv I I (fun y : M => Φ s y) x v)) hcancel
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply, hc] using this
-  -- Eventually-equal bundle datum: `⟨Φ s x, mfderiv …⟩ = tangentMapWithin c.symm c.target ⟨c (Φ s x), P s⟩`.
   have hrecon : (fun s : ℝ =>
         (⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩ : TangentBundle I M))
       =ᶠ[nhds (0 : ℝ)]
@@ -169,36 +159,27 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
     filter_upwards [hsrc_nhds] with s hs
     have hbase : c.symm (c (Φ s x)) = Φ s x := by
       rw [hc]; exact (extChartAt I y₀).left_inv (by rw [extChartAt_source]; exact hs)
-    -- `tangentMapWithin c.symm c.target ⟨c (Φ s x), P s⟩ = ⟨c.symm (c (Φ s x)), mfderivWithin … (P s)⟩`.
     change (⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩ : TangentBundle I M)
       = ⟨c.symm (c (Φ s x)), mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x)) (P s)⟩
     refine Bundle.TotalSpace.ext (x := ⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩)
       (y := ⟨c.symm (c (Φ s x)), mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x)) (P s)⟩)
       hbase.symm ?_
-    -- both fibres are the same element of `E` (`TangentSpace I _` is the constant `E`); the only
-    -- residual is the chart-inverse-vs-bare Jacobian identity `hfib`.
     exact heq_of_eq (hfib s hs).symm
-  -- Continuity of the RHS: the bundled tangent map of the fixed map `c.symm` is continuous on
-  -- `c.target` (`ContMDiffOn.continuousOn_tangentMapWithin`), precomposed with the continuous
-  -- bundle-valued path `s ↦ ⟨c (Φ s x), P s⟩` (whose base stays in `c.target` near `0`).
   have hRHScont : ContinuousAt
       (fun s : ℝ => tangentMapWithin 𝓘(ℝ, E) I c.symm c.target
         (TotalSpace.mk' E (c (Φ s x)) (P s))) 0 := by
-    -- continuity of the bundled tangent map of the fixed map `c.symm` on the open `c.target`
     have hcsm : ContMDiffOn 𝓘(ℝ, E) I 1 c.symm c.target :=
       (contMDiffOn_extChartAt_symm (I := I) (n := ∞) y₀).of_le (by
         exact le_of_lt (by exact_mod_cast ENat.coe_lt_top 1))
     have htm : ContinuousOn (tangentMapWithin 𝓘(ℝ, E) I c.symm c.target)
         (Bundle.TotalSpace.proj ⁻¹' c.target) :=
       hcsm.continuousOn_tangentMapWithin le_rfl hctgt_open.uniqueMDiffOn
-    -- the bundle-valued path `s ↦ ⟨c (Φ s x), P s⟩`, continuous via the model-space homeomorphism
     have hpath : ContinuousAt
         (fun s : ℝ => (TotalSpace.mk' E (c (Φ s x)) (P s) : TangentBundle 𝓘(ℝ, E) E)) 0 := by
       have hpair : ContinuousAt (fun s : ℝ => ((c (Φ s x), P s) : ModelProd E E)) 0 :=
         hbase_cont.prodMk hPcont
       exact (tangentBundleModelSpaceHomeomorph 𝓘(ℝ, E) (H := E)).symm.continuous.continuousAt.comp
         hpair
-    -- the path lands in `π ⁻¹' c.target` near `0`, so `htm` restricts to a `ContinuousAt`.
     have htgt_nhds : Bundle.TotalSpace.proj ⁻¹' c.target ∈
         nhds (TotalSpace.mk' E (c (Φ 0 x)) (P 0) : TangentBundle 𝓘(ℝ, E) E) :=
       (hctgt_open.preimage (FiberBundle.continuous_proj E (TangentSpace 𝓘(ℝ, E)))).mem_nhds
@@ -211,32 +192,111 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
       htm_at hpath
   exact (hRHScont.congr hrecon.symm).continuousWithinAt
 
-/-- A time-dependent field `X_DT` that is jointly `C∞` up to AND across `t = 0` on the
-CLOSED slab `Icc 0 T ×ˢ univ` (`hsmooth0`) admits a single forward flow `Φ : ℝ → M → M`
-with `Φ 0 = id`, per-time diffeomorphisms on `(0,T)`, the bare geometric velocity
-`∂ₛ Φ s x = X_DT t (Φ t x)` on `(0,T)`, `t = 0` right-continuity of the orbit `s ↦ Φ s x`, and
-`t = 0` right-continuity of the bundle-valued moving spatial Jacobian
-`s ↦ ⟨Φ s x, mfderiv I I (Φ s) x v⟩`.  The single closed-slab smoothness `hsmooth0` subsumes the
-former interior-`C∞` + `C⁰`-to-`0` + `C¹`-chart-gradient-to-`0` trio.
+set_option linter.unusedSectionVars false in
+/-- **Joint smoothness of the chart-basis pushforward bundle-section of a jointly-`C∞` flow.**
 
-The whole theorem is proven sorry-free.  The flow `Φ` (and its reverse `Ψ`) is CONSTRUCTED by
-smoothly extending the field across `t = 0` (`seeley_time_extend`) and running the closed-manifold
-full-interval flow-with-reverse engine (`global_flow_full_interval_with_reverse_on_closed_manifold`):
+For a bare flow `Φ` that is jointly `C∞` on an open slab `Ioo lo hi ×ˢ univ`, the chart-`x₀`-basis
+pushforward bundle-section `(t, y) ↦ ⟨Φ t y, mfderiv (Φ t) y (chartBasisVecFiber x₀ i y)⟩` is
+jointly `C∞` (degree `m`) at every interior point of `Ioo lo hi ×ˢ (trivAt x₀).baseSet`.
 
-* `Φ 0 = id`, the bare geometric velocity on `(0,T)`, and the orbit right-continuity at `0` are
-  read off from the engine's output;
-* the per-time diffeomorphism witnesses on `(0,T)` are assembled by
-  `time_dependent_vf_diffeomorph_slice_of_smooth_bijective` from the per-slice smoothness of `Φ t`
-  (joint smoothness restricted to a slice) and `Ψ t` together with the two engine mutual-inverse
-  identities `Ψ t (Φ t x) = x`, `Φ t (Ψ t x) = x` (valid on `Ico 0 hi ⊇ Ioo 0 T`);
-* the bundle-valued moving-Jacobian right-continuity is
-  `flow_mfderiv_continuousWithinAt_zero_of_jointSmooth` (the bundled tangent map of the joint flow).
+The differential of the (jointly-`C∞`) family `(q, y) ↦ Φ q.1 y` in the `y`-slot is jointly
+`ContMDiffWithinAt` of degree `m` by `ContMDiffWithinAt.mfderivWithin`; pairing it with the smooth
+chart-basis bundle-section `chartBasisVec x₀ i` (`chartBasisVec_contMDiffOn`) through
+`ContMDiffWithinAt.clm_apply_of_inCoordinates` gives the bundle-section smoothness, with the
+`inCoordinates` reading identified with the raw `inTangentCoordinates`/`mfderivWithin` differential
+applied to the seed vector.  (This is the bare-`Φ`, open-slab analogue of the conjugating-flow
+interior pushforward smoothness used downstream.) -/
+private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
+    (Φ : ℝ → M → M) {lo hi : ℝ}
+    (hΦsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
+      (Set.Ioo lo hi ×ˢ (Set.univ : Set M)))
+    (x₀ : M) (i : Fin (Module.finrank ℝ E)) (m : ℕ)
+    (t₀ : ℝ) (ht₀ : t₀ ∈ Set.Ioo lo hi) (b₀ : M)
+    (hb₀ : b₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
+    ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (m : ℕ)
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' E (Φ p.1 p.2)
+          (mfderiv I I (fun y : M => Φ p.1 y) p.2
+            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+          : TangentBundle I M))
+      (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
+  classical
+  set S : Set (ℝ × M) := Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
+    with hS
+  have hS_sub : S ⊆ Set.Ioo lo hi ×ˢ (Set.univ : Set M) := by
+    rw [hS]; exact Set.prod_mono_right (Set.subset_univ _)
+  have ht₀b₀ : (t₀, b₀) ∈ S := ⟨ht₀, hb₀⟩
+  have hm1top : (((m : ℕ) + 1 : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) :=
+    WithTop.coe_le_coe.mpr (le_top : (((m : ℕ) + 1 : ℕ) : ℕ∞) ≤ ⊤)
+  have hmtop : ((m : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) :=
+    WithTop.coe_le_coe.mpr (le_top : ((m : ℕ) : ℕ∞) ≤ ⊤)
+  set f : (ℝ × M) → M → M := fun q y => Φ q.1 y with hf_def
+  have hf_uncurry_eq : Function.uncurry f
+      = (fun r : (ℝ × M) × M => Φ r.1.1 r.2) := rfl
+  have hf : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod I) I ((m : ℕ) + 1 : ℕ)
+      (Function.uncurry f) (S ×ˢ (Set.univ : Set M)) ((t₀, b₀), b₀) := by
+    rw [hf_uncurry_eq]
+    have hjointN : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ((m : ℕ) + 1 : ℕ)
+        (fun q : ℝ × M => Φ q.1 q.2) (Set.Ioo lo hi ×ˢ Set.univ) :=
+      hΦsm.of_le hm1top
+    have hpre : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod I) (𝓘(ℝ, ℝ).prod I) ((m : ℕ) + 1 : ℕ)
+        (fun r : (ℝ × M) × M => ((r.1.1, r.2) : ℝ × M)) (S ×ˢ (Set.univ : Set M)) ((t₀, b₀), b₀) :=
+      (contMDiffWithinAt_fst.fst).prodMk contMDiffWithinAt_snd
+    have hmaps : Set.MapsTo (fun r : (ℝ × M) × M => ((r.1.1, r.2) : ℝ × M))
+        (S ×ˢ (Set.univ : Set M)) (Set.Ioo lo hi ×ˢ (Set.univ : Set M)) := by
+      rintro ⟨⟨t, b⟩, y⟩ ⟨hq, -⟩
+      exact ⟨(hS_sub hq).1, Set.mem_univ _⟩
+    have hmem' : ((fun r : (ℝ × M) × M => ((r.1.1, r.2) : ℝ × M)) ((t₀, b₀), b₀))
+        ∈ Set.Ioo lo hi ×ˢ (Set.univ : Set M) := ⟨ht₀, Set.mem_univ _⟩
+    exact (hjointN _ hmem').comp ((t₀, b₀), b₀) hpre hmaps
+  have hg : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
+      (fun q : ℝ × M => q.2) S (t₀, b₀) := contMDiffWithinAt_snd
+  have hu : Set.MapsTo (fun q : ℝ × M => q.2) S (Set.univ : Set M) := fun _ _ => Set.mem_univ _
+  have hϕ := ContMDiffWithinAt.mfderivWithin
+    (I := I) (I' := I) (n := ((m : ℕ) + 1 : ℕ)) (m := (m : ℕ))
+    (f := f) (g := fun q : ℝ × M => q.2) (t := S) (u := (Set.univ : Set M))
+    (x₀ := (t₀, b₀))
+    hf hg ht₀b₀ hu le_rfl uniqueMDiffOn_univ
+  have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (m : ℕ)
+      (fun q : ℝ × M => (Integral.Measure.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
+      S (t₀, b₀) := by
+    have hcb : ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) (m : ℕ)
+        (Integral.Measure.chartBasisVec (I := I) x₀ i)
+        (trivializationAt E (TangentSpace I) x₀).baseSet b₀ :=
+      (Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
+    have hsnd : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
+        (fun q : ℝ × M => q.2) S (t₀, b₀) := contMDiffWithinAt_snd
+    have hmaps2 : Set.MapsTo (fun q : ℝ × M => q.2) S
+        (trivializationAt E (TangentSpace I) x₀).baseSet := fun q hq => hq.2
+    exact hcb.comp (t₀, b₀) hsnd hmaps2
+  have hb₂ : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
+      (fun q : ℝ × M => Φ q.1 q.2) S (t₀, b₀) :=
+    ((hΦsm.of_le hmtop) _ (hS_sub ht₀b₀)).mono hS_sub
+  have hkey := ContMDiffWithinAt.clm_apply_of_inCoordinates
+    (IB₁ := I) (IB₂ := I) (F₁ := E) (F₂ := E)
+    (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+    (b₁ := fun q : ℝ × M => q.2) (b₂ := fun q : ℝ × M => Φ q.1 q.2)
+    (ϕ := fun q : ℝ × M => mfderiv I I (fun y : M => Φ q.1 y) q.2)
+    (v := fun q : ℝ × M => Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.2)
+    (m₀ := (t₀, b₀)) (s := S) (n := (m : ℕ))
+    ?_ hv hb₂
+  · convert hkey using 2
+  · have hrw : (fun q : ℝ × M =>
+          ContinuousLinearMap.inCoordinates E (TangentSpace I (M := M)) E (TangentSpace I (M := M))
+          ((fun q : ℝ × M => q.2) (t₀, b₀)) ((fun q : ℝ × M => q.2) q)
+          ((fun q : ℝ × M => Φ q.1 q.2) (t₀, b₀))
+          ((fun q : ℝ × M => Φ q.1 q.2) q)
+          ((fun q : ℝ × M => mfderiv I I (fun y : M => Φ q.1 y) q.2) q))
+        = (fun q : ℝ × M => inTangentCoordinates I I (fun q : ℝ × M => q.2)
+            (fun x => f x ((fun q : ℝ × M => q.2) x))
+            (fun x => mfderivWithin I I (f x) (Set.univ) ((fun q : ℝ × M => q.2) x))
+            (t₀, b₀) q) := by
+      funext q
+      rw [inTangentCoordinates, mfderivWithin_univ]
+    rw [hrw]
+    exact hϕ
 
-The bundle-valued Jacobian conjunct is the unique SOUND time-continuity statement at the moving
-basepoint `Φ s x`: the bare `E`-coercion of the fibre is discontinuous (the trivialization at
-`Φ s x` jumps across charts), so the basepoint and its Jacobian are tracked coherently inside
-`TangentBundle I M`. -/
-theorem forward_flow_existence_onesided_of_jointsmooth_field
+theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
     (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hsmooth0 : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
@@ -247,16 +307,27 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
         (Set.Ici (0 : ℝ)) t ((1 : ℝ →L[ℝ] ℝ).smulRight (X_DT t (Φ t x)))) ∧
       (∀ x : M, ContinuousWithinAt (fun s : ℝ => Φ s x) (Set.Ici (0 : ℝ)) 0) ∧
       (∀ (x : M) (v : TangentSpace I x),
-        ContinuousWithinAt (fun s : ℝ =>
-            (⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩ : TangentBundle I M))
-          (Set.Ici (0 : ℝ)) 0) := by
+        ContinuousWithinAt (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
+          (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M)) (Set.Ici (0 : ℝ)) 0) ∧
+      (ContinuousOn (fun p : ℝ × M => Φ p.1 p.2) (Set.Ico 0 T ×ˢ Set.univ)) ∧
+      (∀ (x₀ : M) (i : Fin (Module.finrank ℝ E)),
+        ContinuousOn (fun p : ℝ × M =>
+          (TotalSpace.mk' E (Φ p.1 p.2)
+            (mfderiv I I (fun y : M => Φ p.1 y) p.2
+              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+          (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
+      (∃ lo hi : ℝ, lo < 0 ∧ T < hi ∧
+        ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
+          (Set.Ioo lo hi ×ˢ Set.univ)) := by
   obtain ⟨Xext, hXsm, hXeq⟩ := seeley_time_extend X_DT T hT hsmooth0
   obtain ⟨Φ, Ψ, lo, hi, hlo, hhi, hΦ0, hΦsm, hΦvel, hΨsm, hΨΦ, hΦΨ⟩ :=
     global_flow_full_interval_with_reverse_on_closed_manifold Xext hXsm T hT
-  -- `Ioo 0 T ⊆ Ioo lo hi` (from `lo < 0` and `T < hi`).
+
   have hsub : Set.Ioo (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>
     ⟨lt_trans hlo ht.1, lt_trans ht.2 hhi⟩
-  -- The orbit velocity, with `Xext` rewritten to `X_DT` on the closed slab.
+  have hIcoSub : Set.Ico (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>
+    ⟨lt_of_lt_of_le hlo ht.1, lt_trans ht.2 hhi⟩
+
   have hvel_eq : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X_DT t (Φ t x))) := by
@@ -267,8 +338,7 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
     have hrw : Xext t (Φ t x) = X_DT t (Φ t x) := hXeq t htIcc (Φ t x)
     rw [hrw] at hat
     exact hat.hasMFDerivWithinAt
-  -- Each slice `Φ t` (for `t ∈ Ioo lo hi`) is smooth: the joint smoothness restricted to the
-  -- slice `{t} × M`.
+
   have hΦ_slice : ∀ t ∈ Set.Ioo lo hi, ContMDiff I I ∞ (Φ t) := by
     intro t ht x
     have hmem : ((t, x) : ℝ × M) ∈ Set.Ioo lo hi ×ˢ (Set.univ : Set M) :=
@@ -281,10 +351,8 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
         (Set.Ioo lo hi ×ˢ (Set.univ : Set M)) := fun y _ => ⟨ht, Set.mem_univ _⟩
     have hcomp := hxsm.comp x hpair.contMDiffWithinAt hmaps
     simpa using hcomp.contMDiffAt Filter.univ_mem
-  refine ⟨Φ, hΦ0, ?_, hvel_eq, ?_, ?_⟩
-  · -- C2: per-time diffeomorphisms on `(0,T)`, assembled from per-slice smoothness of `Φ t` / `Ψ t`
-    -- and the engine's two mutual-inverse identities (`t ∈ Ioo 0 T ⊆ Ico 0 hi`).
-    intro t ht
+  refine ⟨Φ, hΦ0, ?_, hvel_eq, ?_, ?_, ?_, ?_, ⟨lo, hi, hlo, hhi, hΦsm⟩⟩
+  · intro t ht
     have ht0 : 0 < t := ht.1
     have htHi : t < hi := lt_trans ht.2 hhi
     have htIco : t ∈ Set.Ico (0 : ℝ) hi := ⟨ht0.le, htHi⟩
@@ -305,8 +373,48 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
     have horbit : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun s : ℝ => Φ s x) 0 :=
       hjoint.comp 0 hpair
     exact horbit.continuousAt.continuousWithinAt
-  · -- C5: `t = 0` right-continuity of the moving spatial Jacobian.
+  · -- C5: `t = 0` right-continuity of the moving spatial Jacobian (bundle form).
     intro x v
     exact flow_mfderiv_continuousWithinAt_zero_of_jointSmooth Φ hlo (lt_trans hT hhi) hΦsm x v
+  · -- C6: joint orbit continuity up to `0` on `Ico 0 T ×ˢ univ`.
+    have hcontOn : ContinuousOn (fun q : ℝ × M => Φ q.1 q.2)
+        (Set.Ioo lo hi ×ˢ (Set.univ : Set M)) := hΦsm.continuousOn
+    exact hcontOn.mono (Set.prod_mono hIcoSub (subset_refl _))
+  · -- C7: joint chart-basis pushforward bundle-section continuity up to `0`.
+    intro x₀ i
+    have hsecOn : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (0 : ℕ)
+        (fun p : ℝ × M =>
+          (TotalSpace.mk' E (Φ p.1 p.2)
+            (mfderiv I I (fun y : M => Φ p.1 y) p.2
+              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+        (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+      intro p hp
+      exact flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth Φ hΦsm x₀ i 0 p.1 hp.1 p.2 hp.2
+    have hcontOn := hsecOn.continuousOn
+    exact hcontOn.mono (Set.prod_mono hIcoSub (subset_refl _))
+
+theorem forward_flow_existence_onesided_of_jointsmooth_field
+    (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
+    (hsmooth0 : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
+      (Set.Icc (0 : ℝ) T ×ˢ Set.univ)) :
+    ∃ Φ : ℝ → M → M, (∀ x : M, Φ 0 x = x) ∧
+      (∀ t ∈ Set.Ioo (0 : ℝ) T, ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x) ∧
+      (∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x)
+        (Set.Ici (0 : ℝ)) t ((1 : ℝ →L[ℝ] ℝ).smulRight (X_DT t (Φ t x)))) ∧
+      (∀ x : M, ContinuousWithinAt (fun s : ℝ => Φ s x) (Set.Ici (0 : ℝ)) 0) ∧
+      (∀ (x : M) (v : TangentSpace I x),
+        ContinuousWithinAt (fun s : ℝ => (TotalSpace.mk' E (Φ s x)
+          (mfderiv I I (fun y : M => Φ s y) x v) : TangentBundle I M)) (Set.Ici (0 : ℝ)) 0) ∧
+      (ContinuousOn (fun p : ℝ × M => Φ p.1 p.2) (Set.Ico 0 T ×ˢ Set.univ)) ∧
+      (∀ (x₀ : M) (i : Fin (Module.finrank ℝ E)),
+        ContinuousOn (fun p : ℝ × M =>
+          (TotalSpace.mk' E (Φ p.1 p.2)
+            (mfderiv I I (fun y : M => Φ p.1 y) p.2
+              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+          (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
+  obtain ⟨Φ, hΦ0, hdiffeo, hode, hcont0, hbundle0, horbit, hsection, -⟩ :=
+    forward_flow_existence_smooth_neighborhood_of_jointsmooth_field (I := I) X_DT T hT hsmooth0
+  exact ⟨Φ, hΦ0, hdiffeo, hode, hcont0, hbundle0, horbit, hsection⟩
 
 end DifferentialGeometry.PDE.RicciFlow

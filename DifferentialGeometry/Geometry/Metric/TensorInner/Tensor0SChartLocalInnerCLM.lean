@@ -147,9 +147,7 @@ noncomputable def curryLeftAtCLM (s : ℕ) (v : E) :
     ‖v‖
     (fun S => by
       change ‖S.curryLeft v‖ ≤ _
-      -- `S.curryLeft v : MLF s` has operator norm bounded by `‖S‖ * ‖v‖`.
-      -- Use `ContinuousMultilinearMap.opNorm_le_bound`: norm bound from a
-      -- pointwise inequality on tuples.
+
       refine (ContinuousMultilinearMap.opNorm_le_bound
         (M := ‖S‖ * ‖v‖) ?_ ?_).trans (by ring_nf; rfl)
       · exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
@@ -179,8 +177,7 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
       ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ :=
   let CLi := curryLeftAtCLM (E := E) s ((chartModelBasis E) i)
   let CLj := curryLeftAtCLM (E := E) s ((chartModelBasis E) j)
-  -- For fixed `g` (here `CLj`), `f ↦ f.comp g` is a CLM `(F →L G) →L (E →L G)`.
-  -- This is `(compL).flip g`.
+
   let postCompCLj :
       (Tensor0SModel s ℝ E →L[ℝ] ℝ) →L[ℝ]
         (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ) :=
@@ -215,7 +212,7 @@ private lemma chartTensorInnerPointwise_0sCLM_succ_eq
   refine ContinuousLinearMap.ext ?_
   intro T
   rw [chartTensorInnerPointwise_0sCLM_apply, chartTensorInnerPointwise_0s_succ]
-  -- RHS: evaluate the finite-sum CLM.
+
   rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl ?_
   intro i _

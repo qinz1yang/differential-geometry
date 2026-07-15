@@ -50,7 +50,14 @@ private theorem totalNabla0SRealizes_eval_point_vector_smooth_slots
     (I := I) hA Wsec V x
   simpa [hWsec] using h0
 
-private theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
+/-- **Sharp–covariant-derivative intertwiner for one-forms.**  For a
+metric-compatible connection and a smooth one-form field `alpha` with realized
+covariant derivative `nablaAlpha`, the covariant derivative of the raised vector
+field `y ↦ g♯ (alpha y)` is the sharp of the curried directional covariant
+derivative of `alpha`: `∇_X (g♯ α) = g♯ (∇_X α)` — the `∇`-parallelism of the
+metric raising on one-forms.  `hSharp` is the differentiability of the sharp field
+at `x` (e.g. from `metricSharp_contMDiff_total`). -/
+theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
     [T2Space M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

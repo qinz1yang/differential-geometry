@@ -24,7 +24,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 /-- Scalar curvature evolution in Section 6.2:
@@ -459,7 +459,6 @@ expansion predicate. -/
 theorem ricci_heat_mc
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     [DecidableEq Idx]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
@@ -487,9 +486,6 @@ theorem ricci_heat_mc
     (hRicSym : forall t x i j,
       ricciCompInFrame (I := I) S frame t x i j =
         ricciCompInFrame (I := I) S frame t x j i)
-    (hmc : forall t : Real,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
-        (S.base.connection t) (S.base.metric t))
     (hframe : forall x i, basis x i = frame i x)
     (hinv : forall t x,
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (S.base.metric t) x
@@ -531,7 +527,11 @@ theorem ricci_heat_mc
   let G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real :=
     { metric := S.base.metric
       connection := S.base.connection
-      metricCompatible := hmc }
+      metricCompatible := by
+        intro t
+        simpa [SolutionFamily.connection] using
+          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+            (I := I) (S.base.metric t)) }
   exact
     ricciNormHeatEquationOn_of_solution_canonical_laplacian
       (I := I) S Rm04 gInv frame roughLapRic ricciNormLap nablaRic

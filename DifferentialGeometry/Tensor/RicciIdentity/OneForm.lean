@@ -302,7 +302,11 @@ theorem one_form_third_comm_of_coord
     (fun A :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x =>
         A (vec3 X Y Z)) htensor
-  simpa using h_eval
+  change nabla2Alpha (vec3 X Y Z) -
+      swapFirstTwo0S (I := I) nabla2Alpha (vec3 X Y Z) =
+    -(Rm13 x alpha (vec3 X Y Z)) at h_eval
+  rw [swapFirstTwo0S_apply_vec3] at h_eval
+  exact h_eval
 
 /-- A component-indexed version of `one_form_third_comm_of_coord`. -/
 theorem one_form_third_comm_of_coord_ijk

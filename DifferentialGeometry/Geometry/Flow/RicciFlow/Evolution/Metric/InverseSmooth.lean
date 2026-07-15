@@ -105,13 +105,13 @@ noncomputable def matrixCLM
 
 theorem contMDiffOn_finset_sum
     {ι V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval} {u : Set M}
+    {n : WithTop ℕ∞}
+    {t : Set (Real × M)}
     {s : Finset ι} {f : ι -> Real × M -> V}
     (hf : forall a, a ∈ s ->
-      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) ⊤ (f a)
-        (D.carrier ×ˢ u)) :
-    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) ⊤
-      (fun p => s.sum (fun a => f a p)) (D.carrier ×ˢ u) := by
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) n (f a) t) :
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) n
+      (fun p => s.sum (fun a => f a p)) t := by
   classical
   revert hf
   refine Finset.induction_on s ?base ?step
@@ -119,13 +119,13 @@ theorem contMDiffOn_finset_sum
     simpa using
       (contMDiffOn_const
         (I := 𝓘(Real, Real).prod I) (I' := 𝓘(Real, V))
-        (n := ⊤) (s := D.carrier ×ˢ u) (c := 0))
+        (n := n) (s := t) (c := 0))
   · intro a s ha ih hf
-    have hfa : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) ⊤
-        (f a) (D.carrier ×ˢ u) := by
+    have hfa : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) n
+        (f a) t := by
       exact hf a (Finset.mem_insert_self a s)
-    have hsum : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) ⊤
-        (fun p => s.sum (fun x => f x p)) (D.carrier ×ˢ u) := by
+    have hsum : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) n
+        (fun p => s.sum (fun x => f x p)) t := by
       exact ih (fun x hx => hf x (Finset.mem_insert_of_mem hx))
     simpa [Finset.sum_insert ha] using hfa.add hsum
 
@@ -141,7 +141,7 @@ theorem frameGramCLM_spacetimeSmooth
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u) :
     ContMDiffOn (𝓘(Real, Real).prod I)
-      𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ⊤
+      𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ∞
       (fun p : Real × M => frameGramCLM (I := I) S frame p)
       (D.carrier ×ˢ u) := by
   classical
@@ -488,10 +488,10 @@ theorem coordFrameGramCLM_spacetimeSmooth
     ContMDiffOn (𝓘(Real, Real).prod I)
       𝓘(Real,
         (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) →L[Real]
-          (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ⊤
+          (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ∞
       (fun p : Real × M =>
         frameGramCLM (I := I) S (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p)
-      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+      (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   classical
   unfold frameGramCLM
   apply contMDiffOn_finset_sum
@@ -508,11 +508,11 @@ theorem coordFrameGInvCLM_spacetimeSmooth
     ContMDiffOn (𝓘(Real, Real).prod I)
       𝓘(Real,
         (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) →L[Real]
-          (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ⊤
+          (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ∞
       (fun p : Real × M =>
         frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
           (coordInv (I := I) S x0) p)
-      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+      (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   classical
   intro p hp
   have hgram := coordFrameGramCLM_spacetimeSmooth (I := I) S hS x0 p hp
@@ -548,13 +548,13 @@ theorem coordFrameGInvCLM_spacetimeSmooth
       ContMDiffWithinAt (𝓘(Real, Real).prod I)
         𝓘(Real,
           (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) →L[Real]
-            (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ⊤
+            (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)) ∞
         (fun q : Real × M =>
           ContinuousLinearMap.inverse
             (frameGramCLM (I := I) S
               (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) q))
-        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) p := by
-    simpa [Function.comp_def] using hinvAt.comp_contMDiffWithinAt hgram
+        (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) p := by
+    simpa [Function.comp_def] using (hinvAt.of_le le_top).comp_contMDiffWithinAt hgram
   refine hcomp.congr_of_eventuallyEq_of_mem ?_ hp
   filter_upwards [self_mem_nhdsWithin] with q hq
   exact
@@ -567,32 +567,152 @@ theorem coordInvSmooth
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x0 : M) (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
-    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M => coordInv (I := I) S x0 p.1 p.2 i j)
-      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+      (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   classical
   have hsmooth :=
     coordFrameGInvCLM_spacetimeSmooth (I := I) S hS x0
   have happ :
       ContMDiffOn (𝓘(Real, Real).prod I)
-        𝓘(Real, DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) ⊤
+        𝓘(Real, DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) ∞
         (fun p : Real × M =>
           frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
             (coordInv (I := I) S x0) p
             (Pi.single j 1))
-        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+        (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
     exact hsmooth.clm_apply contMDiffOn_const
   have hcoord :
-      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
           frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
             (coordInv (I := I) S x0) p
             (Pi.single j 1) i)
-        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+        (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
     exact (contMDiffOn_const
       (I := 𝓘(Real, Real).prod I)
       (I' := 𝓘(Real, (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real) →L[Real] Real))
-      (n := ⊤) (s := D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
+      (n := ∞) (s := D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
+      (c := LinearMap.toContinuousLinearMap
+        (LinearMap.proj (R := Real)
+          (φ := fun _ : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E => Real) i))).clm_apply happ
+  refine hcoord.congr ?_
+  intro p hp
+  simpa using
+    (sum_mul_pi_single (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
+      (fun k => coordInv (I := I) S x0 p.1 p.2 i k) j).symm
+
+/-- Carrier-continuity of the coordinate-frame Gram CLM (up to `t = 0`), the
+continuity twin of `coordFrameGramCLM_spacetimeSmooth`. -/
+theorem coordFrameGramCLM_contOn
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x0 : M) :
+    ContinuousOn
+      (fun p : Real × M =>
+        frameGramCLM (I := I) S (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p)
+      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+  classical
+  unfold frameGramCLM
+  apply continuousOn_finset_sum
+  intro i _hi
+  apply continuousOn_finset_sum
+  intro j _hj
+  exact (coordMetricContOn (I := I) S hS x0 i j).smul continuousOn_const
+
+/-- Carrier-continuity of the coordinate-frame inverse Gram CLM (up to `t = 0`),
+the continuity twin of `coordFrameGInvCLM_spacetimeSmooth`: the Gram is jointly
+continuous and everywhere invertible, and `ContinuousLinearMap.inverse` is
+continuous at invertible points. -/
+theorem coordFrameGInvCLM_contOn
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x0 : M) :
+    ContinuousOn
+      (fun p : Real × M =>
+        frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
+          (coordInv (I := I) S x0) p)
+      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+  classical
+  intro p hp
+  have hgram := coordFrameGramCLM_contOn (I := I) S hS x0 p hp
+  have hbasis :=
+    DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric p.1) x0 hp.2
+  have hleft : ∀ a b : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+      (∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        coordInv (I := I) S x0 p.1 p.2 a k *
+          metricCompInFrame (I := I) S
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p.1 p.2 k b) =
+        (if a = b then 1 else 0) := by
+    intro a b
+    simpa [coordInv, metricCompInFrame,
+      DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).1
+  have hright : ∀ a b : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+      (∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        metricCompInFrame (I := I) S
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p.1 p.2 a k *
+          coordInv (I := I) S x0 p.1 p.2 k b) =
+        (if a = b then 1 else 0) := by
+    intro a b
+    simpa [coordInv, metricCompInFrame,
+      DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply] using (hbasis a b).2
+  have hinvAt :
+      ContinuousAt ContinuousLinearMap.inverse
+        (frameGramCLM (I := I) S
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p) :=
+    ((frameGramCLM_isInvertible_at
+      (I := I) S (coordInv (I := I) S x0)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) p
+      hleft hright).contDiffAt_map_inverse (n := (⊤ : WithTop ℕ∞))).continuousAt
+  have hcomp :
+      ContinuousWithinAt
+        (fun q : Real × M =>
+          ContinuousLinearMap.inverse
+            (frameGramCLM (I := I) S
+              (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0) q))
+        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) p := by
+    simpa [Function.comp_def] using hinvAt.comp_continuousWithinAt hgram
+  refine hcomp.congr (fun q hq => ?_) ?_
+  · exact (coordInvCLM_eq (I := I) S x0 (x := q.2) hq.2 q.1).symm
+  · exact (coordInvCLM_eq (I := I) S x0 (x := p.2) hp.2 p.1).symm
+
+/-- Continuity of the canonical coordinate inverse-metric components up to the
+closed initial endpoint `t = 0`.
+
+The interior `C∞` version is `coordInvSmooth` (on `D.regular`); this is the
+carrier-continuity form that up-to-`t=0` consumers (e.g. the Ricci-norm slab
+continuity in `Evolution/ImprovedPinching/Estimate.lean`) need, which
+`coordInvSmooth` no longer provides after `MetricFamilySmoothOn` was weakened to
+interior `C∞` + carrier continuity.  It mirrors `coordInvSmooth`, sourcing the
+inverse Gram from `coordFrameGInvCLM_contOn`. -/
+theorem coordInvContOn
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x0 : M) (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
+    ContinuousOn
+      (fun p : Real × M => coordInv (I := I) S x0 p.1 p.2 i j)
+      (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
+  classical
+  have hcont := coordFrameGInvCLM_contOn (I := I) S hS x0
+  have happ :
+      ContinuousOn
+        (fun p : Real × M =>
+          frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
+            (coordInv (I := I) S x0) p
+            (Pi.single j 1))
+        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) :=
+    hcont.clm_apply continuousOn_const
+  have hcoord :
+      ContinuousOn
+        (fun p : Real × M =>
+          frameGInvCLM (Idx := DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
+            (coordInv (I := I) S x0) p
+            (Pi.single j 1) i)
+        (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) :=
+    (continuousOn_const
       (c := LinearMap.toContinuousLinearMap
         (LinearMap.proj (R := Real)
           (φ := fun _ : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E => Real) i))).clm_apply happ
@@ -611,12 +731,12 @@ theorem coordInvSmoothAt
     (x0 : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
     (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
-    ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+    ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M => coordInv (I := I) S x0 p.1 p.2 i j)
       ((t : Real), x) := by
   exact
     (coordInvSmooth (I := I) S hS x0 i j).contMDiffAt
-      (prod_mem_nhds (D.regular_mem_nhds t.2)
+      (prod_mem_nhds (D.regular_isOpen.mem_nhds t.2)
         ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x0).mem_nhds hx))
 
 theorem frameGInvCLM_spacetimeSmooth
@@ -631,7 +751,7 @@ theorem frameGInvCLM_spacetimeSmooth
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u) :
     ContMDiffOn (𝓘(Real, Real).prod I)
-      𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ⊤
+      𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ∞
       (fun p : Real × M => frameGInvCLM (Idx := Idx) gInv p)
       (D.carrier ×ˢ u) := by
   classical
@@ -653,13 +773,13 @@ theorem frameGInvCLM_spacetimeSmooth
     intro a b
     exact (hreg.nondegenerateGram p.1 p.2 hp.2 a b).2
   have hinvAt :
-      ContDiffAt Real ⊤ ContinuousLinearMap.inverse
+      ContDiffAt Real ∞ ContinuousLinearMap.inverse
         (frameGramCLM (I := I) S frame p) :=
     (frameGramCLM_isInvertible_at (I := I) S gInv frame p
       hleft hright).contDiffAt_map_inverse
   have hcomp :
       ContMDiffWithinAt (𝓘(Real, Real).prod I)
-        𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ⊤
+        𝓘(Real, (Idx -> Real) →L[Real] (Idx -> Real)) ∞
         (fun q : Real × M =>
           ContinuousLinearMap.inverse (frameGramCLM (I := I) S frame q))
         (D.carrier ×ˢ u) p :=
@@ -705,27 +825,27 @@ theorem gInv_spacetimeSmooth
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u)
     (i j : Idx) :
-    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M => gInv p.1 p.2 i j)
       (D.carrier ×ˢ u) := by
   classical
   have hsmooth :=
     frameGInvCLM_spacetimeSmooth (I := I) S gInv gInvDt frame hreg
   have happ :
-      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Idx -> Real) ⊤
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Idx -> Real) ∞
         (fun p : Real × M =>
           frameGInvCLM (Idx := Idx) gInv p (Pi.single j 1))
         (D.carrier ×ˢ u) := by
     exact hsmooth.clm_apply contMDiffOn_const
   have hcoord :
-      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
           frameGInvCLM (Idx := Idx) gInv p (Pi.single j 1) i)
         (D.carrier ×ˢ u) := by
     exact (contMDiffOn_const
       (I := 𝓘(Real, Real).prod I)
       (I' := 𝓘(Real, (Idx -> Real) →L[Real] Real))
-      (n := ⊤) (s := D.carrier ×ˢ u)
+      (n := ∞) (s := D.carrier ×ˢ u)
       (c := LinearMap.toContinuousLinearMap
         (LinearMap.proj (R := Real) (φ := fun _ : Idx => Real) i))).clm_apply happ
   refine hcoord.congr ?_
@@ -752,13 +872,13 @@ theorem MetricFrameSpacetimeRegularityInFrameOnLocal.gInv_mdiffAt
       (fun y : M => gInv (t : Real) y i j) x := by
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   have hslice :
-      ContMDiffOn I (𝓘(Real, Real).prod I) ⊤
+      ContMDiffOn I (𝓘(Real, Real).prod I) ∞
         (fun y : M => ((t : Real), y)) u := by
     exact (contMDiffOn_const (c := (t : Real))).prodMk contMDiffOn_id
   have hsmooth :=
     gInv_spacetimeSmooth (I := I) S gInv gInvDt frame hreg i j
   have hcomp :
-      ContMDiffOn I 𝓘(Real, Real) ⊤
+      ContMDiffOn I 𝓘(Real, Real) ∞
         ((fun p : Real × M => gInv p.1 p.2 i j) ∘
           fun y : M => ((t : Real), y)) u := by
     exact hsmooth.comp hslice (by
@@ -785,12 +905,12 @@ theorem MetricFrameSpacetimeRegularityInFrameOnLocal.metricComp_mdiffAt
       (fun y : M => metricCompInFrame (I := I) S frame (t : Real) y i j) x := by
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   have hslice :
-      ContMDiffOn I (𝓘(Real, Real).prod I) ⊤
+      ContMDiffOn I (𝓘(Real, Real).prod I) ∞
         (fun y : M => ((t : Real), y)) u := by
     exact (contMDiffOn_const (c := (t : Real))).prodMk contMDiffOn_id
   have hsmooth := hreg.frameMetricSpacetimeSmooth i j
   have hcomp :
-      ContMDiffOn I 𝓘(Real, Real) ⊤
+      ContMDiffOn I 𝓘(Real, Real) ∞
         ((fun p : Real × M =>
             metricCompInFrame (I := I) S frame p.1 p.2 i j) ∘
           fun y : M => ((t : Real), y)) u := by

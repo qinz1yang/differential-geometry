@@ -159,11 +159,13 @@ magnitude of `g₁ − g₂` at `x` in the chart-`α` frame. -/
 def chartGramDiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) : ℝ :=
   matrixEntryL1 (chartGramMatrix g₁ α x - chartGramMatrix g₂ α x)
 
+omit [InnerProductSpace ℝ E] in
 /-- `chartGramDiffSup` is non-negative. -/
 lemma chartGramDiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) :
     0 ≤ chartGramDiffSup (I := I) (M := M) g₁ g₂ α x :=
   matrixEntryL1_nonneg _
 
+omit [InnerProductSpace ℝ E] in
 /-- Each chart-Gram-difference entry is bounded by `chartGramDiffSup`. -/
 lemma chartGramMatrix_sub_entry_abs_le_gramDiffSup
     (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
@@ -174,6 +176,7 @@ lemma chartGramMatrix_sub_entry_abs_le_gramDiffSup
     (chartGramMatrix g₁ α x - chartGramMatrix g₂ α x) p q
   rwa [Matrix.sub_apply] at h
 
+omit [InnerProductSpace ℝ E] in
 /-- **Per-point entrywise perturbation bound for the inverse chart-Gram
 matrix.**
 
@@ -224,6 +227,7 @@ theorem chartInvGramMatrix_entry_sub_abs_le
   unfold chartInvGramMatrix
   exact h
 
+omit [InnerProductSpace ℝ E] in
 /-- The per-point bound expressed with the explicit chart-Gram-difference
 entry-sup `chartGramDiffSup` as the perturbation magnitude:
 `|g₁^{kl}(x) − g₂^{kl}(x)| ≤ n² · M² · chartGramDiffSup g₁ g₂ α x`. -/
@@ -328,6 +332,44 @@ theorem exists_chartInvGramMatrix_lipschitz_on_compact
           chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := by
         refine mul_le_mul_of_nonneg_right ?_ h_gram_nn
         linarith
+
+/-- A metric-equivalent family has one inverse-Gram entrywise Lipschitz
+constant on every active partition-of-unity chart support. -/
+theorem chartInvGram_pou_lip
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    (gSeq : ι → SmoothRiemannianMetric I M)
+    (Λ : ℝ) (hΛ : 1 ≤ Λ)
+    (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
+      Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
+        (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
+          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+          ∀ p q : Fin (Module.finrank ℝ E),
+            |chartInvGramMatrix (I := I) (gSeq k₁) α b p q -
+                chartInvGramMatrix (I := I) (gSeq k₂) α b p q| ≤
+              C * chartGramDiffSup (I := I) (M := M)
+                (gSeq k₁) (gSeq k₂) α b := by
+  obtain ⟨M_b, hM_b, hM⟩ :=
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartInvGram_pou_bnd
+      (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+  let C : ℝ := (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 + 1
+  have hC_pos : 0 < C := by
+    dsimp [C]
+    positivity
+  refine ⟨C, hC_pos, ?_⟩
+  intro α hα k₁ k₂ b hb p q
+  have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
+      (I := I) (M := M) α hb
+  have hpt := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup
+    (I := I) (M := M) (gSeq k₁) (gSeq k₂) α hb_base
+      (hM α hα k₁ b hb) (hM α hα k₂ b hb) p q
+  have hdiff_nonneg : 0 ≤ chartGramDiffSup (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α b := chartGramDiffSup_nonneg _ _ _ _
+  exact hpt.trans (mul_le_mul_of_nonneg_right (by dsimp [C]; linarith) hdiff_nonneg)
 
 end DeTurckCoefficients
 end IntrinsicSpectral

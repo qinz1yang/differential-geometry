@@ -41,18 +41,14 @@ theorem exists_predual_basis [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜]
     (b : Module.Basis (Fin d) 𝕜 (E →L[𝕜] 𝕜)) :
     ∃ B : Module.Basis (Fin d) 𝕜 E,
       ∀ i j, b i (B j) = if i = j then 1 else 0 := by
-  -- Convert b to an algebraic dual basis via the linear equiv
-  -- LinearMap.toContinuousLinearMap : (E →ₗ[𝕜] 𝕜) ≃ₗ[𝕜] (E →L[𝕜] 𝕜)
+
   let b_alg : Module.Basis (Fin d) 𝕜 (E →ₗ[𝕜] 𝕜) :=
     b.map (LinearMap.toContinuousLinearMap (𝕜 := 𝕜) (E := E)).symm
-  -- Use the canonical isomorphism E ≃ E** to construct B from b_alg.dualBasis
+
   let B : Module.Basis (Fin d) 𝕜 E :=
     b_alg.dualBasis.map (Module.evalEquiv 𝕜 E).symm
   refine ⟨B, fun i j => ?_⟩
-  -- b i (B j) = b_alg i (B j)  [since b i = toCLM (b_alg i)]
-  -- = (evalEquiv (B j)) (b_alg i)  [by definition of evalEquiv]
-  -- = b_alg.dualBasis j (b_alg i) [since B j = evalEquiv.symm (b_alg.dualBasis j)]
-  -- = δ_{ji} = δ_{ij}
+
   have agree : ∀ x, b i x = (b_alg i) x := by
     intro x; simp [b_alg, Module.Basis.map_apply]
   rw [agree]
@@ -65,9 +61,9 @@ continuous linear functional on `E` decomposes in the dual basis as
 theorem cdual_sum_repr {d : ℕ} [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜]
     (b : Module.Basis (Fin d) 𝕜 E) (α : E →L[𝕜] 𝕜) :
     (∑ k, (α (b k)) • LinearMap.toContinuousLinearMap (b.coord k)) = α := by
-  -- Lift to the algebraic dual via `Basis.sum_dual_apply_smul_coord`.
+
   apply ContinuousLinearMap.coe_injective
-  -- Goal (after coe): ∑ k, α (b k) • b.coord k = α
+
   rw [show ((∑ k, (α (b k)) • LinearMap.toContinuousLinearMap (b.coord k)
         : E →L[𝕜] 𝕜) : E →ₗ[𝕜] 𝕜) =
       ∑ k, (α (b k)) • (b.coord k) by

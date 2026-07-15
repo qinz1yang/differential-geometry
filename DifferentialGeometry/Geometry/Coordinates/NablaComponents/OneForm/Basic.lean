@@ -140,23 +140,13 @@ theorem tensor0S_one_eval_coordFrame_sum
           funext q
           exact (b.sum_repr Z).symm
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-          αx (Function.update (fun _ : Fin 1 => Z) (0 : Fin 1)
-            (b.coord j Z • b j)) := by
+          b.coord j Z *
+            αx (Function.update (fun _ : Fin 1 => Z) (0 : Fin 1) (b j)) := by
           simpa using hmap
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           b.coord j Z * αx (fun _ : Fin 1 => b j) := by
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [hupdate]
-          have hconst :
-              (fun _ : Fin 1 => b.coord j Z • b j) =
-                Function.update (fun _ : Fin 1 => b j) (0 : Fin 1)
-                  (b.coord j Z • b j) := by
-            funext q
-            fin_cases q
-            simp
-          rw [hconst]
-          rw [αx.map_update_smul]
-          simp [smul_eq_mul]
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
             αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by

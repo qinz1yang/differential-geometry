@@ -79,15 +79,15 @@ theorem coordMetricSmooth
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M) (i j : CoordinateIdx (𝕜 := Real) E) :
-    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
         metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
           p.1 p.2 i j)
-      (D.carrier ×ˢ coordinateFrameSet (I := I) x₀) := by
+      (D.regular ×ˢ coordinateFrameSet (I := I) x₀) := by
   simpa [metricCompInFrame] using
     hS.smoothMetric.frameCompSmooth
       (coordinateFrameAt (I := I) x₀)
-      (coordinateFrameAt_isLocalFrame_one (I := I) x₀) i j
+      (coordinateFrameAt_isLocalFrame (I := I) x₀) i j
 
 /-- Pointwise spacetime smoothness of coordinate-frame metric components at
 regular times and points in the coordinate-frame domain. -/
@@ -98,15 +98,60 @@ theorem coordMetricSmoothAt
     (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j : CoordinateIdx (𝕜 := Real) E) :
-    ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+    ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
         metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
           p.1 p.2 i j)
       ((t : Real), x) := by
   exact
     (coordMetricSmooth (I := I) S hS x₀ i j).contMDiffAt
-      (prod_mem_nhds (D.regular_mem_nhds t.2)
+      (prod_mem_nhds (D.regular_isOpen.mem_nhds t.2)
         ((coordinateFrameSet_open (I := I) x₀).mem_nhds hx))
+
+/-- Continuity of coordinate-frame metric components up to the closed initial
+endpoint `t = 0`.
+
+Unlike `coordMetricSmooth` (interior `C∞`), this is the carrier-continuity form
+needed by up-to-`t=0` consumers.  It comes from the carrier-level metric-tensor
+continuity `IsSolutionOn.smoothMetric.metricTensor_cont`, evaluated on the smooth
+coordinate frame via `Tensor0SFamilyContinuousOnSet.eval_continuous`. -/
+theorem coordMetricContOn
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (x₀ : M) (i j : CoordinateIdx (𝕜 := Real) E) :
+    ContinuousOn
+      (fun p : Real × M =>
+        metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) p.1 p.2 i j)
+      (D.carrier ×ˢ coordinateFrameSet (I := I) x₀) := by
+  classical
+  rw [continuousOn_iff_continuous_restrict]
+  set s : Set (Real × M) :=
+    D.carrier ×ˢ coordinateFrameSet (I := I) x₀ with hs
+  have hτ : Continuous (fun q : ↥s => ((q : Real × M)).1) :=
+    continuous_fst.comp continuous_subtype_val
+  have hb : Continuous (fun q : ↥s => ((q : Real × M)).2) :=
+    continuous_snd.comp continuous_subtype_val
+  have hτK : ∀ q : ↥s, ((q : Real × M)).1 ∈ D.carrier := fun q => q.2.1
+  have hv : ∀ k : Fin 2,
+      Continuous (fun q : ↥s =>
+        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
+          ((q : Real × M)).2
+          (coordinateFrameAt (I := I) x₀ (if k = 0 then i else j) ((q : Real × M)).2)) := by
+    intro k
+    rw [continuous_iff_continuousAt]
+    intro q
+    have hframe := (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
+      (coordinateFrameSet_open (I := I) x₀) q.2.2 (if k = 0 then i else j)
+    exact ContinuousAt.comp
+      (g := fun y : M => TotalSpace.mk' E (E := fun y : M => TangentSpace I y) y
+        (coordinateFrameAt (I := I) x₀ (if k = 0 then i else j) y))
+      hframe.continuousAt hb.continuousAt
+  have heval :=
+    (hS.smoothMetric.metricTensor_cont).eval_continuous (P := ↥s) hτ hτK hb hv
+  refine heval.congr (fun q => ?_)
+  rw [Tensor0SBundle.metricTensorField_apply]
+  simp [metricCompInFrame]
 
 /-- Deprecated global inverse-metric components in a fixed frame.
 
@@ -203,7 +248,7 @@ structure MetricFrameTimeRegularityInFrameOnLocal
     (u : Set M) : Prop where
   metricSmooth :
     forall x : M, x ∈ u -> forall i j : Idx,
-      ContDiffOn Real ⊤
+      ContDiffOn Real ∞
         (fun t : Real => metricCompInFrame (I := I) S frame t x i j)
         D.carrier
   /-- Nondegeneracy is represented by an explicit two-sided inverse of the
@@ -234,7 +279,7 @@ structure MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u where
   frameMetricSpacetimeSmooth :
     forall i j : Idx,
-      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M => metricCompInFrame (I := I) S frame p.1 p.2 i j)
         (D.carrier ×ˢ u)
   frameMetricExtDerivTimeDerivative :

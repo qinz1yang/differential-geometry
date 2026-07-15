@@ -267,60 +267,48 @@ for every smooth test ψ with `tsupport ψ ⊆ chartTargetEuclid α`.
 structure DiffChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
-  /-- The base chart-bilinear data structure we differentiate. -/
+
   base : ChartBilinearH1ComplData (I := I) (M := M) g α
-  /-- The coordinate direction in which we differentiate. -/
+
   direction : Fin (Module.finrank ℝ E)
-  /-- The weak `direction`-partial of `base.u_chart`. -/
+
   u_chart_deriv : EuclN → ℝ
-  /-- The weak `direction`-partial of `base.f_chart`. -/
+
   f_chart_deriv : EuclN → ℝ
-  /-- The weak `direction`-partial of `base.weak_partial i`. -/
+
   weak_partial_deriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
-  /-- `u_chart_deriv` is the weak `direction`-partial of `base.u_chart` on
-  `chartTargetEuclid α`. -/
+
   u_chart_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
       u_chart_deriv base.u_chart
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `f_chart_deriv` is the weak `direction`-partial of `base.f_chart` on
-  `chartTargetEuclid α`. -/
+
   f_chart_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
       f_chart_deriv base.f_chart
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `weak_partial_deriv i` is the weak `direction`-partial of
-  `base.weak_partial i` on `chartTargetEuclid α`. -/
+
   weak_partial_deriv_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
       (weak_partial_deriv i) (base.weak_partial i)
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- Local `L²` regularity of `u_chart_deriv` on each compact subset of
-  `chartTargetEuclid α` (with respect to plain Lebesgue volume). -/
+
   u_chart_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp u_chart_deriv 2 ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of `f_chart_deriv` on each compact subset of
-  `chartTargetEuclid α`. -/
+
   f_chart_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp f_chart_deriv 2 ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of each `weak_partial_deriv i` on each compact
-  subset of `chartTargetEuclid α`. -/
+
   weak_partial_deriv_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp (weak_partial_deriv i) 2
         ((volume : Measure EuclN).restrict K)
-  /-- The differentiated variational identity.
 
-  The principal LHS integrand uses `weak_partial_deriv` and `u_chart_deriv`
-  (the weak first partials of the base fields). The Leibniz cross-terms on
-  the RHS involve the smooth coefficient derivatives
-  `weightedInvGramDerivOnEuclid` and `densityDerivOnEuclid` paired with the
-  base fields `weak_partial`, `u_chart`, `f_chart`. -/
   differentiated_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

@@ -47,12 +47,10 @@ exists to exclude pathological instances where the chart-selection map fails
 either property. -/
 class IsBorelChartedSpace (H : Type*) (M : Type*)
     [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] : Prop where
-  /-- The image of the chart-selection map `chartAt H` is countable. -/
+
   chartAt_range_countable :
     (Set.range (fun x : M => chartAt H x)).Countable
-  /-- For every chart `c : OpenPartialHomeomorph M H`, the level set
-  `{x : M | chartAt H x = c}` is Borel-measurable in `M` (with the Borel
-  σ-algebra induced by the topology of `M`). -/
+
   measurableSet_chartAt_preimage :
     ∀ c : OpenPartialHomeomorph M H,
       @MeasurableSet M (borel M) {x : M | chartAt H x = c}

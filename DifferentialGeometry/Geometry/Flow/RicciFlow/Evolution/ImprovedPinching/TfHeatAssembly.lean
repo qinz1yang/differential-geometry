@@ -23,7 +23,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
-variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 
 /-- Eigenvalue-facing form of Lemma 10.4.  This consumes Section 6 scalar and
 Ricci-norm heat equations plus pointwise Ricci eigenvalue data for the scalar,
@@ -835,11 +834,6 @@ theorem tfHeat_lc
         (I := I) (S.base.metric t) x (heatBasis t x))
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3)
-    (hcov : ∀ t,
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (I := I) (E := E) (M := M)
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
-          (S.base.metric t)) (1 : WithTop ℕ∞))
     (hRm13 : ∀ t,
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
         (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
@@ -891,10 +885,10 @@ theorem tfHeat_lc
     exact ricciSym_rm04 (I := I) (heatBasis t x) DifferentialGeometry.Integral.Connection.delta3
       (S.ricciAt t x) (Rm04 t x) hTrace
       (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := Rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := Rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) (g := S.base.metric t)
@@ -906,7 +900,7 @@ theorem tfHeat_lc
   · intro t x basis _horth
     exact
       DifferentialGeometry.Integral.Connection.algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := Rm04 t) (hRm04 := hRm04 t) basis
   · intro t x
     exact DifferentialGeometry.Integral.Connection.rm04LowersRm13At_of_realizes
@@ -947,11 +941,6 @@ theorem tfHeat_metric
         (I := I) (S.base.metric t) x (heatBasis t x))
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3)
-    (hcov : ∀ t,
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (I := I) (E := E) (M := M)
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
-          (S.base.metric t)) (1 : WithTop ℕ∞))
     (hInv : ∀ (t : Real) (x : M) (i j : Fin 3),
       gInv t x i j = DifferentialGeometry.Integral.Connection.delta3 i j) :
     ∃ (eigBasis : (t : Real) -> (x : M) ->
@@ -974,7 +963,7 @@ theorem tfHeat_metric
           (ricciCube (I := I) S)) := by
   refine tfHeat_lc (I := I) S S.base.rm13 S.base.rm04 gInv frame heatBasis
     roughLapRic ricciNormLap nablaRic scalarLap gradScalarNormSq hscalarHeat
-    h_inv h_ricci h_lap hheatBasis hheat hdim hcov ?_ ?_ ?_ hInv
+    h_inv h_ricci h_lap hheatBasis hheat hdim ?_ ?_ ?_ hInv
   · intro t
     simpa [SolutionFamily.rm13, metricCov] using
       (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
@@ -1038,11 +1027,7 @@ theorem tfHeat_metric_smooth
           (ricciCube (I := I) S)) := by
   refine tfHeat_metric (I := I) S gInv frame heatBasis roughLapRic
     ricciNormLap nablaRic scalarLap gradScalarNormSq hscalarHeat h_inv
-    h_ricci h_lap hheatBasis hheat hdim ?_ hInv
-  intro t
-  exact
-    DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-      (I := I) (M := M) (S.base.metric t)
+    h_ricci h_lap hheatBasis hheat hdim hInv
 
 /-- Section 10.4 using the canonical metric-derived curvature sections and an
 already packaged Section 6 Ricci-norm heat equation.  This is the shortest
@@ -1146,10 +1131,10 @@ theorem tfHeat_ricci
     exact ricciSym_rm04 (I := I) (heatBasis t x) DifferentialGeometry.Integral.Connection.delta3
       (S.ricciAt t x) (S.base.rm04 t x) hTrace
       (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) (g := S.base.metric t)
@@ -1161,7 +1146,7 @@ theorem tfHeat_ricci
   · intro t x basis _horth
     exact
       DifferentialGeometry.Integral.Connection.algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t) basis
   · intro t x basis horth
     have hLowerAt :
@@ -1188,7 +1173,6 @@ theorem tfHeat_mc
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I 2 M] [IsManifold I 3 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M (Fin 3))
     (frame : Fin 3 -> (x : M) -> TangentSpace I x)
@@ -1335,10 +1319,10 @@ theorem tfHeat_mc
     exact ricciSym_rm04 (I := I) (heatBasis t x) DifferentialGeometry.Integral.Connection.delta3
       (S.ricciAt t x) (S.base.rm04 t x) hTrace
       (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) (g := S.base.metric t) (hcov := hcov t)
+        (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t))
       (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) (g := S.base.metric t)
@@ -1349,13 +1333,6 @@ theorem tfHeat_mc
         ricciCompInFrame (I := I) S frame t x j i := by
     intro t x i j
     simpa [ricciCompInFrame] using hRicSymAt t x (frame i x) (frame j x)
-  have hmc : ∀ t : Real,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
-        (S.base.connection t) (S.base.metric t) := by
-    intro t
-    simpa [SolutionFamily.connection] using
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
-        (I := I) (S.base.metric t))
   have hRicHeat :
       RicciNormHeatEquationOn
         (D := D) (ricciNormSqInFrame (I := I) S gInv frame)
@@ -1364,7 +1341,7 @@ theorem tfHeat_mc
           (I := I) S S.base.rm04 gInv frame) :=
     ricci_heat_mc (I := I) S S.base.rm04 gInv frame roughLapRic
       ricciNormLap nablaRic basis X A roughA nablaA nabla2A du normSecond
-      h_inv h_ricci hInvSym hRicSym hmc hframe hinv hfields hlapTrace
+      h_inv h_ricci hInvSym hRicSym hframe hinv hfields hlapTrace
       hA h2 hdu hHess hrough hAComp hroughComp hnablaComp
   exact tfHeat_ricci (I := I) S gInv frame heatBasis ricciNormLap nablaRic
     scalarLap gradScalarNormSq hscalarHeat hRicHeat hheatBasis hheat hdim hInv

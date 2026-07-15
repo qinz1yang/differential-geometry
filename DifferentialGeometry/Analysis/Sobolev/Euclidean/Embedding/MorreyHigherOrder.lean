@@ -994,7 +994,7 @@ private lemma cauchyIteratedLimit_tendstoUniformly
 
 /-- For uniformly Cauchy smooth functions, the pointwise limit at the 0-th
 order is a function `E → ℝ`. -/
-private noncomputable def cauchyLimitFun
+noncomputable def cauchyLimitFun
     (g : ℕ → E → ℝ)
     (h_unif_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ n n', N ≤ n → N ≤ n' → ∀ x : E,
       ‖g n x - g n' x‖ ≤ ε) : E → ℝ :=
@@ -1007,7 +1007,7 @@ private noncomputable def cauchyLimitFun
       rw [dist_eq_norm]
       exact lt_of_le_of_lt (hN n n' hn hn' x) (by linarith)))
 
-private lemma cauchyLimitFun_tendsto
+lemma cauchyLimitFun_tendsto
     {g : ℕ → E → ℝ}
     (h_unif_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ n n', N ≤ n → N ≤ n' → ∀ x : E,
       ‖g n x - g n' x‖ ≤ ε)
@@ -1052,7 +1052,7 @@ private lemma cauchyLimitFun_tendstoUniformly
 /-- Identification step: if `g_n` is smooth and uniformly Cauchy in C^m, then
 the pointwise limit `u_smooth = cauchyLimitFun g _ _` has iteratedFDeriv equal
 at every order j ≤ m to the pointwise limit of `iteratedFDeriv ℝ j (g n)`. -/
-private theorem iteratedFDeriv_cauchyLimitFun_eq
+theorem iteratedFDeriv_cauchyLimitFun_eq
     (m : ℕ) {g : ℕ → E → ℝ} (hg_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (g n))
     (h_unif_cauchy_C0 : ∀ ε > 0, ∃ N : ℕ, ∀ n n', N ≤ n → N ≤ n' → ∀ x : E,
       ‖g n x - g n' x‖ ≤ ε)

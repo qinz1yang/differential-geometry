@@ -97,7 +97,7 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
       (fun b : M => (chartGramMatrix g α b).adjugate i j)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
-  -- `adjugate A i j = det (A.updateRow j (Pi.single i 1))` (Mathlib).
+
   have hexp :
       (fun b : M => (chartGramMatrix g α b).adjugate i j)
         = (fun b : M =>
@@ -105,7 +105,7 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
     funext b
     rw [Matrix.adjugate_apply]
   rw [hexp]
-  -- Expand the determinant via the permutation-sum formula.
+
   have hexp2 :
       (fun b : M =>
           ((chartGramMatrix g α b).updateRow j (Pi.single i 1)).det)
@@ -122,8 +122,7 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
   refine contMDiffOn_finset_sum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const) ?_
   refine contMDiffOn_finset_prod (fun k _ => ?_)
-  -- For each `(σ, k)`, the entry `updateRow A j v (σ k) k = if σ k = j then
-  -- v k else A (σ k) k`.
+
   by_cases hσkj : σ k = j
   · -- Row replaced: entry is `(Pi.single i 1) k`, a constant in `b`.
     have heq :
@@ -153,8 +152,7 @@ lemma chartGramMatrix_inv_entry_contMDiffOn
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- Expand: `A⁻¹ = (det A)⁻¹ • adjugate A`, hence
-  -- `A⁻¹ i j = (det A)⁻¹ * adjugate A i j`.
+
   have hexp :
       (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
         = (fun b : M => (chartGramMatrix g α b).det⁻¹ *
@@ -163,7 +161,7 @@ lemma chartGramMatrix_inv_entry_contMDiffOn
     rw [Matrix.inv_def]
     simp [Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
   rw [hexp]
-  -- Both factors smooth on the chart base set.
+
   intro b hb
   have hdet := chartGramMatrix_det_contMDiffOn (I := I) g α b hb
   have hadj := chartGramMatrix_adjugate_entry_contMDiffOn (I := I) g α i j b hb
@@ -238,7 +236,7 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
   induction s with
   | zero =>
       intro S T
-      -- The arity-zero inner product is the constant `S(Fin.elim0) * T(Fin.elim0)`.
+
       have heq :
           (fun b : M =>
               chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b S T)

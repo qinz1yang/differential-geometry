@@ -90,6 +90,9 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- A function that is `C^∞` on the (open) chart-target interior is uniformly
 bounded in absolute value on a compact subset `K`. -/
 private lemma exists_bound_of_contDiffOn_int
@@ -106,6 +109,9 @@ private lemma exists_bound_of_contDiffOn_int
     exact ⟨|f y₀|, abs_nonneg _, fun y hy => hy₀max hy⟩
   · exact ⟨0, le_refl 0, fun y hy => absurd ⟨y, hy⟩ hKne⟩
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 set_option linter.unusedFintypeInType false in
 /-- A finite family of functions, each `C^∞` on the chart-target interior, admits
 a single uniform bound on a compact subset `K`. -/
@@ -125,6 +131,7 @@ private lemma exists_uniform_bound_family
   · intro y hy i
     exact (hC_bd i y hy).trans (Finset.le_sup' C (Finset.mem_univ i))
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- The chart Christoffel symbol is `C^∞` on the chart-target interior. -/
 private lemma chartChristoffel_contDiffOn_int
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -154,6 +161,7 @@ private lemma partial_chartDeTurckVFComp_contDiffOn_int
   unfold partialDeriv
   exact hfderiv.clm_apply contDiffOn_const
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- The chart Christoffel symbol is differentiable at an interior point. -/
 private lemma chartChristoffel_differentiableAt_int
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -163,6 +171,7 @@ private lemma chartChristoffel_differentiableAt_int
   ((chartChristoffel_contDiffOn_int (I := I) g α a b k).contDiffAt
     (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- The inverse-Gram entry is differentiable at an interior point. -/
 private lemma chartInvGramOnE_differentiableAt_int'
     (g : SmoothRiemannianMetric I M) (α : M) (a b : Fin (Module.finrank ℝ E))
@@ -239,6 +248,7 @@ theorem partialDeriv_chartDeTurckVFComp_eq
       (chartChristoffel_differentiableAt_int (I := I) g α a b k hy)
       (chartChristoffel_differentiableAt_int (I := I) g_bg α a b k hy)]
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the chart Christoffel symbols over `K`. -/
 private lemma exists_chartChristoffel_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -253,6 +263,7 @@ private lemma exists_chartChristoffel_bound_on_compact
     (fun p => chartChristoffel_contDiffOn_int (I := I) g α p.1.1 p.1.2 p.2) hK hKsub
   exact ⟨C, hC_nn, fun y hy a b k => hC y hy ((a, b), k)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the chart Christoffel difference `Γ(g) − Γ(g_bg)` over `K`. -/
 private lemma exists_chartChristoffel_diff_bound_on_compact
     (g g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -270,6 +281,7 @@ private lemma exists_chartChristoffel_diff_bound_on_compact
       (chartChristoffel_contDiffOn_int (I := I) g_bg α p.1.1 p.1.2 p.2)) hK hKsub
   exact ⟨C, hC_nn, fun y hy a b k => hC y hy ((a, b), k)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the inverse-Gram entries over `K`. -/
 private lemma exists_invGramOnE_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -283,6 +295,7 @@ private lemma exists_invGramOnE_bound_on_compact
     (fun p => (chartInvGramOnE_contDiffOn (I := I) g α p.1 p.2).mono interior_subset) hK hKsub
   exact ⟨C, hC_nn, fun y hy a b => hC y hy (a, b)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the first partials of the inverse-Gram entries over `K`. -/
 private lemma exists_partial_invGramOnE_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -308,6 +321,7 @@ private lemma exists_partial_invGramOnE_bound_on_compact
     hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy m a b => hC y hy ((m, a), b)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the first partials of the chart Christoffel symbols over `K`. -/
 private lemma exists_partial_chartChristoffel_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -335,6 +349,7 @@ private lemma exists_partial_chartChristoffel_bound_on_compact
     hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy m a b k => hC y hy (((m, a), b), k)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the chart Christoffel-derivative difference
 `∂_m Γ(g) − ∂_m Γ(g_bg)` over `K`. -/
 private lemma exists_partial_chartChristoffel_diff_bound_on_compact
@@ -382,6 +397,7 @@ private lemma exists_partial_chartChristoffel_diff_bound_on_compact
     hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy m a b k => hC y hy (((m, a), b), k)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the first partials of the chart Gram entries over `K`. -/
 private lemma exists_partial_gramOnE_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -407,6 +423,7 @@ private lemma exists_partial_gramOnE_bound_on_compact
     hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy m a b => hC y hy ((m, a), b)⟩
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- Uniform bound on the chart Gram entries over `K`. -/
 private lemma exists_gramOnE_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -529,6 +546,100 @@ theorem chartDeTurckVFComp_sub_abs_le
         (Module.finrank ℝ E : ℝ) *
           ((Module.finrank ℝ E : ℝ) * ((Cinv * P + M_b * CΓ) * jet1)) by ring]
 
+/-- Entrywise inverse-Gram and connection-difference bounds control a chart
+component of the DeTurck vector field. -/
+theorem deTurckVF_abs_le
+    (g g_bg : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (k : Fin (Module.finrank ℝ E)) {M_b P : ℝ}
+    (hMb_nn : 0 ≤ M_b)
+    (hMb : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g α a b y| ≤ M_b)
+    (hP : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g α a b k y -
+        chartChristoffel (I := I) g_bg α a b k y| ≤ P) :
+    |chartDeTurckVFComp (I := I) g g_bg α k y| ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 * M_b * P := by
+  classical
+  rw [chartDeTurckVFComp_def]
+  calc
+    |∑ a : Fin (Module.finrank ℝ E),
+        ∑ b : Fin (Module.finrank ℝ E),
+          chartInvGramOnE (I := I) g α a b y *
+            (chartChristoffel (I := I) g α a b k y -
+              chartChristoffel (I := I) g_bg α a b k y)|
+        ≤ ∑ a : Fin (Module.finrank ℝ E),
+            |∑ b : Fin (Module.finrank ℝ E),
+              chartInvGramOnE (I := I) g α a b y *
+                (chartChristoffel (I := I) g α a b k y -
+                  chartChristoffel (I := I) g_bg α a b k y)| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _a : Fin (Module.finrank ℝ E),
+          ∑ _b : Fin (Module.finrank ℝ E), M_b * P := by
+      refine Finset.sum_le_sum fun a _ => (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      refine Finset.sum_le_sum fun b _ => ?_
+      rw [abs_mul]
+      exact mul_le_mul (hMb a b) (hP a b) (abs_nonneg _) hMb_nn
+    _ = (Module.finrank ℝ E : ℝ) ^ 2 * M_b * P := by
+      simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      ring
+
+/-- First inverse-Gram and connection-difference bounds control a first partial
+of a chart DeTurck-vector-field component. -/
+theorem deTurckVFD_abs_le
+    (g g_bg : SmoothRiemannianMetric I M) (α : M) {y : E}
+    (hy : y ∈ interior (extChartAt I α).target)
+    (m k : Fin (Module.finrank ℝ E)) {D P M_b R : ℝ}
+    (hD_nn : 0 ≤ D) (hMb_nn : 0 ≤ M_b)
+    (hD : ∀ a b : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartInvGramOnE (I := I) g α a b) y| ≤ D)
+    (hP : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g α a b k y -
+        chartChristoffel (I := I) g_bg α a b k y| ≤ P)
+    (hMb : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) g α a b y| ≤ M_b)
+    (hR : ∀ a b : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartChristoffel (I := I) g α a b k) y -
+        partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y| ≤ R) :
+    |partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g g_bg α k) y| ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 * (D * P + M_b * R) := by
+  classical
+  rw [partialDeriv_chartDeTurckVFComp_eq (I := I) g g_bg α m k hy]
+  calc
+    |∑ a : Fin (Module.finrank ℝ E),
+        ∑ b : Fin (Module.finrank ℝ E),
+          (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α a b) y *
+              (chartChristoffel (I := I) g α a b k y -
+                chartChristoffel (I := I) g_bg α a b k y) +
+            chartInvGramOnE (I := I) g α a b y *
+              (partialDeriv (E := E) m (chartChristoffel (I := I) g α a b k) y -
+                partialDeriv (E := E) m
+                  (chartChristoffel (I := I) g_bg α a b k) y))|
+        ≤ ∑ a : Fin (Module.finrank ℝ E),
+            |∑ b : Fin (Module.finrank ℝ E),
+              (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α a b) y *
+                  (chartChristoffel (I := I) g α a b k y -
+                    chartChristoffel (I := I) g_bg α a b k y) +
+                chartInvGramOnE (I := I) g α a b y *
+                  (partialDeriv (E := E) m
+                      (chartChristoffel (I := I) g α a b k) y -
+                    partialDeriv (E := E) m
+                      (chartChristoffel (I := I) g_bg α a b k) y))| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _a : Fin (Module.finrank ℝ E),
+          ∑ _b : Fin (Module.finrank ℝ E), (D * P + M_b * R) := by
+      refine Finset.sum_le_sum fun a _ => (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      refine Finset.sum_le_sum fun b _ => ?_
+      refine (abs_add_le _ _).trans ?_
+      rw [abs_mul, abs_mul]
+      exact add_le_add
+        (mul_le_mul (hD a b) (hP a b) (abs_nonneg _) hD_nn)
+        (mul_le_mul (hMb a b) (hR a b) (abs_nonneg _) hMb_nn)
+    _ = (Module.finrank ℝ E : ℝ) ^ 2 * (D * P + M_b * R) := by
+      simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      ring
+
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 /-- The manifold image of a compact subset of the chart-target interior is a
 compact subset of the chart source. -/
 private lemma symm_image_compact_subset_source
@@ -851,6 +962,8 @@ def chartLieDeTurckComp (g g_bg : SmoothRiemannianMetric I M) (α : M)
       chartGramOnE (I := I) g α i k y *
         partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg α k) y)
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 @[simp] lemma chartLieDeTurckComp_def
     (g g_bg : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
@@ -901,6 +1014,117 @@ private lemma sum_prod_sub_abs_le
       _ = (Ca * Mb + Ma * Cb) * jet := by ring
   · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, le_refl]
 
+omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+/-- Pointwise bounds for the DeTurck vector field, its first partial, and the
+metric Gram factors control the difference of the chart Lie summands. -/
+theorem chartLie_sub_abs_le
+    (g₁ g₂ g_bg : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (i j : Fin (Module.finrank ℝ E))
+    {Cw U Q V Gb Cdw : ℝ} (hCw_nn : 0 ≤ Cw) (hU_nn : 0 ≤ U) (hGb_nn : 0 ≤ Gb)
+    (hCw : ∀ k : Fin (Module.finrank ℝ E),
+      |chartDeTurckVFComp (I := I) g₁ g_bg α k y -
+        chartDeTurckVFComp (I := I) g₂ g_bg α k y| ≤
+          Cw * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y)
+    (hU : ∀ k : Fin (Module.finrank ℝ E),
+      |chartDeTurckVFComp (I := I) g₂ g_bg α k y| ≤ U)
+    (hQ : ∀ k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) k (chartGramOnE (I := I) g₁ α i j) y| ≤ Q)
+    (hV : ∀ m k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₁ g_bg α k) y| ≤ V)
+    (hGb : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartGramOnE (I := I) g₂ α a b y| ≤ Gb)
+    (hCdw : ∀ m k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₁ g_bg α k) y -
+        partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₂ g_bg α k) y| ≤
+          Cdw * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y) :
+    |chartLieDeTurckComp (I := I) g₁ g_bg α i j y -
+      chartLieDeTurckComp (I := I) g₂ g_bg α i j y| ≤
+        (Module.finrank ℝ E : ℝ) *
+          ((Cw * Q + U * 1) + (1 * V + Gb * Cdw) + (1 * V + Gb * Cdw)) *
+            chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  have hjet2_nn : 0 ≤ jet2 := chartMetricJet2DiffSup_nonneg _ _ _ _
+  have hjet1_le : chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y ≤ jet2 :=
+    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y
+  have hG_partial_diff : ∀ k : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) k (chartGramOnE (I := I) g₁ α i j) y -
+        partialDeriv (E := E) k (chartGramOnE (I := I) g₂ α i j) y| ≤ 1 * jet2 := by
+    intro k
+    rw [one_mul]
+    refine (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup (I := I) (M := M)
+      g₁ g₂ α y k i j).trans ?_
+    exact (chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hjet1_le
+  have hGram_diff : ∀ a b : Fin (Module.finrank ℝ E),
+      |chartGramOnE (I := I) g₁ α a b y - chartGramOnE (I := I) g₂ α a b y| ≤
+        1 * jet2 := by
+    intro a b
+    rw [one_mul, chartGramOnE_def, chartGramOnE_def]
+    refine (chartGramMatrix_sub_entry_abs_le_gramDiffSup (I := I) (M := M)
+      g₁ g₂ α ((extChartAt I α).symm y) a b).trans ?_
+    exact (chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hjet1_le
+  let A₁ : ℝ := ∑ k, chartDeTurckVFComp (I := I) g₁ g_bg α k y *
+    partialDeriv (E := E) k (chartGramOnE (I := I) g₁ α i j) y
+  let A₂ : ℝ := ∑ k, chartDeTurckVFComp (I := I) g₂ g_bg α k y *
+    partialDeriv (E := E) k (chartGramOnE (I := I) g₂ α i j) y
+  let B₁ : ℝ := ∑ k, chartGramOnE (I := I) g₁ α k j y *
+    partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α k) y
+  let B₂ : ℝ := ∑ k, chartGramOnE (I := I) g₂ α k j y *
+    partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α k) y
+  let C₁ : ℝ := ∑ k, chartGramOnE (I := I) g₁ α i k y *
+    partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α k) y
+  let C₂ : ℝ := ∑ k, chartGramOnE (I := I) g₂ α i k y *
+    partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α k) y
+  have hA : |A₁ - A₂| ≤
+      (Module.finrank ℝ E : ℝ) * ((Cw * Q + U * 1) * jet2) := by
+    dsimp [A₁, A₂]
+    exact sum_prod_sub_abs_le
+      (A₁ := fun k => chartDeTurckVFComp (I := I) g₁ g_bg α k y)
+      (A₂ := fun k => chartDeTurckVFComp (I := I) g₂ g_bg α k y)
+      (B₁ := fun k => partialDeriv (E := E) k (chartGramOnE (I := I) g₁ α i j) y)
+      (B₂ := fun k => partialDeriv (E := E) k (chartGramOnE (I := I) g₂ α i j) y)
+      hjet2_nn hCw_nn hU_nn hCw hG_partial_diff hU hQ
+  have hB : |B₁ - B₂| ≤
+      (Module.finrank ℝ E : ℝ) * ((1 * V + Gb * Cdw) * jet2) := by
+    dsimp [B₁, B₂]
+    exact sum_prod_sub_abs_le
+      (A₁ := fun k => chartGramOnE (I := I) g₁ α k j y)
+      (A₂ := fun k => chartGramOnE (I := I) g₂ α k j y)
+      (B₁ := fun k => partialDeriv (E := E) i
+        (chartDeTurckVFComp (I := I) g₁ g_bg α k) y)
+      (B₂ := fun k => partialDeriv (E := E) i
+        (chartDeTurckVFComp (I := I) g₂ g_bg α k) y)
+      hjet2_nn (by norm_num) hGb_nn
+      (fun k => hGram_diff k j) (fun k => hCdw i k) (fun k => hGb k j) (fun k => hV i k)
+  have hC : |C₁ - C₂| ≤
+      (Module.finrank ℝ E : ℝ) * ((1 * V + Gb * Cdw) * jet2) := by
+    dsimp [C₁, C₂]
+    exact sum_prod_sub_abs_le
+      (A₁ := fun k => chartGramOnE (I := I) g₁ α i k y)
+      (A₂ := fun k => chartGramOnE (I := I) g₂ α i k y)
+      (B₁ := fun k => partialDeriv (E := E) j
+        (chartDeTurckVFComp (I := I) g₁ g_bg α k) y)
+      (B₂ := fun k => partialDeriv (E := E) j
+        (chartDeTurckVFComp (I := I) g₂ g_bg α k) y)
+      hjet2_nn (by norm_num) hGb_nn
+      (fun k => hGram_diff i k) (fun k => hCdw j k) (fun k => hGb i k) (fun k => hV j k)
+  rw [chartLieDeTurckComp_def, chartLieDeTurckComp_def]
+  change |(A₁ + B₁ + C₁) - (A₂ + B₂ + C₂)| ≤ _
+  calc
+    |(A₁ + B₁ + C₁) - (A₂ + B₂ + C₂)| =
+        |(A₁ - A₂) + (B₁ - B₂) + (C₁ - C₂)| := by
+      apply congrArg abs
+      ring
+    _ ≤ (|A₁ - A₂| + |B₁ - B₂|) + |C₁ - C₂| :=
+      (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) (le_refl _))
+    _ ≤ ((Module.finrank ℝ E : ℝ) * ((Cw * Q + U * 1) * jet2) +
+        (Module.finrank ℝ E : ℝ) * ((1 * V + Gb * Cdw) * jet2)) +
+        (Module.finrank ℝ E : ℝ) * ((1 * V + Gb * Cdw) * jet2) :=
+      add_le_add (add_le_add hA hB) hC
+    _ = (Module.finrank ℝ E : ℝ) *
+          ((Cw * Q + U * 1) + (1 * V + Gb * Cdw) + (1 * V + Gb * Cdw)) * jet2 := by
+      ring
+
 set_option linter.unusedFintypeInType false in
 /-- A direction-uniform `∂_m W^k` Lipschitz constant: a single `C > 0` such that
 the bound `|∂_m W^k(g₁)(y) − ∂_m W^k(g₂)(y)| ≤ C · jet2` holds for every direction
@@ -930,6 +1154,275 @@ private lemma exists_partialDeriv_chartDeTurckVFComp_lipschitz_alldir
     refine (hC m y hy k).trans ?_
     refine mul_le_mul_of_nonneg_right (Finset.le_sup' C (Finset.mem_univ m)) ?_
     exact chartMetricJet2DiffSup_nonneg _ _ _ _
+
+/-- For a fixed DeTurck background, a metric-equivalent family with uniform
+chart Gram bounds through order two has one Lie-summand Lipschitz constant on
+every active partition-of-unity chart support. -/
+theorem chartLie_pou_lip
+    [CompactSpace M]
+    {ι : Type*} (gBase : SmoothRiemannianMetric I M)
+    (gSeq : ι → SmoothRiemannianMetric I M)
+    (Λ : ℝ) (hΛ : 1 ≤ Λ)
+    (hequiv : ∀ k : ι, ∀ b : M, ∀ v : TangentSpace I b,
+      Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
+        (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
+    (Q₀ : ℝ) (hQ₀_nn : 0 ≤ Q₀)
+    (hQ₀ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ k : ι, ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ a c : Fin (Module.finrank ℝ E),
+          |chartGramOnE (I := I) (gSeq k) α a c (extChartAt I α b)| ≤ Q₀)
+    (Q₁ : ℝ) (hQ₁_nn : 0 ≤ Q₁)
+    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ k : ι, ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ m a c : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
+              (extChartAt I α b)| ≤ Q₁)
+    (hQ₁Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ m a c : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) m (chartGramOnE (I := I) gBase α a c)
+              (extChartAt I α b)| ≤ Q₁)
+    (Q₂ : ℝ) (hQ₂_nn : 0 ≤ Q₂)
+    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ k : ι, ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ c m a q : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) c
+            (partialDeriv (E := E) m
+              (chartGramOnE (I := I) (gSeq k) α a q)) (extChartAt I α b)| ≤ Q₂)
+    (hQ₂Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ b ∈ tsupport
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+        ∀ c m a q : Fin (Module.finrank ℝ E),
+          |partialDeriv (E := E) c
+            (partialDeriv (E := E) m
+              (chartGramOnE (I := I) gBase α a q)) (extChartAt I α b)| ≤ Q₂) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
+          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
+          ∀ i j : Fin (Module.finrank ℝ E),
+            |chartLieDeTurckComp (I := I) (gSeq k₁) gBase α i j (extChartAt I α b) -
+              chartLieDeTurckComp (I := I) (gSeq k₂) gBase α i j (extChartAt I α b)| ≤
+                C * chartMetricJet2DiffSup (I := I) (M := M)
+                  (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+  classical
+  obtain ⟨M_b, hM_b_pos, hMb⟩ :=
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartInvGram_pou_bnd
+      (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+  obtain ⟨Cinv, hCinv_pos, hInvLip⟩ :=
+    chartInvGram_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+  obtain ⟨CΓ, hCΓ_pos, hΓLip⟩ :=
+    christoffel_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁
+  obtain ⟨Cd, hCd_pos, hInvDLip⟩ :=
+    invGramD_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁
+  obtain ⟨CdΓ, hCdΓ_pos, hΓDLip⟩ :=
+    christoffelD_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁ Q₂ hQ₂_nn hQ₂
+  obtain ⟨MΓ, hMΓ_nn, hMΓ⟩ :=
+    christoffel_pou_bnd (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁
+  obtain ⟨MdΓ, hMdΓ_nn, hMdΓ⟩ :=
+    christoffelD_pou_bnd (I := I) (M := M) gBase gSeq Λ hΛ hequiv
+      Q₁ hQ₁_nn hQ₁ Q₂ hQ₂_nn hQ₂
+  have hbase_equiv : ∀ _k : Unit, ∀ b : M, ∀ v : TangentSpace I b,
+      (1 : ℝ)⁻¹ * gBase.inner b v v ≤ gBase.inner b v v ∧
+        gBase.inner b v v ≤ (1 : ℝ) * gBase.inner b v v := by
+    intro _ b v
+    simp only [inv_one, one_mul, le_refl, and_self]
+  obtain ⟨MΓb, hMΓb_nn, hMΓb⟩ :=
+    christoffel_pou_bnd (I := I) (M := M) gBase (fun _ : Unit => gBase)
+      1 (le_refl 1) hbase_equiv Q₁ hQ₁_nn
+      (fun α hα _ b hb m a c => hQ₁Base α hα b hb m a c)
+  obtain ⟨MdΓb, hMdΓb_nn, hMdΓb⟩ :=
+    christoffelD_pou_bnd (I := I) (M := M) gBase (fun _ : Unit => gBase)
+      1 (le_refl 1) hbase_equiv Q₁ hQ₁_nn
+      (fun α hα _ b hb m a c => hQ₁Base α hα b hb m a c)
+      Q₂ hQ₂_nn
+      (fun α hα _ b hb c m a q => hQ₂Base α hα b hb c m a q)
+  let n : ℝ := Module.finrank ℝ E
+  let P : ℝ := MΓ + MΓb
+  let R : ℝ := MdΓ + MdΓb
+  let D : ℝ := n ^ 2 * M_b ^ 2 * Q₁
+  let Cw : ℝ := n ^ 2 * (Cinv * P + M_b * CΓ)
+  let Cdw : ℝ := n ^ 2 * (Cd * P + D * CΓ + Cinv * R + M_b * CdΓ)
+  let U : ℝ := n ^ 2 * M_b * P
+  let V : ℝ := n ^ 2 * (D * P + M_b * R)
+  let C : ℝ := n * ((Cw * Q₁ + U * 1) +
+    (1 * V + Q₀ * Cdw) + (1 * V + Q₀ * Cdw)) + 1
+  have hP_nn : 0 ≤ P := by dsimp [P]; positivity
+  have hR_nn : 0 ≤ R := by dsimp [R]; positivity
+  have hD_nn : 0 ≤ D := by dsimp [D, n]; positivity
+  have hCw_nn : 0 ≤ Cw := by dsimp [Cw, n]; positivity
+  have hU_nn : 0 ≤ U := by dsimp [U, n]; positivity
+  have hC_pos : 0 < C := by dsimp [C, Cw, Cdw, U, V, D, P, R, n]; positivity
+  refine ⟨C, hC_pos, ?_⟩
+  intro α hα k₁ k₂ b hb i j
+  have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
+      (I := I) (M := M) α hb
+  have hb_source : b ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I),
+      ← trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact hb_base
+  have hleft : (extChartAt I α).symm (extChartAt I α b) = b :=
+    (extChartAt I α).left_inv hb_source
+  have hy : extChartAt I α b ∈ interior (extChartAt I α).target :=
+    extChartAt_target_subset_interior_of_boundaryless (I := I) α
+      ((extChartAt I α).map_source hb_source)
+  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    chartMetricJet2DiffSup_nonneg _ _ _ _
+  have hjet1_le : chartMetricJet1DiffSup (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤
+        chartMetricJet2DiffSup (I := I) (M := M)
+          (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
+    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
+  have hMb1 : ∀ a c : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) (gSeq k₁) α a c (extChartAt I α b)| ≤ M_b := by
+    intro a c
+    rw [chartInvGramOnE_def, hleft]
+    exact hMb α hα k₁ b hb a c
+  have hMb2 : ∀ a c : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) (gSeq k₂) α a c (extChartAt I α b)| ≤ M_b := by
+    intro a c
+    rw [chartInvGramOnE_def, hleft]
+    exact hMb α hα k₂ b hb a c
+  have hD1 : ∀ m a c : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+        (chartInvGramOnE (I := I) (gSeq k₁) α a c) (extChartAt I α b)| ≤ D := by
+    intro m a c
+    simpa only [D, n] using
+      invGramD_abs_le (I := I) (M := M) (gSeq k₁) α hy hM_b_pos.le hMb1
+        (fun r p q => hQ₁ α hα k₁ b hb r p q) m a c
+  have hD2 : ∀ m a c : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+        (chartInvGramOnE (I := I) (gSeq k₂) α a c) (extChartAt I α b)| ≤ D := by
+    intro m a c
+    simpa only [D, n] using
+      invGramD_abs_le (I := I) (M := M) (gSeq k₂) α hy hM_b_pos.le hMb2
+        (fun r p q => hQ₁ α hα k₂ b hb r p q) m a c
+  have hP1 : ∀ a c q : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) (gSeq k₁) α a c q (extChartAt I α b) -
+        chartChristoffel (I := I) gBase α a c q (extChartAt I α b)| ≤ P := by
+    intro a c q
+    calc
+      |chartChristoffel (I := I) (gSeq k₁) α a c q (extChartAt I α b) -
+          chartChristoffel (I := I) gBase α a c q (extChartAt I α b)|
+          ≤ |chartChristoffel (I := I) (gSeq k₁) α a c q (extChartAt I α b)| +
+            |chartChristoffel (I := I) gBase α a c q (extChartAt I α b)| := by
+              rw [sub_eq_add_neg]
+              simpa only [abs_neg] using abs_add_le
+                (chartChristoffel (I := I) (gSeq k₁) α a c q (extChartAt I α b))
+                (-chartChristoffel (I := I) gBase α a c q (extChartAt I α b))
+      _ ≤ MΓ + MΓb := add_le_add
+        (hMΓ α hα k₁ b hb a c q) (hMΓb α hα () b hb a c q)
+      _ = P := rfl
+  have hP2 : ∀ a c q : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) (gSeq k₂) α a c q (extChartAt I α b) -
+        chartChristoffel (I := I) gBase α a c q (extChartAt I α b)| ≤ P := by
+    intro a c q
+    calc
+      |chartChristoffel (I := I) (gSeq k₂) α a c q (extChartAt I α b) -
+          chartChristoffel (I := I) gBase α a c q (extChartAt I α b)|
+          ≤ |chartChristoffel (I := I) (gSeq k₂) α a c q (extChartAt I α b)| +
+            |chartChristoffel (I := I) gBase α a c q (extChartAt I α b)| := by
+              rw [sub_eq_add_neg]
+              simpa only [abs_neg] using abs_add_le
+                (chartChristoffel (I := I) (gSeq k₂) α a c q (extChartAt I α b))
+                (-chartChristoffel (I := I) gBase α a c q (extChartAt I α b))
+      _ ≤ MΓ + MΓb := add_le_add
+        (hMΓ α hα k₂ b hb a c q) (hMΓb α hα () b hb a c q)
+      _ = P := rfl
+  have hR1 : ∀ m a c q : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+          (chartChristoffel (I := I) (gSeq k₁) α a c q) (extChartAt I α b) -
+        partialDeriv (E := E) m
+          (chartChristoffel (I := I) gBase α a c q) (extChartAt I α b)| ≤ R := by
+    intro m a c q
+    calc
+      |partialDeriv (E := E) m
+          (chartChristoffel (I := I) (gSeq k₁) α a c q) (extChartAt I α b) -
+        partialDeriv (E := E) m
+          (chartChristoffel (I := I) gBase α a c q) (extChartAt I α b)|
+          ≤ |partialDeriv (E := E) m
+              (chartChristoffel (I := I) (gSeq k₁) α a c q) (extChartAt I α b)| +
+            |partialDeriv (E := E) m
+              (chartChristoffel (I := I) gBase α a c q) (extChartAt I α b)| := by
+              rw [sub_eq_add_neg]
+              simpa only [abs_neg] using abs_add_le
+                (partialDeriv (E := E) m
+                  (chartChristoffel (I := I) (gSeq k₁) α a c q) (extChartAt I α b))
+                (-partialDeriv (E := E) m
+                  (chartChristoffel (I := I) gBase α a c q) (extChartAt I α b))
+      _ ≤ MdΓ + MdΓb := add_le_add
+        (hMdΓ α hα k₁ b hb m a c q) (hMdΓb α hα () b hb m a c q)
+      _ = R := rfl
+  have hInv : ∀ a c : Fin (Module.finrank ℝ E),
+      |chartInvGramOnE (I := I) (gSeq k₁) α a c (extChartAt I α b) -
+        chartInvGramOnE (I := I) (gSeq k₂) α a c (extChartAt I α b)| ≤
+          Cinv * chartGramDiffSup (I := I) (M := M)
+            (gSeq k₁) (gSeq k₂) α ((extChartAt I α).symm (extChartAt I α b)) := by
+    intro a c
+    rw [chartInvGramOnE_def, chartInvGramOnE_def, hleft]
+    exact hInvLip α hα k₁ k₂ b hb a c
+  have hCw : ∀ q : Fin (Module.finrank ℝ E),
+      |chartDeTurckVFComp (I := I) (gSeq k₁) gBase α q (extChartAt I α b) -
+        chartDeTurckVFComp (I := I) (gSeq k₂) gBase α q (extChartAt I α b)| ≤
+          Cw * chartMetricJet2DiffSup (I := I) (M := M)
+            (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+    intro q
+    have hpoint := chartDeTurckVFComp_sub_abs_le (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) gBase α hCinv_pos.le hM_b_pos.le hP_nn
+      hP1 hMb2 hInv (fun a c r => hΓLip α hα k₁ k₂ b hb a c r) q
+    have hpoint' :
+        |chartDeTurckVFComp (I := I) (gSeq k₁) gBase α q (extChartAt I α b) -
+          chartDeTurckVFComp (I := I) (gSeq k₂) gBase α q (extChartAt I α b)| ≤
+            Cw * chartMetricJet1DiffSup (I := I) (M := M)
+              (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+      simpa only [Cw, n] using hpoint
+    exact hpoint'.trans (mul_le_mul_of_nonneg_left hjet1_le hCw_nn)
+  have hCdw : ∀ m q : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+          (chartDeTurckVFComp (I := I) (gSeq k₁) gBase α q) (extChartAt I α b) -
+        partialDeriv (E := E) m
+          (chartDeTurckVFComp (I := I) (gSeq k₂) gBase α q) (extChartAt I α b)| ≤
+          Cdw * chartMetricJet2DiffSup (I := I) (M := M)
+            (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
+    intro m q
+    simpa only [Cdw, D, n] using
+      partialDeriv_chartDeTurckVFComp_sub_abs_le (I := I) (M := M)
+        (gSeq k₁) (gSeq k₂) gBase α hy hCd_pos.le hCinv_pos.le hCΓ_pos.le
+        hM_b_pos.le hP_nn hD_nn hR_nn m q
+        (fun a c => hInvDLip α hα k₁ k₂ b hb m a c) hInv
+        (fun a c r => hΓLip α hα k₁ k₂ b hb a c r)
+        (fun a c r => hΓDLip α hα k₁ k₂ b hb m a c r)
+        hP1 hMb2 (hD2 m) (hR1 m)
+  have hU : ∀ q : Fin (Module.finrank ℝ E),
+      |chartDeTurckVFComp (I := I) (gSeq k₂) gBase α q (extChartAt I α b)| ≤ U := by
+    intro q
+    simpa only [U, n] using
+      deTurckVF_abs_le (I := I) (M := M) (gSeq k₂) gBase α
+        (extChartAt I α b) q hM_b_pos.le hMb2 (fun a c => hP2 a c q)
+  have hV : ∀ m q : Fin (Module.finrank ℝ E),
+      |partialDeriv (E := E) m
+        (chartDeTurckVFComp (I := I) (gSeq k₁) gBase α q) (extChartAt I α b)| ≤ V := by
+    intro m q
+    simpa only [V, D, n] using
+      deTurckVFD_abs_le (I := I) (M := M) (gSeq k₁) gBase α hy m q
+        hD_nn hM_b_pos.le (hD1 m) (fun a c => hP1 a c q) hMb1
+        (fun a c => hR1 m a c q)
+  have hpoint := chartLie_sub_abs_le (I := I) (M := M)
+    (gSeq k₁) (gSeq k₂) gBase α (extChartAt I α b) i j
+    hCw_nn hU_nn hQ₀_nn hCw hU (fun q => hQ₁ α hα k₁ b hb q i j)
+    hV (fun a c => hQ₀ α hα k₂ b hb a c) hCdw
+  exact hpoint.trans (mul_le_mul_of_nonneg_right (by dsimp [C]; linarith) hjet2_nn)
 
 /-- **Uniform Lipschitz dependence of the chart-frame DeTurck Lie (gauge) summand
 on the chart `2`-jet of the metric difference, over a compact subset of the

@@ -718,14 +718,14 @@ theorem rm13_coord_expand
     fun q i => basis.repr (slot q) i • basis i
   have hslot : (fun q : Fin 3 => ∑ i : CoordinateIdx (𝕜 := Real) E, g q i) = slot := by
     funext q
-    simpa [g] using (basis.sum_repr (slot q)).symm
+    simp [g]
   calc
     Rm13 x₀ alpha (vec3 X Y Z) =
         Rm13 x₀ alpha (fun q : Fin 3 => ∑ i : CoordinateIdx (𝕜 := Real) E, g q i) := by
           rw [hslot]
     _ = ∑ r : Fin 3 -> CoordinateIdx (𝕜 := Real) E,
         Rm13 x₀ alpha (fun q : Fin 3 => g q (r q)) := by
-          rw [(Rm13 x₀ alpha).map_sum]
+          rw [Tensor0SSpace.map_sum (Rm13 x₀ alpha) g]
     _ =
       ∑ r : Fin 3 -> CoordinateIdx (𝕜 := Real) E,
         (∏ q : Fin 3,

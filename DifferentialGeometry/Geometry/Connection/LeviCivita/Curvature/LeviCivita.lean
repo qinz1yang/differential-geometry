@@ -1138,13 +1138,14 @@ theorem firstBianchi_ofTF
 /-- First Bianchi identity for a lowered Levi-Civita curvature realization. -/
 theorem firstBianchiAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     FirstBianchiAt (I := I) (Rm04 x) := by
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞) :=
+    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one (I := I) g
   intro X Y Z W
   have hXYZ :=
     rm04_tconst_eval (I := I) g (leviCivitaConnectionOfMetric (I := I) g)
@@ -1195,13 +1196,14 @@ private theorem rm04_pair_symm_of_input_output_first
 slot. -/
 theorem rm04OutputSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} :
     Rm04OutputSkewAt (I := I) (Rm04 x) := by
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞) :=
+    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one (I := I) g
   intro X Y Z W
   have hleft :=
     rm04_tconst_eval (I := I) g (leviCivitaConnectionOfMetric (I := I) g)
@@ -1258,8 +1260,6 @@ theorem rm04PairSymm_ofLC
 /-- The lowered Levi-Civita curvature tensor has block/pair symmetry. -/
 theorem rm04PairSymmAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
@@ -1268,15 +1268,13 @@ theorem rm04PairSymmAt_of_leviCivita_realizes
       Rm04 x (vec4 X Y Z W) = Rm04 x (vec4 Z W X Y) :=
   rm04_pair_symm_of_input_output_first (I := I)
     (rm04InputSkewAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
-    (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g hcov Rm04 hRm04)
-    (firstBianchiAt_of_leviCivita_realizes (I := I) g hcov Rm04 hRm04)
+    (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
+    (firstBianchiAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
 /-- The `(1,3)` Levi-Civita curvature tensor is metric-skew in the output
 slot. -/
 theorem rm13MetricSkewAt_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm13 : Rm13RealizesConnection (I := I)
@@ -1287,12 +1285,10 @@ theorem rm13MetricSkewAt_of_leviCivita_realizes
     Rm13MetricSkewAt (I := I) g x (Rm13 x) :=
   rm13MetricSkewAt_of_realizes_outputSkew (I := I) g
     (leviCivitaConnectionOfMetric (I := I) g) Rm13 Rm04 hRm13 hRm04
-    (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g hcov Rm04 hRm04)
+    (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
 private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (alphaSec : OneFormSection (I := I) (M := M))
     (nablaAlphaSec : TwoTensorSection (I := I) (M := M))
@@ -1311,6 +1307,10 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
   classical
   intro X Y Z
   let cov := leviCivitaConnectionOfMetric (I := I) g
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      cov (1 : WithTop ℕ∞) := by
+    simpa [cov] using
+      leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one (I := I) g
   obtain ⟨Xsec, hXx⟩ :=
     ContMDiffSection.exists_eq_at_gen
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
@@ -1586,8 +1586,6 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
 one-form. -/
 theorem oneFormThirdCovDerivCommAt_of_leviCivita
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (alphaSec : OneFormSection (I := I) (M := M))
     (nablaAlphaSec : TwoTensorSection (I := I) (M := M))
@@ -1604,7 +1602,7 @@ theorem oneFormThirdCovDerivCommAt_of_leviCivita
       nabla2Alpha) :
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha :=
   oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
-    (I := I) g hcov Rm13 alphaSec nablaAlphaSec alpha nabla2Alpha hRm13
+    (I := I) g Rm13 alphaSec nablaAlphaSec alpha nabla2Alpha hRm13
     halpha hnabla2
 
 /-- Levi-Civita specialization of the invariant `(0,s)` Ricci identity.  The
@@ -1613,8 +1611,6 @@ this wrapper only removes the torsion term using the constructed
 Levi-Civita connection's torsion-freeness. -/
 theorem tensor0S_ricciIdentity_of_leviCivita
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm13 : Tensor13Section (I := I) (M := M))
     {s : ℕ}
     (alphaSec : Tensor0SSection (I := I) (M := M) s)
@@ -1634,6 +1630,9 @@ theorem tensor0S_ricciIdentity_of_leviCivita
       (leviCivitaConnectionOfMetric (I := I) g) alphaSec nablaAlphaSec x
       nabla2Alpha) :
     Tensor0SRicciIdentityAt (I := I) Rm13 alpha nabla2Alpha := by
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞) :=
+    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one (I := I) g
   refine tensor0S_ricciIdentity_of_torsionFree
     (I := I) (leviCivitaConnectionOfMetric (I := I) g) hcov Rm13
     alphaSec nablaAlphaSec alpha nablaAlpha nabla2Alpha hRm13 halpha

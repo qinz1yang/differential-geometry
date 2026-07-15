@@ -38,7 +38,7 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 section Components
@@ -300,7 +300,6 @@ theorem rm04OutputSkew_regular
     (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (hcov : ConnectionLocallySmoothOn (I := I) S)
     (hRm13 : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
@@ -312,7 +311,8 @@ theorem rm04OutputSkew_regular
   intro t x
   exact DifferentialGeometry.Integral.Connection.rm04OutputSkew_ofMC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (hcov t) (DifferentialGeometry.Integral.Connection.metricCompatible_of_isLeviCivita
+    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
+    (DifferentialGeometry.Integral.Connection.metricCompatible_of_isLeviCivita
       (I := I) (lcAt_regular (I := I) S hS t))
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
@@ -325,7 +325,6 @@ theorem rm04FirstBianchi_regular
     (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (hcov : ConnectionLocallySmoothOn (I := I) S)
     (hRm13 : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
@@ -337,7 +336,8 @@ theorem rm04FirstBianchi_regular
   intro t x
   exact DifferentialGeometry.Integral.Connection.firstBianchi_ofTF
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (hcov t) (DifferentialGeometry.Integral.Connection.torsionFree_of_isLeviCivita
+    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
+    (DifferentialGeometry.Integral.Connection.torsionFree_of_isLeviCivita
       (I := I) (lcAt_regular (I := I) S hS t))
     (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
@@ -350,7 +350,6 @@ theorem rm04PairSymm_regular
     (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (hcov : ConnectionLocallySmoothOn (I := I) S)
     (hRm13 : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
       DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
@@ -364,7 +363,8 @@ theorem rm04PairSymm_regular
   intro t x
   exact DifferentialGeometry.Integral.Connection.rm04PairSymm_ofLC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (hcov t) (lcAt_regular (I := I) S hS t) (Rm04 (t : Real))
+    (connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2))
+    (lcAt_regular (I := I) S hS t) (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 
 /-- First-two input-skew producer for regular Ricci-flow time slices. -/

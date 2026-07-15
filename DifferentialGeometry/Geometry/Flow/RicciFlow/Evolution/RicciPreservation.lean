@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ShiftedReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.MetricVariationBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak
 import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureProducers
@@ -41,6 +42,17 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+
+private theorem real_smul0S_apply {s : ℕ} {x : M} (c : Real)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
+    (v : Fin s → TangentSpace I x) :
+    (c • A) v = c * A v := by
+  rw [Tensor0SSpace.smul_apply, smul_eq_mul]
+
+private theorem tensor02_zero_apply {x : M}
+    (A : Tensor02At (I := I) (M := M) x) :
+    A (0 : Fin 2 → TangentSpace I x) = 0 := by
+  with_unfolding_all exact A.map_coord_zero (0 : Fin 2) rfl
 
 /-- Component-realization predicate for the shifted first-null block reaction.
 
@@ -808,13 +820,16 @@ theorem scalar0_cont_sol
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) :
+    (hS : IsSolutionOn (I := I) S)
+    (h0 : (0 : Real) ∈ D.carrier) :
     Continuous (fun x : M => S.scalar 0 x) := by
-  rw [continuous_iff_continuousAt]
-  intro x
   have hmap : Continuous (fun y : M => ((0 : Real), y)) :=
     continuous_const.prodMk continuous_id
-  exact (hS.scalarCont (0, x)).comp hmap.continuousAt
+  have hmem : ∀ y : M, ((0 : Real), y) ∈ D.carrier ×ˢ (Set.univ : Set M) := by
+    intro y
+    exact ⟨h0, trivial⟩
+  have hcomp := hS.scalarCont.comp_continuous hmap hmem
+  simpa [Function.comp_def] using hcomp
 
 /-- Preserved pinching conclusion for a fixed `delta`. -/
 def PinchPres
@@ -967,8 +982,8 @@ theorem pinchLipSec_apply
         S.scalar t x * (S.base.metric t).inner x v w := by
   simp only [pinchLipSec, tensor0SField_smulByFun_apply,
     ContMDiffSection.coe_add, Pi.add_apply, ContMDiffSection.coe_smul,
-    Pi.smul_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    Pi.smul_apply, Tensor0SSpace.add_apply,
+    Tensor0SSpace.smul_apply, smul_eq_mul]
   rw [metricTensorField_apply]
   have h0 : vec2 (I := I) v w 0 = v := by
     unfold DifferentialGeometry.Integral.Connection.vec2
@@ -992,7 +1007,7 @@ theorem pinchSec_eq
   simp only [pinchSec, pinchTensor, twoTensorSecToFamily,
     ContMDiffSection.coe_add, Pi.add_apply, ContMDiffSection.coe_smul,
     Pi.smul_apply, tensor0SField_smulByFun_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.smul_apply,
+    Tensor0SSpace.add_apply, Tensor0SSpace.smul_apply,
     smul_eq_mul]
   change
     ((S.ricci t) x) (vec2 (I := I) v w) +
@@ -1030,10 +1045,9 @@ private theorem pinchSec_at_trace
   intro slots
   simp only [pinchSec, tensor0SField_smulByFun_apply,
     ContMDiffSection.coe_add, Pi.add_apply, ContMDiffSection.coe_smul,
-    Pi.smul_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.smul_apply]
+    Pi.smul_apply]
   rw [hscalar]
-  simp [metricTensorField_apply, smul_eq_mul, sub_eq_add_neg, mul_assoc]
+  simp [sub_eq_add_neg]
 
 /-- Pointwise symmetry of the canonical metric Ricci tensor. -/
 theorem ricciAt_symm
@@ -1309,8 +1323,8 @@ theorem shiftNRaw_barrier_diff
           SolutionFamily.ricci, SolutionOn.ricciAt, SolutionFamily.ricciAt]
       rw [hshift]
       rw [pinchLipSec_apply]
-      simp only [ContinuousMultilinearMap.sub_apply,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      simp only [Tensor0SSpace.sub_apply,
+        Tensor0SSpace.smul_apply, smul_eq_mul]
       rw [metricTensorField_apply]
       have h0 : vec2 (I := I) v v 0 = v := by
         unfold DifferentialGeometry.Integral.Connection.vec2
@@ -1554,7 +1568,7 @@ private theorem actualRm04_comp_signed
     metricTrace_comp_orthonormal (I := I) (M := M) basis horth Ric
   rw [rm04CompAt_apply] at hformula
   rw [hformula, htraceRic]
-  simp only [ricciCompAt_apply, ContinuousMultilinearMap.neg_apply,
+  simp only [ricciCompAt_apply, Tensor0SSpace.neg_apply,
     stdRmOfRic3, ricciScal3, Finset.sum_neg_distrib]
   ring
 
@@ -1656,7 +1670,7 @@ private theorem traceData_metricTrace
         (DifferentialGeometry.Integral.Connection.standardRmCompAt
           (I := I) basis (S.base.rm04 t x)) :=
     DifferentialGeometry.Integral.Connection.algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
-      (I := I) (g := S.base.metric t) (hcov := hcov)
+      (I := I) (g := S.base.metric t)
       (Rm04 := S.base.rm04 t) (hRm04 := hRm04) basis
   have hRicFirst :
       DifferentialGeometry.Integral.Connection.RicciRealizesRm04FirstTraceAt (I := I) (S.ricci t x)
@@ -2001,9 +2015,11 @@ theorem pinchRough_hessMetric
     (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (tail : Fin 2 -> TangentSpace I x) :
     roughLap0STensor (I := I) (S.base.metric t)
-        (Bundle.continuousMultilinearMap.product_fun
-          (s := 2) (q := 2) hessF
-          (metricTensorField (I := I) (S.base.metric t) x))
+        ((Bundle.continuousMultilinearMap.product_fun
+          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+          (s := 2) (q := 2) (x := x) hessF
+          (metricTensorField (I := I) (S.base.metric t) x)) :
+            Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
         tail =
       metricTraceFirstTwo0SAt (I := I) (S.base.metric t) hessF Fin.elim0 *
         metricTensorField (I := I) (S.base.metric t) x tail := by
@@ -2011,9 +2027,11 @@ theorem pinchRough_hessMetric
     (0 : Real)
     (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     hessF
-    (Bundle.continuousMultilinearMap.product_fun
-      (s := 2) (q := 2) hessF
-      (metricTensorField (I := I) (S.base.metric t) x))
+    ((Bundle.continuousMultilinearMap.product_fun
+      (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+      (s := 2) (q := 2) (x := x) hessF
+      (metricTensorField (I := I) (S.base.metric t) x)) :
+        Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     tail ?_
   intro X Y tail
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
@@ -2027,6 +2045,7 @@ theorem pinchRough_hessMetric
     funext a
     fin_cases a <;> rfl
   rw [hleft, hright]
+  rw [metricTensorField_apply]
   simp
 
 /-- Fixed-time smoothness of scalar curvature for the solution metric. -/
@@ -2056,6 +2075,56 @@ noncomputable def scalarHessSec
     TwoTensorSection (I := I) (M := M) :=
   hessianSec (I := I) (S.base.connection t) (ricciCovInf (I := I) S t)
     (fun x : M => S.scalar t x) (scalarSmoothSec (I := I) S t)
+
+/-- Explicit section model for `dR tensor g` at a fixed time. -/
+noncomputable def scalarMetric1Sec
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 3 :=
+  MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+    (scalarDuSec (I := I) S t)
+    (metricTensorField (I := I) (S.base.metric t))
+
+/-- Explicit section model for `Hess R tensor g` at a fixed time. -/
+noncomputable def scalarMetric2Sec
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 4 :=
+  MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
+    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
+    (scalarHessSec (I := I) S t)
+    (metricTensorField (I := I) (S.base.metric t))
+
+@[simp]
+theorem scalarMetric1Sec_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
+    scalarMetric1Sec (I := I) S t x =
+      (Bundle.continuousMultilinearMap.product_fun
+        (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+        (s := 1) (q := 2) (x := x) (scalarDuSec (I := I) S t x)
+        (metricTensorField (I := I) (S.base.metric t) x) :
+          Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) := by
+  rfl
+
+@[simp]
+theorem scalarMetric2Sec_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
+    scalarMetric2Sec (I := I) S t x =
+      (Bundle.continuousMultilinearMap.product_fun
+        (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
+        (s := 2) (q := 2) (x := x) (scalarHessSec (I := I) S t x)
+        (metricTensorField (I := I) (S.base.metric t) x) :
+          Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) := by
+  rfl
 
 /-- The trace of the canonical fixed-time scalar Hessian is the intrinsic
 scalar Laplacian used by the Ricci-flow scalar evolution equation. -/
@@ -2160,6 +2229,75 @@ theorem ricciRoughTrace_coord
           coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
   simpa [b, frame, hcomp_if] using hsum
 
+/-- The intrinsic rough Ricci tensor evaluated on a fixed pair is the
+coordinate expansion of the canonical coordinate rough-Laplacian components. -/
+theorem ricciRoughPair
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D) (t : Real)
+    (x : M) (v w : TangentSpace I x) :
+    metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
+        (ricciNabla2WMP (I := I) S t x)
+        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) =
+      ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w *
+              coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
+                t x i j := by
+  classical
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
+  let roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 x :=
+    roughLap0STensor (I := I) (S.base.metric t)
+      (ricciNabla2WMP (I := I) S t x)
+  have hnabla : ∀ y a i j,
+      ricciNablaWMP (I := I) S t y
+          (DifferentialGeometry.Integral.Connection.vec3 (I := I)
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x a y)
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x i y)
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x j y)) =
+        nablaRicComp (I := I) S
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a i j := by
+    intro y a i j
+    simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
+      CanonicalSpatialDerivs0S.of_smooth_connection]
+  have hnab2 :=
+    coordNab2_can (I := I) S t x
+      (ricciNablaWMP (I := I) S t)
+      (ricciNabla2WMP (I := I) S t)
+      (by
+        simpa [SolutionOn.family, ricciNablaWMP, ricciNabla2WMP] using
+          (ricciSpatialWMP (I := I) S).second t)
+      hnabla
+  have hcomp :
+      ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        roughA
+            (DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame i x) (frame j x)) =
+          coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
+            t x i j := by
+    intro i j
+    simpa [roughA, frame, SolutionOn.family] using
+      coordRough_can (I := I) S t x
+        (ricciNabla2WMP (I := I) S t) hnab2 i j
+  have hcomp_if :
+      ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        roughA
+            (fun q : Fin 2 => if q = 0 then frame i x else frame j x) =
+          coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
+            t x i j := by
+    intro i j
+    simpa [DifferentialGeometry.Integral.Connection.vec2] using hcomp i j
+  have hsum :=
+    DifferentialGeometry.Tensor.Coordinates.tensor0S_two_eval_coordFrame_sum (I := I)
+      (M := M) (x₀ := x) (Ax := roughA) v w
+  rw [← roughLap0STensor_apply (I := I) (S.base.metric t)
+      (ricciNabla2WMP (I := I) S t x)
+      (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w)]
+  change roughA (fun q : Fin 2 => if q = 0 then v else w) = _
+  simpa [b, frame, hcomp_if] using hsum
+
 /-- The metric trace of the pointwise product `Hess(R) ⊗ g` is
 `(tr Hess(R)) g` when the metric factor is parallel. -/
 theorem scalarMetric_trace
@@ -2172,15 +2310,14 @@ theorem scalarMetric_trace
     (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
     (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-        (Bundle.continuousMultilinearMap.product_fun
-          (s := 2) (q := 2) (scalarHessSec (I := I) S t x)
-          (metricTensorField (I := I) (S.base.metric t) x))
+        (scalarMetric2Sec (I := I) S t x)
         (DifferentialGeometry.Integral.Connection.vec2 (I := I) v v) =
       metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
           (scalarHessSec (I := I) S t x) Fin.elim0 *
         (S.base.metric t).inner x v v := by
   have h := pinchRough_hessMetric (I := I) S t basis gInv hinv
     (scalarHessSec (I := I) S t x) (DifferentialGeometry.Integral.Connection.vec2 (I := I) v v)
+  rw [scalarMetric2Sec_apply]
   simpa [roughLap0STensor_apply, metricTensorField_apply,
     DifferentialGeometry.Integral.Connection.vec2, DifferentialGeometry.Integral.Connection.vec2] using h
 
@@ -2201,8 +2338,8 @@ private theorem trace_sub_smul
       (A - c • B) tail,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv A tail,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv B tail]
-  simp only [metricTrace0S2InBasis, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  simp only [metricTrace0S2InBasis, Tensor0SSpace.sub_apply,
+    Tensor0SSpace.smul_apply, smul_eq_mul]
   simp_rw [mul_sub]
   rw [Finset.mul_sum]
   simp_rw [Finset.sum_sub_distrib, Finset.mul_sum]
@@ -2222,10 +2359,7 @@ def pinchNab2Model
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
   ricciNabla2WMP (I := I) S t x -
-    delta •
-      Bundle.continuousMultilinearMap.product_fun
-        (s := 2) (q := 2) (scalarHessSec (I := I) S t x)
-        (metricTensorField (I := I) (S.base.metric t) x)
+    delta • scalarMetric2Sec (I := I) S t x
 
 /-- The explicit model has the expected rough-trace expansion for
 `Ric - δ R g`.  This is the algebraic trace part of the direct parabolic
@@ -2250,57 +2384,9 @@ theorem pinchNab2Model_trace
   rw [pinchNab2Model]
   rw [trace_sub_smul (I := I) (M := M) (S.base.metric t) basis gInv hinv
     (ricciNabla2WMP (I := I) S t x)
-    (Bundle.continuousMultilinearMap.product_fun
-      (s := 2) (q := 2) (scalarHessSec (I := I) S t x)
-      (metricTensorField (I := I) (S.base.metric t) x))
+    (scalarMetric2Sec (I := I) S t x)
     delta (DifferentialGeometry.Integral.Connection.vec2 (I := I) v v)]
   rw [scalarMetric_trace (I := I) S t basis gInv hinv v]
-
-/-- Explicit section model for `dR tensor g` at a fixed time. -/
-noncomputable def scalarMetric1Sec
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 3 :=
-  MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
-    (scalarDuSec (I := I) S t)
-    (metricTensorField (I := I) (S.base.metric t))
-
-/-- Explicit section model for `Hess R tensor g` at a fixed time. -/
-noncomputable def scalarMetric2Sec
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 4 :=
-  MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
-    (scalarHessSec (I := I) S t)
-    (metricTensorField (I := I) (S.base.metric t))
-
-@[simp]
-theorem scalarMetric1Sec_apply
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
-    scalarMetric1Sec (I := I) S t x =
-      Bundle.continuousMultilinearMap.product_fun
-        (s := 1) (q := 2) (scalarDuSec (I := I) S t x)
-        (metricTensorField (I := I) (S.base.metric t) x) := by
-  rfl
-
-@[simp]
-theorem scalarMetric2Sec_apply
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
-    scalarMetric2Sec (I := I) S t x =
-      Bundle.continuousMultilinearMap.product_fun
-        (s := 2) (q := 2) (scalarHessSec (I := I) S t x)
-        (metricTensorField (I := I) (S.base.metric t) x) := by
-  rfl
 
 /-- The canonical scalar Hessian section realizes the total covariant
 derivative of the canonical scalar differential. -/
@@ -2419,7 +2505,7 @@ theorem scalarMetric1Sec_realizes
           rw [← hslots]
           rw [hnabla]
           simp only [tensor0SField_smulByFun_apply,
-            ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+            Tensor0SSpace.smul_apply, smul_eq_mul]
           rw [hprod]
           have hsum :
               (∑ a : Fin 2,
@@ -2628,6 +2714,7 @@ theorem scalarMetric2Sec_realizes
               fin_cases a
               rfl
             rw [h0left, h1left, h2left]
+            repeat rw [metricTensorField_apply]
             simp [afun, mfun, alphaSec, metricSec, W, Function.update]
             ring_nf
           rw [hsum3]
@@ -2683,10 +2770,7 @@ theorem pinchNablaModel_apply
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     pinchNablaModel (I := I) S delta t x =
       ricciNablaWMP (I := I) S t x -
-        delta •
-          Bundle.continuousMultilinearMap.product_fun
-            (s := 1) (q := 2) (scalarDuSec (I := I) S t x)
-            (metricTensorField (I := I) (S.base.metric t) x) := by
+        delta • scalarMetric1Sec (I := I) S t x := by
   simp [pinchNablaModel]
 
 @[simp]
@@ -2768,6 +2852,20 @@ def ricciCoordReact
   ricciCoordQuadRHS (I := I) S t x v -
     ricciCoordRough (I := I) S t x v
 
+/-- Coordinate Ricci-evolution reaction evaluated on a fixed pair, obtained by
+subtracting the coordinate rough-Laplacian expansion from `ricciPairRHS`. -/
+noncomputable def ricciPairReact
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : Real) (x : M) (v w : TangentSpace I x) : Real :=
+  ricciPairRHS (I := I) S t x v w -
+    ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+      ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w *
+            coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
+
 /-- Coordinate RHS for the time derivative of the shifted pinching quadratic
 evaluation. -/
 def pinchCoordTime
@@ -2801,7 +2899,8 @@ def pinchCoordReact
         S.scalar t x *
           ((-2 : Real) * S.ricciAt t x (DifferentialGeometry.Integral.Connection.vec2 (I := I) v v)))
 
-private def ricciActualReactAt
+/-- Intrinsic reaction tensor in the Ricci evolution equation. -/
+noncomputable def ricciActualReactAt
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -2810,6 +2909,55 @@ private def ricciActualReactAt
       rm04RicciContrAt (I := I) (M := M) (S.base.metric t)
         (S.base.rm04 t x) (S.ricci t x) -
     2 • ricciQuadAt (I := I) (M := M) (S.base.metric t) (S.ricci t x)
+
+private theorem actualReact_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : Real) (x : M) (v : Fin 2 → TangentSpace I x) :
+    ricciActualReactAt (I := I) S t x v =
+      (-2 : Real) *
+          rm04RicciContrAt (I := I) (M := M) (S.base.metric t)
+            (S.base.rm04 t x) (S.ricci t x) v -
+        2 * ricciQuadAt (I := I) (M := M) (S.base.metric t) (S.ricci t x) v := by
+  unfold ricciActualReactAt
+  simp only [Tensor0SSpace.sub_apply, real_smul0S_apply,
+    Tensor0SSpace.nsmul_apply, nsmul_eq_mul, Nat.cast_ofNat]
+
+/-- Components of the intrinsic Ricci reaction in any tangent basis. -/
+theorem actualReact_comp
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : Real) (x : M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx → Idx → Real)
+    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (i j : Idx) :
+    ricciActualReactAt (I := I) S t x
+        (vec2 (I := I) (basis i) (basis j)) =
+      (-2 : Real) *
+          DifferentialGeometry.Integral.Connection.rm04RicciContractionAt
+            (I := I) basis (S.base.rm04 t x) gInv (S.ricci t x) i j -
+        2 * DifferentialGeometry.Integral.Connection.ricciQuadraticAt
+          (I := I) basis gInv (S.ricci t x) i j := by
+  rw [actualReact_apply (I := I) (M := M) S t x
+    (vec2 (I := I) (basis i) (basis j))]
+  rw [rm04ContrAt_comp_basis (I := I) (M := M) basis gInv hinv,
+    ricciQuadAt_comp_basis (I := I) (M := M) basis gInv hinv]
+
+private theorem reaction3_apply
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (v : Fin 2 → TangentSpace I x) :
+    ricciReaction3At (I := I) (M := M) g Ric v =
+      2 * rm04RicciContrAt (I := I) (M := M) g
+          (rm04OfRic3At (I := I) (M := M) g Ric) Ric v -
+        2 * ricciQuadAt (I := I) (M := M) g Ric v := by
+  unfold ricciReaction3At
+  simp only [Tensor0SSpace.sub_apply, Tensor0SSpace.nsmul_apply,
+    nsmul_eq_mul, Nat.cast_ofNat]
 
 private theorem ricciActualReactAt_eq_reaction_basis
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
@@ -2857,7 +3005,8 @@ private theorem ricciActualReactAt_eq_reaction_basis
             (vec2 (I := I) (basis i) (basis j)) -
         2 * ricciQuadAt (I := I) (M := M) (S.base.metric t)
             (S.ricci t x) (vec2 (I := I) (basis i) (basis j)) := by
-        simp [ricciActualReactAt, smul_eq_mul]
+        exact actualReact_apply (I := I) (M := M) S t x
+          (vec2 (I := I) (basis i) (basis j))
     _ =
       2 *
           rm04RicciContrAt (I := I) (M := M) (S.base.metric t)
@@ -2871,7 +3020,8 @@ private theorem ricciActualReactAt_eq_reaction_basis
     _ =
       ricciReaction3At (I := I) (M := M) (S.base.metric t) (S.ricci t x)
         (vec2 (I := I) (basis i) (basis j)) := by
-        simp [ricciReaction3At]
+        exact (reaction3_apply (I := I) (M := M) (S.base.metric t)
+          (S.ricci t x) (vec2 (I := I) (basis i) (basis j))).symm
 
 private theorem ricciCoordReact_eq_actual
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
@@ -2921,7 +3071,8 @@ private theorem ricciCoordReact_eq_actual
           2 * ricciQuadAt (I := I) (M := M) (S.base.metric t)
               (S.ricci t x)
               (DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame i x) (frame j x)) := by
-          simp [ricciActualReactAt, smul_eq_mul]
+          exact actualReact_apply (I := I) (M := M) S t x
+            (DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame i x) (frame j x))
       _ =
         (-2 : Real) *
             DifferentialGeometry.Integral.Connection.rm04RicciContractionAt (I := I) b (S.base.rm04 t x)
@@ -2999,6 +3150,158 @@ private theorem ricciCoordReact_eq_actual
             c i j * L i j
   exact sum_coord_react_cancel c L R Q
 
+/-- The coordinate reaction on a fixed pair is the evaluation of the intrinsic
+Ricci reaction tensor on that pair. -/
+theorem pairReact_eq_actual
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : Real) (x : M) (v w : TangentSpace I x) :
+    ricciPairReact (I := I) S t x v w =
+      ricciActualReactAt (I := I) S t x
+        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) := by
+  classical
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
+  let gInvAt : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j => coordInv (I := I) S x t x i j
+  have hinv :
+      MetricInverseInBasis_gen (I := I) (S.base.metric t) x b gInvAt := by
+    simpa [b, gInvAt] using coordInvReal (I := I) S x t
+  have hbasis :
+      ∀ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        b i = frame i x := by
+    intro i
+    simp [b, frame, DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
+  have hcomp :
+      ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        ricciActualReactAt (I := I) S t x
+            (DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame i x) (frame j x)) =
+          (-2 : Real) *
+              rmRicciContractionCompInFrame
+                (I := I) S S.base.rm04 (coordInv (I := I) S x)
+                frame t x i j -
+            2 * ricciQuadraticCompInFrame
+                (I := I) S (coordInv (I := I) S x) frame t x i j := by
+    intro i j
+    calc
+      ricciActualReactAt (I := I) S t x
+          (DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame i x) (frame j x)) =
+        ricciActualReactAt (I := I) S t x
+          (DifferentialGeometry.Integral.Connection.vec2 (I := I) (b i) (b j)) := by
+            rw [hbasis i, hbasis j]
+      _ =
+        (-2 : Real) *
+            DifferentialGeometry.Integral.Connection.rm04RicciContractionAt
+              (I := I) b (S.base.rm04 t x) gInvAt (S.ricci t x) i j -
+          2 * DifferentialGeometry.Integral.Connection.ricciQuadraticAt
+            (I := I) b gInvAt (S.ricci t x) i j :=
+        actualReact_comp (I := I) (M := M) S t x b gInvAt hinv i j
+      _ =
+          (-2 : Real) *
+              rmRicciContractionCompInFrame
+                (I := I) S S.base.rm04 (coordInv (I := I) S x)
+                frame t x i j -
+            2 * ricciQuadraticCompInFrame
+                (I := I) S (coordInv (I := I) S x) frame t x i j := by
+          simp [rmRicciContractionCompInFrame, raisedRicciCompInFrame,
+            ricciQuadraticCompInFrame, ricciOneUpCompInFrame, ricciCompInFrame,
+            DifferentialGeometry.Integral.Connection.rm04Comp,
+            DifferentialGeometry.Integral.Connection.rm04RicciContractionAt,
+            DifferentialGeometry.Integral.Connection.raised02CompAt,
+            DifferentialGeometry.Integral.Connection.ricciQuadraticAt,
+            DifferentialGeometry.Integral.Connection.oneUp02CompAt,
+            SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionOn.ricci,
+            SolutionFamily.ricci, b, frame, gInvAt, hbasis]
+  have hcomp_if :
+      ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        ricciActualReactAt (I := I) S t x
+            (fun q : Fin 2 => if q = 0 then frame i x else frame j x) =
+          (-2 : Real) *
+              rmRicciContractionCompInFrame
+                (I := I) S S.base.rm04 (coordInv (I := I) S x)
+                frame t x i j -
+            2 * ricciQuadraticCompInFrame
+                (I := I) S (coordInv (I := I) S x) frame t x i j := by
+    intro i j
+    simpa [DifferentialGeometry.Integral.Connection.vec2] using hcomp i j
+  have hsum :=
+    DifferentialGeometry.Tensor.Coordinates.tensor0S_two_eval_coordFrame_sum (I := I)
+      (M := M) (x₀ := x) (Ax := ricciActualReactAt (I := I) S t x) v w
+  symm
+  change ricciActualReactAt (I := I) S t x
+      (fun q : Fin 2 => if q = 0 then v else w) =
+    ricciPairReact (I := I) S t x v w
+  rw [hsum]
+  simp only [ricciPairReact, ricciPairRHS, ricciEvolutionRHSInFrame,
+    hcomp_if, frame]
+  let c : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j =>
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w
+  let L : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j => coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
+  let R : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j =>
+      rmRicciContractionCompInFrame
+        (I := I) S S.base.rm04 (coordInv (I := I) S x)
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t x i j
+  let Q : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+    fun i j =>
+      ricciQuadraticCompInFrame
+        (I := I) S (coordInv (I := I) S x)
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t x i j
+  change
+    (∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+      ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        c i j * ((-2 : Real) * R i j - 2 * Q i j)) =
+      (∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+        ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+          c i j * (L i j - 2 * R i j - 2 * Q i j)) -
+        ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+          ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+            c i j * L i j
+  exact sum_coord_react_cancel c L R Q
+
+/-- Intrinsic Ricci evolution on any fixed pair of tangent vectors, produced
+directly from `IsSolutionOn`. -/
+theorem ricciPairDeriv
+    [I.Boundaryless]
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x : M) (v w : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : Real => S.ricci s x
+        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w))
+      (metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
+          (ricciNabla2WMP (I := I) S (t : Real) x)
+          (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) +
+        ricciActualReactAt (I := I) S (t : Real) x
+          (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w))
+      D.carrier (t : Real) := by
+  have hcoord := ricciPairCoord (I := I) S hS x t v w
+  have hrough := ricciRoughPair (I := I) S (t : Real) x v w
+  have hreact := pairReact_eq_actual (I := I) S (t : Real) x v w
+  have hvalue :
+      ricciPairRHS (I := I) S (t : Real) x v w =
+        metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
+            (ricciNabla2WMP (I := I) S (t : Real) x)
+            (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) +
+          ricciActualReactAt (I := I) S (t : Real) x
+            (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) := by
+    unfold ricciPairReact at hreact
+    rw [hrough]
+    linarith
+  exact hcoord.congr_deriv hvalue
+
 theorem shiftNRaw_pinchCoordReact
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
@@ -3022,15 +3325,26 @@ theorem shiftNRaw_pinchCoordReact
     have hric :
         ricciCoordReact (I := I) S t x 0 = 0 := by
       rw [ricciCoordReact_eq_actual (I := I) S t x 0]
-      simp [ricciActualReactAt, hvec0]
+      rw [actualReact_apply (I := I) (M := M) S t x
+        (vec2 (I := I) (0 : TangentSpace I x) 0)]
+      rw [hvec0, tensor02_zero_apply, tensor02_zero_apply]
+      ring
     rw [shiftNRaw_pinch (I := I) (M := M) S delta t (S.base.metric t) x 0 0]
     have hN :
         shiftNAt (I := I) (M := M) delta t (S.base.metric t) x
             ((pinchSec (I := I) S delta) t x)
             (vec2 (I := I) (0 : TangentSpace I x) 0) = 0 := by
-      simp [hvec0]
+      rw [hvec0]
+      exact tensor02_zero_apply _
     rw [hN]
-    simp [pinchCoordReact, hric, hvec0]
+    unfold pinchCoordReact
+    rw [hric]
+    have hRicZero :
+        S.ricciAt t x (vec2 (I := I) (0 : TangentSpace I x) 0) = 0 := by
+      rw [hvec0]
+      exact tensor02_zero_apply _
+    rw [hRicZero]
+    simp
   · obtain ⟨nb⟩ :=
       exists_nullOrthonormalBasis3At (I := I) (M := M)
         (S.base.metric t) hdim hv
@@ -3044,10 +3358,9 @@ theorem shiftNRaw_pinchCoordReact
     have hcoord := ricciCoordReact_eq_actual (I := I) S t x v
     rw [shiftNRaw_pinch (I := I) (M := M) S delta t (S.base.metric t) x v v]
     rw [hpinch, hshift, ← hactual]
-    simp only [ContinuousMultilinearMap.sub_apply,
-      ContinuousMultilinearMap.smul_apply]
+    simp only [Tensor0SSpace.sub_apply, real_smul0S_apply]
     rw [← hcoord]
-    simp [pinchCoordReact, metricTensorField_apply, smul_eq_mul,
+    simp [pinchCoordReact, metricTensorField_apply,
       SolutionOn.scalar_eq_metricTrace, vec2, DifferentialGeometry.Integral.Connection.vec2]
     ring
 
@@ -3218,24 +3531,15 @@ theorem pinchSecFamilyContinuousOnSet
     (hS : IsSolutionOn (I := I) S) (delta : Real) :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => (pinchSec (I := I) S delta) t x) := by
-  have hmap :
-      Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
-        ((q.1.1 : Real), q.2)) := by
-    exact (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
   have hcoef :
       Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
         delta * S.scalar q.1.1 q.2) := by
     have hscalarSub :
         Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
           S.scalar q.1.1 q.2) := by
-      rw [continuous_iff_continuousAt]
-      intro q
-      exact ContinuousAt.comp
-        (x := q)
-        (f := fun q : {t : Real // t ∈ D.carrier} × M =>
-          ((q.1.1 : Real), q.2))
-        (g := fun p : Real × M => S.scalar p.1 p.2)
-        (hS.scalarCont (q.1.1, q.2)) hmap.continuousAt
+      exact ScalarSTContOn.continuous_subtype (I := I) (M := M) (S := S)
+        ({ scalar_continuousOn := hS.scalarCont } :
+          ScalarSTContOn (I := I) (M := M) S)
     exact continuous_const.mul hscalarSub
   have hmetric :
       Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
@@ -3289,21 +3593,12 @@ theorem pinchLipFamilyContinuousOnSet
     (hS : IsSolutionOn (I := I) S) :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => (pinchLipSec (I := I) S) t x) := by
-  have hmap :
-      Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
-        ((q.1.1 : Real), q.2)) := by
-    exact (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
   have hscalarSub :
       Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
         S.scalar q.1.1 q.2) := by
-    rw [continuous_iff_continuousAt]
-    intro q
-    exact ContinuousAt.comp
-      (x := q)
-      (f := fun q : {t : Real // t ∈ D.carrier} × M =>
-        ((q.1.1 : Real), q.2))
-      (g := fun p : Real × M => S.scalar p.1 p.2)
-      (hS.scalarCont (q.1.1, q.2)) hmap.continuousAt
+    exact ScalarSTContOn.continuous_subtype (I := I) (M := M) (S := S)
+      ({ scalar_continuousOn := hS.scalarCont } :
+        ScalarSTContOn (I := I) (M := M) S)
   have hmetric :
       Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x => metricTensorField (I := I) (S.base.metric t) x) := by
@@ -3709,7 +4004,7 @@ theorem pinchBarrierReg
   metric_eval_continuous := by
     intro x v w
     simpa [SolutionOn.family] using
-      ((hS.smoothMetric.coeff x v w).continuousOn.mono hTsub)
+      ((hS.smoothMetric.coeff_cont x v w).mono hTsub)
   barrier_eval_continuous := by
     intro epsilon d t0 hsub x v w
     have hScont :
@@ -3726,7 +4021,7 @@ theorem pinchBarrierReg
       exact
         (by
           simpa [SolutionOn.family] using
-            ((hS.smoothMetric.coeff x v w).continuousOn.mono hTsub) :
+            ((hS.smoothMetric.coeff_cont x v w).mono hTsub) :
           ContinuousOn
             (fun t : Real => (S.base.metric t).inner x v w)
             (Set.Icc 0 T)).mono hsub
@@ -4753,6 +5048,7 @@ theorem strict_pinch_sol_lt
       (scalar := S.scalar)
       (metricData_sol0 (I := I) (M := M) S)
       (metricData_sol0_pos (I := I) (M := M) S hpos)
-      (scalar0_cont_sol (I := I) (M := M) S hS.isSolution))
+      (scalar0_cont_sol (I := I) (M := M) S hS.isSolution
+        (hTsub (show (0 : Real) ∈ Set.Icc 0 T from ⟨le_rfl, hT⟩))))
 
 end DifferentialGeometry.PDE.RicciFlow

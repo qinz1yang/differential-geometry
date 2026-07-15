@@ -28,6 +28,23 @@ theorem extDerivFun_real_eq_mfderiv
       mfderiv I 𝓘(Real, Real) f x V := by
   simp [extDerivFun, NormedSpace.fromTangentSpace]
 
+/-- Scalar directional derivative chain rule through a diffeomorphism. -/
+theorem extDerivFun_comp_diffeomorph
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M N : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ M]
+    (f : N -> Real) (Phi : M ≃ₘ⟮I, I⟯ N) (x : M)
+    (v : TangentSpace I x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f (Phi x)) :
+    extDerivFun (I := I) (fun y : M => f (Phi y)) x v =
+      extDerivFun (I := I) f (Phi x) (mfderiv I I (Phi : M -> N) x v) := by
+  have hPhi : MDifferentiableAt I I (Phi : M -> N) x :=
+    Phi.mdifferentiable (by decide : (∞ : WithTop ℕ∞) ≠ 0) x
+  rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
+  simpa [Function.comp_def] using
+    mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real)) x hf hPhi v
+
 /-- A scalar chart expression is differentiable at a target point whenever the
 original scalar is manifold-differentiable at the corresponding source point.
 
@@ -837,6 +854,88 @@ theorem fixedBaseOnRegLocal
         simp [writtenInExtChartAt, extChartAt]
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
+
+/-- Mixed time/space derivatives commute locally when the scalar family is
+jointly `C²` and its supplied time derivative is valid on the open domain.
+
+Unlike `fixedBaseOnRegLocal`, spatial differentiability of the supplied time
+derivative is inferred from joint regularity and derivative uniqueness. -/
+theorem fixedBaseOnRegSmooth
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {timeSet regularSet : Set Real} {u : Set M}
+    {F Ft : Real -> M -> Real}
+    (hu : IsOpen u)
+    (hregular_open : IsOpen regularSet)
+    (hregular_nhds : ∀ {t : Real}, t ∈ regularSet -> timeSet ∈ nhds t)
+    (hSmooth :
+      ∀ t, t ∈ regularSet -> ∀ x : M, x ∈ u ->
+        ContMDiffAt
+          ((modelWithCornersSelf Real Real).prod I)
+          (modelWithCornersSelf Real Real) 2
+          (fun p : Real × M => F p.1 p.2)
+          (t, x))
+    (hTime :
+      ∀ t, t ∈ regularSet -> ∀ x : M, x ∈ u ->
+        HasDerivWithinAt
+          (fun s : Real => F s x)
+          (Ft t x)
+          timeSet
+          t) :
+    FixedBaseExtDerivTimeDerivativeOnRegular
+      (I := I) timeSet regularSet u F Ft := by
+  have hFdiff :
+      ∀ s, s ∈ regularSet -> ∀ x : M, x ∈ u ->
+        MDifferentiableAt I (modelWithCornersSelf Real Real) (F s) x := by
+    intro s hs x hx
+    have hslice :
+        ContMDiffAt I ((modelWithCornersSelf Real Real).prod I) 1
+          (fun y : M => (s, y)) x :=
+      contMDiffAt_const.prodMk contMDiffAt_id
+    have hcomp := (hSmooth s hs x hx).of_le
+      (by norm_num : (1 : WithTop ℕ∞) ≤ 2)
+    have hsliceComp := hcomp.comp x hslice
+    simpa [Function.comp_def] using hsliceComp.mdifferentiableAt (by norm_num)
+  have hFtdiff :
+      ∀ t, t ∈ regularSet -> ∀ x : M, x ∈ u ->
+        MDifferentiableAt I (modelWithCornersSelf Real Real) (Ft t) x := by
+    intro t ht x hx
+    have hpartialJoint :
+        ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+          (modelWithCornersSelf Real Real) 1
+          (fun p : Real × M => deriv (fun s => F s p.2) p.1) (t, x) :=
+      timeDeriv_smoothAt (hSmooth t ht x hx)
+        (by norm_num : (1 : WithTop ℕ∞) + 1 ≤ 2)
+    have hslice :
+        ContMDiffAt I ((modelWithCornersSelf Real Real).prod I) 1
+          (fun y : M => (t, y)) x :=
+      contMDiffAt_const.prodMk contMDiffAt_id
+    have hpartialSpace :
+        MDifferentiableAt I (modelWithCornersSelf Real Real)
+          (fun y : M => deriv (fun s => F s y) t) x := by
+      have hcomp := hpartialJoint.comp x hslice
+      simpa [Function.comp_def] using hcomp.mdifferentiableAt (by norm_num)
+    have heq :
+        (fun y : M => Ft t y) =ᶠ[nhds x]
+          fun y : M => deriv (fun s => F s y) t := by
+      filter_upwards [hu.mem_nhds hx] with y hy
+      exact ((hTime t ht y hy).hasDerivAt (hregular_nhds ht)).deriv.symm
+    exact hpartialSpace.congr_of_eventuallyEq heq
+  have hTimeReg :
+      ∀ t, t ∈ regularSet -> ∀ x : M, x ∈ u ->
+        HasDerivWithinAt (fun s : Real => F s x) (Ft t x) regularSet t := by
+    intro t ht x hx
+    exact ((hTime t ht x hx).hasDerivAt (hregular_nhds ht)).hasDerivWithinAt
+  have hswapReg :
+      FixedBaseExtDerivTimeDerivativeOnRegular
+        (I := I) regularSet regularSet u F Ft :=
+    fixedBaseOnRegLocal (I := I) hu (Set.Subset.rfl)
+      (fun ht => hregular_open.mem_nhds ht) hSmooth hFdiff hFtdiff hTimeReg
+  intro t ht x hx V
+  exact ((hswapReg t ht x hx V).hasDerivAt
+    (hregular_open.mem_nhds ht)).hasDerivWithinAt
 
 
 end DifferentialGeometry

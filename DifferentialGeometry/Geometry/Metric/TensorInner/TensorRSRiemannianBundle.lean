@@ -347,26 +347,24 @@ lemma innerModelRS_quadratic_continuous
     Continuous (fun T : TensorRSModel r s ℝ E =>
       tensorInnerPointwise (I := I) (M := M) g r s b T T) := by
   classical
-  -- Use the canonical basis of the finite-dim model fibre.
+
   let ι := Fin (Module.finrank ℝ (TensorRSModel r s ℝ E))
   let basis : Module.Basis ι ℝ (TensorRSModel r s ℝ E) :=
     Module.finBasis ℝ (TensorRSModel r s ℝ E)
-  -- Coordinate functionals `φ_i : M →ₗ[ℝ] ℝ`, each continuous in finite-dim.
+
   let φ : ι → (TensorRSModel r s ℝ E →ₗ[ℝ] ℝ) := fun i => basis.coord i
   have hφ_cont : ∀ i, Continuous (φ i) := fun i =>
     LinearMap.continuous_of_finiteDimensional (φ i)
-  -- Expansion: `T = ∑ φ i T • basis i`.
+
   have hexpand : ∀ T : TensorRSModel r s ℝ E,
       T = ∑ i : ι, (φ i T) • basis i := by
     intro T
     have := basis.linearCombination_repr T
-    -- `linearCombination` over a Finsupp; convert to Finset.sum over Fintype.
+
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype] at this
     · exact this.symm
     · intros; rw [zero_smul]
-  -- Bilin T T = ∑_{i,j} φ_i T * φ_j T * tensorInnerPointwise g r s b (basis i) (basis j)
-  -- A general distributivity lemma: for any coefficient vector `a : ι → ℝ`, the
-  -- inner product of `∑ i, a i • basis i` with itself expands to the double sum.
+
   have hgen_left : ∀ (a : ι → ℝ) (S : TensorRSModel r s ℝ E),
       tensorInnerPointwise (I := I) (M := M) g r s b
         (∑ i : ι, a i • basis i) S =
@@ -413,8 +411,7 @@ lemma innerModelRS_quadratic_continuous
     intro j _
     rw [RR.map_smul]
     rfl
-  -- Now the desired bilinear expansion. We separate coefficient computation from
-  -- the structural rewrite using an auxiliary `aux T S` lemma.
+
   have hbilin_aux : ∀ (T : TensorRSModel r s ℝ E) (a : ι → ℝ),
       T = ∑ i : ι, a i • basis i →
       tensorInnerPointwise (I := I) (M := M) g r s b T T =
@@ -448,14 +445,14 @@ lemma innerModelRS_quadratic_continuous
           tensorInnerPointwise (I := I) (M := M) g r s b (basis i) (basis j) := by
     intro T
     exact hbilin_aux T (fun i => φ i T) (hexpand T)
-  -- The function `T ↦ ∑_{i,j} ...` is continuous.
+
   have hcont : Continuous (fun T : TensorRSModel r s ℝ E =>
       ∑ i : ι, ∑ j : ι, (φ i T) * (φ j T) *
         tensorInnerPointwise (I := I) (M := M) g r s b (basis i) (basis j)) := by
     refine continuous_finset_sum _ (fun i _ => ?_)
     refine continuous_finset_sum _ (fun j _ => ?_)
     refine ((hφ_cont i).mul (hφ_cont j)).mul continuous_const
-  -- Conclude by rewriting via `hbilin_expand`.
+
   refine hcont.congr ?_
   intro T
   exact (hbilin_expand T).symm

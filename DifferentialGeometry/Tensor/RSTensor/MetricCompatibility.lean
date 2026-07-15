@@ -186,7 +186,10 @@ theorem nabla_zero
         (I := I) (M := M) cov X V
         (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (n := (∞ : WithTop ℕ∞)) s) x
-    simpa using heval
+    rw [heval]
+    change extDerivFun (I := I) (fun _ : M => (0 : Real)) x (X x) -
+      ∑ _ : Fin s, (0 : Real) = 0
+    simp [extDerivFun]
   simp only [component0S_apply]
   convert hzero using 2
   ext a
@@ -206,7 +209,8 @@ theorem zero_realizes_nabla
         (n := (∞ : WithTop ℕ∞)) (s + 1)) := by
   intro X x slots
   rw [nabla_zero (I := I) s cov X x]
-  simp
+  change (0 : Real) = 0
+  rfl
 
 /-- The zero `(0,3)` tensor field realizes the first covariant derivative of
 the metric tensor for a metric-compatible connection. -/
@@ -222,7 +226,8 @@ theorem zero_realizes_metric
         (n := (∞ : WithTop ℕ∞)) 3) := by
   intro X x slots
   rw [nabla_metric_zero (I := I) cov g hmc X x]
-  simp
+  change (0 : Real) = 0
+  rfl
 
 /-- Directional derivative product rule for scalar functions, kept private here
 to avoid adding a higher-level scalar-operator import to the tensor layer. -/
@@ -350,9 +355,28 @@ theorem nabla_smul_metric
               f hf metricSec) x slots := by
           rw [← hslots]
           rw [hnabla]
-          simp only [tensor0SField_smulByFun_apply,
-            ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-          rw [hprod]
+          have hfun :
+              (fun p : M =>
+                (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+                    (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+                    f hf metricSec p) (fun a : Fin 2 => V a p)) =
+                fun p : M => f p * mfun p := by
+            funext p
+            rfl
+          have hcorr :
+              (∑ a : Fin 2,
+                (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+                    (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
+                    f hf metricSec x)
+                  (Function.update (fun b : Fin 2 => V b x) a
+                    ((cov (fun p : M => V a p) x) (X x)))) =
+                ∑ a : Fin 2, f x *
+                  metricSec x
+                    (Function.update (fun b : Fin 2 => V b x) a
+                      ((cov (fun p : M => V a p) x) (X x))) := by
+            refine Finset.sum_congr rfl fun a _ => ?_
+            rfl
+          rw [hfun, hprod, hcorr]
           have hsum :
               (∑ a : Fin 2,
                 f x *

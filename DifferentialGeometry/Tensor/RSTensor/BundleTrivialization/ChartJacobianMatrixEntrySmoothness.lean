@@ -164,7 +164,7 @@ theorem chartJinvMatrix_wrapped_entry_contMDiffOn
           ((trivializationAt E (TangentSpace I) α).symmL ℝ b
             ((Module.finBasis ℝ E) i))))
       ((chartAt H α).source ∩ (chartAt H β).source) := by
-  -- Express the wrapped scalar via `coordChangeL` smoothness.
+
   have hcoord := contMDiffOn_coordChangeL_tangent (I := I) α β
   have hcoord_app : ContMDiffOn I 𝓘(ℝ, E) ∞
       (fun b : M => ((trivializationAt E (TangentSpace I) α).coordChangeL ℝ
@@ -206,9 +206,9 @@ theorem chartJMatrix_wrapped_entry_contMDiffOn
           ((trivializationAt E (TangentSpace I) β).symmL ℝ b
             ((Module.finBasis ℝ E) i))))
       ((chartAt H α).source ∩ (chartAt H β).source) := by
-  -- Reduce to the inverse case via index swap.
+
   have h := chartJinvMatrix_wrapped_entry_contMDiffOn (I := I) β α i j
-  -- The set is symmetric in α, β so we rewrite by inter_comm.
+
   rw [Set.inter_comm] at h
   exact h
 

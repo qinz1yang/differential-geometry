@@ -102,25 +102,58 @@ def chartFComponentOnE
 
 /-- `IsMetricPerturbationFamily g₀ α h gfam` says the smooth one-parameter family
 `gfam : ℝ → SmoothRiemannianMetric I M` realises the perturbation line
-`s ↦ g₀ ⊕ s·h` through the chart perturbation `h`, **to first order in `s` at `s = 0`**,
-in chart-`α`-coordinate components: `gfam 0 = g₀`, and at every chart-interior point `y`
-the chart-Gram component `s ↦ g_{ij}(gfam s)(y)` moves along `h` with unit speed,
-`(d/ds) g_{ij}(gfam s)(y)|_{s = 0} = h_{ij}(y)`.
+`s ↦ g₀ ⊕ s·h` through the chart perturbation `h`, **to second order in the chart
+`y`-jet, with `s`-`y` smoothness**, at `s = 0`, in chart-`α`-coordinate components.
+
+The clauses are:
+
+* `gfam 0 = g₀` — the family passes through `g₀` at `s = 0`;
+* `(d/ds) g_{ij}(gfam s)(y)|_{s = 0} = h_{ij}(y)` — the chart-Gram **value** moves along
+  `h` with unit speed (the original pin; the downstream zero-operator guard depends on it);
+* **(joint smoothness)** for each `i, j`, the map
+  `(s, y) ↦ g_{ij}(gfam s)(y)` is `C^∞` at every point of `Set.univ ×ˢ interior target`,
+  so that one may differentiate the chart-Gram in `s` and in `y` freely and commute
+  `(d/ds)` with the chart partials `∂_y` (Clairaut/Schwarz);
+* **(first `y`-jet pin)** `(d/ds) ∂_p g_{ij}(gfam s)(y)|_{s = 0} = ∂_p h_{ij}(y)`, the
+  first chart partial of the Gram moves along the first chart partial of `h`;
+* **(second `y`-jet pin)** `(d/ds) ∂_p∂_q g_{ij}(gfam s)(y)|_{s = 0} = ∂_p∂_q h_{ij}(y)`,
+  the iterated second chart partial of the Gram moves along that of `h`.
+
+The two `y`-jet pins are exactly the inputs the chart second-order symbol calculus needs:
+the linearized Ricci principal symbol carries `∂²h`, so the `s`-derivative of the chart
+DeTurck–Ricci tower at a chart-interior point reads off `∂²h` through the second `y`-jet
+pin, while the first-order remainder reads off `∂h` through the first `y`-jet pin.
 
 The first-order (derivative) form — rather than an exact affine identity for all `s` — is
 what makes the family **realisable by genuine positive-definite metrics**: a small
 symmetric perturbation `g₀ + s·χ·h` with a chart cutoff `χ ≡ 1` near `y` stays
-positive-definite for `s` small and has the prescribed `s`-derivative at `s = 0`, while an
-exact global `g₀ + s·h` would fail positivity for an unbounded `h`.  It pins `s` to the
-genuine perturbation direction `h`, so the `s`-derivative of a chart component of
-`F (gfam s)` at `s = 0` is the directional derivative `D_h F(g₀)`, which is all the
-chart `∂²h` second-order symbol calculus uses. -/
+positive-definite for `s` small and has the prescribed `s`-derivatives of every chart
+`y`-jet at `s = 0` (since `χ ≡ 1` makes the family affine-in-`s` near `y`, with all `∂χ`
+factors vanishing), while an exact global `g₀ + s·h` would fail positivity for an
+unbounded `h`.  Every clause is satisfied by such an affine cutoff family, so the
+predicate is non-vacuous. -/
 def IsMetricPerturbationFamily
     (g₀ : SmoothRiemannianMetric I M) (α : M) (h : ChartMetricPerturbation E)
     (gfam : ℝ → SmoothRiemannianMetric I M) : Prop :=
   gfam 0 = g₀ ∧
-    ∀ (i j : Fin (Module.finrank ℝ E)) {y : E}, y ∈ interior (extChartAt I α).target →
-      HasDerivAt (fun s : ℝ => chartGramOnE (I := I) (gfam s) α i j y) (h i j y) 0
+    (∀ (i j : Fin (Module.finrank ℝ E)) {y : E}, y ∈ interior (extChartAt I α).target →
+      HasDerivAt (fun s : ℝ => chartGramOnE (I := I) (gfam s) α i j y) (h i j y) 0) ∧
+    (∀ (i j : Fin (Module.finrank ℝ E)) {y : E},
+        y ∈ interior (extChartAt I α).target →
+        ContDiffAt ℝ ∞
+          (fun p : ℝ × E => chartGramOnE (I := I) (gfam p.1) α i j p.2) (0, y)) ∧
+    (∀ (i j p : Fin (Module.finrank ℝ E)) {y : E},
+        y ∈ interior (extChartAt I α).target →
+        HasDerivAt
+          (fun s : ℝ => partialDeriv (E := E) p (chartGramOnE (I := I) (gfam s) α i j) y)
+          (partialDeriv (E := E) p (h i j) y) 0) ∧
+    (∀ (i j p q : Fin (Module.finrank ℝ E)) {y : E},
+        y ∈ interior (extChartAt I α).target →
+        HasDerivAt
+          (fun s : ℝ =>
+            partialDeriv (E := E) p
+              (partialDeriv (E := E) q (chartGramOnE (I := I) (gfam s) α i j)) y)
+          (partialDeriv (E := E) p (partialDeriv (E := E) q (h i j)) y) 0)
 
 /-- `IsFirstOrderInPerturbation R` says the family
 `R : ChartMetricPerturbation E → (α : M) → (i j) → E → ℝ` carries **at most one** chart
@@ -445,7 +478,7 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
       rw [extChartAt_source_eq_chartAt_source (I := I)]; exact mem_chart_source H x
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) x
       ((extChartAt I x).map_source hx_src)
-  obtain ⟨gfam, hfam0, hfam_deriv⟩ := hfam hξt
+  obtain ⟨gfam, hfam0, hfam_deriv, hfam_smooth, hfam_jet1, hfam_jet2⟩ := hfam hξt
   have hσ_zero : ∀ i j : Fin (Module.finrank ℝ E),
       (σ x ξ t) ((chartModelBasis E) i) ((chartModelBasis E) j) = 0 := by
     intro i j
@@ -458,7 +491,8 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
             (extChartAt I x x)) 0 = 0 := by
       simp only [chartFComponentOnE_zero_operator]
       exact deriv_const 0 0
-    have hsplit' := hsplit x hξt gfam ⟨hfam0, hfam_deriv⟩ i j hy_int
+    have hsplit' := hsplit x hξt gfam ⟨hfam0, hfam_deriv, hfam_smooth, hfam_jet1, hfam_jet2⟩
+      i j hy_int
     rw [hderiv0] at hsplit'
     have hR0 : R hξt x i j (extChartAt I x x) = 0 :=
       hR_first x hξt i j hy_int

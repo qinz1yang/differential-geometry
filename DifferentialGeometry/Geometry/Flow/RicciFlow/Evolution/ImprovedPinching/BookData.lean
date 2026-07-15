@@ -260,10 +260,10 @@ theorem ricciSym_can
   exact ricciSym_rm04 (I := I) basis gInv
     (S.ricciAt t x) (S.base.rm04 t x) hTrace
     (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-      (I := I) (g := S.base.metric t) (hcov := hcov)
+      (I := I) (g := S.base.metric t)
       (Rm04 := S.base.rm04 t) (hRm04 := hRm04))
     (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-      (I := I) (g := S.base.metric t) (hcov := hcov)
+      (I := I) (g := S.base.metric t)
       (Rm04 := S.base.rm04 t) (hRm04 := hRm04))
     (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
       (I := I) (g := S.base.metric t)
@@ -320,7 +320,7 @@ theorem traceData_can
       DifferentialGeometry.Integral.Connection.AlgebraicCurvatureSymmetries3
         (DifferentialGeometry.Integral.Connection.standardRmCompAt (I := I) basis (S.base.rm04 t x)) :=
     DifferentialGeometry.Integral.Connection.algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
-      (I := I) (g := S.base.metric t) (hcov := hcov)
+      (I := I) (g := S.base.metric t)
       (Rm04 := S.base.rm04 t) (hRm04 := hRm04) basis
   have hRicFirst :
       DifferentialGeometry.Integral.Connection.RicciRealizesRm04FirstTraceAt (I := I) (S.ricciAt t x)

@@ -55,6 +55,14 @@ theorem ricci_comp_eq_trace
 
 
 
+/-- **⚠ SOFT-DEPRECATED — do not add new uses (eventual cleanup target).**
+
+A transparent `abbrev` alias of `scalarFromRicciTraceInFrame`, kept ONLY for the `scalarCurvature…`
+naming and its existing consumers (its `_apply`/`_realizes` lemmas + the volume-frame scalar in
+`Flow/RicciFlow/Evolution/Volume.lean`).  It adds no mathematics beyond the rename.  Prefer
+`scalarFromRicciTraceInFrame` directly in new code; this alias is slated for removal once those uses
+migrate.  (Tolerated-now, fine to keep — see the "eventual cleanup targets" list in
+`Geometry/Curvature/CurvatureCanonicalization.md`.) -/
 abbrev scalarCurvatureFromRicciTraceInFrame
     (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)

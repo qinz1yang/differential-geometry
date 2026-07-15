@@ -320,6 +320,68 @@ theorem comp_time
     exact htime.prodMk continuous_snd
   exact hA.comp hpull
 
+/-- Glue time-dependent tensor continuity on a closed-left half `Ico a c` and an open interior
+`Ioo a b` (with `a < c`, so the two cover `Ico a b` by sets open in it) to continuity on the
+whole closed-open carrier `Ico a b`.  Used to assemble carrier continuity of the extended Ricci-flow
+solution from its `[α, ω)` half and its `(α, ω+ε)` interior half. -/
+theorem of_union_closedOpen
+    {s : Nat} {a c b : Real} (hac : a < c)
+    {A : (t : Real) -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x}
+    (h1 : Tensor0SFamilyContinuousOnSet (I := I) (M := M) s (Set.Ico a c) A)
+    (h2 : Tensor0SFamilyContinuousOnSet (I := I) (M := M) s (Set.Ioo a b) A) :
+    Tensor0SFamilyContinuousOnSet (I := I) (M := M) s (Set.Ico a b) A := by
+  unfold Tensor0SFamilyContinuousOnSet at h1 h2 ⊢
+  rw [continuous_iff_continuousAt]
+  rintro q
+  rcases lt_or_ge (q.1.1 : Real) c with hlt | hge
+  · -- `q.1.1 < c`: continuous on the open set `{q' | q'.1.1 < c}` via the `Ico a c` section.
+    have hopen : IsOpen {q' : {t : Real // t ∈ Set.Ico a b} × M | (q'.1.1 : Real) < c} :=
+      isOpen_lt (continuous_subtype_val.comp continuous_fst) continuous_const
+    have hcont : ContinuousOn
+        (fun q' : {t : Real // t ∈ Set.Ico a b} × M =>
+          TotalSpace.mk' (Tensor0SModel s Real E)
+            (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
+        {q' : {t : Real // t ∈ Set.Ico a b} × M | (q'.1.1 : Real) < c} := by
+      rw [continuousOn_iff_continuous_restrict]
+      refine h1.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
+          (q'.1.1 : Real) < c} =>
+          (⟨w.1.1.1, Set.mem_Ico.mpr ⟨(Set.mem_Ico.mp w.1.1.2).1, w.2⟩⟩, w.1.2)) ?_
+      exact (((continuous_subtype_val.comp continuous_fst).comp
+        continuous_subtype_val).subtype_mk _).prodMk
+        (continuous_snd.comp continuous_subtype_val)
+    exact hcont.continuousAt (hopen.mem_nhds hlt)
+  · -- `q.1.1 ≥ c > a`: continuous on the open set `{q' | a < q'.1.1}` via the `Ioo a b` section.
+    have hopen : IsOpen {q' : {t : Real // t ∈ Set.Ico a b} × M | a < (q'.1.1 : Real)} :=
+      isOpen_lt continuous_const (continuous_subtype_val.comp continuous_fst)
+    have hcont : ContinuousOn
+        (fun q' : {t : Real // t ∈ Set.Ico a b} × M =>
+          TotalSpace.mk' (Tensor0SModel s Real E)
+            (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
+        {q' : {t : Real // t ∈ Set.Ico a b} × M | a < (q'.1.1 : Real)} := by
+      rw [continuousOn_iff_continuous_restrict]
+      refine h2.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
+          a < (q'.1.1 : Real)} =>
+          (⟨w.1.1.1, Set.mem_Ioo.mpr ⟨w.2, (Set.mem_Ico.mp w.1.1.2).2⟩⟩, w.1.2)) ?_
+      exact (((continuous_subtype_val.comp continuous_fst).comp
+        continuous_subtype_val).subtype_mk _).prodMk
+        (continuous_snd.comp continuous_subtype_val)
+    exact hcont.continuousAt (hopen.mem_nhds (lt_of_lt_of_le hac hge))
+
+/-- Transport time-dependent tensor continuity along a family that agrees pointwise on the set.
+Used to carry the `[α, ω)` curvature continuity of one solution onto another whose metric coincides
+there (e.g. the extended Ricci-flow solution agreeing with the original below `ω`). -/
+theorem congr
+    {s : Nat} {K : Set Real}
+    {A B : (t : Real) -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x}
+    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A)
+    (hAB : ∀ t ∈ K, ∀ x : M, A t x = B t x) :
+    Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K B := by
+  unfold Tensor0SFamilyContinuousOnSet at hA ⊢
+  refine hA.congr (fun q => ?_)
+  rw [hAB q.1.1 q.1.2 q.2]
+
 /-- Constant scalar multiplication preserves time-dependent tensor continuity. -/
 theorem const_smul
     {s : Nat} {K : Set Real}
@@ -470,35 +532,60 @@ theorem tensor0SFamily_quadCont
     b hb T hT v hv
   simpa [quad02, P, b, T, v] using hEval
 
-/-- Time smoothness of metric coefficients over a concrete real interval,
-together with joint total-space continuity of the metric tensor family. -/
+/-- Time regularity of metric coefficients over a concrete real interval,
+together with joint total-space continuity of the metric tensor family.
+
+The high-order (`C∞`) time/joint smoothness is required only on the *interior*
+`D.regular`; up to the closed initial endpoint (`D.carrier`) only continuity is
+required.  This matches what parabolic short-time existence actually provides
+(joint `C∞` on the open slab plus `C⁰` up to `t = 0`) and what consumers
+actually use (finite-order smoothness at interior/regular times via `.of_le`,
+and continuity up to `t = 0`); see the consumer audit in
+`DimensionThree/HamiltonPositiveRicci.md`. -/
 structure MetricFamilySmoothOn
     (D : RealTimeInterval)
     (G : RealizedMetricFamilyOn (I := I) (M := M) D) : Prop where
   coeff :
     forall (x : M) (X Y : TangentSpace I x),
-    ContDiffOn Real ⊤ (fun t : Real => (G.metric t).inner x X Y) D.carrier
+    ContDiffOn Real ∞ (fun t : Real => (G.metric t).inner x X Y) D.regular
+  coeff_cont :
+    forall (x : M) (X Y : TangentSpace I x),
+    ContinuousOn (fun t : Real => (G.metric t).inner x X Y) D.carrier
   metricTensor_cont :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => metricTensorField (I := I) (G.metric t) x)
+  /-- Joint spacetime smoothness of the metric components in a local frame.  The frame is
+  required to be **C∞** (`IsLocalFrameOn I E (∞ : WithTop ℕ∞)`): demanding C∞ component output
+  from a merely-C¹ frame is unconstructible (a C¹-not-C² frame yields C¹-not-C² components), so
+  the C∞-in/C∞-out matched form is the honest, inhabitable statement.  Consumers pass genuinely
+  C∞ frames (`e.localFrame b`, `coordinateFrameAt`), so this costs them nothing. -/
   frameCompSmooth :
     forall {Idx : Type} [Fintype Idx]
       (frame : Idx -> (x : M) -> TangentSpace I x) {u : Set M},
-      IsLocalFrameOn I E 1 frame u ->
+      IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u ->
       forall i j : Idx,
-        ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ⊤
+        ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
           (fun p : Real × M =>
             (G.metric p.1).inner p.2 (frame i p.2) (frame j p.2))
-          (D.carrier ×ˢ u)
+          (D.regular ×ˢ u)
 
-/-- Extract a metric coefficient's interval time smoothness. -/
+/-- Extract a metric coefficient's interior time smoothness. -/
 theorem metric_smooth_coeff_of_metricFamilySmoothOn
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
     (x : M) (X Y : TangentSpace I x) :
-    ContDiffOn Real ⊤ (fun t : Real => (G.metric t).inner x X Y) D.carrier :=
+    ContDiffOn Real ∞ (fun t : Real => (G.metric t).inner x X Y) D.regular :=
   hG.coeff x X Y
+
+/-- Extract a metric coefficient's continuity up to the closed initial endpoint. -/
+theorem metric_coeff_cont_of_metricFamilySmoothOn
+    {D : RealTimeInterval}
+    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (x : M) (X Y : TangentSpace I x) :
+    ContinuousOn (fun t : Real => (G.metric t).inner x X Y) D.carrier :=
+  hG.coeff_cont x X Y
 
 /-- Extract the metric tensor total-space continuity from a smooth metric family. -/
 theorem metricTensor_cont_of_metricFamilySmoothOn

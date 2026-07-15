@@ -91,10 +91,7 @@ noncomputable def toMultilinearSection {s : ℕ}
     (T : MixedSection 𝕜 F IB E n 0 s) :
     MultilinearSection 𝕜 F IB E n s :=
   ⟨fun x => T x (ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E x) 1), by
-    -- Apply smooth evaluation of hom bundle: T is smooth as a section of
-    -- Hom(0-multilinear, s-multilinear), and constOfIsEmpty 1 is smooth as a
-    -- section of the 0-multilinear bundle (via fromScalarField applied to
-    -- the constant function 1).
+
     exact T.contMDiff.clm_bundle_apply
       (MultilinearSection.fromScalarField (F := F) (E := E) n
         (fun _ => (1 : 𝕜)) contMDiff_const).contMDiff⟩
@@ -111,13 +108,11 @@ noncomputable def eval₀ (x : B) :
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F] in
 theorem eval₀_apply (x : B) (T : Bundle.continuousMultilinearMap 𝕜 0 F E x) :
     eval₀ (F := F) (E := E) x T = T Fin.elim0 := by
-  -- Unfold: eval₀ x T = curry₀ (toModel T) = (toModel T) 0 = T applied to (something Fin 0 → E x)
-  -- which equals T Fin.elim0 by Subsingleton.
+
   change (continuousMultilinearCurryFin0 𝕜 F 𝕜)
       (Bundle.continuousMultilinearMap.toModel (F := F) (E := E) T) = T Fin.elim0
   rw [continuousMultilinearCurryFin0_apply]
-  -- (toModel T) 0 = T (fun i : Fin 0 => (triv F at x).symmL 𝕜 x ((0 : Fin 0 → F) i))
-  -- The argument is some Fin 0 → E x, equal to Fin.elim0 by Subsingleton.
+
   exact congrArg T (Subsingleton.elim _ _)
 
 /-- Convert an `s`-multilinear section to a mixed `(0,s)`-section.
@@ -135,27 +130,23 @@ noncomputable def fromMultilinearSection {s : ℕ}
     intro x₀
     rw [contMDiffAt_section x₀]
     have hα := (contMDiffAt_section x₀).mp α.contMDiff.contMDiffAt
-    -- The trivialized mixed section eventually equals `smulRightL curry₀.toCLM`
-    -- applied to the trivialized α. The RHS is smooth as the application of a constant
-    -- CLM to a smooth function.
+
     refine ((contMDiffAt_const
       (c := ContinuousLinearMap.smulRightL 𝕜
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => F) 𝕜)
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
         (continuousMultilinearCurryFin0 𝕜 F 𝕜).toContinuousLinearMap)).clm_apply
       hα).congr_of_eventuallyEq ?_
-    -- Pointwise equality on the open base set of `trivializationAt F E x₀`.
+
     filter_upwards [(trivializationAt F E x₀).open_baseSet.mem_nhds
       (mem_baseSet_trivializationAt F E x₀)] with x hx
-    -- The base sets of `trivializationAt F E x₀` and the multilinear bundle's
-    -- `trivializationAt` at `x₀` coincide definitionally.
+
     have hx_s : x ∈ (trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
       (Bundle.continuousMultilinearMap 𝕜 s F E) x₀).baseSet := hx
-    -- Goal: trivialized `(eval₀ x).smulRight (α x)` =
-    --       smulRightL 𝕜 _ _ curry₀.toCLM (trivialized α x)
+
     apply ContinuousLinearMap.ext
     intro ω₀
-    -- The two sides are MLF s. Apply at any input `m : Fin s → F` and reduce.
+
     apply ContinuousMultilinearMap.ext
     intro m
     rw [hom_trivializationAt_apply]
@@ -166,12 +157,10 @@ noncomputable def fromMultilinearSection {s : ℕ}
       ContinuousMultilinearMap.smul_apply,
       map_smul,
       eval₀_apply]
-    -- Goal: ((triv₀.symmL x ω₀) Fin.elim0) • (triv_s.cLMA x (α x)) m
-    --     = (ω₀ 0) • ((triv_s ⟨x, α x⟩).2 m)
+
     rw [Bundle.continuousMultilinearMap.triv_zero_symmL_apply_elim0
       (F := F) (E := E) x₀ x hx ω₀]
-    -- Now the scalars match; the two multilinear maps differ only in `cLMA` vs
-    -- `(triv ⟨x, ·⟩).2`, which agree on the base set.
+
     congr 2
     rw [(trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
       (Bundle.continuousMultilinearMap 𝕜 s F E) x₀).continuousLinearMapAt_apply 𝕜]
@@ -242,8 +231,7 @@ theorem toMultilinearSection_fromMultilinearSection {s : ℕ}
     (fromMultilinearSection n α).toMultilinearSection n = α := by
   apply ContMDiffSection.ext
   intro x
-  -- The underlying section value at `x` of `toMultilinearSection (fromMultilinearSection α)`
-  -- is `((eval₀ x).smulRight (α x)) (constOfIsEmpty 1)`, which simplifies to `1 • α x = α x`.
+
   change ((eval₀ (F := F) (E := E) x).smulRight (α x))
       (ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E x) 1) = α x
   rw [ContinuousLinearMap.smulRight_apply, eval₀_apply,
@@ -258,17 +246,14 @@ theorem fromMultilinearSection_toMultilinearSection {s : ℕ}
     fromMultilinearSection n (T.toMultilinearSection n) = T := by
   apply ContMDiffSection.ext
   intro x
-  -- At point `x`, both sides are CLMs `(0-fiber at x) →L[𝕜] (s-fiber at x)`. Apply at `ψ`.
+
   apply ContinuousLinearMap.ext
   intro ψ
-  -- LHS = ((eval₀ x).smulRight (T x (constOfIsEmpty 1))) ψ
-  --     = (ψ Fin.elim0) • (T x (constOfIsEmpty 1))
-  -- RHS = T x ψ
-  -- Use that ψ = (ψ Fin.elim0) • (constOfIsEmpty 1) and the linearity of T x.
+
   change ((eval₀ (F := F) (E := E) x).smulRight (T x
       (ContinuousMultilinearMap.constOfIsEmpty 𝕜 (fun _ : Fin 0 => E x) 1))) ψ = T x ψ
   rw [ContinuousLinearMap.smulRight_apply, eval₀_apply]
-  -- Goal: (ψ Fin.elim0) • (T x (constOfIsEmpty 1)) = T x ψ
+
   rw [← map_smul (T x), zero_fiber_eq_smul_constOfIsEmpty ψ]
 
 /-!
@@ -284,8 +269,7 @@ theorem fromMultilinearSection_add {s : ℕ}
     (α β : MultilinearSection 𝕜 F IB E n s) (x : B) :
     (fromMultilinearSection n (α + β)).1 x =
     (fromMultilinearSection n α).1 x + (fromMultilinearSection n β).1 x := by
-  -- Unfold both sides to `smulRight` of fiber sums, then use linearity of `smulRight`
-  -- in the second argument.
+
   change (eval₀ (F := F) (E := E) x).smulRight (α.1 x + β.1 x) =
     (eval₀ (F := F) (E := E) x).smulRight (α.1 x) +
       (eval₀ (F := F) (E := E) x).smulRight (β.1 x)
@@ -354,8 +338,7 @@ noncomputable def multilinearBundle_mixedBundle_equiv
        ContinuousMultilinearMap ℝ (fun _ : Fin s => FM) ℝ)
       (fun x => Bundle.continuousMultilinearMap ℝ 0 FM EM' x →L[ℝ]
                 Bundle.continuousMultilinearMap ℝ s FM EM' x) := by
-  -- Construct the section-level C^nm(M,ℝ)-linear equivalence between `s`-multilinear
-  -- sections and mixed `(0, s)`-sections, then apply the section characterization lemma.
+
   let Fequiv : Cₛ^nm⟮IM; ContinuousMultilinearMap ℝ (fun _ : Fin s => FM) ℝ,
         Bundle.continuousMultilinearMap ℝ s FM EM'⟯
       ≃ₗ[C^nm⟮IM, M; ℝ⟯]

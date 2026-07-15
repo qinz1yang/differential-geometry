@@ -133,7 +133,7 @@ noncomputable def fromScalarField
     let d := Module.finrank 𝕜 F
     let b : Module.Basis (Fin d) 𝕜 F := Module.finBasis 𝕜 F
     refine (contMDiff_multilinearSection_iff_coord E n b _).mpr fun σ x₀ => ?_
-    -- The trivialized coordinate of constOfIsEmpty at σ : Fin 0 → Fin d is just the scalar
+
     have hcoord : ∀ x, (continuousMultilinearMap_basis b 0).repr
         (trivializationAt (MLF 0)
           (fun x => Bundle.continuousMultilinearMap 𝕜 0 F E x) x₀
@@ -173,10 +173,9 @@ theorem toScalarField_contMDiff
     (mem_baseSet_trivializationAt _ _ x₀)
   filter_upwards [hbase] with x _
   simp only [toScalarField]
-  -- The trivialized coordinate of a 0-multilinear map equals the map evaluated at Fin.elim0,
-  -- since the trivialization precomposes with symmL on 0 arguments (a vacuous operation).
+
   simp_rw [continuousMultilinearMap_basis_repr]
-  -- Both sides evaluate a 0-multilinear map at an empty argument tuple
+
   exact congrArg (α.toFun x) (Subsingleton.elim _ _)
 
 @[simp]

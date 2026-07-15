@@ -19,7 +19,7 @@ variable {M : Type _} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 
 namespace CovariantDerivative
 
-private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
+theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
     [T2Space M] (x : M) (v : TangentSpace I x) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
       (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v ∧ V x = v := by
@@ -64,7 +64,7 @@ private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
   refine ⟨V, hV, ?_⟩
   exact hV.self_of_nhds.trans (tangentConstAt_self (I := I) x v)
 
-private theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
+theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     {x : M} (X Y Z : TangentSpace I x)

@@ -544,6 +544,19 @@ theorem exists_open_nhds_expMap_diffeoOn
     zero_mem_expMapPartialDiffeomorph_source (I := I) g p,
     fun _ _ => rfl⟩
 
+/-- There is an exponential partial diffeomorphism whose target remains in the
+base chart used to construct it. -/
+theorem exists_exp_pd_chart
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ Φ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1,
+      (0 : E) ∈ Φ.source ∧
+      (∀ v ∈ Φ.source,
+        Φ v = (expMap (I := I) g p (show TangentSpace I p from v) : M)) ∧
+      Φ.target ⊆ (chartAt H p).source := by
+  refine ⟨expMapPartialDiffeomorph (I := I) g p,
+    zero_mem_expMapPartialDiffeomorph_source (I := I) g p, fun _ _ => rfl, ?_⟩
+  exact niceTarget_sub_chartSource (I := I) g p
+
 end LocalDiffeomorph
 
 end Exponential

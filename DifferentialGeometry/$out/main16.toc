@@ -1,0 +1,68 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Formalization status and terminology}{4}{section.2}%
+\contentsline {paragraph}{Native Lean proof.}{4}{section*.2}%
+\contentsline {paragraph}{Consumer theorem.}{4}{section*.3}%
+\contentsline {paragraph}{Black-box input.}{4}{section*.4}%
+\contentsline {paragraph}{Frontier.}{5}{section*.5}%
+\contentsline {paragraph}{Transfer field or transfer interface.}{5}{section*.6}%
+\contentsline {paragraph}{Lean endpoint.}{5}{section*.7}%
+\contentsline {paragraph}{Theorem-shaped endpoint.}{5}{section*.8}%
+\contentsline {section}{\numberline {3}Differential-geometric infrastructure in Lean}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tensor bundles and theorem-facing predicates}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Construction of the Levi-Civita connection}{8}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Linear connections on $TM$ and their actions on tensors}{8}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Linear connections in \texttt {mathlib} and the Levi-Civita connection}{9}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}Induced covariant derivatives on tensor fields in Lean}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Coordinate Christoffel symbols}{11}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}A concrete checked example: the general mixed-tensor coordinate formula}{11}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Main goal and global conventions}{13}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground geometric definitions needed by the endpoint}{13}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}The main Lean endpoint}{15}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Local tensor-calculus and differential-geometric calculations}{16}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Foundational geometric conventions}{16}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Evolution equations}{17}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Metric and connection variation}{18}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Ricci, scalar curvature, and Ricci norm}{19}{subsubsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.3}Three-dimensional curvature algebra}{21}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Analytic inputs and maximum-principle consumers}{22}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Ricci flow and short-time existence}{22}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Maximal Ricci flow interval}{23}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Maximum principles}{24}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Preservation of Ricci positivity and Ricci pinching}{28}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}The improved Ricci pinching quantity}{30}{subsection.6.5}%
+\contentsline {subsubsection}{\numberline {6.5.1}Definition and evolution of the pinching quantity}{30}{subsubsection.6.5.1}%
+\contentsline {subsubsection}{\numberline {6.5.2}The algebraic estimate for $Q$}{32}{subsubsection.6.5.2}%
+\contentsline {section}{\numberline {7}Compactness, transfer, and topological interfaces}{34}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Auxiliary estimates and black-box interfaces for the blow-up argument}{34}{subsection.7.1}%
+\contentsline {section}{\numberline {8}Completion of the proof}{42}{section.8}%
+\contentsline {paragraph}{Flow package and finite-time setup.}{42}{section*.9}%
+\contentsline {paragraph}{Ricci preservation and curvature bounds.}{43}{section*.10}%
+\contentsline {paragraph}{Improved pinching.}{43}{section*.11}%
+\contentsline {paragraph}{Noncollapsing and compactness.}{44}{section*.12}%
+\contentsline {paragraph}{Passing pinching to the limit.}{44}{section*.13}%
+\contentsline {paragraph}{Einstein limit and final topology.}{45}{section*.14}%
+\contentsline {section}{\numberline {9}Dependency ledger for future formalization}{45}{section.9}%
+\contentsline {paragraph}{Checked local infrastructure.}{45}{section*.15}%
+\contentsline {paragraph}{Checked consumers over global package assumptions.}{46}{section*.16}%
+\contentsline {paragraph}{Remaining global analytic and compactness inputs.}{46}{section*.17}%
+\contentsline {paragraph}{Remaining transfer and topological interfaces.}{47}{section*.18}%
+\contentsline {section}{\numberline {10}Theorem-to-Lean reference table}{47}{section.10}%
+\contentsline {section}{\numberline {11}Summary of Hamilton's proof and a few of its variants}{50}{section.11}%
+\contentsline {subsection}{\numberline {11.1}The formalized variant}{50}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Hamilton's original proof}{51}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Convergence-to-soliton variant}{52}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Appendix}{53}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Basic Riemannian Geometry}{53}{subsection.12.1}%
+\contentsline {subsubsection}{\numberline {12.1.1}Levi-Civita, Riemann, Ricci, and scalar curvature}{53}{subsubsection.12.1.1}%
+\contentsline {subsection}{\numberline {12.2}Tensor calculus}{54}{subsection.12.2}%
+\contentsline {subsubsection}{\numberline {12.2.1}Tensors}{54}{subsubsection.12.2.1}%
+\contentsline {subsubsection}{\numberline {12.2.2}Covariant differentiation of tensors}{55}{subsubsection.12.2.2}%
+\contentsline {subsubsection}{\numberline {12.2.3}Index notation for tensors}{56}{subsubsection.12.2.3}%
+\contentsline {subsubsection}{\numberline {12.2.4}The Ricci Identities}{56}{subsubsection.12.2.4}%
+\contentsline {subsubsection}{\numberline {12.2.5}Inner products and norms of tensors}{58}{subsubsection.12.2.5}%
+\contentsline {subsection}{\numberline {12.3}The Laplace operator}{58}{subsection.12.3}%
+\contentsline {subsubsection}{\numberline {12.3.1}The rough Laplacian and the divergence}{59}{subsubsection.12.3.1}%
+\contentsline {subsubsection}{\numberline {12.3.2}The fundamental Bochner formula}{60}{subsubsection.12.3.2}%
+\contentsline {subsection}{\numberline {12.4}First variation of the Christoffel symbols}{62}{subsection.12.4}%
+\contentsline {subsection}{\numberline {12.5}Short time existence}{63}{subsection.12.5}%
+\contentsline {subsection}{\numberline {12.6}Maximal Ricci flow interval}{65}{subsection.12.6}%

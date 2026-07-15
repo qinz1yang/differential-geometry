@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ParabolicInteriorSmoothing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralWeylCounting
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.WeylEigenvalueCountingBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.WeylSummability
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
@@ -38,12 +38,11 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-! ## The interior heat-trace summability (the single Weyl-dependent input)
+/-! ## The interior heat-trace summability
 
-The classical local Weyl law (`weyl_eigenvalue_counting_bound_of_closed`, the one
-deferred analytic input of the development) reduces — via the proven chain
-`EigenvalueCountingBound ⟹ EigenvalueTailSummable` — to the existence of an
-exponent `p > 0` with `∑ᵢ (1 + λᵢ)^{-p}` summable.  From this single fact the
+The proved non-sharp global Weyl estimate `tensorEigen_summable_negpow` supplies
+an exponent `p > 0` with `∑ᵢ (1 + λᵢ)^{-p}` summable for `(0, 2)` tensors. From
+this fact the
 **interior heat-trace summability** `∑ᵢ (1 + λᵢ)^σ · e^{-2 λᵢ ε} < ∞` follows for
 every `σ` and every `ε > 0`: the heat factor `e^{-2 λᵢ ε}` overwhelms any
 polynomial weight, so `(1 + λᵢ)^σ e^{-2 λᵢ ε} ≤ C · (1 + λᵢ)^{-p}` (a
@@ -370,7 +369,7 @@ Strong `Hˢ`-continuity on `[ε, T]` is the Weierstrass `M`-test
 (`continuousOn_tsum`): each single-mode summand is continuous in time and the
 mode-series of `Hˢ`-norms is dominated, uniformly on `[ε, T]`, by a summable
 family whose finiteness is the **interior heat-trace summability**
-`heatTraceWeighted_summable_of_tailSummable`, the sole Weyl-dependent input. -/
+`heatTraceWeighted_summable_of_tailSummable`. -/
 theorem interior_allscale_time_continuity
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
     (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
@@ -394,8 +393,9 @@ theorem interior_allscale_time_continuity
   have hσ0 : (0:ℝ) ≤ σ := le_trans ha0 haσ
   have ha2 : (0:ℝ) ≤ (a:ℝ) + 2 := by linarith
   have htail : EigenvalueTailSummable (I := I) (M := M) g_bg 0 2 :=
-    eigenvalueTailSummable_of_countingBound (I := I) (M := M) g_bg 0 2
-      (weyl_eigenvalue_counting_bound_of_closed (I := I) (M := M) g_bg 0 2)
+    ⟨((weylSobolevExp (E := E) : ℕ) : ℝ) + 1, by positivity,
+      tensorEigen_summable_negpow (I := I) (M := M) g_bg
+        (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1) (by linarith)⟩
   have hforce : ∀ d : ℝ, Summable (forcingMass (I := I) (M := M) gforce d) := by
     intro d
     exact hcouple d (solFieldMass_summable_all (I := I) (M := M) hT.le gforce hcouple hbase (d + 1))

@@ -102,11 +102,8 @@ theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
       simp
   | insert a S ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
-      change (((T a : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) +
-          (∑ i ∈ S, (T i : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜))) v) =
-        (T a : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v +
-          ∑ i ∈ S, (T i : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) v
-      rw [ContinuousMultilinearMap.add_apply, ih]
+      change T a v + (∑ i ∈ S, T i) v = T a v + ∑ i ∈ S, T i v
+      rw [ih]
 
 
 
@@ -134,7 +131,11 @@ theorem tensor0S_apply_eq_sum
   rw [tensor0S_sum_apply]
   refine Finset.sum_congr rfl ?_
   intro slots _hslots
-  rw [ContinuousMultilinearMap.smul_apply, tensor0SBasis_repr]
+  rw [tensor0SBasis_repr]
+  change component0S (I := I) basis A slots *
+      ((tensor0SBasis (I := I) basis s) slots) v =
+    component0S (I := I) basis A slots *
+      ∏ a : Fin s, basis.coord (slots a) (v a)
   have hb :
       ((tensor0SBasis (I := I) basis s) slots) v =
         ∏ a : Fin s, basis.coord (slots a) (v a) := by
@@ -142,7 +143,6 @@ theorem tensor0S_apply_eq_sum
       ∏ a : Fin s, basis.coord (slots a) (v a)
     exact basisTensor0S_apply (I := I) basis slots v
   rw [hb]
-  simp [smul_eq_mul]
 
 end Tensor0S
 

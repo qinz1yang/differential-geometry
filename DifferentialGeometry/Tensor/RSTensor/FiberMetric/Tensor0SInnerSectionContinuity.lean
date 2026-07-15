@@ -84,20 +84,18 @@ lemma continuousAt_clm_of_basis_continuousAt
     (h : ∀ i, ContinuousAt (fun b => u b (v i)) x₀) :
     ContinuousAt u x₀ := by
   classical
-  -- Operator-norm bound: `‖u b - u x₀‖ ≤ C * max_i ‖(u b - u x₀)(v i)‖`.
+
   obtain ⟨C, _hCpos, hC⟩ := v.exists_opNorm_le (E := F) (F := G)
-  -- We use the filter characterisation: prove the limit is `u x₀` at `𝓝 x₀`.
+
   rw [ContinuousAt, Metric.tendsto_nhds]
   intro ε hε
-  -- Pick `M_const := ε / (2 * max C 1)`. Then for each `i` we have
-  -- `‖(u b - u x₀)(v i)‖ ≤ M_const` eventually, and the basis bound gives
-  -- `‖u b - u x₀‖ ≤ max C 1 * M_const = ε/2 < ε`.
+
   have hC_pos : 0 < max C 1 := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
   set M_const : ℝ := ε / (2 * max C 1) with hM_def
   have hM_pos : 0 < M_const := by
     have h1 : 0 < 2 * max C 1 := by positivity
     exact div_pos hε h1
-  -- For each `i`, eventually `‖u b (v i) - u x₀ (v i)‖ < M_const` near `x₀`.
+
   have h_each : ∀ i, ∀ᶠ b in 𝓝 x₀,
       ‖(u b - u x₀) (v i)‖ < M_const := by
     intro i
@@ -111,13 +109,13 @@ lemma continuousAt_clm_of_basis_continuousAt
       ContinuousLinearMap.sub_apply _ _ _
     rw [heq]
     exact hdist
-  -- Intersection over all `i` (finite) of the eventual sets is still eventual.
+
   have h_all : ∀ᶠ b in 𝓝 x₀, ∀ i, ‖(u b - u x₀) (v i)‖ ≤ M_const := by
     rw [Filter.eventually_all]
     intro i
     filter_upwards [h_each i] with b hb
     exact hb.le
-  -- Translate operator-norm bound to a `dist`-bound.
+
   filter_upwards [h_all] with b hb
   have hM_const_nn : 0 ≤ M_const := le_of_lt hM_pos
   have hopBound : ‖u b - u x₀‖ ≤ C * M_const := hC hM_const_nn hb
@@ -148,15 +146,14 @@ lemma continuousAt_bilin_of_basis_continuousAt
     {u : N → F →L[ℝ] F →L[ℝ] ℝ} {x₀ : N}
     (h : ∀ i j, ContinuousAt (fun b => u b (v i) (v j)) x₀) :
     ContinuousAt u x₀ := by
-  -- Step A: for each `i`, `b ↦ (u b) (v i) : N → F →L[ℝ] ℝ` is continuous at `x₀`.
-  -- Apply Step 1 with `G = ℝ`.
+
   have h_inner_each : ∀ i, ContinuousAt (fun b => u b (v i)) x₀ := by
     intro i
     refine continuousAt_clm_of_basis_continuousAt (F := F) (G := ℝ) (N := N)
       (v := v) (u := fun b => u b (v i)) (x₀ := x₀) ?_
     intro j
     exact h i j
-  -- Step B: Apply Step 1 to the outer slot with `G = F →L[ℝ] ℝ`.
+
   exact continuousAt_clm_of_basis_continuousAt
     (F := F) (G := F →L[ℝ] ℝ) (N := N) (v := v)
     (u := u) (x₀ := x₀) h_inner_each
@@ -180,16 +177,14 @@ lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     ContinuousAt
       (fun b : M => chartTensorInnerPointwise_0sCLM g s α b) b₀ := by
   classical
-  -- Apply Step 2 with the canonical finite basis of `Tensor0SModel s ℝ E`.
+
   set basis := Module.finBasis ℝ (Tensor0SModel s ℝ E) with hbasis_def
   refine continuousAt_bilin_of_basis_continuousAt
     (F := Tensor0SModel s ℝ E) (N := M) (v := basis)
     (u := fun b => chartTensorInnerPointwise_0sCLM g s α b)
     (x₀ := b₀) ?_
   intro i j
-  -- Pointwise: `(chartTensorInnerPointwise_0sCLM g s α b) (basis i) (basis j) =`
-  -- `chartTensorInnerPointwise_0s s g α b (basis i) (basis j)`, which is smooth (hence
-  -- continuous) on the chart-α base set.
+
   have heq : (fun b : M =>
       chartTensorInnerPointwise_0sCLM g s α b (basis i) (basis j))
       = (fun b : M =>
@@ -197,8 +192,7 @@ lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     funext b
     rw [chartTensorInnerPointwise_0sCLM_apply]
   rw [heq]
-  -- The scalar function is `ContMDiffOn ∞` on the chart-α base set; restrict to a
-  -- neighborhood of `b₀` and convert to `ContinuousAt`.
+
   have hSmooth := chartTensorInnerPointwise_0s_contMDiffOn (I := I) (M := M) g α s
     (basis i) (basis j)
   have hCont : ContinuousOn
@@ -232,26 +226,22 @@ lemma innerBundleCLM_inCoordinates_apply
         α b α b
         (innerBundleCLM (I := I) (M := M) g s b) v w =
       chartTensorInnerPointwise_0sCLM g s α b v w := by
-  -- The trivialisation of the `(F₂ →L F₃)`-bundle at `α` is the hom-bundle
-  -- trivialisation, whose `linearMapAt` simplifies to the identity on the
-  -- trivial bundle `F₃ = ℝ`. We invoke `inCoordinates_apply_eq₂`.
+
   have hb' : b ∈ (trivializationAt (Tensor0SModel s ℝ E)
       (fun b' : M => Tensor0SSpace s I b') α).baseSet := hb
-  -- The third trivialization is the Trivial bundle's trivialization.
-  -- `linearMapAt` on Bundle.Trivial is the identity.
+
   have hb_trivR :
       b ∈ (trivializationAt ℝ (Bundle.Trivial M ℝ) α).baseSet := by
-    -- Trivial bundle's baseSet is `univ`.
+
     exact mem_univ _
-  -- The second trivialization for the dual bundle is also valid at `b`.
+
   have hb_dual :
       b ∈ (trivializationAt (Tensor0SModel s ℝ E →L[ℝ] ℝ)
         (fun b' : M => Tensor0SSpace s I b' →L[ℝ] ℝ) α).baseSet := by
-    -- The dual hom-bundle's baseSet is the intersection of the two
-    -- factors' baseSets.
+
     simp only [hom_trivializationAt_baseSet]
     exact ⟨hb, mem_univ _⟩
-  -- Apply `inCoordinates_apply_eq₂` with `F₃ = ℝ`, `E₃ = Bundle.Trivial M ℝ`.
+
   rw [inCoordinates_apply_eq₂ (𝕜 := ℝ)
     (F₁ := Tensor0SModel s ℝ E) (F₂ := Tensor0SModel s ℝ E)
     (F₃ := ℝ)
@@ -261,36 +251,22 @@ lemma innerBundleCLM_inCoordinates_apply
     (x₀ := α) (x := b)
     (ϕ := innerBundleCLM (I := I) (M := M) g s b)
     (v := v) (w := w) hb' hb' hb_trivR]
-  -- After `inCoordinates_apply_eq₂`, the result is
-  -- `(triv ℝ Trivial α).linearMapAt b
-  --    (innerBundleCLM g s b
-  --      ((triv F E α).symm b v)
-  --      ((triv F E α).symm b w))`.
-  -- The `linearMapAt` on Trivial is `LinearMap.id`.
-  -- The `(triv F E α).symm b v` for the multilinear bundle equals
-  -- `v.compContinuousLinearMap (chartJ α b)`.
-  -- After identification, applying `innerBundleCLM_apply` and the bridge identity
-  -- yields `chartTensorInnerPointwise_0s s g α b v w`.
-  -- ---- Step 5a: simplify the outer `linearMapAt` on the Trivial bundle.
-  -- The trivialization at `α` of `Bundle.Trivial M ℝ` has `baseSet = univ`, and
-  -- `(triv ⟨b, y⟩).2 = y`, so `linearMapAt R b y = y` by `coe_linearMapAt_of_mem`.
+
   have h_lm_id : ∀ y : ℝ,
       (trivializationAt ℝ (Bundle.Trivial M ℝ) α).linearMapAt ℝ b y = y := by
     intro y
     have hmem : b ∈ (trivializationAt ℝ (Bundle.Trivial M ℝ) α).baseSet := mem_univ _
     rw [(trivializationAt ℝ (Bundle.Trivial M ℝ) α).coe_linearMapAt_of_mem hmem]
-    -- `(triv ⟨b, y⟩).2 = y` for the trivial trivialization.
+
     rfl
   rw [h_lm_id]
-  -- ---- Step 5b: identify the `(triv F E α).symm b v` with compContinuousLinearMap.
-  -- For the multilinear bundle `Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)`,
-  -- the trivialisation at `α` has `.symm b v = v.compContinuousLinearMap (chartJ α b)`.
+
   have hsymm : ∀ (z : Tensor0SModel s ℝ E),
       (trivializationAt (Tensor0SModel s ℝ E)
         (fun b' : M => Tensor0SSpace s I b') α).symm b z =
       z.compContinuousLinearMap (fun _ : Fin s => chartJ (I := I) (M := M) α b) := by
     intro z
-    -- The trivialisation's `.symm` and `.symmL` agree as functions.
+
     have hsymmL_eq :
         ((trivializationAt (Tensor0SModel s ℝ E)
             (fun b' : M => Tensor0SSpace s I b') α).symmL ℝ b z :
@@ -299,25 +275,19 @@ lemma innerBundleCLM_inCoordinates_apply
             (fun b' : M => Tensor0SSpace s I b') α).symm b z := by
       rw [Bundle.Trivialization.symmL_apply]
     rw [← hsymmL_eq]
-    -- Use the dedicated multilinear inverse-trivialization formula.
+
     have :=
       Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
         (𝕜 := ℝ) (B := M) (F := E) (E := (TangentSpace I : M → Type _))
         (s := s) (x₀ := α) (x := b) hb z
-    -- The `chartJ` here is `(triv E TangentSpace α).continuousLinearMapAt ℝ b`,
-    -- which equals our definition of `chartJ α b`.
+
     convert this using 1
   rw [hsymm v, hsymm w]
-  -- Now the goal is:
-  --   `innerBundleCLM g s b (v.compCLM (chartJ α b)) (w.compCLM (chartJ α b))
-  --      = chartTensorInnerPointwise_0sCLM g s α b v w`.
+
   rw [innerBundleCLM_apply]
-  -- `Tensor0SBundle.Tensor0SSpace.toModel (v.compCLM (chartJ α b))` is `v.compCLM (chartJ α b)`
-  -- (as `toModel` is `id` on the underlying carrier).
+
   rw [chartTensorInnerPointwise_0sCLM_apply]
-  -- The `Tensor0SBundle.Tensor0SSpace.toModel` of `v.compCLM(chartJ α b)` (viewed as a
-  -- `Tensor0SSpace s I b` element) is the same multilinear map, since `toModel` is the
-  -- identity on the carrier. We need to absorb the `toModel` wrapping.
+
   have h_toM : ∀ (z : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ),
       Tensor0SBundle.Tensor0SSpace.toModel
         (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
@@ -325,19 +295,15 @@ lemma innerBundleCLM_inCoordinates_apply
     intro z
     exact Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply (I := I) (M := M) s b z
   rw [h_toM, h_toM]
-  -- Apply the bridge identity with `T = v.compCLM (chartJ α b)`, `S = w.compCLM (chartJ α b)`.
+
   rw [tensorInnerPointwise_0s_bridge_identity (I := I) (M := M) g α s hb]
-  -- Now the LHS is `chartTensorInnerPointwise_0s s g α b
-  --   ((v.compCLM (chartJ α b)).compCLM (chartJinv α b))
-  --   ((w.compCLM (chartJ α b)).compCLM (chartJinv α b))`.
-  -- For each tensor, `(v.compCLM (chartJ α b)).compCLM (chartJinv α b)`
-  -- = `v.compCLM (chartJ α b ∘ chartJinv α b)` = `v.compCLM id` = `v`.
+
   have hcomp : ∀ (z : Tensor0SModel s ℝ E),
       (z.compContinuousLinearMap (fun _ : Fin s => chartJ (I := I) (M := M) α b)).compContinuousLinearMap
         (fun _ : Fin s => chartJinv (I := I) (M := M) α b) = z := by
     intro z
     ext m
-    -- Both sides evaluate to `z (chartJ α b ∘ chartJinv α b ∘ m)` = `z m`.
+
     simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext i
@@ -360,28 +326,24 @@ theorem innerBundleCLM_continuousOn (g : SmoothRiemannianMetric I M) (s : ℕ) (
       TotalSpace.mk' (Tensor0SModel s ℝ E →L[ℝ] Tensor0SModel s ℝ E →L[ℝ] ℝ) b
         (innerBundleCLM (I := I) (M := M) g s b))
       (chartAt H α).source := by
-  -- Convert to chart-α base set.
+
   have hOpen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
   rw [show (chartAt H α).source =
     (trivializationAt E (TangentSpace I) α).baseSet from
     (TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) α).symm]
-  -- Show continuity at every point of the base set.
+
   rw [ContinuousOn]
   intro b₀ hb₀
-  -- Convert `ContinuousWithinAt` to `ContinuousAt` (the set is open).
+
   apply ContinuousAt.continuousWithinAt
-  -- Apply `continuousAt_hom_bundle`.
+
   rw [continuousAt_hom_bundle]
   refine ⟨continuousAt_id, ?_⟩
-  -- The bundle for the hom bundle:
+
   let HomBundle := fun b' : M =>
     Tensor0SSpace s I b' →L[ℝ] Tensor0SSpace s I b' →L[ℝ] ℝ
-  -- After `continuousAt_hom_bundle`, the second condition is
-  --   ContinuousAt (fun x ↦ inCoordinates F E F' E' b₀ x b₀ x (innerBundleCLM g s x)) b₀.
-  -- Use Step 4 with α := b₀, plus Step 5 (also with α := b₀) to identify the
-  -- in-coordinates form with `chartTensorInnerPointwise_0sCLM g s b₀`, valid on
-  -- the chart-`b₀` base set.
+
   have hb₀_self : b₀ ∈ (trivializationAt E (TangentSpace I) b₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt (F := E)
       (E := (TangentSpace I : M → Type _)) b₀
@@ -389,23 +351,18 @@ theorem innerBundleCLM_continuousOn (g : SmoothRiemannianMetric I M) (s : ℕ) (
     (trivializationAt E (TangentSpace I) b₀).open_baseSet
   have hCont_clm := chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     (I := I) (M := M) g s b₀ hb₀_self
-  -- Show ContinuousAt of the inCoordinates form by showing it agrees with
-  -- `chartTensorInnerPointwise_0sCLM g s b₀` on a nbhd of `b₀` (Step 5 with α := b₀).
-  -- Use `ContinuousAt.congr`.
+
   refine ContinuousAt.congr hCont_clm ?_
-  -- Show that for `x` near `b₀`, the inCoordinates form equals chartCLM at b₀ x.
+
   have h_nhds : (trivializationAt E (TangentSpace I) b₀).baseSet ∈ 𝓝 b₀ :=
     hOpen_b₀.mem_nhds hb₀_self
   filter_upwards [h_nhds] with x hx
-  -- Goal: `chartTensorInnerPointwise_0sCLM g s b₀ x = inCoordinates ... (innerBundleCLM g s x)`.
-  -- Apply CLM extensionality and use `innerBundleCLM_inCoordinates_apply` with α := b₀.
+
   refine ContinuousLinearMap.ext ?_
   intro v
   refine ContinuousLinearMap.ext ?_
   intro w
-  -- The `inCoordinates` value here is precisely `ContinuousLinearMap.inCoordinates F₁ E₁ F₂ E₂
-  -- b₀ x b₀ x (innerBundleCLM g s x)`, applied to `v` and `w`. By Step 5 (with α := b₀)
-  -- this equals `chartTensorInnerPointwise_0sCLM g s b₀ x v w`.
+
   exact (innerBundleCLM_inCoordinates_apply (I := I) (M := M) g s b₀ hx v w).symm
 
 /-! ## Step 7: Global continuity and the `IsContinuousRiemannianBundle` instance
@@ -447,7 +404,7 @@ noncomputable def tensor0SContinuousRiemannianMetric
   isVonNBounded := fun b =>
     tensor0SRiemannianInner_isVonNBounded (I := I) (M := M) g s b
   continuous := by
-    -- `tensor0SRiemannianInnerCLM = innerBundleCLM` by definition.
+
     have h := innerBundleCLM_continuous (I := I) (M := M) g s
     convert h using 0
 

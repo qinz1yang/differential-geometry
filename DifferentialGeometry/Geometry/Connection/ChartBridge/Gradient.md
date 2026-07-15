@@ -1,0 +1,23 @@
+# Gradient chart bridge
+
+## Current state
+
+- `gradient_eq_gradFun` records that the connection-layer `gradientFun` and the
+  chart/local `gradFun` are definitionally the same metric dual of `df`.
+- The theorem is pointwise, has the weakest assumptions required by the two
+  definitions, and its proof is `rfl`.
+- Focused verification passed.  The file's pre-existing unused-section-variable
+  warnings remain unrelated to this bridge.
+
+## Role in HCG
+
+This is a compatibility brick for rewriting a locally smooth gradient field
+before taking its Levi-Civita covariant derivative.  It is supporting machinery
+only; it does not prove the local Hessian identity or either HCG endpoint
+producer.
+# Gradient chart bridge
+
+`gradient_eq_gradFun` records the pointwise definitional compatibility between
+the connection-layer gradient and the canonical chart gradient.  Focused
+verification passed.  Local scalar-germ and Hessian localization live in the
+Hessian bridge rather than creating a second gradient hierarchy here.

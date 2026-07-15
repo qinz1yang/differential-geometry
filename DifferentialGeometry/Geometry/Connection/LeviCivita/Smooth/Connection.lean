@@ -100,6 +100,16 @@ theorem leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
     (leviCivitaConnectionOfMetric_homSection_contMDiffAt
       (I := I) e b g hxBase hσdiff hσAt).contMDiffWithinAt
 
+/-- The Levi-Civita connection of a smooth Riemannian metric is globally smooth
+as a covariant derivative (Mathlib's bundled `ContMDiffCovariantDerivative`):
+the local predicate at `u = univ`. -/
+theorem leviCivitaConnectionOfMetric_contMDiffCovariantDerivative
+    (g : SmoothRiemannianMetric I M) :
+    CovariantDerivative.ContMDiffCovariantDerivative
+      (leviCivitaConnectionOfMetric (I := I) g) ∞ :=
+  ⟨leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g
+    isOpen_univ⟩
+
 /-- The finite-order `C^1` local smoothness instance for the Levi-Civita
 connection.  This is the producer needed by curvature identities whose
 realization proofs only require differentiating `C^2` test sections once. -/

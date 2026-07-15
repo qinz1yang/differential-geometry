@@ -101,7 +101,7 @@ open scoped Manifold Topology Bundle ContDiff
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [Module.Finite ℝ E] [FiniteDimensional ℝ E]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (n : WithTop ℕ∞)
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
@@ -122,22 +122,20 @@ private noncomputable def to02Tensor_uCLM :
 /-- In local coordinates at `x₀`, the `(0,2)`-tensor obtained from a Riemannian metric is
 `uCLM` applied to the local coordinates of the curried inner product section. -/
 private lemma to02Tensor_trivialization_eq {x₀ x : M}
-    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
+    (A : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
-    let gI := Bundle.ContMDiffRiemannianMetric.inner g
     (trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (fun y => Tensor0SBundle.Tensor0SSpace 2 I y) x₀
-      ⟨x, ((to02Tensor_eCLM (E := E)).comp (gI x)).uncurryLeft⟩).2
+      ⟨x, ((to02Tensor_eCLM (E := E)).comp A).uncurryLeft⟩).2
       =
     (to02Tensor_uCLM (E := E)) ((to02Tensor_eCLM (E := E)).comp
       ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
-      (fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀ ⟨x, gI x⟩).2)) := by
-  dsimp
+      (fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀ ⟨x, A⟩).2)) := by
   let e₀ := trivializationAt E (TangentSpace I) x₀
   ext m
   change (((e₀.continuousMultilinearMap ℝ 2)
       ⟨x, ((to02Tensor_eCLM (E := E)).comp
-        ((Bundle.ContMDiffRiemannianMetric.inner g) x)).uncurryLeft⟩).2) m = _
+        A).uncurryLeft⟩).2) m = _
   rw [Bundle.Trivialization.continuousMultilinearMap_apply]
   simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousLinearMap.uncurryLeft_apply]
@@ -146,16 +144,73 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
     rw [hom_trivializationAt_baseSet]
     exact ⟨hx, by simp⟩
   rw [hom_trivializationAt_apply]
-  change (to02Tensor_eCLM (E := E)) (((Bundle.ContMDiffRiemannianMetric.inner g) x)
+  change (to02Tensor_eCLM (E := E)) (A
       ((Trivialization.symmL ℝ e₀ x) (m 0)))
       (Fin.tail fun i => (Trivialization.symmL ℝ e₀ x) (m i)) =
     (to02Tensor_eCLM (E := E)) (ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
       (fun y => TangentSpace I y →L[ℝ] ℝ) x₀ x x₀ x
-      ((Bundle.ContMDiffRiemannianMetric.inner g) x) (m 0))
+      A (m 0))
       (Fin.tail m)
   rw [ContinuousLinearMap.inCoordinates_eq hx hx']
   simp [to02Tensor_eCLM, hom_trivializationAt, Trivialization.continuousLinearMap_apply]
   rfl
+
+/-- A jointly smooth family of tangent-space bilinear forms, parametrized by
+`M × ℝ`, gives a jointly smooth family of `(0,2)` tensors by uncurrying. -/
+theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
+    (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1 →L[ℝ] ℝ)
+    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+        p.1 (A p))
+      ((Set.univ : Set M) ×ˢ S)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
+        (E := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x) p.1
+        (((continuousMultilinearCurryFin1 ℝ E ℝ).symm.toContinuousLinearMap.comp
+          (A p)).uncurryLeft))
+      ((Set.univ : Set M) ×ˢ S) := by
+  letI := Tensor0SBundle.tensor0SBundle_topology
+    (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  intro p₀ hp₀
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  let eCLM := to02Tensor_eCLM (E := E)
+  let uCLM := to02Tensor_uCLM (E := E)
+  have htriv := (Bundle.contMDiffWithinAt_totalSpace
+    (F := E →L[ℝ] E →L[ℝ] ℝ)
+    (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)).mp
+      (hA p₀ hp₀)
+  have hcurried : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
+      𝓘(ℝ, E →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin 1 => E) ℝ) ∞
+      (fun p : M × ℝ => eCLM.comp
+        ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+          p₀.1 ⟨p.1, A p⟩).2))
+      ((Set.univ : Set M) ×ˢ S) p₀ :=
+    (contMDiffWithinAt_const (c := eCLM)).clm_comp htriv.2
+  have hconverted : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
+      𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E) ∞
+      (fun p : M × ℝ => uCLM (eCLM.comp
+        ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+          p₀.1 ⟨p.1, A p⟩).2)))
+      ((Set.univ : Set M) ×ˢ S) p₀ :=
+    uCLM.contMDiff.contMDiffAt.comp_contMDiffWithinAt p₀ hcurried
+  refine hconverted.congr_of_eventuallyEq ?_ ?_
+  · have hbase : ∀ᶠ p : M × ℝ in
+        nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S),
+        p.1 ∈ (trivializationAt E (TangentSpace I) p₀.1).baseSet :=
+      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
+        ((trivializationAt E (TangentSpace I) p₀.1).open_baseSet.mem_nhds
+          (mem_baseSet_trivializationAt E (TangentSpace I) p₀.1))
+    filter_upwards [hbase] with p hp
+    exact to02Tensor_trivialization_eq (I := I) (M := M)
+      (A := A p) hp
+  · exact to02Tensor_trivialization_eq (I := I) (M := M)
+      (A := A p₀) (mem_baseSet_trivializationAt E (TangentSpace I) p₀.1)
 
 /-- Convert a Riemannian metric to a smooth (0,2)-tensor field. At each point `x`, the
 inner product `g.inner x : TₓM →L[ℝ] TₓM →L[ℝ] ℝ` is uncurried into a continuous
@@ -187,8 +242,8 @@ def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : With
     refine (uCLM.contMDiffAt.comp x₀ hCurried).congr_of_eventuallyEq ?_
     filter_upwards [(trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
       (mem_baseSet_trivializationAt E (TangentSpace I) x₀)] with x hx
-    exact to02Tensor_trivialization_eq (I := I) (n := n) (M := M) (g := g) (x := x)
-      (x₀ := x₀) hx⟩
+    exact to02Tensor_trivialization_eq (I := I) (M := M)
+      (A := gI x) (x := x) (x₀ := x₀) hx⟩
 
 @[simp]
 theorem RiemannianMetric_gen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
@@ -198,8 +253,7 @@ theorem RiemannianMetric_gen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n 
     (x : M) (v : Fin 2 -> TangentSpace I x) :
     RiemannianMetric_gen.to02Tensor_gen (I := I) (n := n) g x v =
       (Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
-  simp [RiemannianMetric_gen.to02Tensor_gen, to02Tensor_eCLM,
-    ContinuousLinearMap.uncurryLeft_apply]
+  simp [RiemannianMetric_gen.to02Tensor_gen, to02Tensor_eCLM]
   change ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
     ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
   simp [Fin.tail]

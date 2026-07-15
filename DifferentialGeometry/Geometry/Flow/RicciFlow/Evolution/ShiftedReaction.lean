@@ -526,7 +526,7 @@ theorem shiftScalar_add_g
     DifferentialGeometry.Integral.Connection.delta3 hinv A]
   norm_num [Fin.sum_univ_three, DifferentialGeometry.Integral.Connection.delta3, metricTensorField_apply,
     horth', vec2, DifferentialGeometry.Integral.Connection.vec2,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.smul_apply,
+    Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
     smul_eq_mul]
   ring
 
@@ -544,11 +544,9 @@ theorem shiftRic_add_g
         (c / (1 - 3 * δ)) • metricTensorField (I := I) g x := by
   have hden : 1 - 3 * δ ≠ 0 := by nlinarith
   have hden' : 1 - δ * 3 ≠ 0 := by nlinarith
-  apply ContinuousMultilinearMap.ext
+  apply ext0S_basis (I := I) basis
   intro slots
-  simp [shiftRic3At, shiftScalar_add_g (I := I) (M := M) basis horth A,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.smul_apply,
-    smul_eq_mul]
+  simp [shiftRic3At, shiftScalar_add_g (I := I) (M := M) basis horth A]
   field_simp [hden, hden']
   ring_nf
 
@@ -588,7 +586,7 @@ theorem shiftScalar3At_pinch
   rw [hR]
   norm_num [Fin.sum_univ_three, DifferentialGeometry.Integral.Connection.delta3, metricTensorField_apply,
     horth', vec2, DifferentialGeometry.Integral.Connection.vec2,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.smul_apply,
+    Tensor0SBundle.Tensor0SSpace.sub_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
     smul_eq_mul]
   field_simp [hden]
 
@@ -653,7 +651,7 @@ theorem shiftRic3At_comp_of_shiftBlock
         DifferentialGeometry.Integral.Connection.delta3 i j := by
     simp [metricTensorField_apply, hblock.orthonormal i j,
       vec2, DifferentialGeometry.Integral.Connection.vec2]
-  simp [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.smul_apply,
+  simp [Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
     hreal (basis i) (basis j), hblock.components i j, hmetric, smul_eq_mul]
 
 /-- Slot permutation sending a product `(0,2) ⊗ (0,2)` to
@@ -841,9 +839,9 @@ theorem rm04OfRic3At_comp_orthonormal
       ∀ a b : Fin 3, g.inner x (basis a) (basis b) =
         DifferentialGeometry.Integral.Connection.delta3 a b := horth
   simp [rm04OfRic3At, stdRmOfRic3, htrace, metricTensorField_apply, horth',
-    vec2, vec4, DifferentialGeometry.Integral.Connection.vec2,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    vec2, DifferentialGeometry.Integral.Connection.vec2,
+    Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.sub_apply,
+    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
 
 /-! ## Canonical shifted reaction tensor -/
 
@@ -1225,8 +1223,9 @@ theorem ricciQuadAt_comp_orthonormal
       ricciSq3
         (fun a b : Fin 3 => Ric (vec2 (I := I) (basis a) (basis b))) i j
   rw [map_sum]
-  simp [DifferentialGeometry.Integral.Connection.metricTrace_tensor0S_curry_apply_cons, finCons1_eq_vec2,
-    smul_eq_mul]
+  simp [DifferentialGeometry.Integral.Connection.metricTrace_tensor0S_curry_apply_cons,
+    finCons1_eq_vec2, Tensor0SBundle.Tensor0SSpace.sum_apply,
+    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
   simp [ricciEnd_repr_orthonormal (I := I) (M := M) basis horth Ric,
     ricciSq3]
 
@@ -1294,9 +1293,20 @@ theorem ricciReaction3At_comp_orthonormal
             (vec4 (I := I) (basis a) (basis b) (basis c) (basis d)))
         (fun a b : Fin 3 =>
           Ric (vec2 (I := I) (basis a) (basis b))) i j := by
-  simp [ricciReaction3At, ricciPresReact,
-    rm04Contr_comp_orthonormal (I := I) (M := M) basis horth,
+  let slots : Fin 2 → Fin 3 := fun q => if q = 0 then i else j
+  have hslots : (fun q : Fin 2 => basis (slots q)) =
+      vec2 (I := I) (basis i) (basis j) := by
+    funext q
+    fin_cases q <;> simp [slots, vec2]
+  rw [← hslots]
+  change component0S (I := I) basis
+      (ricciReaction3At (I := I) (M := M) g Ric) slots = _
+  unfold ricciReaction3At ricciPresReact
+  rw [component0S_sub_gen, component0S_nsmul, component0S_nsmul]
+  simp only [component0S_apply, hslots]
+  rw [rm04Contr_comp_orthonormal (I := I) (M := M) basis horth,
     ricciQuadAt_comp_orthonormal (I := I) (M := M) basis horth]
+  simp only [nsmul_eq_mul, Nat.cast_ofNat]
 
 theorem shiftNAt_comp_orthonormal
     {delta t : Real} {g : SmoothRiemannianMetric I M} {x : M}
@@ -1324,8 +1334,8 @@ theorem shiftNAt_comp_orthonormal
     ricciReaction3At_comp_orthonormal (I := I) (M := M) basis horth,
     ricciNorm3_comp_orthonormal (I := I) (M := M) basis horth,
     metricTrace_comp_orthonormal (I := I) (M := M) basis horth,
-    hmetric, ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    hmetric, Tensor0SBundle.Tensor0SSpace.sub_apply,
+    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
 
 /-- Component form of the metric-shift linearity of the canonical shifted
 reaction.  In dimension three the `c^2` terms cancel. -/
@@ -1469,7 +1479,8 @@ theorem shiftNAt_add_g_quad
                 (vec2 (I := I) (nb.basis 0) (nb.basis 0)) -
             metricTracePair0SAt (I := I) g
               (shiftRic3At (I := I) (M := M) delta g A) := by
-      simp [C, hmetric00, smul_eq_mul]
+      simp [C, hmetric00, Tensor0SBundle.Tensor0SSpace.sub_apply,
+        Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
     rw [hplus, hbase, hC, hC0]
     let P : Real :=
       shiftNAt (I := I) (M := M) delta t g x

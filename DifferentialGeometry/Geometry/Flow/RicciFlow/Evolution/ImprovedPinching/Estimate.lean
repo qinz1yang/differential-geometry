@@ -526,7 +526,7 @@ private theorem ricciNorm_coordCont
       ContinuousOn (fun p : Real × M => gInv p.1 p.2 i j) U := by
     intro i j
     simpa [gInv, U] using
-      (coordInvSmooth (I := I) S hS.isSolution x0 i j).continuousOn
+      coordInvContOn (I := I) S hS.isSolution x0 i j
   have hRic : ∀ i j : Idx,
       ContinuousOn (fun p : Real × M =>
         ricciCompInFrame (I := I) S frame p.1 p.2 i j) U := by
@@ -616,7 +616,11 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
       (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T) := by
     simpa [DifferentialGeometry.Integral.Connection.spacetimeSlab] using
       (SolutionOn.scalar_continuousOn (I := I) (M := M) S
-        hS.isSolution hS.scalarSTCont T)
+        hS.isSolution hS.scalarSTCont T
+        (by
+          intro t ht
+          rw [hD]
+          exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩))
   have hscalar_ne : ∀ p : Real × M, p ∈ DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T ->
       S.scalar p.1 p.2 ≠ 0 ∨ 0 ≤ -(2 - epsilon) := by
     intro p hp

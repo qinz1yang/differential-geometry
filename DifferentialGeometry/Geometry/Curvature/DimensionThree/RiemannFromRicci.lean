@@ -486,8 +486,6 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
       (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
@@ -501,7 +499,7 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
   · intro i j k l
     have h :=
       DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
-        (I := I) g hcov Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)
+        (I := I) g Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)
     have h' :
         (Rm04 x) (vec4 (basis i) (basis j) (basis l) (basis k)) =
           -(Rm04 x) (vec4 (basis i) (basis j) (basis k) (basis l)) := by
@@ -510,7 +508,7 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
   · intro i j k l
     simpa [standardRmCompAt_apply] using
       (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
-        (I := I) g hcov Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)).symm
+        (I := I) g Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)).symm
 
 /-- Lemma 14.2 for a Levi-Civita lowered curvature realization, with Ricci and
 scalar terms expressed as canonical traces of the same curvature array. -/
@@ -518,8 +516,6 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
       (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
@@ -534,7 +530,7 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) :=
   rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries (I := I)
     (algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
-      (I := I) g hcov Rm04 hRm04 basis)
+      (I := I) g Rm04 hRm04 basis)
 
 /-- Pointwise data needed to feed the realized 3D bridge.
 
@@ -842,5 +838,59 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame
           - (1 / 2 : Real) * scalar x *
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) :=
   rm04Comp_displayedRiemannFromRicci3D_at (I := I) h
+
+/-- **Basis-free (metric-form) Kulkarni–Nomizu identity in dimension 3.**
+From the orthonormal-basis 3D trace data, the lowered Riemann tensor is the metric
+Kulkarni–Nomizu combination of `Ric`, `scalar` and `g`, valid on *arbitrary* vectors
+(not just basis vectors) — the form that survives differentiation in a fixed frame
+under Ricci flow (B3a of the Uhlenbeck base route). -/
+theorem rm04_kn_gform
+    {g : SmoothRiemannianMetric I M}
+    {Ric : Tensor02At (I := I) (M := M) x}
+    {scalar : Real}
+    {Rm04 : Tensor04At (I := I) (M := M) x}
+    {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
+    (h : RiemannFromRicci3DTraceDataAt g Ric scalar Rm04 basis)
+    (X Y Z W : TangentSpace I x) :
+    Rm04 (vec4 (I := I) X Y Z W) =
+      Ric (vec2 (I := I) X Z) * g.inner x Y W
+        - Ric (vec2 (I := I) Y Z) * g.inner x X W
+        - Ric (vec2 (I := I) X W) * g.inner x Y Z
+        + Ric (vec2 (I := I) Y W) * g.inner x X Z
+        - (scalar / 2) *
+            (g.inner x X Z * g.inner x Y W - g.inner x Y Z * g.inner x X W) := by
+  classical
+  have horth := h.orthonormal
+  -- δ-form for every component slot, in `(a,b,c,d)` order.
+  have hcomp : ∀ a b c d : Fin 3,
+      component0S (I := I) basis Rm04 (slots4 a b c d) =
+        ricciCompAt (I := I) basis Ric a c * delta3 b d
+          - ricciCompAt (I := I) basis Ric b c * delta3 a d
+          - ricciCompAt (I := I) basis Ric a d * delta3 b c
+          + ricciCompAt (I := I) basis Ric b d * delta3 a c
+          - (1 / 2 : Real) * scalar *
+              (delta3 a c * delta3 b d - delta3 b c * delta3 a d) := by
+    intro a b c d
+    have hd := rm04Comp_displayedRiemannFromRicci3D_at (I := I) h a b d c
+    simpa [rm04CompAt] using hd
+  -- metric and Ricci expansions in the orthonormal basis.
+  have hg : ∀ P Q : TangentSpace I x,
+      g.inner x P Q = ∑ i : Fin 3, basis.repr P i * basis.repr Q i :=
+    fun P Q => inner_eq_sum_repr3 (I := I) horth P Q
+  have hric : ∀ P Q : TangentSpace I x,
+      Ric (vec2 (I := I) P Q) =
+        ∑ a : Fin 3, ∑ c : Fin 3,
+          ricciCompAt (I := I) basis Ric a c * (basis.repr P a * basis.repr Q c) := by
+    intro P Q
+    rw [tensor0S_apply_eq_sum (I := I) basis Ric (vec2 (I := I) P Q), sum_fin_two_fun]
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
+    simp [ricciCompAt, slots2, DifferentialGeometry.Integral.Connection.vec2,
+      Fin.prod_univ_two, Module.Basis.coord_apply, mul_comm, mul_assoc]
+  -- expand the LHS, substitute the δ-form, expand the RHS, brute-force on `Fin 3`.
+  rw [tensor0S_apply_eq_sum (I := I) basis Rm04 (vec4 (I := I) X Y Z W), sum_fin_four_fun]
+  simp_rw [hcomp, hg, hric]
+  simp [DifferentialGeometry.Integral.Connection.vec4, slots4, Fin.prod_univ_four,
+    Module.Basis.coord_apply, delta3, Fin.sum_univ_three]
+  ring
 
 end DifferentialGeometry.Integral.Connection

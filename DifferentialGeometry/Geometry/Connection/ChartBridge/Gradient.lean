@@ -46,13 +46,21 @@ namespace Integral
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [Module.Finite ℝ E] [FiniteDimensional ℝ E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+
+/-- The connection-layer and chart-local gradient functions are the same
+pointwise metric dual of the differential. -/
+theorem gradient_eq_gradFun
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
+    gradientFun (I := I) g f x = gradFun (I := I) g f x := rfl
+
+variable [InnerProductSpace ℝ E] [Module.Finite ℝ E]
+  [NeZero (Module.finrank ℝ E)]
 
 /-- **Metric duality of the gradient with the differential.** For every smooth scalar
 function `f : M → ℝ` and every tangent vector `v : T_x M`,

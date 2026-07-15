@@ -116,8 +116,6 @@ theorem fundamental_bochner_of_leviCivita_terms
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -184,10 +182,10 @@ theorem fundamental_bochner_of_leviCivita_terms
   · exact oneFormLastTwoSymmAt_of_leviCivita_du (I := I)
       g u hu duSec nablaDuSec nabla2Du hdu hnabla2
   · exact oneFormThirdCovDerivCommAt_of_leviCivita (I := I)
-      g hcov Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
+      g Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
       nabla2Du hRm13 (by simpa [duField] using hdu x) hnabla2
   · exact rm13MetricSkewAt_of_leviCivita_realizes (I := I)
-      g hcov Rm13 Rm04 hRm13 hRm04
+      g Rm13 Rm04 hRm13 hRm04
 
 /-- Levi-Civita scalar Bochner formula where the scalar Laplacian trace of
 `|du|^2` is produced from the operator-level Hessian trace theorem. -/
@@ -195,8 +193,6 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -273,10 +269,10 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
   · exact oneFormLastTwoSymmAt_of_leviCivita_du (I := I)
       g u hu duSec nablaDuSec nabla2Du hdu hnabla2
   · exact oneFormThirdCovDerivCommAt_of_leviCivita (I := I)
-      g hcov Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
+      g Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
       nabla2Du hRm13 (by simpa [duField] using hdu x) hnabla2
   · exact rm13MetricSkewAt_of_leviCivita_realizes (I := I)
-      g hcov Rm13 Rm04 hRm13 hRm04
+      g Rm13 Rm04 hRm13 hRm04
 
 /-- Levi-Civita scalar Bochner formula with `d(Delta u)` produced from the
 global Hessian-trace identity.
@@ -289,8 +285,6 @@ theorem lc_bochner_dlap
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -370,7 +364,7 @@ theorem lc_bochner_dlap
       (leviCivitaConnectionOfMetric (I := I) g) g u (nabla2DuSec x) :=
     traceNablaHessianRealizesDLapAt_of_leviCivita (I := I) g u
       nablaDuSec nabla2DuSec hnablaTrace hlapU x
-  exact fundamental_bochner_of_leviCivita_terms (I := I) g hcov Ric Rm13
+  exact fundamental_bochner_of_leviCivita_terms (I := I) g Ric Rm13
     Rm04 gInvFrame frame hRm13 hRm04 hRic13 hRic04 u hu
     (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
     roughDu basis gInvAt hinv X duSec nablaDuSec (nabla2DuSec x) normSecond
@@ -382,8 +376,6 @@ theorem lc_bochner_norm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -472,7 +464,7 @@ theorem lc_bochner_norm
     traceNablaHessianRealizesDLapAt_of_leviCivita (I := I) g u
       nablaDuSec nabla2DuSec hnablaTrace hlapU x
   exact fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
-    (I := I) g hcov Ric Rm13 Rm04 gInvFrame frame hRm13 hRm04 hRic13
+    (I := I) g Ric Rm13 Rm04 gInvFrame frame hRm13 hRm04 hRic13
     hRic04 u hu (fun y : M => nablaDuSec y) (fun y : M => nablaDuSec y)
     roughDu basis gInvAt hinv X duSec normDuSec
     nablaDuSec (nabla2DuSec x) normSecond normSecondSec hfields hHessLocal hdu
@@ -484,8 +476,6 @@ theorem lc_bochner_rm04
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (leviCivitaConnectionOfMetric (I := I) g) (1 : WithTop ℕ∞))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -572,7 +562,7 @@ theorem lc_bochner_rm04
   have hthird : OneFormThirdCovDerivCommAt (I := I) Rm13
       (differential1FormFun (I := I) u x) (nabla2DuSec x) :=
     oneFormThirdCovDerivCommAt_of_leviCivita (I := I)
-      g hcov Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
+      g Rm13 duSec nablaDuSec (differential1FormFun (I := I) u x)
       (nabla2DuSec x) hRm13 (by simpa [duField] using hdu x) hnabla2
   exact DifferentialGeometry.Integral.Connection.fundamental_bochner_of_lc_terms_of_rm04_skew (I := I)
     g Ric Rm13 Rm04 gInvFrame frame hRm13 hRm04 hRic13 hRic04 u

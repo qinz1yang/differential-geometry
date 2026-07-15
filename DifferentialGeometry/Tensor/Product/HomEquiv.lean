@@ -102,7 +102,7 @@ noncomputable def toHomAux :
     F₁ →ₗ[𝕜] F₂ →ₗ[𝕜] (cDual (𝕜:=𝕜) (F₁:=F₁) →L[𝕜] F₂) :=
 by
   classical
-  -- First: for each `v w`, define a linear map `cDual →ₗ F₂`, then make it continuous.
+
   refine
     { toFun := fun v =>
         { toFun := fun w =>
@@ -113,7 +113,7 @@ by
                 simp [add_smul]
               map_smul' := by
                 intro a φ
-                -- (a•φ) v = a*(φ v)
+
                 simp [mul_smul]
             } : (cDual (𝕜:=𝕜) (F₁:=F₁) →ₗ[𝕜] F₂)).toContinuousLinearMap
           map_add' := by
@@ -131,7 +131,7 @@ by
       map_smul' := by
         intro a v
         ext w φ
-        -- φ (a•v) = a*(φ v)
+
         simp [mul_smul] }
 
 /--
@@ -146,7 +146,7 @@ omit [FiniteDimensional 𝕜 F₂]
 /-- In finite dimensions, finrank of continuous linear maps equals the product of finranks. -/
 lemma finrank_continuousLinearMap :
     Module.finrank 𝕜 (F₁ →L[𝕜] F₂) = Module.finrank 𝕜 F₁ * Module.finrank 𝕜 F₂ := by
-  -- In finite dimensions, E →L[𝕜] F ≃ₗ E →ₗ[𝕜] F
+
   haveI : Module.Free 𝕜 F₁ := inferInstance
   haveI : Module.Free 𝕜 F₂ := inferInstance
   have e : (F₁ →L[𝕜] F₂) ≃ₗ[𝕜] (F₁ →ₗ[𝕜] F₂) := LinearMap.toContinuousLinearMap.symm
@@ -183,14 +183,14 @@ noncomputable instance instNormedAddCommGroup_tensor :
 by
   classical
   let e := clmEquiv (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂)
-  -- pick 𝓕 := AddMonoidHom
+
   refine NormedAddCommGroup.induced
     (𝓕 := (F₁ ⊗[𝕜] F₂) →+ (cDual 𝕜 F₁ →L[𝕜] F₂))
     (E := (F₁ ⊗[𝕜] F₂))
     (F := (cDual 𝕜 F₁ →L[𝕜] F₂))
     (f := e.toLinearMap.toAddMonoidHom)
     ?_
-  -- injectivity of the underlying function
+
   exact e.injective
 
 /-- Induced normed `𝕜`-module structure on `F₁ ⊗[𝕜] F₂`, pulled back along `clmEquiv`. -/
@@ -199,7 +199,7 @@ noncomputable instance instNormedSpace_tensor :
 by
   classical
   let e := clmEquiv (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂)
-  -- Choose the "linear map-like" type explicitly:
+
   refine NormedSpace.induced
     (F := (F₁ ⊗[𝕜] F₂) →ₗ[𝕜] (cDual 𝕜 F₁ →L[𝕜] F₂))
     (𝕜 := 𝕜)

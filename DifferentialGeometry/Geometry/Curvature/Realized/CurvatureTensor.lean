@@ -58,6 +58,31 @@ def Rm04RealizesConnection
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov
         (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
 
+/-- Two lowered Riemann sections realizing the same metric connection agree. -/
+theorem rm04_eq_of_realizes [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    {A B : Tensor04Section (I := I) (M := M)}
+    (hA : Rm04RealizesConnection (I := I) g cov A)
+    (hB : Rm04RealizesConnection (I := I) g cov B)
+    (x : M) :
+    A x = B x := by
+  classical
+  apply tensor0SSpace_ext 4 x
+  intro v
+  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at
+    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 0)
+  obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at
+    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 1)
+  obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at
+    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 2)
+  obtain ⟨W, hW⟩ := ContMDiffSection.exists_eq_at
+    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 3)
+  have hv : v = vec4 (I := I) (X x) (Y x) (Z x) (W x) := by
+    funext i
+    fin_cases i <;> simp_all [vec4]
+  rw [hv, hA X Y Z W x, hB X Y Z W x]
+
 /-- A bundled Ricci tensor is the trace contraction of bundled `(1,3)` Riemann. -/
 def RicciTensorRealizesRm13Trace
     (Ric : Tensor02Section (I := I) (M := M))

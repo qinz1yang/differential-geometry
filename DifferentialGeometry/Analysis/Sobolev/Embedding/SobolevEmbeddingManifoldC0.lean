@@ -84,7 +84,7 @@ tuples) of the `tsum` defining `tensorPouSobolevHsNorm g k T` is bounded above
 by the full squared norm `(tensorPouSobolevHsNorm g k T)²`.  Every summand is
 non-negative, so dropping all the other base points / component pairs / orders
 only decreases the value. -/
-private theorem hsBlock_le_hsNorm_sq
+theorem hsBlock_le_hsNorm_sq
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) (α₀ : M)
     (IJ₀ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -332,7 +332,7 @@ the chart target the product is the smooth `η · (raw ∘ pull)`; off the cutof
 topological support (an open superset of the complement of the chart target) the
 product is identically zero.  These two opens cover `EuclN`, giving global
 smoothness; agreement on `closedBall y₀ R` follows from `η = 1` there. -/
-private theorem exists_global_smooth_eqOn_ball_of_rawPull
+theorem exists_global_smooth_eqOn_ball_of_rawPull
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -454,7 +454,7 @@ bounded by `(card · c⁻¹)` times the `(α, IJ, j)` Hilbert–Schmidt block of
 `card = (finrank E)^j` is the Cauchy–Schwarz cost of replacing the operator norm
 of `∂ʲf` by the sum of squares of its basis evaluations; `c⁻¹` is the cost of
 inserting the partition-of-unity weight, available since `ρ ≥ c` on `B`. -/
-private theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
+theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)))
@@ -619,7 +619,7 @@ private theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
 /-- The `eLpNorm` of `‖∂ʲu‖` over a ball is finite for a globally smooth `u`
 (the ball has finite measure, and the integrand is continuous, hence bounded on
 the compact closed ball). -/
-private theorem smooth_eLpNorm_iteratedFDeriv_ball_ne_top
+theorem smooth_eLpNorm_iteratedFDeriv_ball_ne_top
     {y₀ : EuclN} {R : ℝ} (j : ℕ) {u : EuclN → ℝ}
     (hu : ContDiff ℝ (⊤ : ℕ∞) u) :
     eLpNorm (fun z => ‖iteratedFDeriv ℝ j u z‖) 2

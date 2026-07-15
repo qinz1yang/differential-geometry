@@ -317,6 +317,63 @@ theorem covDerivAlong_smulFun (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
   rw [smul_add]
   abel
 
+/-- The chart-`(γ t)`-coordinate representation of a finite sum of sections is
+the sum of the representations. -/
+lemma chartRepAt_sum {ι : Type*} (s : Finset ι) (γ : ℝ → M)
+    (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) :
+    chartRepAt (I := I) γ (fun u => ∑ i ∈ s, V i u) t =
+      fun u => ∑ i ∈ s, chartRepAt (I := I) γ (V i) t u := by
+  funext u
+  simp [chartRepAt, map_sum]
+
+/-- **Finite-sum additivity in the section argument.**  The `Finset` version of
+`covDerivAlong_add`, with the chart-rep differentiability hypothesis per summand. -/
+theorem covDerivAlong_sum {ι : Type*} (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (s : Finset ι) (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (hV : ∀ i ∈ s, DifferentiableAt ℝ (chartRepAt (I := I) γ (V i) t) t) :
+    covDerivAlong (I := I) g γ (fun u => ∑ i ∈ s, V i u) t =
+      ∑ i ∈ s, covDerivAlong (I := I) g γ (V i) t := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      have h0 : (fun u => ∑ i ∈ (∅ : Finset ι), V i u)
+          = fun u => (0 : TangentSpace I (γ u)) := by
+        funext u; simp
+      rw [h0, covDerivAlong_zero, Finset.sum_empty]
+  | insert i s hi ih =>
+      have hVi := hV i (Finset.mem_insert_self i s)
+      have hVtail : ∀ j ∈ s, DifferentiableAt ℝ (chartRepAt (I := I) γ (V j) t) t :=
+        fun j hj => hV j (Finset.mem_insert_of_mem hj)
+      have hVs : DifferentiableAt ℝ
+          (chartRepAt (I := I) γ (fun u => ∑ j ∈ s, V j u) t) t := by
+        rw [chartRepAt_sum]
+        exact DifferentiableAt.fun_sum hVtail
+      have hsplit : (fun u => ∑ j ∈ insert i s, V j u)
+          = fun u => V i u + ∑ j ∈ s, V j u := by
+        funext u; rw [Finset.sum_insert hi]
+      rw [hsplit, covDerivAlong_add g γ _ _ t hVi hVs, ih hVtail,
+        Finset.sum_insert hi]
+
+/-- **Expansion of the covariant derivative in a parallel frame.**  If the
+fields `F i` are covariantly constant at `t` (`D_t F i = 0` — e.g. a parallel
+frame along `γ`), the covariant derivative of `u ↦ ∑ i, y i u • F i u` is the
+componentwise-derivative expansion `∑ i, (y i)' t • F i t`.  This is the
+`D_t ⇄ d/dt` gauge conjugation in frame form: it reduces covariant ODEs along
+`γ` (e.g. the Jacobi equation) to ordinary ODEs for the frame coefficients. -/
+theorem covDerivAlong_expand {ι : Type*} (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (s : Finset ι) (y : ι → ℝ → ℝ) (F : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (hy : ∀ i ∈ s, DifferentiableAt ℝ (y i) t)
+    (hF : ∀ i ∈ s, DifferentiableAt ℝ (chartRepAt (I := I) γ (F i) t) t)
+    (hpar : ∀ i ∈ s, covDerivAlong (I := I) g γ (F i) t = 0) :
+    covDerivAlong (I := I) g γ (fun u => ∑ i ∈ s, y i u • F i u) t =
+      ∑ i ∈ s, deriv (y i) t • F i t := by
+  rw [covDerivAlong_sum g γ s (fun i u => y i u • F i u) t (fun i hi => by
+    rw [chartRepAt_smulFun]
+    exact (hy i hi).smul (hF i hi))]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [covDerivAlong_smulFun g γ (y i) (F i) t (hy i hi) (hF i hi), hpar i hi,
+    smul_zero, add_zero]
+
 /-- The open parameter set on which the chart `γ t` "sees" the curve.
 Expressed through `extChartAt I (γ t)` so that the model `I` is part of
 the signature; its source coincides with `(chartAt H (γ t)).source`. -/

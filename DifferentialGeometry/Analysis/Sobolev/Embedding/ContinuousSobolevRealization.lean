@@ -263,7 +263,7 @@ carrying the `C⁰` Riemannian-fibre sup-seminorm (instead of the `H^{2k}`
 Sobolev norm).  Used as the pre-completion type of the abstract `C⁰` Banach
 space. -/
 structure CSupTensor (g : SmoothRiemannianMetric I M) (r s k : ℕ) where
-  /-- The underlying order-`2k` smooth compactly-supported section wrapper. -/
+
   toHsTensor : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)
 
 namespace CSupTensor
