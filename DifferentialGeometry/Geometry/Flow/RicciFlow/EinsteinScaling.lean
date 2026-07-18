@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
+import DifferentialGeometry.Geometry.Curvature.Scaling
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 set_option autoImplicit false
@@ -170,16 +171,300 @@ def einsteinScaledProbeNabla2 (κ : Real)
 
 
 
+private theorem lcConnSmooth (g : SmoothRiemannianMetric I M) :
+    CovariantDerivative.ContMDiffCovariantDerivative
+      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) ∞ :=
+  ⟨DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+    (I := I) g (u := Set.univ) isOpen_univ⟩
+
+private theorem normSq0S_metricTensorField_eq_finrank
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    normSq0S (I := I) g x 2 (metricTensorField (I := I) g x) = (Module.finrank Real E : Real) := by
+  classical
+  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun k l =>
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+        (I := I) g x k l (extChartAt I x x)
+  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+      (I := I) g x
+  have hcard := DifferentialGeometry.Integral.Connection.normSq0S_metricTensor0S_eq_card
+    (I := I) g basis gInv hinv
+  have hbridge : metricTensorField (I := I) g x =
+      DifferentialGeometry.Integral.Connection.metricTensor0S (I := I) g x := by
+    ext v
+    rw [metricTensorField_apply, DifferentialGeometry.Integral.Connection.metricTensor0S_apply]
+  rw [hbridge, hcard]
+  simp [DifferentialGeometry.Tensor.Coordinates.CoordinateIdx]
+
+private theorem einsteinRicci_tensor (g₀ : SmoothRiemannianMetric I M) (κ : Real)
+    (hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀ κ) (x : M) :
+    DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M) g₀ x
+      = κ • metricTensorField (I := I) g₀ x := by
+  ext v
+  have hv : v = DifferentialGeometry.Integral.Connection.vec2 (I := I) (v 0) (v 1) := by
+    funext i
+    fin_cases i <;> simp [DifferentialGeometry.Integral.Connection.vec2]
+  have hL : DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M) g₀ x v
+      = κ * g₀.inner x (v 0) (v 1) := by
+    have hE := hEin x (v 0) (v 1)
+    rwa [← hv] at hE
+  rw [hL]
+  simp [metricTensorField_apply, smul_eq_mul]
+
+private theorem metricTensorField_scaleMetric_local (c : Real) (hc : 0 < c)
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    metricTensorField (I := I) (scaleMetric (I := I) c hc g) x
+      = c • metricTensorField (I := I) g x := by
+  ext v
+  simp [metricTensorField_apply, scaleMetric_inner, smul_eq_mul]
+
+private theorem frameEval_contMDiffOn (g : SmoothRiemannianMetric I M)
+    {Idx : Type} [Fintype Idx] (frame : Idx -> (x : M) -> TangentSpace I x) {u : Set M}
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (i j : Idx) :
+    ContMDiffOn I 𝓘(Real, Real) ∞ (fun x : M => g.inner x (frame i x) (frame j x)) u := by
+  classical
+  have hg : ContMDiffOn I (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ∞
+      (fun b : M => TotalSpace.mk' (E →L[Real] E →L[Real] Real)
+        (E := fun y : M => TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real)
+        b (g.inner b)) u :=
+    g.contMDiff.contMDiffOn
+  have happ : ContMDiffOn I (I.prod 𝓘(Real, Real)) ∞
+      (fun m : M => (⟨m, g.inner m (frame i m) (frame j m)⟩ :
+            TotalSpace Real (Bundle.Trivial M Real))) u :=
+    ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := Real)
+      (b := id) hg (hframe.contMDiffOn i) (hframe.contMDiffOn j)
+  intro x hx
+  have hpx := happ x hx
+  rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
+  exact hpx.2
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem metricTensorField_const_cont (K : Set Real) (g : SmoothRiemannianMetric I M) :
+    DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+      (fun _ x => metricTensorField (I := I) g x) := by
+  unfold DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet
+  exact ((metricTensorField (I := I) g).contMDiff.continuous).comp
+    (continuous_snd (X := {t : Real // t ∈ K}) (Y := M))
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem metricRicci_const_cont (K : Set Real) (g : SmoothRiemannianMetric I M) :
+    DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+      (fun _ x => DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M) g x) := by
+  unfold DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet
+  refine (((metricRicci (I := I) (M := M) g).contMDiff.continuous).comp
+    (continuous_snd (X := {t : Real // t ∈ K}) (Y := M))).congr (fun q => ?_)
+  simp only [Function.comp_apply, metricRicci_apply]
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem metricRm04_const_cont (K : Set Real) (g : SmoothRiemannianMetric I M) :
+    DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 K
+      (fun _ x => DifferentialGeometry.Integral.Connection.metricRm04At (I := I) (M := M) g x) := by
+  unfold DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet
+  refine (((metricRm04 (I := I) (M := M) g).contMDiff.continuous).comp
+    (continuous_snd (X := {t : Real // t ∈ K}) (Y := M))).congr (fun q => ?_)
+  simp only [Function.comp_apply, metricRm04_apply]
+
+private theorem einsteinScaled_scalar_eq (g₀ : SmoothRiemannianMetric I M) (κ : Real)
+    {s : Real} (hs : s ∈ (einsteinFlowInterval κ).carrier) (x : M) :
+    (einsteinScaledSolution g₀ κ).scalar s x
+      = (einsteinScalingFactor κ s)⁻¹ * metricScalarAt (I := I) (M := M) g₀ x := by
+  have hmetric : (einsteinScaledSolution g₀ κ).base.metric s
+      = scaleMetric (I := I) (einsteinScalingFactor κ s) hs g₀ :=
+    einsteinScaledFamily_metric_of_mem g₀ κ hs
+  have h1 : (einsteinScaledSolution g₀ κ).scalar s x
+      = metricScalarAt (I := I) (M := M) ((einsteinScaledSolution g₀ κ).base.metric s) x := by
+    simp [SolutionOn.scalar, SolutionFamily.scalar]
+  rw [h1, hmetric]
+  exact DifferentialGeometry.Integral.Connection.metricScalarAt_scaleMetric
+    (einsteinScalingFactor κ s) hs g₀ x
+
+private theorem einsteinScaled_ricciNorm_const (g₀ : SmoothRiemannianMetric I M) (κ : Real)
+    (hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀ κ)
+    {t : Real} (ht : t ∈ (einsteinFlowInterval κ).carrier) :
+    ricciNorm (I := I) (einsteinScaledSolution g₀ κ) t
+      = fun _ : M => (einsteinScalingFactor κ t)⁻¹ * (einsteinScalingFactor κ t)⁻¹ *
+          (κ ^ 2 * (Module.finrank Real E : Real)) := by
+  funext y
+  have hmetricB : (einsteinScaledSolution g₀ κ).base.metric t
+      = scaleMetric (I := I) (einsteinScalingFactor κ t) ht g₀ :=
+    einsteinScaledFamily_metric_of_mem g₀ κ ht
+  have hmetricF : (einsteinScaledSolution g₀ κ).family.metric t
+      = scaleMetric (I := I) (einsteinScalingFactor κ t) ht g₀ :=
+    einsteinScaledFamily_metric_of_mem g₀ κ ht
+  have hricci : (einsteinScaledSolution g₀ κ).ricci t y = κ • metricTensorField (I := I) g₀ y := by
+    have h1 : (einsteinScaledSolution g₀ κ).ricci t y
+        = DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M)
+            ((einsteinScaledSolution g₀ κ).base.metric t) y := by
+      simp [SolutionOn.ricci, SolutionFamily.ricci]
+    rw [h1, hmetricB, DifferentialGeometry.Integral.Connection.metricRicciAt_scaleMetric]
+    exact einsteinRicci_tensor g₀ κ hEin y
+  unfold ricciNorm
+  rw [hricci, hmetricF, normSq0S_two_scale, normSq0S_smul,
+    normSq0S_metricTensorField_eq_finrank]
+
 theorem einsteinScaled_isSolutionOn
     (g₀ : SmoothRiemannianMetric I M) (κ : Real)
     (hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀ κ) :
-    IsSolutionOn (I := I) (einsteinScaledSolution g₀ κ) := sorry
+    IsSolutionOn (I := I) (einsteinScaledSolution g₀ κ) where
+  smoothMetric := by
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · intro x X Y
+      have hpoly : ContDiff Real ∞ (fun t : Real => einsteinScalingFactor κ t * g₀.inner x X Y) := by
+        unfold einsteinScalingFactor
+        fun_prop
+      refine (hpoly.contDiffOn).congr (fun t ht => ?_)
+      exact einsteinScaledFamily_metric_inner_of_pos g₀ κ ht x X Y
+    · intro x X Y
+      have hpoly : Continuous (fun t : Real => einsteinScalingFactor κ t * g₀.inner x X Y) := by
+        unfold einsteinScalingFactor
+        fun_prop
+      refine (hpoly.continuousOn).congr (fun t ht => ?_)
+      exact einsteinScaledFamily_metric_inner_of_pos g₀ κ ht x X Y
+    · have hf : Continuous (fun q : {t : Real // t ∈ (einsteinFlowInterval κ).carrier} × M =>
+          einsteinScalingFactor κ q.1.1) :=
+        (by unfold einsteinScalingFactor; fun_prop : Continuous (einsteinScalingFactor κ)).comp
+          (continuous_subtype_val.comp continuous_fst)
+      refine (DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet.smul
+        (f := fun (t : Real) (_ : M) => einsteinScalingFactor κ t) hf
+        (metricTensorField_const_cont (einsteinFlowInterval κ).carrier g₀)).congr
+        (fun t ht x => ?_)
+      have hmetric : (einsteinScaledSolution g₀ κ).family.metric t
+          = scaleMetric (I := I) (einsteinScalingFactor κ t) ht g₀ :=
+        einsteinScaledFamily_metric_of_mem g₀ κ ht
+      rw [hmetric, metricTensorField_scaleMetric_local]
+    · intro Idx _ frame u hframe i j
+      have hstatic : ContMDiffOn I 𝓘(Real, Real) ∞
+          (fun x : M => g₀.inner x (frame i x) (frame j x)) u :=
+        frameEval_contMDiffOn g₀ frame hframe i j
+      have hstaticP : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+          (fun p : Real × M => g₀.inner p.2 (frame i p.2) (frame j p.2))
+          ((einsteinFlowInterval κ).regular ×ˢ u) := by
+        refine hstatic.comp (contMDiff_snd.contMDiffOn) ?_
+        intro p hp
+        exact hp.2
+      have htime : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+          (fun p : Real × M => einsteinScalingFactor κ p.1)
+          ((einsteinFlowInterval κ).regular ×ˢ u) := by
+        have hcm : ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+            (fun p : Real × M => einsteinScalingFactor κ p.1) := by
+          unfold einsteinScalingFactor
+          exact contMDiff_const.sub (contMDiff_const.mul contMDiff_fst)
+        exact hcm.contMDiffOn
+      refine (htime.mul hstaticP).congr (fun p hp => ?_)
+      exact einsteinScaledFamily_metric_inner_of_pos g₀ κ hp.1 p.2 (frame i p.2) (frame j p.2)
+  smoothConnection := by
+    intro t
+    have h : (einsteinScaledSolution g₀ κ).family.connectionAt t
+        = DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g₀ := by
+      rw [DifferentialGeometry.Integral.Connection.RealizedMetricFamilyOn.connectionAt]
+      exact einsteinScaledFamily_connection g₀ κ (t : Real)
+    rw [h]
+    exact lcConnSmooth g₀
+  equation := by
+    intro t x X Y
+    have hpos : 0 < einsteinScalingFactor κ (t : Real) := t.2
+    have hmemc : (t : Real) ∈ (einsteinFlowInterval κ).carrier :=
+      (einsteinFlowInterval κ).regular_subset t.2
+    have hmetric : (einsteinScaledSolution g₀ κ).base.metric (t : Real)
+        = scaleMetric (I := I) (einsteinScalingFactor κ (t : Real)) hpos g₀ :=
+      einsteinScaledFamily_metric_of_mem g₀ κ hmemc
+    have hRic : RicciAtFamily.toTensorField (I := I)
+        (einsteinScaledSolution g₀ κ).ricciAt (t : Real) x X Y = κ * g₀.inner x X Y := by
+      have h1 : RicciAtFamily.toTensorField (I := I) (einsteinScaledSolution g₀ κ).ricciAt
+          (t : Real) x X Y
+          = DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M)
+              ((einsteinScaledSolution g₀ κ).base.metric (t : Real)) x
+              (DifferentialGeometry.Integral.Connection.vec2 (I := I) X Y) := by
+        simp [RicciAtFamily.toTensorField, SolutionOn.ricciAt, SolutionFamily.ricciAt]
+      rw [h1, hmetric, DifferentialGeometry.Integral.Connection.metricRicciAt_scaleMetric]
+      exact hEin x X Y
+    have hpoly : HasDerivWithinAt (fun s : Real => einsteinScalingFactor κ s * g₀.inner x X Y)
+        (-(2 * κ) * g₀.inner x X Y) (einsteinFlowInterval κ).carrier (t : Real) := by
+      have h1 : HasDerivWithinAt (fun s : Real => einsteinScalingFactor κ s) (-(2 * κ))
+          (einsteinFlowInterval κ).carrier (t : Real) := by
+        simpa [einsteinScalingFactor] using
+          (((hasDerivWithinAt_id (t : Real) (einsteinFlowInterval κ).carrier).const_mul
+            (2 * κ)).const_sub 1)
+      simpa using h1.mul_const (g₀.inner x X Y)
+    have hval : (-2 : Real) * RicciAtFamily.toTensorField (I := I)
+        (einsteinScaledSolution g₀ κ).ricciAt (t : Real) x X Y
+        = -(2 * κ) * g₀.inner x X Y := by
+      rw [hRic]; ring
+    rw [hval]
+    exact hpoly.congr_of_mem
+      (fun s hs => einsteinScaledFamily_metric_inner_of_pos g₀ κ hs x X Y) hmemc
+  scalarCont := by
+    have hein : Continuous (einsteinScalingFactor κ) := by
+      unfold einsteinScalingFactor; fun_prop
+    have hcinv : ContinuousOn (fun q : Real × M => (einsteinScalingFactor κ q.1)⁻¹)
+        ((einsteinFlowInterval κ).carrier ×ˢ (Set.univ : Set M)) := by
+      refine (hein.comp continuous_fst).continuousOn.inv₀ (fun q hq => ?_)
+      exact ne_of_gt hq.1
+    have hscal : Continuous (fun q : Real × M => metricScalarAt (I := I) (M := M) g₀ q.2) :=
+      (metricScalar_smooth (I := I) (M := M) g₀).continuous.comp continuous_snd
+    have hprod : ContinuousOn
+        (fun q : Real × M => (einsteinScalingFactor κ q.1)⁻¹ * metricScalarAt (I := I) (M := M) g₀ q.2)
+        ((einsteinFlowInterval κ).carrier ×ˢ (Set.univ : Set M)) :=
+      hcinv.mul hscal.continuousOn
+    refine hprod.congr (fun q hq => ?_)
+    exact (einsteinScaled_scalar_eq g₀ κ hq.1 q.2)
+  scalarTime := by
+    intro K t ht hK x
+    have hct : 0 < einsteinScalingFactor κ t := hK ht
+    have hdiff : DifferentiableWithinAt Real
+        (fun s : Real => (einsteinScalingFactor κ s)⁻¹ * metricScalarAt (I := I) (M := M) g₀ x) K t := by
+      refine DifferentiableWithinAt.mul ?_ (differentiableWithinAt_const _)
+      refine DifferentiableWithinAt.inv ?_ (ne_of_gt hct)
+      unfold einsteinScalingFactor
+      fun_prop
+    refine hdiff.congr (fun s hs => einsteinScaled_scalar_eq g₀ κ (hK hs) x)
+      (einsteinScaled_scalar_eq g₀ κ (hK ht) x)
+  ricciCont := by
+    refine (metricRicci_const_cont (einsteinFlowInterval κ).carrier g₀).congr (fun t ht x => ?_)
+    have hmetric : (einsteinScaledSolution g₀ κ).base.metric t
+        = scaleMetric (I := I) (einsteinScalingFactor κ t) ht g₀ :=
+      einsteinScaledFamily_metric_of_mem g₀ κ ht
+    have h1 : (einsteinScaledSolution g₀ κ).ricci t x
+        = DifferentialGeometry.Integral.Connection.metricRicciAt (I := I) (M := M)
+            ((einsteinScaledSolution g₀ κ).base.metric t) x := by
+      simp [SolutionOn.ricci, SolutionFamily.ricci]
+    rw [h1, hmetric, DifferentialGeometry.Integral.Connection.metricRicciAt_scaleMetric]
+  rm04Cont := by
+    have hf : Continuous (fun q : {t : Real // t ∈ (einsteinFlowInterval κ).carrier} × M =>
+        einsteinScalingFactor κ q.1.1) :=
+      (by unfold einsteinScalingFactor; fun_prop : Continuous (einsteinScalingFactor κ)).comp
+        (continuous_subtype_val.comp continuous_fst)
+    refine (DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet.smul
+      (f := fun (t : Real) (_ : M) => einsteinScalingFactor κ t) hf
+      (metricRm04_const_cont (einsteinFlowInterval κ).carrier g₀)).congr (fun t ht x => ?_)
+    have hmetric : (einsteinScaledSolution g₀ κ).base.metric t
+        = scaleMetric (I := I) (einsteinScalingFactor κ t) ht g₀ :=
+      einsteinScaledFamily_metric_of_mem g₀ κ ht
+    have h1 : (einsteinScaledSolution g₀ κ).base.rm04 t x
+        = DifferentialGeometry.Integral.Connection.metricRm04At (I := I) (M := M)
+            ((einsteinScaledSolution g₀ κ).base.metric t) x := by
+      simp [SolutionFamily.rm04]
+    rw [h1, hmetric, DifferentialGeometry.Integral.Connection.metricRm04At_scaleMetric]
+  ricciNormSpace := by
+    intro t ht x
+    rw [einsteinScaled_ricciNorm_const g₀ κ hEin ht]
+    exact mdifferentiableAt_const
+  ricciNormGrad := by
+    intro t ht x
+    rw [einsteinScaled_ricciNorm_const g₀ κ hEin ht]
+    simp only [DifferentialGeometry.Integral.Connection.gradientFun_const]
+    exact mdifferentiableAt_zeroSection (𝕜 := Real) (E := fun y : M => TangentSpace I y) (F := E)
 
 theorem einsteinScaled_isRealizedRicciFlowSolutionOn
     (g₀ : SmoothRiemannianMetric I M) (κ : Real)
     (hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀ κ) :
     DifferentialGeometry.Integral.Connection.IsRealizedRicciFlowSolutionOn (I := I)
-      (einsteinScaledSolution g₀ κ).toRealizedCandidate := sorry
+      (einsteinScaledSolution g₀ κ).toRealizedCandidate :=
+  isRealizedRicciFlowSolutionOn_of_isSolutionOn (I := I)
+    (einsteinScaled_isSolutionOn g₀ κ hEin)
 
 theorem einsteinScaled_isHeatOneFormOn
     (g₀ : SmoothRiemannianMetric I M) (κ : Real)
@@ -278,7 +563,8 @@ theorem hyperbolicScaled_isSolutionOn
     (hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀
       (-((Module.finrank Real E : Real) - 1))) :
     IsSolutionOn (I := I)
-      (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))) := sorry
+      (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))) :=
+  einsteinScaled_isSolutionOn g₀ (-((Module.finrank Real E : Real) - 1)) hEin
 
 theorem hyperbolicScaled_isHeatOneFormOn
     (g₀ : SmoothRiemannianMetric I M)
