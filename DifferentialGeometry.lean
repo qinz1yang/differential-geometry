@@ -1831,6 +1831,7 @@ import DifferentialGeometry.Geometry.Curvature.EinsteinMetric
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
+import DifferentialGeometry.Geometry.Curvature.Scaling
 import DifferentialGeometry.Geometry.Curvature.Order2Defect.FrameComponentBound
 import DifferentialGeometry.Geometry.Curvature.Order2Defect.FrameCurvatureCore
 import DifferentialGeometry.Geometry.Curvature.Order2Defect.GradientSlotIntertwining
@@ -2394,6 +2395,7 @@ import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.RoughLaplacianScaling
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Geometry.Topology.DirectLimit
