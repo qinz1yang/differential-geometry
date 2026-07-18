@@ -21,7 +21,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-variable {Idx : Type*} [Fintype Idx]
+variable {Idx : Type} [Fintype Idx]
 variable {u : Set M}
 
 
@@ -109,6 +109,7 @@ private theorem matrixInvEntry_differentiableAt
   exact hinv.mul (matrixAdjugate_differentiableAt Mx x a b h)
 
 private theorem metricExtDtOn_posit
+    [I.Boundaryless]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     (hLC : ∀ s : Real, IsLeviCivita (I := I) (G.connection s) (G.metric s))
@@ -120,10 +121,39 @@ private theorem metricExtDtOn_posit
     (hbase : D.regular ∈ nhds base) :
     metricExtDtOn (I := I) (G.toRealizedMetricFamily hLC) frame base u
       (fun y a b =>
-        deriv (fun s => (G.metric s).inner y (frame a y) (frame b y)) base) :=
-  sorry
+        deriv (fun s => (G.metric s).inner y (frame a y) (frame b y)) base) := by
+  have hbaseR : base ∈ D.regular := mem_of_mem_nhds hbase
+  refine metricExtDt_of_fixedBaseRegular (I := I) (G.toRealizedMetricFamily hLC) frame base u
+    (fun y a b => deriv (fun s => (G.metric s).inner y (frame a y) (frame b y)) base) ?_
+  intro a b
+  have hbig :
+      FixedBaseExtDerivTimeDerivativeOnRegular (I := I) (Set.univ : Set Real) D.regular u
+        (fun s y => (G.metric s).inner y (frame a y) (frame b y))
+        (fun t y => deriv (fun s => (G.metric s).inner y (frame a y) (frame b y)) t) := by
+    refine fixedBaseOnRegSmooth hu D.regular_isOpen ?_ ?_ ?_
+    · intro t _ht
+      exact Filter.univ_mem
+    · intro t ht x hx
+      have hcomp := hsmooth.frameCompSmooth (Idx := Idx) frame frameSmooth a b
+      have hmem : (t, x) ∈ D.regular ×ˢ u := ⟨ht, hx⟩
+      have hn : D.regular ×ˢ u ∈ nhds (t, x) :=
+        (D.regular_isOpen.prod hu).mem_nhds hmem
+      exact (hcomp.contMDiffAt hn).of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+    · intro t ht x hx
+      have hcd : ContDiffOn Real ∞
+          (fun s => (G.metric s).inner x (frame a x) (frame b x)) D.regular :=
+        hsmooth.coeff x (frame a x) (frame b x)
+      have hda : DifferentiableAt Real
+          (fun s => (G.metric s).inner x (frame a x) (frame b x)) t :=
+        (hcd.contDiffAt (D.regular_isOpen.mem_nhds ht)).differentiableAt (by norm_num)
+      exact hda.hasDerivAt.hasDerivWithinAt
+  intro t ht x hx V
+  have htb : t = base := ht
+  subst htb
+  exact hbig t hbaseR x hx V
 
 theorem lowerPairDeriv_of_metricFamilySmoothOn
+    [I.Boundaryless]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     (hLC : ∀ s : Real, IsLeviCivita (I := I) (G.connection s) (G.metric s))
@@ -299,6 +329,7 @@ theorem lowerPairDeriv_of_metricFamilySmoothOn
 
 
 theorem gammaDerivOn_of_metricFamilySmoothOn [DecidableEq Idx]
+    [I.Boundaryless]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     (hLC : ∀ s : Real, IsLeviCivita (I := I) (G.connection s) (G.metric s))
