@@ -2243,6 +2243,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.TensorBackedReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.EinsteinScaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HyperbolicHarmonicEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParabolicRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.ScaleTransfer
