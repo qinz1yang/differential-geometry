@@ -2342,6 +2342,7 @@ import DifferentialGeometry.Geometry.Metric.PullbackCross
 import DifferentialGeometry.Geometry.Metric.RiemannianMetric
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
+import DifferentialGeometry.Geometry.Metric.TensorNormJointSmoothness
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExt
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
