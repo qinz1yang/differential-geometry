@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.EinsteinMetric
+import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -8,8 +9,10 @@ set_option linter.unusedSectionVars false
 noncomputable section
 
 open Bundle Manifold Set
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff RealInnerProductSpace
 open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Integral.Measure (chartModelBasis)
+open DifferentialGeometry.Integral.DivergenceTheorem (chartRiemannTensor chartGramOnE chartGramOnE_def)
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -23,17 +26,111 @@ variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable [I.Boundaryless] [BoundarylessManifold I M]
 
+private lemma basis_inner_chartGram_center
+    (g : SmoothRiemannianMetric I M) (x : M) (a b : Fin (Module.finrank ℝ E)) :
+    g.inner x (chartModelBasis E a) (chartModelBasis E b)
+      = chartGramOnE (I := I) g x a b (extChartAt I x x) := by
+  rw [← chartBasisVecFiber_self (I := I) x a, ← chartBasisVecFiber_self (I := I) x b,
+      ← DifferentialGeometry.Integral.Measure.chartGramMatrix_apply g x x a b, chartGramOnE_def,
+      (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)]
+
+private lemma g_inner_center
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
+    g.inner x v w
+      = ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+          (chartModelBasis E).repr v a * (chartModelBasis E).repr w b *
+            chartGramOnE (I := I) g x a b (extChartAt I x x) := by
+  classical
+  have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt' x
+  have hxsrc : x ∈ (extChartAt I x).source := mem_extChartAt_source (I := I) x
+  rw [g_inner_eq_chart_sum (I := I) g x hx hxsrc v w]
+  simp only [trivToE_self_apply (I := I) x v, trivToE_self_apply (I := I) x w]
+
+private lemma reprR (g : SmoothRiemannianMetric I M) (x : M) (X Y : TangentSpace I x)
+    (b : Fin (Module.finrank ℝ E)) :
+    (chartModelBasis E).repr (chartRiemannCLM (I := I) g x X Y Y) b
+      = ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          ∑ k : Fin (Module.finrank ℝ E),
+            (chartModelBasis E).repr Y i * (chartModelBasis E).repr X j *
+              (chartModelBasis E).repr Y k *
+              chartRiemannTensor (I := I) g x i j k b (extChartAt I x x) := by
+  classical
+  rw [chartRiemannCLM_apply g x X Y Y]
+  simp only [map_sum, LinearEquiv.map_smul, Finsupp.coe_finset_sum, Finset.sum_apply,
+    Finsupp.coe_smul, Pi.smul_apply, Module.Basis.repr_self_apply, smul_eq_mul]
+  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl
+    (fun j _ => Finset.sum_congr rfl (fun k _ => ?_)))
+  rw [Finset.sum_eq_single b]
+  · rw [if_pos rfl, mul_one]
+  · intro l _ hl; rw [if_neg hl, mul_zero]
+  · intro h; exact absurd (Finset.mem_univ b) h
+
 private lemma metricRm04Std_eq_sectionalNumerator
     (g : SmoothRiemannianMetric I M) (x : M) (X Y : TangentSpace I x) :
     metricRm04StdAt (I := I) g x X Y Y X
-      = sectionalCurvatureNumerator (I := I) g x X Y := sorry
+      = sectionalCurvatureNumerator (I := I) g x X Y := by
+  classical
+  rw [metricRm04StdAt_eq_chartRiemannCLM g x X Y Y X,
+      g_inner_center g x X (chartRiemannCLM (I := I) g x X Y Y)]
+  simp only [reprR g x X Y]
+  rw [sectionalCurvatureNumerator_def]
+  simp only [chartRiemannLower_def, Finset.mul_sum, Finset.sum_mul]
+  conv_lhs => enter [2, a]; rw [Finset.sum_comm]
+  conv_lhs => rw [Finset.sum_comm]
+  conv_lhs => enter [2, i, 2, a]; rw [Finset.sum_comm]
+  conv_lhs => enter [2, i]; rw [Finset.sum_comm]
+  conv_lhs => enter [2, i, 2, j, 2, a]; rw [Finset.sum_comm]
+  conv_lhs => enter [2, i, 2, j]; rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
+    Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun a _ =>
+      Finset.sum_congr rfl (fun b _ => ?_)))))
+  ring
 
 private lemma exists_gOrthonormalBasis_first
     (g : SmoothRiemannianMetric I M) (x : M) {m : ℕ}
     (hm : Module.finrank ℝ E = m + 1)
     (T : TangentSpace I x) (hT : g.inner x T T = 1) :
     ∃ basis : Module.Basis (Fin (m + 1)) ℝ (TangentSpace I x),
-      (∀ a b, g.inner x (basis a) (basis b) = if a = b then 1 else 0) ∧ basis 0 = T := sorry
+      (∀ a b, g.inner x (basis a) (basis b) = if a = b then 1 else 0) ∧ basis 0 = T := by
+  classical
+  let cd : InnerProductSpace.Core ℝ (TangentSpace I x) := g.toRiemannianMetric.toCore x
+  have hc : ContinuousAt (fun v : TangentSpace I x => cd.inner v v) 0 :=
+    g.toRiemannianMetric.continuousAt x
+  have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
+      RCLike.re (cd.inner v v) < 1} :=
+    g.toRiemannianMetric.isVonNBounded x
+  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+    cd.toNormedAddCommGroupOfTopology hc hbnd
+  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+    InnerProductSpace.ofCoreOfTopology cd hc hbnd
+  have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
+    fun u v => rfl
+  have hfr : Module.finrank ℝ (TangentSpace I x) = Fintype.card (Fin (m + 1)) := by
+    rw [Fintype.card_fin]
+    exact (show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl).trans hm
+  have hTnorm : ‖T‖ = 1 := by
+    have hsq : ‖T‖ * ‖T‖ = 1 := by
+      rw [← real_inner_self_eq_norm_mul_norm, hinner_eq]; exact hT
+    nlinarith [norm_nonneg T]
+  have hsingle : Orthonormal ℝ (({0} : Set (Fin (m + 1))).restrict (fun _ => T)) := by
+    haveI : Subsingleton ↥({0} : Set (Fin (m + 1))) :=
+      ⟨fun a b => Subtype.ext
+        ((Set.mem_singleton_iff.mp a.2).trans (Set.mem_singleton_iff.mp b.2).symm)⟩
+    rw [orthonormal_iff_ite]
+    intro i j
+    rw [Subsingleton.elim i j, if_pos rfl]
+    simp only [Set.restrict_apply]
+    rw [real_inner_self_eq_norm_mul_norm, hTnorm, mul_one]
+  obtain ⟨bu, hbu⟩ := hsingle.exists_orthonormalBasis_extension_of_card_eq hfr
+  have hbu0 : bu 0 = T := hbu 0 (by simp)
+  refine ⟨bu.toBasis, ?_, ?_⟩
+  · intro a b
+    rw [OrthonormalBasis.coe_toBasis, ← hinner_eq]
+    have ho := bu.orthonormal
+    rw [orthonormal_iff_ite] at ho
+    exact ho a b
+  · rw [OrthonormalBasis.coe_toBasis]; exact hbu0
 
 private lemma ricci_symm
     (g : SmoothRiemannianMetric I M) (x : M) (U V : TangentSpace I x) :
