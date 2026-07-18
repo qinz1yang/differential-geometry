@@ -293,6 +293,212 @@ theorem evol_inverse_metric_inFrame
   simpa [inverseMetricEvolutionRHSInFrame] using h
 
 
+
+
+def metricCompInFrameData
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) : Real :=
+  (S.family.metric t).inner x (frame i x) (frame j x)
+
+@[simp] theorem metricCompInFrameData_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) :
+    metricCompInFrameData (I := I) S frame t x i j =
+      (S.family.metric t).inner x (frame i x) (frame j x) := by
+  rfl
+
+
+def ricciCompInFrameData
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) : Real :=
+  S.ricci t x (frame i x) (frame j x)
+
+@[simp] theorem ricciCompInFrameData_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) :
+    ricciCompInFrameData (I := I) S frame t x i j =
+      S.ricci t x (frame i x) (frame j x) := by
+  rfl
+
+
+def raisedRicciCompInFrameData
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) : Real :=
+  ∑ a : Idx, ∑ b : Idx,
+    gInv t x i a * gInv t x j b *
+      ricciCompInFrameData (I := I) S frame t x a b
+
+@[simp] theorem raisedRicciCompInFrameData_apply
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) :
+    raisedRicciCompInFrameData (I := I) S gInv frame t x i j =
+      ∑ a : Idx, ∑ b : Idx,
+        gInv t x i a * gInv t x j b *
+          ricciCompInFrameData (I := I) S frame t x a b := by
+  rfl
+
+
+theorem metricCompInFrameData_hasDerivWithinAt
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : DifferentialGeometry.Integral.Connection.IsRealizedRicciFlowSolutionOn (I := I) S)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x : M) (i j : Idx) :
+    HasDerivWithinAt
+      (fun s : Real => metricCompInFrameData (I := I) S frame s x i j)
+      ((-2 : Real) * ricciCompInFrameData (I := I) S frame (t : Real) x i j)
+      D.carrier
+      (t : Real) := by
+  simpa [metricCompInFrameData, ricciCompInFrameData] using
+    DifferentialGeometry.Integral.Connection.metric_derivWithin_eq_neg_two_ricci_of_isRealizedRicciFlowSolutionOn
+      (I := I) S hS t x (frame i x) (frame j x)
+
+
+def InvMetricLocalData [DecidableEq Idx]
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (u : Set M) : Prop :=
+  forall t x, x ∈ u -> forall i j,
+    (∑ k : Idx,
+        gInv t x i k * metricCompInFrameData (I := I) S frame t x k j) =
+        (if i = j then 1 else 0) ∧
+      (∑ k : Idx,
+        metricCompInFrameData (I := I) S frame t x i k * gInv t x k j) =
+        (if i = j then 1 else 0)
+
+
+theorem inverseMetric_derivative_row_eq_data
+    [DecidableEq Idx]
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : DifferentialGeometry.Integral.Connection.IsRealizedRicciFlowSolutionOn (I := I) S)
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInvDt : Real -> M -> Idx -> Idx -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    {u : Set M}
+    (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
+    (hinv : InvMetricLocalData (I := I) S gInv frame u)
+    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+      UniqueDiffWithinAt Real D.carrier (t : Real))
+    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x : M) (hx : x ∈ u) (i j : Idx) :
+    (∑ a : Idx,
+        (gInvDt (t : Real) x i a *
+          metricCompInFrameData (I := I) S frame (t : Real) x a j +
+        gInv (t : Real) x i a *
+          ((-2 : Real) * ricciCompInFrameData (I := I) S frame (t : Real) x a j))) =
+      0 := by
+  let lhs : Real -> Real :=
+    fun s => ∑ a : Idx,
+      gInv s x i a * metricCompInFrameData (I := I) S frame s x a j
+  have hlhs :
+      HasDerivWithinAt lhs
+        (∑ a : Idx,
+          (gInvDt (t : Real) x i a *
+            metricCompInFrameData (I := I) S frame (t : Real) x a j +
+          gInv (t : Real) x i a *
+            ((-2 : Real) * ricciCompInFrameData (I := I) S frame (t : Real) x a j)))
+        D.carrier
+        (t : Real) := by
+    dsimp [lhs]
+    simpa [Finset.sum_apply] using
+      (HasDerivWithinAt.fun_sum
+        (u := (Finset.univ : Finset Idx))
+        (A := fun a s =>
+          gInv s x i a * metricCompInFrameData (I := I) S frame s x a j)
+        (A' := fun a =>
+          (gInvDt (t : Real) x i a *
+            metricCompInFrameData (I := I) S frame (t : Real) x a j +
+          gInv (t : Real) x i a *
+            ((-2 : Real) * ricciCompInFrameData (I := I) S frame (t : Real) x a j)))
+        (s := D.carrier) (x := (t : Real))
+        (fun a _ha =>
+          by
+            exact (hdt t x i a).mul
+              (metricCompInFrameData_hasDerivWithinAt (I := I) S hS frame t x a j)))
+  have hconst :
+      HasDerivWithinAt lhs 0 D.carrier (t : Real) := by
+    dsimp [lhs]
+    exact
+      (hasDerivWithinAt_const
+        (x := (t : Real)) (s := D.carrier)
+        (c := (if i = j then 1 else 0 : Real))).congr
+        (fun s _hs => by
+          exact (hinv s x hx i j).1)
+        (by
+          exact (hinv (t : Real) x hx i j).1)
+  have h1 := hlhs.derivWithin (hunique t)
+  have h0 := hconst.derivWithin (hunique t)
+  exact h1.symm.trans h0
+
+
+theorem evol_inverse_metric_inFrame_data
+    [DecidableEq Idx]
+    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    (S : DifferentialGeometry.Integral.Connection.RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : DifferentialGeometry.Integral.Connection.IsRealizedRicciFlowSolutionOn (I := I) S)
+    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInvDt : Real -> M -> Idx -> Idx -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    {u : Set M}
+    (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
+    (hinv : InvMetricLocalData (I := I) S gInv frame u)
+    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+      UniqueDiffWithinAt Real D.carrier (t : Real))
+    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x : M) (hx : x ∈ u) (i j : Idx) :
+    HasDerivWithinAt
+      (fun s : Real => gInv s x i j)
+      (2 * raisedRicciCompInFrameData (I := I) S gInv frame (t : Real) x i j)
+      D.carrier
+      (t : Real) := by
+  have hrow : forall m : Idx,
+      (∑ a : Idx,
+          (gInvDt (t : Real) x i a *
+            metricCompInFrameData (I := I) S frame (t : Real) x a m +
+          gInv (t : Real) x i a *
+            ((-2 : Real) * ricciCompInFrameData (I := I) S frame (t : Real) x a m))) =
+        0 := by
+    intro m
+    exact inverseMetric_derivative_row_eq_data
+      (I := I) S hS gInv gInvDt frame hdt hinv hunique t x hx i m
+  have hsolve :
+      gInvDt (t : Real) x i j =
+        2 * raisedRicciCompInFrameData (I := I) S gInv frame (t : Real) x i j := by
+    unfold raisedRicciCompInFrameData
+    exact inverseMetric_derivative_solve
+      (metric := fun a b => metricCompInFrameData (I := I) S frame (t : Real) x a b)
+      (ric := fun a b => ricciCompInFrameData (I := I) S frame (t : Real) x a b)
+      (gInv := fun a b => gInv (t : Real) x a b)
+      (gInvDt := fun a b => gInvDt (t : Real) x a b)
+      i
+      hrow
+      (fun a b => (hinv (t : Real) x hx a b).1)
+      (fun a b => (hinv (t : Real) x hx a b).2)
+      (fun a b => by
+        simpa [metricCompInFrameData] using
+          (S.family.metric (t : Real)).symm x (frame a x) (frame b x))
+      j
+  exact (hdt t x i j).congr_deriv hsolve
+
+
 end Components
 
 end DifferentialGeometry.PDE.RicciFlow
