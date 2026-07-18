@@ -1316,6 +1316,24 @@ theorem normSq0S_pos_of_ne_zero
     0 < normSq0S (I := I) g x s A :=
   (tensor0SMetricData (I := I) g x s).inner_pos_of_ne_zero hA
 
+theorem inner0S_smul_left
+    (g : SmoothMetric I M) (x : M) (s : Nat) (c : Real)
+    (A B : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s (c • A) B = c * inner0S (I := I) g x s A B := by
+  let D := tensor0SMetricData (I := I) g x s
+  change D.flat (c • A) B = c * D.flat A B
+  rw [D.flat.map_smul]
+  rfl
+
+theorem inner0S_smul_right
+    (g : SmoothMetric I M) (x : M) (s : Nat) (c : Real)
+    (A B : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s A (c • B) = c * inner0S (I := I) g x s A B := by
+  let D := tensor0SMetricData (I := I) g x s
+  change D.flat A (c • B) = c * D.flat A B
+  rw [(D.flat A).map_smul]
+  rfl
+
 
 end
 

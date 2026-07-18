@@ -1167,6 +1167,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppC
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieRealizedFamilyJointSmooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OneFormRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.FlatArmCoeffConnectionDifferenceBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.GradSlotCurvature
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
@@ -2531,6 +2532,7 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.TensorRS
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.Bundled
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.MCovariant
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Derivation
+import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.FrameEval
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TensorRS
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
