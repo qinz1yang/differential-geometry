@@ -1304,6 +1304,18 @@ theorem normSq0S_nonneg
     0 <= normSq0S (I := I) g x s A := by
   exact (tensor0SMetricData (I := I) g x s).nonneg A
 
+theorem normSq0S_eq_zero_iff
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) :
+    normSq0S (I := I) g x s A = 0 ↔ A = 0 :=
+  (tensor0SMetricData (I := I) g x s).inner_self_eq_zero_iff A
+
+theorem normSq0S_pos_of_ne_zero
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) (hA : A ≠ 0) :
+    0 < normSq0S (I := I) g x s A :=
+  (tensor0SMetricData (I := I) g x s).inner_pos_of_ne_zero hA
+
 
 end
 
