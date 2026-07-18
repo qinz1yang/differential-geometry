@@ -37,7 +37,13 @@ theorem hyperbolic_isSolutionOn
       DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator (I := I) g₀ p v w ≠ 0 →
         DifferentialGeometry.Geometry.Riemannian.sectionalCurvature (I := I) g₀ p v w = -1) :
     IsSolutionOn (I := I)
-      (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))) := sorry
+      (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))) := by
+  have hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀
+      (-((Module.finrank Real E : Real) - 1)) := by
+    have h := DifferentialGeometry.Geometry.Riemannian.einstein_of_constant_sectionalCurvature
+      (I := I) g₀ (-1) hsec
+    simpa only [neg_one_mul] using h
+  exact hyperbolicScaled_isSolutionOn g₀ hEin
 
 theorem hyperbolic_harmonic_isHeatOneFormOn
     (g₀ : SmoothRiemannianMetric I M)
@@ -56,7 +62,15 @@ theorem hyperbolic_harmonic_isHeatOneFormOn
       (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))).family
       (einsteinScaledProbe (-((Module.finrank Real E : Real) - 1)) alpha)
       (einsteinScaledProbeNabla (-((Module.finrank Real E : Real) - 1)) nablaOmega)
-      (einsteinScaledProbeNabla2 (-((Module.finrank Real E : Real) - 1)) nabla2Omega) := sorry
+      (einsteinScaledProbeNabla2 (-((Module.finrank Real E : Real) - 1)) nabla2Omega) := by
+  have hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀
+      (-((Module.finrank Real E : Real) - 1)) := by
+    have h := DifferentialGeometry.Geometry.Riemannian.einstein_of_constant_sectionalCurvature
+      (I := I) g₀ (-1) hsec
+    simpa only [neg_one_mul] using h
+  have hEigen := DifferentialGeometry.Integral.Connection.isHarmonicOneForm_einstein_roughLap_eigen
+    (I := I) g₀ alpha nablaOmega nabla2Omega (-((Module.finrank Real E : Real) - 1)) hEin hHarm hRealizes2
+  exact hyperbolicScaled_isHeatOneFormOn g₀ alpha nablaOmega nabla2Omega hEin hRealizes2 hEigen
 
 theorem hyperbolic_harmonic_gradEnergy_hasDerivAt [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
@@ -82,7 +96,15 @@ theorem hyperbolic_harmonic_gradEnergy_hasDerivAt [CompactSpace M]
       (((Module.finrank Real E : Real) - 1) ^ 2 * ((Module.finrank Real E : Real) - 6) *
         ∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀))
-      0 := sorry
+      0 := by
+  have hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀
+      (-((Module.finrank Real E : Real) - 1)) := by
+    have h := DifferentialGeometry.Geometry.Riemannian.einstein_of_constant_sectionalCurvature
+      (I := I) g₀ (-1) hsec
+    simpa only [neg_one_mul] using h
+  have hEigen := DifferentialGeometry.Integral.Connection.isHarmonicOneForm_einstein_roughLap_eigen
+    (I := I) g₀ alpha nablaOmega nabla2Omega (-((Module.finrank Real E : Real) - 1)) hEin hHarm hRealizes2
+  exact hyperbolicScaled_gradEnergy_hasDerivAt g₀ alpha nablaOmega nabla2Omega hn hEin hRealizes2 hEigen
 
 theorem hyperbolic_harmonic_gradEnergy_hasDerivAt_dimSix [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
@@ -105,6 +127,14 @@ theorem hyperbolic_harmonic_gradEnergy_hasDerivAt_dimSix [CompactSpace M]
             (einsteinScaledProbeNabla (-((Module.finrank Real E : Real) - 1)) nablaOmega s x)
           ∂(volumeMeasureFamilyOn (I := I) (M := M)
               (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))).family s))
-      0 0 := sorry
+      0 0 := by
+  have hEin : DifferentialGeometry.Integral.Connection.IsEinsteinMetric (I := I) g₀
+      (-((Module.finrank Real E : Real) - 1)) := by
+    have h := DifferentialGeometry.Geometry.Riemannian.einstein_of_constant_sectionalCurvature
+      (I := I) g₀ (-1) hsec
+    simpa only [neg_one_mul] using h
+  have hEigen := DifferentialGeometry.Integral.Connection.isHarmonicOneForm_einstein_roughLap_eigen
+    (I := I) g₀ alpha nablaOmega nabla2Omega (-((Module.finrank Real E : Real) - 1)) hEin hHarm hRealizes2
+  exact hyperbolicScaled_gradEnergy_hasDerivAt_dimSix g₀ alpha nablaOmega nabla2Omega hdim hEin hRealizes2 hEigen
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 
 set_option autoImplicit false
@@ -57,6 +58,62 @@ theorem contMDiffOn_metricInner_localFrame
       (fun x : M => g.inner x (frame i x) (frame j x)) u := by
   have h := contMDiffOn_tensor0SField_eval_localFrame
     (metricTensorField (I := I) g) frame hu hframe ![i, j]
+  refine h.congr (fun x _ => ?_)
+  simp [metricTensorField_apply]
+
+theorem contMDiffWithinAt_tensor0SField_eval_localFrame {s : ℕ}
+    (alpha : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    {Idx : Type*} [Fintype Idx]
+    (frame : Idx → (x : M) → TangentSpace I x)
+    {u : Set M} {x₀ : M} (hx₀ : x₀ ∈ u)
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (m : Fin s → Idx) :
+    ContMDiffWithinAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun x : M => alpha x (fun j : Fin s => frame (m j) x)) u x₀ := by
+  have hEvalProd := TensorMultilinear.contMDiffWithinAt_section_apply_prod
+    (s := u ×ˢ (Set.univ : Set ℝ)) (p₀ := (x₀, 0))
+    s (fun b : M => alpha b)
+    ((alpha.contMDiff.comp contMDiff_fst).contMDiffAt.contMDiffWithinAt)
+    (fun (a : Fin s) (b : M) => frame (m a) b)
+    (fun a => (hframe.contMDiffOn (m a) x₀ hx₀).comp (x₀, 0)
+      contMDiff_fst.contMDiffAt.contMDiffWithinAt (fun p hp => hp.1))
+  have hmaps : Set.MapsTo (fun x : M => (x, (0 : ℝ))) u (u ×ˢ (Set.univ : Set ℝ)) :=
+    fun x hx => ⟨hx, Set.mem_univ _⟩
+  have hFinal : ContMDiffWithinAt I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun x : M => Tensor0SSpace.toModel (alpha x) (fun a : Fin s => frame (m a) x)) u x₀ :=
+    hEvalProd.comp x₀
+      ((contMDiff_id.prodMk contMDiff_const :
+          ContMDiff I (I.prod 𝓘(ℝ, ℝ)) (∞ : WithTop ℕ∞)
+            (fun x : M => (x, (0 : ℝ)))).contMDiffAt.contMDiffWithinAt)
+      hmaps
+  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hFinal
+
+theorem contMDiffOn_tensor0SField_eval_localFrame_of_isLocalFrameOn {s : ℕ}
+    (alpha : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    {Idx : Type*} [Fintype Idx]
+    (frame : Idx → (x : M) → TangentSpace I x)
+    {u : Set M}
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (m : Fin s → Idx) :
+    ContMDiffOn I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun x : M => alpha x (fun j : Fin s => frame (m j) x)) u :=
+  fun _x hx₀ =>
+    contMDiffWithinAt_tensor0SField_eval_localFrame alpha frame hx₀ hframe m
+
+theorem contMDiffOn_metricInner_localFrame_of_isLocalFrameOn
+    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    {Idx : Type*} [Fintype Idx]
+    (frame : Idx → (x : M) → TangentSpace I x)
+    {u : Set M}
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (i j : Idx) :
+    ContMDiffOn I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+      (fun x : M => g.inner x (frame i x) (frame j x)) u := by
+  have h := contMDiffOn_tensor0SField_eval_localFrame_of_isLocalFrameOn
+    (metricTensorField (I := I) g) frame hframe ![i, j]
   refine h.congr (fun x _ => ?_)
   simp [metricTensorField_apply]
 
