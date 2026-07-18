@@ -8,6 +8,10 @@ import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Curvature.Scaling
+import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
+import DifferentialGeometry.Analysis.Integration.Measure.Scaling
+import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.OneFormEigenIBP
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 set_option autoImplicit false
@@ -484,6 +488,33 @@ theorem einsteinScaled_isHeatOneFormOn
       (einsteinScaledProbe κ alpha) (einsteinScaledProbeNabla κ nablaOmega)
       (einsteinScaledProbeNabla2 κ nabla2Omega) := sorry
 
+private theorem einsteinScalingFactor_hasDerivAt_zero (κ : Real) :
+    HasDerivAt (fun s : Real => einsteinScalingFactor κ s) (-(2 * κ)) 0 := by
+  unfold einsteinScalingFactor
+  simpa using ((hasDerivAt_id (0 : Real)).const_mul (2 * κ)).const_sub 1
+
+private theorem einsteinScaling_rpow_sq {κ s : Real}
+    (hs : 0 < einsteinScalingFactor κ s) :
+    (Real.rpow (einsteinScalingFactor κ s) (-(1 / 2 : Real))) ^ 2
+      = (einsteinScalingFactor κ s)⁻¹ := by
+  have hsum : (-(1 / 2 : Real)) + (-(1 / 2 : Real)) = -1 := by norm_num
+  change (einsteinScalingFactor κ s ^ (-(1 / 2 : Real))) ^ 2 = (einsteinScalingFactor κ s)⁻¹
+  rw [pow_two, ← Real.rpow_add hs, hsum, Real.rpow_neg hs.le, Real.rpow_one]
+
+private theorem einsteinScaling_cinv3_hasDerivAt (κ : Real) :
+    HasDerivAt (fun s : Real => (einsteinScalingFactor κ s)⁻¹ ^ 3) (6 * κ) 0 := by
+  have hu0 : einsteinScalingFactor κ 0 ≠ 0 := by rw [einsteinScalingFactor_zero]; norm_num
+  have hinv : HasDerivAt (fun s : Real => (einsteinScalingFactor κ s)⁻¹) (2 * κ) 0 := by
+    have h := (einsteinScalingFactor_hasDerivAt_zero κ).inv hu0
+    rw [einsteinScalingFactor_zero] at h
+    simpa using h
+  have h3 := hinv.pow 3
+  rw [einsteinScalingFactor_zero] at h3
+  have hvaleq : (3 : ℕ) * (1 : Real)⁻¹ ^ (3 - 1) * (2 * κ) = 6 * κ := by
+    rw [inv_one, one_pow]; push_cast; ring
+  rw [hvaleq] at h3
+  exact h3
+
 theorem einsteinScaled_gradEnergy_hasDerivAt [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (κ : Real)
     (alpha : DifferentialGeometry.Integral.Connection.OneFormSection (I := I) (M := M))
@@ -506,8 +537,137 @@ theorem einsteinScaled_gradEnergy_hasDerivAt [CompactSpace M]
       (κ ^ 2 * ((Module.finrank Real E : Real) - 6) *
         ∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀))
-      0 := sorry
+      0 := by
+  classical
+  set G := (einsteinScaledSolution g₀ κ).family with hGdef
+  set f : Real → M → Real :=
+    fun s x => normSq0S (I := I) (G.metric s) x 2 (einsteinScaledProbeNabla κ nablaOmega s x)
+    with hfdef
+  have hc0 : (0 : Real) < einsteinScalingFactor κ 0 := by
+    rw [einsteinScalingFactor_zero]; norm_num
+  have hU : IsOpen ((einsteinFlowInterval κ).regular) := (einsteinFlowInterval κ).regular_isOpen
+  have h0U : (0 : Real) ∈ (einsteinFlowInterval κ).regular := hc0
+  have h0mem : (0 : Real) ∈ (einsteinFlowInterval κ).carrier := hc0
+  have hpt : ∀ (s : Real), 0 < einsteinScalingFactor κ s → ∀ x : M,
+      normSq0S (I := I) (G.metric s) x 2 (einsteinScaledProbeNabla κ nablaOmega s x)
+        = (einsteinScalingFactor κ s)⁻¹ ^ 3 * normSq0S (I := I) g₀ x 2 (nablaOmega x) := by
+    intro s hs x
+    have hmem : s ∈ (einsteinFlowInterval κ).carrier := hs
+    have hms : G.metric s = scaleMetric (I := I) (einsteinScalingFactor κ s) hs g₀ :=
+      einsteinScaledFamily_metric_of_mem g₀ κ hmem
+    have hprobe : einsteinScaledProbeNabla κ nablaOmega s x
+        = (Real.rpow (einsteinScalingFactor κ s) (-(1 / 2 : Real))) • nablaOmega x := by
+      simp only [einsteinScaledProbeNabla, tensor0SField_smulByFun_apply]
+    rw [hms, hprobe, normSq0S_two_scale, normSq0S_smul, einsteinScaling_rpow_sq hs]
+    ring
+  have hS := einsteinScaled_isSolutionOn g₀ κ hEin
+  have hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+        ((einsteinFlowInterval κ).regular ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+    fun x₀ i j =>
+      chartGram_jointContMDiffOn_of_metricFamilySmoothOn (I := I) (M := M) G hS.smoothMetric x₀ i j
+  have hN : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => normSq0S (I := I) g₀ p.2 2 (nablaOmega p.2))
+      ((einsteinFlowInterval κ).regular ×ˢ (Set.univ : Set M)) :=
+    ((DifferentialGeometry.Integral.Connection.normSq0S_smooth (I := I) g₀ nablaOmega).comp
+      contMDiff_snd).contMDiffOn
+  have hθ : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => (einsteinScalingFactor κ p.1)⁻¹ ^ 3)
+      ((einsteinFlowInterval κ).regular ×ˢ (Set.univ : Set M)) := by
+    have hφ : ContDiffOn Real ∞ (fun t : Real => (einsteinScalingFactor κ t)⁻¹ ^ 3)
+        (einsteinFlowInterval κ).regular := by
+      have hpoly : ContDiff Real ∞ (fun t : Real => einsteinScalingFactor κ t) := by
+        unfold einsteinScalingFactor; fun_prop
+      exact (hpoly.contDiffOn.inv (fun t ht => ne_of_gt ht)).pow 3
+    exact ((contMDiffOn_iff_contDiffOn).mpr hφ).comp contMDiff_fst.contMDiffOn (fun p hp => hp.1)
+  have hf : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M =>
+        normSq0S (I := I) (G.metric p.1) p.2 2 (einsteinScaledProbeNabla κ nablaOmega p.1 p.2))
+      ((einsteinFlowInterval κ).regular ×ˢ (Set.univ : Set M)) :=
+    (hθ.mul hN).congr (fun p hp => hpt p.1 hp.1 p.2)
+  have hmet0 : G.metric 0 = scaleMetric (I := I) (einsteinScalingFactor κ 0) hc0 g₀ :=
+    einsteinScaledFamily_metric_of_mem g₀ κ h0mem
+  have hμ0 : riemannianMeasureFamily (I := I) (M := M) (fun t => G.metric t) 0
+      = riemannianVolumeMeasure (I := I) (M := M) g₀ := by
+    rw [riemannianMeasureFamily_def]
+    change riemannianVolumeMeasure (I := I) (M := M) (G.metric 0) = _
+    rw [hmet0, volume_scaleMetric, einsteinScalingFactor_zero]
+    simp [Real.sqrt_one]
+  have hf0 : ∀ x : M, f 0 x = normSq0S (I := I) g₀ x 2 (nablaOmega x) := by
+    intro x
+    change normSq0S (I := I) (G.metric 0) x 2 (einsteinScaledProbeNabla κ nablaOmega 0 x)
+        = normSq0S (I := I) g₀ x 2 (nablaOmega x)
+    rw [hpt 0 hc0 x, einsteinScalingFactor_zero]
+    norm_num
+  have hderivf : ∀ x : M,
+      deriv (fun s => f s x) 0 = 6 * κ * normSq0S (I := I) g₀ x 2 (nablaOmega x) := by
+    intro x
+    have heq : (fun s => f s x) =ᶠ[nhds (0 : Real)]
+        (fun s => (einsteinScalingFactor κ s)⁻¹ ^ 3 * normSq0S (I := I) g₀ x 2 (nablaOmega x)) := by
+      refine Filter.eventually_of_mem (hU.mem_nhds h0U) (fun s hs => ?_)
+      change normSq0S (I := I) (G.metric s) x 2 (einsteinScaledProbeNabla κ nablaOmega s x)
+          = (einsteinScalingFactor κ s)⁻¹ ^ 3 * normSq0S (I := I) g₀ x 2 (nablaOmega x)
+      exact hpt s hs x
+    have hbase : HasDerivAt
+        (fun s : Real => (einsteinScalingFactor κ s)⁻¹ ^ 3 * normSq0S (I := I) g₀ x 2 (nablaOmega x))
+        (6 * κ * normSq0S (I := I) g₀ x 2 (nablaOmega x)) 0 :=
+      (einsteinScaling_cinv3_hasDerivAt κ).mul_const _
+    rw [heq.deriv_eq, hbase.deriv]
+  have htrace : ∀ x : M, traceTimeDerivMetric (I := I) (fun t => G.metric t) 0 x
+      = -(2 * κ) * (Module.finrank Real E : Real) := by
+    intro x
+    have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
+      mem_baseSet_trivializationAt E (TangentSpace I) x
+    have hdet_unit : IsUnit (chartGramMatrix (I := I) g₀ x x).det :=
+      isUnit_iff_ne_zero.mpr (chartGramMatrix_det_pos (I := I) g₀ x hx).ne'
+    have hGram0 : chartGramMatrix (I := I) (G.metric 0) x x = chartGramMatrix (I := I) g₀ x x := by
+      rw [hmet0, chartGram_scale, einsteinScalingFactor_zero, one_smul]
+    have hderivGram : ∀ i j : Fin (Module.finrank Real E),
+        deriv (fun s => chartGramMatrix (I := I) (G.metric s) x x i j) 0
+          = -(2 * κ) * chartGramMatrix (I := I) g₀ x x i j := by
+      intro i j
+      have heqe : (fun s => chartGramMatrix (I := I) (G.metric s) x x i j) =ᶠ[nhds (0 : Real)]
+          (fun s => einsteinScalingFactor κ s * chartGramMatrix (I := I) g₀ x x i j) := by
+        refine Filter.eventually_of_mem (hU.mem_nhds h0U) (fun s hs => ?_)
+        change chartGramMatrix (I := I) (G.metric s) x x i j
+            = einsteinScalingFactor κ s * chartGramMatrix (I := I) g₀ x x i j
+        have hms : G.metric s = scaleMetric (I := I) (einsteinScalingFactor κ s) hs g₀ :=
+          einsteinScaledFamily_metric_of_mem g₀ κ hs
+        rw [hms, chartGram_scale, Matrix.smul_apply, smul_eq_mul]
+      have hbase :=
+        (einsteinScalingFactor_hasDerivAt_zero κ).mul_const (chartGramMatrix (I := I) g₀ x x i j)
+      rw [heqe.deriv_eq, hbase.deriv]
+    simp only [traceTimeDerivMetric_eq]
+    rw [hGram0]
+    have hMof : (Matrix.of fun i j : Fin (Module.finrank Real E) =>
+          deriv (fun s => chartGramMatrix (I := I) (G.metric s) x x i j) 0)
+        = (-(2 * κ)) • chartGramMatrix (I := I) g₀ x x := by
+      ext i j
+      rw [Matrix.of_apply, hderivGram i j, Matrix.smul_apply, smul_eq_mul]
+    rw [hMof, mul_smul_comm, Matrix.trace_smul, Matrix.nonsing_inv_mul _ hdet_unit,
+      Matrix.trace_one, Fintype.card_fin, smul_eq_mul]
+  have hval : (∫ x, (deriv (fun s => f s x) 0
+        + 1 / 2 * traceTimeDerivMetric (I := I) (fun t => G.metric t) 0 x * f 0 x)
+        ∂(riemannianMeasureFamily (I := I) (M := M) (fun t => G.metric t) 0))
+      = κ ^ 2 * ((Module.finrank Real E : Real) - 6)
+          * ∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
+              ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) := by
+    have hintegrand : ∀ x : M,
+        deriv (fun s => f s x) 0
+            + 1 / 2 * traceTimeDerivMetric (I := I) (fun t => G.metric t) 0 x * f 0 x
+          = (-κ * ((Module.finrank Real E : Real) - 6)) * normSq0S (I := I) g₀ x 2 (nablaOmega x) := by
+      intro x
+      rw [hderivf x, htrace x, hf0 x]
+      ring
+    rw [hμ0, integral_congr_ae (Filter.Eventually.of_forall hintegrand), integral_const_mul,
+      DifferentialGeometry.Integral.Connection.oneForm_gradNormSq_integral_eq_neg_eigen g₀ κ alpha nablaOmega nabla2Omega hRealizes hEigen]
+    ring
+  have hmain := first_var_joint (g_fam := fun t => G.metric t) (f := f) hU h0U hg hf
+  rw [hval] at hmain
+  exact hmain
 
+set_option linter.unusedVariables false in
 theorem hyperbolicScaled_gradEnergy_hasDerivAt [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (alpha : DifferentialGeometry.Integral.Connection.OneFormSection (I := I) (M := M))
@@ -534,7 +694,11 @@ theorem hyperbolicScaled_gradEnergy_hasDerivAt [CompactSpace M]
       (((Module.finrank Real E : Real) - 1) ^ 2 * ((Module.finrank Real E : Real) - 6) *
         ∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀))
-      0 := sorry
+      0 := by
+  have h := einsteinScaled_gradEnergy_hasDerivAt g₀ (-((Module.finrank Real E : Real) - 1))
+    alpha nablaOmega nabla2Omega hEin hRealizes hEigen
+  rw [neg_sq] at h
+  exact h
 
 theorem einsteinScaled_gradEnergy_hasDerivAt_dimSix [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (κ : Real)
@@ -556,7 +720,16 @@ theorem einsteinScaled_gradEnergy_hasDerivAt_dimSix [CompactSpace M]
         ∫ x, normSq0S (I := I) ((einsteinScaledSolution g₀ κ).family.metric s) x 2
             (einsteinScaledProbeNabla κ nablaOmega s x)
           ∂(volumeMeasureFamilyOn (I := I) (M := M) (einsteinScaledSolution g₀ κ).family s))
-      0 0 := sorry
+      0 0 := by
+  have h := einsteinScaled_gradEnergy_hasDerivAt g₀ κ alpha nablaOmega nabla2Omega
+    hEin hRealizes hEigen
+  have hval0 : κ ^ 2 * ((Module.finrank Real E : Real) - 6)
+      * (∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) = 0 := by
+    have h6 : (Module.finrank Real E : Real) = 6 := by exact_mod_cast hdim
+    rw [h6]; ring
+  rw [hval0] at h
+  exact h
 
 theorem hyperbolicScaled_isSolutionOn
     (g₀ : SmoothRiemannianMetric I M)
@@ -619,6 +792,15 @@ theorem hyperbolicScaled_gradEnergy_hasDerivAt_dimSix [CompactSpace M]
             (einsteinScaledProbeNabla (-((Module.finrank Real E : Real) - 1)) nablaOmega s x)
           ∂(volumeMeasureFamilyOn (I := I) (M := M)
               (einsteinScaledSolution g₀ (-((Module.finrank Real E : Real) - 1))).family s))
-      0 0 := sorry
+      0 0 := by
+  have h := einsteinScaled_gradEnergy_hasDerivAt g₀ (-((Module.finrank Real E : Real) - 1))
+    alpha nablaOmega nabla2Omega hEin hRealizes hEigen
+  have hval0 : (-((Module.finrank Real E : Real) - 1)) ^ 2 * ((Module.finrank Real E : Real) - 6)
+      * (∫ x, normSq0S (I := I) g₀ x 1 (alpha x)
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) = 0 := by
+    have h6 : (Module.finrank Real E : Real) = 6 := by exact_mod_cast hdim
+    rw [h6]; ring
+  rw [hval0] at h
+  exact h
 
 end DifferentialGeometry.PDE.RicciFlow
