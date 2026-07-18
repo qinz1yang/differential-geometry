@@ -13,6 +13,8 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInne
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannTimeDeriv
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.FamilyProducers
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -1840,6 +1842,830 @@ private lemma ricci_symm_of_solution
   linarith
 
 
+private lemma fin1_eta' {x : M} (slots : Fin 1 -> TangentSpace I x) :
+    slots = fun _ : Fin 1 => slots 0 := by
+  funext q
+  rw [Subsingleton.elim q 0]
+
+private lemma toRS0_one0_eval {s : ℕ} {x : M}
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    Tensor0SSpace.toRS0 A
+        (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x) = A := by
+  rw [Tensor0SSpace.toRS0_apply]
+  have h1 : tensor0SSpace_evalScalar x
+      (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x) = 1 := by
+    rw [Tensor0SSpace.evalScalar_apply]
+    exact Tensor0SField.one0_apply (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      ∞ x Fin.elim0
+  rw [h1, one_smul]
+
+private lemma oneFormRealizes_toTotal
+    [T2Space M] [SigmaCompactSpace M]
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (α : OneFormSection (I := I) (M := M))
+    (β : TwoTensorSection (I := I) (M := M))
+    (h1 : NablaOneFormSectionRealizes (I := I) cov α β) :
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 cov α β := by
+  intro X x slots
+  have h2 := (h1 x) X (slots 0)
+  have hcons : (Fin.cons (X x) slots : Fin 2 -> TangentSpace I x) =
+      vec2 (I := I) (X x) (slots 0) := by
+    rw [vec2_eq_cons, ← fin1_eta' (I := I) slots]
+  rw [hcons, h2]
+  exact congrArg _ (fin1_eta' (I := I) slots).symm
+
+private lemma abstract1'
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
+    (hLC : IsLeviCivita (I := I) cov g)
+    (α : OneFormSection (I := I) (M := M))
+    (Xf : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯)
+    (y : M) (w : TangentSpace I y) :
+    Tensor0SSpace.toModel
+        (tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g)
+          (fun z => α z) y (Xf y)) (fun _ : Fin 1 => w) =
+      nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        1 cov Xf α y (fun _ : Fin 1 => w) := by
+  classical
+  set Zf : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯ :=
+    ⟨smoothExtensionTangent (I := I) y w, smoothExtensionTangent_contMDiff (I := I) y w⟩
+    with hZfdef
+  have hZfy : Zf y = w := smoothExtensionTangent_eq (I := I) y w
+  have htmd : TensorSectionMDiffAt (I := I) 1 (fun z => α z) y :=
+    α.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hpeel := peel1_koszul (I := I) (M := M) g (fun z => α z) htmd Zf (Xf y)
+  have hLCeq : (LeviCivita (I := I) g).toFun (fun z => Zf z) y (Xf y) =
+      (cov (fun z => Zf z) y) (Xf y) :=
+    leviCivita_apply_eq_of_smooth_direction
+      (I := I) (cov := LeviCivita (I := I) g) (cov' := cov)
+      inferInstance inferInstance
+      (leviCivitaConnectionOfMetric_isLeviCivita (I := I) g) hLC
+      (fun z => Zf z) (Zf.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) (Xf y)
+  have hev := nabla0SFun_one_eval_smooth_slots (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    cov Xf Zf α y
+  have hsc : scalarFn I M (fun z : M => curriedSection I M (fun z' => α z') z (Zf z)) =
+      (fun p : M => α p (fun _ : Fin 1 => Zf p)) := by
+    funext z
+    rw [scalarFn_eq_toModel_elim0 (I := I) (M := M), curriedSection_apply,
+      TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+        (T := α z) (v0 := Zf z) (vs := fun i => Fin.elim0 i), toModel0S_apply]
+    congr 1
+    funext i; fin_cases i; rfl
+  rw [← hZfy]
+  conv_lhs =>
+    rw [show (fun _ : Fin 1 => Zf y) = ![Zf y] from by funext i; fin_cases i; rfl, hpeel]
+  rw [hev, hsc]
+  congr 1
+  rw [toModel0S_apply, hLCeq]
+  congr 1
+  funext i; fin_cases i; rfl
+
+private lemma smoothCcTensor_unit_contMDiff
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) {s : ℕ}
+    (T : SmoothCcTensor (I := I) (M := M) g 0 s) :
+    ContMDiff I (I.prod 𝓘(Real, Tensor0SModel s Real E)) (∞ : WithTop ℕ∞)
+      (fun y : M => TotalSpace.mk' (Tensor0SModel s Real E)
+        (E := fun z : M => Tensor0SSpace s I z) y
+        (T.toSection y
+          (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y))) := by
+  exact ContMDiff.clm_bundle_apply (𝕜 := Real) (n := (∞ : WithTop ℕ∞))
+    (F₁ := Tensor0SModel 0 Real E) (F₂ := Tensor0SModel s Real E)
+    (E₁ := fun z : M => Tensor0SSpace 0 I z)
+    (E₂ := fun z : M => Tensor0SSpace s I z)
+    (IM := I) (IB := I) (b := id)
+    (ϕ := fun y : M =>
+      (show Tensor0SSpace 0 I y →L[Real] Tensor0SSpace s I y from T.toSection y))
+    (v := fun y : M =>
+      Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y)
+    T.toSection.contMDiff
+    (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞).contMDiff
+
+private noncomputable def unitValField
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) {s : ℕ}
+    (T : SmoothCcTensor (I := I) (M := M) g 0 s) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s :=
+  ⟨fun y : M => T.toSection y
+      (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y),
+    smoothCcTensor_unit_contMDiff (I := I) (M := M) g T⟩
+
+private lemma unitValField_apply
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) {s : ℕ}
+    (T : SmoothCcTensor (I := I) (M := M) g 0 s) (y : M) :
+    unitValField (I := I) (M := M) g T y =
+      T.toSection y
+        (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y) := rfl
+
+private lemma toSection_eq_toRS0_unitValField
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) {s : ℕ}
+    (T : SmoothCcTensor (I := I) (M := M) g 0 s) (y : M) :
+    T.toSection y = Tensor0SSpace.toRS0 (unitValField (I := I) (M := M) g T y) := by
+  rw [unitValField_apply]
+  exact (toRS0_eval_one0 (I := I) (M := M) y (T.toSection y)).symm
+
+private lemma covGrad_unit_realizes
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
+    (hLC : IsLeviCivita (I := I) cov g)
+    (Wcc : SmoothCcTensor (I := I) (M := M) g 0 1) :
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 cov
+      (unitValField (I := I) (M := M) g Wcc)
+      (unitValField (I := I) (M := M) g
+        (TensorSpectral.covGrad (I := I) (M := M) g 0 1 Wcc)) := by
+  intro X x slots
+  have hslots := fin1_eta' (I := I) slots
+  have hWsec : (fun y : M => Wcc.toSection y) =
+      (fun y : M => (unitValField (I := I) (M := M) g Wcc).toTensorRSField ∞ y) := by
+    funext y
+    rw [Tensor0SField.toRS0_eq]
+    exact toSection_eq_toRS0_unitValField (I := I) (M := M) g Wcc y
+  change Tensor0SSpace.toModel
+      ((TensorSpectral.covGrad (I := I) (M := M) g 0 1 Wcc).toSection x
+        (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x))
+      (Fin.cons (X x) slots) = _
+  rw [TensorSpectral.covGrad_toSection_apply_eval (I := I) (M := M) g 0 1 Wcc x
+    (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x)
+    (Fin.cons (X x) slots)]
+  rw [show (Fin.cons (X x) slots : Fin 2 -> TangentSpace I x) 0 = X x from rfl]
+  rw [show Matrix.vecTail (Fin.cons (X x) slots : Fin 2 -> TangentSpace I x) = slots from by
+    funext q
+    simp [Matrix.vecTail]]
+  rw [TensorSpectral.tensorCovDerivAt_def (I := I) (M := M) g 0 1 Wcc x (X x)]
+  rw [hWsec]
+  rw [nablaRS_toRS0 (I := I) (M := M) (LeviCivita (I := I) g)
+    (unitValField (I := I) (M := M) g Wcc) x (X x)]
+  rw [toRS0_one0_eval (I := I) (M := M)]
+  rw [hslots]
+  exact abstract1' (I := I) (M := M) g cov hLC
+    (unitValField (I := I) (M := M) g Wcc) X x (slots 0)
+
+section GammaClones
+
+variable [T2Space M] [SigmaCompactSpace M]
+variable {Idx : Type} [Fintype Idx] [DecidableEq Idx] {u : Set M}
+
+private lemma coeff_invMetric_pt
+    (g : SmoothRiemannianMetric I M)
+    (gInv : M -> Idx -> Idx -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    {x : M} (hx : x ∈ u)
+    (hinvx : ∀ i j : Idx,
+      (∑ k : Idx, gInv x i k * g.inner x (frame k x) (frame j x)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx, g.inner x (frame i x) (frame k x) * gInv x k j) =
+          (if i = j then 1 else 0))
+    (k : Idx) (V : TangentSpace I x) :
+    hframe.coeff k x V =
+      ∑ l : Idx, gInv x k l * g.inner x (frame l x) V := by
+  let basis := hframe.toBasisAt hx
+  have hcoord :
+      basis.coord k V =
+        ∑ l : Idx, gInv x k l * g.inner x (basis l) V := by
+    symm
+    calc
+      (∑ l : Idx, gInv x k l * g.inner x (basis l) V)
+          = ∑ l : Idx, gInv x k l *
+              g.inner x (basis l) (∑ j : Idx, basis.coord j V • basis j) := by
+            rw [show (∑ j : Idx, basis.coord j V • basis j) = V from basis.sum_repr V]
+      _ = ∑ l : Idx, ∑ j : Idx,
+            gInv x k l * (basis.coord j V * g.inner x (basis l) (basis j)) := by
+            refine Finset.sum_congr rfl fun l _ => ?_
+            rw [map_sum]
+            rw [Finset.mul_sum]
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [map_smul]
+            simp [smul_eq_mul]
+      _ = ∑ j : Idx, basis.coord j V *
+            (∑ l : Idx, gInv x k l * g.inner x (basis l) (basis j)) := by
+            rw [Finset.sum_comm]
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [Finset.mul_sum]
+            refine Finset.sum_congr rfl fun l _ => ?_
+            ring
+      _ = ∑ j : Idx, basis.coord j V * (if k = j then 1 else 0) := by
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [show
+              (∑ l : Idx, gInv x k l * g.inner x (basis l) (basis j)) =
+                (if k = j then 1 else 0) by
+                  simpa [basis, IsLocalFrameOn.toBasisAt_coe] using (hinvx k j).1]
+      _ = basis.coord k V := by
+            simp
+  calc
+    hframe.coeff k x V = basis.coord k V := by
+      simp [basis, IsLocalFrameOn.coeff, hx]
+    _ = ∑ l : Idx, gInv x k l * g.inner x (frame l x) V := by
+      simpa [basis, IsLocalFrameOn.toBasisAt_coe] using hcoord
+
+private lemma gammaDerivOfLower_on
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (gInv : M -> Idx -> Idx -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (base : Real)
+    (lowerDot : M -> Idx -> Idx -> Idx -> Real)
+    (hinvOn : ∀ x : M, x ∈ u -> ∀ i j : Idx,
+      (∑ k : Idx, gInv x i k * (G.metric base).inner x (frame k x) (frame j x)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx, (G.metric base).inner x (frame i x) (frame k x) * gInv x k j) =
+          (if i = j then 1 else 0))
+    (hlower : lowerPairDerivOn (I := I) G frame base u lowerDot) :
+    gammaDerivOn (I := I) G frame hframe base u
+      (fun x k i j => gammaFromLower gInv lowerDot x i j k) := by
+  intro x hx i j k
+  let pair : Idx -> Real -> Real :=
+    fun l s =>
+      (G.metric base).inner x (frame l x)
+        ((G.connection s (frame j) x) (frame i x))
+  have hsum :
+      HasDerivAt
+        (fun s : Real => ∑ l : Idx, gInv x k l * pair l s)
+        (∑ l : Idx, gInv x k l * lowerDot x i j l)
+        base := by
+    simpa [pair] using
+      (HasDerivAt.fun_sum
+        (u := (Finset.univ : Finset Idx))
+        (A := fun l s => gInv x k l * pair l s)
+        (A' := fun l => gInv x k l * lowerDot x i j l)
+        (x := base)
+        (fun l _hl =>
+          HasDerivAt.const_mul
+            (gInv x k l) (hlower x hx i j l)))
+  have hEq :
+      (fun s : Real =>
+        DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
+          (G.connection s) frame hframe x i j k) =ᶠ[nhds base]
+        (fun s : Real => ∑ l : Idx, gInv x k l * pair l s) := by
+    exact Filter.Eventually.of_forall fun s => by
+      simpa [DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame, pair] using
+        coeff_invMetric_pt (I := I) (M := M)
+          (G.metric base) gInv frame hframe hx (hinvOn x hx) k
+          ((G.connection s (frame j) x) (frame i x))
+  simpa [gammaFromLower, pair] using hsum.congr_of_eventuallyEq hEq
+
+private lemma lcGammaVar_on
+    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (hLC : ∀ s : Real,
+      IsLeviCivita (I := I) (G.connection s) (G.metric s))
+    (gInv : M -> Idx -> Idx -> Real)
+    (frame : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hu : IsOpen u)
+    (base : Real)
+    (metricDot : M -> Idx -> Idx -> Real)
+    (metricCovDerivDt gammaDot : M -> Idx -> Idx -> Idx -> Real)
+    (hinvOn : ∀ x : M, x ∈ u -> ∀ i j : Idx,
+      (∑ k : Idx, gInv x i k * (G.metric base).inner x (frame k x) (frame j x)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx, (G.metric base).inner x (frame i x) (frame k x) * gInv x k j) =
+          (if i = j then 1 else 0))
+    (hmetricVar :
+      metricVarOn (I := I) G frame base u metricDot)
+    (hmetric :
+      metricCovVarOn (I := I) G frame base u metricCovDerivDt)
+    (hgamma :
+      gammaDerivOn (I := I) G frame hframe base u gammaDot) :
+    gammaVarEqOn gInv metricCovDerivDt gammaDot u := by
+  intro x hx i j k
+  have hlow :
+      ∀ l : Idx,
+        (∑ a : Idx,
+          gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x)) =
+          metricVarLowerRHS metricCovDerivDt x i j l := by
+    intro l
+    have hL :
+        HasDerivAt
+          (fun s : Real =>
+            2 * connDiffLow (I := I) G frame s base s x i j l)
+          (2 * ∑ a : Idx,
+            gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x))
+          base := by
+      exact HasDerivAt.const_mul (2 : Real)
+        (varLowDeriv (I := I) G frame hframe base metricDot gammaDot
+          hmetricVar hgamma hx i j l)
+    have hR :
+        HasDerivAt
+          (fun s : Real =>
+            metricCovAtBase (I := I) G frame base s x i j l +
+              metricCovAtBase (I := I) G frame base s x j i l -
+                metricCovAtBase (I := I) G frame base s x l i j)
+          (metricCovDerivDt x i j l +
+            metricCovDerivDt x j i l - metricCovDerivDt x l i j)
+          base := by
+      exact ((hmetric x hx i j l).add (hmetric x hx j i l)).sub
+        (hmetric x hx l i j)
+    have hEq :
+        (fun s : Real =>
+            metricCovAtBase (I := I) G frame base s x i j l +
+              metricCovAtBase (I := I) G frame base s x j i l -
+                metricCovAtBase (I := I) G frame base s x l i j) =ᶠ[nhds base]
+          (fun s : Real =>
+            2 * connDiffLow (I := I) G frame s base s x i j l) := by
+      exact Filter.Eventually.of_forall fun s => by
+        exact (finiteDiffKoszul (I := I) G hLC frame hframe hu hx base s i j l).symm
+    have hL_as_R :
+        HasDerivAt
+          (fun s : Real =>
+            metricCovAtBase (I := I) G frame base s x i j l +
+              metricCovAtBase (I := I) G frame base s x j i l -
+                metricCovAtBase (I := I) G frame base s x l i j)
+          (2 * ∑ a : Idx,
+            gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x))
+          base := hL.congr_of_eventuallyEq hEq
+    have hderiv :
+        2 * (∑ a : Idx,
+          gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x)) =
+          metricCovDerivDt x i j l +
+            metricCovDerivDt x j i l - metricCovDerivDt x l i j :=
+      hL_as_R.unique hR
+    unfold metricVarLowerRHS
+    linarith
+  let V : TangentSpace I x :=
+    ∑ a : Idx, gammaDot x a i j • frame a x
+  have hcoeff :
+      hframe.coeff k x V = gammaDot x k i j := by
+    let basis := hframe.toBasisAt hx
+    have hbasis :
+        ∀ a : Idx, basis.repr (frame a x) k = if a = k then 1 else 0 := by
+      intro a
+      have hframe_eq : frame a x = basis a := by
+        simp [basis]
+      rw [hframe_eq]
+      by_cases h : a = k
+      · subst k
+        simp
+      · simp [h]
+    calc
+      hframe.coeff k x V = basis.repr V k := by
+        simp [basis, IsLocalFrameOn.coeff, hx]
+      _ = ∑ a : Idx, gammaDot x a i j * basis.repr (frame a x) k := by
+        simp [V, map_sum, map_smul, smul_eq_mul]
+      _ = ∑ a : Idx, gammaDot x a i j * (if a = k then 1 else 0) := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [hbasis a]
+      _ = gammaDot x k i j := by
+        simp
+  have hinner :
+      ∀ l : Idx,
+        (G.metric base).inner x (frame l x) V =
+          metricVarLowerRHS metricCovDerivDt x i j l := by
+    intro l
+    calc
+      (G.metric base).inner x (frame l x) V =
+          ∑ a : Idx,
+            gammaDot x a i j * (G.metric base).inner x (frame l x) (frame a x) := by
+            simp [V, map_sum, smul_eq_mul]
+      _ = ∑ a : Idx,
+            gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x) := by
+            refine Finset.sum_congr rfl fun a _ => ?_
+            rw [(G.metric base).symm x (frame l x) (frame a x)]
+      _ = metricVarLowerRHS metricCovDerivDt x i j l := hlow l
+  calc
+    gammaDot x k i j = hframe.coeff k x V := hcoeff.symm
+    _ = ∑ l : Idx, gInv x k l * (G.metric base).inner x (frame l x) V := by
+      exact coeff_invMetric_pt (I := I) (M := M)
+        (G.metric base) gInv frame hframe hx (hinvOn x hx) k V
+    _ = ∑ l : Idx, gInv x k l * metricVarLowerRHS metricCovDerivDt x i j l := by
+      refine Finset.sum_congr rfl fun l _ => ?_
+      rw [hinner l]
+    _ = metricVarGammaRHS gInv metricCovDerivDt x i j k := by
+      rfl
+
+end GammaClones
+
+private lemma christoffel_dt_ricciFlow
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : IsRealizedRicciFlowSolutionOn (I := I) S)
+    (ricT : Real -> TwoTensorSection (I := I) (M := M))
+    (hricT : forall (t : Real) (x : M) (X Y : TangentSpace I x),
+      (ricT t) x (vec2 X Y) = S.ricci t x X Y)
+    (t₀ : RealTimeInterval.RegularTime D)
+    {Idx : Type} [Fintype Idx] [DecidableEq Idx]
+    (frame : Idx -> (y : M) -> TangentSpace I y) {u : Set M}
+    (hframeInf : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u)
+    (hframe1 : IsLocalFrameOn I E 1 frame u)
+    (hu : IsOpen u)
+    (gInv : M -> Idx -> Idx -> Real)
+    (hinvOn : ∀ y : M, y ∈ u -> ∀ i j : Idx,
+      (∑ k : Idx, gInv y i k *
+          (S.family.metric (t₀ : Real)).inner y (frame k y) (frame j y)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx, (S.family.metric (t₀ : Real)).inner y (frame i y) (frame k y) *
+            gInv y k j) =
+          (if i = j then 1 else 0)) :
+    ∃ gammaDot : M -> Idx -> Idx -> Idx -> Real,
+      (∀ y : M, y ∈ u -> ∀ i j k : Idx,
+        HasDerivAt
+          (fun s : Real =>
+            christoffelSymbolInFrame (S.family.connection s) frame hframe1 y i j k)
+          (gammaDot y k i j) (t₀ : Real)) ∧
+      (∀ y : M, y ∈ u -> ∀ i j k : Idx,
+        gammaDot y k i j =
+          metricVarGammaRHS gInv
+            (dotCovAt (I := I) (S.family.connection (t₀ : Real)) frame hframe1
+              (fun z a b => (-2 : Real) *
+                ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z))))
+            y i j k) := by
+  classical
+  obtain ⟨ρ, hρsmooth, hρmem, hρeq⟩ := exists_time_retract D.regular_isOpen t₀.2
+  have hρt : ρ (t₀ : Real) = (t₀ : Real) := hρeq.eq_of_nhds
+  have hρmdiff : ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ ρ := by
+    rw [contMDiff_iff_contDiff]; exact hρsmooth
+  have hinnerρ : ContMDiff (𝓘(Real, Real).prod I) (𝓘(Real, Real).prod I) ∞
+      (fun p : Real × M => (ρ p.1, p.2)) :=
+    (hρmdiff.comp contMDiff_fst).prodMk contMDiff_snd
+  let Gr : RealizedMetricFamilyOn (I := I) (M := M) D :=
+    { metric := fun s => S.family.metric (ρ s)
+      connection := fun s => S.family.connection (ρ s)
+      metricCompatible := fun t =>
+        S.family.metricCompatible ⟨ρ (t : Real), D.regular_subset (hρmem (t : Real))⟩ }
+  have hLCall : ∀ s : Real, IsLeviCivita (I := I) (Gr.connection s) (Gr.metric s) := by
+    intro s
+    have hmc : IsMetricCompatible_gen (I := I)
+        (S.family.connection (ρ s)) (S.family.metric (ρ s)) :=
+      hS.leviCivita.1 ⟨ρ s, D.regular_subset (hρmem s)⟩
+    have htf : IsTorsionFree (I := I) (S.family.connection (ρ s)) :=
+      hS.leviCivita.2 ⟨ρ s, D.regular_subset (hρmem s)⟩
+    exact isLeviCivita_of_parts hmc htf
+  have hsmoothGr : MetricFamilySmoothOn (I := I) (M := M) D Gr := by
+    refine
+      { coeff := ?_
+        coeff_cont := ?_
+        metricTensor_cont := ?_
+        frameCompSmooth := ?_ }
+    · intro x X Y
+      have h0 := hS.smoothMetric.coeff x X Y
+      have hρon : ContDiffOn Real ∞ ρ D.regular := hρsmooth.contDiffOn
+      have hcomp := h0.comp hρon (fun s _ => hρmem s)
+      simpa [Function.comp] using hcomp
+    · intro x X Y
+      have h0 := hS.smoothMetric.coeff_cont x X Y
+      have hρonC : ContinuousOn ρ D.carrier := hρsmooth.continuous.continuousOn
+      have hcomp := ContinuousOn.comp h0 hρonC
+        (fun s _ => D.regular_subset (hρmem s))
+      simpa [Function.comp] using hcomp
+    · have h0 := hS.smoothMetric.metricTensor_cont
+      unfold Tensor0SFamilyContinuousOnSet at h0 ⊢
+      let φ : {t : Real // t ∈ D.carrier} × M -> {t : Real // t ∈ D.carrier} × M :=
+        fun q => (⟨ρ q.1.1, D.regular_subset (hρmem q.1.1)⟩, q.2)
+      have hφ : Continuous φ := by
+        refine Continuous.prodMk ?_ continuous_snd
+        exact (hρsmooth.continuous.comp (continuous_subtype_val.comp continuous_fst)).subtype_mk _
+      exact h0.comp hφ
+    · intro Idx' _ frame' u' hframe' i j
+      have h0 := hS.smoothMetric.frameCompSmooth frame' hframe' i j
+      have hcomp := h0.comp hinnerρ.contMDiffOn (by
+        intro p (hp : p ∈ D.regular ×ˢ u')
+        exact ⟨hρmem p.1, hp.2⟩)
+      simpa [Function.comp] using hcomp
+  have hbase : D.regular ∈ nhds (t₀ : Real) := D.regular_isOpen.mem_nhds t₀.2
+  have hlower := lowerPairDeriv_of_metricFamilySmoothOn (I := I) Gr hLCall hsmoothGr
+    frame hframeInf hu (t₀ : Real) hbase
+  have hGrmet : (Gr.toRealizedMetricFamily hLCall).metric (t₀ : Real) =
+      S.family.metric (t₀ : Real) := by
+    change S.family.metric (ρ (t₀ : Real)) = S.family.metric (t₀ : Real)
+    rw [hρt]
+  have hGrconn : (Gr.toRealizedMetricFamily hLCall).connection (t₀ : Real) =
+      S.family.connection (t₀ : Real) := by
+    change S.family.connection (ρ (t₀ : Real)) = S.family.connection (t₀ : Real)
+    rw [hρt]
+  have hinvOn' : ∀ y : M, y ∈ u -> ∀ i j : Idx,
+      (∑ k : Idx, gInv y i k *
+          ((Gr.toRealizedMetricFamily hLCall).metric (t₀ : Real)).inner y
+            (frame k y) (frame j y)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k : Idx,
+            ((Gr.toRealizedMetricFamily hLCall).metric (t₀ : Real)).inner y
+              (frame i y) (frame k y) * gInv y k j) =
+          (if i = j then 1 else 0) := by
+    intro y hy i j
+    rw [hGrmet]
+    exact hinvOn y hy i j
+  have hgammaGr := gammaDerivOfLower_on (I := I) (M := M)
+    (Gr.toRealizedMetricFamily hLCall) gInv frame hframe1 (t₀ : Real)
+    (connectionPairingTimeDeriv (I := I) (Gr.toRealizedMetricFamily hLCall) frame (t₀ : Real))
+    hinvOn' hlower
+  refine ⟨fun x k i j =>
+    gammaFromLower gInv
+      (connectionPairingTimeDeriv (I := I) (Gr.toRealizedMetricFamily hLCall) frame (t₀ : Real))
+      x i j k, ?_, ?_⟩
+  · intro y hy i j k
+    have h0 := hgammaGr y hy i j k
+    refine h0.congr_of_eventuallyEq ?_
+    filter_upwards [hρeq] with s hs
+    have hcs : (Gr.toRealizedMetricFamily hLCall).connection s = S.family.connection s := by
+      change S.family.connection (ρ s) = S.family.connection s
+      rw [hs]
+    rw [hcs]
+  · intro y hy i j k
+    have hflowGr : metricVarOn (I := I) (Gr.toRealizedMetricFamily hLCall) frame (t₀ : Real) u
+        (fun z a b => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z))) := by
+      intro z hz a b
+      beta_reduce
+      have h1 := (hS.equation t₀ z (frame a z) (frame b z)).hasDerivAt
+        (D.regular_mem_nhds t₀.2)
+      have h2 : (-2 : Real) * ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z)) =
+          (-2 : Real) * S.ricci (t₀ : Real) z (frame a z) (frame b z) := by
+        rw [hricT]
+      rw [h2]
+      refine h1.congr_of_eventuallyEq ?_
+      filter_upwards [hρeq] with s hs
+      change ((Gr.toRealizedMetricFamily hLCall).metric s).inner z (frame a z) (frame b z) =
+        (S.family.metric s).inner z (frame a z) (frame b z)
+      have hms : (Gr.toRealizedMetricFamily hLCall).metric s = S.family.metric s := by
+        change S.family.metric (ρ s) = S.family.metric s
+        rw [hs]
+      rw [hms]
+    have hExtGr : metricExtDtOn (I := I) (Gr.toRealizedMetricFamily hLCall) frame
+        (t₀ : Real) u
+        (fun z a b => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z))) := by
+      intro z hz d a b
+      have hbig : FixedBaseExtDerivTimeDerivativeOnRegular (I := I)
+          D.regular D.regular u
+          (fun s w => (S.family.metric s).inner w (frame a w) (frame b w))
+          (fun t w => (-2 : Real) *
+            ricT t w (vec2 (I := I) (frame a w) (frame b w))) := by
+        refine fixedBaseOnRegSmooth hu D.regular_isOpen
+          (fun ht => D.regular_isOpen.mem_nhds ht) ?_ ?_
+        · intro t ht w hw
+          have hcomp := hS.smoothMetric.frameCompSmooth frame hframeInf a b
+          have hmem : (t, w) ∈ D.regular ×ˢ u := ⟨ht, hw⟩
+          have hn : D.regular ×ˢ u ∈ nhds (t, w) :=
+            (D.regular_isOpen.prod hu).mem_nhds hmem
+          exact (hcomp.contMDiffAt hn).of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+        · intro t ht w hw
+          have h1 := (hS.equation ⟨t, ht⟩ w (frame a w) (frame b w)).hasDerivAt
+            (D.regular_mem_nhds ht)
+          have h2 : (-2 : Real) * ricT t w (vec2 (I := I) (frame a w) (frame b w)) =
+              (-2 : Real) * S.ricci t w (frame a w) (frame b w) := by
+            rw [hricT]
+          rw [h2]
+          exact h1.hasDerivWithinAt
+      have hAt := (hbig (t₀ : Real) t₀.2 z hz (frame d z)).hasDerivAt
+        (D.regular_isOpen.mem_nhds t₀.2)
+      refine hAt.congr_of_eventuallyEq ?_
+      filter_upwards [hρeq] with s hs
+      have hms : (Gr.toRealizedMetricFamily hLCall).metric s = S.family.metric s := by
+        change S.family.metric (ρ s) = S.family.metric s
+        rw [hs]
+      rw [hms]
+    have hmcv := metricCovVarOn_of_ricciFlow (I := I)
+      (Gr.toRealizedMetricFamily hLCall) frame hframe1 (t₀ : Real)
+      (fun z a b => ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z)))
+      hflowGr hExtGr
+    have hvarEq := lcGammaVar_on (I := I) (M := M)
+      (Gr.toRealizedMetricFamily hLCall) hLCall gInv frame hframe1 hu (t₀ : Real)
+      (fun z a b => (-2 : Real) *
+        ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z)))
+      (dotCovAt (I := I) ((Gr.toRealizedMetricFamily hLCall).connection (t₀ : Real))
+        frame hframe1
+        (fun z a b => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (frame a z) (frame b z))))
+      (fun x k i j =>
+        gammaFromLower gInv
+          (connectionPairingTimeDeriv (I := I) (Gr.toRealizedMetricFamily hLCall)
+            frame (t₀ : Real)) x i j k)
+      hinvOn' hflowGr hmcv hgammaGr
+    have h0 := hvarEq y hy i j k
+    rw [h0, hGrconn]
+
+private lemma tensor3_first_slot_sum {x : M} {Idx : Type*} [Fintype Idx]
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (c : Idx -> Real) (V : Idx -> TangentSpace I x) (Y Z : TangentSpace I x) :
+    T (vec3 (I := I) (∑ p : Idx, c p • V p) Y Z) =
+      ∑ p : Idx, c p * T (vec3 (I := I) (V p) Y Z) := by
+  classical
+  let base : Fin 3 -> TangentSpace I x := vec3 (I := I) (∑ p : Idx, c p • V p) Y Z
+  have hbase : Function.update base (0 : Fin 3) (∑ p : Idx, c p • V p) = base := by
+    funext q
+    fin_cases q <;>
+      simp [base, Function.update, vec3, DifferentialGeometry.Integral.Connection.vec3]
+  have hupdate : ∀ W : TangentSpace I x,
+      Function.update base (0 : Fin 3) W = vec3 (I := I) W Y Z := by
+    intro W
+    funext q
+    fin_cases q <;>
+      simp [base, Function.update, vec3, DifferentialGeometry.Integral.Connection.vec3]
+  have hsum := T.toMultilinearMap.map_update_sum
+    (Finset.univ : Finset Idx) (0 : Fin 3) (fun p : Idx => c p • V p) base
+  have hsum' : T (Function.update base (0 : Fin 3) (∑ p : Idx, c p • V p)) =
+      ∑ p : Idx, c p * T (Function.update base (0 : Fin 3) (V p)) := by
+    simpa using hsum
+  calc T (vec3 (I := I) (∑ p : Idx, c p • V p) Y Z)
+      = T (Function.update base (0 : Fin 3) (∑ p : Idx, c p • V p)) := by rw [hbase]
+    _ = ∑ p : Idx, c p * T (Function.update base (0 : Fin 3) (V p)) := hsum'
+    _ = ∑ p : Idx, c p * T (vec3 (I := I) (V p) Y Z) := by
+        refine Finset.sum_congr rfl fun p _ => ?_
+        rw [hupdate (V p)]
+
+private lemma tensor3_third_slot_sum {x : M} {Idx : Type*} [Fintype Idx]
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (c : Idx -> Real) (V : Idx -> TangentSpace I x) (X Y : TangentSpace I x) :
+    T (vec3 (I := I) X Y (∑ p : Idx, c p • V p)) =
+      ∑ p : Idx, c p * T (vec3 (I := I) X Y (V p)) := by
+  classical
+  let base : Fin 3 -> TangentSpace I x := vec3 (I := I) X Y (∑ p : Idx, c p • V p)
+  have hbase : Function.update base (2 : Fin 3) (∑ p : Idx, c p • V p) = base := by
+    funext q
+    fin_cases q <;>
+      simp [base, Function.update, vec3, DifferentialGeometry.Integral.Connection.vec3]
+  have hupdate : ∀ W : TangentSpace I x,
+      Function.update base (2 : Fin 3) W = vec3 (I := I) X Y W := by
+    intro W
+    funext q
+    fin_cases q <;>
+      simp [base, Function.update, vec3, DifferentialGeometry.Integral.Connection.vec3]
+  have hsum := T.toMultilinearMap.map_update_sum
+    (Finset.univ : Finset Idx) (2 : Fin 3) (fun p : Idx => c p • V p) base
+  have hsum' : T (Function.update base (2 : Fin 3) (∑ p : Idx, c p • V p)) =
+      ∑ p : Idx, c p * T (Function.update base (2 : Fin 3) (V p)) := by
+    simpa using hsum
+  calc T (vec3 (I := I) X Y (∑ p : Idx, c p • V p))
+      = T (Function.update base (2 : Fin 3) (∑ p : Idx, c p • V p)) := by rw [hbase]
+    _ = ∑ p : Idx, c p * T (Function.update base (2 : Fin 3) (V p)) := hsum'
+    _ = ∑ p : Idx, c p * T (vec3 (I := I) X Y (V p)) := by
+        refine Finset.sum_congr rfl fun p _ => ?_
+        rw [hupdate (V p)]
+
+private lemma ricReact_eval (g : SmoothRiemannianMetric I M) (x : M)
+    (nR : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (X Y : TangentSpace I x) :
+    ricciVariationOneFormReaction (I := I) g x nR α (vec2 (I := I) X Y) =
+      nR (vec3 (I := I) X Y (cotangentSharp (I := I) g x α)) +
+        nR (vec3 (I := I) Y X (cotangentSharp (I := I) g x α)) -
+        nR (vec3 (I := I) (cotangentSharp (I := I) g x α) X Y) := by
+  classical
+  set Hs : TangentSpace I x := cotangentSharp (I := I) g x α with hHs
+  have hexpand : ricciVariationOneFormReaction (I := I) g x nR α (vec2 (I := I) X Y) =
+      (tensor0S_curry (𝕜 := Real) (I := I) 2 x (nR.domDomCongr (finRotate 3))) Hs
+          (vec2 (I := I) X Y) +
+        ((tensor0S_curry (𝕜 := Real) (I := I) 2 x (nR.domDomCongr (finRotate 3))) Hs).domDomCongr
+            (Equiv.swap (0 : Fin 2) 1) (vec2 (I := I) X Y) -
+        (tensor0S_curry (𝕜 := Real) (I := I) 2 x nR) Hs (vec2 (I := I) X Y) := rfl
+  have hterm1 : (tensor0S_curry (𝕜 := Real) (I := I) 2 x (nR.domDomCongr (finRotate 3))) Hs
+      (vec2 (I := I) X Y) = nR (vec3 (I := I) X Y Hs) := by
+    rw [curry_eval (I := I) (nR.domDomCongr (finRotate 3)) Hs (vec2 (I := I) X Y),
+      ContinuousMultilinearMap.domDomCongr_apply]
+    congr 1
+    funext i
+    fin_cases i <;> rfl
+  have hterm2 : ((tensor0S_curry (𝕜 := Real) (I := I) 2 x
+        (nR.domDomCongr (finRotate 3))) Hs).domDomCongr
+      (Equiv.swap (0 : Fin 2) 1) (vec2 (I := I) X Y) = nR (vec3 (I := I) Y X Hs) := by
+    rw [ContinuousMultilinearMap.domDomCongr_apply]
+    have hsw : (fun i => (vec2 (I := I) X Y) ((Equiv.swap (0 : Fin 2) 1) i)) =
+        vec2 (I := I) Y X := swap_vec2_eval (I := I) X Y
+    rw [show (fun i => (vec2 (I := I) X Y) ((Equiv.swap (0 : Fin 2) 1) i)) =
+        vec2 (I := I) Y X from hsw]
+    rw [curry_eval (I := I) (nR.domDomCongr (finRotate 3)) Hs (vec2 (I := I) Y X),
+      ContinuousMultilinearMap.domDomCongr_apply]
+    congr 1
+    funext i
+    fin_cases i <;> rfl
+  have hterm3 : (tensor0S_curry (𝕜 := Real) (I := I) 2 x nR) Hs (vec2 (I := I) X Y) =
+      nR (vec3 (I := I) Hs X Y) := by
+    rw [curry_eval (I := I) nR Hs (vec2 (I := I) X Y)]
+    congr 1
+    funext i
+    fin_cases i <;> rfl
+  rw [hexpand, hterm1, hterm2, hterm3]
+
+private lemma dotCovAt_ric_components
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (ricT : Real -> TwoTensorSection (I := I) (M := M))
+    (nablaRic : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (hNablaRic : forall t : RealTimeInterval.FlowTime D, forall x : M,
+      forall (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+        (Y Z : TangentSpace I x),
+        nablaRic (t : Real) x (vec3 (X x) Y Z) =
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 (S.family.connection (t : Real)) X (ricT (t : Real)) x (vec2 Y Z))
+    (t₀ : RealTimeInterval.RegularTime D)
+    {Idx : Type} [Fintype Idx] [DecidableEq Idx]
+    (Yg : Idx -> Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) {u : Set M}
+    (hframe1 : IsLocalFrameOn I E 1 (fun i (y : M) => Yg i y) u)
+    {x : M} (hx : x ∈ u) (d a b : Idx) :
+    dotCovAt (I := I) (S.family.connection (t₀ : Real)) (fun i (y : M) => Yg i y) hframe1
+        (fun z p q => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (Yg p z) (Yg q z)))
+        x d a b =
+      (-2 : Real) * nablaRic (t₀ : Real) x (vec3 (I := I) (Yg d x) (Yg a x) (Yg b x)) := by
+  classical
+  have hmd : MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M => ricT (t₀ : Real) y (vec2 (I := I) (Yg a y) (Yg b y))) x := by
+    have h0 := tensor0SField_eval_C1_slots_mdiffAt
+      (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (ricT (t₀ : Real))
+      (fun q : Fin 2 => if q = 0 then (fun y : M => Yg a y) else (fun y : M => Yg b y))
+      x
+      (by
+        intro q
+        by_cases hq : q = 0 <;>
+          simp only [hq, if_pos, ite_false] <;>
+          exact ((Yg _).contMDiff.contMDiffAt).of_le (by norm_num))
+    have hshape : (fun p : M => ricT (t₀ : Real) p
+        (fun q : Fin 2 => (if q = 0 then (fun y : M => Yg a y) else fun y : M => Yg b y) p)) =
+        (fun y : M => ricT (t₀ : Real) y (vec2 (I := I) (Yg a y) (Yg b y))) := by
+      funext p
+      congr 1
+      funext q
+      by_cases hq : q = 0 <;>
+        simp [hq, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    rwa [hshape] at h0
+  have hnr := hNablaRic (RealTimeInterval.regularToFlow t₀) x (Yg d) (Yg a x) (Yg b x)
+  simp only [RealTimeInterval.regularToFlow_val] at hnr
+  have hkos := nabla0SFun_two_koszul (I := I) (M := M)
+    (S.family.connection (t₀ : Real)) (Yg d) (Yg a) (Yg b) (ricT (t₀ : Real)) x
+  have hca := covariantDerivative_eq_sum_christoffel
+    (𝕜 := Real) (I := I) (cov := S.family.connection (t₀ : Real))
+    (frame := fun i (y : M) => Yg i y) (hframe := hframe1) hx d a
+  have hcb := covariantDerivative_eq_sum_christoffel
+    (𝕜 := Real) (I := I) (cov := S.family.connection (t₀ : Real))
+    (frame := fun i (y : M) => Yg i y) (hframe := hframe1) hx d b
+  have hslotA : ricT (t₀ : Real) x
+      (vec2 (I := I)
+        ((S.family.connection (t₀ : Real) (fun p => Yg a p) x) (Yg d x)) (Yg b x)) =
+      ∑ p : Idx,
+        christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+            (fun i (y : M) => Yg i y) hframe1 x d a p *
+          ricT (t₀ : Real) x (vec2 (I := I) (Yg p x) (Yg b x)) := by
+    rw [show (S.family.connection (t₀ : Real) (fun p => Yg a p) x) (Yg d x) =
+        ∑ k : Idx,
+          christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+              (fun i (y : M) => Yg i y) hframe1 x d a k • Yg k x from hca]
+    exact tensor2_first_slot_sum (I := I) (ricT (t₀ : Real) x)
+      (fun k => christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+        (fun i (y : M) => Yg i y) hframe1 x d a k)
+      (fun k => Yg k x) (Yg b x)
+  have hslotB : ricT (t₀ : Real) x
+      (vec2 (I := I) (Yg a x)
+        ((S.family.connection (t₀ : Real) (fun p => Yg b p) x) (Yg d x))) =
+      ∑ p : Idx,
+        christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+            (fun i (y : M) => Yg i y) hframe1 x d b p *
+          ricT (t₀ : Real) x (vec2 (I := I) (Yg a x) (Yg p x)) := by
+    rw [show (S.family.connection (t₀ : Real) (fun p => Yg b p) x) (Yg d x) =
+        ∑ k : Idx,
+          christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+              (fun i (y : M) => Yg i y) hframe1 x d b k • Yg k x from hcb]
+    exact tensor2_second_slot_sum (I := I) (ricT (t₀ : Real) x)
+      (fun k => christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+        (fun i (y : M) => Yg i y) hframe1 x d b k)
+      (fun k => Yg k x) (Yg a x)
+  have hext2 : extDerivFun (I := I)
+      (fun z : M => (-2 : Real) *
+        ricT (t₀ : Real) z (vec2 (I := I) (Yg a z) (Yg b z))) x
+      ((fun i (y : M) => Yg i y) d x) =
+      (-2 : Real) * extDerivFun (I := I)
+        (fun z : M => ricT (t₀ : Real) z (vec2 (I := I) (Yg a z) (Yg b z))) x (Yg d x) := by
+    rw [extDerivFun_const_mul I (-2 : Real) hmd]
+    rfl
+  unfold dotCovAt
+  rw [hext2, hnr, hkos]
+  rw [hslotA, hslotB]
+  rw [show (∑ p : Idx,
+      christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+          (fun i (y : M) => Yg i y) hframe1 x d a p *
+        ((fun z p' q => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (Yg p' z) (Yg q z))) x p b)) =
+      (-2 : Real) * ∑ p : Idx,
+        christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+            (fun i (y : M) => Yg i y) hframe1 x d a p *
+          ricT (t₀ : Real) x (vec2 (I := I) (Yg p x) (Yg b x)) from by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    ring]
+  rw [show (∑ p : Idx,
+      christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+          (fun i (y : M) => Yg i y) hframe1 x d b p *
+        ((fun z p' q => (-2 : Real) *
+          ricT (t₀ : Real) z (vec2 (I := I) (Yg p' z) (Yg q z))) x a p)) =
+      (-2 : Real) * ∑ p : Idx,
+        christoffelSymbolInFrame (S.family.connection (t₀ : Real))
+            (fun i (y : M) => Yg i y) hframe1 x d b p *
+          ricT (t₀ : Real) x (vec2 (I := I) (Yg a x) (Yg p x)) from by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    ring]
+  ring
+
+
 private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : RealTimeInterval}
@@ -1873,7 +2699,477 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
       (GLap x (vec2 X Y)
         + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
             (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (vec2 X Y))
-      (t₀ : Real) := sorry
+      (t₀ : Real) := by
+  classical
+  have hbridge2 : ∀ y : M,
+      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun y =
+        TensorRSSpace.toModel
+          (Tensor0SSpace.toRS0
+            (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+              (nabla2H (t₀ : Real) y))) :=
+    fun y => (heatOneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H
+      hProbe t₀ W hW y).2
+  have hmc : IsMetricCompatible_gen (I := I) (S.family.connection (t₀ : Real))
+      (S.family.metric (t₀ : Real)) := hS.leviCivita.1 (RealTimeInterval.regularToFlow t₀)
+  have htf : IsTorsionFree (I := I) (S.family.connection (t₀ : Real)) :=
+    hS.leviCivita.2 (RealTimeInterval.regularToFlow t₀)
+  have hLC : IsLeviCivita (I := I) (S.family.connection (t₀ : Real))
+      (S.family.metric (t₀ : Real)) := isLeviCivita_of_parts hmc htf
+  haveI hcovsmooth : CovariantDerivative.ContMDiffCovariantDerivative
+      (S.family.connection (t₀ : Real)) ∞ :=
+    hS.smoothConnection (RealTimeInterval.regularToFlow t₀)
+  set eT := trivializationAt E (TangentSpace I : M -> Type _) x with heT
+  have hxe : x ∈ eT.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
+  have hframe₀ := eT.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (Module.finBasis Real E)
+  obtain ⟨Yg, hYg⟩ := hframe₀.exists_contMDiffSection_eqOn_nhd eT.open_baseSet hxe
+  obtain ⟨u₀, hu₀mem, hu₀open, hxu₀⟩ := eventually_nhds_iff.mp hYg
+  have hu : IsOpen (u₀ ∩ eT.baseSet) := hu₀open.inter eT.open_baseSet
+  have hxu : x ∈ u₀ ∩ eT.baseSet := ⟨hxu₀, hxe⟩
+  have hframeInf : IsLocalFrameOn I E (∞ : WithTop ℕ∞)
+      (fun i (y : M) => Yg i y) (u₀ ∩ eT.baseSet) := by
+    refine IsLocalFrameOn.congr ((hframe₀.mono Set.inter_subset_right)) ?_
+    intro i y hy
+    exact (hu₀mem y hy.1 i).symm
+  have hframe1 : IsLocalFrameOn I E 1 (fun i (y : M) => Yg i y) (u₀ ∩ eT.baseSet) :=
+    { linearIndependent := fun {y} hy => hframeInf.linearIndependent hy
+      generating := fun {y} hy => hframeInf.generating hy
+      contMDiffOn := fun i => (hframeInf.contMDiffOn i).of_le (by exact_mod_cast le_top) }
+  set gInvF : M -> Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) -> Real :=
+    fun y i j =>
+      if hy : y ∈ u₀ ∩ eT.baseSet then
+        basisInvMetric (I := I) (S.family.metric (t₀ : Real)) y (hframe1.toBasisAt hy) i j
+      else 0
+    with hgInvF
+  have hinvOn : ∀ y : M, y ∈ u₀ ∩ eT.baseSet ->
+      ∀ i j : Fin (Module.finrank Real E),
+      (∑ k, gInvF y i k *
+          (S.family.metric (t₀ : Real)).inner y (Yg k y) (Yg j y)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k, (S.family.metric (t₀ : Real)).inner y (Yg i y) (Yg k y) *
+            gInvF y k j) =
+          (if i = j then 1 else 0) := by
+    intro y hy i j
+    have hreal := basisInvMetric_real (I := I) (S.family.metric (t₀ : Real)) y
+      (hframe1.toBasisAt hy)
+    have hco : ∀ k, (hframe1.toBasisAt hy) k = Yg k y :=
+      fun k => hframe1.toBasisAt_coe hy k
+    constructor
+    · have h1 := (hreal i j).1
+      simp only [hco] at h1
+      rw [hgInvF]
+      beta_reduce
+      simp only [dif_pos hy]
+      exact h1
+    · have h2 := (hreal i j).2
+      simp only [hco] at h2
+      rw [hgInvF]
+      beta_reduce
+      simp only [dif_pos hy]
+      exact h2
+  have hinvOn' : ∀ y : M, y ∈ u₀ ∩ eT.baseSet ->
+      ∀ i j : Fin (Module.finrank Real E),
+      (∑ k, gInvF y i k *
+          (S.family.metric (t₀ : Real)).inner y
+            ((fun i (z : M) => Yg i z) k y) ((fun i (z : M) => Yg i z) j y)) =
+          (if i = j then 1 else 0) ∧
+        (∑ k, (S.family.metric (t₀ : Real)).inner y
+            ((fun i (z : M) => Yg i z) i y) ((fun i (z : M) => Yg i z) k y) *
+            gInvF y k j) =
+          (if i = j then 1 else 0) := hinvOn
+  obtain ⟨gammaDot, hgammaDeriv, hgammaEq⟩ :=
+    christoffel_dt_ricciFlow (I := I) (M := M) S hS ricT hricT t₀
+      (fun i (y : M) => Yg i y) hframeInf hframe1 hu gInvF hinvOn'
+  set Wlap := rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W with hWlap
+  have hlapSec : ∀ y : M, Wlap.toSection y =
+      Tensor0SSpace.toRS0 (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+        (nabla2H (t₀ : Real) y)) := by
+    intro y
+    have hb := hbridge2 y
+    rw [SmoothCcTensor.toFun_apply] at hb
+    exact TensorRSSpace.toModel_injective hb
+  have hLFeq : ∀ y : M,
+      unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap y =
+        roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+          (nabla2H (t₀ : Real) y) := by
+    intro y
+    rw [unitValField_apply, hlapSec y]
+    exact toRS0_one0_eval (I := I) (M := M) _
+  have hGLapEq : ∀ y : M, GLap y =
+      unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
+        (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap) y := by
+    intro y
+    have h1 := congrArg (fun T : TensorRSSpace 0 2 I y =>
+      T (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y)) (hGLap y)
+    simp only at h1
+    rw [toRS0_one0_eval (I := I) (M := M) (GLap y)] at h1
+    rw [h1, unitValField_apply]
+  have hrealL := covGrad_unit_realizes (I := I) (M := M) (S.family.metric (t₀ : Real))
+    (S.family.connection (t₀ : Real)) hLC Wlap
+  have hcomp : ∀ i j : Fin (Module.finrank Real E),
+      HasDerivAt (fun s : Real => nablaH s x (vec2 (I := I) (Yg i x) (Yg j x)))
+        (GLap x (vec2 (I := I) (Yg i x) (Yg j x))
+          + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
+              (vec2 (I := I) (Yg i x) (Yg j x)))
+        (t₀ : Real) := by
+    intro i j
+    set n : Fin 2 -> Fin (Module.finrank Real E) := ![i, j] with hn
+    have hn0 : n 0 = i := rfl
+    have hn1 : n 1 = j := rfl
+    have htail : Fin.tail n = fun _ : Fin 1 => j := by
+      funext q
+      rw [Subsingleton.elim q 0]
+      rfl
+    set A : Real -> M -> (Fin 1 -> Fin (Module.finrank Real E)) -> Real :=
+      fun s => frameComp0S (I := I) (h s) (fun i (y : M) => Yg i y) with hA
+    set Adt : Real -> M -> (Fin 1 -> Fin (Module.finrank Real E)) -> Real :=
+      fun t y m =>
+        roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
+          (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) with hAdt
+    set chr : Real -> M -> Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) ->
+        Fin (Module.finrank Real E) -> Real :=
+      fun s y => christoffelSymbolInFrame (S.family.connection s)
+        (fun i (z : M) => Yg i z) hframe1 y with hchrdef
+    set chrDtF : Real -> M -> Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) ->
+        Fin (Module.finrank Real E) -> Real :=
+      fun _ y i' a p => gammaDot y p i' a with hchrDtF
+    have hslot1 : ∀ (y : M) (m : Fin 1 -> Fin (Module.finrank Real E)),
+        frameTuple (I := I) (fun i (z : M) => Yg i z) y m =
+          (fun _ : Fin 1 => Yg (m 0) y) := by
+      intro y m
+      funext q
+      rw [Subsingleton.elim q 0]
+      rfl
+    have hAeq : ∀ (s : Real) (y : M) (m : Fin 1 -> Fin (Module.finrank Real E)),
+        A s y m = h s y (fun _ : Fin 1 => Yg (m 0) y) := by
+      intro s y m
+      change h s y (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
+      rw [hslot1 y m]
+    have hAdteq : ∀ (t : Real) (y : M) (m : Fin 1 -> Fin (Module.finrank Real E)),
+        Adt t y m =
+          roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
+            (fun _ : Fin 1 => Yg (m 0) y) := by
+      intro t y m
+      change roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
+          (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
+      rw [hslot1 y m]
+    have hAder : ∀ m : Fin 1 -> Fin (Module.finrank Real E),
+        HasDerivWithinAt (fun s : Real => A s x m) (Adt (t₀ : Real) x m)
+          D.regular (t₀ : Real) := by
+      intro m
+      have heq := hProbe.equation t₀ x (Yg (m 0) x)
+      have hfun : (fun s : Real => A s x m) =
+          (fun s : Real => h s x (fun _ : Fin 1 => Yg (m 0) x)) := by
+        funext s
+        exact hAeq s x m
+      rw [hfun, hAdteq (t₀ : Real) x m]
+      exact heq.hasDerivWithinAt
+    have hchrDer : ∀ i' a p : Fin (Module.finrank Real E),
+        HasDerivWithinAt (fun s : Real => chr s x i' a p) (chrDtF (t₀ : Real) x i' a p)
+          D.regular (t₀ : Real) :=
+      fun i' a p => (hgammaDeriv x hxu i' a p).hasDerivWithinAt
+    have hswap : ∀ m : Fin 1 -> Fin (Module.finrank Real E),
+        HasDerivWithinAt
+          (fun s : Real =>
+            extDerivFun (I := I) (fun y : M => A s y m) x
+              ((fun i (z : M) => Yg i z) (n 0) x))
+          (extDerivFun (I := I) (fun y : M => Adt (t₀ : Real) y m) x
+            ((fun i (z : M) => Yg i z) (n 0) x))
+          D.regular (t₀ : Real) := by
+      intro m
+      have hbig : FixedBaseExtDerivTimeDerivativeOnRegular (I := I)
+          D.regular D.regular (u₀ ∩ eT.baseSet)
+          (fun s y => A s y m)
+          (fun t y => Adt t y m) := by
+        refine fixedBaseOnRegSmooth hu D.regular_isOpen
+          (fun ht => D.regular_isOpen.mem_nhds ht) ?_ ?_
+        · intro t ht y hy
+          have hjs := hProbe.jointSmooth (fun i (z : M) => Yg i z) hframeInf (m 0)
+          have hjs' : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+              (fun p : Real × M => A p.1 p.2 m) (D.regular ×ˢ (u₀ ∩ eT.baseSet)) := by
+            refine hjs.congr (fun p _ => ?_)
+            exact hAeq p.1 p.2 m
+          have hmem : (t, y) ∈ D.regular ×ˢ (u₀ ∩ eT.baseSet) := ⟨ht, hy⟩
+          have hnh : D.regular ×ˢ (u₀ ∩ eT.baseSet) ∈ nhds (t, y) :=
+            (D.regular_isOpen.prod hu).mem_nhds hmem
+          exact (hjs'.contMDiffAt hnh).of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+        · intro t ht y hy
+          have heq := hProbe.equation ⟨t, ht⟩ y (Yg (m 0) y)
+          have hfun : (fun s : Real => A s y m) =
+              (fun s : Real => h s y (fun _ : Fin 1 => Yg (m 0) y)) := by
+            funext s
+            exact hAeq s y m
+          rw [hfun, hAdteq t y m]
+          exact heq.hasDerivWithinAt
+      exact hbig (t₀ : Real) t₀.2 x hxu ((fun i (z : M) => Yg i z) (n 0) x)
+    have hEng := covDerivStepComp_hasDerivWithinAt
+      (I := I) (fun i (z : M) => Yg i z) A Adt chr chrDtF
+      (D := D.regular) (t := (t₀ : Real)) x n hAder hchrDer hswap
+    have hFn : ∀ s ∈ D.regular,
+        covDerivStepComp
+            (frameExtData (I := I) (fun i (z : M) => Yg i z) (fun y : M => A s y) x)
+            (chr s x) (A s x) n =
+          nablaH s x (frameTuple (I := I) (fun i (z : M) => Yg i z) x n) := by
+      intro s hs
+      have hreal1 : NablaOneFormSectionRealizes (I := I) (S.family.connection s)
+          (h s) (nablaH s) :=
+        (hProbe.realizes ⟨s, D.regular_subset hs⟩ x).1
+      have hTot := oneFormRealizes_toTotal (I := I) (M := M)
+        (S.family.connection s) (h s) (nablaH s) hreal1
+      exact covDerivStepComp_frameComp_eq
+        (I := I) (S.family.connection s) (h s) (nablaH s) hTot
+        (fun i (z : M) => Yg i z) hframe1 hu hxu n
+    have hW2 := hEng.congr (fun s hs => (hFn s hs).symm) ((hFn (t₀ : Real) t₀.2).symm)
+    have hAt := hW2.hasDerivAt (D.regular_isOpen.mem_nhds t₀.2)
+    have hft : frameTuple (I := I) (fun i (z : M) => Yg i z) x n =
+        vec2 (I := I) (Yg i x) (Yg j x) := by
+      funext q
+      fin_cases q <;>
+        simp [frameTuple, n, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    rw [hft] at hAt
+    have hval : covDerivStepComp
+          (frameExtData (I := I) (fun i (z : M) => Yg i z) (fun y : M => Adt (t₀ : Real) y) x)
+          (chr (t₀ : Real) x) (Adt (t₀ : Real) x) n -
+        covDerivStepDt (chrDtF (t₀ : Real) x) (A (t₀ : Real) x) n =
+        GLap x (vec2 (I := I) (Yg i x) (Yg j x))
+          + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
+              (vec2 (I := I) (Yg i x) (Yg j x)) := by
+      have hAdtF : Adt (t₀ : Real) =
+          frameComp0S (I := I)
+            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+            (fun i (z : M) => Yg i z) := by
+        funext y m
+        change roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+            (nabla2H (t₀ : Real) y)
+            (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
+        rw [show frameComp0S (I := I)
+            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+            (fun i (z : M) => Yg i z) y m =
+            unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap y
+              (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) from rfl]
+        rw [hLFeq y]
+      have h1 : covDerivStepComp
+          (frameExtData (I := I) (fun i (z : M) => Yg i z) (fun y : M => Adt (t₀ : Real) y) x)
+          (chr (t₀ : Real) x) (Adt (t₀ : Real) x) n =
+          unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
+            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap) x
+            (frameTuple (I := I) (fun i (z : M) => Yg i z) x n) := by
+        rw [hAdtF]
+        exact covDerivStepComp_frameComp_eq
+          (I := I) (S.family.connection (t₀ : Real))
+          (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+          (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
+            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap))
+          hrealL (fun i (z : M) => Yg i z) hframe1 hu hxu n
+      have h2 : covDerivStepDt (chrDtF (t₀ : Real) x) (A (t₀ : Real) x) n =
+          - ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
+              (vec2 (I := I) (Yg i x) (Yg j x)) := by
+        have hupd : ∀ p : Fin (Module.finrank Real E),
+            Function.update (Fin.tail n) (0 : Fin 1) p = (fun _ : Fin 1 => p) := by
+          intro p
+          funext q
+          rw [Subsingleton.elim q 0]
+          simp
+        have hsteps : covDerivStepDt (chrDtF (t₀ : Real) x) (A (t₀ : Real) x) n =
+            ∑ p, gammaDot x p i j * h (t₀ : Real) x (fun _ : Fin 1 => Yg p x) := by
+          change (∑ q : Fin 1, ∑ p, chrDtF (t₀ : Real) x (n 0) (Fin.tail n q) p *
+              A (t₀ : Real) x (Function.update (Fin.tail n) q p)) = _
+          rw [Fin.sum_univ_one]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [hupd p]
+          have hA1 : A (t₀ : Real) x (fun _ : Fin 1 => p) =
+              h (t₀ : Real) x (fun _ : Fin 1 => Yg p x) := by
+            rw [hAeq]
+          rw [hA1]
+          rfl
+        have hmcd : ∀ d a b : Fin (Module.finrank Real E),
+            dotCovAt (I := I) (S.family.connection (t₀ : Real))
+              (fun i' (z : M) => Yg i' z) hframe1
+              (fun z p q => (-2 : Real) *
+                ricT (t₀ : Real) z (vec2 (I := I) (Yg p z) (Yg q z)))
+              x d a b =
+            (-2 : Real) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg d x) (Yg a x) (Yg b x)) :=
+          fun d a b => dotCovAt_ric_components (I := I) (M := M) S ricT nablaRic hNablaRic t₀
+            Yg hframe1 hxu d a b
+        have hgamma_p : ∀ p : Fin (Module.finrank Real E),
+            gammaDot x p i j =
+              ∑ l, gInvF x p l *
+                ((-(1 : Real)) *
+                  (nablaRic (t₀ : Real) x (vec3 (I := I) (Yg i x) (Yg j x) (Yg l x)) +
+                    nablaRic (t₀ : Real) x (vec3 (I := I) (Yg j x) (Yg i x) (Yg l x)) -
+                    nablaRic (t₀ : Real) x (vec3 (I := I) (Yg l x) (Yg i x) (Yg j x)))) := by
+          intro p
+          have he := hgammaEq x hxu i j p
+          rw [he]
+          change (∑ l, gInvF x p l *
+              metricVarLowerRHS
+                (dotCovAt (I := I) (S.family.connection (t₀ : Real))
+                  (fun i' (z : M) => Yg i' z) hframe1
+                  (fun z a b => (-2 : Real) *
+                    ricT (t₀ : Real) z (vec2 (I := I) (Yg a z) (Yg b z))))
+                x i j l) = _
+          refine Finset.sum_congr rfl fun l _ => ?_
+          congr 1
+          change (1 / 2 : Real) * (_ + _ - _) = _
+          rw [hmcd i j l, hmcd j i l, hmcd l i j]
+          ring
+        have hbasisco : ∀ k, (hframe1.toBasisAt hxu) k = Yg k x :=
+          fun k => hframe1.toBasisAt_coe hxu k
+        have hinvB : MetricInverseInBasis (I := I) (S.family.metric (t₀ : Real)) x
+            (hframe1.toBasisAt hxu) (fun p m => gInvF x p m) := by
+          intro i' j'
+          have hp := hinvOn x hxu i' j'
+          constructor
+          · simpa [hbasisco] using hp.1
+          · simpa [hbasisco] using hp.2
+        have hsymmG : ∀ p l, gInvF x p l = gInvF x l p := by
+          intro p l
+          rw [hgInvF]
+          beta_reduce
+          simp only [dif_pos hxu]
+          exact basisInvMetric_symm (I := I) (S.family.metric (t₀ : Real)) x
+            (hframe1.toBasisAt hxu) p l
+        have hHsexp : cotangentSharp (I := I) (S.family.metric (t₀ : Real)) x
+            (h (t₀ : Real) x) =
+            ∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) • Yg p x := by
+          rw [cotangentSharp_eq_sum_inv (I := I) (S.family.metric (t₀ : Real)) x
+            (hframe1.toBasisAt hxu) (fun p m => gInvF x p m) hinvB (h (t₀ : Real) x)]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          congr 1
+          · refine Finset.sum_congr rfl fun m _ => ?_
+            congr 1
+            rw [cotangentToDual_apply]
+            congr 1
+            funext q
+            rw [hbasisco m]
+          · exact hbasisco p
+        have hreact := ricReact_eval (I := I) (M := M) (S.family.metric (t₀ : Real)) x
+          (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (Yg i x) (Yg j x)
+        have ht1 : nablaRic (t₀ : Real) x
+            (vec3 (I := I) (Yg i x) (Yg j x)
+              (cotangentSharp (I := I) (S.family.metric (t₀ : Real)) x (h (t₀ : Real) x))) =
+            ∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg i x) (Yg j x) (Yg p x)) := by
+          rw [hHsexp]
+          exact tensor3_third_slot_sum (I := I) (nablaRic (t₀ : Real) x) _ _ _ _
+        have ht2 : nablaRic (t₀ : Real) x
+            (vec3 (I := I) (Yg j x) (Yg i x)
+              (cotangentSharp (I := I) (S.family.metric (t₀ : Real)) x (h (t₀ : Real) x))) =
+            ∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg j x) (Yg i x) (Yg p x)) := by
+          rw [hHsexp]
+          exact tensor3_third_slot_sum (I := I) (nablaRic (t₀ : Real) x) _ _ _ _
+        have ht3 : nablaRic (t₀ : Real) x
+            (vec3 (I := I)
+              (cotangentSharp (I := I) (S.family.metric (t₀ : Real)) x (h (t₀ : Real) x))
+              (Yg i x) (Yg j x)) =
+            ∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg p x) (Yg i x) (Yg j x)) := by
+          rw [hHsexp]
+          exact tensor3_first_slot_sum (I := I) (nablaRic (t₀ : Real) x) _ _ _ _
+        rw [hsteps, hreact, ht1, ht2, ht3]
+        rw [show (∑ p, gammaDot x p i j * h (t₀ : Real) x (fun _ : Fin 1 => Yg p x)) =
+            ∑ p, ∑ l, gInvF x p l *
+              ((-(1 : Real)) *
+                (nablaRic (t₀ : Real) x (vec3 (I := I) (Yg i x) (Yg j x) (Yg l x)) +
+                  nablaRic (t₀ : Real) x (vec3 (I := I) (Yg j x) (Yg i x) (Yg l x)) -
+                  nablaRic (t₀ : Real) x (vec3 (I := I) (Yg l x) (Yg i x) (Yg j x)))) *
+                h (t₀ : Real) x (fun _ : Fin 1 => Yg p x) from by
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [hgamma_p p, Finset.sum_mul]]
+        rw [show (∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg i x) (Yg j x) (Yg p x))) +
+            (∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg j x) (Yg i x) (Yg p x))) -
+            (∑ p, (∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x)) *
+              nablaRic (t₀ : Real) x (vec3 (I := I) (Yg p x) (Yg i x) (Yg j x))) =
+            ∑ p, ∑ m, gInvF x p m * h (t₀ : Real) x (fun _ : Fin 1 => Yg m x) *
+              (nablaRic (t₀ : Real) x (vec3 (I := I) (Yg i x) (Yg j x) (Yg p x)) +
+                nablaRic (t₀ : Real) x (vec3 (I := I) (Yg j x) (Yg i x) (Yg p x)) -
+                nablaRic (t₀ : Real) x (vec3 (I := I) (Yg p x) (Yg i x) (Yg j x))) from by
+          rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [Finset.sum_mul, Finset.sum_mul, Finset.sum_mul,
+            ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+          refine Finset.sum_congr rfl fun m _ => ?_
+          ring]
+        rw [Finset.sum_comm]
+        rw [← Finset.sum_neg_distrib]
+        refine Finset.sum_congr rfl fun p _ => ?_
+        rw [← Finset.sum_neg_distrib]
+        refine Finset.sum_congr rfl fun l _ => ?_
+        rw [hsymmG l p]
+        ring
+      rw [h1, hft, h2, ← hGLapEq x]
+      ring
+    rw [hval] at hAt
+    exact hAt
+  set basisX := hframe1.toBasisAt hxu with hbX
+  have hbco : ∀ k, basisX k = Yg k x := fun k => hframe1.toBasisAt_coe hxu k
+  have hXexp : X = ∑ i', basisX.repr X i' • Yg i' x := by
+    conv_lhs => rw [show X = ∑ i', basisX.repr X i' • basisX i' from (basisX.sum_repr X).symm]
+    refine Finset.sum_congr rfl fun i' _ => ?_
+    rw [hbco i']
+  have hYexp : Y = ∑ j', basisX.repr Y j' • Yg j' x := by
+    conv_lhs => rw [show Y = ∑ j', basisX.repr Y j' • basisX j' from (basisX.sum_repr Y).symm]
+    refine Finset.sum_congr rfl fun j' _ => ?_
+    rw [hbco j']
+  have hTexp : ∀ T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x,
+      T (vec2 (I := I) X Y) =
+        ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
+          T (vec2 (I := I) (Yg i' x) (Yg j' x))) := by
+    intro T
+    conv_lhs => rw [hXexp, hYexp]
+    rw [tensor2_first_slot_sum (I := I) T (fun i' => basisX.repr X i') (fun i' => Yg i' x)
+      (∑ j', basisX.repr Y j' • Yg j' x)]
+    refine Finset.sum_congr rfl fun i' _ => ?_
+    congr 1
+    exact tensor2_second_slot_sum (I := I) T (fun j' => basisX.repr Y j')
+      (fun j' => Yg j' x) (Yg i' x)
+  have hbig : HasDerivAt
+      (fun s : Real => ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
+        nablaH s x (vec2 (I := I) (Yg i' x) (Yg j' x))))
+      (∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
+        (GLap x (vec2 (I := I) (Yg i' x) (Yg j' x))
+          + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
+              (vec2 (I := I) (Yg i' x) (Yg j' x)))))
+      (t₀ : Real) := by
+    refine HasDerivAt.fun_sum ?_
+    intro i' _
+    refine HasDerivAt.const_mul (basisX.repr X i') ?_
+    refine HasDerivAt.fun_sum ?_
+    intro j' _
+    exact (hcomp i' j').const_mul (basisX.repr Y j')
+  have hfun : (fun s : Real => nablaH s x (vec2 (I := I) X Y)) =
+      (fun s : Real => ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
+        nablaH s x (vec2 (I := I) (Yg i' x) (Yg j' x)))) := by
+    funext s
+    exact hTexp (nablaH s x)
+  rw [hfun]
+  have hvaleq : GLap x (vec2 (I := I) X Y)
+      + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+          (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (vec2 (I := I) X Y) =
+      ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
+        (GLap x (vec2 (I := I) (Yg i' x) (Yg j' x))
+          + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
+              (vec2 (I := I) (Yg i' x) (Yg j' x)))) := by
+    rw [hTexp (GLap x), hTexp (ricciVariationOneFormReaction (I := I)
+      (S.family.metric (t₀ : Real)) x (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) :
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)]
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i' _ => ?_
+    rw [← mul_add]
+    congr 1
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j' _ => ?_
+    ring
+  rw [hvaleq]
+  exact hbig
 
 
 private lemma heatOneForm_gradNormSq_pointwise
