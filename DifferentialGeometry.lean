@@ -1666,6 +1666,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.TwoJetVanishingExtension
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.FamilyProducers
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.ScalarHessian
 import DifferentialGeometry.Geometry.Connection.MLieBracket
