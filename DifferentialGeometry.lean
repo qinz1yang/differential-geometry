@@ -442,6 +442,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
 import DifferentialGeometry.Analysis.Integration.Measure.ManifoldL2NormChartTargetBound
+import DifferentialGeometry.Analysis.Integration.Measure.NoAtoms
 import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Analysis.Integration.Measure.PouDensityChartBound
@@ -1868,6 +1869,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 import DifferentialGeometry.Geometry.Curvature.Riemann.ConstantCurvature
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
+import DifferentialGeometry.Geometry.Curvature.Sphere.RoundGaussCurvature
 import DifferentialGeometry.Geometry.Curvature.Tensor
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowData
@@ -2403,6 +2405,7 @@ import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Operator.RoughLaplacianScaling
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Surface.ConformalGaussCurvature
 import DifferentialGeometry.Geometry.Surface.CurvatureEnergyIdentity
 import DifferentialGeometry.Geometry.Surface.CurvatureEnergySharpness
 import DifferentialGeometry.Geometry.Surface.GaussCurvature
