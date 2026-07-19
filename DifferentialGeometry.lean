@@ -452,6 +452,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.RealizedMetricForMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
 import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.ConformalScaling
 import DifferentialGeometry.Analysis.Integration.Measure.Scaling
 import DifferentialGeometry.Analysis.Integration.Measure.TensorChartPulled
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
@@ -2563,6 +2564,7 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.KroneckerQuadForm
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
+import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.ConformalScaling
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
 import DifferentialGeometry.Tensor.RSTensor.TensorRSRiemannian
