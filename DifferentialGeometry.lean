@@ -2044,6 +2044,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarGradient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ShiftedReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionHeatProbeEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.FrozenSlotAllK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.NablaReactionAllK
@@ -2329,6 +2330,7 @@ import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hodge.OneFormHarmonic
+import DifferentialGeometry.Geometry.Hodge.OneFormHodgeLaplacian
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.ChartGram
@@ -2400,6 +2402,9 @@ import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Operator.RoughLaplacianScaling
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Geometry.Surface.CurvatureEnergyIdentity
+import DifferentialGeometry.Geometry.Surface.GaussCurvature
+import DifferentialGeometry.Geometry.Surface.TensorTraceFree
 import DifferentialGeometry.Geometry.Topology.DirectLimit
 import DifferentialGeometry.Geometry.Topology.DirectLimitManifold
 import DifferentialGeometry.Geometry.Topology.FiberBundleT2
