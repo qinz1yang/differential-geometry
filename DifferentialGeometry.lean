@@ -2367,6 +2367,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConn
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConnLC
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundShape
+import DifferentialGeometry.Geometry.Metric.Sphere.RoundZonalIntegral
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
