@@ -29,11 +29,6 @@ def stereoHeight (x : EuclideanSpace ℝ (Fin 2)) : ℝ := (4 - ‖x‖ ^ 2) / (
 
 def stereoDensity (x : EuclideanSpace ℝ (Fin 2)) : ℝ := (4 / (‖x‖ ^ 2 + 4)) ^ 2
 
-theorem chartDensity_roundMetric_northPole_symm (x : EuclideanSpace ℝ (Fin 2)) :
-    chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
-        ((extChartAt (𝓡 2) northPole).symm x)
-      = stereoDensity x := sorry
-
 theorem innerCoordFun_northPole_symm (x : EuclideanSpace ℝ (Fin 2)) :
     innerCoordFun (E := EuclideanSpace ℝ (Fin 3)) (n := 2)
         (EuclideanSpace.single (2 : Fin 3) (1 : ℝ))
@@ -75,8 +70,7 @@ theorem integral_roundMetric_stereographic_reduction
           (M := sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
           (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))))
       = ∫ x : EuclideanSpace ℝ (Fin 2),
-          chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
-              ((extChartAt (𝓡 2) northPole).symm x) *
+          stereoDensity x *
             F ((extChartAt (𝓡 2) northPole).symm x) ∂volume := sorry
 
 def zonalRadialIntegrand (y : ℝ) : ℝ :=
@@ -242,8 +236,7 @@ theorem integral_legendreTwo_height_roundMetric :
           (M := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
           (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))))
         = ∫ x : EuclideanSpace ℝ (Fin 2),
-            chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
-                ((extChartAt (𝓡 2) northPole).symm x) *
+            stereoDensity x *
               (((3 * (innerCoordFun (E := EuclideanSpace ℝ (Fin 3)) (n := 2)
                   (EuclideanSpace.single (2 : Fin 3) (1 : ℝ))
                   ((extChartAt (𝓡 2) northPole).symm x)) ^ 2 - 1) / 2)
@@ -256,7 +249,7 @@ theorem integral_legendreTwo_height_roundMetric :
             (((3 * stereoHeight x ^ 2 - 1) / 2) * (1 - stereoHeight x ^ 2)) ∂volume := by
         refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
         dsimp only
-        rw [chartDensity_roundMetric_northPole_symm, innerCoordFun_northPole_symm]
+        rw [innerCoordFun_northPole_symm]
     _ = -(8 * Real.pi / 15) := integral_stereoDensity_legendreTwo
 
 end Geometry
