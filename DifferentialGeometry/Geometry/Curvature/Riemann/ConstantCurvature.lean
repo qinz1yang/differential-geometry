@@ -66,7 +66,7 @@ private lemma reprR (g : SmoothRiemannianMetric I M) (x : M) (X Y : TangentSpace
   · intro l _ hl; rw [if_neg hl, mul_zero]
   · intro h; exact absurd (Finset.mem_univ b) h
 
-private lemma metricRm04Std_eq_sectionalNumerator
+lemma metricRm04Std_eq_sectionalNumerator
     (g : SmoothRiemannianMetric I M) (x : M) (X Y : TangentSpace I x) :
     metricRm04StdAt (I := I) g x X Y Y X
       = sectionalCurvatureNumerator (I := I) g x X Y := by
