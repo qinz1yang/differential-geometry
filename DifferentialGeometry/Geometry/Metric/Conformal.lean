@@ -57,7 +57,18 @@ def conformalMetric (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
             simp [L, smul_smul, mul_comm]
           _ = v := by
             rw [smul_smul, inv_mul_cancel₀ (ne_of_gt hc), one_smul]
-  contMDiff := sorry
+  contMDiff :=
+    set_option synthInstance.maxHeartbeats 80000 in by
+    have h2f : ContMDiff I 𝓘(Real, Real) ∞ (fun y : M => 2 * f y) :=
+      contMDiff_const.mul hf
+    have hscalar : ContMDiff I 𝓘(Real, Real) ∞ (fun y : M => Real.exp (2 * f y)) :=
+      Real.contDiff_exp.comp_contMDiff h2f
+    simpa only [Pi.smul_apply] using
+      (hscalar.smul_section (I := I)
+        (F := E →L[Real] E →L[Real] Real)
+        (V := fun y : M =>
+          TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real)
+        (s := g.inner) g.contMDiff)
 
 @[simp] theorem conformalMetric_inner
     (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
