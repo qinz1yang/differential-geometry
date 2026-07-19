@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ExtendedSolutionRegularity
 
 set_option autoImplicit false
 set_option linter.style.longLine false
@@ -158,7 +159,8 @@ theorem isSolutionOn_of_shortTimeExistence_output
     IsSolutionOn (I := I) (M := M)
       (D := RealTimeInterval.closedOpen 0 T hT)
       (⟨⟨g_fam⟩⟩ : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT)) := by
-  sorry
+  exact DifferentialGeometry.PDE.RicciFlow.solutionOn_of_joint (I := I) (M := M)
+    hT g_fam hGram hDeriv
 
 
 theorem heatOneForm_normSq_integral_hasDerivAt_shortTimeExistence
