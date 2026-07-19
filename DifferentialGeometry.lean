@@ -2349,6 +2349,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
+import DifferentialGeometry.Geometry.Metric.Conformal
 import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Metric.PullbackCross
 import DifferentialGeometry.Geometry.Metric.RiemannianMetric
@@ -2403,6 +2404,7 @@ import DifferentialGeometry.Geometry.Operator.RoughLaplacianScaling
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Geometry.Surface.CurvatureEnergyIdentity
+import DifferentialGeometry.Geometry.Surface.CurvatureEnergySharpness
 import DifferentialGeometry.Geometry.Surface.GaussCurvature
 import DifferentialGeometry.Geometry.Surface.TensorTraceFree
 import DifferentialGeometry.Geometry.Topology.DirectLimit
