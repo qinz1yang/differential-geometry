@@ -362,7 +362,7 @@ private lemma nabla0SFun_two_koszul
   rw [h]; ring
 
 
-lemma heatOneForm_wrapped_realizes
+lemma oneForm_wrapped_realizes
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : RealTimeInterval}
     (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
@@ -371,7 +371,9 @@ lemma heatOneForm_wrapped_realizes
     (nablaH : Real -> TwoTensorSection (I := I) (M := M))
     (nabla2H : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hProbe : IsHeatOneFormOn (I := I) S.family h nablaH nabla2H)
+    (hRealizes : forall t : RealTimeInterval.FlowTime D, forall y : M,
+      Nabla2OneFormRealizesAt (I := I) (S.family.connection (t : Real))
+        (h (t : Real)) (nablaH (t : Real)) y (nabla2H (t : Real) y))
     (t₀ : RealTimeInterval.RegularTime D)
     (W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
     (hW : ∀ y : M, W.toSection y =
@@ -396,7 +398,7 @@ lemma heatOneForm_wrapped_realizes
     hS.smoothConnection (RealTimeInterval.regularToFlow t₀)
   have hreal1 : NablaOneFormSectionRealizes (I := I) (S.family.connection (t₀ : Real))
       (h (t₀ : Real)) (nablaH (t₀ : Real)) :=
-    (hProbe.realizes (RealTimeInterval.regularToFlow t₀) x).1
+    (hRealizes (RealTimeInterval.regularToFlow t₀) x).1
   have hWsec : (fun y : M => W.toSection y) =
       (fun y : M => (h (t₀ : Real)).toTensorRSField ∞ y) := by
     funext y
@@ -441,7 +443,7 @@ lemma heatOneForm_wrapped_realizes
     rw [show Matrix.vecTail v = (fun _ : Fin 1 => v 1) from by
       funext i; fin_cases i; rfl, hab,
       show vec2 (I := I) (v 0) (v 1) = v from by funext i; fin_cases i <;> rfl]
-  · have hreal2 := (hProbe.realizes (RealTimeInterval.regularToFlow t₀) x).2
+  · have hreal2 := (hRealizes (RealTimeInterval.regularToFlow t₀) x).2
     simp only [RealTimeInterval.regularToFlow_val] at hreal2
     have hAsmooth : ContMDiff I (I.prod 𝓘(Real, Tensor0SModel 1 Real E)) (∞ + 1)
         (fun z : M => TotalSpace.mk' (Tensor0SModel 1 Real E)
@@ -781,6 +783,31 @@ lemma heatOneForm_wrapped_realizes
       Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul,
       ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.smul_apply,
       ← smul_sub, hinner i tail]
+
+
+lemma heatOneForm_wrapped_realizes
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : IsRealizedRicciFlowSolutionOn (I := I) S)
+    (h : Real -> OneFormSection (I := I) (M := M))
+    (nablaH : Real -> TwoTensorSection (I := I) (M := M))
+    (nabla2H : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (hProbe : IsHeatOneFormOn (I := I) S.family h nablaH nabla2H)
+    (t₀ : RealTimeInterval.RegularTime D)
+    (W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
+    (hW : ∀ y : M, W.toSection y =
+      Tensor0SSpace.toRS0 (h (t₀ : Real) y))
+    (x : M) :
+    (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun x =
+        TensorRSSpace.toModel (Tensor0SSpace.toRS0 (nablaH (t₀ : Real) x))
+      ∧ (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun x =
+        TensorRSSpace.toModel
+          (Tensor0SSpace.toRS0
+            (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+              (nabla2H (t₀ : Real) x))) :=
+  oneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H hProbe.realizes t₀ W hW x
 
 
 private lemma jointSmooth_timeDeriv_continuous
@@ -1708,6 +1735,14 @@ private lemma comp_two_eq_vec2 {x : M} {Idx : Type*}
   funext a
   by_cases hcase : a = 0 <;>
     simp [hcase, vec2, DifferentialGeometry.Integral.Connection.vec2]
+
+
+private lemma inner0S_symm_local {x : M}
+    (g : SmoothMetric I M) (s : ℕ)
+    (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    inner0S (I := I) g x s A B = inner0S (I := I) g x s B A := by
+  unfold inner0S MetricFiberData.inner
+  exact (tensor0SMetricData (I := I) g x s).symm A B
 
 
 private lemma inner0S_add_left {x : M}
@@ -2666,7 +2701,7 @@ private lemma dotCovAt_ric_components
   ring
 
 
-private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
+private lemma evolvingOneForm_nablaH_timeDeriv_ricciFlow
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : RealTimeInterval}
     (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
@@ -2680,35 +2715,29 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
     (nablaH : Real -> TwoTensorSection (I := I) (M := M))
     (nabla2H : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (phi : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (hNablaRic : forall t : RealTimeInterval.FlowTime D, forall x : M,
       forall (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
         (Y Z : TangentSpace I x),
         nablaRic (t : Real) x (vec3 (X x) Y Z) =
           nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection (t : Real)) X (ricT (t : Real)) x (vec2 Y Z))
-    (hProbe : IsHeatOneFormOn (I := I) S.family h nablaH nabla2H)
+    (hEvol : IsEvolvingOneFormOn (I := I) S.family h nablaH nabla2H phi)
     (t₀ : RealTimeInterval.RegularTime D)
-    (W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
-    (hW : ∀ y : M, W.toSection y = Tensor0SSpace.toRS0 (h (t₀ : Real) y))
-    (GLap : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
-    (hGLap : ∀ y : M, Tensor0SSpace.toRS0 (GLap y) =
+    (Phi : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
+    (hPhi : ∀ y : M, Phi.toSection y = Tensor0SSpace.toRS0 (phi (t₀ : Real) y))
+    (GPhi : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
+    (hGPhi : ∀ y : M, Tensor0SSpace.toRS0 (GPhi y) =
       (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toSection y)
+        Phi).toSection y)
     (x : M) (X Y : TangentSpace I x) :
     HasDerivAt (fun s : Real => nablaH s x (vec2 X Y))
-      (GLap x (vec2 X Y)
+      (GPhi x (vec2 X Y)
         + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
             (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (vec2 X Y))
       (t₀ : Real) := by
   classical
-  have hbridge2 : ∀ y : M,
-      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun y =
-        TensorRSSpace.toModel
-          (Tensor0SSpace.toRS0
-            (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
-              (nabla2H (t₀ : Real) y))) :=
-    fun y => (heatOneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H
-      hProbe t₀ W hW y).2
   have hmc : IsMetricCompatible_gen (I := I) (S.family.connection (t₀ : Real))
       (S.family.metric (t₀ : Real)) := hS.leviCivita.1 (RealTimeInterval.regularToFlow t₀)
   have htf : IsTorsionFree (I := I) (S.family.connection (t₀ : Real)) :=
@@ -2779,35 +2808,26 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
   obtain ⟨gammaDot, hgammaDeriv, hgammaEq⟩ :=
     christoffel_dt_ricciFlow (I := I) (M := M) S hS ricT hricT t₀
       (fun i (y : M) => Yg i y) hframeInf hframe1 hu gInvF hinvOn'
-  set Wlap := rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W with hWlap
-  have hlapSec : ∀ y : M, Wlap.toSection y =
-      Tensor0SSpace.toRS0 (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
-        (nabla2H (t₀ : Real) y)) := by
-    intro y
-    have hb := hbridge2 y
-    rw [SmoothCcTensor.toFun_apply] at hb
-    exact TensorRSSpace.toModel_injective hb
   have hLFeq : ∀ y : M,
-      unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap y =
-        roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
-          (nabla2H (t₀ : Real) y) := by
+      unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Phi y =
+        phi (t₀ : Real) y := by
     intro y
-    rw [unitValField_apply, hlapSec y]
+    rw [unitValField_apply, hPhi y]
     exact toRS0_one0_eval (I := I) (M := M) _
-  have hGLapEq : ∀ y : M, GLap y =
+  have hGPhiEq : ∀ y : M, GPhi y =
       unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
-        (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap) y := by
+        (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi) y := by
     intro y
     have h1 := congrArg (fun T : TensorRSSpace 0 2 I y =>
-      T (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y)) (hGLap y)
+      T (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y)) (hGPhi y)
     simp only at h1
-    rw [toRS0_one0_eval (I := I) (M := M) (GLap y)] at h1
+    rw [toRS0_one0_eval (I := I) (M := M) (GPhi y)] at h1
     rw [h1, unitValField_apply]
   have hrealL := covGrad_unit_realizes (I := I) (M := M) (S.family.metric (t₀ : Real))
-    (S.family.connection (t₀ : Real)) hLC Wlap
+    (S.family.connection (t₀ : Real)) hLC Phi
   have hcomp : ∀ i j : Fin (Module.finrank Real E),
       HasDerivAt (fun s : Real => nablaH s x (vec2 (I := I) (Yg i x) (Yg j x)))
-        (GLap x (vec2 (I := I) (Yg i x) (Yg j x))
+        (GPhi x (vec2 (I := I) (Yg i x) (Yg j x))
           + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
               (vec2 (I := I) (Yg i x) (Yg j x)))
@@ -2824,8 +2844,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
       fun s => frameComp0S (I := I) (h s) (fun i (y : M) => Yg i y) with hA
     set Adt : Real -> M -> (Fin 1 -> Fin (Module.finrank Real E)) -> Real :=
       fun t y m =>
-        roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
-          (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) with hAdt
+        phi t y (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) with hAdt
     set chr : Real -> M -> Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) ->
         Fin (Module.finrank Real E) -> Real :=
       fun s y => christoffelSymbolInFrame (S.family.connection s)
@@ -2846,18 +2865,15 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
       change h s y (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
       rw [hslot1 y m]
     have hAdteq : ∀ (t : Real) (y : M) (m : Fin 1 -> Fin (Module.finrank Real E)),
-        Adt t y m =
-          roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
-            (fun _ : Fin 1 => Yg (m 0) y) := by
+        Adt t y m = phi t y (fun _ : Fin 1 => Yg (m 0) y) := by
       intro t y m
-      change roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y)
-          (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
+      change phi t y (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
       rw [hslot1 y m]
     have hAder : ∀ m : Fin 1 -> Fin (Module.finrank Real E),
         HasDerivWithinAt (fun s : Real => A s x m) (Adt (t₀ : Real) x m)
           D.regular (t₀ : Real) := by
       intro m
-      have heq := hProbe.equation t₀ x (Yg (m 0) x)
+      have heq := hEvol.equation t₀ x (Yg (m 0) x)
       have hfun : (fun s : Real => A s x m) =
           (fun s : Real => h s x (fun _ : Fin 1 => Yg (m 0) x)) := by
         funext s
@@ -2884,7 +2900,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
         refine fixedBaseOnRegSmooth hu D.regular_isOpen
           (fun ht => D.regular_isOpen.mem_nhds ht) ?_ ?_
         · intro t ht y hy
-          have hjs := hProbe.jointSmooth (fun i (z : M) => Yg i z) hframeInf (m 0)
+          have hjs := hEvol.jointSmooth (fun i (z : M) => Yg i z) hframeInf (m 0)
           have hjs' : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
               (fun p : Real × M => A p.1 p.2 m) (D.regular ×ˢ (u₀ ∩ eT.baseSet)) := by
             refine hjs.congr (fun p _ => ?_)
@@ -2894,7 +2910,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
             (D.regular_isOpen.prod hu).mem_nhds hmem
           exact (hjs'.contMDiffAt hnh).of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
         · intro t ht y hy
-          have heq := hProbe.equation ⟨t, ht⟩ y (Yg (m 0) y)
+          have heq := hEvol.equation ⟨t, ht⟩ y (Yg (m 0) y)
           have hfun : (fun s : Real => A s y m) =
               (fun s : Real => h s y (fun _ : Fin 1 => Yg (m 0) y)) := by
             funext s
@@ -2913,7 +2929,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
       intro s hs
       have hreal1 : NablaOneFormSectionRealizes (I := I) (S.family.connection s)
           (h s) (nablaH s) :=
-        (hProbe.realizes ⟨s, D.regular_subset hs⟩ x).1
+        (hEvol.realizes ⟨s, D.regular_subset hs⟩ x).1
       have hTot := oneFormRealizes_toTotal (I := I) (M := M)
         (S.family.connection s) (h s) (nablaH s) hreal1
       exact covDerivStepComp_frameComp_eq
@@ -2931,36 +2947,35 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
           (frameExtData (I := I) (fun i (z : M) => Yg i z) (fun y : M => Adt (t₀ : Real) y) x)
           (chr (t₀ : Real) x) (Adt (t₀ : Real) x) n -
         covDerivStepDt (chrDtF (t₀ : Real) x) (A (t₀ : Real) x) n =
-        GLap x (vec2 (I := I) (Yg i x) (Yg j x))
+        GPhi x (vec2 (I := I) (Yg i x) (Yg j x))
           + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
               (vec2 (I := I) (Yg i x) (Yg j x)) := by
       have hAdtF : Adt (t₀ : Real) =
           frameComp0S (I := I)
-            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Phi)
             (fun i (z : M) => Yg i z) := by
         funext y m
-        change roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
-            (nabla2H (t₀ : Real) y)
+        change phi (t₀ : Real) y
             (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) = _
         rw [show frameComp0S (I := I)
-            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+            (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Phi)
             (fun i (z : M) => Yg i z) y m =
-            unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap y
+            unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Phi y
               (frameTuple (I := I) (fun i (z : M) => Yg i z) y m) from rfl]
         rw [hLFeq y]
       have h1 : covDerivStepComp
           (frameExtData (I := I) (fun i (z : M) => Yg i z) (fun y : M => Adt (t₀ : Real) y) x)
           (chr (t₀ : Real) x) (Adt (t₀ : Real) x) n =
           unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
-            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap) x
+            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi) x
             (frameTuple (I := I) (fun i (z : M) => Yg i z) x n) := by
         rw [hAdtF]
         exact covDerivStepComp_frameComp_eq
           (I := I) (S.family.connection (t₀ : Real))
-          (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Wlap)
+          (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real)) Phi)
           (unitValField (I := I) (M := M) (S.family.metric (t₀ : Real))
-            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Wlap))
+            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi))
           hrealL (fun i (z : M) => Yg i z) hframe1 hu hxu n
       have h2 : covDerivStepDt (chrDtF (t₀ : Real) x) (A (t₀ : Real) x) n =
           - ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
@@ -3103,7 +3118,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
         refine Finset.sum_congr rfl fun l _ => ?_
         rw [hsymmG l p]
         ring
-      rw [h1, hft, h2, ← hGLapEq x]
+      rw [h1, hft, h2, ← hGPhiEq x]
       ring
     rw [hval] at hAt
     exact hAt
@@ -3133,7 +3148,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
       (fun s : Real => ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
         nablaH s x (vec2 (I := I) (Yg i' x) (Yg j' x))))
       (∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
-        (GLap x (vec2 (I := I) (Yg i' x) (Yg j' x))
+        (GPhi x (vec2 (I := I) (Yg i' x) (Yg j' x))
           + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
               (vec2 (I := I) (Yg i' x) (Yg j' x)))))
@@ -3150,15 +3165,15 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
     funext s
     exact hTexp (nablaH s x)
   rw [hfun]
-  have hvaleq : GLap x (vec2 (I := I) X Y)
+  have hvaleq : GPhi x (vec2 (I := I) X Y)
       + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
           (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (vec2 (I := I) X Y) =
       ∑ i', basisX.repr X i' * (∑ j', basisX.repr Y j' *
-        (GLap x (vec2 (I := I) (Yg i' x) (Yg j' x))
+        (GPhi x (vec2 (I := I) (Yg i' x) (Yg j' x))
           + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)
               (vec2 (I := I) (Yg i' x) (Yg j' x)))) := by
-    rw [hTexp (GLap x), hTexp (ricciVariationOneFormReaction (I := I)
+    rw [hTexp (GPhi x), hTexp (ricciVariationOneFormReaction (I := I)
       (S.family.metric (t₀ : Real)) x (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)]
     rw [← Finset.sum_add_distrib]
@@ -3172,7 +3187,7 @@ private lemma heatOneForm_nablaH_timeDeriv_ricciFlow
   exact hbig
 
 
-private lemma heatOneForm_gradNormSq_pointwise
+private lemma evolvingOneForm_gradNormSq_pointwise
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : RealTimeInterval}
     (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
@@ -3186,25 +3201,27 @@ private lemma heatOneForm_gradNormSq_pointwise
     (nablaH : Real -> TwoTensorSection (I := I) (M := M))
     (nabla2H : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (phi : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (hNablaRic : forall t : RealTimeInterval.FlowTime D, forall x : M,
       forall (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
         (Y Z : TangentSpace I x),
         nablaRic (t : Real) x (vec3 (X x) Y Z) =
           nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection (t : Real)) X (ricT (t : Real)) x (vec2 Y Z))
-    (hProbe : IsHeatOneFormOn (I := I) S.family h nablaH nabla2H)
+    (hEvol : IsEvolvingOneFormOn (I := I) S.family h nablaH nabla2H phi)
     (t₀ : RealTimeInterval.RegularTime D)
-    (W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
-    (hW : ∀ y : M, W.toSection y = Tensor0SSpace.toRS0 (h (t₀ : Real) y))
-    (GLap : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
-    (hGLap : ∀ y : M, Tensor0SSpace.toRS0 (GLap y) =
+    (Phi : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
+    (hPhi : ∀ y : M, Phi.toSection y = Tensor0SSpace.toRS0 (phi (t₀ : Real) y))
+    (GPhi : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
+    (hGPhi : ∀ y : M, Tensor0SSpace.toRS0 (GPhi y) =
       (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toSection y)
+        Phi).toSection y)
     (x : M) :
     deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x)) (t₀ : Real)
       = ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
           ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
-        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x)
+        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x)
         + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
             (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x))
@@ -3224,14 +3241,14 @@ private lemma heatOneForm_gradNormSq_pointwise
     exact ricci_symm_of_solution (I := I) (M := M) S hS t₀ x X Y
   have hA : ∀ X Y : TangentSpace I x,
       HasDerivAt (fun r : Real => nablaH r x (vec2 (I := I) X Y))
-        ((GLap x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+        ((GPhi x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
             (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (vec2 (I := I) X Y)) (t₀ : Real) := by
     intro X Y
-    have hp := heatOneForm_nablaH_timeDeriv_ricciFlow (I := I) (M := M) S hS ricT hricT
-      nablaRic h nablaH nabla2H hNablaRic hProbe t₀ W hW GLap hGLap x X Y
-    have hval : (GLap x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+    have hp := evolvingOneForm_nablaH_timeDeriv_ricciFlow (I := I) (M := M) S hS ricT hricT
+      nablaRic h nablaH nabla2H phi hNablaRic hEvol t₀ Phi hPhi GPhi hGPhi x X Y
+    have hval : (GPhi x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
           (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (vec2 (I := I) X Y)
-        = GLap x (vec2 (I := I) X Y)
+        = GPhi x (vec2 (I := I) X Y)
           + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
               (nablaRic (t₀ : Real) x) (h (t₀ : Real) x) (vec2 (I := I) X Y) := rfl
     rw [hval]
@@ -3240,19 +3257,19 @@ private lemma heatOneForm_gradNormSq_pointwise
     (g := fun s : Real => S.family.metric s)
     (Q := (ricT (t₀ : Real)) x) hQsymm
     (A := fun s : Real => nablaH s x)
-    (Adot := GLap x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+    (Adot := GPhi x + ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
       (nablaRic (t₀ : Real) x) (h (t₀ : Real) x))
     hg_hyp hA
   rw [show deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x))
         (t₀ : Real) = _ from hnst.deriv,
-    inner0S_add_left (I := I) (S.family.metric (t₀ : Real)) 2 (GLap x)
+    inner0S_add_left (I := I) (S.family.metric (t₀ : Real)) 2 (GPhi x)
       (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
         (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (nablaH (t₀ : Real) x)]
   ring
 
 
 set_option maxHeartbeats 1600000 in
-private lemma heatOneForm_gradNormSq_reaction_ibp
+private lemma evolvingOneForm_gradNormSq_reaction_ibp
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {D : RealTimeInterval}
     (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
@@ -3266,23 +3283,27 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
     (nablaH : Real -> TwoTensorSection (I := I) (M := M))
     (nabla2H : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (phi : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (hNablaRic : forall t : RealTimeInterval.FlowTime D, forall x : M,
       forall (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
         (Y Z : TangentSpace I x),
         nablaRic (t : Real) x (vec3 (X x) Y Z) =
           nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection (t : Real)) X (ricT (t : Real)) x (vec2 Y Z))
-    (hProbe : IsHeatOneFormOn (I := I) S.family h nablaH nabla2H)
+    (hEvol : IsEvolvingOneFormOn (I := I) S.family h nablaH nabla2H phi)
     (t₀ : RealTimeInterval.RegularTime D)
     (W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
     (hW : ∀ y : M, W.toSection y = Tensor0SSpace.toRS0 (h (t₀ : Real) y))
-    (GLap : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
-    (hGLap : ∀ y : M, Tensor0SSpace.toRS0 (GLap y) =
+    (Phi : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
+    (hPhi : ∀ y : M, Phi.toSection y = Tensor0SSpace.toRS0 (phi (t₀ : Real) y))
+    (GPhi : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
+    (hGPhi : ∀ y : M, Tensor0SSpace.toRS0 (GPhi y) =
       (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toSection y) :
+        Phi).toSection y) :
     (∫ x, (ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
             ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
-          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x)
+          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x)
           + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
               (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
                 (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (nablaH (t₀ : Real) x)
@@ -3292,7 +3313,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
         ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family (t₀ : Real)))
       =
       ((-2 : Real) *
-          (∫ x, normSq0S (I := I) (S.family.metric (t₀ : Real)) x 1
+          (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 1 (phi (t₀ : Real) x)
               (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
                 (nabla2H (t₀ : Real) x))
             ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family (t₀ : Real)))
@@ -3309,11 +3330,11 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
                   * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x))
           ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family (t₀ : Real))) := by
   classical
-  have hpt := heatOneForm_gradNormSq_pointwise (I := I) (M := M) S hS ricT hricT nablaRic
-    h nablaH nabla2H hNablaRic hProbe t₀ W hW GLap hGLap
+  have hpt := evolvingOneForm_gradNormSq_pointwise (I := I) (M := M) S hS ricT hricT nablaRic
+    h nablaH nabla2H phi hNablaRic hEvol t₀ Phi hPhi GPhi hGPhi
   simp only [volumeMeasureFamilyOn_eq]
   have hbridge := fun x : M =>
-    heatOneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H hProbe t₀ W hW x
+    oneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H hEvol.realizes t₀ W hW x
   have hB1 : ∀ x : M,
       (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun x =
         TensorRSSpace.toModel (Tensor0SSpace.toRS0 (nablaH (t₀ : Real) x)) :=
@@ -3326,85 +3347,94 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
               (nabla2H (t₀ : Real) x))) :=
     fun x => (hbridge x).2
   have hIP : ∀ x : M,
-      inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x) =
+      inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x) =
         tensorInnerPointwise (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 2 x
           ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-            (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toFun x)
+            Phi).toFun x)
           ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun x) := by
     intro x
-    rw [hB1 x, SmoothCcTensor.toFun_apply, ← hGLap x,
-      inner_toRS0 (I := I) (M := M) (S.family.metric (t₀ : Real)) 2 x (GLap x)
+    rw [hB1 x, SmoothCcTensor.toFun_apply, ← hGPhi x,
+      inner_toRS0 (I := I) (M := M) (S.family.metric (t₀ : Real)) 2 x (GPhi x)
         (nablaH (t₀ : Real) x),
       inner0S_eq_covariantTensorInnerPointwise (I := I) (S.family.metric (t₀ : Real)) x 2
-        (GLap x) (nablaH (t₀ : Real) x)]
+        (GPhi x) (nablaH (t₀ : Real) x)]
   have hcross : Integrable (fun x : M =>
-      2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x))
+      2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x))
       (riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))) := by
     have hcross0 := SmoothCcTensor.integrable_inner_cross (I := I) (M := M)
-      (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W))
+      (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi)
       (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W)
     have heq : (fun x : M =>
-        2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x))
+        2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x))
         = fun x : M => 2 * tensorInnerPointwise (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 2 x
             ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-              (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toFun x)
+              Phi).toFun x)
             ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun x) := by
       funext x
       rw [hIP x]
     rw [heq]
     exact hcross0.const_mul 2
-  have hWeitz := covGrad_rawConnLap_l2Inner_covGrad_eq_neg_normSq_gen (I := I) (M := M)
-    (S.family.metric (t₀ : Real)) 1 W
-  have htL2Norm : tensorL2Norm (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun ^ 2
-      = ∫ x, normSq0S (I := I) (S.family.metric (t₀ : Real)) x 1
+  have hIBP := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen (I := I) (M := M)
+    (S.family.metric (t₀ : Real)) 1 W Phi
+  have htL2Pair : tensorL2Inner (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
+      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun Phi.toFun
+      = ∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 1 (phi (t₀ : Real) x)
           (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
             (nabla2H (t₀ : Real) x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))) := by
-    rw [tensorL2Norm_sq_toFun (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)]
     change (∫ x, tensorInnerPointwise (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 x
         ((rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun x)
-        ((rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toFun x)
+        (Phi.toFun x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real)))) = _
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     beta_reduce
-    rw [hB2 x, ← normSq0S_eq_tensorInnerPointwise_toRS0 (I := I) (S.family.metric (t₀ : Real)) x 1
-      (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1) (nabla2H (t₀ : Real) x))]
-  have hL2 : (∫ x, 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+    rw [hB2 x,
+      show Phi.toFun x = TensorRSSpace.toModel (Phi.toSection x) from rfl,
+      hPhi x,
+      inner_toRS0 (I := I) (M := M) (S.family.metric (t₀ : Real)) 1 x
+        (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+          (nabla2H (t₀ : Real) x)) (phi (t₀ : Real) x),
+      ← inner0S_eq_covariantTensorInnerPointwise (I := I) (S.family.metric (t₀ : Real)) x 1
+        (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+          (nabla2H (t₀ : Real) x)) (phi (t₀ : Real) x)]
+    exact inner0S_symm_local (I := I) (S.family.metric (t₀ : Real)) 1 _ _
+  have hL2 : (∫ x, 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
         (nablaH (t₀ : Real) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))))
-      = (-2 : Real) * ∫ x, normSq0S (I := I) (S.family.metric (t₀ : Real)) x 1
+      = (-2 : Real) * ∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 1
+          (phi (t₀ : Real) x)
           (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
             (nabla2H (t₀ : Real) x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))) := by
-    have h1 : (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+    have h1 : (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
           (nablaH (t₀ : Real) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))))
         = tensorL2Inner (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 (1 + 1)
-            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-              (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toFun
+            (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi).toFun
             (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun := by
-      have h2 : (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+      have h2 : (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
             (nablaH (t₀ : Real) x)
             ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))))
           = ∫ x, tensorInnerPointwise (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 2 x
               ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-                (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toFun x)
+                Phi).toFun x)
               ((TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun x)
               ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))) :=
         integral_congr_ae (Filter.Eventually.of_forall (fun x => hIP x))
       rw [h2]
       rfl
-    rw [MeasureTheory.integral_const_mul, h1, hWeitz, htL2Norm]
+    rw [MeasureTheory.integral_const_mul, h1,
+      tensorL2Inner_symm (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 (1 + 1)
+        (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 Phi).toFun
+        (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1 W).toFun,
+      hIBP, htL2Pair]
     ring
   have hDerivCont : Continuous (fun x : M =>
       deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x))
         (t₀ : Real)) :=
     jointSmooth_timeDeriv_continuous (I := I) (M := M)
       (fun s x => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x))
-      (heatOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M) hS.smoothMetric hProbe) t₀
+      (evolvingOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M) hS.smoothMetric hEvol) t₀
   have hDerivInt : Integrable (fun x : M =>
       deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x))
         (t₀ : Real))
@@ -3413,8 +3443,8 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
       hDerivCont
   have hTraceCont := metricFamily_traceTimeDeriv_continuous (I := I) (M := M)
     S.family hS.smoothMetric t₀
-  have hNSjoint := heatOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M)
-    hS.smoothMetric hProbe
+  have hNSjoint := evolvingOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M)
+    hS.smoothMetric hEvol
   have hNormSqCont : Continuous
       (fun x : M => normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x)) := by
     have hmap : ContMDiff I (𝓘(Real, Real).prod I) ∞ (fun x : M => ((t₀ : Real), x)) :=
@@ -3467,7 +3497,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
         = (fun x : M =>
             (deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x))
                 (t₀ : Real)
-              - 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+              - 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
                   (nablaH (t₀ : Real) x))
             - scalarCurvatureFromRicciInVolumeFrameOn (I := I) (M := M) S.family S.ricci
                   (t₀ : Real) x
@@ -3480,7 +3510,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
   have hsplitInt : (∫ x,
         (ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x ((ricT (t₀ : Real)) x)
             (nablaH (t₀ : Real) x)
-          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
               (nablaH (t₀ : Real) x)
           + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
               (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
@@ -3489,7 +3519,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
                 (t₀ : Real) x
               * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x))
         ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))))
-      = (∫ x, 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+      = (∫ x, 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
             (nablaH (t₀ : Real) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) (S.family.metric (t₀ : Real))))
         + ∫ x,
@@ -3505,7 +3535,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
     have heq2 : (fun x : M =>
         ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x ((ricT (t₀ : Real)) x)
             (nablaH (t₀ : Real) x)
-          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+          + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
               (nablaH (t₀ : Real) x)
           + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
               (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
@@ -3514,7 +3544,7 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
                 (t₀ : Real) x
               * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x))
         = (fun x : M =>
-            2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x)
+            2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x)
                 (nablaH (t₀ : Real) x)
               + (ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
                     ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
@@ -3530,6 +3560,101 @@ private lemma heatOneForm_gradNormSq_reaction_ibp
     rw [heq2]
     exact MeasureTheory.integral_add hcross hRestInt
   rw [hsplitInt, hL2]
+
+
+theorem evolvingOneForm_gradNormSq_integral_hasDerivAt_ricciFlow
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : IsRealizedRicciFlowSolutionOn (I := I) S)
+    (ricT : Real -> TwoTensorSection (I := I) (M := M))
+    (hricT : forall (t : Real) (x : M) (X Y : TangentSpace I x),
+      (ricT t) x (vec2 X Y) = S.ricci t x X Y)
+    (nablaRic : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (h : Real -> OneFormSection (I := I) (M := M))
+    (nablaH : Real -> TwoTensorSection (I := I) (M := M))
+    (nabla2H : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
+    (phi : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
+    (hNablaRic : forall t : RealTimeInterval.FlowTime D, forall x : M,
+      forall (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
+        (Y Z : TangentSpace I x),
+        nablaRic (t : Real) x (vec3 (X x) Y Z) =
+          nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+            2 (S.family.connection (t : Real)) X (ricT (t : Real)) x (vec2 Y Z))
+    (hEvol : IsEvolvingOneFormOn (I := I) S.family h nablaH nabla2H phi)
+    (t₀ : RealTimeInterval.RegularTime D)
+    (Phi : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1)
+    (hPhi : ∀ y : M, Phi.toSection y = Tensor0SSpace.toRS0 (phi (t₀ : Real) y)) :
+    HasDerivAt
+      (fun s : Real =>
+        ∫ x, normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x)
+          ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family s))
+      ((-2 : Real) *
+          (∫ x, inner0S (I := I) (S.family.metric (t₀ : Real)) x 1 (phi (t₀ : Real) x)
+              (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+                (nabla2H (t₀ : Real) x))
+            ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family (t₀ : Real)))
+        + ∫ x,
+            (ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
+                ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
+              + (2 : Real) *
+                  inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
+                    (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+                      (nablaRic (t₀ : Real) x) (h (t₀ : Real) x))
+                    (nablaH (t₀ : Real) x)
+              - scalarCurvatureFromRicciInVolumeFrameOn (I := I) (M := M) S.family S.ricci
+                    (t₀ : Real) x
+                  * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x))
+          ∂(volumeMeasureFamilyOn (I := I) (M := M) S.family (t₀ : Real)))
+      (t₀ : Real) := by
+  classical
+  set W : SmoothCcTensor (S.family.metric (t₀ : Real)) 0 1 :=
+    { toSection := (h (t₀ : Real)).toTensorRSField
+      hasCompactSupport := HasCompactSupport.of_compactSpace _ } with hW_def
+  have hW : ∀ y : M, W.toSection y = Tensor0SSpace.toRS0 (h (t₀ : Real) y) := fun _ => rfl
+  set GPhi : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y :=
+    fun y => (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
+        Phi).toSection y
+      (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y) with hGPhi_def
+  have hGPhi : ∀ y : M, Tensor0SSpace.toRS0 (GPhi y) =
+      (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
+        Phi).toSection y :=
+    fun y => toRS0_eval_one0 (I := I) (M := M) y _
+  have hderiv := first_var_joint (I := I) (M := M)
+    (g_fam := fun s : Real => S.family.metric s)
+    (f := fun (s : Real) (y : M) => normSq0S (I := I) (S.family.metric s) y 2 (nablaH s y))
+    (U := D.regular) (t := (t₀ : Real))
+    D.regular_isOpen t₀.2
+    (fun x₀ i j =>
+      chartGram_jointSmooth_of_metricFamilySmoothOn (I := I) (M := M)
+        S.family hS.smoothMetric x₀ i j)
+    (evolvingOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M) hS.smoothMetric hEvol)
+  refine hderiv.congr_deriv
+    (Eq.trans ?_
+      (evolvingOneForm_gradNormSq_reaction_ibp (I := I) (M := M)
+        S hS ricT hricT nablaRic h nablaH nabla2H phi hNablaRic hEvol t₀ W hW Phi hPhi
+        GPhi hGPhi))
+  refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+  change deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x)) (t₀ : Real)
+        + (1 / 2 : Real) *
+            traceTimeDerivMetric (I := I) (fun s : Real => S.family.metric s) (t₀ : Real) x
+          * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x)
+      = ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
+            ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
+        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GPhi x) (nablaH (t₀ : Real) x)
+        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
+            (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
+              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (nablaH (t₀ : Real) x)
+        - scalarCurvatureFromRicciInVolumeFrameOn (I := I) (M := M) S.family S.ricci
+              (t₀ : Real) x
+            * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x)
+  rw [evolvingOneForm_gradNormSq_pointwise (I := I) (M := M) S hS ricT hricT nablaRic
+      h nablaH nabla2H phi hNablaRic hEvol t₀ Phi hPhi GPhi hGPhi x,
+    traceTimeDerivMetricOn_eq_neg_two_scalar (I := I) (M := M) S hS t₀ x]
+  ring
 
 
 theorem heatOneForm_gradNormSq_integral_hasDerivAt_ricciFlow
@@ -3581,45 +3706,21 @@ theorem heatOneForm_gradNormSq_integral_hasDerivAt_ricciFlow
     { toSection := (h (t₀ : Real)).toTensorRSField
       hasCompactSupport := HasCompactSupport.of_compactSpace _ } with hW_def
   have hW : ∀ y : M, W.toSection y = Tensor0SSpace.toRS0 (h (t₀ : Real) y) := fun _ => rfl
-  set GLap : (y : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y :=
-    fun y => (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toSection y
-      (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ y) with hGLap_def
-  have hGLap : ∀ y : M, Tensor0SSpace.toRS0 (GLap y) =
-      (TensorSpectral.covGrad (I := I) (M := M) (S.family.metric (t₀ : Real)) 0 1
-        (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W)).toSection y :=
-    fun y => toRS0_eval_one0 (I := I) (M := M) y _
-  have hderiv := first_var_joint (I := I) (M := M)
-    (g_fam := fun s : Real => S.family.metric s)
-    (f := fun (s : Real) (y : M) => normSq0S (I := I) (S.family.metric s) y 2 (nablaH s y))
-    (U := D.regular) (t := (t₀ : Real))
-    D.regular_isOpen t₀.2
-    (fun x₀ i j =>
-      chartGram_jointSmooth_of_metricFamilySmoothOn (I := I) (M := M)
-        S.family hS.smoothMetric x₀ i j)
-    (heatOneForm_nablaNormSq_jointContMDiffOn (I := I) (M := M) hS.smoothMetric hProbe)
-  refine hderiv.congr_deriv
-    (Eq.trans ?_
-      (heatOneForm_gradNormSq_reaction_ibp (I := I) (M := M)
-        S hS ricT hricT nablaRic h nablaH nabla2H hNablaRic hProbe t₀ W hW GLap hGLap))
-  refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-  change deriv (fun s : Real => normSq0S (I := I) (S.family.metric s) x 2 (nablaH s x)) (t₀ : Real)
-        + (1 / 2 : Real) *
-            traceTimeDerivMetric (I := I) (fun s : Real => S.family.metric s) (t₀ : Real) x
-          * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x)
-      = ricciReactionInner (I := I) (S.family.metric (t₀ : Real)) x
-            ((ricT (t₀ : Real)) x) (nablaH (t₀ : Real) x)
-        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2 (GLap x) (nablaH (t₀ : Real) x)
-        + 2 * inner0S (I := I) (S.family.metric (t₀ : Real)) x 2
-            (ricciVariationOneFormReaction (I := I) (S.family.metric (t₀ : Real)) x
-              (nablaRic (t₀ : Real) x) (h (t₀ : Real) x)) (nablaH (t₀ : Real) x)
-        - scalarCurvatureFromRicciInVolumeFrameOn (I := I) (M := M) S.family S.ricci
-              (t₀ : Real) x
-            * normSq0S (I := I) (S.family.metric (t₀ : Real)) x 2 (nablaH (t₀ : Real) x)
-  rw [heatOneForm_gradNormSq_pointwise (I := I) (M := M) S hS ricT hricT nablaRic
-      h nablaH nabla2H hNablaRic hProbe t₀ W hW GLap hGLap x,
-    traceTimeDerivMetricOn_eq_neg_two_scalar (I := I) (M := M) S hS t₀ x]
-  ring
+  have hPhi : ∀ y : M,
+      (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W).toSection y =
+        Tensor0SSpace.toRS0
+          (roughLap0STensor (I := I) (S.family.metric (t₀ : Real)) (s := 1)
+            (nabla2H (t₀ : Real) y)) := by
+    intro y
+    have hb := (heatOneForm_wrapped_realizes (I := I) (M := M) S hS h nablaH nabla2H
+      hProbe t₀ W hW y).2
+    rw [SmoothCcTensor.toFun_apply] at hb
+    exact TensorRSSpace.toModel_injective hb
+  exact evolvingOneForm_gradNormSq_integral_hasDerivAt_ricciFlow (I := I) (M := M)
+    S hS ricT hricT nablaRic h nablaH nabla2H
+    (fun t y => roughLap0STensor (I := I) (S.family.metric t) (s := 1) (nabla2H t y))
+    hNablaRic hProbe.toEvolving t₀
+    (rawTensorConnLapSmooth (I := I) (S.family.metric (t₀ : Real)) 0 1 W) hPhi
 
 end HeatProbeEnergy
 end Evolution
