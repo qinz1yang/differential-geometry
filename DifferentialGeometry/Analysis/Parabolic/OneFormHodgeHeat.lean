@@ -59,6 +59,25 @@ structure IsHodgeHeatOneFormOn
             nablaH p.1 p.2 (vec2 (frame i p.2) (frame j p.2)))
           (D.regular ×ˢ u)
 
+lemma IsHodgeHeatOneFormOn.toEvolving
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    {D : RealTimeInterval}
+    {G : RealizedMetricFamilyOn (I := I) (M := M) D}
+    {h : Real -> OneFormSection (I := I) (M := M)}
+    {nablaH : Real -> TwoTensorSection (I := I) (M := M)}
+    {nabla2H : Real -> (x : M) ->
+      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x}
+    (hHodge : IsHodgeHeatOneFormOn (I := I) G h nablaH nabla2H) :
+    IsEvolvingOneFormOn (I := I) G h nablaH nabla2H
+      (fun t x =>
+        -(oneFormHodgeLaplacianAt (I := I) (G.metric t) (nablaH t) (nabla2H t) x)) where
+  realizes := hHodge.realizes
+  equation := by
+    intro t x X
+    simpa only [Tensor0SSpace.neg_apply] using hHodge.equation t x X
+  jointSmooth := hHodge.jointSmooth
+  jointSmoothNabla := hHodge.jointSmoothNabla
+
 end
 
 end DifferentialGeometry.Analysis.Parabolic
