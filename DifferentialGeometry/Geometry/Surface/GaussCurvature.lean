@@ -232,4 +232,16 @@ theorem ricci_eq_gaussCurvature_smul_metric_twoDim
   ring
 
 
+theorem gaussCurvature_contMDiff (g : SmoothRiemannianMetric I M) :
+    ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+      (gaussCurvature (I := I) (M := M) g) := by
+  have hfun : gaussCurvature (I := I) (M := M) g
+      = fun x : M => (2 : Real)⁻¹ * metricScalarAt (I := I) (M := M) g x := by
+    funext x
+    rw [gaussCurvature_def, metricScalar_eq_scal (I := I) (M := M) g x]
+  rw [hfun]
+  exact (contMDiff_const (c := (2 : Real)⁻¹)).mul
+    (metricScalar_smooth (I := I) (M := M) g)
+
+
 end DifferentialGeometry.Integral.Connection
