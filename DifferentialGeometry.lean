@@ -571,6 +571,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Synthesis
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
 import DifferentialGeometry.Analysis.Parabolic.OneFormHeat
+import DifferentialGeometry.Analysis.Parabolic.OneFormHodgeHeat
 import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTrace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceEnergy
@@ -2048,6 +2049,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ShiftedReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionHeatProbeEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionHodgeProbeEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.FrozenSlotAllK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.NablaReactionAllK
