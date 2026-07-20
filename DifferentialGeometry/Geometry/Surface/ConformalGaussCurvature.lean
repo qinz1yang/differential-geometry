@@ -994,4 +994,159 @@ theorem gaussCurvature_conformalMetric
       ← mul_assoc, inv_mul_cancel₀ hE2, one_mul]
 
 
+private lemma gradFun_conformalMetric_eq
+    (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (g : SmoothRiemannianMetric I M)
+    (φ : M -> Real) (b : M) :
+    gradFun (I := I) (conformalMetric f hf g) φ b
+      = Real.exp (-(2 * f b)) • gradFun (I := I) g φ b := by
+  refine SmoothRiemannianMetric.eq_of_inner_eq (conformalMetric f hf g) (fun ζ => ?_)
+  rw [inner_gradFun (I := I) (conformalMetric f hf g) φ b ζ, conformalMetric_inner,
+    map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, inner_gradFun (I := I) g φ b ζ,
+    Real.exp_neg, ← mul_assoc, mul_inv_cancel₀ (Real.exp_ne_zero (2 * f b)), one_mul]
+
+
+private lemma conformal_laplacian_full_collapse
+    (B : E →L[Real] E →L[Real] Real) (hB : ∀ a b : E, B a b = B b a)
+    (Q : E →L[Real] E) (p q : E) (Δval c : Real)
+    (hQ : ∑ i : Fin (Module.finrank Real E),
+      (chartModelBasis E).repr (Q (chartModelBasis E i)) i = Δval)
+    (hn : (Module.finrank Real E : Real) = 2) :
+    ∑ i : Fin (Module.finrank Real E),
+      (chartModelBasis E).repr
+        (c • (Q (chartModelBasis E i)
+            - B p (chartModelBasis E i) • q
+            + B p q • (chartModelBasis E i)
+            - B q (chartModelBasis E i) • p)) i
+      = c * Δval := by
+  classical
+  have key : ∀ i : Fin (Module.finrank Real E),
+      (chartModelBasis E).repr
+        (c • (Q (chartModelBasis E i)
+            - B p (chartModelBasis E i) • q
+            + B p q • (chartModelBasis E i)
+            - B q (chartModelBasis E i) • p)) i
+      = c * ((chartModelBasis E).repr (Q (chartModelBasis E i)) i
+          - B p (chartModelBasis E i) * (chartModelBasis E).repr q i
+          + B p q * (chartModelBasis E).repr (chartModelBasis E i) i
+          - B q (chartModelBasis E i) * (chartModelBasis E).repr p i) := by
+    intro i
+    simp only [map_smul, map_sub, map_add, Finsupp.smul_apply, Finsupp.sub_apply,
+      Finsupp.add_apply, smul_eq_mul]
+  rw [Finset.sum_congr rfl (fun i _ => key i), ← Finset.mul_sum,
+    Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_sub_distrib, hQ]
+  have hB2 : ∑ i : Fin (Module.finrank Real E),
+      B p (chartModelBasis E i) * (chartModelBasis E).repr q i = B p q := by
+    rw [← sum_repr_mul_apply (B p) q]
+    exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)
+  have hB3 : ∑ i : Fin (Module.finrank Real E),
+      B p q * (chartModelBasis E).repr (chartModelBasis E i) i
+      = B p q * (Module.finrank Real E : Real) := by
+    rw [← Finset.mul_sum, sum_repr_basis_diag]
+  have hB4 : ∑ i : Fin (Module.finrank Real E),
+      B q (chartModelBasis E i) * (chartModelBasis E).repr p i = B p q := by
+    rw [show B p q = B q p from hB p q, ← sum_repr_mul_apply (B q) p]
+    exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)
+  rw [hB2, hB3, hB4, hn]
+  ring
+
+
+theorem formLaplacianScalar_conformalMetric_twoDim
+    (hdim : Module.finrank Real E = 2)
+    (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (g : SmoothRiemannianMetric I M)
+    (φ : M -> Real) (hφ : ContMDiff I 𝓘(Real, Real) ∞ φ) (x : M) :
+    formLaplacianScalar (I := I) (conformalMetric f hf g) hφ x
+      = Real.exp (-(2 * f x)) * formLaplacianScalar (I := I) g hφ x := by
+  classical
+  have hf_at : MDifferentiableAt I 𝓘(Real, Real) f x := hf.mdifferentiable (by simp) x
+  have hneg2f : ContMDiff I 𝓘(Real, Real) ∞ (fun y : M => -(2 * f y)) :=
+    (contMDiff_const.mul hf).neg
+  have hneg2f_at : MDifferentiableAt I 𝓘(Real, Real) (fun y : M => -(2 * f y)) x :=
+    hneg2f.mdifferentiable (by simp) x
+  have hc_sm : ContMDiff I 𝓘(Real, Real) ∞ (fun b : M => Real.exp (-(2 * f b))) :=
+    Real.contDiff_exp.comp_contMDiff hneg2f
+  have hc_at : MDiffAt (fun b : M => Real.exp (-(2 * f b))) x :=
+    hc_sm.mdifferentiable (by simp) x
+  have hW_at : MDiffAt (T% (fun b : M => gradFun (I := I) (conformalMetric f hf g) φ b)) x :=
+    ((gradFun_contMDiff_total (I := I) (conformalMetric f hf g) hφ) x).mdifferentiableAt (by simp)
+  have hGφ_at : MDiffAt (T% (fun b : M => gradFun (I := I) g φ b)) x :=
+    ((gradFun_contMDiff_total (I := I) g hφ) x).mdifferentiableAt (by simp)
+  have hn : (Module.finrank Real E : Real) = 2 := by rw [hdim]; norm_num
+  have hkey : ∀ u : TangentSpace I x,
+      (LeviCivita (I := I) (conformalMetric f hf g)).toFun
+        (fun b : M => gradFun (I := I) (conformalMetric f hf g) φ b) x u
+      = Real.exp (-(2 * f x)) •
+          ((LeviCivita (I := I) g).toFun (fun b : M => gradFun (I := I) g φ b) x u
+            - g.inner x (gradFun (I := I) g f x) u • gradFun (I := I) g φ x
+            + g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g φ x) • u
+            - g.inner x (gradFun (I := I) g φ x) u • gradFun (I := I) g f x) := by
+    intro u
+    have hexp_du : extDerivFun (I := I) (fun b : M => Real.exp (-(2 * f b))) x u
+        = Real.exp (-(2 * f x)) * extDerivFun (I := I) (fun y : M => -(2 * f y)) x u := by
+      have h0 : mfderiv I 𝓘(Real, Real) (fun y : M => Real.exp (-(2 * f y))) x
+          = Real.exp (-(2 * f x)) • mfderiv I 𝓘(Real, Real) (fun y : M => -(2 * f y)) x :=
+        (hasMFDerivAt_exp_comp (I := I) hneg2f_at.hasMFDerivAt).mfderiv
+      rw [extDerivFun, extDerivFun]
+      simp only [NormedSpace.fromTangentSpace, ContinuousLinearMap.comp_apply]
+      have happly := congrArg (fun L => L u) h0
+      simpa [smul_eq_mul] using happly
+    have hneg2f_du : extDerivFun (I := I) (fun y : M => -(2 * f y)) x u
+        = -(2 * extDerivFun (I := I) f x u) := by
+      have heq : (fun y : M => -(2 * f y)) = fun y : M => (-2 : Real) * f y := by
+        funext y; ring
+      rw [heq, extDerivFun_const_mul (I := I) (-2 : Real) hf_at,
+        ContinuousLinearMap.smul_apply, smul_eq_mul]
+      ring
+    have hdf : extDerivFun (I := I) f x u = g.inner x (gradFun (I := I) g f x) u :=
+      (inner_gradFun (I := I) g f x u).symm
+    have hWsec : gradFun (I := I) (conformalMetric f hf g) φ
+        = (fun b : M => Real.exp (-(2 * f b))) • gradFun (I := I) g φ := by
+      funext b
+      exact gradFun_conformalMetric_eq (I := I) f hf g φ b
+    rw [leviCivita_conformalMetric_toFun_apply (I := I) f hf g hW_at u,
+      gradFun_conformalMetric_eq (I := I) f hf g φ x, hWsec]
+    rw [(LeviCivita (I := I) g).isCovariantDerivativeOnUniv.leibniz
+          (σ := gradFun (I := I) g φ)
+          (g := fun b : M => Real.exp (-(2 * f b))) hGφ_at hc_at]
+    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.smulRight_apply, conformalOneForm_apply_inner, map_smul,
+      hexp_du, hneg2f_du, hdf]
+    module
+  have hconf_lap := sum_repr_covGrad_eq_laplacian (I := I) φ hφ (conformalMetric f hf g) x
+  have hmain : Δ_g (I := I) (conformalMetric f hf g) hφ x
+      = Real.exp (-(2 * f x)) * Δ_g (I := I) g hφ x := by
+    rw [← hconf_lap]
+    refine Eq.trans (Finset.sum_congr rfl (fun i _ =>
+      congrArg (fun v : TangentSpace I x => (chartModelBasis E).repr v i)
+        (hkey (chartModelBasis E i)))) ?_
+    exact conformal_laplacian_full_collapse (E := E) (g.inner x) (fun a b => g.symm x a b)
+      ((LeviCivita (I := I) g).toFun (fun b : M => gradFun (I := I) g φ b) x)
+      (gradFun (I := I) g f x) (gradFun (I := I) g φ x) (Δ_g (I := I) g hφ x)
+      (Real.exp (-(2 * f x))) (sum_repr_covGrad_eq_laplacian (I := I) φ hφ g x) hn
+  rw [formLaplacianScalar_eq_neg_Δ_g (I := I) (conformalMetric f hf g) hφ x,
+    formLaplacianScalar_eq_neg_Δ_g (I := I) g hφ x, hmain]
+  ring
+
+
+theorem gaussCurvature_conformalMetric_contMDiff
+    (hdim : Module.finrank Real E = 2)
+    (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (g : SmoothRiemannianMetric I M)
+    (hK : ContMDiff I 𝓘(Real, Real) ∞ (gaussCurvature (I := I) g)) :
+    ContMDiff I 𝓘(Real, Real) ∞ (gaussCurvature (I := I) (conformalMetric f hf g)) := by
+  have heq : gaussCurvature (I := I) (conformalMetric f hf g)
+      = fun x : M => Real.exp (-(2 * f x))
+          * (gaussCurvature (I := I) g x + formLaplacianScalar (I := I) g hf x) := by
+    funext x
+    exact gaussCurvature_conformalMetric (I := I) hdim f hf g x
+  rw [heq]
+  have hexp : ContMDiff I 𝓘(Real, Real) ∞ (fun x : M => Real.exp (-(2 * f x))) :=
+    Real.contDiff_exp.comp_contMDiff ((contMDiff_const.mul hf).neg)
+  have hsum : ContMDiff I 𝓘(Real, Real) ∞
+      (fun x : M => gaussCurvature (I := I) g x + formLaplacianScalar (I := I) g hf x) :=
+    hK.add (formLaplacianScalar_contMDiff (I := I) g hf)
+  exact hexp.mul hsum
+
+
 end DifferentialGeometry.Integral.Connection
