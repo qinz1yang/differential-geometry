@@ -4511,6 +4511,84 @@ theorem curvatureEnergyInequality_fails_unrestricted :
     beta_reduce
     linarith [hval']
 
+theorem curvatureEnergyInequality_fails_positively_curved :
+    ∃ g : SmoothRiemannianMetric (𝓡 2) (sphere (0 : EuclideanSpace Real (Fin 3)) 1),
+    ∃ h : OneFormSection (I := 𝓡 2) (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1),
+    ∃ nablaH : TwoTensorSection (I := 𝓡 2) (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1),
+    ∃ nabla2H : (x : sphere (0 : EuclideanSpace Real (Fin 3)) 1) ->
+      Tensor0SSpace (𝕜 := Real) (I := 𝓡 2) 3 x,
+      NablaOneFormSectionRealizes (I := 𝓡 2)
+        (metricCov (I := 𝓡 2) g) h nablaH ∧
+      (∀ x, Nabla2OneFormRealizesAt (I := 𝓡 2)
+        (metricCov (I := 𝓡 2) g) h nablaH x (nabla2H x)) ∧
+      (∀ x, 0 < gaussCurvature (I := 𝓡 2) g x) ∧
+      (∫ x, normSq0S (I := 𝓡 2) g x 1
+            (roughLap0STensor (I := 𝓡 2) g (s := 1) (nabla2H x))
+          ∂(riemannianVolumeMeasure (I := 𝓡 2)
+            (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1) g))
+        < (∫ x, gaussCurvature (I := 𝓡 2) g x * normSq0S (I := 𝓡 2) g x 2 (nablaH x)
+            ∂(riemannianVolumeMeasure (I := 𝓡 2)
+              (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1) g))
+          + (∫ x, inner0S (I := 𝓡 2) g x 2
+                (oneFormReaction2D (I := 𝓡 2) g (h x)) (nablaH x)
+              ∂(riemannianVolumeMeasure (I := 𝓡 2)
+                (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1) g)) := by
+  obtain ⟨ε₀, hε₀, hneg⟩ := sphereCurvatureEnergy_neg
+  set ε := min ε₀ (1 / 3) / 2 with hεdef
+  have hminpos : 0 < min ε₀ (1 / 3) := lt_min hε₀ (by norm_num)
+  have hεpos : 0 < ε := by rw [hεdef]; exact half_pos hminpos
+  have hεltε₀ : ε < ε₀ := by
+    have h1 : min ε₀ (1 / 3) ≤ ε₀ := min_le_left _ _
+    rw [hεdef]; linarith
+  have hεlt13 : ε < 1 / 3 := by
+    have h2 : min ε₀ (1 / 3) ≤ 1 / 3 := min_le_right _ _
+    rw [hεdef]; linarith
+  refine ⟨sphereConformalMetric ε, sphereHeightOneForm,
+    (sphereConformalDerivs ε).nablaA,
+    fun x => (sphereConformalDerivs ε).nabla2A x, ?_, ?_, ?_, ?_⟩
+  · exact fun x =>
+      (nabla2OneFormRealizesAt_of_totalNabla
+        (metricCov (I := 𝓡 2) (sphereConformalMetric ε))
+        sphereHeightOneForm ((sphereConformalDerivs ε).nablaA)
+        ((sphereConformalDerivs ε).nabla2A)
+        (sphereConformalDerivs ε).first
+        (sphereConformalDerivs ε).second x).1 x
+  · exact fun x =>
+      nabla2OneFormRealizesAt_of_totalNabla
+        (metricCov (I := 𝓡 2) (sphereConformalMetric ε))
+        sphereHeightOneForm ((sphereConformalDerivs ε).nablaA)
+        ((sphereConformalDerivs ε).nabla2A)
+        (sphereConformalDerivs ε).first
+        (sphereConformalDerivs ε).second x
+  · intro x
+    rw [sphereK_eq ε x]
+    exact mul_pos (Real.exp_pos _)
+      (by nlinarith [sphereHeight_sq_le_one x, hεpos, hεlt13,
+        sq_nonneg (sphereHeight x)])
+  · have hval : sphereCurvatureEnergy ε < 0 :=
+      hneg ε ⟨hεpos, hεltε₀⟩
+    have hval' : (∫ x, normSq0S (I := 𝓡 2) (sphereConformalMetric ε) x 1
+          (roughLap0STensor (I := 𝓡 2) (sphereConformalMetric ε) (s := 1)
+            ((sphereConformalDerivs ε).nabla2A x))
+        ∂(riemannianVolumeMeasure (I := 𝓡 2)
+          (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+          (sphereConformalMetric ε)))
+        - (∫ x, gaussCurvature (I := 𝓡 2) (sphereConformalMetric ε) x
+            * normSq0S (I := 𝓡 2) (sphereConformalMetric ε) x 2
+                ((sphereConformalDerivs ε).nablaA x)
+          ∂(riemannianVolumeMeasure (I := 𝓡 2)
+            (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+            (sphereConformalMetric ε)))
+        - (∫ x, inner0S (I := 𝓡 2) (sphereConformalMetric ε) x 2
+            (oneFormReaction2D (I := 𝓡 2) (sphereConformalMetric ε)
+              (sphereHeightOneForm x))
+            ((sphereConformalDerivs ε).nablaA x)
+          ∂(riemannianVolumeMeasure (I := 𝓡 2)
+            (M := sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+            (sphereConformalMetric ε))) < 0 := hval
+    beta_reduce
+    linarith [hval']
+
 end Sphere
 
 end DifferentialGeometry.Integral.Connection
