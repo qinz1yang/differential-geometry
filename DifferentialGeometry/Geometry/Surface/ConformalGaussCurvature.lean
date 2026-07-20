@@ -262,7 +262,7 @@ private lemma leviCivita_conformalMetric_toFun_apply
   rw [← h]
   exact conformalConnection_toFun_apply (I := I) f g σ x u
 
-private lemma connDiff_conformalMetric_apply
+lemma connDiff_conformalMetric_apply
     (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (g : SmoothRiemannianMetric I M) (x : M) (z u : TangentSpace I x) :
     connDiff (I := I) (conformalMetric f hf g) g x z u =
