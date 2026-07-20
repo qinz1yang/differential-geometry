@@ -10,12 +10,19 @@ import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.FDeriv.Mul
+import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
+import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.LinearAlgebra.Matrix.ToLin
+import Mathlib.Tactic.Module
 
 
 noncomputable section
 
 open Manifold Metric Module Set MeasureTheory Filter Topology
-open scoped Manifold Topology RealInnerProductSpace
+open scoped Manifold Topology RealInnerProductSpace Matrix
 open DifferentialGeometry.Integral.Measure
 
 namespace DifferentialGeometry
@@ -113,12 +120,387 @@ private lemma continuous_extChartAt_northPole_symm :
   rw [← continuousOn_univ, ← extChartAt_northPole_target]
   exact continuousOn_extChartAt_symm northPole
 
+private noncomputable def stereoPlaneIncl :
+    EuclideanSpace ℝ (Fin 2) →ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 3) :=
+  ((ℝ ∙ ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+      EuclideanSpace ℝ (Fin 3)))ᗮ).subtypeₗᵢ.comp
+    ((OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) 2
+        (ne_zero_of_mem_unit_sphere (-northPole))).repr.symm.toLinearIsometry)
+
+private lemma stereoPlaneIncl_apply (z : EuclideanSpace ℝ (Fin 2)) :
+    stereoPlaneIncl z
+      = (((OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) 2
+            (ne_zero_of_mem_unit_sphere (-northPole))).repr.symm z :
+          (ℝ ∙ ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+            EuclideanSpace ℝ (Fin 3)))ᗮ) : EuclideanSpace ℝ (Fin 3)) := rfl
+
+private lemma stereoPlaneIncl_norm (z : EuclideanSpace ℝ (Fin 2)) :
+    ‖stereoPlaneIncl z‖ = ‖z‖ :=
+  stereoPlaneIncl.norm_map z
+
+private lemma stereoPlaneIncl_inner (a b : EuclideanSpace ℝ (Fin 2)) :
+    ⟪stereoPlaneIncl a, stereoPlaneIncl b⟫ = ⟪a, b⟫ :=
+  stereoPlaneIncl.inner_map_map a b
+
+private lemma stereoPlaneIncl_inner_southPole (a : EuclideanSpace ℝ (Fin 2)) :
+    ⟪stereoPlaneIncl a,
+      ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3))⟫ = 0 := by
+  rw [stereoPlaneIncl_apply]
+  exact Submodule.inner_left_of_mem_orthogonal
+    (Submodule.mem_span_singleton_self _) (Submodule.coe_mem _)
+
+private lemma southPole_inner_stereoPlaneIncl (a : EuclideanSpace ℝ (Fin 2)) :
+    ⟪((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3)), stereoPlaneIncl a⟫ = 0 := by
+  rw [stereoPlaneIncl_apply]
+  exact Submodule.inner_right_of_mem_orthogonal
+    (Submodule.mem_span_singleton_self _) (Submodule.coe_mem _)
+
+private lemma southPole_inner_self :
+    ⟪((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3)),
+      ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3))⟫ = 1 := by
+  rw [real_inner_self_eq_norm_sq, coe_neg_sphere, norm_neg,
+    mem_sphere_zero_iff_norm.mp northPole.2]
+  norm_num
+
+private noncomputable def stereoParamDeriv (y : EuclideanSpace ℝ (Fin 2)) :
+    EuclideanSpace ℝ (Fin 2) →L[ℝ] EuclideanSpace ℝ (Fin 3) :=
+  (4 * (‖y‖ ^ 2 + 4)⁻¹) • stereoPlaneIncl.toContinuousLinearMap
+    + (innerSL ℝ y).smulRight
+        ((-(8 * ((‖y‖ ^ 2 + 4)⁻¹) ^ 2)) • stereoPlaneIncl y
+          + (16 * ((‖y‖ ^ 2 + 4)⁻¹) ^ 2) •
+            ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+              EuclideanSpace ℝ (Fin 3)))
+
+private lemma stereoParamDeriv_apply (y h : EuclideanSpace ℝ (Fin 2)) :
+    stereoParamDeriv y h
+      = (4 * (‖y‖ ^ 2 + 4)⁻¹) • stereoPlaneIncl h
+        + ⟪y, h⟫ • ((-(8 * ((‖y‖ ^ 2 + 4)⁻¹) ^ 2)) • stereoPlaneIncl y
+            + (16 * ((‖y‖ ^ 2 + 4)⁻¹) ^ 2) •
+              ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+                EuclideanSpace ℝ (Fin 3))) := by
+  simp [stereoParamDeriv, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+    LinearIsometry.coe_toContinuousLinearMap]
+
+private lemma coe_extChartAt_northPole_symm (z : EuclideanSpace ℝ (Fin 2)) :
+    ((extChartAt (𝓡 2) northPole).symm z : EuclideanSpace ℝ (Fin 3))
+      = (‖z‖ ^ 2 + 4)⁻¹ • (4 : ℝ) • stereoPlaneIncl z
+        + (‖z‖ ^ 2 + 4)⁻¹ • (‖z‖ ^ 2 - 4) •
+            ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+              EuclideanSpace ℝ (Fin 3)) := by
+  rw [show ((extChartAt (𝓡 2) northPole).symm z : EuclideanSpace ℝ (Fin 3))
+      = ((stereographic' 2 (-northPole)).symm z : EuclideanSpace ℝ (Fin 3)) from rfl]
+  rw [stereographic'_symm_apply]
+  simp only [← stereoPlaneIncl_apply, stereoPlaneIncl_norm]
+
+private lemma hasFDerivAt_coe_extChartAt_northPole_symm (y : EuclideanSpace ℝ (Fin 2)) :
+    HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) =>
+        ((extChartAt (𝓡 2) northPole).symm z : EuclideanSpace ℝ (Fin 3)))
+      (stereoParamDeriv y) y := by
+  have hne : (⟪y, y⟫ + 4 : ℝ) ≠ 0 := by
+    rw [real_inner_self_eq_norm_sq]; positivity
+  have hfun : (fun z : EuclideanSpace ℝ (Fin 2) =>
+      ((extChartAt (𝓡 2) northPole).symm z : EuclideanSpace ℝ (Fin 3)))
+      = fun z : EuclideanSpace ℝ (Fin 2) =>
+          (⟪z, z⟫ + 4)⁻¹ • (4 : ℝ) • stereoPlaneIncl z
+            + (⟪z, z⟫ + 4)⁻¹ • (⟪z, z⟫ - 4) •
+                ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+                  EuclideanSpace ℝ (Fin 3)) := by
+    funext z
+    rw [coe_extChartAt_northPole_symm z, real_inner_self_eq_norm_sq]
+  rw [hfun]
+  have hq := (hasFDerivAt_id (𝕜 := ℝ) y).inner (𝕜 := ℝ) (hasFDerivAt_id y)
+  have hg1 : HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) => (⟪z, z⟫ + 4)⁻¹) _ y :=
+    (hasFDerivAt_inv' (𝕜 := ℝ) hne).comp y (hq.add_const 4)
+  have hg2 : HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) => (4 : ℝ) • stereoPlaneIncl z)
+      ((4 : ℝ) • stereoPlaneIncl.toContinuousLinearMap) y :=
+    stereoPlaneIncl.toContinuousLinearMap.hasFDerivAt.const_smul (4 : ℝ)
+  have hg3 : HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) => (⟪z, z⟫ - 4) •
+        ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+          EuclideanSpace ℝ (Fin 3))) _ y :=
+    (hq.sub_const 4).smul_const _
+  have ht1 : HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) =>
+        (⟪z, z⟫ + 4)⁻¹ • (4 : ℝ) • stereoPlaneIncl z) _ y := hg1.smul hg2
+  have ht2 : HasFDerivAt
+      (fun z : EuclideanSpace ℝ (Fin 2) =>
+        (⟪z, z⟫ + 4)⁻¹ • (⟪z, z⟫ - 4) •
+          ((-northPole : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+            EuclideanSpace ℝ (Fin 3))) _ y := hg1.smul hg3
+  have htot := ht1.add ht2
+  convert htot using 1
+  refine ContinuousLinearMap.ext fun h => ?_
+  rw [stereoParamDeriv_apply]
+  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.prod_apply, ContinuousLinearMap.id_apply, id_eq,
+    ContinuousLinearMap.neg_apply,
+    ContinuousLinearMap.mulLeftRight_apply, fderivInnerCLM_apply,
+    LinearIsometry.coe_toContinuousLinearMap]
+  rw [real_inner_comm h y]
+  rw [show ⟪y, y⟫ = ‖y‖ ^ 2 from real_inner_self_eq_norm_sq y]
+  have h4 : (‖y‖ ^ 2 + 4 : ℝ) ≠ 0 := by positivity
+  match_scalars <;> field_simp <;> ring
+
+private lemma inner_stereoParamDeriv (y h₁ h₂ : EuclideanSpace ℝ (Fin 2)) :
+    ⟪stereoParamDeriv y h₁, stereoParamDeriv y h₂⟫ = stereoDensity y * ⟪h₁, h₂⟫ := by
+  have h4 : (‖y‖ ^ 2 + 4 : ℝ) ≠ 0 := by positivity
+  rw [stereoParamDeriv_apply, stereoParamDeriv_apply]
+  simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right,
+    stereoPlaneIncl_inner, stereoPlaneIncl_inner_southPole, southPole_inner_stereoPlaneIncl,
+    southPole_inner_self]
+  rw [real_inner_comm h₁ y]
+  rw [show ⟪y, y⟫ = ‖y‖ ^ 2 from real_inner_self_eq_norm_sq y]
+  rw [stereoDensity]
+  field_simp
+  ring
+
+private lemma dIncl_chartBasisVecFiber_eq (y : EuclideanSpace ℝ (Fin 2))
+    (i : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) :
+    dIncl (n := 2) ((extChartAt (𝓡 2) northPole).symm y)
+        (chartBasisVecFiber (I := 𝓡 2) northPole i ((extChartAt (𝓡 2) northPole).symm y))
+      = stereoParamDeriv y (chartModelBasis (EuclideanSpace ℝ (Fin 2)) i) := by
+  have hy_target : y ∈ (extChartAt (𝓡 2) northPole).target := by
+    rw [extChartAt_northPole_target]; exact Set.mem_univ y
+  have hx_source : (extChartAt (𝓡 2) northPole).symm y
+      ∈ (chartAt (EuclideanSpace ℝ (Fin 2)) northPole).source := by
+    have := (extChartAt (𝓡 2) northPole).map_target hy_target
+    rwa [extChartAt_source] at this
+  have hxy : extChartAt (𝓡 2) northPole ((extChartAt (𝓡 2) northPole).symm y) = y :=
+    (extChartAt (𝓡 2) northPole).right_inv hy_target
+  have hstep1 : chartBasisVecFiber (I := 𝓡 2) northPole i
+        ((extChartAt (𝓡 2) northPole).symm y)
+      = (trivializationAt (EuclideanSpace ℝ (Fin 2)) (TangentSpace (𝓡 2)) northPole).symmL ℝ
+          ((extChartAt (𝓡 2) northPole).symm y)
+          (chartModelBasis (EuclideanSpace ℝ (Fin 2)) i) := by
+    rw [Bundle.Trivialization.symmL_apply]
+    rfl
+  rw [hstep1, TangentBundle.symmL_trivializationAt (I := 𝓡 2) (x₀ := northPole) hx_source,
+    hxy, ModelWithCorners.range_eq_univ, mfderivWithin_univ]
+  have hg : MDifferentiableAt (𝓡 2) 𝓘(ℝ, EuclideanSpace ℝ (Fin 3))
+      ((↑) : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → EuclideanSpace ℝ (Fin 3))
+      ((extChartAt (𝓡 2) northPole).symm y) :=
+    (contMDiff_coe_sphere ((extChartAt (𝓡 2) northPole).symm y)).mdifferentiableAt one_ne_zero
+  have hf : MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ (Fin 2)) (𝓡 2)
+      (extChartAt (𝓡 2) northPole).symm y := by
+    have h := mdifferentiableWithinAt_extChartAt_symm hy_target
+    rwa [ModelWithCorners.range_eq_univ, mdifferentiableWithinAt_univ] at h
+  have hcomp := mfderiv_comp (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin 2))) (I' := 𝓡 2)
+    (I'' := 𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) y hg hf
+  have hclm : mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin 2)) 𝓘(ℝ, EuclideanSpace ℝ (Fin 3))
+      (((↑) : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → EuclideanSpace ℝ (Fin 3))
+        ∘ (extChartAt (𝓡 2) northPole).symm) y = stereoParamDeriv y := by
+    rw [mfderiv_eq_fderiv]
+    rw [show (((↑) : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → EuclideanSpace ℝ (Fin 3))
+          ∘ (extChartAt (𝓡 2) northPole).symm)
+        = fun z : EuclideanSpace ℝ (Fin 2) =>
+            ((extChartAt (𝓡 2) northPole).symm z : EuclideanSpace ℝ (Fin 3)) from rfl]
+    rw [(hasFDerivAt_coe_extChartAt_northPole_symm y).fderiv]
+  exact ((congrFun (congrArg DFunLike.coe hcomp)
+      (chartModelBasis (EuclideanSpace ℝ (Fin 2)) i)).symm).trans
+    (congrFun (congrArg DFunLike.coe hclm)
+      (chartModelBasis (EuclideanSpace ℝ (Fin 2)) i))
+
+private lemma chartDensity_roundMetric_northPole (y : EuclideanSpace ℝ (Fin 2)) :
+    chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
+        ((extChartAt (𝓡 2) northPole).symm y)
+      = stereoDensity y *
+          Real.sqrt (Matrix.of fun i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))) =>
+            ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+              chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫).det := by
+  have hmat : chartGramMatrix (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
+      ((extChartAt (𝓡 2) northPole).symm y)
+      = stereoDensity y •
+          Matrix.of fun i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))) =>
+            ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+              chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫ := by
+    ext i j
+    rw [chartGramMatrix_apply, roundMetric_inner, dIncl_chartBasisVecFiber_eq y i,
+      dIncl_chartBasisVecFiber_eq y j, inner_stereoParamDeriv]
+    simp [Matrix.smul_apply, Matrix.of_apply, smul_eq_mul]
+  have hcd : chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
+      ((extChartAt (𝓡 2) northPole).symm y)
+      = Real.sqrt (chartGramMatrix (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))
+          northPole ((extChartAt (𝓡 2) northPole).symm y)).det := rfl
+  rw [hcd, hmat, Matrix.det_smul]
+  rw [show Fintype.card (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) = 2 from by
+    rw [Fintype.card_fin, finrank_euclideanSpace_fin]]
+  rw [Real.sqrt_mul (sq_nonneg (stereoDensity y)), Real.sqrt_sq (stereoDensity_nonneg y)]
+
+private noncomputable def modelReindex :
+    EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ≃ₗᵢ[ℝ]
+      EuclideanSpace ℝ (Fin 2) :=
+  LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ (finCongr finrank_euclideanSpace_fin)
+
+private noncomputable def modelBasisEndoLin :
+    EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) →ₗ[ℝ]
+      EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) :=
+  (((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm.toLinearEquiv).trans
+    modelReindex.symm.toLinearEquiv).toLinearMap
+
+private lemma modelBasisEndoLin_apply
+    (z : EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))))) :
+    modelBasisEndoLin z
+      = modelReindex.symm ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z) := by
+  simp [modelBasisEndoLin, LinearEquiv.trans_apply]
+
+private lemma det_modelBasisEndoLin_ne_zero : LinearMap.det modelBasisEndoLin ≠ 0 :=
+  IsUnit.ne_zero
+    (LinearEquiv.isUnit_det'
+      (((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm.toLinearEquiv).trans
+        modelReindex.symm.toLinearEquiv))
+
+private lemma det_gram_chartModelBasis :
+    (Matrix.of fun i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))) =>
+        ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+          chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫).det
+      = LinearMap.det modelBasisEndoLin ^ 2 := by
+  classical
+  have h1 : ∀ k : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))),
+      modelBasisEndoLin
+        ((EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis k)
+      = modelReindex.symm (chartModelBasis (EuclideanSpace ℝ (Fin 2)) k) := by
+    intro k
+    rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+      modelBasisEndoLin_apply, chartModelBasis_apply]
+  have hentry : ∀ i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))),
+      ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+        chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫
+      = ((LinearMap.toMatrix
+            (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+            (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+            modelBasisEndoLin)ᵀ
+          * LinearMap.toMatrix
+            (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+            (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+            modelBasisEndoLin) i j := by
+    intro i j
+    calc ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+          chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫
+        = ⟪modelReindex.symm (chartModelBasis (EuclideanSpace ℝ (Fin 2)) i),
+            modelReindex.symm (chartModelBasis (EuclideanSpace ℝ (Fin 2)) j)⟫ :=
+          (LinearIsometryEquiv.inner_map_map modelReindex.symm _ _).symm
+      _ = ⟪modelBasisEndoLin
+            ((EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis i),
+          modelBasisEndoLin
+            ((EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis j)⟫ := by
+          rw [h1, h1]
+      _ = ∑ k, modelBasisEndoLin
+              ((EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis i) k
+            * modelBasisEndoLin
+              ((EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis j) k := by
+          have hri : ∀ a b : ℝ, ⟪a, b⟫ = a * b := fun a b => by
+            have hba : ⟪a, b⟫ = b * a := rfl
+            rw [hba, mul_comm]
+          rw [PiLp.inner_apply]
+          exact Finset.sum_congr rfl fun k _ => hri _ _
+      _ = _ := by
+          rw [Matrix.mul_apply]
+          refine Finset.sum_congr rfl fun k _ => ?_
+          rw [Matrix.transpose_apply, LinearMap.toMatrix_apply, LinearMap.toMatrix_apply,
+            OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+            EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_repr]
+  have hmat : (Matrix.of fun i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))) =>
+      ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+        chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫)
+      = (LinearMap.toMatrix
+          (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+          (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+          modelBasisEndoLin)ᵀ
+        * LinearMap.toMatrix
+          (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+          (EuclideanSpace.basisFun (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) ℝ).toBasis
+          modelBasisEndoLin := by
+    ext i j
+    simpa [Matrix.of_apply] using hentry i j
+  rw [hmat, Matrix.det_mul, Matrix.det_transpose, LinearMap.det_toMatrix, sq]
+
+private lemma integral_modelHaar_eq (f : EuclideanSpace ℝ (Fin 2) → ℝ) (hf : Continuous f) :
+    (∫ y, f y ∂(modelHaar (E := EuclideanSpace ℝ (Fin 2))))
+      = |LinearMap.det modelBasisEndoLin|⁻¹
+          * ∫ y, f y ∂(volume : Measure (EuclideanSpace ℝ (Fin 2))) := by
+  have hTme : AEMeasurable (toEuclidean (E := EuclideanSpace ℝ (Fin 2)))
+      (modelHaar (E := EuclideanSpace ℝ (Fin 2))) := by
+    have hm : Measurable (toEuclidean (E := EuclideanSpace ℝ (Fin 2))) :=
+      (toEuclidean (E := EuclideanSpace ℝ (Fin 2))).continuous.measurable
+    exact ⟨_, hm.mono (le_of_eq BorelSpace.measurable_eq) le_rfl, Filter.EventuallyEq.rfl⟩
+  have hfm : AEStronglyMeasurable
+      (fun z : EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) =>
+        f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z))
+      (volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))) :=
+    (hf.comp (toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm.continuous).aestronglyMeasurable
+  rw [← map_toEuclidean_modelHaar_eq_volume (E := EuclideanSpace ℝ (Fin 2))] at hfm
+  have h1 : (∫ y, f y ∂(modelHaar (E := EuclideanSpace ℝ (Fin 2))))
+      = ∫ z, f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z)
+          ∂(volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))) := by
+    rw [← map_toEuclidean_modelHaar_eq_volume (E := EuclideanSpace ℝ (Fin 2)),
+      MeasureTheory.integral_map hTme hfm]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
+    change f w = f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm
+      (toEuclidean (E := EuclideanSpace ℝ (Fin 2)) w))
+    rw [ContinuousLinearEquiv.symm_apply_apply]
+  have hNcont : Continuous modelBasisEndoLin :=
+    modelBasisEndoLin.continuous_of_finiteDimensional
+  have hmapN := MeasureTheory.Measure.map_linearMap_addHaar_eq_smul_addHaar
+    (volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))))))
+    det_modelBasisEndoLin_ne_zero
+  have hfm2 : AEStronglyMeasurable
+      (fun w : EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))) =>
+        f (modelReindex w))
+      (MeasureTheory.Measure.map modelBasisEndoLin
+        (volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))))))) :=
+    (hf.comp modelReindex.continuous).aestronglyMeasurable
+  have e2 : (∫ w, f (modelReindex w)
+      ∂(MeasureTheory.Measure.map modelBasisEndoLin
+        (volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))))))))
+      = ∫ z, f (modelReindex (modelBasisEndoLin z))
+          ∂(volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))) :=
+    MeasureTheory.integral_map hNcont.aemeasurable hfm2
+  have h3 : (∫ z, f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z)
+      ∂(volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))))
+      = |LinearMap.det modelBasisEndoLin|⁻¹
+          * ∫ y, f y ∂(volume : Measure (EuclideanSpace ℝ (Fin 2))) := by
+    have e1 : (∫ z, f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z)
+        ∂(volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))))
+        = ∫ z, f (modelReindex (modelBasisEndoLin z))
+            ∂(volume : Measure (EuclideanSpace ℝ (Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2)))))) := by
+      refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
+      change f ((toEuclidean (E := EuclideanSpace ℝ (Fin 2))).symm z)
+        = f (modelReindex (modelBasisEndoLin z))
+      rw [modelBasisEndoLin_apply z, LinearIsometryEquiv.apply_symm_apply]
+    rw [e1, ← e2, hmapN, MeasureTheory.integral_smul_measure,
+      ENNReal.toReal_ofReal (abs_nonneg _), smul_eq_mul, abs_inv,
+      MeasureTheory.integral_comp modelReindex f]
+  rw [h1, h3]
+
 private lemma integral_chartDensity_modelHaar_eq_stereoDensity_volume
     {G : EuclideanSpace ℝ (Fin 2) → ℝ} (hG : Continuous G) :
     (∫ y, chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)) northPole
             ((extChartAt (𝓡 2) northPole).symm y) * G y
           ∂(modelHaar (E := EuclideanSpace ℝ (Fin 2))))
-      = ∫ y, stereoDensity y * G y ∂volume := sorry
+      = ∫ y, stereoDensity y * G y ∂volume := by
+  have habs : |LinearMap.det modelBasisEndoLin| ≠ 0 :=
+    abs_ne_zero.mpr det_modelBasisEndoLin_ne_zero
+  have hfun : (fun y => chartDensity (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))
+        northPole ((extChartAt (𝓡 2) northPole).symm y) * G y)
+      = fun y => Real.sqrt (Matrix.of fun i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin 2))) =>
+          ⟪chartModelBasis (EuclideanSpace ℝ (Fin 2)) i,
+            chartModelBasis (EuclideanSpace ℝ (Fin 2)) j⟫).det
+          * (stereoDensity y * G y) := by
+    funext y
+    rw [chartDensity_roundMetric_northPole y]
+    ring
+  rw [hfun, MeasureTheory.integral_const_mul,
+    integral_modelHaar_eq (fun y => stereoDensity y * G y) (continuous_stereoDensity.mul hG),
+    det_gram_chartModelBasis, Real.sqrt_sq_eq_abs, ← mul_assoc,
+    mul_inv_cancel₀ habs, one_mul]
 
 private lemma integral_rvm_eq_of_support_in_chart
     {H : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → ℝ} (hH : Continuous H)
