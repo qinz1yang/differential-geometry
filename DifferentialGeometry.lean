@@ -2413,6 +2413,7 @@ import DifferentialGeometry.Geometry.Surface.ConformalGaussCurvature
 import DifferentialGeometry.Geometry.Surface.CurvatureEnergyIdentity
 import DifferentialGeometry.Geometry.Surface.CurvatureEnergySharpness
 import DifferentialGeometry.Geometry.Surface.GaussCurvature
+import DifferentialGeometry.Geometry.Surface.OneFormHodgeLaplacianTwoDim
 import DifferentialGeometry.Geometry.Surface.TensorTraceFree
 import DifferentialGeometry.Geometry.Topology.DirectLimit
 import DifferentialGeometry.Geometry.Topology.DirectLimitManifold
