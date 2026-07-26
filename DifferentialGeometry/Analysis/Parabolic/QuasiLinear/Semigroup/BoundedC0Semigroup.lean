@@ -50,16 +50,16 @@ continuity `t ↦ S(t) v`. No constraint is placed on `toFun` for negative
 `t`. -/
 structure BoundedC0Semigroup (X : Type*) [NormedAddCommGroup X]
     [NormedSpace ℝ X] where
-  /-- The underlying one-parameter family of bounded operators. -/
+
   toFun : ℝ → (X →L[ℝ] X)
-  /-- The semigroup is the identity at time `0`. -/
+
   apply_zero : toFun 0 = ContinuousLinearMap.id ℝ X
-  /-- The semigroup law `S(t + s) = S(t) ∘ S(s)` for non-negative times. -/
+
   apply_add : ∀ t s : ℝ, 0 ≤ t → 0 ≤ s →
     toFun (t + s) = (toFun t).comp (toFun s)
-  /-- Each operator is a contraction: `‖S(t)‖ ≤ 1` for `t ≥ 0`. -/
+
   opNorm_le_one : ∀ t : ℝ, 0 ≤ t → ‖toFun t‖ ≤ 1
-  /-- Strong continuity: `t ↦ S(t) v` is continuous on `[0, ∞)`. -/
+
   continuousOn_apply : ∀ v : X,
     ContinuousOn (fun t : ℝ => toFun t v) (Set.Ici 0)
 

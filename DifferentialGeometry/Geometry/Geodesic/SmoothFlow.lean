@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 
 set_option linter.unusedSectionVars false
@@ -914,6 +915,70 @@ theorem exists_chartPhase_contDiffOn_isLocalFlow_combined_nat
     hΦ'.apply_initial (x₀, v₀) (Metric.mem_closedBall_self (by
       exact_mod_cast (le_of_lt hrN)))
   exact ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hΦ', hCDOn, hinitial⟩
+
+/-- **Uniform-box `C^∞` chart-phase flow.**  The all-orders strengthening of
+`exists_chartPhase_contDiffOn_isLocalFlow_combined_nat`: the chart-phase flow `Φ` of the
+(globally `C^∞`, bump-cutoff) field `chartPhaseVFTime` is jointly `C^∞` on a **single
+fixed box** `ball (x₀, v₀) ρ ×ˢ Ioo (-T) T`, with **no order-dependent shrinking**.
+
+The radius is obtained from `exists_flow_nesting_data` and the all-orders smoothness from
+the fixed-box Hartman theorem `IsLocalFlow.contDiffOn_top` (which the per-order
+`exists_contDiffOn_flow_Cnat` route cannot match — its neighbourhood shrinks with the
+order).  This is the missing `combined_inf` input for uniform-ball `expMap` smoothness. -/
+theorem exists_chartPhase_contDiffOn_isLocalFlow_combined_inf
+    [CompleteSpace E]
+    (g : SmoothRiemannianMetric I M) (α : M) {x₀ v₀ : E}
+    (hx₀ : x₀ ∈ interior (extChartAt I α).target) :
+    ∃ (b : ContDiffBump ((x₀, v₀) : E × E))
+      (r : ℝ≥0) (ε : ℝ) (ρ T : ℝ)
+      (Φ : (E × E) × ℝ → E × E),
+      0 < r ∧ 0 < ε ∧ 0 < ρ ∧ 0 < T ∧
+      Metric.closedBall ((x₀, v₀) : E × E) b.rOut ⊆
+        (interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ∧
+      DifferentialGeometry.Analysis.ODE.Flow.IsLocalFlow
+        (chartPhaseVFTime (I := I) g α (x₀, v₀) b)
+        (0 : ℝ) (x₀, v₀) r (-ε) ε Φ ∧
+      ContDiffOn ℝ ∞ Φ
+        ((Metric.ball ((x₀, v₀) : E × E) ρ) ×ˢ Set.Ioo (-T) T) ∧
+      Φ (((x₀, v₀) : E × E), 0) = (x₀, v₀) := by
+  classical
+  obtain ⟨b, hb_sub⟩ :=
+    exists_contDiffBump_subset_chart_interior (I := I) (α := α)
+      (x₀ := x₀) (v₀ := v₀) hx₀
+  have hf_inf : ContDiff ℝ ∞
+      (Function.uncurry (chartPhaseVFTime (I := I) g α (x₀, v₀) b)) :=
+    chartPhaseVFTime_uncurry_contDiff (I := I) g α (x₀, v₀) b hb_sub
+  have hC1 : ContDiffOn ℝ 1
+      (Function.uncurry (chartPhaseVFTime (I := I) g α (x₀, v₀) b))
+      (Set.univ : Set (ℝ × (E × E))) :=
+    chartPhaseVFTime_uncurry_contDiffOn_univ_one (I := I) g α (x₀, v₀) b hb_sub
+  obtain ⟨rN, εN, hrN, hεN, Φ, hΦ⟩ :=
+    DifferentialGeometry.Analysis.ODE.Flow.exists_isLocalFlow_of_contDiffOn_univ
+      (E := E × E) (chartPhaseVFTime (I := I) g α (x₀, v₀) b) hC1 0 (x₀, v₀)
+  have heq1 : (0 : ℝ) - εN = -εN := by ring
+  have heq2 : (0 : ℝ) + εN = εN := by ring
+  have hΦ' : DifferentialGeometry.Analysis.ODE.Flow.IsLocalFlow
+        (chartPhaseVFTime (I := I) g α (x₀, v₀) b)
+        (0 : ℝ) (x₀, v₀) rN (-εN) εN Φ := by
+    have := hΦ
+    rw [heq1, heq2] at this
+    exact this
+  have ht₀_mem : (0 : ℝ) ∈ Set.Ioo (-εN) εN := ⟨by linarith, hεN⟩
+  have hrN_pos : 0 < (rN : ℝ) := hrN
+  obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r',
+    hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid, hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out,
+    hρρ', hρ_out_le_r, hsub, hA_bd⟩ :=
+    DifferentialGeometry.Analysis.ODE.Flow.exists_flow_nesting_data hΦ' hC1 ht₀_mem hrN_pos
+  have hCDOn0 : ContDiffOn ℝ ∞ Φ
+      ((Metric.ball ((x₀, v₀) : E × E) ρ) ×ˢ Set.Ioo ((0 : ℝ) - T) ((0 : ℝ) + T)) :=
+    hΦ'.contDiffOn_top hf_inf hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
+      hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
+  have hCDOn : ContDiffOn ℝ ∞ Φ
+      ((Metric.ball ((x₀, v₀) : E × E) ρ) ×ˢ Set.Ioo (-T) T) := by
+    simpa only [zero_sub, zero_add] using hCDOn0
+  have hinitial : Φ (((x₀, v₀) : E × E), 0) = (x₀, v₀) :=
+    hΦ'.apply_initial (x₀, v₀) (Metric.mem_closedBall_self (by exact_mod_cast (le_of_lt hrN)))
+  exact ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT, hb_sub, hΦ', hCDOn, hinitial⟩
 
 end Geodesic
 end Riemannian

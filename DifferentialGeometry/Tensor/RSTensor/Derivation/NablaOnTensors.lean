@@ -885,14 +885,19 @@ noncomputable def mcovariantDeriv_tensorRSWithin (r s : ℕ)
     (ΓX : E → E →L[𝕜] E)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
+  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
-  let T' : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
-    fun y => tensorRSSpace_continuousLinearEquiv (I := I) r s
-      ((extChartAt I x₀).symm y) (T.toFun ((extChartAt I x₀).symm y))
-  exact (tensorRSSpace_continuousLinearEquiv (I := I) r s x₀).symm
-    (covariantDeriv_tensorRSModelWithin r s X' ΓX T'
-      ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
-      (extChartAt I x₀ x₀))
+  let T' : E → TensorRSModel r s 𝕜 E :=
+    fun y =>
+      ((trivializationAt (TensorRSModel r s 𝕜 E)
+          (fun x => TensorRSSpace r s I x) x₀)
+        ⟨(extChartAt I x₀).symm y, T.toFun ((extChartAt I x₀).symm y)⟩).2
+  exact
+    (trivializationAt (TensorRSModel r s 𝕜 E)
+        (fun x => TensorRSSpace r s I x) x₀).symm x₀
+      (covariantDeriv_tensorRSModelWithin r s X' ΓX T'
+        ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
+        (extChartAt I x₀ x₀))
 
 /-- Pointwise covariant derivative of an `(r,s)` tensor field in a chosen chart,
 with supplied local connection endomorphism. -/
@@ -1105,32 +1110,6 @@ noncomputable def nablaRS (r s : ℕ)
     (x : M) :
     nablaRS (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T hreg x =
       nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T x := rfl
-
-/-- Smoothness target for covariant tensor derivatives.
-
-Expected proof: trivialize the tensor bundle, unfold `nabla0SFun`, use the chart formula
-for `mcovariantDeriv_tensor0SFromConnection`, and combine smoothness of the connection
-endomorphism with the model-space derivative/correction smoothness lemmas. -/
-theorem nabla0S_reg (s : ℕ)
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
-    (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
-      (n := n) s) :
-    Nabla0SRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α := by
-  sorry
-
-/-- Smoothness target for mixed tensor derivatives.
-
-Expected proof: trivialize the Hom tensor bundle, unfold `nablaRSFun`, use the chart formula
-for `mcovariantDeriv_tensorRSFromConnection`, and combine smoothness of the connection
-endomorphism with the model-space derivative/correction smoothness lemmas. -/
-theorem nablaRS_reg (r s : ℕ)
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
-    (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
-      (n := n) r s) :
-    NablaRSRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T := by
-  sorry
 
 end
 

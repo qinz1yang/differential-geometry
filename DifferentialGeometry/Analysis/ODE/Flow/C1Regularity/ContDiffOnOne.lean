@@ -306,6 +306,37 @@ theorem variationalSolution_compare_norm
     have hx_le_T : τ' - t₀ ≤ T := by change 2 * t₀ - t - t₀ ≤ T; linarith [ht.1]
     exact le_trans hgr_τ' (hreduce_full hx_nn hx_le_T)
 
+/-- Operator-norm comparison for two continuous-linear-map families whose
+pointwise evaluations solve the variational equations along two central
+orbits.  Unlike the chosen `variationalLinearMapAt` constructor, this wrapper
+does not require the auxiliary Picard restriction `M * T < 1`. -/
+theorem opNorm_sub_le_of_var
+    {α₁ α₂ : ℝ → E} {T M ε : ℝ}
+    (hT : 0 < T) (hM : 0 ≤ M) (hε : 0 ≤ ε)
+    (hA₂_bd : ∀ τ ∈ Icc (t₀ - T) (t₀ + T), ‖fderiv ℝ (f τ) (α₂ τ)‖ ≤ M)
+    (hA₁_bd : ∀ τ ∈ Icc (t₀ - T) (t₀ + T), ‖fderiv ℝ (f τ) (α₁ τ)‖ ≤ M)
+    (hA_diff : ∀ τ ∈ Icc (t₀ - T) (t₀ + T),
+      ‖fderiv ℝ (f τ) (α₁ τ) - fderiv ℝ (f τ) (α₂ τ)‖ ≤ ε)
+    {Y₁ Y₂ : ℝ → E →L[ℝ] E}
+    (h₁ : ∀ δ, IsVariationalSolutionOn f α₁ δ t₀ (fun s => Y₁ s δ)
+      (Icc (t₀ - T) (t₀ + T)))
+    (h₂ : ∀ δ, IsVariationalSolutionOn f α₂ δ t₀ (fun s => Y₂ s δ)
+      (Icc (t₀ - T) (t₀ + T))) :
+    ∀ t ∈ Icc (t₀ - T) (t₀ + T),
+      ‖Y₁ t - Y₂ t‖ ≤ ε * exp (M * T) * T * exp (M * T) := by
+  intro t ht
+  apply ContinuousLinearMap.opNorm_le_bound _
+    (mul_nonneg (mul_nonneg (mul_nonneg hε (le_of_lt (exp_pos _))) hT.le)
+      (le_of_lt (exp_pos _)))
+  intro δ
+  rw [ContinuousLinearMap.sub_apply]
+  have hcompare := variationalSolution_compare_norm hT hM hε
+    hA₂_bd hA₁_bd hA_diff (h₁ δ) (h₂ δ) t ht
+  calc
+    ‖Y₁ t δ - Y₂ t δ‖ ≤
+        ε * ‖δ‖ * exp (M * T) * T * exp (M * T) := hcompare
+    _ = (ε * exp (M * T) * T * exp (M * T)) * ‖δ‖ := by ring
+
 end GronwallCompare
 
 section VariationalCLMContinuity

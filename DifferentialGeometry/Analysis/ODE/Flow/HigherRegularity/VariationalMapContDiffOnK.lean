@@ -147,6 +147,52 @@ theorem contDiffOn_partial_fderiv_of_succ
     exact h
   exact hcomp_Ck.congr heq
 
+/-- Local version of `partial_fderiv_eq_comp_inr_on_univ` on an open domain. -/
+lemma partial_fderiv_eq_comp_inr_on_open
+    {Ω : Set (ℝ × E)} (hΩ : IsOpen Ω)
+    (hf : ContDiffOn ℝ 1 (uncurry f) Ω) :
+    ∀ p ∈ Ω, fderiv ℝ (f p.1) p.2
+      = (fderiv ℝ (uncurry f) p).comp (ContinuousLinearMap.inr ℝ ℝ E) := by
+  intro p hp
+  have hp_open : Ω ∈ 𝓝 p := hΩ.mem_nhds hp
+  have hdiff_joint : DifferentiableAt ℝ (uncurry f) p :=
+    ((hf.contDiffAt hp_open).differentiableAt one_ne_zero)
+  exact fderiv_eq_comp_inr hdiff_joint
+
+/-- Local **spatial-Fréchet-derivative smoothness** on an open domain.  If
+`uncurry f` is `C^{k+1}` on `Ω`, then `(t, x) ↦ fderiv ℝ (f t) x`
+is `C^k` on the same `Ω`. -/
+theorem contDiffOn_partial_fderiv_of_succ_local
+    {k : ℕ∞} {Ω : Set (ℝ × E)} (hΩ : IsOpen Ω)
+    (hf_succ : ContDiffOn ℝ (k + 1) (uncurry f) Ω) :
+    ContDiffOn ℝ k (fun p : ℝ × E => fderiv ℝ (f p.1) p.2) Ω := by
+  have hfderiv_Ck : ContDiffOn ℝ k (fderiv ℝ (uncurry f)) Ω :=
+    hf_succ.fderiv_of_isOpen hΩ le_rfl
+  set postL : ((ℝ × E) →L[ℝ] E) →L[ℝ] (E →L[ℝ] E) :=
+    (ContinuousLinearMap.compL ℝ E (ℝ × E) E).flip
+      (ContinuousLinearMap.inr ℝ ℝ E) with hpostL_def
+  have hpostL_apply : ∀ R : (ℝ × E) →L[ℝ] E,
+      postL R = R.comp (ContinuousLinearMap.inr ℝ ℝ E) := by
+    intro R
+    rfl
+  have hcomp_Ck : ContDiffOn ℝ k
+      (fun p : ℝ × E => postL (fderiv ℝ (uncurry f) p)) Ω :=
+    hfderiv_Ck.continuousLinearMap_comp postL
+  have heq : ∀ p ∈ Ω,
+      fderiv ℝ (f p.1) p.2 = postL (fderiv ℝ (uncurry f) p) := by
+    intro p hp
+    have hf_C1 : ContDiffOn ℝ 1 (uncurry f) Ω := by
+      have h1 : (1 : ℕ∞) ≤ k + 1 := by
+        calc (1 : ℕ∞) = 0 + 1 := by simp
+          _ ≤ k + 1 := by gcongr; exact zero_le _
+      have h1' : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by
+        exact_mod_cast h1
+      exact hf_succ.of_le h1'
+    have h := partial_fderiv_eq_comp_inr_on_open hΩ hf_C1 p hp
+    rw [hpostL_apply]
+    exact h
+  exact hcomp_Ck.congr heq
+
 end PartialFDerivSmoothness
 
 section AugVFSmoothness

@@ -115,49 +115,32 @@ case `fderiv ℝ u_chart` vanishes a.e.). -/
 structure ChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
-  /-- The chart-pulled `H¹` function. -/
+
   u_chart : EuclN → ℝ
-  /-- The chart-pulled `L²` right-hand-side data. -/
+
   f_chart : EuclN → ℝ
-  /-- Explicit weak partial derivatives of `u_chart`. -/
+
   weak_partial : Fin (Module.finrank ℝ E) → EuclN → ℝ
-  /-- `u_chart` is `MemLp 2` w.r.t. the chart-pulled weighted measure
-  restricted to `chartTargetEuclid α`. -/
+
   u_chart_memLp_weighted :
     MemLp u_chart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-  /-- `f_chart` is `MemLp 2` w.r.t. the chart-pulled weighted measure
-  restricted to `chartTargetEuclid α`. -/
+
   f_chart_memLp_weighted :
     MemLp f_chart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-  /-- Each weak partial derivative is locally `MemLp 2` (with respect to
-  plain Lebesgue volume) on every compact subset of `chartTargetEuclid α`.
 
-  Local L² is the natural integrability for chart-pulled gradients. The
-  principal integrand of the variational identity is integrated against
-  test functions of compact support, so only local L² is needed for the
-  variational identity to make sense.
-
-  In the constructor `chartBilinearH1ComplData_of_laplacianDomain`, the
-  partials in fact satisfy the stronger bound `MemLp 2` w.r.t. the
-  chart-pulled weighted measure restricted to `chartTargetEuclid α`
-  (since the chart-pulled Gram matrix has uniformly bounded eigenvalues
-  on a closed manifold). The local statement here is the minimum
-  needed for the variational identity to make sense and for the consumer
-  `chart_loc_of_uniform_bound` to extract `H²` regularity. -/
   weak_partial_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K → K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp (weak_partial i) 2 ((volume : Measure EuclN).restrict K)
-  /-- Each weak partial derivative is in fact a weak partial of `u_chart`
-  on `chartTargetEuclid α` (DeGiorgi sense, against plain volume). -/
+
   weak_partial_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
       (weak_partial i) u_chart
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- The variational identity in density-weighted form. -/
+
   variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

@@ -566,6 +566,71 @@ theorem riemannianFiberNormSq_eq_tensorInnerPointwise
       exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x T
         (Module.finrank ℝ E) e p.1 p.2).symm
 
+/-- **Bilinear fibre-inner bridge in a frame.** For a `g(x)`-orthonormal frame `e`
+(packaged as a `Module.Basis bse`, `n = Module.finrank ℝ (TangentSpace I x)`), the model
+Gram-matrix-based pointwise inner product of two `(r, s)`-tensors `A`, `B` is the
+double-multi-index sum of the products of their frame components. This is the bilinear
+generalization of `riemannianFiberNormSq_eq_tensorInnerPointwise` (whose diagonal `A = B`
+case is the squared-norm statement); the proof ports verbatim, using the *bilinear* model
+Parseval `tensorInnerPointwise_0s_eq_diag_sum_orthoFrame` and the per-component append
+identity for each argument separately. -/
+theorem tensorInnerPointwise_eq_sum_componentS_mul
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+    {n : ℕ} (e : Fin n → TangentSpace I x)
+    (bse : Module.Basis (Fin n) ℝ (TangentSpace I x))
+    (hn : n = Module.finrank ℝ E) (hbse : ∀ i : Fin n, bse i = e i)
+    (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
+    (A B : TensorRSSpace r s I x) :
+    tensorInnerPointwise (I := I) (M := M) g r s x
+        (TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
+          (r := r) (s := s) (x := x) A)
+        (TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
+          (r := r) (s := s) (x := x) B) =
+      ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
+        fiberNormSqComponent (I := I) (M := M) g x r s A n e K J *
+          fiberNormSqComponent (I := I) (M := M) g x r s B n e K J := by
+  classical
+  subst hn
+  have hbse_orth : ∀ a b, g.inner x (bse a) (bse b) = if a = b then (1 : ℝ) else 0 := by
+    intro a b; rw [hbse a, hbse b]; exact horth a b
+  set Am := TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
+    (r := r) (s := s) (x := x) A with hAm_def
+  set Bm := TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
+    (r := r) (s := s) (x := x) B with hBm_def
+  rw [show tensorInnerPointwise (I := I) (M := M) g r s x Am Bm =
+      tensorInnerPointwise_0s (I := I) (M := M) (r + s) g x
+        (lowerAllUpperIndices (I := I) (M := M) g r s x Am)
+        (lowerAllUpperIndices (I := I) (M := M) g r s x Bm) from rfl]
+  rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x (r + s)
+    bse hbse_orth _ _]
+  rw [← Fintype.sum_equiv (Fin.appendEquiv r s)
+    (fun p : (Fin r → Fin (Module.finrank ℝ E)) ×
+        (Fin s → Fin (Module.finrank ℝ E)) =>
+      fiberNormSqComponent (I := I) (M := M) g x r s A (Module.finrank ℝ E) e p.1 p.2 *
+        fiberNormSqComponent (I := I) (M := M) g x r s B (Module.finrank ℝ E) e p.1 p.2)
+    (fun φ : Fin (r + s) → Fin (Module.finrank ℝ E) =>
+      (lowerAllUpperIndices (I := I) (M := M) g r s x Am) (fun k => bse (φ k)) *
+        (lowerAllUpperIndices (I := I) (M := M) g r s x Bm) (fun k => bse (φ k)))
+    ?_]
+  · rw [Fintype.sum_prod_type]
+  · intro p
+    have hbse_e : ∀ i : Fin (Module.finrank ℝ E), bse i = e i := hbse
+    have happend :
+        (fun k => bse ((Fin.appendEquiv r s) p k)) =
+          Fin.append (fun k => e (p.1 k)) (fun j => e (p.2 j)) := by
+      funext k
+      simp only [hbse_e, Fin.appendEquiv_apply]
+      induction k using Fin.addCases with
+      | left i => simp only [Fin.append_left]
+      | right i => simp only [Fin.append_right]
+    dsimp only
+    rw [happend, hAm_def, hBm_def]
+    congr 1
+    · exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x A
+        (Module.finrank ℝ E) e p.1 p.2).symm
+    · exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x B
+        (Module.finrank ℝ E) e p.1 p.2).symm
+
 open MeasureTheory in
 /-- Global `L²` corollary: the squared metric `L²` norm of a tensor section field equals the
 integral of the intrinsic Riemannian fibre norm of its bundle lift. -/

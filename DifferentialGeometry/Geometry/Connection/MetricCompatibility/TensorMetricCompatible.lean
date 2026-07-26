@@ -613,7 +613,7 @@ differentiable at `x`, a smooth vector field `Y`, and a tangent vector `v`:
 
   `∇^s_v (curriedSection W · (Y ·))
      = (curry of ∇^{s+1}_v W) (Y x) + curriedSection W x (∇^{TM}_v Y)`. -/
-private lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
+lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (W : Π x : M, Tensor0SSpace (s + 1) I x) {x : M}
     (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
@@ -656,6 +656,88 @@ private lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
   rw [show v = Vfield x from hVx.symm]
   rw [hHom]
   abel
+
+open Tensor0SNabla HomConnection in
+/-- **Evaluated leading-slot peel of the `(0, s + 1)`-tensor covariant derivative.**
+For a `(0, s + 1)`-tensor section `W` differentiable at `x`, a smooth vector field `Y`,
+a tangent vector `v`, and an evaluation tuple `m : Fin s → E`, the model coercion of
+`∇^{(0, s + 1)}_v W` read on the cons-tuple `Fin.cons (Y x) m` decomposes by the covariant
+Leibniz product rule applied to the leading slot:
+```
+toModel(∇^{(0,s+1)}_v W)(Fin.cons (Y x) m)
+  = toModel(∇^{(0,s)}_v (y ↦ curriedSection W y (Y y)))(m)
+  − toModel(W x)(Fin.cons (∇^{TM}_v Y) m).
+```
+This is the tuple-evaluated form of `tensor0SCovariantDerivative_curriedSection_hom_leibniz`,
+obtained by applying `toModel(·) m` and the currying-evaluation identity
+`tensor0S_curry_apply_eval`. It is the building block for the `r`-fold leading-slot peel
+used to expand the metric-lowered covariant derivative. -/
+lemma tensor0SCovariantDerivative_succ_consEval_peel
+    (g : SmoothRiemannianMetric I M) (s : ℕ)
+    (W : Π x : M, Tensor0SSpace (s + 1) I x) {x : M}
+    (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
+    (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x)
+    (m : Fin s → E) :
+    Tensor0SSpace.toModel
+        (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
+        (Fin.cons (Y x) m) =
+      Tensor0SSpace.toModel
+          (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
+            (fun y : M => curriedSection I M W y (Y y)) x v) m
+        - Tensor0SSpace.toModel (W x)
+            (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) m) := by
+  classical
+  have hleib := tensor0SCovariantDerivative_curriedSection_hom_leibniz
+    (I := I) (M := M) g s W hW Y v
+
+  have hterm1 : Tensor0SSpace.toModel
+        (tensor0S_curry (I := I) (M := M) s x
+          (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) (Y x)) m =
+      Tensor0SSpace.toModel
+        (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
+        (Fin.cons (Y x) m) :=
+    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+      (T := tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
+      (v0 := Y x) (vs := m)
+
+  have hterm2 : Tensor0SSpace.toModel
+        (curriedSection I M W x ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) m =
+      Tensor0SSpace.toModel (W x)
+        (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) m) := by
+    rw [curriedSection_apply]
+    exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+      (T := W x) (v0 := (LeviCivita (I := I) g).toFun (fun y => Y y) x v) (vs := m)
+  rw [← hterm1, hleib, Tensor0SBundle.Tensor0SSpace.toModel_add,
+    ContinuousMultilinearMap.add_apply, hterm2]
+  ring
+
+open TensorRSNabla in
+/-- **Product rule for a test `(0, r)`-form vanishing at the base point.** For a
+smooth mixed `(r, s)`-tensor section `S`, a smooth `(0, r)`-form test section `w`
+whose value at `x` is the zero form, and any direction `v`, the directional
+covariant derivative of the partial evaluation `y ↦ (S y)(w y)` reduces to the
+`S`-image of the covariant derivative of `w`:
+```
+∇^{(0,s)}_v (y ↦ (S y)(w y)) x = (S x)(∇^{(0,r)}_v w x).
+```
+This is the `(r, s)`-tensor product rule `tensorRSCovariantDerivative_apply`
+specialised to `w x = 0`, which kills the `(∇^{(r,s)}_v S)(w x)` term. It is the
+tool that makes the metric-lowering Leibniz expansion *independent of the chosen
+smooth representative* of the metric lowering form. -/
+lemma tensor0SCovariantDerivative_apply_eq_of_vanishing
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
+    (w : Cₛ^∞⟮I; Tensor0SModel r ℝ E, (fun x : M => Tensor0SSpace r I x)⟯)
+    {x : M} (hw0 : w x = 0) (v : TangentSpace I x) :
+    tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
+        (fun y : M =>
+          (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from S y) (w y)) x v =
+      (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S x)
+        (tensor0SCovariantDerivative I M r (LeviCivita (I := I) g) w x v) := by
+  have hrs := tensorRSCovariantDerivative_apply (I := I) M r s
+    (LeviCivita (I := I) g) S w x v
+  rw [hw0, map_zero] at hrs
+  exact sub_eq_zero.mp hrs.symm
 
 /-- **Skew-symmetry of the Levi-Civita connection on a smooth orthonormal
 frame.** For the smooth orthonormal frame `smoothOrthoFrame g x` and any

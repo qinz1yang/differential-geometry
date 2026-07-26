@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 
 /-!
 # Bridge between the connection Laplacian, the chart Laplacian, and the abstract-Hessian
@@ -58,6 +60,61 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Tensor.Coordinates
+open Tensor0SBundle
+
+/-- The chart Hessian at `x`, packaged as an intrinsic covariant two-tensor.
+
+This is the object-level adapter from the bilinear `hessFun` API to the
+`Tensor0SSpace` API consumed by intrinsic metric traces. -/
+noncomputable def hessTensorAt
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
+    Tensor0SSpace (E := E) (H := H) (I := I) (M := M) 2 x :=
+  (((continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ).symm.toContinuousLinearMap).comp
+    (hessFun (I := I) g f x).toContinuousBilinearMap).uncurryLeft
+
+@[simp]
+theorem hessTensorAt_apply
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
+    (v w : TangentSpace I x) :
+    hessTensorAt (I := I) g f x (vec2 (I := I) v w) =
+      hessFun (I := I) g f x v w := by
+  rfl
+
+/-- On a scalar-smooth open set, the realized Levi-Civita Laplacian is the
+intrinsic metric trace of the chart Hessian tensor at each point of the set. -/
+theorem lap_eq_hess_on [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} {U : Set M} {x : M}
+    (hU : IsOpen U)
+    (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
+    (hx : x ∈ U) :
+    laplacian (I := I) (LeviCivita (I := I) g) g f x =
+      metricTracePair0SAt (I := I) g (hessTensorAt (I := I) g f x) := by
+  classical
+  let basis :
+      Module.Basis (CoordinateIdx (𝕜 := ℝ) E) ℝ (TangentSpace I x) :=
+    coordinateFrameAt_toBasis (I := I) x
+  let gInv : CoordinateIdx (𝕜 := ℝ) E → CoordinateIdx (𝕜 := ℝ) E → ℝ :=
+    fun i j =>
+      inverseMetricFlatModelInChart_component (I := I) g x i j
+        (extChartAt I x x)
+  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+    inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x
+  unfold laplacian divergence
+  rw [linearMap_trace_eq_sum_inv_inner_apply
+    (I := I) g x basis gInv hinv
+    ((LeviCivita (I := I) g).toFun
+      (fun y => gradientFun (I := I) g f y) x).toLinearMap]
+  rw [metricTracePair0SAt_eq_sum_basis
+    (I := I) g basis gInv hinv (hessTensorAt (I := I) g f x)]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [hessTensorAt_apply]
+  rw [hessFun_eq_cov_local (I := I) g hU hf hx]
+  rfl
 
 /-- **Bridge between the scalar connection Laplacian and the chart Laplacian.**
 For every smooth scalar function `f : M → ℝ` on a smooth boundaryless Riemannian

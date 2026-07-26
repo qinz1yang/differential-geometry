@@ -1,7 +1,3 @@
-/-
-Author: Yuan Liao
-Coauthor: Ayush Khaitan, Jack McCarthy
--/
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.VectorField.Pullback
@@ -178,17 +174,16 @@ noncomputable def mlieDeriv_tensor0SWithin (s : ℕ)
     (t : Set M)
     (x₀ : M) :
     Tensor0SSpace s I x₀ := by
-  -- Pull back X to model space
+
   let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
-  -- Pull back α to model space (as a function E → (0,s)-tensors on E)
-  -- Since TangentSpace I x = E definitionally, Tensor0SSpace s I x = Tensor0SModel s
+
   let α' : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s := fun y =>
     α ((extChartAt I x₀).symm y)
-  -- Compute Lie derivative in model space
+
   let result := lieDeriv_tensor0SWithin s X' α'
     ((extChartAt I x₀).symm ⁻¹' t ∩ range I)
     (extChartAt I x₀ x₀)
-  -- The result is already the right type since TangentSpace I x₀ = E
+
   exact result
 
 /-- The Lie derivative of a (0,s) tensor field on a manifold. -/
@@ -528,13 +523,13 @@ noncomputable def mlieDeriv_tensorRSWithin (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
-  -- Pull back X to model space
+
   let X' := mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I)
-  -- Pull back T to model space via the continuous linear equivalence
+
   let T' : E → Tensor0SModel (𝕜 := 𝕜) (E := E) r →L[𝕜] Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
     fun y => tensorRSSpace_continuousLinearEquiv (I := I) r s
       ((extChartAt I x₀).symm y) (T.toFun ((extChartAt I x₀).symm y))
-  -- Compute Lie derivative in model space and convert back
+
   exact (tensorRSSpace_continuousLinearEquiv (I := I) r s x₀).symm
     (lieDeriv_tensorRSFullWithin r s X' T'
       ((extChartAt I x₀).symm ⁻¹' u ∩ range I)

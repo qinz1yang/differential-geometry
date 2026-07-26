@@ -165,8 +165,7 @@ both satisfy. -/
 private def precompBundleCLM (s : ℕ) (b : M) :
     (Tensor0SModel s ℝ E →L[ℝ] ℝ) →L[ℝ]
       (Tensor0SSpace s I b →L[ℝ] ℝ) :=
-  -- `(bundleCLE.symm).arrowCongr (refl ℝ ℝ) :
-  --     (Tensor0SModel s ℝ E →L[ℝ] ℝ) ≃L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ)`.
+
   ((bundleCLE (I := I) (M := M) (E := E) s b).symm.arrowCongr
     (ContinuousLinearEquiv.refl ℝ ℝ)).toContinuousLinearMap
 
@@ -187,13 +186,11 @@ def innerBundleCLM
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
     Tensor0SSpace s I b →L[ℝ]
       Tensor0SSpace s I b →L[ℝ] ℝ :=
-  -- Step A: Post-compose the model-fibre CLM with `precompBundleCLM`.
-  -- `precompBundleCLM ∘L innerModelCLM : Tensor0SModel s ℝ E →L[ℝ]
-  --   (Tensor0SSpace s I b →L[ℝ] ℝ)`.
+
   let stepA : Tensor0SModel s ℝ E →L[ℝ] (Tensor0SSpace s I b →L[ℝ] ℝ) :=
     (precompBundleCLM (I := I) (M := M) (E := E) s b).comp
       (innerModelCLM (I := I) (M := M) g s b)
-  -- Step B: Pre-compose `stepA` with `bundleToModelCLM` on the first slot.
+
   stepA.comp (bundleToModelCLM (I := I) (M := M) (E := E) s b)
 
 @[simp] lemma innerBundleCLM_apply
@@ -228,7 +225,7 @@ lemma innerBundleCLM_pos
     (T : Tensor0SSpace s I b) (hT : T ≠ 0) :
     0 < innerBundleCLM (I := I) (M := M) g s b T T := by
   rw [innerBundleCLM_apply]
-  -- `T ≠ 0 ⟹ toModel T ≠ 0` via injectivity of the CLE.
+
   have hTm :
       Tensor0SBundle.Tensor0SSpace.toModel
         (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T ≠ 0 := by

@@ -69,7 +69,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Pointwise bound on a single raw chart-frame scalar component.**
 
 For a smooth compactly-supported `(0, s)`-tensor `T`, a chart center `α`, and a compact
@@ -437,7 +439,9 @@ theorem chartPreimage_image_isCompact_subset_chartSource
     exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α (hKsub hy'_mem)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Uniform bound on the lower-order Christoffel correction term (general `s`).**  On a
 compact subset `K_eucl ⊆ chartTargetEuclid α`, there is a single constant `C ≥ 0` such that
 for every `(0,s)`-tensor `T`, direction `m`, target multi-index `Jdx`, and `y' ∈ K_eucl`,
@@ -617,7 +621,9 @@ theorem covDerivComponentEuclid_eqOn_rawComponent_covGrad
 
 set_option maxHeartbeats 3200000 in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- The `EuclideanSpace`-side partial `euclidPartial c (covDerivComponentEuclid g_bg 0 2 S α a
 (![]) Jdx)` is bounded on a compact subset of the chart target by `Craw4 · ‖∇²S‖ + CLO3 ·
 ‖∇S‖` at the chart preimage. -/
@@ -689,7 +695,9 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
 
 set_option maxHeartbeats 3200000 in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Second-order chart-push bound (constant-parametrized).**  The iterated `EuclideanSpace`
 partial of the chart-pushed raw `(0,2)`-component of `S` is bounded by the three raw-component
 constants (at arities `4, 3, 2`), the two lower-order constants (arities `3, 2`), and the two
@@ -879,7 +887,9 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
   exact add_le_add h_dc ((abs_add_le _ _).trans (add_le_add h_val_sum h_grad_sum))
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- For `j < 3`, the `g_bg`-Riemannian fibre norm of `(∇^j S)(x)` is bounded by the iterated
 covariant-gradient jet sum at `x` (it is the `j`-th nonnegative summand). -/
 theorem iteratedCovGrad_norm_le_jetSum
@@ -970,7 +980,9 @@ theorem secondCovDerivLO_gradCoeff_uniform_bound
 
 set_option maxHeartbeats 4000000 in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Second-order chart-push bound by the jet sum.**  On a compact `K_eucl ⊆ chartTargetEuclid
 α`, there is a constant `C ≥ 0` such that the iterated `EuclideanSpace` partial of the
 chart-pushed raw `(0,2)`-component of `S` is bounded by `C` times the iterated covariant-gradient
@@ -1058,7 +1070,9 @@ theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
         ring
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Conjunct 1 of the covariant-gradient jet bound.**  On a compact `K ⊆ interior (extChartAt
 I α).target`, the realized-difference chart-frame component is bounded by a constant times the
 `j = 0` jet term `‖S.toSection (symm y)‖`. -/
@@ -1113,8 +1127,12 @@ theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
         exact (abs_add_le _ _).trans (add_le_add h_lb h_bl)
     _ = Craw * N := by ring
 
+set_option maxHeartbeats 6400000 in
+set_option synthInstance.maxHeartbeats 6400000 in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **Conjunct 2 of the covariant-gradient jet bound.**  On a compact `K ⊆ interior (extChartAt
 I α).target`, the first chart partial of the realized-difference chart-frame component is
 bounded by a constant times the iterated covariant-gradient jet sum at the chart preimage. -/
@@ -1346,7 +1364,9 @@ theorem partialDeriv2_reprDiffChartCompOnE_abs_le
 
 set_option maxHeartbeats 1600000 in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **The pointwise covariant-gradient jet input `hcovgrad_jet_bound`.**
 
 On a compact `K ⊆ interior (extChartAt I α).target`, there is a single constant `C₀ ≥ 0` such

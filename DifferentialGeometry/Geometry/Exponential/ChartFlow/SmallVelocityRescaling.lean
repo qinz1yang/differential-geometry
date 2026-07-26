@@ -176,6 +176,96 @@ theorem foot_in_source_throughout
   rw [chartFlowOrbitLiftRescaled_proj (I := I) p vb t' t hΦ_target_tt] at hsrc
   exact hsrc
 
+/-- **Continuity of the maximal geodesic arc on `[0, 1]` for small velocity.**
+There is `ρ > 0` such that for every initial velocity `v₀` with `‖v₀‖ < ρ`,
+the geodesic arc `t ↦ maximalGeodesic g p v₀ t` is continuous on `[0, 1]`.
+
+For small `v₀` the arc stays in the home chart and equals the projection of the
+uniform chart-pushed flow orbit `t ↦ (extChartAt I p).symm (Φ((x₀, v_base),
+t'·t)).1`, which is continuous in `t`: the orbit is differentiable in time
+(`hΦ_phase`), hence continuous, its first component lands in
+`interior (extChartAt I p).target` (`hΦ_target`), and `(extChartAt I p).symm`
+is continuous there.  (No analogue holds for large `v₀`, whose geodesic leaves
+the chart and for which `maximalGeodesic` reverts to its junk value.) -/
+theorem maximalGeodesic_continuousOn_Icc_of_norm_lt
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ∀ {v₀ : TangentSpace I p}, ‖(v₀ : E)‖ < ρ →
+        ContinuousOn (maximalGeodesic (I := I) g p v₀) (Set.Icc (0 : ℝ) 1) := by
+  classical
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+    exists_uniform_existence_interval (I := I) (g := g) (p := p)
+  set t' : ℝ := T / 2 with ht'_def
+  have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
+  have ht'_lt_T : t' < T := by rw [ht'_def]; linarith
+  refine ⟨t' * ρ₀, mul_pos ht'_pos hρ₀_pos, ?_⟩
+  intro v₀ hv₀
+  set w : E := (v₀ : E) with hw_def
+  have ht'_ne : t' ≠ 0 := ne_of_gt ht'_pos
+  set vb : E := (1 / t') • w with hvb_def
+  have hvb_resc : t' • vb = (v₀ : E) := by
+    rw [hvb_def, smul_smul, mul_one_div, div_self ht'_ne, one_smul, hw_def]
+  have hw_norm : ‖w‖ < t' * ρ₀ := by rw [hw_def]; exact hv₀
+  have hvb_ball : vb ∈ Metric.ball (0 : E) ρ₀ := by
+    rw [Metric.mem_ball, dist_zero_right, hvb_def, norm_smul]
+    rw [Real.norm_eq_abs, abs_of_pos (by positivity : (0 : ℝ) < 1 / t')]
+    rw [one_div, ← div_eq_inv_mul, div_lt_iff₀ ht'_pos]
+    linarith [hw_norm, mul_comm t' ρ₀]
+  have hT_div : T / t' = 2 := by rw [ht'_def]; field_simp
+  -- The maximal geodesic equals the chart-pushed orbit projection on `[0, 1]`.
+  have h_eqOn : Set.EqOn (maximalGeodesic (I := I) g p v₀)
+      (fun t => (extChartAt I p).symm
+        (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1)
+      (Set.Icc (0 : ℝ) 1) := by
+    intro t ht
+    have ht_Ioo : t ∈ Set.Ioo (-T / t') (T / t') := by
+      rw [neg_div, hT_div]
+      obtain ⟨ht0, ht1⟩ := ht
+      exact ⟨by linarith, by linarith⟩
+    have h := maximalGeodesic_rescaled_eq_orbit_proj (I := I) (g := g) (p := p)
+      (v := vb) (T := T) (t' := t') ht'_pos
+      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
+      (s := t) ht_Ioo
+    rw [show (t' • vb : TangentSpace I p) = v₀ from hvb_resc] at h
+    exact h
+  -- Continuity of the orbit-projection representative on `[0, 1]`.
+  have hφ_contOn : ContinuousOn
+      (fun s : ℝ => Φ (((extChartAt I p p, vb) : E × E), s)) (Set.Ioo (-T) T) := by
+    intro s hs
+    exact ((hΦ_phase vb hvb_ball s hs).differentiableAt).continuousAt.continuousWithinAt
+  have hmap : Set.MapsTo (fun t : ℝ => t' * t) (Set.Icc (0 : ℝ) 1) (Set.Ioo (-T) T) := by
+    intro t ht
+    obtain ⟨ht0, ht1⟩ := ht
+    have h_nonneg : 0 ≤ t' * t := mul_nonneg ht'_pos.le ht0
+    have h_le : t' * t ≤ t' := by
+      calc t' * t ≤ t' * 1 := mul_le_mul_of_nonneg_left ht1 ht'_pos.le
+        _ = t' := mul_one t'
+    exact ⟨by linarith, by linarith [ht'_lt_T]⟩
+  have h_orbit_cont : ContinuousOn
+      (fun t : ℝ => Φ (((extChartAt I p p, vb) : E × E), t' * t)) (Set.Icc (0 : ℝ) 1) :=
+    hφ_contOn.comp ((continuous_const.mul continuous_id).continuousOn) hmap
+  have h_fst : ContinuousOn
+      (fun t : ℝ => (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1)
+      (Set.Icc (0 : ℝ) 1) :=
+    continuous_fst.comp_continuousOn h_orbit_cont
+  have hmaps_target : Set.MapsTo
+      (fun t : ℝ => (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1)
+      (Set.Icc (0 : ℝ) 1) (extChartAt I p).target := by
+    intro t ht
+    obtain ⟨ht0, ht1⟩ := ht
+    have h_nonneg : 0 ≤ t' * t := mul_nonneg ht'_pos.le ht0
+    have h_le : t' * t ≤ t' := by
+      calc t' * t ≤ t' * 1 := mul_le_mul_of_nonneg_left ht1 ht'_pos.le
+        _ = t' := mul_one t'
+    have hts : t' * t ∈ Set.Icc (-T) T := ⟨by linarith, by linarith [ht'_lt_T.le]⟩
+    exact interior_subset (hΦ_target vb hvb_ball (t' * t) hts).1
+  have hF_cont : ContinuousOn
+      (fun t => (extChartAt I p).symm
+        (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1)
+      (Set.Icc (0 : ℝ) 1) :=
+    (continuousOn_extChartAt_symm (I := I) p).comp h_fst hmaps_target
+  exact hF_cont.congr h_eqOn
+
 /-- **Uniform small-velocity geodesic rescaling at time `1`.** There is
 an explicit `ρ > 0` (namely `(T / 2) * ρ₀` for the uniform flow radii
 `(ρ₀, T)` of `exists_uniform_existence_interval`) such that for every

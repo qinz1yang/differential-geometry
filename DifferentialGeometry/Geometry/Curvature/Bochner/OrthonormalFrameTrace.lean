@@ -25,9 +25,9 @@ The building blocks are:
   model basis). Proved via the change-of-basis matrix `coBchange` and the inverse
   Gram identity `A G Aᵀ = I`.
 * **`LinearMap.trace` as an orthonormal-frame sum**
-  (`linearMap_trace_eq_orthonormal_bilin_sum`): for any endomorphism `T`,
-  `tr T = ∑ᵢ g_x(T Bᵢ, Bᵢ)`. Proved via the chart-coordinate trace identity
-  `linearMap_trace_eq_invGram_bilin_sum`.
+  (`trace_eq_ortho_sum`): for any endomorphism `T`,
+  `tr T = ∑ᵢ g_x(T Bᵢ, Bᵢ)`. Proved by promoting the frame to the
+  orthonormal basis of the inner product induced by `g`.
 * **Ricci as an orthonormal trace** (`ricciTensor_eq_orthonormal_trace`,
   `heart_curvature_orthonormal_sum_eq_ricci`): `Ric_x(v, w) = ∑ᵢ g_x(R(Bᵢ, v) w, Bᵢ)`,
   and the curvature term of the heart-of-Bochner identity summed against the
@@ -530,16 +530,17 @@ private lemma linearMap_trace_eq_invGram_bilin_sum
   exact finBasis_repr_eq_invGram_inner_sum (I := I) g x
     (T ((chartModelBasis E) k)) k
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
+  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 /-- **Trace formula via orthonormal frame.** For any linear endomorphism
 `T : T_x M →ₗ[ℝ] T_x M` and any `g_x`-orthonormal basis `(B_i)` of `T_x M`,
 the trace `LinearMap.trace ℝ T` equals the orthonormal-frame trace sum:
 $$
   \mathrm{tr}\,T = \sum_i g_x\bigl(T(B_i),\, B_i\bigr).
 $$
-The proof composes `linearMap_trace_eq_invGram_bilin_sum` with
-`orthonormal_basis_bilin_trace` applied to the bilinear form `Hb(Z, W) :=
-g(T(Z), W)`. -/
-private theorem linearMap_trace_eq_orthonormal_bilin_sum
+The orthonormal family is promoted to an `OrthonormalBasis` for the inner
+product induced by `g`, after which this is `LinearMap.trace_eq_sum_inner`. -/
+theorem trace_eq_ortho_sum
     (T : TangentSpace I x →ₗ[ℝ] TangentSpace I x)
     (B : Fin (Module.finrank ℝ E) → TangentSpace I x)
     (hB : ∀ i j : Fin (Module.finrank ℝ E),
@@ -547,38 +548,45 @@ private theorem linearMap_trace_eq_orthonormal_bilin_sum
     LinearMap.trace ℝ (TangentSpace I x) T =
       ∑ i : Fin (Module.finrank ℝ E), g.inner x (T (B i)) (B i) := by
   classical
-  haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
-  set Tc : TangentSpace I x →L[ℝ] TangentSpace I x :=
-    LinearMap.toContinuousLinearMap T with hTc_def
-  have hTc_apply : ∀ Z : TangentSpace I x, Tc Z = T Z := fun _ => rfl
-  set Hb : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
-    (g.inner x).comp Tc with hHb_def
-  have hHb_apply : ∀ Z W : TangentSpace I x,
-      Hb Z W = g.inner x (T Z) W := by
-    intro Z W
-    change ((g.inner x).comp Tc) Z W = g.inner x (T Z) W
-    rw [ContinuousLinearMap.comp_apply, hTc_apply]
-  have hortho := orthonormal_basis_bilin_trace (I := I) g x Hb B hB
-  rw [show (∑ i : Fin (Module.finrank ℝ E), g.inner x (T (B i)) (B i)) =
-      ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) from
-    Finset.sum_congr rfl (fun i _ => (hHb_apply (B i) (B i)).symm)]
-  rw [hortho]
-  rw [show (∑ k : Fin (Module.finrank ℝ E),
-        ∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g x x k l *
-            Hb ((chartModelBasis E) k) ((chartModelBasis E) l)) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        ∑ l : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g x x k l *
-            g.inner x (T ((chartModelBasis E) k))
-              ((chartModelBasis E) l) from by
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    refine Finset.sum_congr rfl ?_
-    intro l _
-    rw [hHb_apply]]
-  exact linearMap_trace_eq_invGram_bilin_sum (I := I) g x T
+  by_cases hdim : Module.finrank ℝ E = 0
+  · have htang : Module.finrank ℝ (TangentSpace I x) = 0 := hdim
+    letI : Subsingleton (TangentSpace I x) := Module.finrank_zero_iff.1 htang
+    rw [Subsingleton.elim T 0]
+    simp
+  · letI : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    let D := (Tensor0SBundle.tangentMetricData_gen (I := I) g x).metric
+    letI : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
+    letI : NormedAddCommGroup (TangentSpace I x) :=
+      @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
+    letI : InnerProductSpace ℝ (TangentSpace I x) :=
+      @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
+    have hg : ∀ v w : TangentSpace I x,
+        g.inner x v w = Inner.inner ℝ v w := by
+      intro v w
+      rw [← Tensor0SBundle.TangentMetricData_gen.inner_eq_gen
+        (Tensor0SBundle.tangentMetricData_gen (I := I) g x) v w]
+      change D.inner v w = Inner.inner ℝ v w
+      exact (Tensor0SBundle.MetricFiberData.toCore_inner D v w).symm
+    have hON : Orthonormal ℝ B := by
+      rw [orthonormal_iff_ite]
+      intro i j
+      rw [← hg]
+      exact hB i j
+    have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
+        Module.finrank ℝ (TangentSpace I x) := by
+      rw [Fintype.card_fin]
+      rfl
+    have hspan : ⊤ ≤ Submodule.span ℝ (Set.range B) :=
+      ge_of_eq (hON.linearIndependent.span_eq_top_of_card_eq_finrank hcard)
+    let b : OrthonormalBasis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+      OrthonormalBasis.mk hON hspan
+    have hb : ∀ i, b i = B i := by
+      intro i
+      show (OrthonormalBasis.mk hON hspan) i = B i
+      rw [OrthonormalBasis.coe_mk]
+    rw [LinearMap.trace_eq_sum_inner T b]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hb i, ← hg (B i) (T (B i)), g.symm x (B i) (T (B i))]
 
 end TraceIdentity
 
@@ -626,7 +634,7 @@ theorem ricciTensor_eq_orthonormal_trace
     rw [ricciTensor_apply]
     rfl
   rw [hRic]
-  rw [linearMap_trace_eq_orthonormal_bilin_sum (I := I) g x
+  rw [trace_eq_ortho_sum (I := I) g x
     (riemannCurvatureEndo (I := I) g x v w) B hB]
   refine Finset.sum_congr rfl ?_
   intro i _
@@ -766,7 +774,7 @@ theorem g_inner_eq_orthonormal_parseval_sum
   have hT_trace_orthonormal :
       LinearMap.trace ℝ (TangentSpace I x) T =
         ∑ i : Fin (Module.finrank ℝ E), g.inner x (T (B i)) (B i) :=
-    linearMap_trace_eq_orthonormal_bilin_sum (I := I) g x T B hB
+    trace_eq_ortho_sum (I := I) g x T B hB
   have hT_trace_xy : LinearMap.trace ℝ (TangentSpace I x) T = g.inner x X Y := by
     rw [linearMap_trace_eq_invGram_bilin_sum (I := I) g x T]
     rw [show (∑ k : Fin (Module.finrank ℝ E),

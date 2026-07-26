@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.SobolevScaleSummable
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Defs
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapGreenIntertwiner
 
 /-!
 # Closability of the covariant gradient: the faithful `H¹ ↪ L²` embedding
@@ -28,11 +29,14 @@ the `L²` pairing against the symmetric operator `(1 - Δ_∇)`.
 * `TensorH1ComplToTensorL2_injective_two`, `..._three` — the unconditional
   injectivity at ranks `(0, 2)` and `(0, 3)`, discharging the witness with
   `loweringIntertwiner_two` / `loweringIntertwiner_three`.
-* `smoothToTensorH1Compl_eigenvectorSmooth_eq` — the eigenvector identification
-  `⟦eᵢ⟧ = μ⁻¹ • eigenvectorResolvent i` in the `H¹` completion,
-  obtained from the `(0, 2)` injectivity.
-* `tensorL2Coeff_ofCompact_oneMinusConnLapSmooth` — the per-step eigen-coordinate
-  identity `cᵢ((1 - Δ_∇) T) = (1 + λᵢ) · cᵢ(T)`.
+* `smoothEigen_h1_eq` — the eigenvector identification
+  `⟦eᵢ⟧ = μ⁻¹ • eigenvectorResolvent i` in the `H¹` completion at
+  every covariant rank `(0, s)`; the older rank-`2` theorem is a wrapper.
+* `oneMinus_coeff` — the per-step eigen-coordinate identity
+  `cᵢ((1 - Δ_∇) T) = (1 + λᵢ) · cᵢ(T)` at every covariant rank;
+  the older rank-`2` theorem is a wrapper.
+* `rawLap_coeff` — the rough-Laplacian eigen-coordinate identity at every
+  covariant rank `(0, s)`.
 * `smoothCcTensor_tensorL2Coeff_weighted_summable` — the headline: the eigenbasis
   coordinates of a smooth compactly-supported `(0, 2)`-tensor are weighted
   square-summable at every real Sobolev order `a`.
@@ -275,6 +279,28 @@ theorem TensorH1ComplToTensorL2_injective_three
   TensorH1ComplToTensorL2_injective_of_green (I := I) (M := M) g 3
     (loweringIntertwiner_three (I := I) (M := M) g)
 
+/-- The smooth representative of any covariant tensor eigenvector embeds in
+`H¹` as the inverse-resolvent-eigenvalue rescaling of the resolvent eigenvector. -/
+theorem smoothEigen_h1_eq
+    (g : SmoothRiemannianMetric I M) (s : ℕ)
+    (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+      (I := I) (M := M) g 0 s) :
+    smoothToTensorH1Compl (I := I) (M := M) g 0 s
+        ⟨eigenvectorSmooth (I := I) (M := M) g 0 s i⟩ =
+      (i.fst.val)⁻¹ •
+        eigenvectorResolvent (I := I) (M := M) g 0 s i := by
+  apply TensorH1ComplToTensorL2_injective_of_green (I := I) (M := M) g s
+    (loweringIntertwiner_gen (I := I) (M := M) g s)
+  rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe]
+  change (eigenvectorSmooth (I := I) (M := M) g 0 s i :
+        TensorL2 0 s g) =
+      TensorH1ComplToTensorL2 (I := I) (M := M) g 0 s
+        ((i.fst.val)⁻¹ •
+          eigenvectorResolvent (I := I) (M := M) g 0 s i)
+  rw [eigenvectorSmooth_toL2 (I := I) (M := M) g 0 s i,
+    map_smul]
+  exact eigenvector_eq_resolvent_smul (I := I) (M := M) g 0 s i
+
 /-- **The smooth eigenvector's `H¹` embedding is the rescaled resolvent
 eigenvector.** For the smooth representative `eᵢ = eigenvectorSmooth i`
 of the resolvent eigenbasis vector at index `i`,
@@ -289,16 +315,7 @@ theorem smoothToTensorH1Compl_eigenvectorSmooth_eq
         ⟨eigenvectorSmooth (I := I) (M := M) g 0 2 i⟩ =
       (i.fst.val)⁻¹ •
         eigenvectorResolvent (I := I) (M := M) g 0 2 i := by
-  apply TensorH1ComplToTensorL2_injective_two (I := I) (M := M) g
-  rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe]
-  change (eigenvectorSmooth (I := I) (M := M) g 0 2 i :
-        TensorL2 0 2 g) =
-      TensorH1ComplToTensorL2 (I := I) (M := M) g 0 2
-        ((i.fst.val)⁻¹ •
-          eigenvectorResolvent (I := I) (M := M) g 0 2 i)
-  rw [eigenvectorSmooth_toL2 (I := I) (M := M) g 0 2 i,
-    map_smul]
-  exact eigenvector_eq_resolvent_smul (I := I) (M := M) g 0 2 i
+  exact smoothEigen_h1_eq (I := I) (M := M) g 2 i
 
 /-- The resolvent eigenvalue `μ = i.fst.val` is positive. -/
 theorem tensorEigenIdx_val_pos
@@ -329,6 +346,73 @@ theorem one_add_lambda_eq_inv_val
 one-minus-connection-Laplacian scales the `i`-th eigenbasis coordinate by
 `(1 + λᵢ)`:
 `cᵢ((1 - Δ_∇) T) = (1 + λᵢ) · cᵢ(T)`. -/
+theorem oneMinus_coeff
+    (g : SmoothRiemannianMetric I M) (s : ℕ)
+    (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 s))
+    (T : SmoothCcTensor g 0 s)
+    (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+      (I := I) (M := M) g 0 s) :
+    tensorL2Coeff (I := I) (M := M) h_compact
+        (SmoothCcTensor.toL2 (oneMinusConnLapSmooth (I := I) g 0 s T)) i =
+      (1 + Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx.lambda
+          (I := I) (M := M) i) *
+        tensorL2Coeff (I := I) (M := M) h_compact
+          (SmoothCcTensor.toL2 T) i := by
+  classical
+  have hb :
+      tensorResolventHilbertEigenbasisSigma (I := I) (M := M) h_compact i =
+        (eigenvectorSmooth (I := I) (M := M) g 0 s i :
+          TensorL2 0 s g) := by
+    rw [tensorResolventHilbertEigenbasisSigma_apply,
+      eigenvectorSmooth_toL2 (I := I) (M := M) g 0 s i]
+  rw [tensorL2Coeff_eq_inner, tensorL2Coeff_eq_inner, hb,
+    SmoothCcTensor.toL2_apply, SmoothCcTensor.toL2_apply]
+  rw [real_inner_comm
+    ((oneMinusConnLapSmooth (I := I) g 0 s T : SmoothCcTensor g 0 s) :
+      TensorL2 0 s g)
+    (eigenvectorSmooth (I := I) (M := M) g 0 s i : TensorL2 0 s g),
+    oneMinusConnLapSmooth_toL2_inner_eq_h1_general (I := I) (M := M) g s
+      (loweringIntertwiner_gen (I := I) (M := M) g s) T
+      (eigenvectorSmooth (I := I) (M := M) g 0 s i)]
+  rw [smoothEigen_h1_eq (I := I) (M := M) g s i,
+    inner_smul_right]
+  rw [real_inner_comm
+    (eigenvectorResolvent (I := I) (M := M) g 0 s i)
+    (smoothToTensorH1Compl (I := I) (M := M) g 0 s ⟨T⟩),
+    eigenvectorSmooth_weak_eigen (I := I) (M := M) g 0 s i ⟨T⟩]
+  rw [show ((⟨T⟩ : SmoothCcTensorH1 g 0 s).toCcTensor : TensorL2 0 s g) =
+        (T : TensorL2 0 s g) from rfl,
+    real_inner_comm
+      (eigenvectorSmooth (I := I) (M := M) g 0 s i : TensorL2 0 s g)
+      (T : TensorL2 0 s g),
+    one_add_lambda_eq_inv_val (I := I) (M := M) i]
+
+/-- Applying the rough connection Laplacian scales each eigenbasis coordinate
+by the negative tensor-Laplacian eigenvalue. -/
+theorem rawLap_coeff
+    (g : SmoothRiemannianMetric I M) (s : ℕ)
+    (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 s))
+    (T : SmoothCcTensor g 0 s)
+    (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
+      (I := I) (M := M) g 0 s) :
+    tensorL2Coeff (I := I) (M := M) h_compact
+        (SmoothCcTensor.toL2 (rawTensorConnLapSmooth (I := I) g 0 s T)) i =
+      (- Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx.lambda
+          (I := I) (M := M) i) *
+        tensorL2Coeff (I := I) (M := M) h_compact
+          (SmoothCcTensor.toL2 T) i := by
+  have h_split :
+      rawTensorConnLapSmooth (I := I) g 0 s T =
+        T - oneMinusConnLapSmooth (I := I) g 0 s T := by
+    rw [show oneMinusConnLapSmooth (I := I) g 0 s T =
+          T - rawTensorConnLapSmooth (I := I) g 0 s T from rfl]
+    abel
+  rw [h_split, map_sub, tensorL2Coeff_eq_inner, inner_sub_right,
+    ← tensorL2Coeff_eq_inner, ← tensorL2Coeff_eq_inner,
+    oneMinus_coeff (I := I) (M := M) g s h_compact T i]
+  ring
+
+/-- Rank-`(0,2)` compatibility wrapper for `oneMinus_coeff`. -/
 theorem tensorL2Coeff_ofCompact_oneMinusConnLapSmooth
     (g : SmoothRiemannianMetric I M)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g 0 2))
@@ -341,34 +425,7 @@ theorem tensorL2Coeff_ofCompact_oneMinusConnLapSmooth
           (I := I) (M := M) i) *
         tensorL2Coeff (I := I) (M := M) h_compact
           (SmoothCcTensor.toL2 T) i := by
-  classical
-  have hb :
-      tensorResolventHilbertEigenbasisSigma (I := I) (M := M) h_compact i =
-        (eigenvectorSmooth (I := I) (M := M) g 0 2 i :
-          TensorL2 0 2 g) := by
-    rw [tensorResolventHilbertEigenbasisSigma_apply,
-      eigenvectorSmooth_toL2 (I := I) (M := M) g 0 2 i]
-  rw [tensorL2Coeff_eq_inner, tensorL2Coeff_eq_inner, hb,
-    SmoothCcTensor.toL2_apply, SmoothCcTensor.toL2_apply]
-  rw [real_inner_comm
-    ((oneMinusConnLapSmooth (I := I) g 0 2 T : SmoothCcTensor g 0 2) :
-      TensorL2 0 2 g)
-    (eigenvectorSmooth (I := I) (M := M) g 0 2 i : TensorL2 0 2 g),
-    oneMinusConnLapSmooth_toL2_inner_eq_h1_general (I := I) (M := M) g 2
-      (loweringIntertwiner_two (I := I) (M := M) g) T
-      (eigenvectorSmooth (I := I) (M := M) g 0 2 i)]
-  rw [smoothToTensorH1Compl_eigenvectorSmooth_eq (I := I) (M := M) g i,
-    inner_smul_right]
-  rw [real_inner_comm
-    (eigenvectorResolvent (I := I) (M := M) g 0 2 i)
-    (smoothToTensorH1Compl (I := I) (M := M) g 0 2 ⟨T⟩),
-    eigenvectorSmooth_weak_eigen (I := I) (M := M) g 0 2 i ⟨T⟩]
-  rw [show ((⟨T⟩ : SmoothCcTensorH1 g 0 2).toCcTensor : TensorL2 0 2 g) =
-        (T : TensorL2 0 2 g) from rfl,
-    real_inner_comm
-      (eigenvectorSmooth (I := I) (M := M) g 0 2 i : TensorL2 0 2 g)
-      (T : TensorL2 0 2 g),
-    one_add_lambda_eq_inv_val (I := I) (M := M) i]
+  exact oneMinus_coeff (I := I) (M := M) g 2 h_compact T i
 
 /-- The iterated per-step identity: `cᵢ((1 - Δ_∇)^k T) = (1 + λᵢ)^k · cᵢ(T)`. -/
 theorem tensorL2Coeff_ofCompact_oneMinusConnLapSmoothIter

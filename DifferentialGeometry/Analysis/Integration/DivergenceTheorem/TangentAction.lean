@@ -59,6 +59,23 @@ def tangentSectionAction
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : M → ℝ) (x : M) :
     tangentSectionAction (I := I) X f x = mfderiv I 𝓘(ℝ) f x (X x) := rfl
 
+omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+/-- The tangent action obeys the scalar Leibniz rule at points where both
+factors are manifold-differentiable. -/
+theorem tangent_mul
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {f h : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x) :
+    tangentSectionAction (I := I) X (fun y => f y * h y) x =
+      f x * tangentSectionAction (I := I) X h x +
+        h x * tangentSectionAction (I := I) X f x := by
+  have hmul := (hf.hasMFDerivAt.mul hh.hasMFDerivAt).mfderiv
+  unfold tangentSectionAction
+  change (mfderiv I 𝓘(ℝ, ℝ) (f * h) x) (X x) = _
+  rw [hmul]
+  rfl
+
 /-- The pullback of `f : M → ℝ` through the chart inverse, viewed as a function
 on the chart target `(extChartAt I α).target ⊆ E`. -/
 def scalarOnE (α : M) (f : M → ℝ) : E → ℝ :=
@@ -66,6 +83,21 @@ def scalarOnE (α : M) (f : M → ℝ) : E → ℝ :=
 
 @[simp] lemma scalarOnE_def (α : M) (f : M → ℝ) (y : E) :
     scalarOnE (I := I) α f y = f ((extChartAt I α).symm y) := rfl
+
+/-- The chart pullback of a scalar function, extended by zero outside the
+extended-chart target. -/
+def chartPullZero (α : M) (f : M → ℝ) : E → ℝ :=
+  (extChartAt I α).target.indicator (scalarOnE (I := I) α f)
+
+lemma chartPullZero_mem (α : M) (f : M → ℝ) {y : E}
+    (hy : y ∈ (extChartAt I α).target) :
+    chartPullZero (I := I) α f y = scalarOnE (I := I) α f y :=
+  Set.indicator_of_mem hy _
+
+lemma chartPullZero_nmem (α : M) (f : M → ℝ) {y : E}
+    (hy : y ∉ (extChartAt I α).target) :
+    chartPullZero (I := I) α f y = 0 :=
+  Set.indicator_of_notMem hy _
 
 /-- The map `f : M → ℝ` on the chart source equals the composition of its
 chart-pullback `scalarOnE α f` with the extended chart. -/
@@ -94,6 +126,61 @@ lemma scalarOnE_contDiffWithinAt
     (hy : y ∈ (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞ (scalarOnE (I := I) α f) (extChartAt I α).target y :=
   scalarOnE_contDiffOn (I := I) α hf y hy
+
+/-- At a point where the scalar chart pullback is differentiable, the
+manifold derivative on a chart-basis vector is the corresponding Euclidean
+partial derivative. -/
+lemma mfderiv_chart_diff (α : M)
+    {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
+    (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))
+    (i : Fin (Module.finrank ℝ E)) :
+    mfderiv I 𝓘(ℝ) f x (chartBasisVecFiber (I := I) α i x) =
+      partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+  set φ := extChartAt I α
+  have hxsrc : x ∈ φ.source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact hx
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hx
+  have hcomp_eq : ∀ᶠ y in 𝓝 x,
+      f y = (scalarOnE (I := I) α f) (φ y) := by
+    filter_upwards [(isOpen_extChartAt_source (I := I) α).mem_nhds hxsrc] with y hy
+    rw [scalarOnE_def, φ.left_inv hy]
+  have hcong : f =ᶠ[𝓝 x]
+      (scalarOnE (I := I) α f) ∘ (extChartAt I α) := hcomp_eq
+  rw [Filter.EventuallyEq.mfderiv_eq hcong]
+  have hφ_diff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x :=
+    mdifferentiableAt_extChartAt (I := I) (x := α) hx
+  have hg_diff : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ)
+      (scalarOnE (I := I) α f) (φ x) := hf.mdifferentiableAt
+  rw [mfderiv_comp x hg_diff hφ_diff]
+  rw [show mfderiv 𝓘(ℝ, E) 𝓘(ℝ) (scalarOnE (I := I) α f) (φ x) =
+      fderiv ℝ (scalarOnE (I := I) α f) (φ x) from
+        mfderiv_eq_fderiv (𝕜 := ℝ) (f := scalarOnE (I := I) α f)]
+  have hmfderiv_chartBasis :
+      mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
+          (chartBasisVecFiber (I := I) α i x) = (chartModelBasis E) i := by
+    rw [← TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
+      (x₀ := α) (x := x) hx]
+    set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
+      trivializationAt E (TangentSpace I) α
+    have heq : chartBasisVecFiber (I := I) α i x =
+        T.symm x ((chartModelBasis E) i) := rfl
+    rw [heq]
+    have h_apply :
+        T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i)) =
+          (chartModelBasis E) i := by
+      have : T.symm x ((chartModelBasis E) i) =
+          T.symmL ℝ x ((chartModelBasis E) i) := by
+        rw [Trivialization.symmL_apply]
+      rw [this, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
+    exact h_apply
+  change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
+        (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
+          (chartBasisVecFiber (I := I) α i x)) = _
+  rw [hmfderiv_chartBasis]
+  rfl
 
 /-- Decomposition: applying `mfderiv` of `f` at `x` to the chart-basis frame
 vector at index `i`, using the chart at `α`. The model space is `E`, so this is
@@ -213,6 +300,46 @@ lemma extChartAt_target_subset_interior_of_boundaryless [I.Boundaryless] (α : M
     (extChartAt I α).target ⊆ interior (extChartAt I α).target := by
   intro y hy
   exact (isOpen_extChartAt_target (I := I) α).interior_eq.symm ▸ hy
+
+/-- At a differentiability point of the zero-extended chart pullback, a
+smooth tangent section acts by the corresponding finite sum of coordinate
+line derivatives. -/
+theorem tangent_chart_diff [I.Boundaryless]
+    (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
+    (hf : DifferentiableAt ℝ (chartPullZero (I := I) α f)
+      (extChartAt I α x)) :
+    tangentSectionAction (I := I) X f x =
+      ∑ i : Fin (Module.finrank ℝ E),
+        chartCoeff (I := I) α X i x *
+          lineDeriv ℝ (chartPullZero (I := I) α f) (extChartAt I α x)
+            ((chartModelBasis E) i) := by
+  classical
+  have hxsrc : x ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact hx
+  have hxy : extChartAt I α x ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hxsrc
+  have heq : chartPullZero (I := I) α f =ᶠ[𝓝 (extChartAt I α x)]
+      scalarOnE (I := I) α f := by
+    filter_upwards [(isOpen_extChartAt_target (I := I) α).mem_nhds hxy] with y hy
+    exact chartPullZero_mem (I := I) α f hy
+  have hscalar : DifferentiableAt ℝ (scalarOnE (I := I) α f)
+      (extChartAt I α x) := hf.congr_of_eventuallyEq heq.symm
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hx
+  have hXrecomp : X x = ∑ i, chartCoeff (I := I) α X i x •
+      chartBasisVecFiber (I := I) α i x :=
+    chartCoeff_recompose (I := I) α X hbase
+  rw [tangentSectionAction_def, hXrecomp, map_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  rw [map_smul, mfderiv_chart_diff (I := I) α hx hscalar i]
+  unfold partialDeriv
+  rw [← heq.fderiv_eq, ← hf.lineDeriv_eq_fderiv]
+  exact smul_eq_mul ..
 
 /-- Under `[I.Boundaryless]`, the chart-local representation holds for any
 point in the chart base set. -/

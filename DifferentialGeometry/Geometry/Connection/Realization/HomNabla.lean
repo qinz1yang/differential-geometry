@@ -53,8 +53,7 @@ variable
   (I : ModelWithCorners ℝ E H)
   (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
-  -- The target bundle V with model fiber F (both explicit so typeclass resolution can match
-  -- F to V uniquely throughout the file).
+
   (F : Type*) [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   [CompleteSpace F]
   (V : M → Type*) [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
@@ -137,7 +136,7 @@ private theorem Psi_add_right
     (hY : MDiffAtVec I M Y x) (hY' : MDiffAtVec I M Y' x) :
     Psi I M F V cov_TM cov_V τ V_field (Y + Y') x =
       Psi I M F V cov_TM cov_V τ V_field Y x + Psi I M F V cov_TM cov_V τ V_field Y' x := by
-  -- Show V-valued differentiability of the pairings τ·Y and τ·Y'.
+
   have hτY : MDiffAtV I M F V (fun y => τ y (Y y)) x := mdiffAt_apply I M F V hτ hY
   have hτY' : MDiffAtV I M F V (fun y => τ y (Y' y)) x := mdiffAt_apply I M F V hτ hY'
   have h_add_fun : (fun y => τ y ((Y + Y') y)) =
@@ -147,7 +146,7 @@ private theorem Psi_add_right
   have hY_T : MDiffAt (T% fun y => Y y) x := hY
   have hY'_T : MDiffAt (T% fun y => Y' y) x := hY'
   simp only [Psi]
-  -- cov_V is additive in the section argument; use `IsCovariantDerivativeOn.add`.
+
   rw [h_add_fun, cov_V.isCovariantDerivativeOn.add hτY hτY']
   rw [show (Y + Y' : Π x : M, TangentSpace I x) = (fun x => Y x) + (fun x => Y' x) from rfl,
       cov_TM.isCovariantDerivativeOn.add hY_T hY'_T]
@@ -163,29 +162,24 @@ private theorem Psi_smul_right
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) (hY : MDiffAtVec I M Y x) :
     Psi I M F V cov_TM cov_V τ V_field (f • Y) x = f x • Psi I M F V cov_TM cov_V τ V_field Y x := by
   have hτY : MDiffAtV I M F V (fun y => τ y (Y y)) x := mdiffAt_apply I M F V hτ hY
-  -- Recall (f • Y) y = f y • Y y, so τ y ((f • Y) y) = f y • τ y (Y y) by CLM-linearity.
+
   have h_fun : (fun y => τ y ((f • Y) y)) = f • (fun y => τ y (Y y)) := by
     funext y
     exact ContinuousLinearMap.map_smul (τ y) (f y) (Y y)
   have hY_T : MDiffAt (T% fun y => Y y) x := hY
   simp only [Psi]
   rw [h_fun]
-  -- Apply cov_V's Leibniz rule for V-valued sections: cov_V (f • s) x = f x • cov_V s x +
-  --                                                  (extDerivFun f x).smulRight (s x).
+
   rw [cov_V.isCovariantDerivativeOn.leibniz hτY hf]
-  -- Apply cov_TM's Leibniz rule for the TM section.
+
   rw [show (f • Y : Π x : M, TangentSpace I x) = f • (fun x => Y x) from rfl,
       cov_TM.isCovariantDerivativeOn.leibniz hY_T hf]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
     ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.map_add,
     ContinuousLinearMap.map_smul]
-  -- Goal: f x • cov_V (τY) x V_field + extDerivFun f x V_field • τ x (Y x) -
-  --       (f x • τ x (cov_TM Y x V_field) + extDerivFun f x V_field • τ x (Y x)) =
-  --       f x • (cov_V (τY) x V_field - τ x (cov_TM Y x V_field))
-  -- The mixed terms cancel.
+
   rw [smul_sub]
-  -- Now: a + b - (c + d) = (a - c) where a, b are first/second smulRight, etc.
-  -- (a + b) - (c + d) where b = d. We need to rearrange.
+
   abel
 
 /-! ### Bilinear tensoriality of `Psi cov_TM cov_V τ V_field Y x` -/
@@ -318,7 +312,7 @@ private theorem homBundleCovariantDerivativeFun_isCovOn
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V (τ₁ + τ₂) hτ_sum hV_diff hY_diff]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ₁ hτ₁' hV_diff hY_diff]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ₂ hτ₂' hV_diff hY_diff]
-    -- Goal: Psi (τ₁+τ₂) V_field Y x = Psi τ₁ V_field Y x + Psi τ₂ V_field Y x
+
     have h_funeq : (fun y => (τ₁ + τ₂) y (Y y)) =
         (fun y => τ₁ y (Y y)) + (fun y => τ₂ y (Y y)) := by
       funext y
@@ -348,13 +342,11 @@ private theorem homBundleCovariantDerivativeFun_isCovOn
     rw [show (v : TangentSpace I x) = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
     rw [show (w : TangentSpace I x) = (Y : Π x : M, TangentSpace I x) x from hYx.symm]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V (g • τ) hgτ hV_diff hY_diff]
-    -- After distributing CLM-application on the RHS.
+
     simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
       ContinuousLinearMap.smulRight_apply]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ hτ' hV_diff hY_diff]
-    -- Goal:
-    --   Psi (g • τ) V_field Y x =
-    --   g x • Psi τ V_field Y x + (extDerivFun g x V_field) • τ x (Y x)
+
     have h_funeq : (fun y => (g • τ) y (Y y)) = g • (fun y => τ y (Y y)) := by
       funext y
       rfl
@@ -406,23 +398,17 @@ private theorem homBundleCov_section_smooth
       (fun x => TotalSpace.mk' (E →L[ℝ] F)
         (E := fun x : M => (TangentSpace I x →L[ℝ] V x))
         x ((homBundleCovariantDerivativeFun I M F V cov_TM cov_V τ x) (Y x))) := by
-  -- Apply the bridge: the section is smooth iff for every smooth Z of TM,
-  -- the V-valued section x ↦ ⟨x, (homBundleCov ... τ x)(Y x)(Z x)⟩ is smooth.
+
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (V₁ := TangentSpace I) (V₂ := V)
     (φ := fun x => (homBundleCovariantDerivativeFun I M F V cov_TM cov_V τ x) (Y x))
   intro Z
-  -- For each smooth Z, the value `(homBundleCov ... τ x)(Y x)(Z x)` equals
-  -- `cov_V (τ·Z) x (Y x) − τ x (cov_TM Z x (Y x))`.
-  -- 1. cov_V (τ·Z) is a smooth Hom(TM, V) section, applied at smooth Y gives smooth V section.
-  -- 2. cov_TM Z is a smooth Hom(TM, TM) section, applied at smooth Y gives smooth TM section,
-  --    then τ applied gives smooth V section.
-  -- The smooth V-valued section τ·Z = fun y => τ y (Z y).
+
   have hτZ_section : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
       (fun y => TotalSpace.mk' F (E := V) y (τ y (Z y))) :=
     contMDiff_hom_apply_section I M F V τ Z
   let τZ : Cₛ^∞⟮I; F, V⟯ := ⟨fun y => τ y (Z y), hτZ_section⟩
-  -- cov_V applied to a smooth section is smooth.
+
   have hcov_V_τZ : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] F)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] F)
         (E := fun x : M => (TangentSpace I x →L[ℝ] V x)) x (cov_V τZ x)) := by
@@ -432,22 +418,20 @@ private theorem homBundleCov_section_smooth
     have hcov_V_smooth :=
       (‹ContMDiffCovariantDerivative cov_V ∞›).contMDiff.contMDiff hτZ_plus.contMDiffOn
     rwa [← contMDiffOn_univ]
-  -- Then evaluated at smooth Y, gives a smooth V section.
+
   have h_first : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
       (fun x => TotalSpace.mk' F (E := V) x (cov_V τZ x (Y x))) :=
     ContMDiff.clm_bundle_apply (b := id) hcov_V_τZ Y.contMDiff
-  -- Second term: cov_TM Z x (Y x) is smooth — this is the concreteConn pattern. We can
-  -- reuse `concreteConn cov_TM Y Z` whose value at x is `cov_TM Z x (Y x)`.
+
   have h_concrete : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x => TotalSpace.mk' E (E := TangentSpace I) x
         ((concreteConn I M cov_TM Y Z) x)) :=
     (concreteConn I M cov_TM Y Z).contMDiff
-  -- τ applied to the smooth TM-section gives smooth V-section.
+
   have h_second : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
       (fun x => TotalSpace.mk' F (E := V) x (τ x ((concreteConn I M cov_TM Y Z) x))) :=
     ContMDiff.clm_bundle_apply (b := id) τ.contMDiff h_concrete
-  -- Reduce: (homBundleCovFun cov_TM cov_V τ x (Y x))(Z x) =
-  --   cov_V (τZ) x (Y x) − τ x (cov_TM Z x (Y x))
+
   have h_eq : ∀ x, (homBundleCovariantDerivativeFun I M F V cov_TM cov_V τ x) (Y x) (Z x) =
       cov_V τZ x (Y x) - τ x ((concreteConn I M cov_TM Y Z) x) := by
     intro x
@@ -456,22 +440,18 @@ private theorem homBundleCov_section_smooth
     have hZ_diff := vec_section_mdiff I M Z x
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ hτ_diff hY_diff hZ_diff]
     rfl
-  -- Combine: the V-valued section x ↦ ⟨x, h_first - h_second⟩ is smooth.
-  -- Use mdifferentiable_sub_section / contMDiff_sub_section style, but for ContMDiff we use
-  -- mathlib's lemmas at the section level.
-  -- Show that the desired section is pointwise equal to (V-section h_first) - (V-section h_second).
+
   have h_diff : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
       (fun x => TotalSpace.mk' F (E := V) x
         (cov_V τZ x (Y x) - τ x ((concreteConn I M cov_TM Y Z) x))) := by
-    -- Express as a difference of smooth sections via section subtraction.
-    -- Build smooth sections s₁, s₂ and use ContMDiff sub_section.
+
     let s₁ : Cₛ^∞⟮I; F, V⟯ := ⟨fun x => cov_V τZ x (Y x), h_first⟩
     let s₂ : Cₛ^∞⟮I; F, V⟯ :=
       ⟨fun x => τ x ((concreteConn I M cov_TM Y Z) x), h_second⟩
     have : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
         (fun x => TotalSpace.mk' F (E := V) x ((s₁ - s₂) x)) := (s₁ - s₂).contMDiff
     convert this using 1
-  -- Final: bridge to the section value via h_eq.
+
   intro x₀
   rw [contMDiffAt_section]
   have h_diff_at := h_diff x₀

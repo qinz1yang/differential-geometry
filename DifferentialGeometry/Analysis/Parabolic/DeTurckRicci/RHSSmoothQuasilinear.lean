@@ -391,7 +391,7 @@ conjuncts:
   (whose principal-symbol witness records that `deTurckRicciRHS g_bg g` is symmetric and
   has the gauge-cancelled isotropic Laplacian symbol `−|ξ|²_g · id` on the symmetric
   perturbation space). -/
-theorem deTurckRicciRHS_isSmoothQuasilinear
+theorem deTurckRicciRHS_isSmoothQuasilinear [I.Boundaryless]
     (g_bg : SmoothRiemannianMetric I M) :
     IsSmoothQuasilinearMetricRHS (I := I)
       (deTurckRicciRHS (I := I) g_bg) := by

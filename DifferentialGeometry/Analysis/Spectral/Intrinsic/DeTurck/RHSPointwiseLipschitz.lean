@@ -131,6 +131,8 @@ set_option synthInstance.maxHeartbeats 1600000 in
 set_option linter.unusedSectionVars false in
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- **Per-point reverse bridge applied to the RHS difference.**  At each base
@@ -1023,6 +1025,8 @@ def metricDiff02CovIterateMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric 
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- The intrinsic `2`-jet seminorm of the metric difference `g₁ − g₂` at `x`,
@@ -1046,6 +1050,8 @@ def metricDiff2JetNorm (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : �
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- The intrinsic `2`-jet seminorm equals the sum of the three jet Riemannian fibre
@@ -1066,6 +1072,8 @@ theorem metricDiff2JetNorm_eq_riemannianNorm_sum
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- The intrinsic `2`-jet seminorm is non-negative. -/
@@ -1088,6 +1096,8 @@ set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 1600000 in
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- **Continuity of the intrinsic `2`-jet seminorm.**  Each of the three jet fibre
@@ -1133,7 +1143,10 @@ theorem metricDiff2JetNorm_continuous
       (F₀ := TensorRSModel 0 4 ℝ E) (V₀ := fun b : M => TensorRSSpace 0 4 I b)
       (σ := fun x => metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂ x)
       (metricDiff02CovIterateMixedSection (I := I) g₀ g₁ g₂).contMDiff.continuous
-  exact (h0.add h1).add h2
+  have hsum := (h0.add h1).add h2
+  refine hsum.congr (fun x => ?_)
+  rw [metricDiff2JetNorm_eq_riemannianNorm_sum (I := I) g₀ g₁ g₂ x]
+  simp only [Pi.add_apply]
 
 /-- The chart-`α` `(i, j)` scalar component of the Ricci–DeTurck right-hand side
 `deTurckRicciRHS g_bg g = -2 • Ric(g) + 𝓛_{W(g)} g`, at the chart point `y ∈ E`:

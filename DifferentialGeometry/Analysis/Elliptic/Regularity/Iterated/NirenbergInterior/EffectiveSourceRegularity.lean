@@ -130,16 +130,15 @@ structure CanonicalIteratedDataBundle
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E)) (m : ℕ) where
-  /-- The level-`m` data instance. -/
+
   data : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m
-  /-- The direction multi-index of `data` agrees with
-  `dirsOf dirs_seq m`. -/
+
   directions_eq : data.directions = dirsOf dirs_seq m
-  /-- `data.fChartEff ∈ MemW1p 2` on the chart target. -/
+
   fChartEff_memW1p :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 data.fChartEff
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `data.fChartEff` vanishes ae off `chartImagePOUTsupport α`. -/
+
   fChartEff_ae_zero_off_K :
     data.fChartEff =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
@@ -411,9 +410,7 @@ private structure CanonicalBundleWithMemWkp
     (u_h : H1Compl (I := I) (M := M) g)
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E)) (M_max K m : ℕ) extends
     CanonicalIteratedDataBundle (I := I) (M := M) g α u_h dirs_seq m where
-  /-- The `MemWkp (K + (M_max - m)) 2` regularity of the level-`m` source.
-  At `m = 0`, this reduces to `MemWkp (K + M_max) 2 base.f_chart`. At `m = M_max`,
-  it reduces to `MemWkp K 2`, which is the user's target. -/
+
   fChartEff_memWkp :
     MemWkp (d := Module.finrank ℝ E) (K + (M_max - m)) 2 data.fChartEff
       (chartTargetEuclid (I := I) (M := M) α)

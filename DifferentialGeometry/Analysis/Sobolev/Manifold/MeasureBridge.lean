@@ -54,6 +54,69 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+/-- On a chart source, the canonical Riemannian volume measure is exactly the
+corresponding chart-local measure. -/
+theorem volume_restrict_eq
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (α : M) :
+    (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) g).restrict (chartAt H α).source =
+      (DifferentialGeometry.Integral.Measure.chartLocalMeasure
+        (I := I) g α).restrict (chartAt H α).source := by
+  apply Measure.ext_of_lintegral
+  intro F hF
+  let U : Set M := (chartAt H α).source
+  have hU : MeasurableSet U := (chartAt H α).open_source.measurableSet
+  rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def]
+  have h := riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
+    (I := I) (M := M) g α (F := U.indicator F) (hF.indicator hU) (by
+      intro x hx
+      exact Set.indicator_of_notMem hx _)
+  simpa only [U, MeasureTheory.lintegral_indicator hU] using h
+
+/-- An integrable function supported in one chart has the same chart-local and
+global Riemannian integrals. -/
+theorem chart_int_eq_global
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (α : M) {f : M → ℝ}
+    (hf : Integrable f
+      (DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α))
+    (hsupp : ∀ x, x ∉ (chartAt H α).source → f x = 0) :
+    Integrable f
+        (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+          (I := I) (M := M) g) ∧
+      ∫ x, f x ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+          (I := I) (M := M) g) =
+        ∫ x, f x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure
+          (I := I) g α) := by
+  have hrestrict := volume_restrict_eq (I := I) (M := M) g α
+  have hglobal_on : IntegrableOn f (chartAt H α).source
+      (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) g) := by
+    change Integrable f
+      ((DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) g).restrict (chartAt H α).source)
+    rw [hrestrict]
+    exact hf.integrableOn
+  refine ⟨hglobal_on.integrable_of_forall_notMem_eq_zero hsupp, ?_⟩
+  calc
+    ∫ x, f x ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) g) =
+        ∫ x in (chartAt H α).source, f x
+          ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+            (I := I) (M := M) g) :=
+      (setIntegral_eq_integral_of_forall_compl_eq_zero hsupp).symm
+    _ = ∫ x in (chartAt H α).source, f x
+          ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure
+            (I := I) g α) := by
+      rw [hrestrict]
+    _ = ∫ x, f x
+          ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure
+            (I := I) g α) :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero hsupp
+
 variable (I)
 
 /-- Raw chart pushforward of `u : M → ℝ` at chart `α`, with the
@@ -157,6 +220,40 @@ lemma continuousOn_symm_toEuclideanSymm (α : M) :
     exact hy
   exact (continuousOn_extChartAt_symm (I := I) α).comp
     (toEuclidean (E := E)).symm.continuous.continuousOn hy_target
+
+/-- Differentiability of a raw chart representative at the coordinate of a
+point in the chart source gives manifold differentiability at that point. -/
+theorem mdiff_of_raw (α : M) {f : M → ℝ} {x : M}
+    (hx : x ∈ (chartAt H α).source)
+    (hf : DifferentiableAt ℝ (chartPushedRaw (I := I) (M := M) α f)
+      ((toEuclidean (E := E)) (extChartAt I α x))) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) f x := by
+  let coord : M → EuclN E := fun y =>
+    (toEuclidean (E := E)) (extChartAt I α y)
+  have hext : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x :=
+    mdifferentiableAt_extChartAt hx
+  have hcoord : MDifferentiableAt I 𝓘(ℝ, EuclN E) coord x := by
+    simpa only [coord, Function.comp_apply] using
+      (toEuclidean (E := E)).differentiable.differentiableAt.comp_mdifferentiableAt hext
+  have hf' : DifferentiableAt ℝ
+      (chartPushedRaw (I := I) (M := M) α f) (coord x) := by
+    simpa only [coord] using hf
+  have hcomp : MDifferentiableAt I 𝓘(ℝ, ℝ)
+      ((chartPushedRaw (I := I) (M := M) α f) ∘ coord) x :=
+    hf'.comp_mdifferentiableAt hcoord
+  refine hcomp.congr_of_eventuallyEq ?_
+  filter_upwards [(chartAt H α).open_source.mem_nhds hx] with y hy
+  have hy_ext : y ∈ (extChartAt I α).source := by
+    rwa [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
+      (I := I) (M := M)]
+  have hy_target : extChartAt I α y ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hy_ext
+  have hy_eucl : coord y ∈ chartTargetEuclid (I := I) (M := M) α := by
+    exact ⟨extChartAt I α y, hy_target, rfl⟩
+  rw [Function.comp_apply,
+    chartPushedRaw_apply_of_mem (I := I) (M := M) α f hy_eucl]
+  simp only [coord, ContinuousLinearEquiv.symm_apply_apply,
+    (extChartAt I α).left_inv hy_ext]
 
 /-- The pushforward of `modelHaar` along the continuous linear equivalence
 `toEuclidean : E ≃L[ℝ] EuclN E` is itself an additive Haar measure on `EuclN E`. -/
@@ -395,6 +492,90 @@ lemma chartLocalMeasure_lintegral_via_chartTargetEuclid
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
       exact hy
     rw [Set.indicator_of_notMem hy_target, Set.indicator_of_notMem hy]
+
+/-- A Euclidean-volume almost-everywhere property transfers to the chart-local
+measure after evaluation in the fixed chart coordinates. -/
+lemma ae_chart_of_volume
+    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M) (α : M)
+    {P : EuclN E → Prop} (hP : MeasurableSet {y | P y})
+    (h : ∀ᵐ y ∂(volume : Measure (EuclN E)), P y) :
+    ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α),
+      x ∈ (chartAt H α).source →
+        P ((toEuclidean (E := E)) (extChartAt I α x)) := by
+  classical
+  have hmap :
+      ∀ᵐ y ∂Measure.map (toEuclidean : E → EuclN E)
+        (DifferentialGeometry.Integral.Measure.modelHaar (E := E)), P y := by
+    rw [map_toEuclidean_modelHaar_eq_smul_volume (E := E)]
+    exact Measure.smul_absolutelyContinuous.ae_le h
+  have hhaar :
+      ∀ᵐ y ∂(DifferentialGeometry.Integral.Measure.modelHaar (E := E)),
+        P ((toEuclidean (E := E)) y) :=
+    (Measure.tendsto_ae_map
+      ((toEuclidean (E := E)).continuous.measurable.aemeasurable)) hmap
+  let dens : E → ℝ≥0∞ := fun y =>
+    ENNReal.ofReal
+      (DifferentialGeometry.Integral.Measure.chartDensity g α
+        ((extChartAt I α).symm y))
+  let μT : Measure E :=
+    (DifferentialGeometry.Integral.Measure.modelHaar (E := E)).restrict
+      (extChartAt I α).target
+  let μD : Measure E := μT.withDensity dens
+  have hrestrict : ∀ᵐ y ∂μT, P ((toEuclidean (E := E)) y) := by
+    exact (Measure.absolutelyContinuous_of_le Measure.restrict_le_self).ae_le hhaar
+  have hdens : ∀ᵐ y ∂μD, P ((toEuclidean (E := E)) y) := by
+    exact (MeasureTheory.withDensity_absolutelyContinuous μT dens).ae_le hrestrict
+  have htarget : ∀ᵐ y ∂μD, y ∈ (extChartAt I α).target := by
+    exact (MeasureTheory.withDensity_absolutelyContinuous μT dens).ae_le
+      (MeasureTheory.ae_restrict_mem
+        (DifferentialGeometry.Integral.Measure.measurableSet_extChartAt_target
+          (I := I) (M := M) α))
+  let coord : M → EuclN E := fun x =>
+    if x ∈ (chartAt H α).source then
+      (toEuclidean (E := E)) (extChartAt I α x)
+    else 0
+  have hcoord : Measurable coord := by
+    have hsource : MeasurableSet (chartAt H α).source :=
+      (chartAt H α).open_source.measurableSet
+    have hext : ContinuousOn (fun x : M => extChartAt I α x)
+        (chartAt H α).source := by
+      have hsource_eq : (chartAt H α).source = (extChartAt I α).source :=
+        (DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
+          (I := I) (M := M) α).symm
+      rw [hsource_eq]
+      exact continuousOn_extChartAt α
+    have hmain : ContinuousOn
+        (fun x : M => (toEuclidean (E := E)) (extChartAt I α x))
+        (chartAt H α).source :=
+      (toEuclidean (E := E)).continuous.comp_continuousOn hext
+    have hcoord_eq : coord = (chartAt H α).source.piecewise
+        (fun x : M => (toEuclidean (E := E)) (extChartAt I α x))
+        (fun _ => 0) := by
+      funext x
+      simp only [coord, Set.piecewise]
+    rw [hcoord_eq]
+    exact ContinuousOn.measurable_piecewise hmain continuousOn_const hsource
+  have hsymm : AEMeasurable (extChartAt I α).symm μD := by
+    exact (DifferentialGeometry.Integral.Measure.aemeasurable_extChartAt_symm_restrict_target
+      (I := I) (E := E) α).mono_ac
+        (MeasureTheory.withDensity_absolutelyContinuous μT dens)
+  have hpush : ∀ᵐ x ∂Measure.map (extChartAt I α).symm μD, P (coord x) := by
+    refine (MeasureTheory.ae_map_iff hsymm (hP.preimage hcoord)).2 ?_
+    filter_upwards [hdens, htarget] with y hy hy_target
+    have hy_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+      have hmem : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+        (extChartAt I α).map_target hy_target
+      rwa [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
+        (I := I) (M := M)] at hmem
+    simpa only [coord, if_pos hy_source,
+      (extChartAt I α).right_inv hy_target] using hy
+  have hchart :
+      ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α),
+        P (coord x) := by
+    simpa only [DifferentialGeometry.Integral.Measure.chartLocalMeasure, μD, μT, dens]
+      using hpush
+  filter_upwards [hchart] with x hx hx_source
+  simpa only [coord, if_pos hx_source] using hx
 
 /-- The chart density is strictly positive at points of the chart target. -/
 lemma chartDensity_pos_on_target

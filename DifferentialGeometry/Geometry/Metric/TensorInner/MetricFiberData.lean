@@ -2,6 +2,7 @@ import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Analysis.InnerProductSpace.Defs
+import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
@@ -162,6 +163,56 @@ theorem toCore_inner (D : MetricFiberData V) (v w : V) :
   change D.toCore.inner v w = D.inner v w
   rfl
 
+section MetricEquiv
+
+variable {V' W' : Type*}
+  [NormedAddCommGroup V'] [NormedSpace Real V'] [FiniteDimensional Real V']
+  [NormedAddCommGroup W'] [NormedSpace Real W'] [FiniteDimensional Real W']
+
+/-- Equal-dimensional metric fibers admit a continuous linear equivalence
+preserving their metric inner products. -/
+theorem exists_metric_cle
+    (DV : MetricFiberData V') (DW : MetricFiberData W')
+    (hfin : Module.finrank Real V' = Module.finrank Real W') :
+    ∃ e : V' ≃L[Real] W',
+      ∀ v w, DW.inner (e v) (e w) = DV.inner v w := by
+  classical
+  let addV : AddCommGroup V' := inferInstance
+  let modV : Module Real V' := inferInstance
+  let addW : AddCommGroup W' := inferInstance
+  let modW : Module Real W' := inferInstance
+  let eData :
+      {e : V' ≃ₗ[Real] W' //
+        ∀ v w, DW.inner (e v) (e w) = DV.inner v w} := by
+    letI : InnerProductSpace.Core Real V' := DV.toCore
+    letI : NormedAddCommGroup V' :=
+      @InnerProductSpace.Core.toNormedAddCommGroup Real V' _ addV modV DV.toCore
+    letI : AddCommGroup V' := addV
+    letI : Module Real V' := modV
+    letI : InnerProductSpace Real V' :=
+      @InnerProductSpace.ofCore Real V' _ _ _ DV.toCore.toCore
+    letI : InnerProductSpace.Core Real W' := DW.toCore
+    letI : NormedAddCommGroup W' :=
+      @InnerProductSpace.Core.toNormedAddCommGroup Real W' _ addW modW DW.toCore
+    letI : AddCommGroup W' := addW
+    letI : Module Real W' := modW
+    letI : InnerProductSpace Real W' :=
+      @InnerProductSpace.ofCore Real W' _ _ _ DW.toCore.toCore
+    let bV := stdOrthonormalBasis Real V'
+    let bW := stdOrthonormalBasis Real W'
+    let e : V' ≃ₗᵢ[Real] W' := bV.equiv bW (finCongr hfin)
+    refine ⟨e.toLinearEquiv, ?_⟩
+    intro v w
+    change Inner.inner Real (e v) (e w) = Inner.inner Real v w
+    exact e.inner_map_map v w
+  let e : V' ≃L[Real] W' := eData.1.toContinuousLinearEquiv
+  refine ⟨e, ?_⟩
+  intro v w
+  change DW.inner (eData.1 v) (eData.1 w) = DV.inner v w
+  exact eData.2 v w
+
+end MetricEquiv
+
 variable {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
 
 /-- Metric adjoint of a linear map between metric fibers. -/
@@ -194,7 +245,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 abbrev SmoothMetric
     (I : ModelWithCorners Real E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Type _ :=
-  Bundle.ContMDiffRiemannianMetric I ⊤ E (TangentSpace I : M -> Type _)
+  Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I : M -> Type _)
 
 /-- The tangent flat map induced by a smooth Riemannian metric. -/
 def tangentFlatLinear (g : SmoothMetric I M) (x : M) :

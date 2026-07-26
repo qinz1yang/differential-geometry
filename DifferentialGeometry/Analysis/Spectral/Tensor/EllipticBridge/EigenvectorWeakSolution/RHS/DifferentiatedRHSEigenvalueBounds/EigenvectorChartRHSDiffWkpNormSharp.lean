@@ -359,8 +359,7 @@ open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 structure sharpDiffPerK
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) where
-  /-- The structural `MemWkp K'` regularity of the resolvent chart component,
-  needed to apply `eigenvectorChartRHSDiff_memWkp` at every order. -/
+
   h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
     (β : M) (Q : TensorCompIdx (E := E) r s),
     MemWkp (d := Module.finrank ℝ E) K' 2
@@ -370,7 +369,7 @@ structure sharpDiffPerK
           β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
           EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)
-  /-- Chart-component bound at order `K'`. -/
+
   Ceig : ℕ → ℝ
   eEig : ℕ → ℕ
   hCeig_nn : ∀ K', 0 ≤ Ceig K'
@@ -384,7 +383,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- High-order resolvent chart-component atom at order `K' + 1`. -/
+
   CresH : ℕ → ℝ
   eResH : ℕ → ℕ
   hCresH_nn : ∀ K', 0 ≤ CresH K'
@@ -402,7 +401,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- Low-order resolvent chart-component atom at order `K'`. -/
+
   CresL : ℕ → ℝ
   eResL : ℕ → ℕ
   hCresL_nn : ∀ K', 0 ≤ CresL K'
@@ -420,7 +419,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- Partial-`Lp`-limit atom at order `K'`. -/
+
   Cpar : ℕ → ℝ
   ePar : ℕ → ℕ
   hCpar_nn : ∀ K', 0 ≤ Cpar K'
@@ -437,7 +436,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- Component-`Lp`-limit atom at order `K'`. -/
+
   Ccom : ℕ → ℝ
   eCom : ℕ → ℕ
   hCcom_nn : ∀ K', 0 ≤ Ccom K'
@@ -454,7 +453,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- Cross-right limit-component atom at order `K'`. -/
+
   CcR : ℕ → ℝ
   eCcR : ℕ → ℕ
   hCcR_nn : ∀ K', 0 ≤ CcR K'
@@ -471,7 +470,7 @@ structure sharpDiffPerK
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  /-- Cutoff-partial-`Lp`-limit atom at order `K'`. -/
+
   Ccut : ℕ → ℝ
   eCcut : ℕ → ℕ
   hCcut_nn : ∀ K', 0 ≤ Ccut K'

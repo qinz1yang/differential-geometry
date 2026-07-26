@@ -114,7 +114,7 @@ theorem derivShuffleLeftFwd_wd (k : Fin (m + n + 1))
           permFinOfSum (σ₁⁻¹ * σ₂))) := by
     simp only [derivShuffleLeftFwd]
     rw [permCongr_inv_mul]; congr 1
-    -- ((cycleRange k)⁻¹ * D(0, P(σ₁)))⁻¹ * ((cycleRange k)⁻¹ * D(0, P(σ₂)))
+
     rw [mul_inv_rev, inv_inv, mul_assoc (Equiv.Perm.decomposeFin.symm _ )⁻¹,
         ← mul_assoc (Fin.cycleRange k), mul_inv_cancel, one_mul,
         decomposeFin_symm_zero_inv, decomposeFin_symm_zero_mul]
@@ -122,11 +122,10 @@ theorem derivShuffleLeftFwd_wd (k : Fin (m + n + 1))
       permCongr_inv_mul finSumFinEquiv σ₁ σ₂
     rw [this]
   rw [hratio, ← hblock]
-  -- Now: Φ.symm.permCongr (D(0, P(sumCongr τ_l τ_r))) maps inl to inl.
+
   apply Equiv.Perm.mem_sumCongrHom_range_of_perm_mapsTo_inl
   intro x ⟨a, ha⟩; subst ha
-  -- D(0, P(sumCongr τ_l τ_r)) fixes 0 and permutes {1,...,m} among themselves.
-  -- After Φ.symm, inl maps to inl.
+
   refine Fin.cases ?_ (fun a' => ?_) a
   · -- a = 0: Φ(inl 0) = 0, D(0,_) fixes 0, Φ⁻¹(0) = inl 0.
     -- These are Fin arithmetic identities through the chain of equivs.
@@ -184,13 +183,13 @@ theorem derivShuffleJ_wd (k : Fin (m + n + 1))
     derivShuffleJ k σ₁ = derivShuffleJ k σ₂ := by
   rw [QuotientGroup.leftRel_apply] at h
   obtain ⟨⟨τ_l, τ_r⟩, hblock⟩ := h
-  -- σ₁⁻¹ * σ₂ = sumCongr τ_l τ_r, so σ₂ = σ₁ * sumCongr τ_l τ_r
+
   have h_sc : Equiv.Perm.sumCongr τ_l τ_r = σ₁⁻¹ * σ₂ := by
     change (Equiv.Perm.sumCongrHom _ _ (τ_l, τ_r) : Equiv.Perm _) = _; exact hblock
   have h_eq : σ₂ = σ₁ * Equiv.Perm.sumCongr τ_l τ_r := by rw [h_sc]; group
   subst h_eq
   simp only [derivShuffleJ, Fin.mk.injEq]
-  -- After substitution, the filter predicate for σ₁ * sumCongr becomes P ∘ τ_l
+
   change (Finset.univ.filter (fun i =>
     (permFinOfSum σ₁ (Fin.castAdd n i)).val < k.val)).card =
     (Finset.univ.filter (fun i =>
@@ -207,7 +206,7 @@ theorem derivShuffleLeftFwd_coset_injective (k : Fin (m + n + 1))
       (derivShuffleLeftFwd k σ₁) (derivShuffleLeftFwd k σ₂)) :
     QuotientGroup.leftRel (Equiv.Perm.sumCongrHom (Fin m) (Fin n)).range σ₁ σ₂ := by
   rw [QuotientGroup.leftRel_apply] at h ⊢
-  -- The ratio simplifies via the same computation as derivShuffleLeftFwd_wd
+
   have hratio : (derivShuffleLeftFwd k σ₁)⁻¹ * (derivShuffleLeftFwd k σ₂) =
       finSuccSumEquiv.symm.permCongr
         (Equiv.Perm.decomposeFin.symm ((0 : Fin (m + n + 1)),
@@ -220,16 +219,13 @@ theorem derivShuffleLeftFwd_coset_injective (k : Fin (m + n + 1))
     have : (permFinOfSum σ₁)⁻¹ * permFinOfSum σ₂ = permFinOfSum (σ₁⁻¹ * σ₂) :=
       permCongr_inv_mul finSumFinEquiv σ₁ σ₂
     rw [this]
-  -- The ratio is a (m+1,n)-block perm
+
   rw [hratio] at h
   obtain ⟨⟨s_l, s_r⟩, hs⟩ := h
-  -- Need to show σ₁⁻¹ * σ₂ is an (m,n)-block perm
-  -- The (m+1,n)-block perm Φ.permCongr(D(0, P(σ₁⁻¹*σ₂))) maps inl to inl.
-  -- D(0, e) fixes 0 and maps (i+1) ↦ (e(i))+1, so e maps {0,...,m-1} to itself.
-  -- Hence σ₁⁻¹ * σ₂ maps inl to inl.
+
   apply Equiv.Perm.mem_sumCongrHom_range_of_perm_mapsTo_inl
   intro x ⟨a, ha⟩; subst ha
-  -- We know Φ.permCongr(D(0, P(σ₁⁻¹*σ₂))) maps inl to inl (it's a block perm)
+
   have h_block : ∀ i : Fin (m + 1),
       ∃ j, finSuccSumEquiv.symm.permCongr
         (Equiv.Perm.decomposeFin.symm ((0 : Fin (m + n + 1)),
@@ -238,11 +234,7 @@ theorem derivShuffleLeftFwd_coset_injective (k : Fin (m + n + 1))
     have := Equiv.Perm.sumCongrHom_apply (Fin (m + 1)) (Fin n) (s_l, s_r)
     rw [this] at hs
     exact ⟨s_l i, by rw [← hs]; simp [Equiv.sumCongr_apply]⟩
-  -- Use h_block at (Fin.succ a) and hs to derive a val-level contradiction.
-  -- Strategy: hs says compound = sumCongr s_l s_r. Evaluating at inl(a.succ)
-  -- gives a val-level equation linking P(g)(a) to s_l(a.succ).
-  -- If g(inl a) = inr c then P(g)(a).val = m + c.val, forcing s_l(a.succ).val ≥ m+1,
-  -- contradicting s_l(a.succ) : Fin(m+1).
+
   rcases hga : (σ₁⁻¹ * σ₂) (Sum.inl a) with b | c
   · exact ⟨b, rfl⟩
   · exfalso
@@ -252,31 +244,29 @@ theorem derivShuffleLeftFwd_coset_injective (k : Fin (m + n + 1))
       rwa [Equiv.Perm.sumCongrHom_apply] at hs
     set e := permFinOfSum (σ₁⁻¹ * σ₂) with he
     set D := Equiv.Perm.decomposeFin.symm ((0 : Fin (m + n + 1)), e) with hD_def
-    -- Fin arithmetic: Φ(inl(a.succ)) = (castAdd n a).succ
+
     have hΦ : finSuccSumEquiv (Sum.inl (Fin.succ a)) = (Fin.castAdd n a).succ :=
       Fin.ext (by simp [finSuccSumEquiv, Fin.finAddFlipAssoc, finCongr])
-    -- D(0, e) at a .succ position
+
     have hD : D (Fin.castAdd n a).succ = (e (Fin.castAdd n a)).succ := by
       simp [hD_def, Equiv.Perm.decomposeFin_symm_apply_succ, Equiv.swap_self]
-    -- P(g)(castAdd n a) = natAdd m c (from hga)
+
     have hP : e (Fin.castAdd n a) = Fin.natAdd m c := by
       simp only [he, permFinOfSum, Equiv.permCongr_apply, finSumFinEquiv_symm_apply_castAdd,
         hga, finSumFinEquiv_apply_right]
-    -- So the compound perm at inl(a.succ) = Φ⁻¹((natAdd m c).succ)
+
     have heval : (finSuccSumEquiv.symm.permCongr D) (Sum.inl (Fin.succ a)) =
         finSuccSumEquiv.symm ((Fin.natAdd m c).succ) := by
       simp only [Equiv.permCongr_apply, Equiv.symm_symm, hΦ, hD, hP]
-    -- From h_sc: inl(s_l(a.succ)) = Φ⁻¹((natAdd m c).succ)
+
     have h1 := DFunLike.congr_fun h_sc (Sum.inl (Fin.succ a))
     rw [heval] at h1
     simp only [Equiv.Perm.sumCongr_apply, Sum.map_inl] at h1
-    -- h1: Sum.inl (s_l (a.succ)) = finSuccSumEquiv.symm ((natAdd m c).succ)
-    -- Apply finSuccSumEquiv to both sides, then compare vals
+
     apply_fun finSuccSumEquiv at h1
     simp only [Equiv.apply_symm_apply] at h1
     apply_fun Fin.val at h1
-    -- LHS val = (s_l(a.succ)).val (since Φ(inl i).val = i.val)
-    -- RHS val = m + c.val + 1
+
     simp [finSuccSumEquiv, Fin.finAddFlipAssoc, finCongr, finSumFinEquiv_apply_left] at h1
     have := (s_l (Fin.succ a)).isLt
     omega
@@ -514,12 +504,12 @@ private theorem derivShuffleFwd_injective :
   have h_coset : Quotient.mk'' (derivShuffleLeftFwd k₁ σ₁) =
       Quotient.mk'' (derivShuffleLeftFwd k₂ σ₂) := congr_arg Prod.fst h
   have h_j : derivShuffleJ k₁ σ₁ = derivShuffleJ k₂ σ₂ := congr_arg Prod.snd h
-  -- Step 1: Same coset means the ratio is a block perm
+
   have h_rel := Quotient.exact' h_coset
   have h_left_set :
       derivShuffleLeftSet k₁ σ₁ = derivShuffleLeftSet k₂ σ₂ :=
     derivShuffleLeftSet_eq_of_rel k₁ k₂ σ₁ σ₂ h_rel
-  -- Step 2: `derivShuffleJ` is the rank of the derivative position in the shared left set.
+
   have h_k_eq : k₁ = k₂ := by
     let L := derivShuffleLeftSet k₁ σ₁
     have hk₁ : k₁ ∈ L := by
@@ -542,7 +532,7 @@ private theorem derivShuffleFwd_injective :
       simpa [L, h_left_set] using hjv
     exact finset_rank_lt_injective L hk₁ hk₂ h_rank
   subst h_k_eq
-  -- Step 3: Same k, same coset → same [σ] (coset injectivity)
+
   ext1
   · rfl
   · exact Quotient.sound' (derivShuffleLeftFwd_coset_injective k₁ σ₁ σ₂

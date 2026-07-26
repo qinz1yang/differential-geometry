@@ -59,25 +59,22 @@ noncomputable def concreteConn
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
   toFun x := cov Y x (X x)
   contMDiff_toFun := by
-    -- ContMDiffCovariantDerivative gives us: for C^{∞+1} section Y,
-    -- cov Y is a C^∞ section of Hom(TM, TM). Since ∞ + 1 = ∞, any C^∞ section suffices.
+
     have hY_plus : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ + 1) (T% fun x => Y x) := by
       rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from by simp]
       exact Y.contMDiff
     have hcov_smooth := (‹ContMDiffCovariantDerivative cov ∞›).contMDiff.contMDiff
       (hY_plus.contMDiffOn)
-    -- hcov_smooth : ContMDiffOn I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
-    --   (fun x => ⟨x, cov Y x⟩) Set.univ
-    -- Convert to ContMDiff
+
     have hcov_global : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
         (fun x => TotalSpace.mk' (E →L[ℝ] E)
           (E := fun (x : M) => TangentSpace I x →L[ℝ] TangentSpace I x) x (cov Y x)) := by
       rwa [← contMDiffOn_univ]
-    -- X is a C^∞ section of TM
+
     have hX_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x => TotalSpace.mk' E (E := TangentSpace I) x (X x)) :=
       X.contMDiff
-    -- Apply clm_bundle_apply: smooth Hom-section applied to smooth section is smooth
+
     exact ContMDiff.clm_bundle_apply (b := id) hcov_global hX_smooth
 
 /-- The pointwise value of `concreteConn`: `concreteConn cov X Y x = cov Y x (X x)`. -/
@@ -152,11 +149,10 @@ theorem concreteConn_leibniz
     concreteConn I M cov X (f • Y) =
       vectorFieldActionSmooth I M X f • Y + f • concreteConn I M cov X Y := by
   apply ContMDiffSection.ext; intro x
-  -- LHS: cov (fun x => f x • Y x) x (X x)
-  -- RHS: vectorFieldActionSmooth I M X f x • Y x + f x • cov Y x (X x)
+
   change cov (fun x => (f : M → ℝ) x • Y x) x (X x) =
     (vectorFieldActionSmooth I M X f) x • Y x + f x • cov Y x (X x)
-  -- Apply IsCovariantDerivativeOn.leibniz
+
   have hY : MDiffAt (T% fun x => Y x) x := Y.mdifferentiableAt
   have hf : MDiffAt (f : M → ℝ) x :=
     f.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
@@ -164,8 +160,7 @@ theorem concreteConn_leibniz
   rw [hfY_eq, cov.isCovariantDerivativeOn.leibniz hY hf]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
     ContinuousLinearMap.smulRight_apply]
-  -- Goal: f x • cov Y x (X x) + extDerivFun f x (X x) • Y x =
-  --        vectorFieldActionSmooth I M X f x • Y x + f x • cov Y x (X x)
+
   simp only [vectorFieldActionSmooth, ContMDiffMap.coeFn_mk, vectorFieldAction]
   abel
 end Connection

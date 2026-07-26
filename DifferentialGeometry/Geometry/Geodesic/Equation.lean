@@ -598,6 +598,72 @@ theorem isGeodesicOn_comp_neg
   intro τ hτ
   exact hasGeodesicEquationAt_comp_neg (I := I) (hγ (-τ) hτ)
 
+/-- The chart-local curve of the affinely reparametrised curve `s ↦ γ (c s + d)`
+at base time `t` equals the chart-local curve of `γ` at the base time `c t + d`,
+precomposed with the affine map `s ↦ c s + d` (the foot points coincide, so the
+ambient chart is the same).  Holds definitionally. -/
+lemma chartLocalCurve_comp_affine (γ : ℝ → M) (c d t : ℝ) :
+    chartLocalCurve (I := I) (fun s => γ (c * s + d)) t =
+      (fun s => chartLocalCurve (I := I) γ (c * t + d) (c * s + d)) := rfl
+
+/-- **Pointwise affine reparametrisation of the geodesic equation.** If `γ`
+satisfies the geodesic equation at `c t + d`, then the affine reparametrisation
+`s ↦ γ (c s + d)` satisfies it at `t`: the chart velocity scales by `c`, the chart
+acceleration by `c²`, and the Christoffel contraction scales by `c²` too
+(`chartChristoffelContraction_smul_smul`), so the geodesic identity carries over
+after factoring out `c²`.  Generalises `hasGeodesicEquationAt_comp_neg` (`c = -1`,
+`d = 0`) and the translation case (`c = 1`). -/
+theorem hasGeodesicEquationAt_comp_affine
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {c d t : ℝ}
+    (hγ : HasGeodesicEquationAt (I := I) g γ (c * t + d)) :
+    HasGeodesicEquationAt (I := I) g (fun s => γ (c * s + d)) t := by
+  obtain ⟨v, a, hv, hev, ha, hgeo⟩ := hγ
+  set u : ℝ → E := chartLocalCurve (I := I) γ (c * t + d) with hu_def
+  have haff : ∀ s : ℝ, HasDerivAt (fun x : ℝ => c * x + d) c s := fun s => by
+    simpa using ((hasDerivAt_id s).const_mul c).add_const d
+  have hshift : chartLocalCurve (I := I) (fun s => γ (c * s + d)) t
+      = (fun s => u (c * s + d)) := rfl
+  have hcont : Filter.Tendsto (fun s : ℝ => c * s + d) (nhds t) (nhds (c * t + d)) :=
+    ((continuous_const.mul continuous_id).add continuous_const).continuousAt
+  have hev_pb : ∀ᶠ s in nhds t, HasDerivAt u (deriv u (c * s + d)) (c * s + d) :=
+    hcont.eventually hev
+  have hderiv_ev : ∀ᶠ s in nhds t,
+      deriv (fun x => u (c * x + d)) s = c • deriv u (c * s + d) := by
+    filter_upwards [hev_pb] with s hs
+    have hch := hs.scomp s (haff s)
+    simpa [Function.comp_def] using hch.deriv
+  refine ⟨c • v, (c * c) • a, ?_, ?_, ?_, ?_⟩
+  · rw [hshift]
+    have := hv.scomp t (haff t)
+    simpa [Function.comp_def] using this
+  · rw [hshift]
+    filter_upwards [hev_pb, hderiv_ev] with s hs hds
+    have hch := hs.scomp s (haff s)
+    rw [hds]
+    simpa [Function.comp_def] using hch
+  · rw [hshift]
+    have hcongr : (fun s => deriv (fun x => u (c * x + d)) s)
+        =ᶠ[nhds t] (fun s => c • deriv u (c * s + d)) := hderiv_ev
+    refine HasDerivAt.congr_of_eventuallyEq ?_ hcongr
+    have hinner : HasDerivAt (fun s => deriv u (c * s + d)) (c • a) t := by
+      have := ha.scomp t (haff t)
+      simpa [Function.comp_def] using this
+    have hfin := hinner.const_smul c
+    rw [smul_smul] at hfin
+    exact hfin
+  · rw [chartChristoffelContraction_smul_smul (I := I) g _ c v, ← smul_add, hgeo,
+      smul_zero]
+
+/-- **Affine reparametrisation of a geodesic on a set.** If `γ` is a geodesic on
+`s : Set ℝ`, then `t ↦ γ (c t + d)` is a geodesic on the affine preimage
+`{t | c t + d ∈ s}`. -/
+theorem isGeodesicOn_comp_affine
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {s : Set ℝ} {c d : ℝ}
+    (hγ : IsGeodesicOn (I := I) g γ s) :
+    IsGeodesicOn (I := I) g (fun t => γ (c * t + d)) {t : ℝ | c * t + d ∈ s} := by
+  intro t ht
+  exact hasGeodesicEquationAt_comp_affine (I := I) (hγ (c * t + d) ht)
+
 section ChartFixedSmoothness
 
 variable [I.Boundaryless]

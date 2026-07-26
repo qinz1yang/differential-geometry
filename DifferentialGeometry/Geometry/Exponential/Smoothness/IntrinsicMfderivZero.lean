@@ -36,12 +36,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 
+omit [ConnectedSpace M] in
 set_option linter.unusedSectionVars false in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 /-- **The manifold derivative of the intrinsic exponential map at the zero tangent
-vector is the identity.** For a smooth Riemannian metric `g` on a connected,
-boundaryless, complete Riemannian manifold modelled on a complete inner-product space,
+vector is the identity.** For a smooth Riemannian metric `g` on a boundaryless,
+complete Riemannian manifold modelled on a complete inner-product space,
 and any base point `p`,
 
 `mfderiv 𝓘(ℝ, E) I (expMapIntrinsic g hEnorm p) 0 = ContinuousLinearMap.id ℝ E`.

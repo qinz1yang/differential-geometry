@@ -263,19 +263,12 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
         ⟨x, T⟩).2) := by
-  -- The base-bundle transition CLE from x to x₀, at point x
-  -- (trivAt F E x .cLEAt x).symm : F → E x, then (trivAt F E x₀ .cLEAt x) : E x → F
+
   set Φ : F ≃L[𝕜] F :=
     ((trivializationAt F E x).continuousLinearEquivAt 𝕜 x
       (mem_baseSet_trivializationAt F E x)).symm.trans
       ((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx) with hΦ_def
-  -- ### Step 1: Expand LHS using trivialization of the tensor product bundle
-  -- The tensor product bundle trivialization at x₀ applies TensorProduct.map of the
-  -- per-factor transitions, which when composed with `dualTensorMultilinearUntrivializeAt`
-  -- (part of multilinearHomTensorEquivAt_bundle) gives:
-  --   triv_tensor(x₀)(fiberwise_equiv(T)).2
-  --     = TensorProduct.map(compCCLM(precomp(Φ)), compCCLM(Φ.symm))
-  --         (modelEquiv(mixedCLE(x)(T)))
+
   have hLHS : (trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
@@ -293,14 +286,11 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
         ((ContinuousMultilinearMap.multilinearHomEquivDualMultilinearTensor 𝕜 F r s)
           ((Bundle.continuousMultilinearMap.mixedContinuousLinearEquivAt
               (𝕜 := 𝕜) (F := F) (E := E) r s x) T)) := by
-    -- Let `u := modelEquiv (mixedCLE x T)` be the model-fiber tensor product element.
-    -- We show more generally: for any `v`, the tensor product trivialization of
-    -- `dualTensorMultilinearUntrivializeAt r s x v` at x₀ equals the per-factor
-    -- transition maps applied to v.
+
     set u := (ContinuousMultilinearMap.multilinearHomEquivDualMultilinearTensor 𝕜 F r s)
       ((Bundle.continuousMultilinearMap.mixedContinuousLinearEquivAt
         (𝕜 := 𝕜) (F := F) (E := E) r s x) T) with hu_def
-    -- The fiberwise equiv unfolds to: dualTensorUntrivAt (modelEquiv (mixedCLE T))
+
     have hf_eq : (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
         (𝕜 := 𝕜) (F := F) (E := E) r s x) T =
         (Bundle.continuousMultilinearMap.dualTensorMultilinearUntrivializeAt
@@ -309,7 +299,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
       simp only [LinearEquiv.trans_apply, hu_def,
         ContinuousLinearEquiv.coe_toLinearEquiv]
     rw [hf_eq]
-    -- Unfold dualTensorMultilinearUntrivializeAt as TensorProduct.map
+
     rw [show (Bundle.continuousMultilinearMap.dualTensorMultilinearUntrivializeAt
           (𝕜 := 𝕜) (F := F) (E := E) r s x) u =
         TensorProduct.map
@@ -317,7 +307,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (E := Bundle.dual 𝕜 E) r x).symm.toLinearEquiv.toLinearMap
           (Bundle.continuousMultilinearMap.continuousLinearEquivAt (𝕜 := 𝕜) (F := F) (E := E) s x).symm.toLinearEquiv.toLinearMap
           u from rfl]
-    -- The tensor product bundle trivialization at x₀ applies TensorProduct.map
+
     rw [show (trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
@@ -332,9 +322,9 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀)) from
       Bundle.TensorProduct.tensorProduct_trivializationAt x₀]
     rw [Trivialization.tensorProduct_apply]
-    -- Extract the .2 from the pair, combine the TensorProduct.maps using functoriality
+
     simp only [TensorProduct.map_map]
-    -- Establish the two per-factor linear map equalities
+
     have h_r : (((trivializationAt
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x)
@@ -346,77 +336,54 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (fun _ => (ContinuousLinearMap.compL 𝕜 F F 𝕜).flip Φ.toContinuousLinearMap)).toLinearMap := by
       apply LinearMap.ext; intro M
       simp only [LinearMap.coe_comp, Function.comp_apply]
-      -- The dual multilinear bundle's baseSet at x₀ has x in it iff x is in the base bundle's
+
       have hx_dmr : x ∈ (trivializationAt
           (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) x₀).baseSet := by
-        -- Derived from hx using the fact that the dual multilinear bundle's trivialization
-        -- inherits its baseSet from the base bundle E (via the dual bundle).
+
         have : x ∈ (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x₀).baseSet := by
           change x ∈ (trivializationAt F E x₀).baseSet ∩ Set.univ
           exact ⟨hx, trivial⟩
         exact this
-      apply ContinuousMultilinearMap.ext; intro w  -- w : Fin r → (F →L[𝕜] 𝕜)
-      -- Set T := compCCLM(precomp(Φ)) M  as the target RHS
+      apply ContinuousMultilinearMap.ext; intro w
+
       set T : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 :=
         (ContinuousMultilinearMap.compContinuousLinearMapL
           (𝕜 := 𝕜) (E := fun _ : Fin r => F →L[𝕜] 𝕜) (E₁ := fun _ : Fin r => F →L[𝕜] 𝕜) (F := 𝕜)
           (fun _ => (ContinuousLinearMap.compL 𝕜 F F 𝕜).flip Φ.toContinuousLinearMap)) M with hT_def
-      -- Key identity: cle_dual_r(x).symm M = triv_dual_r(x₀).symmL(x) T
+
       have key : (Bundle.continuousMultilinearMap.continuousLinearEquivAt
           (𝕜 := 𝕜) (F := F →L[𝕜] 𝕜) (E := Bundle.dual 𝕜 E) r x).symm M =
           (trivializationAt
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x)
             x₀).symmL 𝕜 x T := by
-        apply ContinuousMultilinearMap.ext; intro v  -- v : Fin r → dual_E x
-        -- Derive hx for the dual bundle (from hx for base bundle via intersection with univ)
+        apply ContinuousMultilinearMap.ext; intro v
+
         have hx_dual : x ∈ (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x₀).baseSet := by
           change x ∈ (trivializationAt F E x₀).baseSet ∩ Set.univ
           exact ⟨hx, trivial⟩
-        -- RHS via triv_symmL_eq_compContinuousLinearMap for the dual multilinear bundle
+
         rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
           (𝕜 := 𝕜) (F := F →L[𝕜] 𝕜) (E := Bundle.dual 𝕜 E) x₀ x hx_dual]
         simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-        -- LHS: M(cLMA_dual_at_x(x) ∘ v)
+
         change M (fun i => (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt 𝕜 x (v i)) =
           T (fun i => (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x₀).continuousLinearMapAt 𝕜 x (v i))
         rw [hT_def]
         rw [ContinuousMultilinearMap.compContinuousLinearMapL_apply,
             ContinuousMultilinearMap.compContinuousLinearMap_apply]
-        -- Goal: M(cLMA_dual_at_x(x) ∘ v) = M(precomp(Φ) ∘ cLMA_dual_at_x₀(x) ∘ v)
+
         congr 1
         funext i
-        -- Show: cLMA_dual_at_x(x)(v i) = precomp(Φ)(cLMA_dual_at_x₀(x)(v i)) as CLMs F →L 𝕜
+
         apply ContinuousLinearMap.ext
-        intro a  -- a : F
-        -- Use dualBundle_triv_symmL_eq_comp to compute both cLMA_dual values via round-trip
-        -- cLMA_dual_at_x(x)(η)(a) = η(symmL_base_at_x(x)(a))
-        -- cLMA_dual_at_x₀(x)(η)(a') = η(symmL_base_at_x₀(x)(a'))
-        -- precomp(Φ)(ζ)(a) = ζ(Φ(a))
-        -- So both reduce to η applied to some E x element; we need the elements to match.
-        -- Apply symmL_continuousLinearMapAt at x₀: symmL_dual_at_x₀ ∘ cLMA_dual_at_x₀ = id on baseSet
-        -- Pre-apply symmL_dual_at_x₀(x) on both sides and use dualBundle_triv_symmL_eq_comp
-        -- First, unfold the `precomp(Φ)` on RHS
+        intro a
+
         simp only [ContinuousLinearMap.flip_apply, ContinuousLinearMap.compL_apply]
-        -- Goal: cLMA_dual_at_x(x)(v i)(a) = cLMA_dual_at_x₀(x)(v i)(Φ(a))
-        -- Apply dualBundle_triv_symmL_eq_comp in reverse: use symmL_continuousLinearMapAt
+
         have hxx : x ∈ (trivializationAt F E x).baseSet := mem_baseSet_trivializationAt F E x
-        -- LHS = (symmL_dual_at_x(x) (cLMA_dual_at_x(x) (v i))) (symmL_base_at_x(x) a)?
-        -- No, that's not quite right. Let me use a different approach.
-        --
-        -- Key insight: both sides are characterized by their behaviour when composed with
-        -- cLMA_base at appropriate points. Rather than computing cLMA_dual directly, use:
-        --   ((trivAt (F →L 𝕜) (dual E) x).symmL 𝕜 x (cLMA_dual_at_x(x) η)) = η
-        -- (by symmL_continuousLinearMapAt). Expanding symmL via dualBundle_triv_symmL_eq_comp:
-        --   cLMA_dual_at_x(x) η ∘ cLMA_base_at_x(x) = η (as elements of dual_E x)
-        --
-        -- So evaluating at b : E x: cLMA_dual_at_x(x) η (cLMA_base_at_x(x) b) = η b.
-        -- Setting a = cLMA_base_at_x(x) b, we have b = symmL_base_at_x(x) a, and
-        --   cLMA_dual_at_x(x) η a = η (symmL_base_at_x(x) a).
-        -- Similarly cLMA_dual_at_x₀(x) η (Φ a) = η (symmL_base_at_x₀(x) (Φ a)).
-        -- And Φ.symm ∘ Φ = id, Φ = cLMA_at_x₀ ∘ symmL_at_x, so
-        --   symmL_at_x₀(Φ a) = symmL_at_x₀(cLMA_at_x₀(symmL_at_x(a))) = symmL_at_x(a).
+
         have hxx_dual : x ∈ (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).baseSet :=
           mem_baseSet_trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x
         have hLHS : (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt 𝕜 x
@@ -425,11 +392,9 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (𝕜 := 𝕜) (F := F) (E := E) x x hxx
             ((trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt 𝕜 x (v i))
             (((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).symm a)
-          -- this : symmL_dual(cLMA_dual(v i)) (cLEAt_x.symm a) = cLMA_dual(v i) (cLMA_base (cLEAt_x.symm a))
-          -- Simplify LHS: symmL_dual ∘ cLMA_dual = id when x ∈ baseSet of dual trivAt at x
+
           rw [Trivialization.symmL_continuousLinearMapAt _ hxx_dual] at this
-          -- this : v i (cLEAt_x.symm a) = cLMA_dual (v i) (cLMA_base (cLEAt_x.symm a))
-          -- Simplify cLMA_base (cLEAt_x.symm a) = a
+
           have h_symm_eq : ((trivializationAt F E x).continuousLinearEquivAt 𝕜 x hxx).symm a
               = (trivializationAt F E x).symmL 𝕜 x a := rfl
           rw [h_symm_eq, Trivialization.continuousLinearMapAt_symmL _ hxx] at this
@@ -453,13 +418,11 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (v i)) (Φ a))
         rw [hRHS]
         congr 1
-        -- Show: cLEAt_x.symm a = cLEAt_x₀.symm (Φ a)
-        -- Φ = cLEAt_x.symm.trans cLEAt_x₀, so Φ a = cLEAt_x₀ (cLEAt_x.symm a), thus
-        -- cLEAt_x₀.symm (Φ a) = cLEAt_x.symm a.
+
         rw [hΦ_def]
         simp only [ContinuousLinearEquiv.trans_apply,
           ContinuousLinearEquiv.symm_apply_apply]
-      -- Final: invert via continuousLinearMapAt_symmL
+
       change ((trivializationAt
           (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) x₀).continuousLinearMapAt 𝕜 x
@@ -481,35 +444,33 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (fun _ => Φ.symm.toContinuousLinearMap)).toLinearMap := by
       apply LinearMap.ext; intro M
       simp only [LinearMap.coe_comp, Function.comp_apply]
-      -- The multilinear bundle's baseSet equals the base bundle's baseSet
+
       have hx_ms : x ∈ (trivializationAt
           (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).baseSet := hx
-      -- Show pointwise equality on w : Fin s → F
+
       apply ContinuousMultilinearMap.ext; intro w
-      -- LHS: triv_s(x₀).cLMA(x) (cle_s(x).symm M) evaluated at w
-      -- Set T := compCCLM(Φ.symm) M. We'll show cle_s(x).symm M = triv_s(x₀).symmL(x) T.
+
       set T : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜 :=
         (ContinuousMultilinearMap.compContinuousLinearMapL
           (𝕜 := 𝕜) (E := fun _ : Fin s => F) (E₁ := fun _ : Fin s => F) (F := 𝕜)
           (fun _ => Φ.symm.toContinuousLinearMap)) M with hT_def
-      -- Key identity: cle_s(x).symm M = triv_s(x₀).symmL(x) T
+
       have key : (Bundle.continuousMultilinearMap.continuousLinearEquivAt
           (𝕜 := 𝕜) (F := F) (E := E) s x).symm M =
           (trivializationAt
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).symmL 𝕜 x T := by
-        -- Evaluate pointwise on v : Fin s → E x
+
         apply ContinuousMultilinearMap.ext; intro v
-        -- RHS via triv_symmL_eq_compContinuousLinearMap: T(cLMA_x₀(x) ∘ v)
+
         rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap x₀ x hx]
-        -- Unfold both sides using compContinuousLinearMap_apply
+
         simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-        -- LHS: cle_s(x).symm M v = M(symmL_at_x(x).symm ∘ v) = M(cLMA_at_x(x) ∘ v)
-        -- Unfold cle_s(x).symm
+
         change M (fun i => (trivializationAt F E x).continuousLinearMapAt 𝕜 x (v i)) =
           T (fun i => (trivializationAt F E x₀).continuousLinearMapAt 𝕜 x (v i))
-        -- Unfold T
+
         rw [hT_def]
         change M (fun i => (trivializationAt F E x).continuousLinearMapAt 𝕜 x (v i)) =
           ((ContinuousMultilinearMap.compContinuousLinearMapL
@@ -517,21 +478,20 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (fun i => (trivializationAt F E x₀).continuousLinearMapAt 𝕜 x (v i))
         rw [ContinuousMultilinearMap.compContinuousLinearMapL_apply,
             ContinuousMultilinearMap.compContinuousLinearMap_apply]
-        -- Goal: M(cLMA_at_x(x) ∘ v) = M(Φ.symm ∘ cLMA_at_x₀(x) ∘ v)
+
         congr 1
         funext i
-        -- cLMA_at_x(x)(v i) = Φ.symm (cLMA_at_x₀(x)(v i))
+
         rw [hΦ_def]
         simp only [ContinuousLinearEquiv.symm_trans_apply,
           ContinuousLinearEquiv.symm_symm,
           ContinuousLinearEquiv.coe_coe,
           Trivialization.coe_continuousLinearEquivAt_eq _ (mem_baseSet_trivializationAt F E x)]
-        -- Goal reduces to: cLMA_at_x(x) (v i) = cLMA_at_x(x) (cLEAt_at_x₀(x).symm (cLMA_at_x₀(x) (v i)))
-        -- i.e., cLEAt_at_x₀(x).symm ∘ cLMA_at_x₀(x) = id on E x
+
         congr 1
         rw [← Trivialization.coe_continuousLinearEquivAt_eq _ hx]
         exact (((trivializationAt F E x₀).continuousLinearEquivAt 𝕜 x hx).symm_apply_apply (v i)).symm
-      -- Final: use key to rewrite LHS to a form using triv_s(x₀).symmL(x), then invert
+
       change ((trivializationAt
           (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).continuousLinearMapAt 𝕜 x
@@ -543,10 +503,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).continuousLinearMapAt_symmL hx_ms T) w
     rw [h_r, h_s]
-  -- ### Step 2: Expand RHS using trivialization of the hom bundle (mixed bundle)
-  -- The hom bundle trivialization at x₀ uses `inCoordinates`, and conjugating
-  -- mixedCLE(x)(T) by the transitions gives:
-  --   triv_mixed(x₀)(T).2 = compCCLM(Φ.symm) ∘ mixedCLE(x)(T) ∘ compCCLM(Φ)
+
   have hx_ms : x ∈ (trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
       (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).baseSet := hx
   have hRHS : (trivializationAt
@@ -563,19 +520,15 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (ContinuousMultilinearMap.compContinuousLinearMapL
             (𝕜 := 𝕜) (E := fun _ : Fin r => F) (E₁ := fun _ : Fin r => F) (F := 𝕜)
             (fun _ => Φ.toContinuousLinearMap))) := by
-    -- The hom bundle trivialization at x₀ is (definitionally) the
-    -- `Trivialization.continuousLinearMap` construction applied to the two
-    -- multilinear bundle trivializations. Unfolding gives:
-    --    (trivAt_hom x₀ ⟨x, T⟩).2 = (cLMA_mls_x₀(x)).comp (T.comp (symmL_mlr_x₀(x)))
+
     change ((trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).continuousLinearMapAt 𝕜 x).comp
           (T.comp ((trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x) x₀).symmL 𝕜 x)) = _
-    -- Reduce to pointwise equality on MLF_r (model) and Fin s → F
+
     apply ContinuousLinearMap.ext; intro M
     apply ContinuousMultilinearMap.ext; intro v
-    -- Substitute the symmL at x for mlr (triv_symmL_eq_compContinuousLinearMap):
-    --   symmL_mlr_x₀(x) M = M.compCLM (fun _ => (triv F E x₀).cLMA 𝕜 x)
+
     have hmlr_symmL : ((trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x) x₀).symmL 𝕜 x M :
           Bundle.continuousMultilinearMap 𝕜 r F E x) =
@@ -583,8 +536,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (fun _ : Fin r => (trivializationAt F E x₀).continuousLinearMapAt 𝕜 x) :=
       Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
         (𝕜 := 𝕜) (F := F) (E := E) x₀ x hx M
-    -- For cLMA, use coe_linearMapAt_of_mem: on baseSet, cLMA N = (e ⟨x, N⟩).2.
-    -- By continuousMultilinearMap_apply: (e_mls ⟨x, N⟩).2 = N.compCLM (fun _ => (triv F E x₀).symmL 𝕜 x)
+
     have hmls_cLMA : ∀ (N : Bundle.continuousMultilinearMap 𝕜 s F E x),
         ((trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
             (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).continuousLinearMapAt 𝕜 x N :
@@ -596,18 +548,15 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
           (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).linearMapAt 𝕜 x N = _
       rw [Trivialization.coe_linearMapAt_of_mem _ hx_ms]
       rfl
-    -- Compute LHS M v
+
     simp only [ContinuousLinearMap.comp_apply]
     rw [hmlr_symmL, hmls_cLMA]
     simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-    -- LHS at (M,v) = T (M.compCLM(fun _ => (triv F E x₀).cLMA 𝕜 x))
-    --                  (fun i => (triv F E x₀).symmL 𝕜 x (v i))
-    -- Unfold RHS: compContinuousLinearMapL, then arrowCongr inside mixedContinuousLinearEquivAt
+
     simp only [ContinuousMultilinearMap.compContinuousLinearMapL_apply,
       ContinuousMultilinearMap.compContinuousLinearMap_apply,
       ContinuousLinearEquiv.coe_coe]
-    -- mixedContinuousLinearEquivAt = arrowCongr (cle_r x) (cle_s x).
-    -- For any N' : MLF_r (model): (arrowCongr e₁ e₂) T N' = e₂ (T (e₁.symm N')).
+
     change _ =
       (Bundle.continuousMultilinearMap.continuousLinearEquivAt
           (𝕜 := 𝕜) (F := F) (E := E) s x
@@ -615,11 +564,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
             (𝕜 := 𝕜) (F := F) (E := E) r x).symm
           (M.compContinuousLinearMap (fun _ : Fin r => Φ.toContinuousLinearMap)))))
         (fun i => Φ.symm.toContinuousLinearMap (v i))
-    -- Unfold the concrete definitions of cle_r.symm and cle_s from Fiber.lean:
-    --   (cle_r x).symm N' = compContinuousLinearMapL (fun _ => (triv F E x).cLMA 𝕜 x) N'
-    --                     = N'.compContinuousLinearMap (fun _ => (triv F E x).cLMA 𝕜 x)
-    --   (cle_s x) N      = compContinuousLinearMapL (fun _ => (triv F E x).symmL 𝕜 x) N
-    --                     = N.compContinuousLinearMap  (fun _ => (triv F E x).symmL 𝕜 x)
+
     change _ =
       (T ((M.compContinuousLinearMap (fun _ : Fin r => Φ.toContinuousLinearMap)
           ).compContinuousLinearMap
@@ -627,7 +572,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
         )).compContinuousLinearMap
           (fun _ : Fin s => (trivializationAt F E x).symmL 𝕜 x) (fun i => Φ.symm (v i))
     simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-    -- Prove the key argument-to-T equality and input-vector equality separately.
+
     have h_arg : M.compContinuousLinearMap
           (fun _ : Fin r => (trivializationAt F E x₀).continuousLinearMapAt 𝕜 x) =
         (M.compContinuousLinearMap (fun _ : Fin r => Φ.toContinuousLinearMap)).compContinuousLinearMap
@@ -636,12 +581,12 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
       simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply]
       congr 1
       funext i
-      -- (triv F E x₀).cLMA 𝕜 x (w i) = Φ ((triv F E x).cLMA 𝕜 x (w i))
+
       rw [hΦ_def]
       simp only [ContinuousLinearEquiv.trans_apply, ContinuousLinearEquiv.coe_coe,
         Trivialization.coe_continuousLinearEquivAt_eq _ hx]
       congr 1
-      -- Goal: w i = cLEAt(x).symm (cLMA (w i))
+
       have h_sym_eq : ((trivializationAt F E x).continuousLinearEquivAt 𝕜 x
           (mem_baseSet_trivializationAt F E x)).symm
           ((trivializationAt F E x).continuousLinearMapAt 𝕜 x (w i)) =
@@ -658,8 +603,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
       rw [Trivialization.symmL_continuousLinearMapAt _ (mem_baseSet_trivializationAt F E x)]
       rfl
     rw [h_arg, h_vec]
-  -- Step 3: Combine via naturality of `multilinearHomEquivDualMultilinearTensor`.
-  -- `modelMixedToTensorCLM` coerces to the same function as the naturality's MHE.
+
   rw [hLHS, hRHS]
   exact (ContinuousMultilinearMap.multilinearHomEquivDualMultilinearTensor_naturality
     r s Φ ((Bundle.continuousMultilinearMap.mixedContinuousLinearEquivAt
@@ -684,18 +628,15 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x ⊗[𝕜]
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
         ⟨x, T⟩).2) := by
-  -- Derive from the forward direction by applying it to the preimage of T.
+
   have hfwd := mixedToTensor_triv_eq_bundle x₀ x hx
     ((Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
       (𝕜 := 𝕜) (F := F) (E := E) r s x).symm T)
-  -- After `apply_symm_apply` on the inner `(bundle equiv) ((bundle equiv).symm T)`:
+
   rw [LinearEquiv.apply_symm_apply] at hfwd
-  -- hfwd : (trivAt_tensor ⟨x, T⟩).2 = modelMixedToTensorCLM ((trivAt_hom ⟨x, φ.symm T⟩).2)
+
   rw [hfwd]
-  -- Goal: (trivAt_hom ⟨x, φ.symm T⟩).2 = modelTensorToMixedCLM (modelMixedToTensorCLM (...))
-  -- Both `modelMixedToTensorCLM` and `modelTensorToMixedCLM` are built from the same
-  -- underlying LinearEquiv `e1.trans e2` (forward and `.symm`), so their composition
-  -- on a fiber element is the identity by `LinearEquiv.symm_apply_apply`.
+
   exact (LinearEquiv.symm_apply_apply _ _).symm
 
 /-! ### Total-space smoothness -/

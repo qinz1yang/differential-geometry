@@ -31,16 +31,15 @@ compactness / finite-subcover argument.
 -/
 structure ChartLocalPicardData
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) where
-  /-- Positive time horizon for the chart-α-local flow. -/
+
   T : ℝ
   T_pos : 0 < T
-  /-- Positive chart-coord radius around `I ((chartAt H α) α)`. -/
+
   r : ℝ
   r_pos : 0 < r
-  /-- Chart-α-coord flow `E → ℝ → E`. -/
+
   flow : E → ℝ → E
-  /-- Initial condition and ODE on the closed ball of radius `r` for time
-  `[0, T]`. -/
+
   flow_spec : ∀ y ∈ Metric.closedBall (I ((chartAt H α) α)) r,
     flow y 0 = y ∧
     ∀ t ∈ Set.Icc (0 : ℝ) T,

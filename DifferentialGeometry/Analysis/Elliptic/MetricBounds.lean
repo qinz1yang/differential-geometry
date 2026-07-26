@@ -141,6 +141,33 @@ lemma abs_metric_inner_le_sqrt_metric_quadratic
   rw [hsqrt_mul] at h_le_sqrt
   exact h_le_sqrt
 
+set_option linter.unusedSectionVars false in
+/-- The square root of the metric quadratic form satisfies the triangle
+inequality on each tangent fibre. -/
+lemma gNorm_add_le
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
+    Real.sqrt (g.inner x (v + w) (v + w)) ≤
+      Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w) := by
+  have hv : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) (M := M) g x v
+  have hw : 0 ≤ g.inner x w w := metric_inner_self_nonneg (I := I) (M := M) g x w
+  have hvw : g.inner x v w ≤
+      Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) :=
+    (le_abs_self _).trans
+      (abs_metric_inner_le_sqrt_metric_quadratic (I := I) (M := M) g x v w)
+  have hexpand : g.inner x (v + w) (v + w) =
+      g.inner x v v + 2 * g.inner x v w + g.inner x w w := by
+    rw [map_add (g.inner x), ContinuousLinearMap.add_apply,
+      map_add (g.inner x v), map_add (g.inner x w), g.symm x w v]
+    ring
+  have hsum : 0 ≤ Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w) :=
+    add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  rw [show Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w) =
+      Real.sqrt ((Real.sqrt (g.inner x v v) + Real.sqrt (g.inner x w w)) ^ 2) from
+    (Real.sqrt_sq hsum).symm]
+  refine Real.sqrt_le_sqrt ?_
+  rw [hexpand, add_sq, Real.sq_sqrt hv, Real.sq_sqrt hw]
+  linarith
+
 /-- Pointwise operator norm of `g.inner x` as a bilinear form on `TangentSpace I x`. -/
 noncomputable def metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) : ℝ :=

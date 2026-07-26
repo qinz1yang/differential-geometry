@@ -4,6 +4,8 @@ import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.NonlinearitySpectral
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpVWFactorBound
+import DifferentialGeometry.Geometry.Connection.SingleSlotOperatorFiberNormBound
 
 /-!
 # Realizing a smooth `(0,2)`-tensor section as a smooth Riemannian metric perturbation
@@ -136,6 +138,194 @@ theorem ccTensorBilin_apply (g : SmoothRiemannianMetric I M)
     ccTensorBilin (I := I) g T x v w =
       ccTensorModel (I := I) g T x ![v, w] :=
   bilinFormToModel_symm_apply E (ccTensorModel (I := I) g T x) v w
+
+attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
+  Tensor0SBundle.tensorRSSpace_normedSpace in
+/-- **The pointwise tensor Cauchy–Schwarz bound for the extracted bilinear form.**
+
+The bilinear evaluation `ccTensorBilin g₀ T x v w` (which recovers the `(0,2)`-tensor value
+`T(x)(v, w)`) is controlled by the Riemannian fibre norm of the tensor at `x` times the
+`g₀`-lengths of the two arguments:
+
+  `|ccTensorBilin g₀ T x v w| ≤ ‖T.toSection x‖_g · √(g₀ x v v) · √(g₀ x w w)`,
+
+where `‖·‖_g` is the fibre norm of the installed `RiemannianBundle` instance
+`tensorRS_riemannianBundle g₀ 0 2`.  This is the textbook pointwise tensor Cauchy–Schwarz
+inequality for a covariant `(0,2)`-tensor: pairing `T(x)` with the rank-one cotensor
+`v♭ ⊗ w♭` (the metric duals of `v, w`) recovers `T(x)(v, w)`, the bilinear
+metric-induced Cauchy–Schwarz `tensorInnerPointwise_sq_le_mul` bounds it by the fibre norms,
+and `‖v♭ ⊗ w♭‖_g = √(g₀ x v v) · √(g₀ x w w)`.
+
+This is the single named geometric leaf of the spectral `C⁰`-control bridge
+`ccTensorBilinSymm_gFibreOpBound_le_spectral_lossy`: composed with the supercritical
+Sobolev embedding `H^{2k} ↪ C⁰` and the PoU → spectral norm comparison, it turns a small
+`H^σ` ball into the fibre operator-norm smallness `gFibreOpBound`. -/
+theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
+    (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
+    (v w : TangentSpace I x) :
+    letI : Bundle.RiemannianBundle
+        (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
+      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+    |ccTensorBilin (I := I) g₀ T x v w| ≤
+      ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ *
+        Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
+  classical
+  letI instTens : Bundle.RiemannianBundle
+      (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
+    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+
+  obtain ⟨n, e, _hn, horth, hpars, hexpand, hrfns⟩ :=
+    tangent_frame_expansion (I := I) (M := M) g₀ x
+  set B : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
+    ccTensorBilin (I := I) g₀ T x with hB_def
+
+  set coef : Fin n × Fin n → ℝ :=
+    fun p => g₀.inner x (e p.1) v * g₀.inner x (e p.2) w with hcoef_def
+  set comp : Fin n × Fin n → ℝ := fun p => B (e p.1) (e p.2) with hcomp_def
+
+  have hexpV : v = ∑ i : Fin n, g₀.inner x (e i) v • e i := hexpand v
+  have hexpW : w = ∑ j : Fin n, g₀.inner x (e j) w • e j := hexpand w
+  have hvalue : B v w = ∑ p : Fin n × Fin n, coef p * comp p := by
+    have hBv : B v = ∑ i : Fin n, g₀.inner x (e i) v • B (e i) := by
+      conv_lhs => rw [hexpV]
+      rw [map_sum]
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      rw [map_smul]
+    have hBvw : B v w =
+        ∑ i : Fin n, g₀.inner x (e i) v • (B (e i) w) := by
+      rw [hBv, ContinuousLinearMap.sum_apply]
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      rw [ContinuousLinearMap.smul_apply]
+    have hBeiw : ∀ i : Fin n, B (e i) w =
+        ∑ j : Fin n, g₀.inner x (e j) w • B (e i) (e j) := by
+      intro i
+      conv_lhs => rw [hexpW]
+      rw [map_sum]
+      refine Finset.sum_congr rfl (fun j _ => ?_)
+      rw [map_smul]
+    rw [hBvw]
+    have hdouble : (∑ i : Fin n, g₀.inner x (e i) v • (B (e i) w)) =
+        ∑ i : Fin n, ∑ j : Fin n,
+          (g₀.inner x (e i) v * g₀.inner x (e j) w) • B (e i) (e j) := by
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      rw [hBeiw i, Finset.smul_sum]
+      refine Finset.sum_congr rfl (fun j _ => ?_)
+      rw [smul_smul]
+    rw [hdouble, ← Fintype.sum_prod_type'
+      (f := fun (i j : Fin n) =>
+        (g₀.inner x (e i) v * g₀.inner x (e j) w) • B (e i) (e j))]
+    refine Finset.sum_congr rfl (fun p _ => ?_)
+    rw [hcoef_def, hcomp_def, smul_eq_mul]
+
+  have hCS : (∑ p : Fin n × Fin n, coef p * comp p) ^ 2 ≤
+      (∑ p : Fin n × Fin n, coef p ^ 2) * ∑ p : Fin n × Fin n, comp p ^ 2 :=
+    Finset.sum_mul_sq_le_sq_mul_sq Finset.univ coef comp
+
+  have hcoefsq : (∑ p : Fin n × Fin n, coef p ^ 2) =
+      g₀.inner x v v * g₀.inner x w w := by
+    rw [Fintype.sum_prod_type (f := fun p : Fin n × Fin n => coef p ^ 2)]
+    rw [show (∑ i : Fin n, ∑ j : Fin n, coef (i, j) ^ 2) =
+          (∑ i : Fin n, g₀.inner x (e i) v ^ 2) *
+            ∑ j : Fin n, g₀.inner x (e j) w ^ 2 from ?_]
+    · rw [hpars v, hpars w]
+    · rw [Finset.sum_mul_sum]
+      refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+      rw [hcoef_def]
+      ring
+
+  have hcomp_fiber : ∀ (K : Fin 0 → Fin n) (i j : Fin n),
+      comp (i, j) = fiberNormSqComponent (I := I) (M := M) g₀ x 0 2
+        (T.toSection x) n e K (![i, j] : Fin 2 → Fin n) := by
+    intro K i j
+
+    have hconst : ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+          (fun k : Fin 0 => g₀.inner x (e (K k))) :
+          Tensor0SBundle.Tensor0SSpace 0 I x) =
+        ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) := by
+      apply Tensor0SBundle.tensor0SSpace_ext
+      intro u
+      change ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+          (fun k : Fin 0 => g₀.inner x (e (K k)))) u =
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) u
+      rw [show ((ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) u : ℝ) = 1 from rfl]
+      change (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ)
+          (fun k => g₀.inner x (e (K k)) (u k)) = 1
+      rw [ContinuousMultilinearMap.mkPiAlgebra_apply]
+      exact Finset.prod_of_isEmpty _
+
+    have hcompij : comp (i, j) = ccTensorModel (I := I) g₀ T x ![e i, e j] := by
+      rw [hcomp_def, hB_def]
+      exact ccTensorBilin_apply (I := I) g₀ T x (e i) (e j)
+    rw [hcompij]
+
+    unfold fiberNormSqComponent
+    rw [hconst]
+    have htuple : (fun k => e ((![i, j] : Fin 2 → Fin n) k)) =
+        (![e i, e j] : Fin 2 → TangentSpace I x) := by
+      funext k; fin_cases k <;> rfl
+    rw [htuple]
+
+    change ccTensorModel (I := I) g₀ T x ![e i, e j] =
+      ((T.toSection x
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)))
+        ![e i, e j] : ℝ)
+    unfold ccTensorModel
+    rw [ccTensorMultilinear_apply]
+    rfl
+  have hcompsq : (∑ p : Fin n × Fin n, comp p ^ 2) =
+      ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 := by
+    rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x
+      (T.toSection x)]
+
+    rw [hrfns (T.toSection x)]
+    rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
+      ∑ J : Fin 2 → Fin n,
+        fiberNormSqSummand (I := I) (M := M) g₀ x 0 2 (T.toSection x) n e K J)]
+
+    refine (Fintype.sum_equiv (finTwoArrowEquiv (Fin n))
+      (fun J : Fin 2 → Fin n =>
+        fiberNormSqSummand (I := I) (M := M) g₀ x 0 2 (T.toSection x) n e
+          (default : Fin 0 → Fin n) J)
+      (fun p : Fin n × Fin n => comp p ^ 2) ?_).symm
+    intro J
+    have hJ : (![J 0, J 1] : Fin 2 → Fin n) = J := by
+      funext k; fin_cases k <;> rfl
+    simp only [finTwoArrowEquiv_apply, Equiv.toFun_as_coe, piFinTwoEquiv_apply]
+    rw [fiberNormSqSummand_eq_component_sq,
+      hcomp_fiber (default : Fin 0 → Fin n) (J 0) (J 1), hJ]
+
+  have hnorm_nn : 0 ≤ ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ := norm_nonneg _
+  have hvv_nn : 0 ≤ g₀.inner x v v :=
+    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x v
+  have hww_nn : 0 ≤ g₀.inner x w w :=
+    DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M) g₀ x w
+  have habs_sq : |B v w| ^ 2 ≤
+      ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 *
+        (g₀.inner x v v * g₀.inner x w w) := by
+    rw [sq_abs, hvalue]
+    calc (∑ p : Fin n × Fin n, coef p * comp p) ^ 2
+        ≤ (∑ p : Fin n × Fin n, coef p ^ 2) * ∑ p : Fin n × Fin n, comp p ^ 2 := hCS
+      _ = (g₀.inner x v v * g₀.inner x w w) *
+            ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 := by
+            rw [hcoefsq, hcompsq]
+      _ = ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 *
+            (g₀.inner x v v * g₀.inner x w w) := by ring
+
+  have hrhs_nn : 0 ≤ ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ *
+      Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) :=
+    mul_nonneg (mul_nonneg hnorm_nn (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
+  rw [← Real.sqrt_sq (abs_nonneg (B v w))]
+  rw [show ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ *
+        Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) =
+      Real.sqrt (‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 *
+        (g₀.inner x v v * g₀.inner x w w)) from ?_]
+  · exact Real.sqrt_le_sqrt habs_sq
+  · rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq hnorm_nn,
+      Real.sqrt_mul hvv_nn, mul_assoc]
 
 /-- For two smooth tangent sections `Y, W`, the scalar
 `x ↦ ccTensorBilin T x (Y x) (W x)` is `C^∞`.

@@ -72,6 +72,9 @@ Geometer convention `Δ_∇ = −∇*∇`, spectrum `⊆ (−∞, 0]`; resolvent
 
 noncomputable section
 
+set_option linter.style.setOption false
+set_option synthInstance.maxHeartbeats 400000
+
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace

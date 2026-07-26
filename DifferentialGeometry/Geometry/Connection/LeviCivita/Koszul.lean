@@ -80,11 +80,11 @@ This is a thin wrapper around `(mfderiv I 𝓘(ℝ) f x) v` whose codomain
 as such by typeclass inference, which makes sums of such expressions awkward to
 elaborate without an explicit cast. Bundling the cast into a helper avoids
 repeating the ascription throughout the Koszul identity. -/
-@[reducible] def directionalDeriv (f : M → ℝ) (x : M) (v : TangentSpace I x) : ℝ :=
+@[reducible] def directionalDerivAt (f : M → ℝ) (x : M) (v : TangentSpace I x) : ℝ :=
   (mfderiv I 𝓘(ℝ) f x) v
 
-@[simp] lemma directionalDeriv_eq (f : M → ℝ) (x : M) (v : TangentSpace I x) :
-    directionalDeriv (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
+@[simp] lemma directionalDerivAt_eq (f : M → ℝ) (x : M) (v : TangentSpace I x) :
+    directionalDerivAt (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
 
 /-- **Koszul identity** (on-set form). Given a covariant derivative `cov` on the
 tangent bundle of a smooth Riemannian manifold which is metric-compatible (in the local
@@ -105,19 +105,19 @@ theorem koszul_identity_on
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x)
     (hxs : x ∈ s) :
     2 * g.inner x (cov Y x (X x)) (Z x) =
-      directionalDeriv (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x)
-      + directionalDeriv (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x)
-      - directionalDeriv (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x)
+      directionalDerivAt (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x)
+      + directionalDerivAt (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x)
+      - directionalDerivAt (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x)
       + g.inner x (VectorField.mlieBracket I X Y x) (Z x)
       - g.inner x (VectorField.mlieBracket I X Z x) (Y x)
       - g.inner x (VectorField.mlieBracket I Y Z x) (X x) := by
-  have eq1 : directionalDeriv (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x) =
+  have eq1 : directionalDerivAt (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x) =
       g.inner x (cov Y x (X x)) (Z x) + g.inner x (Y x) (cov Z x (X x)) :=
     hMC hY hZ hxs (X x)
-  have eq2 : directionalDeriv (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x) =
+  have eq2 : directionalDerivAt (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x) =
       g.inner x (cov X x (Y x)) (Z x) + g.inner x (X x) (cov Z x (Y x)) :=
     hMC hX hZ hxs (Y x)
-  have eq3 : directionalDeriv (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x) =
+  have eq3 : directionalDerivAt (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x) =
       g.inner x (cov X x (Z x)) (Y x) + g.inner x (X x) (cov Y x (Z x)) :=
     hMC hX hY hxs (Z x)
   have tf_XY : cov Y x (X x) - cov X x (Y x) = VectorField.mlieBracket I X Y x :=
@@ -163,9 +163,9 @@ theorem koszul_identity
     {X Y Z : Π x : M, TangentSpace I x} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
     2 * g.inner x (cov.toFun Y x (X x)) (Z x) =
-      directionalDeriv (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x)
-      + directionalDeriv (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x)
-      - directionalDeriv (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x)
+      directionalDerivAt (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x)
+      + directionalDerivAt (I := I) (fun b => g.inner b (X b) (Z b)) x (Y x)
+      - directionalDerivAt (I := I) (fun b => g.inner b (X b) (Y b)) x (Z x)
       + g.inner x (VectorField.mlieBracket I X Y x) (Z x)
       - g.inner x (VectorField.mlieBracket I X Z x) (Y x)
       - g.inner x (VectorField.mlieBracket I Y Z x) (X x) := by

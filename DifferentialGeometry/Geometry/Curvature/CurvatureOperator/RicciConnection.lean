@@ -1449,6 +1449,25 @@ theorem riemannOp_inner_pair_symm
   change riemann4 (I := I) g x v w Z W = riemann4 (I := I) g x Z W v w
   exact riemann4_pair_symm (I := I) g x v w Z W
 
+/-- The Jacobi curvature endomorphism `X ↦ R(X, v)v` is self-adjoint for the
+Riemannian metric. -/
+theorem riemannOp_diag_symm
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (v X Y : TangentSpace I x) :
+    g.inner x (riemannOp (LeviCivita (I := I) g) x X v v) Y =
+      g.inner x X (riemannOp (LeviCivita (I := I) g) x Y v v) := by
+  calc
+    g.inner x (riemannOp (LeviCivita (I := I) g) x X v v) Y =
+        g.inner x (riemannOp (LeviCivita (I := I) g) x v Y X) v :=
+      riemannOp_inner_pair_symm (I := I) g x X v v Y
+    _ = g.inner x (-(riemannOp (LeviCivita (I := I) g) x Y v X)) v := by
+      rw [riemannOp_swap]
+    _ = -g.inner x (riemannOp (LeviCivita (I := I) g) x Y v X) v := by
+      simp
+    _ = g.inner x X (riemannOp (LeviCivita (I := I) g) x Y v v) := by
+      have hskew := riemannOp_metric_skew (I := I) g x Y v X v
+      linarith
+
 end PairSymmetry
 
 end Connection

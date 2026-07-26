@@ -1583,6 +1583,37 @@ private lemma radialCurve_pathELength_eq
   rw [MeasureTheory.setLIntegral_const, Real.volume_Ioo, sub_zero,
     ENNReal.ofReal_one, mul_one]
 
+/-- The radial exponential curve bounds the Riemannian distance by the
+Riemannian length of its launch vector.  This direction only needs the launch
+vector to lie in the `C²` exponential ball; it does not require radial
+minimality or injectivity. -/
+theorem edist_exp_le_radius
+    (g : SmoothRiemannianMetric I M) (p : M) (a : E)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
+    riemannianEDist I p
+        (expMap (I := I) g p (show TangentSpace I p from a)) ≤
+      ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
+  set γr : ℝ → M :=
+    fun u : ℝ ↦ (expMap (I := I) g p
+      (show TangentSpace I p from (u • a)) : M) with hγr_def
+  have hγr0 : γr 0 = p := by
+    rw [hγr_def]
+    simp only [zero_smul]
+    exact expMap_zero (I := I) g p
+  have hγr1 : γr 1 =
+      expMap (I := I) g p (show TangentSpace I p from a) := by
+    rw [hγr_def]
+    simp only [one_smul]
+  have hγr_C1 : CMDiff[Set.Icc (0 : ℝ) 1] 1 γr :=
+    radialCurve_contMDiffOn_Icc (I := I) g p a ha
+  have hdist := riemannianEDist_le_pathELength
+    (I := I) (γ := γr) (a := 0) (b := 1) hγr_C1 rfl rfl zero_le_one
+  rw [hγr0, hγr1,
+    radialCurve_pathELength_eq (I := I) g p a hEnorm ha] at hdist
+  exact hdist
+
 /-- **Radial distance equals the radius (inside the `C²` ball).** For a chart
 endpoint `a` with `√(g_p(a, a)) < expRadiusGp g p` (equivalently `a` in the
 normal-chart target and in the natural exponential domain), the Riemannian
@@ -1623,6 +1654,23 @@ private theorem radial_riemannianEDist_eq_radius
     refine hdist_le.trans ?_
     rw [radialCurve_pathELength_eq (I := I) g p a hEnorm ha_eucl]
   exact le_antisymm hle hge
+
+/-- Inside the intrinsic exponential radius, the Riemannian distance to a
+radial exponential point equals the `g_p`-length of its launch vector.  The
+small-radius hypothesis supplies the normal-chart and exponential-domain
+memberships needed by the underlying radial-distance identity. -/
+theorem edist_exp_eq_radius
+    (g : SmoothRiemannianMetric I M) (p : M) {a : E}
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
+    riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from a))
+      = ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
+  have ha_eucl : ‖a‖ < expMapC2Radius (I := I) g p :=
+    norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p ha_small
+  exact radial_riemannianEDist_eq_radius (I := I) g p hEnorm
+    (mem_expDomain_of_norm_lt_radius (I := I) g p ha_eucl)
+    (ball_subset_normalChartAt_target (I := I) g p ha_eucl) ha_small
 
 /-- **Short-time confinement of a curve to the small normal ball at its
 launch point.** If `γ` is `C¹` on `[a, b]` with `γ t₀ = q` at an interior
@@ -2144,6 +2192,32 @@ theorem metricBall_subset_normalBall
   have hdy : riemannianEDist I c y = ENNReal.ofReal (Real.sqrt (g.inner c v v)) := by
     rw [hy_eq]; exact hdist_eq
   rw [hdy, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)]
+
+/-- A point whose Riemannian distance from `c` is below `expRadiusGp g c`
+belongs to the source of the normal chart at `c`. This is the source-membership
+projection of `metricBall_subset_normalBall`; use the stronger theorem when the
+radial vector or radius identity is also needed. -/
+theorem memNChartSrcOfDist
+    (g : SmoothRiemannianMetric I M) (c : M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    {y : M} (hfin : riemannianEDist I c y ≠ ⊤)
+    (hy : (riemannianEDist I c y).toReal < expRadiusGp (I := I) g c) :
+    y ∈ (NormalCoordinates.normalChartAt (I := I) g c).source := by
+  obtain ⟨v, hv_tgt, _hv_dom, _hv_len, hy_eq⟩ :=
+    metricBall_subset_normalBall (I := I) g c hEnorm hfin hy
+  set ψ := NormalCoordinates.normalChartAt (I := I) g c with hψ_def
+  have hv_symm_src : v ∈ ψ.symm.source := by
+    rw [hψ_def]
+    exact hv_tgt
+  have hy_symm : ψ.symm v = y := by
+    rw [hy_eq]
+    rw [hψ_def]
+    exact NormalCoordinates.normalChartAt_symm_apply (I := I) g c hv_symm_src
+  have hsrc : ψ.symm v ∈ ψ.source := by
+    exact ψ.symm.map_source hv_symm_src
+  rw [← hy_symm]
+  exact hsrc
 
 end LocalRadialIdentification
 

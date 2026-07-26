@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonDeTurckPullbackFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationFormChainRule
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
@@ -7,7 +6,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Tensor
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.DeTurckVFChartCoord
 
@@ -1003,6 +1001,231 @@ private lemma fderiv_chartDeTurckVFComp_joint_continuousOn
   refine ContinuousOn.smul ?_ continuousOn_const
   exact partialDeriv_chartDeTurckVFComp_joint_continuousOn
     (I := I) g_DT g₀ α T h_gram0 h_partial h_partial2 m k
+
+/-- The chart change-of-variables `Ψ : (t, y) ↦ (t, (extChartAt I α).symm y)` is continuous
+on `Icc 0 T ×ˢ interior (extChartAt I α).target`, mapping it into `Icc 0 T ×ˢ goodSet α`. -/
+private lemma psi_continuousOn_Icc (α : M) (T : ℝ) :
+    ContinuousOn (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) ∧
+    Set.MapsTo (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target)
+      (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
+  refine ⟨ContinuousOn.prodMk continuousOn_fst ?_, ?_⟩
+  · have hsymm : ContinuousOn (extChartAt I α).symm (extChartAt I α).target :=
+      continuousOn_extChartAt_symm (I := I) α
+    refine hsymm.comp continuousOn_snd ?_
+    intro p hp; exact interior_subset hp.2
+  · intro p hp
+    refine ⟨hp.1, ?_⟩
+    rw [mem_chartLeviCivitaGoodSet_iff]
+    have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+    refine ⟨(extChartAt I α).map_target hy_tgt, ?_, ?_⟩
+    · exact symm_mem_baseSet_of_mem_interior (I := I) (α := α) hp.2
+    · rw [(extChartAt I α).right_inv hy_tgt]; exact hp.2
+
+/-- **C⁰ joint chart-Gram value on the chart-target interior, from manifold-side joint data.**
+The `C⁰` `Icc`-analogue of `chartGramOnE_joint_contDiffOn_of_manifold`: from the joint `(t, x)`
+continuity of `chartGramOnE (g_DT ·) α i j (extChartAt I α ·)` on `Icc 0 T ×ˢ univ`, the
+`E`-level entry `(t, y) ↦ chartGramOnE (g_DT t) α i j y` is jointly continuous on
+`Icc 0 T ×ˢ interior (extChartAt I α).target`, via the chart change-of-variables `Ψ`. -/
+private lemma chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (T : ℝ)
+    (h_gram0 : ∀ (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × M => chartGramOnE (I := I) (g_DT q.1) α i j (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (i j : Fin (Module.finrank ℝ E)) :
+    ContinuousOn
+      (fun p : ℝ × E => chartGramOnE (I := I) (g_DT p.1) α i j p.2)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
+  obtain ⟨hΨ_cont, hΨ_maps⟩ := psi_continuousOn_Icc (I := I) α T
+  have hmaps' : Set.MapsTo (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target)
+      (Set.Icc (0 : ℝ) T ×ˢ Set.univ) :=
+    fun p hp => ⟨hp.1, Set.mem_univ _⟩
+  have hcomp : ContinuousOn
+      ((fun q : ℝ × M => chartGramOnE (I := I) (g_DT q.1) α i j (extChartAt I α q.2)) ∘
+        (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2)))
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
+    (h_gram0 i j).comp hΨ_cont hmaps'
+  refine hcomp.congr (fun p hp => ?_)
+  have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+  simp only [Function.comp_apply]
+  rw [(extChartAt I α).right_inv hy_tgt]
+
+/-- **C⁰ joint chart-Gram iterated jet on the chart-target interior, from manifold-side
+joint data.** Transports the manifold-side joint `(t, x)` continuity of
+`iteratedFDeriv ℝ k (chartGramOnE (g_DT ·) α i j) (extChartAt I α ·)` (on `Icc 0 T ×ˢ goodSet`,
+as produced for `k ≤ 2`) to the `E`-level joint continuity of
+`(t, y) ↦ iteratedFDeriv ℝ k (chartGramOnE (g_DT t) α i j) y` on
+`Icc 0 T ×ˢ interior (extChartAt I α).target`, via the chart change-of-variables `Ψ`. -/
+private lemma iteratedFDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (T : ℝ) (k : ℕ)
+    (i j : Fin (Module.finrank ℝ E))
+    (hC2 : ContinuousOn
+      (fun q : ℝ × M => iteratedFDeriv ℝ k (chartGramOnE (I := I) (g_DT q.1) α i j)
+        (extChartAt I α q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α)) :
+    ContinuousOn
+      (fun p : ℝ × E => iteratedFDeriv ℝ k (chartGramOnE (I := I) (g_DT p.1) α i j) p.2)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
+  obtain ⟨hΨ_cont, hΨ_maps⟩ := psi_continuousOn_Icc (I := I) α T
+  have hcomp : ContinuousOn
+      ((fun q : ℝ × M => iteratedFDeriv ℝ k (chartGramOnE (I := I) (g_DT q.1) α i j)
+          (extChartAt I α q.2)) ∘
+        (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2)))
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
+    hC2.comp hΨ_cont hΨ_maps
+  refine hcomp.congr (fun p hp => ?_)
+  have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+  simp only [Function.comp_apply]
+  rw [(extChartAt I α).right_inv hy_tgt]
+
+/-- Pointwise: the directional partial of `chartGramOnE` equals the `iteratedFDeriv 1` on the
+basis direction. -/
+private lemma partialDeriv_chartGramOnE_eq_iteratedFDeriv_one
+    (g : SmoothRiemannianMetric I M) (α : M) (i j l : Fin (Module.finrank ℝ E)) (y : E) :
+    partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y =
+      iteratedFDeriv ℝ 1 (chartGramOnE (I := I) g α i j) y ![(chartModelBasis E) l] := by
+  rw [iteratedFDeriv_one_apply]; rfl
+
+/-- Pointwise: the second directional partial of `chartGramOnE` equals the `iteratedFDeriv 2`
+on the two basis directions, at a chart-target interior point. -/
+private lemma partialDeriv2_chartGramOnE_eq_iteratedFDeriv_two
+    (g : SmoothRiemannianMetric I M) (α : M) (i j m l : Fin (Module.finrank ℝ E))
+    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
+    partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y =
+      iteratedFDeriv ℝ 2 (chartGramOnE (I := I) g α i j) y
+        ![(chartModelBasis E) m, (chartModelBasis E) l] := by
+  have hcd : ContDiffOn ℝ ∞ (chartGramOnE (I := I) g α i j)
+      ((extChartAt I α).target) := chartGramOnE_contDiffOn (I := I) g α i j
+  have hfderiv_diff : DifferentiableAt ℝ
+      (fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z) y := by
+    have hcdAt : ContDiffAt ℝ ∞ (chartGramOnE (I := I) g α i j) y :=
+      (hcd.mono interior_subset).contDiffAt
+        (isOpen_interior.mem_nhds hy)
+    have hderiv := hcdAt.fderiv_right (m := ∞) le_rfl
+    exact hderiv.differentiableAt (by simp)
+  have hl : (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j))
+      = fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z ((chartModelBasis E) l) := by
+    funext z; rfl
+  rw [show partialDeriv (E := E) m
+        (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y
+      = fderiv ℝ (fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z
+            ((chartModelBasis E) l)) y ((chartModelBasis E) m) from by rw [hl]; rfl]
+  rw [iteratedFDeriv_two_apply]
+  rw [fderiv_clm_apply hfderiv_diff (differentiableAt_const _)]
+  simp [ContinuousLinearMap.flip_apply]
+
+/-- **C⁰ joint first chart-Gram partial on the chart-target interior, from manifold-side
+`iteratedFDeriv 1` data.** -/
+private lemma partialDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (T : ℝ)
+    (l i j : Fin (Module.finrank ℝ E))
+    (hC2 : ContinuousOn
+      (fun q : ℝ × M => iteratedFDeriv ℝ 1 (chartGramOnE (I := I) (g_DT q.1) α i j)
+        (extChartAt I α q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α)) :
+    ContinuousOn
+      (fun p : ℝ × E =>
+        partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT p.1) α i j) p.2)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
+  have hjet := iteratedFDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (I := I) g_DT α T 1 i j hC2
+  have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => E) ℝ
+    ![(chartModelBasis E) l]).continuous
+  refine (hL.comp_continuousOn hjet).congr (fun p _ => ?_)
+  simp only [Function.comp_apply, ContinuousMultilinearMap.apply_apply]
+  rw [partialDeriv_chartGramOnE_eq_iteratedFDeriv_one (I := I) (g_DT p.1) α i j l p.2]
+
+/-- **C⁰ joint second chart-Gram partial on the chart-target interior, from manifold-side
+`iteratedFDeriv 2` data.** -/
+private lemma partialDeriv2_chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (T : ℝ)
+    (m l i j : Fin (Module.finrank ℝ E))
+    (hC2 : ContinuousOn
+      (fun q : ℝ × M => iteratedFDeriv ℝ 2 (chartGramOnE (I := I) (g_DT q.1) α i j)
+        (extChartAt I α q.2))
+      (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α)) :
+    ContinuousOn
+      (fun p : ℝ × E =>
+        partialDeriv (E := E) m
+          (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT p.1) α i j)) p.2)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
+  have hjet := iteratedFDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc
+    (I := I) g_DT α T 2 i j hC2
+  have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) ℝ
+    ![(chartModelBasis E) m, (chartModelBasis E) l]).continuous
+  refine (hL.comp_continuousOn hjet).congr (fun p hp => ?_)
+  simp only [Function.comp_apply, ContinuousMultilinearMap.apply_apply]
+  rw [partialDeriv2_chartGramOnE_eq_iteratedFDeriv_two (I := I) (g_DT p.1) α i j m l hp.2]
+
+/-- **Chart-frame value/derivative continuity of the DeTurck velocity from manifold-side
+chart-Gram jet data.** The producer feeding the `Hcomp`/`Hfderiv` chart-frame inputs of
+`conjugating_flow_pullback_jointGram_data`.
+
+From the manifold-side joint chart-Gram data that the spectral DeTurck endpoint outputs —
+the `0`-jet `h_gram0` (joint `(t, x)` continuity of `chartGramOnE (g_DT ·) α i j (extChartAt I α ·)`
+on `Icc 0 T ×ˢ univ`) and the second-order chart-jet `hC2` (joint `(t, x)` continuity of
+`iteratedFDeriv ℝ k (chartGramOnE (g_DT ·) α i j) (extChartAt I α ·)` on `Icc 0 T ×ˢ goodSet`
+for `k ≤ 2`) — this produces, for every chart centre `α` and component `k`:
+
+* `Hcomp`: joint `(t, y)` continuity of the chart DeTurck-VF component value
+  `chartDeTurckVFComp (g_DT t) g_bg α k y` on `Icc 0 T ×ˢ interior (extChartAt I α).target`;
+* `Hfderiv`: joint `(t, y)` continuity of its spatial Fréchet derivative on the same set.
+
+The chart-target interior data is recovered from the good-set manifold data through the chart
+change-of-variables `Ψ : (t, y) ↦ (t, (extChartAt I α).symm y)` (good-set ↔ interior bijection)
+and the pointwise `iteratedFDeriv`-to-`partialDeriv` identifications. -/
+theorem deturck_vf_chartFrame_continuity_data
+    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (T : ℝ)
+    (h_gram0 : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × M =>
+          chartGramOnE (I := I) (g_DT q.1) α i j (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ Set.univ))
+    (hC2 : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
+      ContinuousOn
+        (fun q : ℝ × M => iteratedFDeriv ℝ k (chartGramOnE (I := I) (g_DT q.1) α i j)
+          (extChartAt I α q.2))
+        (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α)) :
+    (∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E => chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target)) ∧
+    (∀ (α : M) (k : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun q : ℝ × E =>
+          fderiv ℝ (fun w : E => chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k w) q.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target)) := by
+  have h_gram_E : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun p : ℝ × E => chartGramOnE (I := I) (g_DT p.1) α i j p.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := fun α i j =>
+    chartGramOnE_joint_continuousOn_of_manifold_Icc (I := I) g_DT α T (h_gram0 α) i j
+  have h_partial_E : ∀ (α : M) (l i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun p : ℝ × E =>
+          partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT p.1) α i j) p.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := fun α l i j =>
+    partialDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc (I := I) g_DT α T l i j
+      (hC2 α i j 1 (by norm_num))
+  have h_partial2_E : ∀ (α : M) (m l i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun p : ℝ × E =>
+          partialDeriv (E := E) m
+            (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT p.1) α i j)) p.2)
+        (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := fun α m l i j =>
+    partialDeriv2_chartGramOnE_joint_continuousOn_of_manifold_Icc (I := I) g_DT α T m l i j
+      (hC2 α i j 2 (by norm_num))
+  refine ⟨fun α k => ?_, fun α k => ?_⟩
+  · exact chartDeTurckVFComp_joint_continuousOn_E (I := I) g_DT g_bg α T
+      (h_gram_E α) (fun l i j => h_partial_E α l i j) k
+  · exact fderiv_chartDeTurckVFComp_joint_continuousOn (I := I) g_DT g_bg α T
+      (h_gram_E α) (fun l i j => h_partial_E α l i j)
+      (fun m l i j => h_partial2_E α m l i j) k
+
 
 end DeTurckVFSmoothnessKeystone
 

@@ -59,38 +59,36 @@ restricted to orders `i ≤ kmax`. This is enough to apply the chain rule
 for `W^{k,p}` whenever `k ≤ kmax`. -/
 structure SmoothDiffeoBoundedAtOrder
     (d : ℕ) (Ω Ω' : Set (EuclideanSpace ℝ (Fin d))) (kmax : ℕ) where
-  /-- The forward map. -/
+
   toFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-  /-- The inverse map. -/
+
   invFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-  /-- Smoothness of the forward map. -/
+
   toFun_smooth : ContDiff ℝ (⊤ : ℕ∞) toFun
-  /-- Smoothness of the inverse map. -/
+
   invFun_smooth : ContDiff ℝ (⊤ : ℕ∞) invFun
-  /-- The forward map sends `Ω` bijectively onto `Ω'`. -/
+
   bijOn : Set.BijOn toFun Ω Ω'
-  /-- The inverse map sends `Ω'` bijectively onto `Ω`. -/
+
   invFun_bijOn : Set.BijOn invFun Ω' Ω
-  /-- Left inverse on `Ω`. -/
+
   left_inv : Set.LeftInvOn invFun toFun Ω
-  /-- Right inverse on `Ω'`. -/
+
   right_inv : Set.RightInvOn invFun toFun Ω'
-  /-- Uniform upper bound for iterated derivatives of orders `≤ kmax`. -/
+
   deriv_bound : ℝ
-  /-- The bound is strictly positive. -/
+
   deriv_bound_pos : 0 < deriv_bound
-  /-- Iterated derivatives of `toFun` up to order `kmax` are globally bounded
-  by `deriv_bound`. Higher orders may fail to be uniformly bounded. -/
+
   iter_deriv_bounded_at : ∀ i ≤ kmax, ∀ x, ‖iteratedFDeriv ℝ i toFun x‖ ≤ deriv_bound
-  /-- Iterated derivatives of `invFun` up to order `kmax` are globally bounded
-  by `deriv_bound`. Higher orders may fail to be uniformly bounded. -/
+
   iter_deriv_invFun_bounded_at :
     ∀ i ≤ kmax, ∀ x, ‖iteratedFDeriv ℝ i invFun x‖ ≤ deriv_bound
-  /-- Uniform positive lower bound for `|det DΦ|` on `Ω`. -/
+
   jacobian_lower_bound : ℝ
-  /-- The Jacobian lower bound is strictly positive. -/
+
   jacobian_lower_bound_pos : 0 < jacobian_lower_bound
-  /-- `|det DΦ(x)| ≥ jacobian_lower_bound` for `x ∈ Ω`. -/
+
   jacobian_lower : ∀ x ∈ Ω, jacobian_lower_bound ≤ |(fderiv ℝ toFun x).det|
 
 namespace SmoothDiffeoBoundedAtOrder

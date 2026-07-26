@@ -301,113 +301,73 @@ each factor of the once-differentiated RHS, plus the original
 structure DiffTwiceChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
-  /-- The base once-differentiated chart-bilinear data structure we
-  differentiate one more time. -/
+
   base1 : DiffChartBilinearH1ComplData (I := I) (M := M) g α
-  /-- The second coordinate direction in which we differentiate. -/
+
   direction2 : Fin (Module.finrank ℝ E)
-  /-- The weak `direction2`-partial of `base1.u_chart_deriv`. -/
+
   u_chart_deriv2 : EuclN → ℝ
-  /-- The weak `direction2`-partial of `base1.f_chart_deriv`. -/
+
   f_chart_deriv2 : EuclN → ℝ
-  /-- The canonical weak `direction2`-partial of `base1.u_chart_deriv`
-  used in the principal `L²` term of the twice-differentiated identity.
-  Definitionally `= u_chart_deriv2` in the canonical constructor, but kept
-  as a separate field for ergonomics in the variational identity. -/
+
   u_chart_second_deriv : EuclN → ℝ
-  /-- The weak `direction2`-partial of `base1.weak_partial_deriv i` (an
-  auxiliary record of the `(direction2)`-derivative of each of the once-
-  differentiated weak partials of the chart-pull). -/
+
   weak_partial_deriv2 : Fin (Module.finrank ℝ E) → EuclN → ℝ
-  /-- The canonical weak `direction2`-partial of `base1.weak_partial_deriv i`
-  used in the principal `L²` term of the twice-differentiated identity.
-  Definitionally `= weak_partial_deriv2 i` in the canonical constructor. -/
+
   weak_partial_second_deriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
-  /-- `u_chart_deriv2` is the weak `direction2`-partial of
-  `base1.u_chart_deriv` on `chartTargetEuclid α`. -/
+
   u_chart_deriv2_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
       u_chart_deriv2 base1.u_chart_deriv
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `f_chart_deriv2` is the weak `direction2`-partial of
-  `base1.f_chart_deriv` on `chartTargetEuclid α`. -/
+
   f_chart_deriv2_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
       f_chart_deriv2 base1.f_chart_deriv
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `u_chart_second_deriv` is the weak `direction2`-partial of
-  `base1.u_chart_deriv` on `chartTargetEuclid α`. -/
+
   u_chart_second_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
       u_chart_second_deriv base1.u_chart_deriv
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `weak_partial_deriv2 i` is the weak `direction2`-partial of
-  `base1.weak_partial_deriv i` on `chartTargetEuclid α`. -/
+
   weak_partial_deriv2_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
       (weak_partial_deriv2 i) (base1.weak_partial_deriv i)
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- `weak_partial_second_deriv i` is the weak `direction2`-partial of
-  `base1.weak_partial_deriv i` on `chartTargetEuclid α`. -/
+
   weak_partial_second_deriv_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
       (weak_partial_second_deriv i) (base1.weak_partial_deriv i)
       (chartTargetEuclid (I := I) (M := M) α)
-  /-- Local `L²` regularity of `u_chart_deriv2` on each compact subset of
-  `chartTargetEuclid α` (with respect to plain Lebesgue volume). -/
+
   u_chart_deriv2_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp u_chart_deriv2 2 ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of `f_chart_deriv2` on each compact subset of
-  `chartTargetEuclid α`. -/
+
   f_chart_deriv2_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp f_chart_deriv2 2 ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of `u_chart_second_deriv` on each compact subset
-  of `chartTargetEuclid α`. -/
+
   u_chart_second_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp u_chart_second_deriv 2 ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of each `weak_partial_deriv2 i` on each compact
-  subset of `chartTargetEuclid α`. -/
+
   weak_partial_deriv2_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp (weak_partial_deriv2 i) 2
         ((volume : Measure EuclN).restrict K)
-  /-- Local `L²` regularity of each `weak_partial_second_deriv i` on each
-  compact subset of `chartTargetEuclid α`. -/
+
   weak_partial_second_deriv_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp (weak_partial_second_deriv i) 2
         ((volume : Measure EuclN).restrict K)
-  /-- The twice-differentiated variational identity.
 
-  The principal LHS integrand uses `weak_partial_second_deriv` and
-  `u_chart_second_deriv` (canonical weak second partials of the base
-  fields). The Leibniz cross-terms on the RHS layer two levels of
-  smooth-coefficient derivatives:
-
-  * the once-Leibniz terms with `(weightedInvGramDerivOnEuclid ·,
-    densityDerivOnEuclid ·)` paired with the once-differentiated fields
-    (`base1.weak_partial_deriv`, `base1.u_chart_deriv`,
-    `base1.f_chart_deriv`) — these come from `∂_{l₂}` acting on the
-    principal block of the once-differentiated identity;
-
-  * the once-Leibniz terms with `(weightedInvGramDerivOnEuclid ·,
-    densityDerivOnEuclid ·)` paired with the second-direction partials of
-    base fields (`weak_partial_deriv2`, `u_chart_deriv2`, `f_chart_deriv2`)
-    — these come from `∂_{l₂}` acting on the once-differentiated RHS;
-
-  * the twice-Leibniz terms with `(weightedInvGramSecondDerivOnEuclid · l₁ l₂,
-    densitySecondDerivOnEuclid · l₁ l₂)` paired with the base scalar fields
-    (`base1.base.weak_partial`, `base1.base.u_chart`, `base1.base.f_chart`)
-    — these come from `∂_{l₂}` acting on the once-Leibniz cross-terms of
-    the once-differentiated identity. -/
   twice_differentiated_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

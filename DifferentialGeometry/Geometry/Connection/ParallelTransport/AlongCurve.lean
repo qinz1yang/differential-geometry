@@ -89,7 +89,7 @@ a vector in `T_{γ(t)} M = E`. -/
 @[ext] structure SectionAlongCurve (I : ModelWithCorners ℝ E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (_γ : ℝ → M) where
-  /-- The underlying real-to-model-fibre function. -/
+
   toFun : ℝ → E
 
 namespace SectionAlongCurve

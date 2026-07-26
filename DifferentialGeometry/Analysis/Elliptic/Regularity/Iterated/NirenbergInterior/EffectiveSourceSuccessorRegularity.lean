@@ -270,9 +270,9 @@ lemma chosenMthMixed_ae_zero_off_Kα
       exact h_step
 
 private structure SmoothExt (α : M) (f : EuclN → ℝ) where
-  /-- Radius of the closed thickening on which the extension agrees with `f`. -/
+
   δ : ℝ
-  /-- The globally smooth extension. -/
+
   ext : EuclN → ℝ
   δ_pos : 0 < δ
   cthick_in_target : Metric.cthickening δ (Kα (I := I) (M := M) α) ⊆

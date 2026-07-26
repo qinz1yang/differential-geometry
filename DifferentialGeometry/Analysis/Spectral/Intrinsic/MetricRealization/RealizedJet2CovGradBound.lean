@@ -253,7 +253,9 @@ theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
   rw [hev.fderiv_eq]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- The iterated covariant-gradient jet sum of a fixed `(0,2)`-tensor `S` at a manifold
 point `x`: `∑_{j ≤ 2} ‖(∇^j S)(x)‖_{g_bg}` (the `g_bg`-fibre norms of the `(0, 2 + j)`-tensors
 `∇^j S`).  This is exactly the left-hand side of the unconditional `C²` Sobolev embedding. -/
@@ -265,7 +267,9 @@ def iteratedCovGradJetSum (g_bg : SmoothRiemannianMetric I M)
     ‖(iteratedCovGrad (I := I) (M := M) g_bg 0 2 j S).toSection x‖)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- `iteratedCovGradJetSum` is non-negative. -/
 lemma iteratedCovGradJetSum_nonneg (g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g_bg 0 2) (x : M) :
@@ -276,6 +280,10 @@ lemma iteratedCovGradJetSum_nonneg (g_bg : SmoothRiemannianMetric I M)
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
   exact norm_nonneg _
 
+attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
+  Tensor0SBundle.tensorRSSpace_normedSpace
+  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
 /-- **The iterated covariant-gradient jet sum is bounded by the intrinsic `H^{2k}` Sobolev
 norm of the fixed tensor (unconditional `C²` Sobolev embedding).**
 

@@ -77,7 +77,7 @@ variable (E₂ : B → Type*) [∀ x, AddCommGroup (E₂ x)] [∀ x, Module 𝕜
 @[reducible] noncomputable def tensorFiberTopologicalSpace (x : B) :
     TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) := by
   classical
-  -- ensure model tensor has a topology
+
   letI : TopologicalSpace (F₁ ⊗[𝕜] F₂) := inferInstance
   let L₁ : E₁ x ≃L[𝕜] F₁ :=
     (trivializationAt F₁ E₁ x).continuousLinearEquivAt 𝕜 x
@@ -158,14 +158,14 @@ noncomputable instance instNormedAddCommGroup_tensor :
 by
   classical
   let e := clmEquiv (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂)
-  -- pick 𝓕 := AddMonoidHom
+
   refine NormedAddCommGroup.induced
     (𝓕 := (F₁ ⊗[𝕜] F₂) →+ (cDual 𝕜 F₁ →L[𝕜] F₂))
     (E := (F₁ ⊗[𝕜] F₂))
     (F := (cDual 𝕜 F₁ →L[𝕜] F₂))
     (f := e.toLinearMap.toAddMonoidHom)
     ?_
-  -- injectivity of the underlying function
+
   exact e.injective
 
 /-- Normed `𝕜`-module structure on the model fiber `F₁ ⊗[𝕜] F₂`, pulled back via `clmEquiv`. -/
@@ -204,18 +204,18 @@ noncomputable instance tensorFiberTopologies
 tensor products of trivializations from the atlases of `E₁` and `E₂`. -/
 noncomputable def vectorPrebundle :
     @VectorPrebundle
-      𝕜                                  -- R
-      B                                  -- B
-      (F₁ ⊗[𝕜] F₂)                       -- F
-      (fun x ↦ E₁ x ⊗[𝕜] E₂ x)           -- E
-      _                                  -- [NontriviallyNormedField 𝕜]
-      _                                  -- [∀ x, AddCommMonoid (E x)]
-      _                                  -- [∀ x, Module 𝕜 (E x)]
-      instNormedAddCommGroup_tensor -- [NormedAddCommGroup F]
-      instNormedSpace_model_tensor        -- [NormedSpace 𝕜 F]
-      _                                  -- [TopologicalSpace B]
+      𝕜
+      B
+      (F₁ ⊗[𝕜] F₂)
+      (fun x ↦ E₁ x ⊗[𝕜] E₂ x)
+      _
+      _
+      _
+      instNormedAddCommGroup_tensor
+      instNormedSpace_model_tensor
+      _
       (fun x => tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂) x)
-      -- [∀ x, TopologicalSpace (E x)]
+
       :=
   letI := tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂)
   {
@@ -245,7 +245,7 @@ noncomputable def vectorPrebundle :
           (e₁ := e₁) (e₁' := e₁') (e₂ := e₂) (e₂' := e₂'))
     totalSpaceMk_isInducing := by
       intro b
-      -- 1. Setup local definitions
+
       letI : TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) :=
          tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂) b
       let L₁ : E₁ b ≃L[𝕜] F₁ :=
@@ -254,7 +254,7 @@ noncomputable def vectorPrebundle :
       let L₂ : E₂ b ≃L[𝕜] F₂ :=
         (trivializationAt F₂ E₂ b).continuousLinearEquivAt 𝕜 b
           (mem_baseSet_trivializationAt _ _ _)
-      -- 2. Prove induction
+
       have hind : IsInducing (TensorProduct.map L₁.toLinearMap L₂.toLinearMap) := ⟨rfl⟩
       have : IsInducing fun x ↦ (b, TensorProduct.map L₁.toLinearMap L₂.toLinearMap x) :=
         isInducing_const_prod.mpr hind
@@ -267,7 +267,7 @@ noncomputable def vectorPrebundle :
               E₁ b →ₗ[𝕜] F₁) =
             (↑L₁.toLinearEquiv : E₁ b →ₗ[𝕜] F₁) := by
         ext w
- -- `L₁` is defined as `continuousLinearEquivAt`, and its underlying map is `continuousLinearMapAt`
+
         simpa [L₁] using
           congrArg (fun f => f w)
             (Trivialization.coe_continuousLinearEquivAt_eq (R := 𝕜)
@@ -283,7 +283,7 @@ noncomputable def vectorPrebundle :
             (Trivialization.coe_continuousLinearEquivAt_eq (R := 𝕜)
               (trivializationAt F₂ E₂ b)
               (mem_baseSet_trivializationAt F₂ E₂ b)).symm
-      -- now the two `TensorProduct.map`'s are definitionally the same
+
       simp [hL1, hL2]
 
   }
@@ -294,11 +294,11 @@ noncomputable instance Bundle.TensorProduct.topologicalSpaceTotalSpace :
     TopologicalSpace
       (TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x)) := by
   classical
-  -- provide fiber topologies locally
+
   letI (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
     Bundle.TensorProduct.tensorFiberTopology
       (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂) x
-  -- now identical to the sample
+
   exact
     (Bundle.TensorProduct.vectorPrebundle
         (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)).totalSpaceTopology

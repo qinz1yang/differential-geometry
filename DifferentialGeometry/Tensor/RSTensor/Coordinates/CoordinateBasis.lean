@@ -153,6 +153,16 @@ theorem component0S_apply
     component0S (I := I) basis A slots = A (fun a => basis (slots a)) :=
   rfl
 
+/-- Rewrite the slot map of a covariant component under a slot-map equality, without
+unfolding `component0S` / `Fin.cons`.  Lets downstream proofs prove `slots = slots'` separately
+(e.g. by `funext`) and rewrite, instead of relying on `backward.isDefEq.respectTransparency false`. -/
+theorem component0S_congr_slots
+    (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
+    (A : Tensor0SSpace s I x) {slots slots' : Fin s -> Idx}
+    (h : slots = slots') :
+    component0S (I := I) basis A slots = component0S (I := I) basis A slots' := by
+  rw [h]
+
 @[simp]
 theorem tensor0SBasis_repr
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))

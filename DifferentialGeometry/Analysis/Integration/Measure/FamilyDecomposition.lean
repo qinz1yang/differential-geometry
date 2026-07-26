@@ -53,11 +53,12 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- Bochner integral characterisation of the chart-local measure for a
-measurable, integrable real-valued function. -/
-theorem integral_chartLocalMeasure
+/-- Bochner integral characterisation of the chart-local measure for an
+almost-everywhere strongly measurable real-valued function. -/
+theorem integral_chart_ae
     (g : SmoothRiemannianMetric I M) (x₀ : M)
-    (h : M → ℝ) (hh_meas : Measurable h) :
+    (h : M → ℝ)
+    (hh_meas : AEStronglyMeasurable h (chartLocalMeasure (I := I) g x₀)) :
     ∫ x, h x ∂(chartLocalMeasure (I := I) g x₀)
       = ∫ y in (extChartAt I x₀).target,
           chartDensity g x₀ ((extChartAt I x₀).symm y) *
@@ -74,6 +75,10 @@ theorem integral_chartLocalMeasure
   have h_unfold :
       chartLocalMeasure (I := I) g x₀ =
         MeasureTheory.Measure.map (extChartAt I x₀).symm μ₁ := rfl
+  have hh_map : AEStronglyMeasurable h
+      (MeasureTheory.Measure.map (extChartAt I x₀).symm μ₁) := by
+    rw [← h_unfold]
+    exact hh_meas
   rw [h_unfold]
   have haem_symm : AEMeasurable ((extChartAt I x₀).symm) μ₁ := by
     have haem_base : AEMeasurable ((extChartAt I x₀).symm) μ₀ :=
@@ -84,7 +89,7 @@ theorem integral_chartLocalMeasure
   have h_integral_map :
       ∫ x, h x ∂(MeasureTheory.Measure.map (extChartAt I x₀).symm μ₁)
         = ∫ y, h ((extChartAt I x₀).symm y) ∂μ₁ := by
-    exact MeasureTheory.integral_map haem_symm hh_meas.aestronglyMeasurable
+    exact MeasureTheory.integral_map haem_symm hh_map
   rw [h_integral_map]
   have hwd_aem : AEMeasurable w μ₀ :=
     aemeasurable_chartDensity_symm_pullback (I := I) g x₀
@@ -122,6 +127,72 @@ theorem integral_chartLocalMeasure
   rw [h_restrict]
   refine setIntegral_congr_fun htarget_meas (fun y hy => ?_)
   rw [hw_toReal y hy, smul_eq_mul]
+
+/-- Bochner integral characterisation of the chart-local measure for a
+measurable real-valued function. -/
+theorem integral_chartLocalMeasure
+    (g : SmoothRiemannianMetric I M) (x₀ : M)
+    (h : M → ℝ) (hh_meas : Measurable h) :
+    ∫ x, h x ∂(chartLocalMeasure (I := I) g x₀)
+      = ∫ y in (extChartAt I x₀).target,
+          chartDensity g x₀ ((extChartAt I x₀).symm y) *
+            h ((extChartAt I x₀).symm y)
+          ∂(modelHaar (E := E)) :=
+  integral_chart_ae (I := I) g x₀ h hh_meas.aestronglyMeasurable
+
+/-- A model-Haar almost-everywhere property transfers to the chart-local
+measure after evaluation in the fixed chart coordinates. -/
+theorem ae_chart_of_haar
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {P : E → Prop} (hP : MeasurableSet {y | P y})
+    (h : ∀ᵐ y ∂(modelHaar (E := E)), P y) :
+    ∀ᵐ x ∂(chartLocalMeasure (I := I) g α),
+      x ∈ (chartAt H α).source → P (extChartAt I α x) := by
+  classical
+  let dens : E → ℝ≥0∞ := fun y =>
+    ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y))
+  let μT : Measure E :=
+    (modelHaar (E := E)).restrict (extChartAt I α).target
+  let μD : Measure E := μT.withDensity dens
+  have hrestrict : ∀ᵐ y ∂μT, P y :=
+    (Measure.absolutelyContinuous_of_le Measure.restrict_le_self).ae_le h
+  have hdens : ∀ᵐ y ∂μD, P y :=
+    (withDensity_absolutelyContinuous μT dens).ae_le hrestrict
+  have htarget : ∀ᵐ y ∂μD, y ∈ (extChartAt I α).target := by
+    exact (withDensity_absolutelyContinuous μT dens).ae_le
+      (ae_restrict_mem (measurableSet_extChartAt_target (I := I) α))
+  let coord : M → E := fun x =>
+    if x ∈ (chartAt H α).source then extChartAt I α x else 0
+  have hcoord : Measurable coord := by
+    have hsource : MeasurableSet (chartAt H α).source :=
+      (chartAt H α).open_source.measurableSet
+    have hext : ContinuousOn (fun x : M => extChartAt I α x)
+        (chartAt H α).source := by
+      have hsource_eq : (chartAt H α).source = (extChartAt I α).source :=
+        (extChartAt_source_eq_chartAt_source (I := I) (M := M) α).symm
+      rw [hsource_eq]
+      exact continuousOn_extChartAt α
+    have hcoord_eq : coord = (chartAt H α).source.piecewise
+        (fun x : M => extChartAt I α x) (fun _ => 0) := by
+      funext x
+      simp only [coord, Set.piecewise]
+    rw [hcoord_eq]
+    exact ContinuousOn.measurable_piecewise hext continuousOn_const hsource
+  have hsymm : AEMeasurable (extChartAt I α).symm μD :=
+    (aemeasurable_extChartAt_symm_restrict_target (I := I) (E := E) α).mono_ac
+      (withDensity_absolutelyContinuous μT dens)
+  have hpush : ∀ᵐ x ∂Measure.map (extChartAt I α).symm μD, P (coord x) := by
+    refine (ae_map_iff hsymm (hP.preimage hcoord)).2 ?_
+    filter_upwards [hdens, htarget] with y hy hy_target
+    have hy_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+      have hmem : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+        (extChartAt I α).map_target hy_target
+      rwa [extChartAt_source_eq_chartAt_source (I := I) (M := M)] at hmem
+    simpa only [coord, if_pos hy_source, (extChartAt I α).right_inv hy_target] using hy
+  have hchart : ∀ᵐ x ∂(chartLocalMeasure (I := I) g α), P (coord x) := by
+    simpa only [chartLocalMeasure, μD, μT, dens] using hpush
+  filter_upwards [hchart] with x hx hx_source
+  simpa only [coord, if_pos hx_source] using hx
 
 /-- On a compact manifold, the set of indices where the chart-atlas POU has
 nonempty support is finite. -/
@@ -524,6 +595,51 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
       (fun _ _ => Measure.zero_le _) hα
   conv_lhs => rw [hVol_eq]
   exact integral_finset_sum_measure hsummand_int
+
+/-- An integrable scalar function may be integrated globally by summing its
+partition-weighted chart-local integrals. -/
+theorem chart_sum_integral
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) (h : M → ℝ)
+    (hh_int : Integrable h (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∫ x, h x * (chartAtlasPOU I M) α x
+          ∂(chartLocalMeasure (I := I) g α) =
+      ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+  classical
+  have hVol_eq := riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
+  have hsummand_int : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      Integrable h ((chartLocalMeasure (I := I) g α).withDensity
+        (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
+    intro α hα
+    refine hh_int.mono_measure ?_
+    rw [hVol_eq]
+    exact Finset.single_le_sum
+      (f := fun β : M => (chartLocalMeasure (I := I) g β).withDensity
+        (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) β y)))
+      (s := chartAtlasPOU_finset (I := I) (M := M))
+      (fun _ _ => Measure.zero_le _) hα
+  have hglobal :
+      ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          ∫ x, h x ∂((chartLocalMeasure (I := I) g α).withDensity
+            (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
+    conv_lhs => rw [hVol_eq]
+    exact integral_finset_sum_measure hsummand_int
+  rw [hglobal]
+  refine Finset.sum_congr rfl (fun α _ => ?_)
+  let ρ : M → ℝ := fun x => (chartAtlasPOU I M) α x
+  have hρ_nonneg : ∀ x, 0 ≤ ρ x := fun x => (chartAtlasPOU I M).nonneg α x
+  have hρ_ae : AEMeasurable (fun x : M => ENNReal.ofReal (ρ x))
+      (chartLocalMeasure (I := I) g α) :=
+    (measurable_ofReal_pou_weight (chartAtlasPOU I M) α).aemeasurable
+  have hρ_lt_top : ∀ᵐ x ∂(chartLocalMeasure (I := I) g α),
+      ENNReal.ofReal (ρ x) < ⊤ := Filter.Eventually.of_forall fun _ => by simp
+  rw [integral_withDensity_eq_integral_toReal_smul₀
+    (μ := chartLocalMeasure (I := I) g α)
+    (f := fun x : M => ENNReal.ofReal (ρ x)) hρ_ae hρ_lt_top]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp only [ENNReal.toReal_ofReal (hρ_nonneg x), smul_eq_mul, ρ, mul_comm]
 
 theorem volume_variation_formula_from_chart_derivs
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

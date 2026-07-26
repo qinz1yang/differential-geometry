@@ -285,9 +285,7 @@ theorem tensor0S_curry_apply_eval {n : ℕ} {b : M}
     (v0 : E) (vs : Fin n → E) :
     Tensor0SSpace.toModel (tensor0S_curry (I := I) (M := M) n b T v0) vs =
     Tensor0SSpace.toModel T (Fin.cons v0 vs) := by
-  -- The underlying carrier of `Tensor0SSpace.toModel` is the identity (the CLE
-  -- `tensor0SSpace_continuousLinearEquiv` has `toFun = id`); both sides reduce to evaluating
-  -- the curry CLE at `v0` then at `vs`, which equals evaluating `T` at `Fin.cons v0 vs`.
+
   change (((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (n + 1) b) T) v0)) vs =
       ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (n + 1) b) T) (Fin.cons v0 vs)
@@ -341,7 +339,7 @@ private theorem continuous_section_apply_aux : ∀ (n : ℕ)
         (fun _ : Fin 0 => E) ((T b) 0)) 0 = (T b) 0
       rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
     rw [hev]
-    -- Goal: `(T b) 0 = Tensor0SSpace.toModel (T b) (fun i : Fin 0 => v i b)`
+
     have huniq : (fun i : Fin 0 => v i b) = (0 : Fin 0 → E) := Subsingleton.elim _ _
     rw [huniq]
     rfl
@@ -364,8 +362,7 @@ private theorem continuous_section_apply_aux : ∀ (n : ℕ)
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
     refine hRec.congr (fun b => ?_)
-    -- `Continuous.congr (h : Continuous f) (h' : ∀ x, f x = g x) : Continuous g` —
-    -- so the goal is `curried b = original b`.
+
     change Tensor0SSpace.toModel ((curriedSection T b) (v 0 b))
         (fun i : Fin n => v i.succ b) =
       Tensor0SSpace.toModel (T b) (fun i : Fin (n + 1) => v i b)
@@ -436,8 +433,7 @@ private theorem contMDiff_section_apply_aux : ∀ (n : ℕ)
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
     refine hRec.congr (fun b => ?_)
-    -- `ContMDiff.congr (h : ContMDiff f) (h₁ : ∀ y, f₁ y = f y) : ContMDiff f₁` —
-    -- so the goal is `original b = curried b`.
+
     change Tensor0SSpace.toModel (T b) (fun i : Fin (n + 1) => v i b) =
       Tensor0SSpace.toModel ((curriedSection T b) (v 0 b))
         (fun i : Fin n => v i.succ b)
@@ -601,9 +597,7 @@ private theorem contMDiffAt_section_apply_aux : ∀ (n : ℕ) (x₀ : M)
       (fun i => hv i.succ)
     refine hRec.congr_of_eventuallyEq ?_
     filter_upwards with b
-    -- Goal: original = curried (eventually), i.e.
-    --   Tensor0SSpace.toModel (T b) (fun i => v i b)
-    --     = Tensor0SSpace.toModel ((curriedSection T b) (v 0 b)) (fun i => v i.succ b).
+
     show Tensor0SSpace.toModel (T b) (fun i : Fin (n + 1) => v i b) =
       Tensor0SSpace.toModel ((curriedSection T b) (v 0 b))
         (fun i : Fin n => v i.succ b)
@@ -633,6 +627,205 @@ theorem contMDiffAt_section_apply
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun b : M => Tensor0SSpace.toModel (T b) (fun i : Fin n => v i b)) x₀ :=
   contMDiffAt_section_apply_aux n x₀ T hT v hv
+
+/-!
+## Prod-base versions (domain `M × ℝ`, base map `Prod.fst`)
+
+The same evaluation lemma over a product base `M × ℝ`, where the bundle data depend only on
+the `M`-coordinate via `Prod.fst`. This is the joint-smoothness form needed to bridge a
+time-parametrized section family into a `ContMDiff` function on `M × ℝ`. The proof mirrors the
+single-base version; the only structural change is using `Bundle.contMDiffWithinAt_totalSpace`
+(with base map `Prod.fst`, projection component `contMDiffWithinAt_fst`) in place of the
+`id`-base `Bundle.contMDiff*_section`, and `ContMDiffWithinAt.clm_bundle_apply (b := Prod.fst)`
+in the inductive step. All trivialization-fibre and curry bricks are base-agnostic and reused.
+-/
+
+/-- Prod-base curry smoothness: the `ContMDiffWithinAt`-version of
+`contMDiffAt_curriedSection_of_contMDiffAt_section`, with domain `M × ℝ` and base map
+`Prod.fst`. -/
+private theorem contMDiffWithinAt_curriedSection_of_contMDiffWithinAt_section_prod {n : ℕ}
+    {s : Set (M × ℝ)} {p₀ : M × ℝ}
+    (T : ∀ b : M, Tensor0SSpace (n + 1) I b)
+    (hT : ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel (n + 1) ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel (n + 1) ℝ E)
+        (E := fun x : M => Tensor0SSpace (n + 1) I x) p.1 (T p.1)) s p₀) :
+    ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel n ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SModel n ℝ E)
+        (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace n I y) p.1
+        (curriedSection T p.1)) s p₀ := by
+  letI : TopologicalSpace (TotalSpace (Tensor0SModel (n + 1) ℝ E)
+      (fun y : M => Tensor0SSpace (n + 1) I y)) :=
+    tensor0SBundle_topology (n + 1)
+  rw [Bundle.contMDiffWithinAt_totalSpace
+    (F := E →L[ℝ] Tensor0SModel n ℝ E)
+    (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace n I y)
+    (IB := I) (IM := I.prod 𝓘(ℝ,ℝ))]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  have hT_at := (Bundle.contMDiffWithinAt_totalSpace
+    (F := Tensor0SModel (n + 1) ℝ E)
+    (E := fun y : M => Tensor0SSpace (n + 1) I y)
+    (IB := I) (IM := I.prod 𝓘(ℝ,ℝ))).mp hT |>.2
+  have hcurry :
+      ContMDiff 𝓘(ℝ, Tensor0SModel (n + 1) ℝ E) 𝓘(ℝ, E →L[ℝ] Tensor0SModel n ℝ E)
+        (∞ : WithTop ℕ∞)
+        (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ) :=
+    ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ
+      ).toContinuousLinearEquiv.toContinuousLinearMap).contMDiff
+  have hcomp := hcurry.contMDiffAt.comp_contMDiffWithinAt p₀ hT_at
+  refine hcomp.congr_of_eventuallyEq ?_ ?_
+  · have hbase : {p : M × ℝ | p.1 ∈ (trivializationAt (Tensor0SModel n ℝ E)
+        (fun y : M => Tensor0SSpace n I y) p₀.1).baseSet} ∈ nhdsWithin p₀ s := by
+      apply nhdsWithin_le_nhds
+      apply (continuous_fst.continuousAt).preimage_mem_nhds
+      exact (trivializationAt (Tensor0SModel n ℝ E)
+        (fun y : M => Tensor0SSpace n I y) p₀.1).open_baseSet.mem_nhds
+        (mem_baseSet_trivializationAt _ _ _)
+    filter_upwards [hbase] with p hb
+    change (trivializationAt (E →L[ℝ] Tensor0SModel n ℝ E)
+        (fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace n I y) p₀.1
+        ⟨p.1, curriedSection T p.1⟩).2 =
+      (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
+        ((trivializationAt (Tensor0SModel (n + 1) ℝ E)
+          (fun y : M => Tensor0SSpace (n + 1) I y) p₀.1 ⟨p.1, T p.1⟩).2)
+    exact trivializationAt_homBundle_curriedSection_eq (I := I) (M := M) T p₀.1 p.1 hb
+  · change (trivializationAt (E →L[ℝ] Tensor0SModel n ℝ E)
+        (fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace n I y) p₀.1
+        ⟨p₀.1, curriedSection T p₀.1⟩).2 =
+      (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
+        ((trivializationAt (Tensor0SModel (n + 1) ℝ E)
+          (fun y : M => Tensor0SSpace (n + 1) I y) p₀.1 ⟨p₀.1, T p₀.1⟩).2)
+    exact trivializationAt_homBundle_curriedSection_eq (I := I) (M := M) T p₀.1 p₀.1
+      (mem_baseSet_trivializationAt _ _ _)
+
+/-- **Prod-base pointwise smoothness of multilinear bundle evaluation (within a set).**
+For a `ContMDiffWithinAt`-section `T` of the `(0, n)`-tensor bundle and `ContMDiffWithinAt`-tangent
+sections, all over a product base `M × ℝ` with base map `Prod.fst` on a set `s` at `p₀`, the
+pointwise evaluation `p ↦ Tensor0SSpace.toModel (T p.1) (fun i => v i p.1)` is
+`ContMDiffWithinAt` on `s` at `p₀`. -/
+theorem contMDiffWithinAt_section_apply_prod : ∀ (n : ℕ)
+    {s : Set (M × ℝ)} {p₀ : M × ℝ}
+    (T : ∀ b : M, Tensor0SSpace n I b)
+    (_hT : ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel n ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel n ℝ E)
+        (E := fun x : M => Tensor0SSpace n I x) p.1 (T p.1)) s p₀)
+    (v : Fin n → ∀ b : M, TangentSpace I b)
+    (_hv : ∀ i, ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p.1)) s p₀),
+    ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) 𝓘(ℝ,ℝ) ∞
+      (fun p : M × ℝ => Tensor0SSpace.toModel (T p.1) (fun i => v i p.1)) s p₀
+  | 0, s, p₀, T, hT, v, _hv => by
+    have hT_at := (Bundle.contMDiffWithinAt_totalSpace
+      (F := Tensor0SModel 0 ℝ E)
+      (E := fun y : M => Tensor0SSpace 0 I y)
+      (IB := I) (IM := I.prod 𝓘(ℝ,ℝ))).mp hT |>.2
+    have hcurry :
+        ContMDiff 𝓘(ℝ, Tensor0SModel 0 ℝ E) 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
+          (continuousMultilinearCurryFin0 ℝ E ℝ) :=
+      (continuousMultilinearCurryFin0 ℝ E ℝ).toContinuousLinearMap.contMDiff
+    have hcomp :
+        ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) 𝓘(ℝ,ℝ) ∞
+          (fun p : M × ℝ =>
+            (continuousMultilinearCurryFin0 ℝ E ℝ)
+              ((trivializationAt (Tensor0SModel 0 ℝ E)
+                (fun y : M => Tensor0SSpace 0 I y) p₀.1 ⟨p.1, T p.1⟩).2)) s p₀ :=
+      hcurry.contMDiffAt.comp_contMDiffWithinAt p₀ hT_at
+    refine hcomp.congr_of_eventuallyEq ?_ ?_
+    · filter_upwards with p
+      rw [trivializationAt_tensor0SBundle_zero_fibre (I := I) (M := M) T p₀.1 p.1]
+      have hev : (continuousMultilinearCurryFin0 ℝ E ℝ)
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => E) ((T p.1) 0)) = (T p.1) 0 := by
+        change (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => E) ((T p.1) 0)) 0 = (T p.1) 0
+        rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
+      rw [hev]
+      have huniq : (fun i : Fin 0 => v i p.1) = (0 : Fin 0 → E) := Subsingleton.elim _ _
+      rw [huniq]
+      rfl
+    · rw [trivializationAt_tensor0SBundle_zero_fibre (I := I) (M := M) T p₀.1 p₀.1]
+      have hev : (continuousMultilinearCurryFin0 ℝ E ℝ)
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => E) ((T p₀.1) 0)) = (T p₀.1) 0 := by
+        change (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => E) ((T p₀.1) 0)) 0 = (T p₀.1) 0
+        rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
+      rw [hev]
+      have huniq : (fun i : Fin 0 => v i p₀.1) = (0 : Fin 0 → E) := Subsingleton.elim _ _
+      rw [huniq]
+      rfl
+  | n + 1, s, p₀, T, hT, v, hv => by
+    have hCurry := contMDiffWithinAt_curriedSection_of_contMDiffWithinAt_section_prod
+      (I := I) (M := M) T hT
+    have hApplied : ContMDiffWithinAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel n ℝ E)) ∞
+        (fun p : M × ℝ =>
+          TotalSpace.mk' (Tensor0SModel n ℝ E)
+            (E := fun x : M => Tensor0SSpace n I x) p.1
+            ((curriedSection T p.1) (v 0 p.1))) s p₀ :=
+      ContMDiffWithinAt.clm_bundle_apply (𝕜 := ℝ) (n := (∞ : WithTop ℕ∞))
+        (F₁ := E) (F₂ := Tensor0SModel n ℝ E)
+        (E₁ := fun x : M => TangentSpace I x)
+        (E₂ := fun x : M => Tensor0SSpace n I x)
+        (IM := I.prod 𝓘(ℝ,ℝ)) (IB := I)
+        (b := Prod.fst) (ϕ := fun p : M × ℝ => curriedSection T p.1)
+        (v := fun p : M × ℝ => v 0 p.1)
+        hCurry (hv 0)
+    have hRec := contMDiffWithinAt_section_apply_prod n
+      (s := s) (p₀ := p₀)
+      (fun b : M => (curriedSection T b) (v 0 b))
+      hApplied
+      (fun (i : Fin n) (b : M) => v i.succ b)
+      (fun i => hv i.succ)
+    refine hRec.congr_of_eventuallyEq ?_ ?_
+    · filter_upwards with p
+      rw [tensor0S_curry_apply_eval]
+      refine Eq.symm ?_
+      congr 1
+      funext j
+      refine Fin.cases ?_ ?_ j
+      · simp [Fin.cons_zero]
+      · intro k; simp [Fin.cons_succ]
+    · change Tensor0SSpace.toModel (T p₀.1) (fun i : Fin (n + 1) => v i p₀.1) =
+        Tensor0SSpace.toModel ((curriedSection T p₀.1) (v 0 p₀.1))
+          (fun i : Fin n => v i.succ p₀.1)
+      rw [tensor0S_curry_apply_eval]
+      refine Eq.symm ?_
+      congr 1
+      funext j
+      refine Fin.cases ?_ ?_ j
+      · simp [Fin.cons_zero]
+      · intro k; simp [Fin.cons_succ]
+
+/-- **Prod-base pointwise smoothness of multilinear bundle evaluation (`ContMDiffAt`).**
+The `ContMDiffAt` specialization of `contMDiffWithinAt_section_apply_prod` at a single point
+of the product base `M × ℝ`. -/
+theorem contMDiffAt_section_apply_prod {n : ℕ} {p₀ : M × ℝ}
+    (T : ∀ b : M, Tensor0SSpace n I b)
+    (hT : ContMDiffAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel n ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel n ℝ E)
+        (E := fun x : M => Tensor0SSpace n I x) p.1 (T p.1)) p₀)
+    (v : Fin n → ∀ b : M, TangentSpace I b)
+    (hv : ∀ i, ContMDiffAt (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p.1)) p₀) :
+    ContMDiffAt (I.prod 𝓘(ℝ,ℝ)) 𝓘(ℝ,ℝ) ∞
+      (fun p : M × ℝ => Tensor0SSpace.toModel (T p.1) (fun i => v i p.1)) p₀ := by
+  rw [← contMDiffWithinAt_univ] at hT ⊢
+  exact contMDiffWithinAt_section_apply_prod n T hT v
+    (fun i => (contMDiffWithinAt_univ).mpr (hv i))
+
+/-- **Prod-base smoothness of multilinear bundle evaluation (`ContMDiff`).**
+The global `ContMDiff` form over the product base `M × ℝ`, base map `Prod.fst`. -/
+theorem contMDiff_section_apply_prod {n : ℕ}
+    (T : ∀ b : M, Tensor0SSpace n I b)
+    (hT : ContMDiff (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel n ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel n ℝ E)
+        (E := fun x : M => Tensor0SSpace n I x) p.1 (T p.1)))
+    (v : Fin n → ∀ b : M, TangentSpace I b)
+    (hv : ∀ i, ContMDiff (I.prod 𝓘(ℝ,ℝ)) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p.1))) :
+    ContMDiff (I.prod 𝓘(ℝ,ℝ)) 𝓘(ℝ,ℝ) ∞
+      (fun p : M × ℝ => Tensor0SSpace.toModel (T p.1) (fun i => v i p.1)) := by
+  intro p₀
+  exact contMDiffAt_section_apply_prod T (hT p₀) v (fun i => hv i p₀)
 
 end TensorMultilinear
 

@@ -244,15 +244,15 @@ any tensor section. -/
 private structure ChartCutoff (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     where
-  /-- The cutoff function. -/
+
   toFun : EuclN → ℝ
-  /-- The cutoff is globally `C^∞`. -/
+
   smooth : ContDiff ℝ ∞ toFun
-  /-- The cutoff is `1` on the compact `K`. -/
+
   one_on : ∀ y ∈ K, toFun y = 1
-  /-- The cutoff has compact support inside the chart target. -/
+
   tsupport_subset : tsupport toFun ⊆ chartTargetEuclid (I := I) (M := M) α
-  /-- The cutoff has compact support. -/
+
   hasCompactSupport : HasCompactSupport toFun
 
 /-- Construction of the cutoff data: interpolate a compact `L` between `K` and

@@ -1,0 +1,4566 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{longtable,array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{blackbox}[theorem]{Black Box}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathrm{e}}
+
+\newcommand{\vspacesub}{\vspace{0pt}}
+
+\newcommand{\Ric}{\operatorname{Ric}}
+\newcommand{\Rm}{\operatorname{Rm}}
+\newcommand{\Scal}{R}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Vol}{\operatorname{Vol}}
+\newcommand{\inj}{\operatorname{inj}}
+\newcommand{\diam}{\operatorname{diam}}
+\newcommand{\Lie}{\mathcal L}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left|#1\right|}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\del}{\delta}
+\newcommand{\cRm}{\mathcal R}
+\newcommand{\owedge}{\mathbin{\text{\raisebox{0.15ex}{$\scriptstyle\wedge$}}}}
+\newcommand{\M}{M}
+\newcommand{\leanref}[1]{\nolinkurl{#1}}
+\newcommand{\leanfile}[1]{\nolinkurl{#1}}
+\newcommand{\rffile}[1]{\leanfile{#1}}
+\newcommand{\rfdir}[1]{\leanfile{#1/}}
+\newcommand{\leanchanged}[1]{\textcolor{blue}{#1}}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\do\_\do\.\do\/}
+\makeatother
+\Urlmuskip=0mu plus 2mu\relax
+\emergencystretch=3em
+
+\title{Hamilton's Three-Manifold Theorem and its Lean Formalization}
+\author{Bennett Chow \and Yuan Liao \and Ziyang Qin}
+\date{Working paper}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This working paper describes a Lean formalization project for Hamilton's 1982
+classification theorem for closed three-manifolds with positive Ricci
+curvature.  The project focuses not only on the final theorem statement, but on
+the geometric-analysis infrastructure needed for Hamilton's proof: Riemannian
+tensor calculus, Ricci-flow evolution equations, maximum-principle consumers,
+three-dimensional curvature algebra, Ricci pinching, and the blow-up argument.
+The current Lean development is substantial but not yet a completely closed
+formalization of Hamilton's theorem.  Its endpoint is theorem-shaped and
+machine-checkable relative to explicitly named global analytic, compactness,
+transfer, and topological inputs.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+The Ricci flow is the equation
+\begin{equation}
+    \frac{\partial}{\partial t} g = - 2 \Ric
+\end{equation}
+for one-parameter families of Riemannian metrics $g(t)$ on smooth manifolds.
+It was introduced by Richard Hamilton in his seminal 1982 paper
+\cite{MR664497}, where he used it to prove the following classification
+result.
+\begin{theorem}[Hamilton 1982]
+   If $M^3$ is a closed three-manifold that admits a metric $g_0$ with positive
+   Ricci curvature, then $M^3$ admits a metric $g_\infty$ with constant
+   positive sectional curvature.
+\end{theorem}
+Equivalently, such a manifold is diffeomorphic to a spherical space form.  This
+theorem is one of the starting points of the Ricci-flow approach to
+three-dimensional topology.
+
+During the 1980s and 1990s, Hamilton developed a broad Ricci-flow program for
+Thurston's geometrization conjecture and the subsumed Poincar\'e conjecture
+\cite{Hamilton1995SDG,Ham97,MR1714939,CCCY}.  In 2002--2003, Perelman
+introduced new monotonicity, noncollapsing, and surgery ideas that completed
+the remaining parts of Hamilton's program \cite{Perelman1,Perelman2,Perelman3}.
+This led to the Hamilton--Perelman proof of geometrization and Poincar\'e.
+Detailed expositions were subsequently given by Kleiner and Lott
+\cite{MR2460872}, Morgan and Tian \cite{MR2334563,MR3186136}, and Cao and Zhu
+\cite{MR2233789}.  Ricci flow has since become a central tool in geometric
+analysis, with applications including the differentiable sphere theorem of
+Brendle and Schoen \cite{BrendleSchoen}, the spherical space form theorem of
+B\"ohm and Wilking \cite{BohmWilking}, and later work of Brendle and Bamler on
+problems arising from Perelman's program \cite{Brendle2018U,Bamler0}.  Bamler's
+recent work has also developed a high-dimensional Ricci-flow theory
+\cite{Bamler2020A,MR4623543,Bamler2020C}.
+
+The formalization of mathematics is the project of writing mathematical
+definitions, statements, and proofs in languages whose correctness can be
+checked by computer.  Early milestones include de Bruijn's Automath,
+Trybulec's Mizar project, and Milner's LCF approach to interactive theorem
+proving \cite{deBruijnAutomath,TrybulecMizar,GordonMilnerWadsworthLCF}.
+Later systems such as HOL, Coq, Isabelle, and Lean developed powerful
+foundational frameworks and extensive libraries of formalized mathematics
+\cite{GordonHOL,Coq,PaulsonIsabelle,deMouraLean}.  Major formalization
+achievements include Gonthier's formal proof of the four-color theorem, the Coq
+formalization of the Feit--Thompson odd order theorem, and Hales's Flyspeck
+formal proof of the Kepler conjecture
+\cite{GonthierFourColor,GonthierOddOrder,HalesFlyspeck}.  More recently,
+Lean's mathematical library \texttt{mathlib} and projects such as the Liquid
+Tensor Experiment have shown that proof assistants can engage directly with
+contemporary research mathematics \cite{mathlib,CommelinLiquidTensor}.
+
+Geometric analysis is a natural and demanding next frontier for formalization.
+Modern proofs in the subject combine long chains of local tensor calculations,
+analytic estimates, compactness arguments, limiting procedures, and global
+geometric or topological inputs.  Hamilton's 1982 theorem already displays this
+combination in a comparatively compact setting: its proof uses curvature
+evolution equations, scalar and tensor maximum principles, three-dimensional
+curvature algebra, Ricci pinching estimates, finite-time blow-up, and
+Cheeger--Gromov--Hamilton compactness.  A Lean formalization forces these
+ingredients to be stated with precise hypotheses and interfaces.  It also
+separates reusable geometric-analysis infrastructure from the argument specific
+to Hamilton's theorem.
+
+Recent Lean formalizations have begun to reach geometry, analysis, and
+geometric analysis more directly.  Differential-geometric work in
+\texttt{mathlib} includes Lie groups, vector bundles, and Lie algebras
+\cite{BordgCavalleriDGLean}, and ongoing Riemannian-geometry developments
+include covariant derivatives, the Levi-Civita connection, geodesic flow, and
+the exponential map \cite{RothgangDGMathlib}.  The sphere eversion project of
+Massot, van Doorn, and Nash formalized a substantial part of Gromov's
+$h$-principle and deduced Smale's sphere eversion theorem
+\cite{MassotVanDoornNashSphereEversion}.  In analysis, the Carleson project
+formalized a generalized Carleson theorem on doubling metric measure spaces and
+recovered the classical theorem as a corollary \cite{CarlesonLean}.  Armstrong
+and Kempe formalized the core interior De Giorgi--Nash--Moser theory for weak
+solutions of rough-coefficient elliptic equations \cite{ArmstrongKempeDGNM}.
+Together, these developments suggest that the infrastructure needed for Ricci
+flow is beginning to come within reach of Lean.
+
+It is important to distinguish formalizing a theorem statement from formalizing
+the proof infrastructure behind that theorem.  In \texttt{mathlib}, the
+generalized Poincar\'e conjecture and the three-dimensional topological and
+smooth Poincar\'e conjectures have already been expressed as Lean statements
+\cite{XuPoincareMathlib}.  The Lean Millennium Prize Problems project likewise
+gives Clay-aligned formal statements of the Millennium problems, including the
+Poincar\'e conjecture \cite{LeanMillenniumPrizeProblems}.  Those projects are
+important reference points, but our aim is different.  We focus on Hamilton's
+specific Ricci-flow theorem at the beginning of the Hamilton--Perelman program,
+and on the geometric-analytic proof infrastructure needed to support its proof.
+
+This paper describes the current state of that formalization.  The development
+checks or packages substantial local infrastructure: tensor calculus and
+curvature conventions; Ricci-flow evolution equations; scalar and tensor
+maximum-principle consumer layers; three-dimensional Ricci and curvature
+algebra; preservation of Ricci positivity and shifted pinching; Hamilton's
+improved pinching quantity and estimate; and finite-time scalar blow-up and
+point-selection consumers.  At the same time, several global ingredients remain
+as explicitly named inputs.  The purpose of this paper is therefore twofold: to
+explain the mathematical structure of Hamilton's proof in a Lean-facing way,
+and to record precisely which parts of the current proof are machine-checked
+inside the project and which parts remain as global inputs or transfer interfaces.
+
+The rest of the paper follows Hamilton's argument and its formalization.  We
+first discuss the differential-geometric infrastructure used by the project,
+using the Levi-Civita connection and tensor covariant derivatives as a running
+example.  We then state the main theorem and global conventions, discuss
+short-time and maximal Ricci-flow inputs, give the evolution equations and
+maximum-principle layers, explain the three-dimensional algebra and pinching
+arguments, and finally describe the blow-up argument and the remaining global
+interfaces.  The final sections record a dependency ledger and compare the
+formalized route with a few variants of Hamilton's proof.
+
+\section{Formalization status and terminology}
+
+This section fixes the terminology used throughout the paper.  The words below
+are meant as formalization-status terms, not as mathematical qualifications of
+Hamilton's theorem.
+
+\paragraph{Native Lean proof.}
+A result has a native Lean proof when the project proves it in Lean from earlier
+library results, project definitions, and explicitly supplied hypotheses,
+rather than assuming that same result as a black-box input.  A native proof may still
+be local-frame, coordinate-frame, carrier-restricted, domain-aware, or packaged
+through an API whose mathematical reading is explained in the surrounding text.
+
+\paragraph{Consumer theorem.}
+A consumer theorem is a checked theorem whose role is to consume previously
+packaged hypotheses or interfaces.  It is machine-checked, but its conclusion
+may be conditional on inputs such as a Ricci-flow existence package, a maximum
+principle, a compactness theorem, or convergence-transfer data.
+
+\paragraph{Black-box input.}
+A black-box input is a named mathematical ingredient that is represented in Lean
+by an assumption or theorem-shaped interface rather than by a complete proof in
+the current project.  We use black-box inputs mainly for global analytic,
+compactness, convergence, and topological results that are not yet part of the
+local \texttt{RicciFlower} development.
+
+\paragraph{Transfer field or transfer interface.}
+A transfer field, or transfer interface, is a structured collection of
+hypotheses that carries geometric information through a limiting or pullback
+process.  In the Hamilton proof these interfaces express, for example, that
+Ricci nonnegativity, scalar normalization, or pinching estimates pass from the
+rescaled flows to the Cheeger--Gromov--Hamilton limit.
+
+\paragraph{Lean endpoint.}
+A Lean endpoint is the theorem or collection of theorems that serves as the
+formal target of a portion of the project.  The endpoint may be a fully closed
+proof, or it may be a consumer theorem whose hypotheses list the remaining
+interfaces needed by that part of the argument.
+
+\paragraph{Theorem-shaped endpoint.}
+A theorem-shaped endpoint is a Lean theorem with the shape and conclusion of
+the intended mathematical theorem, but whose proof still depends on explicitly
+named black-box inputs or transfer interfaces.  The current Hamilton endpoint is
+useful in this sense: it exposes the final dependency boundary and checks the
+downstream assembly, but it should not be read as a claim that Hamilton's theorem
+has already been formalized without global assumptions.
+
+With this terminology, the current formalization verifies or packages
+substantial local infrastructure, including:
+\begin{itemize}[leftmargin=2em]
+  \item local tensor calculus and curvature conventions;
+  \item Ricci-flow evolution equations;
+  \item scalar and tensor maximum-principle consumer layers;
+  \item three-dimensional Ricci and curvature algebra;
+  \item preservation of Ricci positivity/nonnegativity and shifted pinching;
+  \item Hamilton's improved pinching quantity and estimate;
+  \item finite-time scalar blow-up and point-selection consumers.
+\end{itemize}
+The main remaining inputs are global analytic, compactness, transfer, or
+topological interfaces.  In the current endpoint these include:
+\begin{itemize}[leftmargin=2em]
+  \item the short-time regularity bridge
+    \leanref{ham3_short_isSolution}, from the raw short-time chart/PDE output to
+    the project predicate \leanref{IsSolutionOn};
+  \item the normalized maximal Ricci-flow package
+    \leanref{ham3_flow_exists_normalized};
+  \item the extension/no-bounded-curvature continuation input used to pass from
+    finite maximal time to curvature blow-up;
+  \item Perelman's no-local-collapsing input \leanref{ham3_noncollapse};
+  \item Cheeger--Gromov--Hamilton compactness \leanref{ham3_cgh_limit};
+  \item transfer data
+    \leanref{Ham3RicNonnegTransfer},
+    \leanref{Ham3LimitBaseScalarConv}, and
+    \leanref{Ham3PinchTransfer};
+  \item the scalar-positivity interface on the limit flow, currently packaged
+    as \leanref{LimitScalarPos} inside the CGH limit output;
+  \item the final global/topological handoff
+    \leanref{limit_to_orig},
+    \leanref{ham3_space_box}, and
+    \leanref{spaceForm_const_metric}.
+\end{itemize}
+Thus the present document should be read as both a mathematical account of
+Hamilton's proof and a precise status report for the current Lean development.
+When a displayed theorem is checked only in a component, local-frame,
+positive-region, carrier-restricted, transfer-dependent, or consumer form, the
+corresponding proof paragraph records that scope.
+
+\section{Differential-geometric infrastructure in Lean}
+
+The first detailed formalization example is the Levi-Civita connection.  It is
+mathematically familiar, but it exposes one of the central issues in a Lean
+Ricci-flow development: textbook differential geometry often suppresses the
+point, the tangent direction, the domain of definition, and the regularity data,
+whereas Lean's typed APIs make these choices explicit.  The same infrastructure
+is then reused in the later Ricci-flow evolution equations, where the project
+must move reliably between invariant tensor notation, coordinate-frame
+components, and local analytic hypotheses.
+
+The construction builds on the differential-geometry infrastructure of
+\texttt{mathlib} \cite{mathlib}, including the surrounding Lean work on vector
+bundles and related structures \cite{BordgCavalleriDGLean}, and is compatible in
+spirit with ongoing Riemannian-geometry developments in Lean
+\cite{RothgangDGMathlib}.  The project-local contribution is not a replacement
+for this broader library work; it is a Ricci-flow-oriented layer that supplies
+the tensor model fibers and tensor-bundle constructions, the pointwise tensor
+fibers, and the particular connection, tensor-nabla, coordinate-component,
+curvature, metric, and regularity interfaces needed by Hamilton's proof and by
+the final theorem statement itself.
+
+\subsection{Tensor bundles and theorem-facing predicates}
+
+Before discussing the Levi-Civita connection, it is useful to record the typed
+objects that make the final Hamilton endpoint meaningful.  The theorem
+\leanref{ham3_main} is not a statement about informal metrics and curvatures:
+it quantifies over a charted smooth manifold, a model space, smooth
+Riemannian metrics, tensor fields on the tangent bundle, and pointwise
+curvature tensors built from those data.
+
+The base manifold data are carried by a model with corners \(I\) on a model
+space \(E\), a topological space \(M\), a charted-space structure, and manifold
+instances.  The theorem-facing closed three-manifold hypothesis is the
+predicate \leanref{Closed3Manifold}.
+In the current Lean endpoint this expands to compactness, connectedness,
+boundarylessness, and the dimension condition
+\[
+  \operatorname{finrank}_{\mathbb R} E = 3 .
+\]
+Thus the phrase ``closed smooth three-manifold'' is not left implicit: each
+topological, smooth-boundary, and dimension requirement is a field or instance
+that downstream Ricci-flow and three-dimensional curvature algebra can consume.
+
+The tensor layer starts with model fibers.  For covariant tensors, the model
+fiber is
+\[
+  \mathtt{Tensor0SModel}\ s\ \mathbb R\ E
+  =
+  \operatorname{CMLin}\bigl((\operatorname{Fin}s\to E),\mathbb R\bigr),
+\]
+the continuous multilinear maps from \(s\) copies of the model space to
+\(\mathbb R\).  For mixed tensors, the model fiber is represented as
+\[
+  \mathtt{TensorRSModel}\ r\ s\ \mathbb R\ E
+  =
+  \mathtt{Tensor0SModel}\ r\ \mathbb R\ E
+  \to_{\!L}
+  \mathtt{Tensor0SModel}\ s\ \mathbb R\ E .
+\]
+This is the project's Hom realization of mixed tensors.  It keeps the mixed
+tensor bundle compatible with continuous-linear-map infrastructure while still
+exposing the usual \((r,s)\)-tensor component API.
+
+The corresponding pointwise fibers over \(x\in M\) are
+\[
+  \mathtt{Tensor0SSpace}\ s\ I\ x
+\]
+and
+\[
+  \mathtt{TensorRSSpace}\ r\ s\ I\ x .
+\]
+The tensor bundle itself is the dependent family over \(M\): for example,
+\(x\mapsto\mathtt{Tensor0SSpace}\ s\ I\ x\) for covariant tensors and
+\(x\mapsto\mathtt{TensorRSSpace}\ r\ s\ I\ x\) for mixed tensors.  The model
+fibers above provide the local trivialization targets, while these pointwise
+spaces are the actual fibers used at each point.
+The first is the fiber of covariant \(s\)-tensors on \(T_xM\), implemented via
+the bundle of continuous multilinear maps on the tangent bundle.  The second is
+the mixed tensor fiber, implemented as continuous linear maps from
+\(\mathtt{Tensor0SSpace}\ r\ I\ x\) to
+\(\mathtt{Tensor0SSpace}\ s\ I\ x\).  These fibers come with the topology,
+vector-space, and normed-space structure needed by later estimates.  They are
+not merely notation for components; they are the actual fiber objects on which
+curvature, Ricci tensors, trace-free Ricci tensors, and tensor norms live.
+
+Tensor fields are then functions or sections over these fibers.  The metric is
+a smooth Riemannian metric
+\[
+  \mathtt{SmoothRiemannianMetric}\ I\ M,
+\]
+that is, a smoothly varying inner product on the tangent spaces.  The metric
+also gives a \((0,2)\)-tensor field through the tensor-bundle layer.  Curvature
+objects used by the Hamilton endpoint are built from the Levi-Civita connection
+of such a metric.  In particular, the pointwise Ricci tensor of a metric is
+\[
+  \mathtt{metricRicciAt}\ g\ x
+  :
+  \mathtt{Tensor0SSpace}\ 2\ I\ x,
+\]
+and the standard lowered Riemann tensor evaluator is
+\[
+  \mathtt{metricRm04StdAt}\ g\ x\ X\ Y\ Z\ W
+  =
+  \Rm_{04}(X,Y,Z,W).
+\]
+The standard slot convention is
+\[
+  \Rm_{04}(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle .
+\]
+
+With these objects in place, the initial positive-Ricci hypothesis becomes a
+precise predicate.  For a smooth metric \(g\),
+\[
+  \mathtt{PosRicciMetric}\ g
+\]
+means
+\[
+  \forall x:M,\ \forall v\in T_xM,\ v\ne0
+  \Longrightarrow
+  0 <
+  \mathtt{metricRicciAt}\ g\ x(v,v).
+\]
+In Lean the pair \((v,v)\) is supplied by the local tensor argument constructor
+\leanref{vec2}.  The theorem hypothesis
+\leanref{AdmitsPosRicci} is then the existence of a smooth Riemannian metric satisfying
+\leanref{PosRicciMetric}.  This is why the tensor-bundle and Ricci-tensor
+construction is part of the theorem statement itself, not only part of the
+evolution proof.
+
+The metric conclusion is similarly theorem-facing.  For a smooth metric \(g\),
+\[
+  \mathtt{ConstPosSecMetric}\ g
+\]
+asserts the existence of a constant \(c>0\) such that, for every point and every
+pair of tangent vectors \(X,Y\),
+\[
+  \mathtt{metricRm04StdAt}\ g\ x\ X\ Y\ Y\ X
+  =
+  c\bigl(
+      g(X,X)g(Y,Y)-g(X,Y)^2
+    \bigr).
+\]
+The predicate \leanref{AdmitsConstPosSec} is the existence of such a smooth
+metric.  The topological conclusion \leanref{SphericalSpaceForm} is a separate
+global-geometry predicate: it is represented by a finite free isometric
+quotient model of the round three-sphere and a smooth equivalence with \(M\).
+
+Thus the final statement \leanref{ham3_main} rests on several infrastructure
+layers before any Ricci-flow argument begins:
+the manifold package \leanref{Closed3Manifold}, the tensor model fibers and
+bundles \leanref{Tensor0SModel}, \leanref{TensorRSModel},
+\leanref{Tensor0SSpace}, and \leanref{TensorRSSpace}, smooth metrics,
+Levi-Civita curvature producers, and the theorem-facing predicates
+\leanref{PosRicciMetric}, \leanref{AdmitsPosRicci},
+\leanref{ConstPosSecMetric}, \leanref{AdmitsConstPosSec}, and
+\leanref{SphericalSpaceForm}.  The rest of this section explains how the
+connection, tensor-nabla, and coordinate-component layers supply the local
+geometric calculations consumed by the Ricci-flow proof.
+
+\subsection{Construction of the Levi-Civita connection}
+
+\subsubsection{Linear connections on \texorpdfstring{$TM$}{TM} and their actions on tensors}
+
+We begin by separating several uses of the notation $\nabla$.  In differential
+geometry, a linear connection on the tangent bundle is often written as a
+bilinear operation on vector fields
+\[
+  \nabla : \mathfrak X(M) \times \mathfrak X(M) \to \mathfrak X(M),
+  \qquad
+  (X,Y) \mapsto \nabla_XY .
+\]
+It is $C^\infty(M)$-linear in the first argument, $\mathbb R$-linear in the
+second argument, and satisfies the Leibniz rule
+\[
+  \nabla_X(fY) = X(f)Y + f\nabla_XY .
+\]
+The same connection induces covariant derivatives on tensor fields.  For a
+covariant tensor field $\alpha \in \Gamma((T^*M)^{\otimes s})$, the directional
+covariant derivative is characterized by
+\[
+  (\nabla_X\alpha)(Y_1,\ldots,Y_s)
+  =
+  X\bigl(\alpha(Y_1,\ldots,Y_s)\bigr)
+  -
+  \sum_{a=1}^s
+  \alpha(Y_1,\ldots,\nabla_XY_a,\ldots,Y_s).
+\]
+Equivalently, the total covariant derivative is the $(0,s+1)$-tensor field
+\[
+  (\nabla\alpha)(X,Y_1,\ldots,Y_s)
+  =
+  (\nabla_X\alpha)(Y_1,\ldots,Y_s).
+\]
+Thus the same mathematical symbol $\nabla$ denotes at least three related
+operations: the tangent-bundle connection, the induced directional covariant
+derivative on tensors, and the total covariant derivative, which adds one lower
+index.  In Lean these operations have different types and therefore have to be
+implemented as separate, connected APIs.
+
+\subsubsection{Linear connections in \texttt{mathlib} and the Levi-Civita connection}
+
+The base interface is \texttt{mathlib}'s bundled tangent-bundle covariant
+derivative
+\[
+  \texttt{CovariantDerivative I E (TangentSpace I : M -> Type \_)} .
+\]
+Its application order is
+\[
+  \texttt{cov Y x v} = (\nabla_vY)(x),
+\]
+where $Y$ is a vector field, $x\in M$, and $v\in T_xM$.  In other words, the
+point $x$ and the tangent direction $v$ are explicit arguments of the API.  This
+object is a connection on tangent-vector fields: it contains the additivity and
+Leibniz rules required of a covariant derivative, but it is not by itself a
+complete tensor-calculus package.  Its $C^\infty$-linearity in the direction
+variable is expressed pointwise, through the value at $x$ and the tangent vector
+$v$, rather than through a globally chosen vector field $X$.
+
+For a smooth Riemannian metric $g$, the project defines the Levi-Civita
+connection as a particular instance of this \texttt{mathlib} structure:
+\[
+  \texttt{leviCivitaConnectionOfMetric g}
+  :
+  \texttt{CovariantDerivative I E (TangentSpace I : M -> Type \_)} .
+\]
+The construction is based on the Koszul formula
+\[
+\begin{aligned}
+2\langle \nabla_XY,Z\rangle
+&=
+X\langle Y,Z\rangle
++
+Y\langle Z,X\rangle
+-
+Z\langle X,Y\rangle                                      \\
+&\quad
+-\langle X,[Y,Z]\rangle
++
+\langle Y,[Z,X]\rangle
++
+\langle Z,[X,Y]\rangle .
+\end{aligned}
+\]
+A direct transcription of this formula would be field-level: it depends on a
+vector field $X$ and on Lie brackets of vector fields.  The target
+\texttt{CovariantDerivative} API, however, expects a point $x$ and a tangent
+vector $v\in T_xM$.  The formal construction must therefore prove a descent
+statement: the value obtained from the Koszul formula at $x$ depends only on the
+pointwise tangent vector $v$, not on the auxiliary vector-field extension used
+to represent it.
+
+The descent is organized as follows.  First, \texttt{RicciFlower} defines the
+scalar right-hand side of the Koszul formula as a field-level expression
+\[
+  \texttt{koszulScalar g X Y Z x}.
+\]
+It then constructs a covector from this scalar expression, raises the index
+using the metric, and obtains a candidate vector field
+\[
+  \texttt{koszulNablaField g X Y x}.
+\]
+Given a tangent vector $v\in T_xM$, the project extends $v$ to a
+chart-constant vector field
+\[
+  \texttt{tangentConstAt x v}
+\]
+and defines the pointwise candidate
+\[
+  \texttt{koszulNablaAt g Y x v}
+  :=
+  \texttt{koszulNablaField g (tangentConstAt x v) Y x}.
+\]
+The key local theorem proves independence of the chosen smooth extension of
+$v$.  Only after this independence statement is available does the construction
+package the result as a continuous linear map
+\[
+  \texttt{leviCivitaConnectionCandidateAt g Y x}
+  :
+  T_xM \to _L[\mathbb R] T_xM .
+\]
+The final bundled connection \texttt{leviCivitaConnectionOfMetric g} uses this
+candidate as its \texttt{toFun} field.
+
+The formal development then proves the two defining properties of the
+Levi-Civita connection.  Metric compatibility is stated as
+\[
+  X\langle Y,Z\rangle
+  =
+  \langle \nabla_XY,Z\rangle
+  +
+  \langle Y,\nabla_XZ\rangle,
+\]
+and torsion-freeness is stated as
+\[
+  T^\nabla(X,Y)
+  =
+  \nabla_XY-\nabla_YX-[X,Y]
+  =
+  0.
+\]
+The corresponding predicates are
+\[
+  \texttt{IsMetricCompatible cov g},
+  \qquad
+  \texttt{IsTorsionFree cov},
+  \qquad
+  \texttt{IsLeviCivita cov g}.
+\]
+The theorem
+\[
+  \texttt{leviCivitaConnectionOfMetric\_isLeviCivita}
+\]
+records that the Koszul-constructed connection is metric-compatible and
+torsion-free.
+
+\subsection{Induced covariant derivatives on tensor fields in Lean}
+
+Once a tangent-bundle connection \texttt{cov} has been constructed, the project
+defines its induced action on tensor fields in a separate layer.  For covariant
+tensor fields, the main pointwise directional definition is
+\[
+  \texttt{nabla0SFun s cov X alpha x}.
+\]
+This represents the value of $\nabla_X\alpha$ at $x$, where $\alpha$ is a
+$(0,s)$-tensor field.  For mixed tensor fields, the corresponding definition is
+\[
+  \texttt{nablaRSFun r s cov X T x},
+\]
+which represents the value of $\nabla_XT$ at $x$ for a mixed $(r,s)$-tensor
+field $T$.
+
+These definitions are directional covariant derivatives: they preserve tensor
+valence.  The total covariant derivative is a separate construction.  For
+covariant tensors, the project uses
+\[
+  \texttt{totalNabla0SFun s cov alpha x},
+\]
+whose output has one additional leading covariant slot.  Evaluating that
+leading slot at a vector $X_x$ recovers the directional derivative
+\[
+  (\nabla\alpha)_x(X_x,\cdots) = (\nabla_X\alpha)_x(\cdots).
+\]
+
+Smoothness is also kept separate from the raw pointwise definition.  The raw
+functions \texttt{nabla0SFun}, \texttt{nablaRSFun}, and
+\texttt{totalNabla0SFun} define pointwise values.  The bundled tensor-field
+versions require explicit regularity hypotheses such as
+\[
+  \texttt{Nabla0SRegular}, \qquad
+  \texttt{NablaRSRegular}, \qquad
+  \texttt{TotalNabla0SRegular}.
+\]
+This design avoids hiding analytic regularity work inside the definition of the
+operator.  For the main Ricci-flow applications in this project, the relevant
+regularity hypotheses are produced from smoothness of the metric and the
+Levi-Civita connection, ultimately through the Koszul construction and its local
+coordinate consequences.
+
+For mixed tensors, the induced connection has the usual sign convention: upper
+indices contribute with a plus sign and lower indices contribute with a minus
+sign.  For a mixed tensor $T^a{}_{bc}$, the coordinate expression is
+\[
+  (\nabla_i T)^a{}_{bc}
+  =
+  \partial_i T^a{}_{bc}
+  +
+  \Gamma^a_{im} T^m{}_{bc}
+  -
+  \Gamma^m_{ib} T^a{}_{mc}
+  -
+  \Gamma^m_{ic} T^a{}_{bm}.
+\]
+In the formalization, this formula is not used as the definition of tensor
+covariant derivative.  Rather, it is proved as a coordinate projection theorem:
+after applying the invariant tensor-nabla construction, its coordinate
+components agree with the classical Christoffel-symbol formula.
+
+\subsection{Coordinate Christoffel symbols}
+
+Only after the invariant connection and tensor-nabla layers are in place does
+\texttt{RicciFlower} project to local coordinates.  If $\{\partial_i\}$ is a
+coordinate frame, the Christoffel symbols of a connection are defined by
+\[
+  \nabla_{\partial_i}\partial_j
+  =
+  \Gamma^k_{ij}\partial_k.
+\]
+For the Levi-Civita connection, \texttt{RicciFlower} proves the coordinate
+formula
+\[
+  \Gamma^k_{ij}
+  =
+  \frac12
+  \sum_\ell g^{k\ell}
+  \left(
+    \partial_i g_{j\ell}
+    +
+    \partial_j g_{i\ell}
+    -
+    \partial_\ell g_{ij}
+  \right).
+\]
+The corresponding Lean theorem is
+\[
+  \texttt{leviCivitaConnectionOfMetric\_coordinate\_christoffel\_formula}.
+\]
+Its proof follows the textbook route, but the formal dependencies are explicit:
+first express the $k$-th coordinate coefficient using the inverse metric, then
+apply the Koszul inner-product formula, and finally rewrite the Koszul scalar in
+terms of derivatives of metric components in the coordinate frame.
+
+\subsection{A concrete checked example: the general mixed-tensor coordinate formula}
+
+A representative checked example is not a low-valence special case, but the
+general coordinate theorem for mixed tensor covariant derivatives:
+\[
+  \texttt{nablaRS\_coordFrame\_slots\_of\_smooth}.
+\]
+This theorem appears in
+\[
+  \texttt{...Coordinates/NablaComponents/TensorRS/Formula.lean}.
+\]
+It states the coordinate-frame component formula for the covariant derivative of
+an arbitrary mixed $(r,s)$-tensor field.
+
+Let $T$ be a mixed tensor field of type $(r,s)$, let
+\[
+  I : \operatorname{Fin}(r) \to \{1,\ldots,n\},
+  \qquad
+  J : \operatorname{Fin}(s) \to \{1,\ldots,n\}
+\]
+be choices of upper and lower coordinate indices, and write
+\[
+  T^I{}_J
+\]
+for the corresponding coordinate component of $T$.  The theorem proves the
+formula
+\[
+\begin{aligned}
+  (\nabla_X T)^I{}_J
+  &=
+  X(T^I{}_J)                                                     \\
+  &\quad
+  +
+  \sum_{a\in \operatorname{Fin}(r)}
+  \sum_k
+  \Gamma^{I_a}(X,k)\,
+  T^{I[a\mapsto k]}{}_J                                      \\
+  &\quad
+  -
+  \sum_{b\in \operatorname{Fin}(s)}
+  \sum_k
+  \Gamma^k(X,J_b)\,
+  T^I{}_{J[b\mapsto k]} .
+\end{aligned}
+\]
+Here $I[a\mapsto k]$ denotes the index tuple obtained from $I$ by replacing its
+$a$-th upper index by $k$, and similarly $J[b\mapsto k]$ denotes replacement in
+the lower-index tuple.  The sign convention is exactly the classical one:
+contravariant slots contribute positive Christoffel terms, while covariant slots
+contribute negative Christoffel terms.
+
+The proof of \texttt{nablaRS\_coordFrame\_slots\_of\_smooth} is organized as a
+sequence of exchange lemmas between three representations of the same object.
+The theorem itself is a smooth-input wrapper around the more explicit theorem
+\texttt{nablaRS\_coordFrame\_slots}, whose additional hypothesis asserts that
+the fixed-chart model derivative agrees with the scalar directional derivative
+of the corresponding coordinate component.
+
+The core proof first unfolds \texttt{nablaRSFun} into its chart-level
+definition.  This replaces the invariant-looking tensor field
+\[
+  \nabla_XT
+\]
+by the model-space covariant derivative of the fixed-chart representative of
+$T$, with the connection represented by
+\[
+  \texttt{connectionEndomorphismInChart}.
+\]
+It then rewrites the desired coordinate component using the bridge theorem
+\[
+  \texttt{tensorRSModelAt\_coordComponentRSAt},
+\]
+which identifies the fixed-chart model component at the base point with the
+coordinate-frame component.
+
+After this normalization, the proof invokes the model-space formula
+\[
+  \texttt{covariantDeriv\_tensorRSModelWithin\_apply\_basis\_slots}.
+\]
+This theorem supplies the algebraic mixed-tensor covariant-derivative formula:
+one derivative term, one positive Christoffel correction for each upper slot,
+and one negative Christoffel correction for each lower slot.  The remaining work
+is to translate the three types of terms back into coordinate language.
+
+First, the model connection coefficients are rewritten as Christoffel
+coefficients in the coordinate frame using
+\[
+  \texttt{connCoeff\_eq\_christoffelAlong\_coord}.
+\]
+Second, the model derivative term is rewritten as the coordinate directional
+derivative by the bridge
+\[
+  \texttt{modelDeriv\_eq\_coordDerivRSAt}.
+\]
+This is the only genuinely analytic bridge in the proof: it identifies the
+Fr\'echet derivative of the fixed-chart model representative with the manifold
+directional derivative of the scalar coordinate component.  Finally, the tensor
+evaluations inside the two correction sums are rewritten back to coordinate
+components by another use of
+\[
+  \texttt{tensorRSModelAt\_coordComponentRSAt}.
+\]
+The proof then closes by congruence of finite sums and elementary simplification
+of \texttt{Function.update} on the upper and lower index tuples.
+
+
+
+\section{Main goal and global conventions}
+
+\begin{theorem}[Hamilton's theorem in dimension three]
+\label{thm:main-hamilton-3d}
+Let $M^3$ be a closed, connected, smooth three-manifold. If $M$ admits a
+Riemannian metric $g_0$ with
+\[
+\Ric(g_0)>0,
+\]
+then $M$ admits a Riemannian metric of constant positive sectional curvature.
+Equivalently, $M$ is diffeomorphic to a spherical space form.
+\end{theorem}
+
+
+Hamilton's proof route runs Ricci flow from the initial metric \(g_0\), proves
+preservation and improvement of Ricci pinching, and then performs a blow-up
+argument at a finite-time singularity.  The later sections follow this route,
+while recording whether each formal result is native, a consumer theorem, or an
+interface over global inputs.
+
+Throughout the paper, $M$ is closed, meaning compact without boundary.  We use
+the Ricci-flow sign convention
+\[
+  \partial_t g=-2\Ric.
+\]
+The rough Laplacian is
+\[
+  \Delta T=g^{ij}\nabla_i\nabla_jT.
+\]
+Indices are raised and lowered using the evolving metric $g(t)$, and repeated
+indices are summed unless otherwise stated.
+
+\subsection{Ground geometric definitions needed by the endpoint}
+\label{subsec:ground-definitions-for-endpoint}
+
+The final Hamilton endpoint is stated using project-local Lean predicates, as many corresponding definitions not yet exists in Mathlib.
+Before stating that endpoint, we record the mathematical content of the
+underlying geometric objects.
+
+The ambient smooth manifold is represented by a model with corners
+\[
+  I : \mathrm{ModelWithCorners}\ \mathbb{R}\ E\ H
+\]
+together with a type \(M\), a topology on \(M\), a charted-space structure, and
+smooth-manifold instances.  Thus the formal theorem is not stated about a bare
+topological space.  It is stated about a charted smooth manifold modeled on a
+finite-dimensional real inner product space \(E\).  Tangent vectors at a point
+\(x\in M\) live in the Lean type \texttt{TangentSpace I x}.
+
+A smooth Riemannian metric is represented by
+\begin{center}
+\texttt{\detokenize{SmoothRiemannianMetric I M}}.
+\end{center}
+For such a metric \(g\), the pointwise inner product of tangent vectors
+\(X,Y\in T_xM\) is written in Lean as
+\begin{center}
+\texttt{\detokenize{g.inner x X Y}}.
+\end{center}
+The metric determines its Levi-Civita connection, and hence its curvature,
+Ricci tensor, and scalar curvature.  These are not independent fields in the
+main theorem statement.  They are canonical objects produced from the metric.
+
+The lowered Riemann curvature convention used by the endpoint is
+\[
+  \operatorname{Rm}_{04}(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle .
+\]
+With this convention, the sectional numerator of the plane spanned by \(X\) and
+\(Y\) is
+\[
+  \operatorname{Rm}_{04}(X,Y,Y,X).
+\]
+This convention is important because the constant-positive-sectional-curvature
+predicate is stated directly in terms of this lowered four-tensor.
+
+For a smooth metric \(g\), the Ricci tensor is represented pointwise by the
+canonical tensor
+\begin{center}
+\texttt{\detokenize{metricRicciAt g x}}.
+\end{center}
+The positive-Ricci predicate says that this tensor is positive definite:
+\[
+  \operatorname{Ric}_g(v,v)>0
+  \qquad
+  \text{for every }x\in M\text{ and every nonzero }v\in T_xM .
+\]
+In Lean, the pair of tensor arguments \((v,v)\) is supplied by the constructor
+\texttt{vec2}.  Thus the formal expression
+\begin{center}
+\texttt{\detokenize{metricRicciAt g x (vec2 v v)}}
+\end{center}
+is the Lean-facing version of \(\operatorname{Ric}_g(v,v)\).
+
+Constant positive sectional curvature is also stated as a metric predicate.
+For a smooth metric \(g\), it means that there exists a real constant \(c>0\)
+such that, for every point \(x\in M\) and all tangent vectors
+\(X,Y\in T_xM\),
+\[
+  \operatorname{Rm}_{04}(X,Y,Y,X)
+  =
+  c\bigl(
+    g(X,X)g(Y,Y)-g(X,Y)^2
+  \bigr).
+\]
+Equivalently, every nondegenerate two-plane has sectional curvature \(c\).
+The Lean endpoint uses the numerator form above because it avoids separately
+dividing by the Gram determinant.
+
+Finally, the topological conclusion uses the predicate
+\begin{center}
+\texttt{SphericalSpaceForm}.
+\end{center}
+This is not a Ricci-flow analytic predicate.  It means that \(M\) is smoothly
+presented as a finite free isometric quotient of the round three-sphere.  More
+concretely, the witness data consist of a finite group \(\Gamma\), an isometric
+free action of \(\Gamma\) on the round unit sphere
+\[
+  S^3=\{x\in \mathbb{R}^4:|x|=1\},
+\]
+a smooth structure on the orbit quotient \(S^3/\Gamma\), and a smooth
+homeomorphism between \(M\) and that quotient.
+
+These definitions are the ground layer needed to read the theorem in
+Section~\ref{subsec:main-lean-endpoint}.  The Ricci-flow proof produces the metric
+conclusion, namely the existence of a constant-positive-sectional-curvature
+metric.  The spherical-space-form conclusion is a separate global
+geometry/topology handoff.
+
+\subsection{The main Lean endpoint}
+\label{subsec:main-lean-endpoint}
+
+The formal endpoint of the project is the following Lean theorem in
+\texttt{DimensionThree/HamiltonPositiveRicci.lean}.  We state it before giving
+the corresponding textbook sentence, because the formal theorem is the object
+whose hypotheses and conclusions the rest of the paper must explain.
+
+\begin{verbatim}
+theorem ham3_main
+    (hM : Closed3Manifold (I := I) (M := M))
+    (hpos : AdmitsPosRicci (I := I) (M := M)) :
+    AdmitsConstPosSec (I := I) (M := M) /\
+      SphericalSpaceForm (I := I) (M := M) := by
+  have hconst : AdmitsConstPosSec (I := I) (M := M) :=
+    ham3_const_metric (I := I) (M := M) hM hpos
+  exact And.intro hconst ((ham3_equiv (I := I) (M := M) hM).1 hconst)
+\end{verbatim}
+
+
+
+There are two hypotheses.
+
+First,
+\begin{center}
+\texttt{\detokenize{Closed3Manifold (I := I) (M := M)}}
+\end{center}
+is the Lean package for a closed connected smooth three-manifold.  In the
+current endpoint it expands to
+\[
+  \mathrm{CompactSpace}\ M
+  \quad\wedge\quad
+  \mathrm{ConnectedSpace}\ M
+  \quad\wedge\quad
+  I.\mathrm{Boundaryless}
+  \quad\wedge\quad
+  \operatorname{finrank}_{\mathbb{R}} E = 3.
+\]
+Thus compactness, connectedness, boundarylessness, and dimension three are all
+explicit data.  The dimension is attached to the model vector space \(E\), not
+to an informal superscript on \(M\).
+
+Second,
+\begin{center}
+\texttt{\detokenize{AdmitsPosRicci (I := I) (M := M)}}
+\end{center}
+says that \(M\) admits a smooth Riemannian metric with positive Ricci
+curvature.  More explicitly, it is the existence of a metric
+\[
+  g_0 : \mathtt{SmoothRiemannianMetric}\ I\ M
+\]
+such that
+\[
+  \operatorname{Ric}_{g_0}(v,v)>0
+\]
+for every point \(x\in M\) and every nonzero tangent vector
+\(v\in T_xM\).  In Lean this positivity is expressed using the canonical
+pointwise Ricci tensor of \(g_0\):
+\[
+  0 <
+  \mathtt{metricRicciAt}\ g_0\ x\ (\mathtt{vec2}\ v\ v).
+\]
+This is important: the initial Ricci tensor is not separately supplied.  It is
+computed from the Levi-Civita curvature of the chosen initial metric.
+
+The proof is just conjunction.  The first component to justify is
+\begin{center}
+\texttt{\detokenize{AdmitsConstPosSec (I := I) (M := M)}}.
+\end{center}
+This is done by the metric conclusion of Hamilton's theorem.  It says that there exists a
+smooth Riemannian metric \(g_\infty\) on \(M\) and a real constant \(c>0\)
+such that
+\[
+  \operatorname{Rm}_{04}^{g_\infty}(X,Y,Y,X)
+  =
+  c\bigl(
+    g_\infty(X,X)g_\infty(Y,Y)
+    -
+    g_\infty(X,Y)^2
+  \bigr)
+\]
+for every point \(x\in M\) and every pair \(X,Y\in T_xM\).  The curvature
+convention is
+\[
+  \operatorname{Rm}_{04}(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle,
+\]
+so the displayed identity is exactly the constant-positive-sectional-curvature
+condition in lowered-curvature form.
+
+The second component,
+\begin{center}
+\texttt{\detokenize{SphericalSpaceForm (I := I) (M := M)}},
+\end{center}
+is the topological consequence of a constant-positive-sectional-curvature three manifold.
+
+In ordinary mathematical language, the theorem says:
+
+\begin{theorem}[Hamilton's positive-Ricci theorem, Lean-facing endpoint]
+\label{thm:main-hamilton-3d-lean-facing}
+Let \(M\) be a compact, connected, boundaryless smooth three-manifold.  If
+\(M\) admits a smooth Riemannian metric with positive Ricci curvature, then
+\(M\) admits a smooth Riemannian metric of constant positive sectional
+curvature.  Consequently, \(M\) is diffeomorphic to a spherical space form.
+\end{theorem}
+
+The Lean theorem is stronger as a status marker than this prose theorem,
+because it identifies the exact formal predicates used at the endpoint.  Later
+sections explain the proof of \texttt{\detokenize{ham3_const_metric}} and list
+the remaining analytic, compactness, transfer, and topological interfaces on
+which the current theorem-shaped endpoint depends.
+
+
+\begin{remark}[Lean-facing division of labor]
+\label{rem:lean-division-of-labor}
+The remaining proof uses three kinds of formal objects.  First, tensor-calculus
+identities are local-coordinate, local-frame, or invariant differential-
+geometric calculations.  Second, maximum-principle and parabolic-existence
+statements are analytic inputs or consumer theorems, depending on the section.
+Third, compactness, noncollapsing, convergence transfer, and the final
+topological handoff are represented by explicitly named global interfaces.
+For the following three sections, we will describe our status in each of these directions.
+\end{remark}
+
+\section{Local tensor-calculus and differential-geometric calculations}
+\label{sec:local-tensor-geometry}
+
+This section records the project-local geometric calculations: the standing
+Riemannian conventions, the Ricci-flow evolution identities, and the
+three-dimensional curvature algebra.  These are the tensor-calculus and
+coordinate/local-frame components in the division of labor from
+Remark~\ref{rem:lean-division-of-labor}.
+
+\subsection{Foundational geometric conventions}
+
+For basic Riemannian geometry, see \S\ \ref{subsec:BasicRiemGeom}.  For basic
+tensor calculus, see \S\ \ref{subsec:TensorCalculus}.
+
+The preceding differential-geometric infrastructure section describes the
+project's local Lean APIs for the Levi-Civita connection and induced tensor
+covariant derivatives.  The following assumption records the textbook geometric
+conventions used in the remaining proof.  It should be read as a bookkeeping
+package for the paper's mathematical narrative: many local pieces are supplied
+by the project infrastructure above, the appendix gives the corresponding
+textbook formulas, and each later proof paragraph records the exact Lean scope
+of the result it cites.
+
+\begin{assumption}[Basic Riemannian tensor-calculus conventions]
+\label{ass:riemannian-calculus}
+We use the standard smooth Riemannian tensor calculus associated to a metric
+$g$.
+\begin{enumerate}[label=(\arabic*)]
+  \item The Levi-Civita connection $\nabla$ is defined on vector fields and
+  extends to arbitrary tensors by linearity, the Leibniz rule, and commuting
+  with contractions.
+
+  \item The connection is torsion-free and metric-compatible:
+  \[
+  \nabla g=0.
+  \]
+
+  \item The Riemann curvature tensor is defined by the commutator of covariant
+  derivatives:
+  \[
+  \Rm(X,Y)Z
+  =
+  \nabla_X\nabla_YZ
+  -\nabla_Y\nabla_XZ
+  -\nabla_{[X,Y]}Z.
+  \]
+
+  \item The Ricci tensor and scalar curvature are contractions of $\Rm$:
+  \[
+  \Ric_{ij}=g^{k\ell}R_{kij\ell},
+  \qquad
+  R=g^{ij}\Ric_{ij}.
+  \]
+
+  \item We use the algebraic symmetries of $\Rm$, the first and second Bianchi
+  identities, and the contracted Bianchi identity.
+
+  \item We use the standard commutator identities for covariant derivatives
+  acting on tensors.
+
+  \item Norms, traces, divergences, contractions, and the rough Laplacian
+  \[
+  \Delta T=g^{ij}\nabla_i\nabla_jT
+  \]
+  are formed using $g$ and $\nabla$.
+\end{enumerate}
+\end{assumption}
+
+\subsection{Evolution equations}
+
+\paragraph{Lean scope note.}
+The formulas in this section are displayed in standard tensor notation.  In the
+current Lean development, the corresponding producers are often local-frame or
+coordinate-frame component statements rather than single invariant tensor
+identities.  They are attached to the derived smooth-solution view
+\leanref{IsSmoothSolutionOn}.  This is a formalization-scope statement, not an
+extra analytic assumption: \leanref{IsSmoothSolutionOn} extends
+\leanref{IsSolutionOn}, and the upgrade theorem \leanref{smoothOfSol} supplies
+this view from the metric Ricci-flow solution predicate under the standing
+boundaryless coordinate hypothesis.
+
+\subsubsection{Evolution of the connection}
+
+\begin{lemma}[Evolution of the inverse metric]
+\label{lem:evol-inverse-metric}
+Along Ricci flow,
+\[
+\partial_tg^{ij}=2\Ric^{ij}.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The proof is the fixed-frame component theorem
+\leanref{RicciFlow.evol_inverse_metric_inFrame} in
+\rffile{RicciFlow/Evolution/Metric/Evolution.lean}.  The proof does not treat
+\(g^{ij}\) as an independent formal symbol.  Instead, it works with a local
+inverse-metric component family, called \(gInv(t,x,i,j)\) in Lean and
+mathematically read as \(g^{ij}(t,x)\).  The hypotheses
+\leanref{MetricFrameTimeRegularityInFrameOnLocal} provide the two-sided inverse
+identities and the required time regularity.
+
+Lean differentiates the local inverse identity
+\[
+  \sum_a g^{ia}g_{aj}=\delta^i_j .
+\]
+The Ricci-flow equation supplies
+\(\partial_tg_{aj}=-2\Ric_{aj}\).  Solving the differentiated inverse identity
+then gives, in the fixed local frame,
+\[
+  \frac d{dt}g^{ij}=2\Ric^{ij}.
+\]
+The formal endpoint is a \texttt{HasDerivWithinAt} statement on the time
+carrier \(D.carrier\), with right-hand side
+\leanref{raisedRicciCompInFrame}; the displayed formula is its standard
+coordinate-frame reading.
+\end{proof}
+
+\begin{lemma}[Evolution of the Christoffel symbols]
+\label{lem:evol-christoffel}
+Along Ricci flow,
+\[
+\partial_t\Gamma^k_{ij}
+=
+-g^{k\ell}
+\left(
+\nabla_i\Ric_{j\ell}
++
+\nabla_j\Ric_{i\ell}
+-
+\nabla_\ell\Ric_{ij}
+\right).
+\]
+\end{lemma}
+
+For the complete proof, see \S \ref{subsec:1stVarFormulaChristoffel}.
+
+\begin{proof}[Lean-facing calculation]
+The checked route is in \rffile{RicciFlow/Evolution/Connection/Producers.lean},
+and its endpoint is \leanref{evol_christoffel_inFrame}.  The formal proof uses
+the connection-variation layer rather than an informal normal-coordinate
+shortcut.  This is important for the Lean development: tensors and their
+coordinate components are moved between APIs explicitly, rather than being
+identified by unrecorded tensoriality arguments.
+
+First, the general metric-variation formula is proved in lowered pairing form:
+\[
+  \left\langle
+    \frac{\partial}{\partial t}(\nabla_{\partial_i}\partial_j),\partial_\ell
+  \right\rangle
+  =
+  \frac12\left(
+    \nabla_i\frac{\partial g_{j\ell}}{\partial t}
+    +\nabla_j\frac{\partial g_{i\ell}}{\partial t}
+    -\nabla_\ell\frac{\partial g_{ij}}{\partial t}
+  \right).
+\]
+This lowered formula is represented by the pairing API together with the
+Christoffel-evolution API.  Substituting the Ricci-flow equation
+\[
+  \frac{\partial g_{ab}}{\partial t}=-2\Ric_{ab}
+\]
+gives the lowered expression
+\[
+  -\nabla_i\Ric_{j\ell}
+  -\nabla_j\Ric_{i\ell}
+  +\nabla_\ell\Ric_{ij}.
+\]
+Lean then raises the \(\ell\)-index with the local inverse metric and rewrites
+the result to the displayed coordinate right-hand side.  The component theorem
+therefore verifies precisely
+\[
+  \partial_t\Gamma^k_{ij}
+  =
+  -g^{k\ell}
+  \left(
+    \nabla_i\Ric_{j\ell}
+    +\nabla_j\Ric_{i\ell}
+    -\nabla_\ell\Ric_{ij}
+  \right).
+\]
+This agrees with what one obtains by differentiating the classical coordinate
+formula
+\[
+  \Gamma^k_{ij}
+  =
+  \frac12g^{k\ell}
+  \left(
+    \partial_ig_{j\ell}
+    +\partial_jg_{i\ell}
+    -\partial_\ell g_{ij}
+  \right),
+\]
+but the Lean proof factors the calculation through the lower-index variation
+and the explicit raising step.
+\end{proof}
+
+\subsubsection{Evolution of Ricci and scalar curvature}
+
+\begin{lemma}[Evolution of Ricci]
+\label{lem:evol-ricci}
+Along Ricci flow,
+\[
+\partial_t\Ric_{ij}
+=
+\Delta\Ric_{ij}
++2R_{ikj\ell}\Ric^{k\ell}
+-2\Ric_i{}^k\Ric_{kj}.
+\]
+Equivalently,
+\[
+(\partial_t-\Delta)\Ric_{ij}
+=
+2R_{ikj\ell}\Ric^{k\ell}
+-2\Ric_i{}^k\Ric_{kj}.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The native proof follows the first-variation route, carried out componentwise
+in a centered coordinate frame.  The final producer is
+\leanref{coordRicciEvol} in
+\rffile{RicciFlow/Evolution/Ricci/CoordinateIdentities.lean}; it proves the
+within-time derivative statement for
+\[
+  \Ric_{ij}(t,x_0)
+\]
+in the coordinate frame centered at \(x_0\).  The proof is deliberately split
+into three layers, so that the formal development exposes the intermediate
+coordinate identities rather than compressing the calculation into a single
+textbook rewrite.
+
+First, Lean differentiates the Christoffel trace formula for the Ricci tensor.
+If
+\[
+  A^k{}_{ij}:=\frac{\partial\Gamma^k_{ij}}{\partial t},
+\]
+then the first-variation formula is
+\[
+  \frac{\partial\Ric_{ij}}{\partial t}
+  =
+  \nabla_k A^k{}_{ij}-\nabla_i A^k{}_{kj}.
+\]
+The Ricci-variation predicates live in
+\rffile{RicciFlow/Evolution/Ricci/GammaAlgebra.lean}, while the coordinate
+producer differentiating the Christoffel curvature trace lives in
+\rffile{RicciFlow/Evolution/Ricci/GammaCoord.lean}.
+
+Second, the Christoffel-symbol evolution is substituted into \(A\).  The
+covariant derivative of \(A\) is rewritten using \(\nabla g^{-1}=0\), so the
+derivative of the raised Christoffel variation becomes a fixed-frame second
+covariant derivative of Ricci.  This is the role of
+\leanref{nablaGammaDtFromNabla2RicInFrame} and the core theorem
+\leanref{ricciVarCore}.  At this stage the expression is still an expanded sum
+of second Ricci derivatives, scalar-Hessian trace terms, and curvature
+corrections.
+
+Third, the expanded expression is reduced by the contracted commutator package.
+The package \leanref{RicciContractedCommutatorsInFrame} is produced from the
+differentiated contracted Bianchi identity together with the native
+\((0,2)\)-tensor Ricci identity; the relevant files are
+\rffile{RicciFlow/Evolution/Ricci/Bianchi.lean} and
+\rffile{RicciFlow/Evolution/Ricci/Commutator.lean}.  This reduction cancels the
+gauge and Hessian-trace terms, reorganizes the remaining second derivatives as
+\[
+  \Delta\Ric_{ij},
+\]
+and identifies the reaction terms as
+\[
+  2R_{ikj\ell}\Ric^{k\ell}-2\Ric_i{}^k\Ric_{kj}.
+\]
+Finally, \leanref{coordRicciEvol} assembles the coordinate inputs: the
+Christoffel evolution, regularity for \(g^{-1}\), \(\nabla\Ric\), and
+\(\nabla^2\Ric\), the identity \(\nabla g^{-1}=0\), curvature realization
+bridges for \(Rm_{13}\) and \(Rm_{04}\), and the contracted commutator package.
+The displayed equation is the mathematical projection of that checked component
+statement.
+\end{proof}
+
+\begin{definition}[Lichnerowicz Laplacian]
+\label{def:lichnerowicz-laplacian}
+For a symmetric $2$-tensor $h$, define
+\[
+(\Delta_Lh)_{ij}
+=
+\Delta h_{ij}
++2R_{ikj\ell}h^{k\ell}
+-\Ric_i{}^kh_{kj}
+-\Ric_j{}^kh_{ki}.
+\]
+\end{definition}
+
+\begin{corollary}[Ricci evolves by the Lichnerowicz heat equation]
+\label{cor:ricci-lichnerowicz}
+Along Ricci flow,
+\[
+\partial_t\Ric=\Delta_L\Ric.
+\]
+\end{corollary}
+
+\begin{proof}[Lean-facing calculation]
+The Lichnerowicz rewrite is a separate checked layer in
+\rffile{Ricci/Lichnerowicz.lean} under \rfdir{RicciFlow/Evolution}.  Lean
+introduces the component right-hand side
+\leanref{lichnerowiczRHSInFrame} and a proposition expressing
+\(\partial_t\Ric=\Delta_L\Ric\).  The assembly theorem in that file turns the
+Ricci evolution equation into this Lichnerowicz form.
+
+The algebraic specialization is that the two Ricci-action terms in
+\(\Delta_Lh\) become the same quadratic term when \(h=\Ric\).  Using Ricci
+symmetry and symmetry of the local inverse-metric components, Lean proves
+\[
+-\Ric_i{}^kh_{kj}-\Ric_j{}^kh_{ki}
+=
+-2\Ric_i{}^k\Ric_{kj}
+\qquad (h=\Ric).
+\]
+Composing this specialization with the Ricci evolution producer gives
+\(\partial_t\Ric=\Delta_L\Ric\) in the coordinate-frame component API.
+\end{proof}
+
+\begin{lemma}[Evolution of scalar curvature]
+\label{lem:evol-scalar}
+Along Ricci flow,
+\[
+\partial_tR=\Delta R+2\norm{\Ric}^2.
+\]
+Equivalently,
+\[
+(\partial_t-\Delta)R=2\norm{\Ric}^2.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The intrinsic producer is \leanref{scalarEvolOfSmooth} in
+\rffile{Scalar/Basic.lean} under \rfdir{RicciFlow/Evolution}.  The calculation
+is split into a pre-Bianchi trace identity and a contracted-Bianchi reduction.
+The theorem \leanref{ScalarPreBianchiEvolutionEquationOn} records the
+derivative of
+\[
+  R=g^{ij}\Ric_{ij},
+\]
+and \leanref{ScalarContractedBianchiReductionOn} identifies the contracted
+Ricci-Hessian term with the scalar Laplacian.  The assembly theorem
+\leanref{scalarEvolutionEquationOn_of_contractedBianchi} then produces
+\leanref{ScalarEvolutionEquationOn}.
+
+At the component level,
+\[
+\partial_tR=(\partial_tg^{ij})\Ric_{ij}+g^{ij}\partial_t\Ric_{ij}.
+\]
+The inverse-metric evolution contributes \(2\norm{\Ric}^2\).  Tracing the Ricci
+evolution contributes the scalar Laplacian after the contracted-Bianchi
+reduction; the remaining zero-order trace terms cancel in the standard way.
+Thus the only surviving reaction term is \(2\norm{\Ric}^2\).  For a smooth
+Ricci-flow solution package \leanref{IsSmoothSolutionOn},
+\leanref{scalarEvolOfSmooth} packages the result as
+\[
+  \partial_tR=\Delta R+2\norm{\Ric}^2.
+\]
+\end{proof}
+
+\begin{lemma}[Evolution of the Ricci norm]
+\label{lem:evol-ricci-norm}
+Along Ricci flow,
+\[
+(\partial_t-\Delta)\norm{\Ric}^2
+=
+-2\norm{\nabla\Ric}^2
++4R_{ikj\ell}\Ric^{ij}\Ric^{k\ell}.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The native endpoint is \leanref{ricciHeatSmooth} in \rffile{RicciNorm.lean}
+under the Ricci-flow evolution folder.  It first builds
+\leanref{ricciHeatDataSmooth} from the strengthened
+\leanref{IsSmoothSolutionOn} fields:
+\begin{itemize}[leftmargin=2em]
+  \item inverse-metric evolution: \leanref{hS.invEvol};
+  \item Ricci evolution: \leanref{hS.ricciEvol};
+  \item inverse-metric and Ricci symmetry: \leanref{hS.invSymm},
+    \leanref{hS.ricciSymm};
+  \item Ricci Laplacian expansion: \leanref{hS.ricciLap}.
+\end{itemize}
+The algebraic consumer \leanref{ricciHeat_of_data} then combines the time
+variation of the norm with the Laplacian expansion.
+
+Mathematically, the coordinate norm is represented by the full contraction
+\[
+  \norm{\Ric}^2=g^{ia}g^{jb}\Ric_{ij}\Ric_{ab}.
+\]
+Lean differentiates this expression using the inverse-metric evolution and the
+Ricci evolution.  The cubic terms produced by differentiating the two inverse
+metrics cancel the quadratic-Ricci part of the Ricci evolution.  The Laplacian
+expansion contributes the standard structure
+\[
+  \Delta\norm{\Ric}^2
+  =2\ip{\Delta\Ric}{\Ric}+2\norm{\nabla\Ric}^2,
+\]
+which is represented by \leanref{ricciNormLap} together with the gradient term
+\leanref{ricciGradSq}.  The remaining reaction is
+\[
+  4R_{ikj\ell}\Ric^{ij}\Ric^{k\ell}.
+\]
+Thus the checked proposition \leanref{RicciNormHeatEquationOn} is obtained for
+the canonical functions \leanref{ricciNorm}, \leanref{ricciNormLap},
+\leanref{ricciGradSq}, and \leanref{ricciReact}.
+\end{proof}
+
+\subsection{Three-dimensional curvature algebra}
+
+In dimension three, the Ricci tensor controls the full Riemann curvature tensor.
+This is one of the special algebraic facts that makes Hamilton's proof work:
+the tensor maximum-principle calculations and the Ricci pinching estimates can
+be reduced to explicit eigenvalue algebra.  In the Lean development, this part
+of the proof is also a useful separation point.  The purely finite-dimensional
+curvature algebra is checked independently, and the Ricci-flow preservation
+arguments then consume that algebra through pointwise and solution-level
+interfaces.
+
+\begin{lemma}[Three-dimensional curvature identities]
+\label{lem:3d-curvature-identities}
+In dimension $3$, the Riemann tensor is determined algebraically by the Ricci
+tensor and scalar curvature:
+\[
+R_{ijkl}
+=
+g_{ik}\Ric_{j\ell}-g_{i\ell}\Ric_{jk}
+-g_{jk}\Ric_{i\ell}+g_{j\ell}\Ric_{ik}
+-\frac R2\left(g_{ik}g_{j\ell}-g_{i\ell}g_{jk}\right).
+\]
+If $\Ric$ is diagonal with eigenvalues $\lambda_1,\lambda_2,\lambda_3$, then
+\[
+K_{ij}=R_{ijij}=\frac{\lambda_i+\lambda_j-\lambda_k}{2},
+\]
+where $\{i,j,k\}=\{1,2,3\}$.
+\end{lemma}
+
+\begin{proof}[Lean-facing algebra]
+The dimension-three curvature algebra is native and finite-dimensional.  The
+pure algebra lives in \rffile{DimensionThree/CurvatureAlgebra.lean}.  Lean
+works with an abstract four-index array
+\[
+  R_{ijkl},\qquad i,j,k,l\in \operatorname{Fin} 3,
+\]
+assuming only the algebraic curvature symmetries: skewness in the first pair,
+skewness in the second pair, and pair symmetry.  It defines Ricci and scalar
+traces by explicit finite sums over the three basis vectors and then forms the
+residual obtained by subtracting the displayed Riemann-from-Ricci expression.
+
+The proof does not use a Weyl decomposition.  Instead, Lean proves that this
+residual has the same skew/skew and pair symmetries as the original curvature
+array.  In dimension three, these symmetries reduce the verification to the six
+ordered block components
+\[
+  (01,01),\ (01,02),\ (01,12),\ (02,02),\ (02,12),\ (12,12).
+\]
+Each of these six components is checked directly by expanding the Ricci and
+scalar traces and using the curvature symmetries.  The theorem
+\leanref{displayedRiemannFromRicci3D_of_algebraic_curvature_symmetries}
+then promotes those six component checks to the full four-index identity.
+
+The realized bridge lives in \rffile{DimensionThree/RiemannFromRicci.lean}.  It
+transfers the finite \(\operatorname{Fin} 3\) component identity to a pointwise
+orthonormal-frame statement for the lowered curvature tensor
+\[
+  Rm04(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle .
+\]
+The bridge records the necessary trace and slot-convention data through
+\leanref{RiemannFromRicci3DTraceDataAt} and
+\leanref{rm04Comp_displayedRiemannFromRicci3D_at}.  Finally,
+\rffile{DimensionThree/RicciControlsRm.lean} handles the Ricci-eigenbasis
+sectional-curvature consequence: after diagonalizing Ricci with eigenvalues
+\(\lambda_1,\lambda_2,\lambda_3\), substituting into the realized formula gives
+\[
+  K_{12}=\frac{\lambda_1+\lambda_2-\lambda_3}{2},
+  \quad
+  K_{13}=\frac{\lambda_1+\lambda_3-\lambda_2}{2},
+  \quad
+  K_{23}=\frac{\lambda_2+\lambda_3-\lambda_1}{2}.
+\]
+\end{proof}
+
+\section{Analytic inputs and maximum-principle consumers}
+\label{sec:analytic-consumers}
+
+This section records the analytic side of the formalization: short-time and
+maximal-flow interfaces, scalar and tensor maximum-principle arguments, and the
+Ricci-preservation and pinching estimates that consume those analytic packages.
+The local tensor identities from Section~\ref{sec:local-tensor-geometry} supply
+the differential-geometric inputs for these consumers.
+
+\subsection{Ricci flow and short-time existence}
+
+\begin{definition}[Ricci flow]
+\label{def:ricci-flow}
+A Ricci flow on $M$ is a smooth one-parameter family of metrics $g(t)$,
+$t\in[0,T)$, satisfying
+\[
+  \partial_tg=-2\Ric(g(t)).
+\]
+\end{definition}
+
+The current Lean development separates the short-time headline from the
+regularity package consumed by the Hamilton endpoint.  Mathematically, the
+standard proof uses DeTurck's trick to replace the diffeomorphism-invariant
+Ricci-flow equation by a strictly parabolic Ricci--DeTurck equation, solves
+that equation for a short time, and then pulls back by the DeTurck
+diffeomorphisms.  In the live Lean tree, the headline theorem
+\leanref{ricci_flow_short_time_existence} is cited through
+\leanref{ham3_short_exists}; the checked adapter
+\leanref{ham3_short_solution_candidate} packages the raw short-time output as a
+candidate \leanref{SolutionOn}.  The remaining short-time frontier for the
+Hamilton endpoint is \leanref{ham3_short_isSolution}, which promotes that raw
+chart/PDE output to the project predicate \leanref{IsSolutionOn}.  The later
+promotion \leanref{smoothOfSol} from \leanref{IsSolutionOn} to
+\leanref{IsSmoothSolutionOn} is already reused by
+\leanref{ham3_short_smooth_solution}.
+
+\begin{blackbox}[Short-time existence for strictly parabolic systems]
+\label{bb:strictly-parabolic-short-time}
+A smooth strictly parabolic system on a closed manifold with smooth initial data
+has a smooth solution for a short time, and the solution is unique in the
+appropriate parabolic class.
+\end{blackbox}
+
+\begin{theorem}[Short-time existence for Ricci flow]
+\label{thm:rf-short-time-existence}
+Let $g_0$ be a smooth Riemannian metric on a closed manifold $M$. Then there
+exists $T>0$ and a smooth Ricci flow $g(t)$ on $[0,T)$ with $g(0)=g_0$.
+\end{theorem}
+
+For the textbook proof, assuming short-time existence for strictly parabolic
+systems, see \S\ \ref{subsec:ShortTimeExistence}.
+
+\begin{proof}[Mathematical proof route over a global analytic input]
+Ricci flow is diffeomorphism-invariant and hence not strictly parabolic.  One
+fixes a background metric $\bar g$ and introduces the DeTurck vector field
+\[
+W^k
+=
+g^{ij}\left(\Gamma^k_{ij}(g)-\Gamma^k_{ij}(\bar g)\right).
+\]
+The Ricci--DeTurck equation is
+\[
+\partial_t\tilde g
+=
+-2\Ric(\tilde g)+\Lie_W\tilde g.
+\]
+This equation is a strictly parabolic system.  Black
+Box~\ref{bb:strictly-parabolic-short-time} gives a short-time solution of the
+Ricci--DeTurck equation.  Pulling this solution back by the diffeomorphisms
+generated by $-W$ gives a genuine Ricci flow.  The live Lean endpoint now cites
+this headline through \leanref{ham3_short_exists} and
+\leanref{ham3_short_solution_candidate}; the remaining short-time work is the
+regularity bridge \leanref{ham3_short_isSolution}, not the bare mathematical
+existence statement itself.
+\end{proof}
+
+\subsection{Maximal Ricci flow interval}
+
+\begin{blackbox}[Normalized maximal Ricci-flow data]
+\label{bb:maximal-rf-interval}
+For the closed three-manifold and positive-Ricci initial metric \(g_0\) in the
+Hamilton theorem, there is a positive real number \(\omega\) and a smooth
+Ricci flow
+\[
+  g(t),\qquad t\in[0,\omega),
+\]
+with
+\[
+  g(0)=g_0,
+\]
+which satisfies the Ricci-flow equation and the smoothness hypotheses needed by
+the later evolution-equation calculations.  We also assume the maximal-end
+curvature blow-up property: for every \(K\in\mathbb R\), there are
+\(t\in[0,\omega)\) and \(x\in M\) such that
+\[
+  K<\norm{\Rm(g(t))}^{2}_{x}.
+\]
+\end{blackbox}
+
+For the textbook maximal-flow theorem, see \S\
+\ref{subsec:MaxRicciFlowInterval}.  In the current Lean organization, the
+Hamilton proof does not separately consume short-time existence, uniqueness,
+maximal extension, and bounded-curvature continuation.  Instead it consumes the
+theorem-shaped interface \leanref{ham3_flow_exists_normalized} in
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}.  That theorem now explicitly
+cites the short-time smooth solution producer \leanref{ham3_short_smooth_solution};
+its remaining frontier is the normalized maximal-continuation package and the
+endpoint blow-up assembly.
+
+\begin{remark}[Formal interface used in the current Lean tree]
+The interface \leanref{ham3_flow_exists_normalized} packages the data needed by
+the downstream Hamilton argument: a flow on the closed-open interval
+\([0,\omega)\), the initial condition \(g(0)=g_0\), the Ricci-flow equation,
+the smoothness and evolution-equation regularity hypotheses used later, and the
+maximal-end curvature blow-up proxy in Black
+Box~\ref{bb:maximal-rf-interval}.
+
+The construction of this package from a short-time smooth solution, uniqueness,
+maximal extension, and the bounded-curvature continuation criterion remains a
+global analytic frontier for the current endpoint.  The short-time smooth
+solution stage has been factored: \leanref{ham3_short_smooth_solution} reuses
+the checked \leanref{smoothOfSol} promotion, while
+\leanref{ham3_short_isSolution} remains the precise raw-data-to-\leanref{IsSolutionOn}
+regularity bridge.  Once the normalized maximal-flow package is supplied, the
+later development consumes it directly and proves downstream statements such as
+\leanref{ham3_finite_time} and \leanref{ham3_scalar_blowup}, together with the
+later evolution and pinching
+consumers.
+\end{remark}
+
+\subsection{Maximum principles}
+
+This section records the maximum-principle layer used by the later Ricci-flow
+arguments.  The scalar weak maximum principle is formalized as a native
+comparison package and then consumed by the scalar-curvature lower-bound and
+finite-time arguments.  The tensor weak maximum principle is formalized as a
+native section-backed package for symmetric two-tensors over a time-dependent
+metric background.  The scalar strong maximum principle used on the blow-up
+limit remains a named black-box analytic input.
+
+\begin{theorem}[Scalar weak maximum principle: supersolutions]
+\label{thm:scalar-wmp-super}
+Let $(M,g(t))$ be a smooth one-parameter family of metrics on a closed
+manifold, and let $u:M\times[0,T]\to\mathbb R$ be smooth. Suppose
+\[
+\partial_tu
+\ge
+\Delta_{g(t)}u+
+\ip{X}{\nabla u}_{g(t)}+F(u,t),
+\]
+where $X$ is a smooth time-dependent vector field and $F$ is locally Lipschitz
+and nondecreasing in $u$.
+
+Let $c(t)$ solve
+\[
+c'=F(c,t).
+\]
+If
+\[
+u(\cdot,0)\ge c(0),
+\]
+then
+\[
+u(x,t)\ge c(t)
+\]
+for all $(x,t)\in M\times[0,T]$.
+\end{theorem}
+
+\begin{proof}[Lean-facing calculation]
+The scalar weak maximum-principle layer is native in
+\rffile{MaximumPrinciple/ScalarWeak.lean}.  The supersolution endpoint is
+\leanref{scalar_wmp_super_theorem_7_1}, built from the regular positive-time
+comparison theorem
+\leanref{scalar_wmp_supersolutions_of_lipschitz_on_value_set_of_regular_positive_time}.
+This is a proof layer used by later Ricci-flow scalar estimates, not a hidden
+global black-box input.
+
+Lean introduces the comparison function
+\[
+  w=u-c
+\]
+and then the weighted barrier
+\[
+  e^{-Kt}w,
+\]
+where $K$ is a Lipschitz constant for $F$ on the compact value set relevant to
+the comparison argument.  The lemmas
+\leanref{reaction_difference_lower_bound_on_negative_region} and
+\leanref{negative_region_parabolic_lower_bound} convert the nonlinear reaction
+comparison into a linear lower bound on the negative region of $w$.  The
+compactness and first-negative-minimum argument is isolated in
+\leanref{strict_barrier_nonnegative_of_positive_time}.  At a first negative
+positive-time minimum one has
+\[
+  \nabla w=0,
+  \qquad
+  \Delta w\ge0,
+  \qquad
+  \partial_tw\le0,
+\]
+while the strict weighted inequality gives the opposite sign.  This
+contradiction proves $w\ge0$, hence $u\ge c$.
+\end{proof}
+
+\begin{theorem}[Scalar weak maximum principle: subsolutions]
+\label{thm:scalar-wmp-sub}
+In the setting of Theorem~\ref{thm:scalar-wmp-super}, suppose instead that
+\[
+\partial_tu
+\le
+\Delta_{g(t)}u+
+\ip{X}{\nabla u}_{g(t)}+F(u,t).
+\]
+If $u(\cdot,0)\le c(0)$ and $c'=F(c,t)$, then
+\[
+u(x,t)\le c(t)
+\]
+for all $(x,t)\in M\times[0,T]$.
+\end{theorem}
+
+\begin{proof}[Lean-facing calculation]
+The subsolution theorem is the checked wrapper
+\leanref{scalar_wmp_sub_theorem_7_2} in
+\rffile{MaximumPrinciple/ScalarWeak.lean}.  Lean obtains it by applying the
+supersolution theorem to $-u$, with the reaction term, initial inequality, and
+weighted-barrier hypotheses rewritten through the same scalar WMP API.
+\end{proof}
+
+\begin{corollary}[Scalar curvature lower bound]
+\label{cor:scalar-lower-bound}
+Let $g(t)$ be a Ricci flow on a closed $n$-manifold. Let
+\[
+c_0=\inf_MR(\cdot,0).
+\]
+Then, as long as the denominator is positive,
+\[
+R(x,t)
+\ge
+\frac{c_0}{1-\frac2n c_0t}.
+\]
+In particular, if $R(\cdot,0)>0$, then $R(\cdot,t)>0$ for as long as the
+solution exists.
+\end{corollary}
+
+\begin{proof}[Lean-facing calculation]
+The scalar lower-bound route is native in
+\rffile{RicciFlow/Evolution/ScalarLowerBound.lean}.  The ODE-comparison core is
+\leanref{scalar_curvature_lower_bound_of_parabolic_inequality}; the Ricci-flow
+producer wrappers are
+\leanref{scalar_curvature_lower_bound_of_scalarEvolution} and
+\leanref{scalar_curvature_lower_bound_of_scalarEvolution_initialMinimum}.
+
+The calculation starts from the scalar evolution equation supplied by
+\leanref{scalarEvolOfSmooth}:
+\[
+  \partial_tR=\Delta R+2\norm{\Ric}^2.
+\]
+The trace/norm inequality
+\[
+  \norm{\Ric}^2\ge \frac1n R^2
+\]
+gives the parabolic inequality
+\[
+  \partial_tR
+  \ge
+  \Delta R+\frac2nR^2.
+\]
+Lean names the comparison solution
+\[
+  c(t)=\frac{c_0}{1-\frac2n c_0t}
+\]
+by \leanref{scalarLowerBarrier}; its within-derivative identity is
+\leanref{scalarLowerBarrier_hasDerivWithinAt}.  The scalar WMP applied to this
+barrier gives the displayed lower bound.  The regularity hypotheses needed by
+the WMP are kept explicit through \leanref{scalarRegOfSmooth}, and the Hamilton
+endpoint uses this package through \leanref{ham3_scalarRegular}.
+\end{proof}
+
+\begin{corollary}[Positive scalar curvature forces finite maximal time]
+\label{cor:positive-scalar-finite-time}
+Let $g(t)$ be a Ricci flow on a closed $n$-manifold with
+\[
+R(g(0))>0.
+\]
+Let $[0,T_{\max})$ be its maximal time interval of existence. Then
+\[
+T_{\max}
+\le
+\frac{n}{2\min_M R(g(0))}
+<\infty .
+\]
+\end{corollary}
+
+\begin{proof}[Lean-facing assembly]
+This is a checked downstream scalar consumer once maximal-flow data are
+supplied.  The maximal-flow existence package itself remains a global input,
+but the scalar lower-bound and endpoint argument are formalized through
+\rffile{RicciFlow/Evolution/ScalarFiniteTime.lean} and then packaged for the
+Hamilton endpoint by \leanref{ham3_finite_time} in
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}.
+
+Set
+\[
+  c_0:=\min_M R(g(0))>0.
+\]
+Corollary~\ref{cor:scalar-lower-bound} gives
+\[
+  R(x,t)\ge \frac{c_0}{1-\frac2n c_0t}
+\]
+whenever the flow exists and the denominator is positive.  The barrier on the
+right blows up as
+\[
+  t\nearrow \frac{n}{2c_0}.
+\]
+The theorem \leanref{scalar_endpoint_le_blowupTime_of_lower_barrier_bound}
+turns this explicit barrier blow-up into an endpoint bound: if the maximal flow
+existed smoothly past $n/(2c_0)$, then $R$ would be bounded on the compact
+spacetime slab
+\[
+  M\times\left[0,\frac{n}{2c_0}\right],
+\]
+contradicting the lower bound.  Thus
+\[
+  T_{\max}\le \frac{n}{2c_0}.
+\]
+\end{proof}
+
+The tensor maximum principle used by Hamilton must be formulated for a
+time-dependent metric background.  The current Lean route includes this
+metric dependence in the formal setup and follows the corrected
+time-dependent barrier argument, rather than reducing to a static-metric
+shortcut.
+
+\begin{theorem}[Hamilton weak maximum principle for symmetric $2$-tensors]
+\label{thm:hamilton-tensor-wmp}
+Let $(M,g(t))$ be a smooth one-parameter family of metrics on a closed
+manifold, and let $S(t)$ be a smooth family of symmetric $2$-tensors satisfying
+\[
+(\partial_t-\Delta)S_{ij}
+\ge
+X^k\nabla_kS_{ij}+N_{ij}(S,g,t),
+\]
+where $X$ is a smooth time-dependent vector field and $N$ is a smooth
+fiberwise algebraic symmetric $2$-tensor expression.
+
+Assume the null-eigenvector condition: whenever $S\ge0$ at a point and
+$S(v,v)=0$, one has
+\[
+N(S,g,t)(v,v)\ge0.
+\]
+If $S(\cdot,0)\ge0$, then $S(\cdot,t)\ge0$ for all $t$.
+\end{theorem}
+
+\begin{proof}[Lean-facing calculation]
+The tensor WMP is a native section-backed package in
+\rfdir{MaximumPrinciple/TensorWeak}.  The theorem-facing statements are
+\leanref{wmp_section_sec}, \leanref{tensor_wmp}, and
+\leanref{hamilton_tensor_wmp_section}.
+
+The proof uses Hamilton's positive barrier
+\[
+  S_\eta=S+\eta e^{At}g.
+\]
+The first-null geometry and the scalar test function are handled by the
+compactness and first-null layers, while \leanref{strictCert_sec} packages the
+strict certificate used at the first null point.  At that point the scalar test
+\[
+  \phi=S_\eta(v,v)
+\]
+satisfies
+\[
+  \phi=0,
+  \qquad
+  \nabla\phi=0,
+  \qquad
+  \Delta\phi\ge0,
+  \qquad
+  \partial_t\phi\le0.
+\]
+The drift term vanishes, the Laplacian term is nonnegative, and the symmetric
+null-eigenvector condition supplies the nonnegative reaction contribution.  The
+strict certificate gives the first-null contradiction.  Finally, the
+barrier-limit theorem sends $\eta\downarrow0$, giving $S\ge0$ on the whole time
+interval.
+\end{proof}
+
+The next input is the scalar strong maximum principle used on the blow-up
+limit.  This is a theorem-shaped analytic frontier for the current endpoint,
+not a native proof layer in the present project.  Although the mathematical
+strong maximum principle is local in nature, the paper records the
+complete-flow and limit-flow hypotheses consumed by the Hamilton endpoint.
+
+\begin{blackbox}[Scalar strong maximum principle]
+\label{bb:scalar-strong-mp}
+Let $(N,h(t))$, $t\in[a,b]$, be a complete connected Ricci flow background
+with the regularity and bounded-geometry assumptions needed in the blow-up
+limit. Let $u\ge0$ be a smooth solution or supersolution of a scalar parabolic
+inequality of the form
+\[
+\partial_tu\ge \Delta_{h(t)}u+\ip{X}{\nabla u}+cu,
+\]
+where $X$ and $c$ are smooth and locally bounded.
+
+If $u(\cdot,t_0)$ is not identically zero for some $t_0\in[a,b)$, then
+\[
+u>0
+\]
+on $N\times(t_0,b]$.
+\end{blackbox}
+
+In the Hamilton endpoint, the corresponding limit-flow positivity is now
+packaged as the predicate \leanref{LimitScalarPos}.  The analytic source is the
+scalar strong maximum principle on the complete limit flow, but the live Lean
+file no longer uses a theorem named \texttt{limit\_scal\_pos\_smp}; the positivity
+interface is carried as part of the CGH limit output consumed only at the
+blow-up-limit stage.
+
+\begin{lemma}[Positivity of scalar curvature in the blow-up limit]
+\label{lem:limit-scalar-positive}
+Let $(N^3,h(t))$, $t\in[\alpha,0]$, be a complete connected Ricci flow with
+bounded geometry on compact time subintervals. Suppose
+\[
+\Ric(h(t))\ge0,
+\qquad
+R(h(t))\ge0,
+\qquad
+R(h(0))(x_0)=1
+\]
+for some $x_0\in N$. Then
+\[
+R(h(t))>0
+\]
+on $N\times(\alpha,0]$.
+\end{lemma}
+
+\begin{proof}[Lean-facing assembly over a black-box input]
+The paper treats the scalar strong maximum principle as the analytic input
+behind the limit-flow positivity predicate \leanref{LimitScalarPos}.  In the
+current Lean endpoint, \leanref{LimitScalarPos} is recorded in
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} and carried by
+\leanref{Ham3CGHLimitExists}; the assembled inputs are limit Ricci
+nonnegativity, scalar nonnegativity, and the basepoint normalization
+\[
+  R(h(0))(x_0)=1.
+\]
+
+Mathematically, fix $\tau\in(\alpha,0)$.  First one shows that
+$R(h(\tau))$ is not identically zero.  If $R(h(\tau))\equiv0$, then
+$\Ric(h(\tau))\equiv0$ because $\Ric\ge0$.  The Ricci-flat flow starting from
+$h(\tau)$ is static, so uniqueness of Ricci flow would force the solution to
+remain Ricci-flat at later times, contradicting the basepoint normalization
+$R(h(0))(x_0)=1$.
+
+Now apply Black Box~\ref{bb:scalar-strong-mp} to the scalar curvature equation
+\[
+  \partial_tR=\Delta R+2\norm{\Ric}^2\ge\Delta R
+\]
+on $[\tau,0]$.  Since $R(h(\tau))\ge0$ and is not identically zero, the scalar
+strong maximum principle gives
+\[
+  R(h(t))>0
+\]
+on $N\times(\tau,0]$.  Varying $\tau$ over $(\alpha,0)$ gives positivity on
+$N\times(\alpha,0]$.
+\end{proof}
+
+\subsection{Preservation of Ricci positivity and Ricci pinching}
+
+The next step applies the maximum-principle layer to the three-dimensional
+curvature algebra.  There are two related but distinct preservation statements.
+The nonnegative-Ricci endpoint is the \(\delta=0\) preservation result for
+\(S=\Ric\).  The shifted pinching theorem is the strict tensor WMP application
+for
+\[
+  S=\Ric-\delta Rg,\qquad 0<\delta<1/3.
+\]
+The distinction is important in the Lean organization: the nonnegative case is
+packaged separately, while the strict shifted theorem uses the first-null
+algebra available only below the boundary value \(\delta=1/3\).
+
+\begin{lemma}[Preservation of nonnegative Ricci curvature in dimension $3$]
+\label{lem:preserve-ricci-nonnegative}
+Let $g(t)$ be a Ricci flow on a closed three-manifold. If
+\[
+\Ric(g(0))\ge0,
+\]
+then
+\[
+\Ric(g(t))\ge0
+\]
+for all times for which the flow exists.
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The preservation route is native in the Ricci-flow evolution layer.  In the
+paper notation this is the file \rffile{RicciPreservation.lean} under
+\rfdir{RicciFlow/Evolution}; the explicit solution-level file reference used
+elsewhere in this section is \rffile{RicciFlow/Evolution/RicciPreservation.lean}.
+The smooth-solution endpoint for the nonnegative case is
+\leanref{ricci_nonneg_sol_closed}, and the Hamilton endpoint consumes it through
+\leanref{ham3_rescaled_ric_nonneg}.
+
+Lean applies the tensor weak maximum principle to \(S=\Ric\).  By
+Lemma~\ref{lem:evol-ricci},
+\[
+(\partial_t-\Delta)\Ric_{ij}=N_{ij},
+\qquad
+N_{ij}=2R_{ikj\ell}\Ric^{k\ell}-2\Ric_i{}^k\Ric_{kj}.
+\]
+At a point, diagonalize \(\Ric\) with eigenvalues
+\(\lambda_1,\lambda_2,\lambda_3\).  If \(\Ric\ge0\) and \(e_1\) is a null
+eigenvector, then \(\lambda_1=0\), and the three-dimensional curvature
+identity gives
+\[
+N_{11}=(\lambda_2-\lambda_3)^2\ge0.
+\]
+This is the direct null-eigenvector calculation for the nonnegative Ricci
+preservation theorem.
+
+For code reuse, the final endpoint \leanref{ricci_nonneg_sol_closed} is
+packaged through the nonnegative-\(\delta\) wrapper
+\leanref{pinch_sol_closed_nonneg} at \(\delta=0\).  This wrapper uses the same
+parabolic producer \leanref{pinchParabolic} and barrier regularity input
+\leanref{pinchBarrierReg}, but it is not the strict shifted pinching theorem
+\leanref{pinch_sol_closed} evaluated at \(\delta=0\).
+\end{proof}
+
+\begin{lemma}[Preservation of Ricci pinching in dimension $3$]
+\label{lem:preserve-ricci-pinching}
+Let $g(t)$ be a Ricci flow on a closed three-manifold. Fix
+\[
+0<\del<\frac13.
+\]
+
+If
+\[
+\Ric(g(0))\ge \del R(g(0))g(0),
+\]
+then
+\[
+\Ric(g(t))\ge \del R(g(t))g(t)
+\]
+for all times for which the flow exists.
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+This is the strict shifted WMP application for
+\[
+S=\Ric-\delta Rg,
+\qquad 0<\delta<1/3.
+\]
+The checked solution-level endpoint is \leanref{pinch_sol_closed} in
+\rffile{RicciFlow/Evolution/RicciPreservation.lean}.  Strict initial positivity
+is supplied by the wrappers \leanref{pinch_init_sol_lt} and
+\leanref{strict_pinch_sol_lt}.  The parabolic producer and barrier regularity
+inputs are \leanref{pinchParabolic} and \leanref{pinchBarrierReg}.
+
+Using Lemmas~\ref{lem:evol-ricci} and~\ref{lem:evol-scalar}, together with
+\(\partial_tg=-2\Ric\) and \(\Delta g=0\), one obtains
+\[
+(\partial_t-\Delta)S_{ij}
+=
+N_{ij}
+-2\del\left(\norm{\Ric}^2g_{ij}-R\Ric_{ij}\right),
+\]
+where \(N\) is the Ricci reaction tensor from the preceding nonnegative Ricci
+calculation.  At a null eigenvector of \(S\), diagonalize \(\Ric\) and write
+\(\lambda_1=\delta R\).  The checked first-null reaction is
+\[
+  \delta^2(1-3\delta)R^2
+  +(1-\delta)(\lambda_2-\lambda_3)^2.
+\]
+This expression is nonnegative for \(0<\delta<1/3\).
+
+The algebraic stack for this first-null calculation is
+\leanref{shiftScal3_eq}, \leanref{shiftNull3},
+\leanref{pinchShiftNull_ge}, \leanref{shiftReact3_nonneg},
+\leanref{shiftNAt}, \leanref{shiftNRaw}, and
+\leanref{shiftNRaw_null_symm}.  Together with the parabolic and regularity
+producers, it feeds \leanref{PinchFlowWMPData.ofShiftNClosed}, which supplies
+the tensor-WMP data used by \leanref{pinch_sol_closed}.
+
+The boundary value \(\delta=1/3\) corresponds to a rigidity boundary, but that
+endpoint is not needed for the preservation statement used in Hamilton's proof
+and is not asserted here as a closed Lean result.
+\end{proof}
+
+\begin{corollary}[Strict positivity gives uniform pinching]
+\label{cor:strict-positive-gives-pinching}
+If $M^3$ is closed and $\Ric(g_0)>0$, then there exists $\del>0$, depending
+only on $g_0$, such that
+\[
+\Ric(g_0)\ge\del R(g_0)g_0.
+\]
+Consequently, along the Ricci flow from $g_0$,
+\[
+\Ric(g(t))\ge\del R(g(t))g(t).
+\]
+\end{corollary}
+
+\begin{proof}[Lean-facing calculation]
+Compactness of \(M\) and continuity of the least Ricci-to-scalar ratio supply a
+uniform initial constant.  Mathematically, since \(\Ric(g_0)>0\), the function
+\[
+x\mapsto \min_{\norm{v}_{g_0}=1}\frac{\Ric_{g_0}(v,v)}{R(g_0)}
+\]
+is positive and continuous on the compact manifold \(M\).  Its minimum is
+therefore positive.  Reducing this minimum if necessary gives a constant
+\(\delta\) with \(0<\delta<1/3\) and
+\[
+\Ric(g_0)\ge \delta R(g_0)g_0.
+\]
+The shifted pinching preservation theorem then gives the asserted inequality
+for all later times on which the flow exists.
+
+In Lean, the initial pinching selector is represented by the
+\leanref{PinchInitLt} family.  The wrappers \leanref{pinch_init_wmp_lt} and
+\leanref{strict_pinch_sol_lt} package the selected strict constant and feed it
+to the shifted WMP endpoint.
+\end{proof}
+
+\subsection{The improved Ricci pinching quantity}
+
+Hamilton's preserved lower pinching inequality \(\Ric \ge \delta Rg\) is not
+by itself enough to force the blow-up limit to be Einstein.  The improved
+pinching estimate supplies the missing decay.  It bounds the scale-sensitive
+quantity
+\[
+  \frac{\norm{\Ric^\circ}^2}{R^2}
+  \le C R^{-\varepsilon},
+\]
+so that after parabolic rescaling at points where \(R\to\infty\), the
+trace-free Ricci tensor disappears in the limit.
+
+\subsubsection{Definition and evolution of the pinching quantity}
+
+\begin{definition}[Trace-free Ricci tensor]
+\label{def:tracefree-ricci}
+In dimension $3$, define
+\[
+\Ric^\circ
+=
+\Ric-\frac13Rg.
+\]
+Then
+\[
+\norm{\Ric^\circ}^2
+=
+\norm{\Ric}^2-\frac13R^2.
+\]
+\end{definition}
+
+\begin{definition}[Hamilton's improved pinching quantity]
+\label{def:pinching-P}
+Assume $R>0$ and fix $0<\eps<1$. Define
+\[
+P
+=
+\frac{\norm{\Ric}^2-\frac13R^2}{R^{2-\eps}}
+=
+\frac{\norm{\Ric^\circ}^2}{R^{2-\eps}}.
+\]
+\end{definition}
+
+The quantity \(P\) is scale-invariant only in the limiting case
+\(\eps=0\).  The nonzero exponent is intentional: it is precisely what
+produces the decay factor \(R_i^{-\eps}\) after parabolic blow-up at points
+where the scalar curvature scale \(R_i\) tends to infinity.
+
+\begin{definition}[The cubic reaction quantity $Q$]
+\label{def:Q}
+In dimension $3$, define
+\[
+Q
+:=
+2\norm{\Ric}^4
++R^4
+-5R^2\norm{\Ric}^2
++4R\tr(\Ric^3),
+\]
+where
+\[
+\tr(\Ric^3)=\Ric_i{}^j\Ric_j{}^k\Ric_k{}^i.
+\]
+\end{definition}
+
+\begin{lemma}[Evolution of the trace-free Ricci norm]
+\label{lem:evol-tracefree-ricci-norm}
+In dimension $3$, along Ricci flow and wherever $R>0$,
+\[
+(\partial_t-\Delta)\norm{\Ric^\circ}^2
+=
+-2\norm{\nabla\Ric}^2
++\frac23\norm{\nabla R}^2
++
+\frac{4\norm{\Ric}^2\norm{\Ric^\circ}^2-2Q}{R}.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The textbook-facing endpoint is \leanref{tfHeat_book} in
+\rffile{RicciFlow/Evolution/ImprovedPinching/BookData.lean}; the
+smooth-solution wrapper is \leanref{tfHeat_sol}.  The canonical scalar field
+for the trace-free Ricci norm is \leanref{tfRicNormSq}.  The proof begins with
+\[
+\norm{\Ric^\circ}^2=\norm{\Ric}^2-\frac13R^2.
+\]
+The Ricci-norm evolution and scalar-curvature evolution from the previous
+sections provide the heat terms.  Differentiating the displayed identity gives
+the gradient contribution
+\[
+-2\norm{\nabla\Ric}^2+\frac23\norm{\nabla R}^2.
+\]
+The remaining reaction term is then rewritten using the native three-dimensional
+Riemann-from-Ricci and eigenvalue algebra.  In the textbook-facing form this
+reaction is exactly
+\[
+\frac{4\norm{\Ric}^2\norm{\Ric^\circ}^2-2Q}{R}.
+\]
+\end{proof}
+
+\begin{lemma}[Quotient evolution identity]
+\label{lem:quotient-evolution}
+Let $\varphi$ and $\psi$ be smooth spacetime functions with $\psi>0$, and work
+on a region where $\varphi>0$. For constants $\alpha,\beta$, one has
+\begin{align*}
+(\partial_t-\Delta)\left(\frac{\varphi^\alpha}{\psi^\beta}\right)
+&=
+\alpha\frac{\varphi^{\alpha-1}}{\psi^\beta}(\partial_t-\Delta)\varphi
+-
+\beta\frac{\varphi^\alpha}{\psi^{\beta+1}}(\partial_t-\Delta)\psi
+\\
+&\quad
+-
+\alpha(\alpha-1)\frac{\varphi^{\alpha-2}}{\psi^\beta}\norm{\nabla\varphi}^2
+-
+\beta(\beta+1)\frac{\varphi^\alpha}{\psi^{\beta+2}}\norm{\nabla\psi}^2
+\\
+&\quad
++
+2\alpha\beta\frac{\varphi^{\alpha-1}}{\psi^{\beta+1}}
+\ip{\nabla\varphi}{\nabla\psi}.
+\end{align*}
+In the special case \(\alpha=1\) used below, the checked theorem only needs
+\(\varphi\ge0\) instead of \(\varphi>0\); the
+\(\norm{\nabla\varphi}^2\) term vanishes.
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation, with scope note]
+The quotient calculus layer is native in
+\rffile{RicciFlow/Evolution/ImprovedPinching/Quotient.lean}.
+The theorem \leanref{quotHeat_book} proves the positive-region
+arbitrary-exponent identity.  The Hamilton-ready theorem
+\leanref{quotHeat1_book} is the \(\alpha=1\) specialization, where the
+numerator only has to be nonnegative because
+\[
+  \alpha(\alpha-1)\varphi^{\alpha-2}\norm{\nabla\varphi}^2=0
+  \qquad (\alpha=1).
+\]
+Thus the later pinching proof does not rely on an unproved arbitrary-exponent
+nonnegative-numerator quotient theorem.
+
+The proof differentiates
+\(F(\varphi,\psi)=\varphi^\alpha\psi^{-\beta}\) and uses the product and chain
+rules for the realized parabolic operator:
+\[
+\Delta(F(\varphi,\psi))
+=F_\varphi\Delta\varphi+F_\psi\Delta\psi
++F_{\varphi\varphi}\norm{\nabla\varphi}^2
++2F_{\varphi\psi}\ip{\nabla\varphi}{\nabla\psi}
++F_{\psi\psi}\norm{\nabla\psi}^2.
+\]
+The theorem \leanref{quotHeatDiv} is the display-form wrapper that rewrites the
+result in the usual quotient notation.
+\end{proof}
+
+\begin{lemma}[Evolution of Hamilton's pinching quantity]
+\label{lem:evol-pinching-P}
+Let $g(t)$ be a Ricci flow on a closed three-manifold, and assume $R>0$. For
+$0<\eps<1$, the quantity
+\[
+P=\frac{\norm{\Ric^\circ}^2}{R^{2-\eps}}
+\]
+satisfies
+\begin{align}
+\partial_tP
+&=
+\Delta P
++
+\frac{2(1-\eps)}{R}\ip{\nabla R}{\nabla P}
+\nonumber\\
+&\quad
+-
+\frac{2}{R^{4-\eps}}
+\norm{R\nabla\Ric-\nabla R\otimes\Ric}^2
+-
+\frac{\eps(1-\eps)}{R^{4-\eps}}
+\norm{\Ric^\circ}^2\norm{\nabla R}^2
+\nonumber\\
+&\quad
++
+\frac{2}{R^{3-\eps}}
+\left(
+\eps\norm{\Ric}^2\norm{\Ric^\circ}^2-Q
+\right).
+\label{eq:evol-pinching-P}
+\end{align}
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The textbook-facing wrapper is \leanref{pinchEvol_book}.  The solution-level
+assembly theorem \leanref{pinchEvol_sol} supplies the raw quotient setup,
+quotient regularity, and positivity data from the solution package, and
+\leanref{pinchEvol_sec} removes manual Ricci-section inputs.  The calculation
+applies the \(\alpha=1\) quotient identity with
+\[
+  \varphi=\norm{\Ric^\circ}^2,
+  \qquad
+  \psi=R,
+  \qquad
+  \beta=2-\eps.
+\]
+The heat equations for \(\varphi\) and \(\psi\) are the trace-free Ricci norm
+evolution and the scalar-curvature evolution.
+
+The gradient terms are then completed into the square
+\[
+  \norm{R\nabla\Ric-\nabla R\otimes\Ric}^2.
+\]
+In Lean this square is represented by \leanref{ricciGradCoupleSq}.  The mixed
+term needed for the square completion is related to the gradients of
+\(\norm{\Ric}^2\) and \(\norm{\Ric^\circ}^2\) by
+\leanref{ricciMixed_eq_gradNorm} and \leanref{ricciMixed_eq_tfGrad}.  After
+these gradient rewrites, the remaining zero-order reaction is the last line of
+\eqref{eq:evol-pinching-P}.  This is a quotient-calculus and tensor-algebra
+producer, not an additional maximum-principle argument.
+\end{proof}
+
+\subsubsection{The algebraic estimate for \texorpdfstring{$Q$}{Q}}
+
+\begin{lemma}[Factorization of \texorpdfstring{$Q$}{Q} in Ricci eigenvalues]
+\label{lem:Q-factorization}
+Let $\lambda_1,\lambda_2,\lambda_3$ be the eigenvalues of $\Ric$ at a point,
+and set $R=\lambda_1+\lambda_2+\lambda_3$. Then
+\[
+Q
+=
+\sum_{\substack{\{i,j,k\}=\{1,2,3\}\\ i<j}}
+(\lambda_i-\lambda_j)^2(R-2\lambda_k)^2.
+\]
+Equivalently,
+\begin{align*}
+Q
+&=
+(\lambda_1-\lambda_2)^2(R-2\lambda_3)^2
++(\lambda_1-\lambda_3)^2(R-2\lambda_2)^2
+\\
+&\quad
++(\lambda_2-\lambda_3)^2(R-2\lambda_1)^2.
+\end{align*}
+\end{lemma}
+
+\begin{proof}[Lean-facing algebra]
+The factorization is \leanref{hamiltonCubicQ3_factorized} in
+\rffile{DimensionThree/PinchingAlgebra.lean}.  Lean defines both
+\leanref{hamiltonCubicQ3} and its factorized form
+\leanref{hamiltonCubicQFactorized3}.  After expanding in the three Ricci
+eigenvalues, the identity is a finite three-variable polynomial identity:
+\[
+Q=2\norm{\Ric}^4+R^4-5R^2\norm{\Ric}^2+4R\tr(\Ric^3),
+\]
+where
+\[
+\norm{\Ric}^2=\sum_i\lambda_i^2,
+\qquad
+\tr(\Ric^3)=\sum_i\lambda_i^3.
+\]
+\end{proof}
+
+\begin{lemma}[Algebraic lower bound for $Q$]
+\label{lem:Q-lower-bound}
+Suppose $R>0$ and
+\[
+\Ric\ge\del Rg
+\]
+for some $\del>0$. Then
+\[
+Q\ge 2\del^2\norm{\Ric}^2\norm{\Ric^\circ}^2.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing algebra]
+The lower bound is checked in
+\rffile{DimensionThree/PinchingAlgebra.lean}.  The ordered-eigenvalue theorem
+is \leanref{hamiltonCubicQ3_lower_bound_ordered_nonnegative_eigenvalues}.  The
+Hamilton-ready nonnegative reaction form is \leanref{PinchEigen3.q_sub_nonneg},
+and the unordered version is \leanref{PinchEigen3Unordered.q_sub_nonneg}.
+
+Order the eigenvalues as
+\[
+  \lambda_1\ge\lambda_2\ge\lambda_3
+\]
+and set
+\[
+  z=\lambda_3,
+  \qquad
+  b=\lambda_2-\lambda_3,
+  \qquad
+  a=\lambda_1-\lambda_2.
+\]
+Then \(a,b,z\ge0\),
+\[
+  \lambda_1=z+b+a,
+  \qquad
+  \lambda_2=z+b,
+  \qquad
+  \lambda_3=z.
+\]
+Using the factorization of \(Q\), Lean proves the polynomial identity
+\begin{align*}
+&Q-z^2\left(a^2+(a+b)^2+b^2\right) \\
+&\qquad
+=
+2a^2\left(a^2+3ab+2az+3b^2+4bz\right)
+\ge0.
+\end{align*}
+Thus
+\[
+  Q\ge z^2\left(a^2+(a+b)^2+b^2\right).
+\]
+Since
+\[
+\norm{\Ric^\circ}^2
+=
+\frac13\left(
+(\lambda_1-\lambda_2)^2
++(\lambda_1-\lambda_3)^2
++(\lambda_2-\lambda_3)^2
+\right),
+\]
+this gives \(Q\ge3z^2\norm{\Ric^\circ}^2\).  The pinching hypothesis implies
+\(z\ge\delta R\), and nonnegativity of the eigenvalues gives
+\(\norm{\Ric}^2\le R^2\).  Therefore
+\[
+Q
+\ge
+3\delta^2 R^2\norm{\Ric^\circ}^2
+\ge
+2\delta^2\norm{\Ric}^2\norm{\Ric^\circ}^2.
+\]
+The flow-facing bridge \leanref{cubicQ_pinchOn} translates this eigenvalue
+inequality into the \(cubicQAt\) notation used by the pinching evolution.
+\end{proof}
+
+\begin{corollary}[Improved Ricci pinching estimate]
+\label{cor:improved-ricci-pinching}
+Let $g(t)$ be a Ricci flow on a closed three-manifold with $\Ric(g_0)>0$.
+Then there exist constants $\eps>0$ and $C<\infty$, depending only on $g_0$,
+such that
+\[
+\frac{\norm{\Ric^\circ}^2}{R^{2-\eps}}\le C
+\]
+for all times for which the flow exists.
+Equivalently,
+\[
+\frac{\norm{\Ric^\circ}^2}{R^2}\le CR^{-\eps}.
+\]
+\end{corollary}
+
+\begin{proof}[Lean-facing calculation]
+The endpoint file is \rffile{Estimate.lean} under
+\rfdir{RicciFlow/Evolution/ImprovedPinching}.  The final solution-level theorem
+is \leanref{pinchEstimate_sol}.  It is a domain-aware scalar-WMP consumer over
+the evolution identities and three-dimensional algebra above.  The Hamilton
+endpoint packages the result as \leanref{Ham3PinchEstimate}; this is produced
+by \leanref{ham3_pinch_imp_can}, while \leanref{ham3_pinch_imp} is the
+all-real display wrapper.
+
+By Corollary~\ref{cor:strict-positive-gives-pinching}, there exists
+\(\delta>0\), depending only on \(g_0\), such that
+\[
+\Ric(g(t))\ge\del R(g(t))g(t)
+\]
+for all times.  Choose \(0<\eps\le2\delta^2\); in Lean this is implemented as
+\[
+  \eps=\min\{1/2,\delta^2\},
+\]
+which gives \(0<\eps<1\) and \(\eps\le2\delta^2\).  The algebraic lower bound
+for \(Q\) then makes the zero-order term in \eqref{eq:evol-pinching-P}
+nonpositive:
+\[
+  \eps\norm{\Ric}^2\norm{\Ric^\circ}^2-Q\le0.
+\]
+The two completed-square gradient terms in \eqref{eq:evol-pinching-P} are also
+nonpositive.  Hence \(P\) satisfies the drifted scalar subsolution inequality
+\[
+\partial_tP
+\le
+\Delta P+
+\frac{2(1-\eps)}{R}\ip{\nabla R}{\nabla P}.
+\]
+
+The Lean proof turns this into a maximum-principle estimate in several checked
+consumer steps.  The theorem \leanref{pinchQuotient_parabolic_nonpos} proves
+the drifted inequality for the quotient on each compact slab.  The theorem
+\leanref{pinchQuot_slab_bound} applies the scalar weak maximum principle to
+\(C-P\), using the sign-change identity \leanref{Realized.parabolic_const_sub}.
+The initial bound is \leanref{pinchQuotient_initial_bound}.  The positivity and
+regularity inputs for the quotient are \leanref{pinchQuotient_space_pos},
+\leanref{pinchQuotient_grad_pos}, and the slab-continuity producer
+\leanref{ricciNorm_slabCont}.  The resulting estimate is
+\[
+  P(\cdot,t)\le \sup_M P(\cdot,0)=:C,
+\]
+which is the displayed improved pinching inequality.
+\end{proof}
+
+\section{Compactness, transfer, and topological interfaces}
+\label{sec:global-interfaces}
+
+This section records the nonlocal interfaces in the final Hamilton argument:
+finite-time blow-up data, parabolic rescaling, noncollapsing,
+Cheeger--Gromov--Hamilton compactness, convergence transfer, and the global
+handoff from the limiting constant-curvature metric back to the original
+manifold.
+
+\subsection{Auxiliary estimates and black-box interfaces for the blow-up argument}
+
+The preceding sections supply the local evolution equations, maximum-principle
+consumers, three-dimensional algebra, and improved pinching estimates.  The
+remaining part of Hamilton's proof uses those local results inside a global
+blow-up argument.  This section records the auxiliary estimates and interfaces
+used for that argument, distinguishing checked downstream consumers from global
+analytic, compactness, convergence-transfer, and topological inputs.
+
+\begin{lemma}[Finite-time singularity]
+\label{lem:finite-time}
+Let $g(t)$ be the maximal Ricci flow starting from a closed three-manifold with
+$R(g_0)>0$. Then the maximal existence time $T$ is finite, with an upper bound
+depending only on $g_0$.
+\end{lemma}
+
+\begin{proof}[Lean-facing assembly]
+This result is packaged for Hamilton's endpoint as \leanref{ham3_finite_time}
+in \rffile{DimensionThree/HamiltonPositiveRicci.lean}.  The lower-level scalar endpoint is in
+\rffile{RicciFlow/Evolution/ScalarFiniteTime.lean}; it consumes the scalar
+lower-bound theorem and the maximal-flow interval package.  Thus this is a
+checked downstream scalar consumer once the maximal-flow data have been
+supplied.
+
+In dimension three, if
+\[
+  c_0=\min_M R(g_0)>0,
+\]
+then the scalar lower-barrier argument gives
+\[
+  T\le \frac{3}{2c_0}.
+\]
+This is the specialization of the general scalar estimate
+\(T\le n/(2c_0)\) to \(n=3\).
+\end{proof}
+
+The next input is the usual finite-time extension criterion for Ricci flow.
+It is global analytic PDE theory rather than local tensor algebra.  Its
+mathematical proof uses curvature-derivative estimates, compactness, and
+Arzel\`a--Ascoli type arguments.  The present Hamilton endpoint consumes this
+continuation principle as an interface; it does not claim a native proof of the
+full theorem.
+
+\begin{blackbox}[Ricci flow extension criterion]
+\label{bb:rf-extension-criterion}
+Let $g(t)$ be a Ricci flow on a closed manifold, defined on a finite time
+interval $[0,T)$. If
+\[
+\sup_{M\times[0,T)} \norm{\Rm(g(t))}<\infty,
+\]
+then the flow extends smoothly to a Ricci flow on a larger time interval
+\[
+[0,T+\eta)
+\]
+for some $\eta>0$.
+\end{blackbox}
+
+\begin{lemma}[Curvature blow-up at a finite maximal time]
+\label{lem:finite-time-curvature-blow-up}
+Let $g(t)$ be a maximal Ricci flow on a closed manifold with maximal time
+interval
+\[
+[0,T_{\max})
+\]
+and suppose
+\[
+T_{\max}<\infty.
+\]
+Then
+\[
+\sup_{M\times[0,T_{\max})}\norm{\Rm(g(t))}=\infty.
+\]
+Equivalently,
+\[
+\limsup_{t\nearrow T_{\max}}\sup_M\norm{\Rm(g(t))}=\infty.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing assembly over an extension black-box input]
+The abstract maximal-time interface lives in
+\rffile{RicciFlow/MaximalTime.lean}.  That file records the interval-changing
+notions and the consumer shape of the maximal-time argument, while the
+bounded-curvature extension criterion remains the global black-box analytic
+input.  The Hamilton scalar-blow-up consumer is \leanref{ham3_scalar_blowup}.
+
+Suppose instead that
+\[
+\sup_{M\times[0,T_{\max})}\norm{\Rm(g(t))}<\infty.
+\]
+Since $T_{\max}<\infty$, Black Box~\ref{bb:rf-extension-criterion} extends the
+flow smoothly to a larger interval
+\[
+[0,T_{\max}+\eta)
+\]
+for some $\eta>0$.  This contradicts maximality.  Therefore the curvature is
+unbounded as \(t\nearrow T_{\max}\).
+\end{proof}
+
+\begin{corollary}[Nonnegative Ricci controls full curvature in dimension $3$]
+\label{cor:ricci-controls-rm}
+There exists a universal constant $C_3$ such that on any three-dimensional
+Riemannian manifold with $\Ric\ge0$,
+\[
+\norm{\Rm}\le C_3R.
+\]
+In particular, one may take a coarse constant such as $C_3=100$.
+\end{corollary}
+
+\begin{proof}[Lean-facing algebra]
+The pointwise dimension-three bound is native in
+\rffile{DimensionThree/RicciControlsRm.lean}.  The Hamilton endpoint consumes
+it through \leanref{ham3_rm_bound}.  The proof uses the lowered curvature
+convention
+\[
+  \Rm_{04}(X,Y,Z,W)=\langle R(X,Y)Z,W\rangle
+\]
+and the first-trace route \leanref{normSqLeOfFirstTrace}.
+
+At a point, diagonalize \(\Ric\) with eigenvalues
+\(\lambda_1,\lambda_2,\lambda_3\ge0\).  By the three-dimensional
+Riemann-from-Ricci identity, the principal sectional curvatures satisfy
+\[
+K_{ij}=\frac{\lambda_i+\lambda_j-\lambda_k}{2}.
+\]
+Hence
+\[
+\abs{K_{ij}}\le\frac{\lambda_i+\lambda_j+\lambda_k}{2}=\frac R2.
+\]
+Since \(\norm{\Rm}^2\) is a fixed universal multiple of the sum of the squares
+of the three principal sectional curvatures in dimension three, this gives
+\(\norm{\Rm}\le C_3R\) for a universal constant.  The Hamilton file uses the
+coarse constant \(100\), which is more than sufficient for the blow-up
+argument.
+\end{proof}
+
+\begin{definition}[Parabolic rescaling]
+\label{def:parabolic-rescaling}
+Let $g(t)$ be a Ricci flow defined on $[0,T)$. Given a point-time
+$(x_i,t_i)$ with $0<t_i<T$ and a scale $R_i>0$, define the rescaled Ricci
+flow
+\[
+g^{R_i}(s)=R_i\,g\left(t_i+\frac{s}{R_i}\right).
+\]
+It is defined for
+\[
+s\in[-R_it_i,R_i(T-t_i)).
+\]
+Under this rescaling,
+\[
+R(g^{R_i})(x,s)=R_i^{-1}R(g)\left(x,t_i+\frac{s}{R_i}\right),
+\]
+while the scale-invariant ratio
+\[
+\frac{\norm{\Ric^\circ}^2}{R^2}
+\]
+is unchanged.  The standard change of time and constant metric scaling preserve
+the Ricci-flow equation, so each \(g^{R_i}(s)\) is again a Ricci flow on its
+rescaled time interval.
+\end{definition}
+
+\begin{lemma}[Point selection and scalar normalization]
+\label{lem:point-selection-rescaling}
+Let $g(t)$, $t\in[0,T_{\max})$, be the maximal Ricci flow from a closed
+three-manifold with $\Ric(g_0)>0$. Then there exist points and times
+$(x_i,t_i)$ with $t_i\nearrow T_{\max}$ and numbers
+\[
+R_i:=R(x_i,t_i)\to\infty
+\]
+such that the rescaled flows $g^{R_i}(s)$ satisfy
+\[
+R(g^{R_i})(x_i,0)=
+\max_{M\times[-R_it_i,0]}R(g^{R_i})
+=1.
+\]
+\end{lemma}
+
+\begin{proof}[Lean-facing assembly]
+The checked point-selection theorem is \leanref{ham3_point_select} in
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}.  It consumes the finite-time package
+\leanref{ham3_finite_time}, the scalar-blow-up package
+\leanref{ham3_scalar_blowup}, and the rescaling data structures
+\leanref{Ham3BlowupData} and \leanref{Ham3PointSel}.  Point selection is
+therefore a checked downstream consumer in the Hamilton endpoint, not one of
+the remaining compactness black-box inputs.
+
+Mathematically, finite-time blow-up and nonnegative Ricci curvature give
+\[
+\sup_{M\times[0,T_{\max})}R=\infty,
+\]
+using Corollary~\ref{cor:ricci-controls-rm} to pass from full curvature blow-up
+to scalar blow-up.  Let
+\[
+  m(t):=\max_{M\times[0,t]}R.
+\]
+Then \(m(t)\to\infty\) as \(t\nearrow T_{\max}\).  Choose levels
+\(A_i\to\infty\), choose times \(t_i\) where the running maximum reaches
+\(A_i\), and choose points \(x_i\) with
+\[
+  R(x_i,t_i)=m(t_i)=A_i.
+\]
+Set \(R_i=R(x_i,t_i)\).  The parabolic rescaling in
+Definition~\ref{def:parabolic-rescaling} then gives
+\[
+  R(g^{R_i})(x_i,0)=1,
+  \qquad
+  \max_{M\times[-R_it_i,0]}R(g^{R_i})=1.
+\]
+\end{proof}
+
+\begin{definition}[\texorpdfstring{$\kappa$}{kappa}-noncollapsed at all scales controlled by curvature]
+\label{def:kappa-noncollapsed}
+Let $g(t)$ be a Ricci flow on an $n$-manifold $M$, defined for
+$t\in I$. Let $\kappa>0$.
+
+We say that $g(t)$ is $\kappa$-noncollapsed at all scales controlled by
+curvature if the following condition holds.
+
+For every $x\in M$, every $t\in I$, and every $r>0$ such that
+\[
+[t-r^2,t]\subset I,
+\]
+if the backward parabolic neighborhood
+\[
+P(x,t,r,-r^2)
+:=
+\left\{
+(y,s)\in M\times[t-r^2,t]
+:
+y\in B_{g(s)}(x,r)
+\right\}
+\]
+satisfies the curvature bound
+\[
+\norm{\Rm(g(s))}(y)\le r^{-2}
+\qquad
+\text{for all }(y,s)\in P(x,t,r,-r^2),
+\]
+then the time-$t$ ball satisfies the volume lower bound
+\[
+\Vol_{g(t)} B_{g(t)}(x,r)\ge \kappa r^n.
+\]
+\end{definition}
+
+Perelman's no-local-collapsing theorem is treated as a global black-box input
+for the present Hamilton endpoint.  The input includes the theorem itself and
+its compatibility with parabolic rescaling.  In the current endpoint it is
+represented by \leanref{ham3_noncollapse}.
+
+\begin{blackbox}[Perelman's no-local-collapsing theorem]
+\label{bb:no-local-collapsing}
+Let $g(t)$ be a Ricci flow on a closed manifold, defined on a finite time
+interval $[0,T)$. Then there exists
+\[
+\kappa=\kappa(g(0),T)>0
+\]
+such that the flow is $\kappa$-noncollapsed at all scales controlled by
+curvature in the sense of Definition~\ref{def:kappa-noncollapsed}.
+
+Moreover, this property is invariant under parabolic rescaling.
+\end{blackbox}
+
+\begin{definition}[Smooth pointed Cheeger--Gromov--Hamilton convergence]
+\label{def:cgh-convergence}
+Let
+\[
+(M_i,g_i(t),x_i),
+\qquad
+ t\in [a,b],
+\]
+be a sequence of pointed Ricci flows, and let
+\[
+(M_\infty,g_\infty(t),x_\infty),
+\qquad
+ t\in [a,b],
+\]
+be a pointed Ricci flow.
+
+We say that
+\[
+(M_i,g_i(t),x_i)
+\longrightarrow
+(M_\infty,g_\infty(t),x_\infty)
+\]
+in the smooth pointed Cheeger--Gromov--Hamilton sense on $[a,b]$ if there
+exists an exhaustion of $M_\infty$ by compact domains
+\[
+K_1\subset K_2\subset K_3\subset\cdots,
+\qquad
+x_\infty\in \operatorname{Int}(K_1),
+\qquad
+\bigcup_{j=1}^\infty K_j=M_\infty,
+\]
+and, for each $j$, smooth embeddings
+\[
+\Phi_{i,j}:K_j\to M_i
+\]
+defined for all sufficiently large $i$, such that
+\[
+\Phi_{i,j}(x_\infty)=x_i
+\]
+and
+\[
+\Phi_{i,j}^*g_i(t)\longrightarrow g_\infty(t)
+\]
+smoothly on $K_j\times [a,b]$.
+
+Equivalently, for every $j$, every integer $m\ge 0$, and every compact
+subinterval $[a',b']\subset [a,b]$, all spacetime derivatives up to order $m$
+of
+\[
+\Phi_{i,j}^*g_i(t)-g_\infty(t)
+\]
+converge uniformly to zero on $K_j\times [a',b']$.
+\end{definition}
+
+\begin{lemma}[Curvature convergence under smooth CGH convergence]
+\label{lem:cgh-curvature-convergence}
+Let
+\[
+(M_i,g_i(t),x_i)\to (M_\infty,g_\infty(t),x_\infty),
+\qquad
+ t\in [a,b],
+\]
+in the smooth pointed Cheeger--Gromov--Hamilton sense of
+Definition~\ref{def:cgh-convergence}. Let
+\[
+K\subset M_\infty
+\]
+be a compact domain on which the convergence maps
+\[
+\Phi_i:K\to M_i
+\]
+are defined for all sufficiently large $i$.
+
+Then, for every compact subinterval $[a',b']\subset [a,b]$,
+\[
+\Phi_i^*\Rm(g_i(t))\to \Rm(g_\infty(t))
+\]
+smoothly on $K\times [a',b']$.
+
+Consequently,
+\[
+\Phi_i^*\Ric(g_i(t))\to \Ric(g_\infty(t)),
+\]
+\[
+\Phi_i^*R(g_i(t))\to R(g_\infty(t)),
+\]
+and
+\[
+\Phi_i^*\left(\norm{\Rm(g_i(t))}_{g_i(t)}^2\right)
+\to
+\norm{\Rm(g_\infty(t))}_{g_\infty(t)}^2,
+\]
+\[
+\Phi_i^*\left(\norm{\Ric(g_i(t))}_{g_i(t)}^2\right)
+\to
+\norm{\Ric(g_\infty(t))}_{g_\infty(t)}^2,
+\]
+\[
+\Phi_i^*\left(\norm{\Ric^\circ(g_i(t))}_{g_i(t)}^2\right)
+\to
+\norm{\Ric^\circ(g_\infty(t))}_{g_\infty(t)}^2
+\]
+smoothly on $K\times [a',b']$.
+\end{lemma}
+
+\begin{proof}[Lean-facing transfer frontier]
+These convergence statements are standard consequences of smooth
+Cheeger--Gromov--Hamilton convergence.  In the current Lean development,
+however, the full smooth curvature transfer is not yet closed as a single
+producer theorem.  The Hamilton endpoint records the needed transfer through
+explicit interfaces in \rffile{DimensionThree/HamiltonPositiveRicci.lean} and in the
+\rfdir{HCGCompactness} folder.  The relevant transfer fields are
+\leanref{Ham3RicNonnegTransfer}, \leanref{Ham3LimitBaseScalarConv}, and
+\leanref{Ham3PinchTransfer}.  The generic compact-open scalar pullback API lives
+in \rffile{HCGCompactness/PointedConvergence.lean}.
+
+The current HCG folder also contains a Hamilton-facing adapter:
+\rffile{HCGCompactness/HamiltonPositiveRicciAdapter.lean}.  Its theorem
+\leanref{ham3OfCompactSol} records the preferred replacement shape for the
+older opaque \leanref{ham3_cgh_limit} input: a solution compactness interface,
+Hamilton-specific topology data, basepoint-scalar identification, and explicit
+Ricci/pinching/scalar-positivity transfer producers imply the legacy
+\leanref{Ham3CGHLimitExists} package.
+
+Mathematically, smooth CGH convergence gives
+\[
+\Phi_i^*g_i(t)\to g_\infty(t)
+\]
+smoothly on $K\times [a',b']$.  The curvature tensor is a universal expression
+in the metric, inverse metric, and first and second derivatives of the metric;
+therefore
+\[
+\Rm(\Phi_i^*g_i(t))\to \Rm(g_\infty(t)).
+\]
+Because curvature commutes with pullback by the convergence diffeomorphisms
+onto their images,
+\[
+\Rm(\Phi_i^*g_i(t))=\Phi_i^*\Rm(g_i(t)).
+\]
+The Ricci tensor and scalar curvature are contractions of \(\Rm\), and the
+norms of \(\Rm\), \(\Ric\), and \(\Ric^\circ\) are algebraic expressions in
+the metric, inverse metric, and curvature.  Hence the displayed convergence
+statements follow at the mathematical level, while the Lean endpoint keeps the
+corresponding transfer as explicit data.
+\end{proof}
+
+\begin{corollary}[Convergence of curvature ratios]
+\label{cor:cgh-curvature-ratio-convergence}
+Assume the hypotheses of Lemma~\ref{lem:cgh-curvature-convergence}. Let
+\[
+K\subset M_\infty
+\]
+be compact and let $[a',b']\subset [a,b]$ be compact. Suppose that
+\[
+R(g_\infty(t))>0
+\]
+on $K\times [a',b']$.
+
+Then, for all sufficiently large $i$,
+\[
+\Phi_i^*R(g_i(t))>0
+\]
+on $K\times [a',b']$, and
+\[
+\Phi_i^*
+\left(
+\frac{\norm{\Ric^\circ(g_i(t))}_{g_i(t)}^2}{R(g_i(t))^2}
+\right)
+\to
+\frac{\norm{\Ric^\circ(g_\infty(t))}_{g_\infty(t)}^2}{R(g_\infty(t))^2}
+\]
+smoothly on $K\times [a',b']$.
+\end{corollary}
+
+\begin{proof}[Lean-facing transfer frontier]
+As above, the smooth curvature-ratio convergence is a standard consequence of
+smooth CGH convergence, but the current endpoint represents the Hamilton-useful
+pieces through transfer interfaces.  The checked order-closure lemma is
+\leanref{FunctionPullbackTendsto.le_of_bound0} in
+\rffile{HCGCompactness/PointedConvergence.lean}.  The Hamilton consumer
+\leanref{limit_tf_decay} uses \leanref{Ham3PinchTransfer} as the remaining
+producer for the improved-pinching transfer to the limit.
+
+Mathematically, Lemma~\ref{lem:cgh-curvature-convergence} gives smooth
+convergence of the pulled-back scalar curvature and trace-free Ricci norm.  The
+positive scalar curvature of the limit on the compact set $K\times[a',b']$
+gives a positive lower bound there.  Therefore, for all sufficiently large
+$i$, the pulled-back scalar curvature is also positive on that compact set, and
+the quotient converges smoothly.
+\end{proof}
+
+Cheeger--Gromov--Hamilton compactness is the global compactness theorem needed
+to extract the blow-up limit.  It is not a local tensor-calculus result.  In the
+current Hamilton endpoint it is represented by \leanref{ham3_cgh_limit}, which
+produces a complete pointed limit flow together with the transfer fields
+consumed later.  The current
+\rffile{HCGCompactness/HamiltonPositiveRicciAdapter.lean} file has already
+factored a more structured route: \leanref{toHam3Exists} forgets a pointed
+smooth CGH convergence conclusion down to \leanref{Ham3CGHLimitExists}, and
+\leanref{ham3OfCompactSol} derives that conclusion from the solution
+compactness interface plus Hamilton-specific transfer producers.  Thus
+\leanref{ham3_cgh_limit} remains the theorem-shaped input consumed by the main
+Hamilton file, while the adapter records the more precise next interface to
+close.
+
+\begin{blackbox}[Cheeger--Gromov--Hamilton compactness]
+\label{bb:cgh-compactness}
+Let
+\[
+(M_i,g_i(t),x_i),
+\qquad
+ t\in[a,b],
+\]
+be a sequence of pointed Ricci flows. Suppose that for every $r<\infty$ there
+is a constant $C_r<\infty$ such that
+\[
+\norm{\Rm(g_i(t))}\le C_r
+\]
+on the parabolic neighborhoods of radius $r$ around $(x_i,0)$, uniformly in
+$i$. Suppose also that there is a uniform basepoint noncollapsing lower bound,
+for example constants $r_0,v_0>0$ such that
+\[
+\Vol_{g_i(0)}B_{g_i(0)}(x_i,r_0)\ge v_0
+\]
+and the curvature is uniformly bounded on these balls.
+
+Then a subsequence converges in the smooth pointed Cheeger--Gromov--Hamilton
+sense of Definition~\ref{def:cgh-convergence} to a complete pointed Ricci flow
+\[
+(M_\infty,g_\infty(t),x_\infty),
+\qquad
+ t\in[a,b].
+\]
+\end{blackbox}
+
+\begin{remark}[Compact CGH limit gives a diffeomorphism]
+\label{rem:compact-cgh-limit-diffeomorphism}
+If a smooth pointed Cheeger--Gromov--Hamilton limit $M_\infty$ is compact,
+then for all sufficiently large $i$ the convergence maps are defined on all of
+$M_\infty$:
+\[
+\Phi_i:M_\infty\to M_i.
+\]
+If $M_i$ is connected, each $\Phi_i$ is a diffeomorphism onto $M_i$. Indeed,
+$\Phi_i$ is a smooth embedding between manifolds of the same dimension, so its
+image is open by invariance of domain.  Since $M_\infty$ is compact, the image
+is compact, hence closed.  Since $M_i$ is connected, the image is all of $M_i$.
+\end{remark}
+
+Myers theorem is another global Riemannian input in this part of the proof.  It
+belongs to the compactness and topological handoff, not to the local Ricci-flow
+calculation layers.
+
+\begin{blackbox}[Myers theorem]
+\label{bb:myers}
+If a complete Riemannian manifold satisfies
+\[
+\Ric\ge (n-1)kg
+\]
+for some $k>0$, then it is compact and has diameter at most $\pi/\sqrt{k}$.
+\end{blackbox}
+
+\begin{lemma}[Three-dimensional Einstein metrics have constant sectional curvature]
+\label{lem:3d-einstein-space-form}
+Let $(N^3,h)$ be a connected three-dimensional Riemannian manifold. Suppose
+\[
+\Ric^\circ(h)=0
+\]
+and $R(h)$ is positive somewhere. Then $R(h)$ is a positive constant and $h$
+has constant positive sectional curvature.
+\end{lemma}
+
+\begin{proof}[Lean-facing calculation]
+The local geometric step is checked with explicit connectedness,
+boundarylessness, and three-dimensional rank hypotheses.  Vanishing trace-free
+Ricci gives the Einstein equation through \leanref{limitEinstein_of_tf0}.  The
+static three-dimensional space-form step is
+\leanref{limit_const_sec_of_einstein}, and the wrappers
+\leanref{const_pos_of_tf0} and \leanref{limit_const_pos} assemble the
+limit-time conclusion.
+
+The condition \(\Ric^\circ=0\) means
+\[
+\Ric=\frac R3h.
+\]
+The contracted Bianchi identity gives
+\[
+\nabla^i\Ric_{ij}=\frac12\nabla_jR.
+\]
+On the other hand, substituting \(\Ric=(R/3)h\) and using \(\nabla h=0\) gives
+\[
+\nabla^i\Ric_{ij}=\frac13\nabla_jR.
+\]
+Thus \((1/3)\nabla_jR=(1/2)\nabla_jR\), so \(\nabla R=0\).  Hence $R$ is
+constant.  Since $R$ is positive somewhere, it is a positive constant.  By the
+three-dimensional curvature identity, an Einstein metric in dimension three
+satisfies
+\[
+R_{ijkl}
+=
+\frac R6
+\left(h_{ik}h_{j\ell}-h_{i\ell}h_{jk}\right),
+\]
+so all sectional curvatures are equal to $R/6>0$.
+\end{proof}
+
+\section{Completion of the proof}
+
+\begin{proof}[Proof of the main Theorem~\ref{thm:main-hamilton-3d}; current Lean status]
+This section follows Hamilton's blow-up argument.  The Lean file
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} mirrors that argument as a theorem-shaped
+endpoint: the main metric conclusion is the consumer theorem
+\leanref{ham3_const_metric}, while \leanref{ham3_main} adds the
+spherical-space-form conclusion.  The endpoint is not a closed proof without
+external hypotheses; it remains conditional on the global analytic,
+compactness, transfer, and topological interfaces named in the preceding
+sections.
+
+\paragraph{Flow package and finite-time setup.}
+Let $g(t)$, $t\in[0,T)$, be the maximal Ricci flow with $g(0)=g_0$.  In Lean,
+this data is represented by \leanref{Ham3FlowPackage}.  The existence of the
+normalized maximal-flow package, \leanref{ham3_flow_exists_normalized}, remains
+a global analytic input, but it now cites the short-time smooth solution
+producer \leanref{ham3_short_smooth_solution}.  The remaining lower short-time
+frontier is \leanref{ham3_short_isSolution}, the bridge from raw short-time
+chart/PDE data to \leanref{IsSolutionOn}; the remaining frontier in
+\leanref{ham3_flow_exists_normalized} itself is maximal continuation and
+endpoint blow-up assembly.  Once the normalized package is supplied, the
+downstream scalar and blow-up steps are checked consumers: scalar regularity is
+supplied by \leanref{ham3_scalarRegular}, scalar evolution by
+\leanref{ham3_evol74}, finite-time control by \leanref{ham3_finite_time}, and
+scalar blow-up by \leanref{ham3_scalar_blowup}.  These consumers use the
+Ricci-flow evolution and maximum-principle layers under
+\begin{itemize}[leftmargin=2em]
+  \item \rfdir{RicciFlow/Evolution}
+  \item \rfdir{MaximumPrinciple}.
+\end{itemize}
+Thus the maximal-flow package itself is still an input, but scalar regularity,
+finite-time control, scalar blow-up, and point selection are checked once that
+input is available.
+
+Choose points and scales \((x_i,t_i,R_i)\), with \(R_i\to\infty\), so that the
+rescaled flows satisfy
+\[
+R(g^{R_i})(x_i,0)=
+\max_{M\times[-R_it_i,0]}R(g^{R_i})=1.
+\]
+The selected blow-up data are represented by \leanref{Ham3BlowupData}, and the
+point-selection step is the checked consumer \leanref{ham3_point_select}.
+
+\paragraph{Ricci preservation and curvature bounds.}
+By the Ricci-preservation package,
+\[
+\Ric(g(t))\ge0.
+\]
+The Hamilton endpoint consumes this statement as \leanref{ham3_ric_nonneg9}.
+After parabolic rescaling, the corresponding nonnegativity statement is
+\leanref{ham3_rescaled_ric_nonneg}.  The preservation proof itself is routed
+through \rffile{RicciFlow/Evolution/RicciPreservation.lean}, where the tensor
+maximum-principle data, symmetric null condition, barrier regularity, and the
+\(\delta=0\) endpoint are assembled.
+
+In dimension three, nonnegative Ricci curvature controls the full curvature
+tensor.  The pointwise algebra used for this control is native in
+\begin{itemize}[leftmargin=2em]
+  \item \rffile{DimensionThree/RicciControlsRm.lean}
+  \item \rffile{DimensionThree/RiemannFromRicci.lean}.
+\end{itemize}
+The theorem \leanref{ham3_rm_bound} packages the curvature bound needed for the
+chosen blow-up sequence.  In the rescaled variables it gives, for a coarse
+constant \(C\),
+\[
+\norm{\Rm(g^{R_i}(s))}^2 \le C^2 R_i^2
+\]
+on the selected backward slab.  This is the Lean-facing form of the usual
+bounded-curvature estimate on the fixed parabolic neighborhood after point
+selection.
+
+\paragraph{Improved pinching.}
+Hamilton's improved pinching proof is distributed across the quotient-evolution
+layer, tensor-square expansions, three-dimensional algebra, and scalar-WMP
+consumer files.  The relevant files and directories include
+\begin{itemize}[leftmargin=2em]
+  \item \rffile{RicciFlow/Evolution/ImprovedPinching.lean}
+  \item \rfdir{RicciFlow/Evolution/ImprovedPinching}
+  \item \rffile{RicciFlow/Evolution/RicciPreservation.lean}
+  \item the dimension-three algebra files.
+\end{itemize}
+The theorem-facing package is \leanref{Ham3PinchEstimate}, produced by
+\leanref{ham3_pinch_imp_can}; \leanref{ham3_pinch_imp} remains the display
+wrapper.
+
+Mathematically, the estimate gives constants \(C<\infty\) and \(\eps>0\),
+depending only on \(g_0\), such that
+\[
+\frac{\norm{\Ric^\circ}^2}{R^2}\le C R^{-\eps}.
+\]
+Under parabolic rescaling this becomes
+\[
+\frac{\norm{\Ric^\circ}^2}{R^2}(g^{R_i})
+\le
+C R_i^{-\eps}R(g^{R_i})^{-\eps}.
+\]
+The factor \(R_i^{-\eps}\), together with the lower scalar control available on
+compact subsets of the limit, is what forces the trace-free Ricci ratio to
+vanish in the blow-up limit.
+
+\paragraph{Noncollapsing and compactness.}
+Perelman's no-local-collapsing theorem remains a global black-box input in the final
+Hamilton proof.  In the Lean endpoint it is represented by
+\leanref{ham3_noncollapse}.  The structures \leanref{Ham3BallPair} and
+\leanref{Ham3Noncollapse} record the ball and volume data used by that input.
+The folder \rfdir{HCGCompactness} gives a more structured compactness
+interface, including
+\begin{itemize}[leftmargin=2em]
+  \item \rffile{MetricCompactness.lean}, for the Cheeger--Gromov--Hamilton compactness
+    frontier;
+  \item \rffile{HamiltonCompactness.lean}, for the solution-facing wrapper;
+  \item \rffile{HCGCompactness/HamiltonPositiveRicciAdapter.lean}, where
+    \leanref{toHam3Exists} and \leanref{ham3OfCompactSol} adapt the newer HCG
+    compactness interface back to the Hamilton endpoint;
+  \item \rffile{PointedConvergence.lean}, for the pointed-convergence and
+    pullback vocabulary.
+\end{itemize}
+The Hamilton endpoint still consumes the theorem-shaped compactness input
+\leanref{ham3_cgh_limit}.  The adapter shows how this input should be replaced
+by a solution compactness theorem plus Hamilton-specific transfer producers,
+but the main endpoint still treats the final extraction as a named compactness
+frontier.  Therefore, after passing to a subsequence, the rescaled pointed
+flows converge in the smooth pointed
+Cheeger--Gromov--Hamilton sense to a complete pointed limit flow
+\[
+(M_\infty,g_\infty(s),x_\infty).
+\]
+
+The limit inherits nonnegative Ricci curvature and the basepoint scalar
+normalization
+\[
+R(g_\infty)(x_\infty,0)=1.
+\]
+The scalar strong maximum principle is the analytic source that promotes this
+nonnegative, nontrivial scalar curvature to positive scalar curvature on the
+relevant noninitial part of the limit flow.  The current Lean endpoint records
+the resulting limit-flow positivity as \leanref{LimitScalarPos}, carried inside
+\leanref{Ham3CGHLimitExists}; there is no longer a live Lean theorem named
+\texttt{limit\_scal\_pos\_smp}.  We do not claim here that the scalar strong
+maximum principle on the complete limit flow is natively closed.
+
+\paragraph{Passing pinching to the limit.}
+Fix a compact domain \(K\subset M_\infty\) and a compact time interval
+\([a',b']\) contained in the relevant noninitial time range.  The
+Cheeger--Gromov--Hamilton maps pull scalar and curvature quantities back to the
+approximating flows.  The transfer needed for the pinching estimate is recorded
+as \leanref{Ham3PinchTransfer} inside \leanref{Ham3CGHLimitExists}.
+
+Once scalar positivity is available on compact subsets of the relevant time
+interval, the rescaled improved pinching estimate and \(R_i^{-\eps}\to0\) force
+\[
+  \frac{\norm{\Ric^\circ(g_\infty(t))}_{g_\infty(t)}^2}
+       {R(g_\infty(t))^2}=0
+\]
+on \(K\times[a',b']\).  Since \(K\) and \([a',b']\) are arbitrary, it follows
+that
+\[
+\Ric^\circ(g_\infty(t))\equiv0
+\]
+on the noninitial part of the limit flow, in particular at the limiting time
+used in the final argument.
+
+If the Cheeger--Gromov--Hamilton limit is compact, the compact-limit
+identification argument compares the original manifold with the limit manifold
+for large indices: the convergence embeddings have open images by invariance of
+domain, compactness makes the images closed, and connectedness gives
+surjectivity.  The current endpoint records this global transfer through
+\leanref{limit_to_orig}.  This belongs to the remaining topological and
+CGH-transfer boundary, not to the local Ricci-flow calculation layers.
+
+\paragraph{Einstein limit and final topology.}
+The equation \(\Ric^\circ=0\), together with positive scalar curvature, gives
+the Einstein and constant-positive-sectional-curvature conclusion on the limit.
+The corresponding local limit predicates are \leanref{LimitEinsteinAt} and
+\leanref{LimitConstPosSec}.  The dimension-three algebra and curvature
+convention inputs used here live under \rfdir{DimensionThree} and
+\rfdir{Curvature}.  The assembly theorem \leanref{ham3_limit_const_metric}
+packages the constant-curvature metric conclusion, consuming the compactness,
+pinching-transfer, scalar-positivity, and limit-inheritance inputs described
+above.
+
+The final spherical-space-form statement remains a global Riemannian/topological
+handoff.  In the current endpoint this handoff is represented by
+\leanref{limit_to_orig}, \leanref{ham3_space_box}, and
+\leanref{spaceForm_const_metric}.  Consequently, \leanref{ham3_const_metric} is
+a theorem-shaped consumer over the remaining global analytic, compactness, transfer, and topological inputs, while
+\leanref{ham3_main} adds the spherical-space-form conclusion through the final
+topological interface.  The local tensor, component, Ricci-flow evolution,
+maximum-principle, three-dimensional algebra, and pinching calculations are the
+checked project-local layers feeding this final assembly.
+\end{proof}
+
+
+\section{Dependency ledger for future formalization}
+
+The preceding sections separate the proof into machine-checked local layers,
+checked consumers over packaged hypotheses, and explicitly named global inputs.
+This ledger records that boundary in a form intended to be read by both Lean
+users and geometric analysts.  It is not a raw to-do list: each item below is
+classified by the role it plays in the present theorem-shaped endpoint.
+
+\paragraph{Checked local infrastructure.}
+These are native or project-local Lean proof layers, sometimes stated in
+local-frame, coordinate-frame, carrier-restricted, or domain-aware form.
+\begin{itemize}[leftmargin=2em]
+  \item Riemannian tensor-calculus interfaces, including the Levi-Civita
+  connection, induced tensor covariant derivatives, and coordinate-component
+  APIs.
+  \item Curvature conventions and the lowered \(\Rm_{04}\) convention used by
+  the constant-sectional-curvature predicate.
+  \item The inverse-metric, Christoffel-symbol, Ricci, scalar-curvature,
+  Ricci-norm, trace-free Ricci, quotient, and improved-pinching evolution
+  calculations.
+  \item The scalar weak maximum principle and its scalar Ricci-flow lower-bound
+  consumers.
+  \item Hamilton's tensor weak maximum principle for symmetric two-tensors.
+  \item Three-dimensional curvature algebra, including the finite-dimensional
+  Ricci-to-Riemann identities and the eigenvalue algebra used in pinching.
+  \item Preservation of Ricci nonnegativity, shifted Ricci pinching, and strict
+  positive-Ricci-to-uniform-pinching wrappers.
+  \item Hamilton's improved pinching estimate, including the quotient
+  evolution, the cubic algebraic estimate, and the scalar-WMP consumer layer.
+\end{itemize}
+
+\paragraph{Checked consumers over global package assumptions.}
+These results are machine-checked once the relevant flow, compactness, transfer,
+or limit-flow interfaces have been supplied.
+\begin{itemize}[leftmargin=2em]
+  \item \leanref{ham3_short_solution_candidate}, which packages the raw
+  short-time output from \leanref{ham3_short_exists} as a candidate
+  \leanref{SolutionOn}.
+  \item \leanref{ham3_short_smooth_solution}, which uses
+  \leanref{ham3_short_isSolution} and the checked promotion
+  \leanref{smoothOfSol} to produce the short-time smooth solution package.
+  \item \leanref{ham3_finite_time}, which consumes the maximal-flow package and
+  the scalar lower-bound estimate.
+  \item \leanref{ham3_scalar_blowup}, which uses the extension/continuation
+  interface to turn finite maximal time into scalar blow-up.
+  \item \leanref{ham3_point_select}, which packages the normalized blow-up
+  sequence after scalar blow-up.
+  \item \leanref{ham3_rm_bound}, which combines nonnegative Ricci curvature
+  with the dimension-three pointwise curvature-control algebra.
+  \item \leanref{ham3_pinch_imp_can}, the canonical Hamilton-facing improved
+  pinching estimate.
+  \item \leanref{limit_tf_zero} and \leanref{limit_const_pos}, which are checked
+  limit-flow consumers once scalar positivity and the Cheeger--Gromov--Hamilton
+  transfer interfaces have been supplied.
+\end{itemize}
+
+\paragraph{Remaining global analytic and compactness inputs.}
+These are not claimed as closed native proofs in the present endpoint.
+\begin{itemize}[leftmargin=2em]
+  \item The short-time regularity bridge \leanref{ham3_short_isSolution}, from
+  the raw short-time chart/PDE output to \leanref{IsSolutionOn}.
+  \item The normalized maximal Ricci-flow package
+  \leanref{ham3_flow_exists_normalized}; its remaining gap is maximal
+  continuation and endpoint blow-up assembly after the short-time smooth
+  solution has been produced.
+  \item The Ricci-flow extension, or no-bounded-curvature continuation,
+  criterion used to obtain blow-up at the maximal time.
+  \item Perelman's no-local-collapsing input \leanref{ham3_noncollapse}.
+  \item Cheeger--Gromov--Hamilton compactness, represented by
+  \leanref{ham3_cgh_limit}; the newer adapter interface
+  \leanref{ham3OfCompactSol} records the preferred structured replacement.
+  \item The scalar strong maximum principle on the limit flow, currently
+  represented at the Hamilton endpoint by the \leanref{LimitScalarPos}
+  interface carried inside \leanref{Ham3CGHLimitExists}.
+\end{itemize}
+
+\paragraph{Remaining transfer and topological interfaces.}
+These interfaces record the boundary between the local Ricci-flow formalization
+and the global geometric or topological handoff.
+\begin{itemize}[leftmargin=2em]
+  \item Ricci-nonnegativity transfer through the limit,
+  \leanref{Ham3RicNonnegTransfer}.
+  \item Basepoint scalar convergence, \leanref{Ham3LimitBaseScalarConv}.
+  \item Improved-pinching transfer, \leanref{Ham3PinchTransfer}.
+  \item The compact-limit transfer back to the original manifold,
+  \leanref{limit_to_orig}.
+  \item The spherical-space-form and constant-curvature handoff interfaces
+  \leanref{ham3_space_box} and \leanref{spaceForm_const_metric}.
+\end{itemize}
+
+Thus ``checked local infrastructure'' means Lean proof layers supplied by the
+project or by earlier libraries; ``checked consumers'' are machine-checked
+statements conditional on packaged inputs; ``remaining global inputs'' are
+analytic or compactness theorems not closed in the current endpoint; and
+``transfer/topological interfaces'' mark the final passage from the blow-up
+limit back to the original manifold and its spherical-space-form conclusion.
+
+
+\section{Theorem-to-Lean reference table}
+
+The following table is an index of the main formal interfaces used in this
+paper.  It is not a complete dependency graph, and it suppresses many local
+supporting lemmas.  The proof paragraphs in the main text remain the
+authoritative source for hypotheses, scope, and the distinction between native
+proof layers, checked consumers, transfer interfaces, and black-box inputs.
+
+{\footnotesize
+\setlength{\LTpre}{0.5em}
+\setlength{\LTpost}{0.5em}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}@{\hspace{0.35em}}>{\raggedright\arraybackslash}p{0.33\textwidth}@{\hspace{0.35em}}>{\raggedright\arraybackslash}p{0.24\textwidth}@{\hspace{0.35em}}>{\raggedright\arraybackslash}p{0.20\textwidth}@{}}
+\textbf{Mathematical role} & \textbf{Lean-facing name(s)} & \textbf{File or interface} & \textbf{Status and caveat} \\
+\hline
+\endfirsthead
+\textbf{Mathematical role} & \textbf{Lean-facing name(s)} & \textbf{File or interface} & \textbf{Status and caveat} \\
+\hline
+\endhead
+
+Hamilton theorem in dimension three &
+\leanref{ham3_main}; \leanref{thm_2_1} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Final checked assembly theorem over the seven direct frontiers listed in the status remark. \\
+
+Metric constant-positive-curvature conclusion &
+\leanref{ham3_const_metric} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked blow-up assembly over the remaining analytic, compactness, transfer, and topological frontiers. \\
+
+Spherical-space-form handoff &
+\leanref{ham3_space_box}; \leanref{spaceForm_const_metric} &
+Topological/global-geometry interface &
+Topological handoff; not a local Ricci-flow calculation. \\
+
+Short-time raw existence and candidate package &
+\leanref{ricci_flow_short_time_existence}; \leanref{ham3_short_exists}; \leanref{ham3_short_solution_candidate} &
+\rffile{ShortTimeExistence.lean}; \rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+The short-time headline is cited and the raw output is repackaged as a candidate \leanref{SolutionOn}. \\
+
+Short-time regularity bridge &
+\leanref{ham3_short_isSolution}; \leanref{ham3_short_smooth_solution}; \leanref{smoothOfSol} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; regularity interface &
+\leanref{ham3_short_isSolution} is the raw-data-to-\leanref{IsSolutionOn} frontier; \leanref{smoothOfSol} is the checked promotion to \leanref{IsSmoothSolutionOn}. \\
+
+Normalized maximal Ricci-flow package &
+\leanref{ham3_flow_exists_normalized} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; maximal-flow interface &
+The remaining gap is maximal continuation and endpoint blow-up assembly after the short-time smooth solution stage. \\
+
+Finite-time scalar bound &
+\leanref{ham3_finite_time} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; \rffile{RicciFlow/Evolution/ScalarFiniteTime.lean} &
+Checked consumer once the maximal-flow package is supplied. \\
+
+Scalar blow-up at finite maximal time &
+\leanref{ham3_scalar_blowup} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; maximal-time interface &
+Checked consumer over the extension/no-bounded-curvature continuation input. \\
+
+Inverse-metric evolution &
+\leanref{RicciFlow.evol_inverse_metric_inFrame} &
+\rffile{RicciFlow/Evolution/Metric/Evolution.lean} &
+Native/project-local local-frame evolution calculation. \\
+
+Christoffel-symbol evolution &
+\leanref{evol_christoffel_inFrame} &
+\rffile{RicciFlow/Evolution/Connection/Producers.lean} &
+Native/project-local connection-variation producer. \\
+
+Ricci evolution &
+\leanref{coordRicciEvol} &
+\rffile{RicciFlow/Evolution/Ricci/CoordinateIdentities.lean} &
+Native/project-local coordinate evolution producer. \\
+
+Scalar-curvature evolution &
+\leanref{scalarEvolOfSmooth} &
+\rffile{Scalar/Basic.lean} &
+Checked evolution endpoint over the smooth-solution view. \\
+
+Ricci-norm evolution &
+\leanref{RicciNormHeatEquationOn} &
+\rffile{RicciNorm.lean} &
+Native/project-local evolution calculation using Ricci and inverse-metric evolution. \\
+
+Scalar weak maximum principle, supersolution form &
+\leanref{scalar_wmp_super_theorem_7_1} &
+\rffile{MaximumPrinciple/ScalarWeak.lean} &
+Native scalar WMP proof layer. \\
+
+Scalar weak maximum principle, subsolution form &
+\leanref{scalar_wmp_sub_theorem_7_2} &
+\rffile{MaximumPrinciple/ScalarWeak.lean} &
+Checked wrapper obtained from the supersolution theorem. \\
+
+Hamilton tensor weak maximum principle &
+\leanref{tensor_wmp}; \leanref{hamilton_tensor_wmp_section} &
+\rfdir{MaximumPrinciple/TensorWeak} &
+Native/project-local symmetric two-tensor WMP package. \\
+
+Limit-flow scalar positivity &
+\leanref{LimitScalarPos}; \leanref{Ham3CGHLimitExists} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; limit-flow analytic interface &
+Current Hamilton endpoint carries scalar positivity as data in the CGH output; the scalar strong maximum principle remains the analytic source. \\
+
+Three-dimensional Riemann-from-Ricci identity &
+\leanref{displayedRiemannFromRicci3D_of_algebraic_curvature_symmetries} &
+\rffile{DimensionThree/CurvatureAlgebra.lean} &
+Native finite-dimensional algebra over \(\operatorname{Fin}3\). \\
+
+Realized bridge to lowered curvature &
+\leanref{rm04Comp_displayedRiemannFromRicci3D_at} &
+\rffile{DimensionThree/RiemannFromRicci.lean} &
+Checked bridge from algebraic components to the realized \(\Rm_{04}\) convention. \\
+
+Ricci nonnegativity preservation &
+\leanref{ricci_nonneg_sol_closed} &
+\rffile{RicciFlow/Evolution/RicciPreservation.lean} &
+Checked tensor-WMP consumer over the Ricci evolution layer. \\
+
+Hamilton-facing rescaled Ricci nonnegativity &
+\leanref{ham3_rescaled_ric_nonneg} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked consumer used in the blow-up sequence. \\
+
+Shifted Ricci pinching &
+\leanref{pinch_sol_closed} &
+\rffile{RicciFlow/Evolution/RicciPreservation.lean} &
+Checked strict shifted tensor-WMP application for \(\Ric-\delta Rg\). \\
+
+Strict-positive-to-uniform-pinching wrapper &
+\leanref{strict_pinch_sol_lt} &
+\rffile{RicciFlow/Evolution/RicciPreservation.lean} &
+Checked compactness/initial-positivity wrapper feeding shifted pinching. \\
+
+Trace-free Ricci evolution &
+\leanref{tfHeat_book}; \leanref{tfHeat_sol} &
+\rffile{RicciFlow/Evolution/ImprovedPinching/BookData.lean} &
+Native/project-local textbook-facing and solution-level evolution endpoints. \\
+
+Quotient evolution &
+\leanref{quotHeat_book}; \leanref{quotHeat1_book} &
+\rffile{RicciFlow/Evolution/ImprovedPinching/Quotient.lean} &
+Native positive-region quotient-calculus producer. \\
+
+Hamilton pinching-quantity evolution &
+\leanref{pinchEvol_book}; \leanref{pinchEvol_sol}; \leanref{pinchEvol_sec} &
+\rfdir{RicciFlow/Evolution/ImprovedPinching} &
+Native/project-local producer and wrapper layer. \\
+
+Cubic pinching algebra &
+\leanref{hamiltonCubicQ3_factorized}; \leanref{hamiltonCubicQ3_lower_bound_ordered_nonnegative_eigenvalues} &
+\rffile{DimensionThree/PinchingAlgebra.lean} &
+Native finite-dimensional polynomial/eigenvalue algebra. \\
+
+Final improved pinching estimate &
+\leanref{pinchEstimate_sol}; \leanref{Ham3PinchEstimate}; \leanref{ham3_pinch_imp_can}; \leanref{ham3_pinch_imp} &
+\rfdir{RicciFlow/Evolution/ImprovedPinching}; \rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked scalar-WMP consumer over quotient, algebraic, and regularity inputs. \\
+
+Nonnegative-Ricci curvature control &
+\leanref{ham3_rm_bound} &
+\rffile{DimensionThree/RicciControlsRm.lean}; \rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked consumer of native dimension-three pointwise algebra. \\
+
+Point selection and normalized blow-up sequence &
+\leanref{ham3_point_select} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked consumer after scalar blow-up and blow-up data packaging. \\
+
+Perelman no-local-collapsing &
+\leanref{ham3_noncollapse} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Global black-box input in the Hamilton endpoint. \\
+
+Cheeger--Gromov--Hamilton compactness &
+\leanref{ham3_cgh_limit}; \leanref{toHam3Exists}; \leanref{ham3OfCompactSol} &
+\rfdir{HCGCompactness}; \rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+\leanref{ham3_cgh_limit} remains the main endpoint input; the HCG adapter gives the structured solution-compactness replacement shape. \\
+
+Limit-transfer interfaces &
+\leanref{Ham3RicNonnegTransfer}; \leanref{Ham3LimitBaseScalarConv}; \leanref{Ham3PinchTransfer} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; \rfdir{HCGCompactness} &
+Transfer interfaces carrying Ricci nonnegativity, scalar normalization, and pinching to the limit. \\
+
+Trace-free Ricci decay and vanishing in the limit &
+\leanref{limit_tf_decay}; \leanref{limit_tf_zero} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked limit-flow consumers once scalar positivity and pinching transfer are supplied. \\
+
+Limit constant-positive-sectional curvature &
+\leanref{limit_const_pos}; \leanref{ham3_limit_const_metric} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean} &
+Checked limit-flow assembly; the metric conclusion on the original manifold still passes through \leanref{limit_to_orig}. \\
+
+Compact-limit/topological handoff &
+\leanref{limit_to_orig}; \leanref{ham3_space_box}; \leanref{spaceForm_const_metric} &
+\rffile{DimensionThree/HamiltonPositiveRicci.lean}; topological interface &
+Transfer/topological handoff from the constant-curvature limit back to the original manifold. \\
+
+\end{longtable}
+}
+
+The old paper-facing name for the scalar strong maximum-principle input has
+been replaced here by the live endpoint interface \leanref{LimitScalarPos}.
+
+\section{Summary of Hamilton's proof and a few of its variants}
+
+\subsection{The formalized variant}
+
+The route formalized by the current theorem-shaped endpoint is the blow-up route
+used throughout this paper.  It may be summarized as follows.
+\begin{enumerate}[leftmargin=2em]
+  \item The flow is supplied by the maximal Ricci-flow package.  Once this
+  package is available, positive scalar curvature, finite-time control, scalar
+  blow-up, and the required scalar regularity statements are checked consumers.
+  \item Ricci nonnegativity and uniform shifted Ricci pinching are preserved by
+  the scalar and tensor maximum-principle layers developed earlier in the paper.
+  In particular, from initially positive Ricci curvature one obtains
+  \(\Ric \ge \delta Rg\) for some \(0<\delta<1/3\) along the relevant flow.
+  \item Hamilton's improved pinching estimate gives
+  \[
+    \frac{\norm{\Ric^\circ}^2}{R^{2-\eps}}\le C
+  \]
+  for suitable \(\eps>0\) and \(C<\infty\).  Equivalently,
+  \(\norm{\Ric^\circ}^2/R^2\le C R^{-\eps}\), which is the form used after
+  parabolic rescaling.
+  \item The finite-time singularity and scalar blow-up statements are checked
+  consumers once the maximal-flow package and the extension/continuation input
+  have been supplied.
+  \item Point selection is also checked at the consumer level: it chooses a
+  normalized blow-up sequence adapted to the scalar blow-up and curvature-control
+  data, rather than serving as a remaining compactness black-box input.
+  \item Derivative estimates, Perelman's no-local-collapsing theorem, and
+  Cheeger--Gromov--Hamilton compactness remain global inputs for the extraction
+  of a complete pointed limit flow.
+  \item The improved pinching estimate passes to the limit through the explicit
+  transfer interfaces.  Since the rescaled base curvatures tend to infinity, the
+  factor \(R_i^{-\eps}\) forces the trace-free Ricci ratio to vanish on the
+  noninitial part of the limit flow.
+  \item Scalar positivity on the limit is obtained from nonnegative scalar
+  curvature, basepoint normalization, and the scalar strong maximum-principle
+  input.  Together with vanishing trace-free Ricci curvature, this makes the
+  limit Einstein.
+  \item In dimension three, an Einstein metric with positive scalar curvature
+  has constant positive sectional curvature.  The final identification of the
+  original manifold with the compact limit, and hence the spherical-space-form
+  conclusion, is recorded through the Cheeger--Gromov--Hamilton transfer and
+  topological handoff interfaces.
+\end{enumerate}
+
+This variant is deliberately weaker than Hamilton's original normalized-flow
+convergence theorem, but it isolates a route well suited to the present Lean
+formalization: local tensor and maximum-principle layers are checked directly,
+while the nonlocal analytic and topological ingredients remain explicit.
+
+\subsection{Hamilton's original proof}
+
+Hamilton's original proof proves a stronger asymptotic statement for the
+volume-normalized Ricci flow.  The early curvature estimates are the same in
+spirit: scalar positivity and Ricci positivity are preserved, and the Ricci
+pinching improves.  Hamilton then proves a maximum-principle estimate for a
+modified gradient quantity
+\[
+  F:= \frac{\norm{\nabla R}^2}{R}-\eta R^2+168\norm{\Ric^\circ}^2.
+\]
+For every \(\eta>0\), this yields a constant \(C\) such that
+\[
+  \norm{\nabla R}^2\le \eta R^3+C.
+\]
+Combined with estimates for higher covariant derivatives of curvature along the
+normalized flow, this shows that the scalar curvature becomes spatially uniform,
+the trace-free Ricci tensor decays, and the normalized metrics converge
+exponentially in each \(C^k\) norm to a metric of constant positive sectional
+curvature.
+
+This normalized-flow convergence route is mathematically stronger than what is
+needed for the theorem-shaped endpoint described above.  It is not the route
+currently formalized in the main Lean endpoint, which instead uses a blow-up
+limit and improved pinching to obtain the constant-curvature conclusion.
+
+\subsection{Convergence-to-soliton variant}
+
+A third possible route would avoid relying on Hamilton's improved pinching
+estimate as the main mechanism for identifying the limit.  One would combine
+preserved Ricci pinching, a diameter estimate, Perelman's no-local-collapsing
+theorem, point selection, and compactness to obtain a singularity model on a
+closed manifold identified with the original one.  One would then use a theorem
+identifying the model as a shrinking gradient Ricci soliton, for example a
+result of Zhenlei Zhang under the appropriate hypotheses, and finally classify
+pinched positive-Ricci shrinkers as spherical space forms.
+
+This soliton route is best viewed as a possible alternative for future
+formalization.  The soliton-identification theorem, the required compactness and
+noncollapsing inputs, and the final shrinker-classification step are not claimed
+as native components of the current Hamilton endpoint.
+
+\newpage 
+
+\section{Appendix}
+
+This appendix records textbook background and auxiliary derivations used by the
+main text.  It is explanatory rather than a theorem-to-Lean status ledger: a
+displayed formula here should not be read as a claim that the project contains a
+separate final Lean theorem with exactly that statement.  The proof paragraphs in
+the main text remain authoritative about which results are native Lean proofs,
+which are consumer theorems, and which are black-box inputs.
+
+\subsection{Basic Riemannian Geometry}\label{subsec:BasicRiemGeom}
+
+The fundamental hierarchy of structures in Riemannian geometry is
+\[
+g \;\longrightarrow\; \nabla \;\longrightarrow\; \Rm ,
+\]
+where the metric determines the Levi-Civita connection and the connection
+determines the curvature tensor.
+
+\subsubsection{Levi-Civita, Riemann, Ricci, and scalar curvature}
+
+\vspacesub
+
+The Levi-Civita connection
+$\nabla: \mathfrak{X}(M) \times \mathfrak{X}(M) \to \mathfrak{X}(M)$
+is the unique linear connection on the tangent bundle $TM$ that is both
+torsion-free and metric-compatible.  The \textbf{Koszul formula} for
+$\nabla$ is
+\begin{align}
+ 2g\left(  \nabla_{U}V,W\right)   &  =U\left(  g\left(  V,W\right)  \right)
++V\left(  g\left(  U,W\right)  \right)  -W\left(  g\left(  U,V\right)  \right)
+\nonumber \\
+&   -g\left( U,  \left[  V,W\right] \right) -g\left( V, \left[  U,W\right]
+\right)    + g\left( W, \left[  U,V\right]  \right)   .   \label{Nabla basic formula} 
+\end{align}
+The standard derivation expands the first line of
+\eqref{Nabla basic formula}, uses metric compatibility, and cancels the
+remaining terms with the torsion-free condition.
+
+\begin{definition}[Christoffel Symbols]
+\label{def:Christoffel_symbols}
+    Let $(M,g)$ be a Riemannian manifold and let $(U,\mathbf{x})$ be a
+    local coordinate chart, with $\mathbf{x}=(x^1,\dots,x^n)$.  Let
+    $\{\partial_i\}_{i=1}^n$ denote the induced coordinate frame on
+    $TM|_U$, where $\partial_i:=\frac{\partial}{\partial x^i}$.
+
+    If $\nabla$ is the Levi-Civita connection of $g$, the
+    \textbf{Christoffel symbols} are the functions
+    $\Gamma_{ij}^k:U\to\mathbb R$ defined by expanding the covariant
+    derivative in this coordinate frame:
+    \begin{equation}
+        \nabla_{\partial_i} \partial_j = \Gamma_{ij}^k \partial_k,
+    \end{equation}
+    where the Einstein summation convention is implied over the index $k$.
+\end{definition}
+
+The Christoffel symbols can be expressed in terms of the first partial
+derivatives of the metric components:
+\begin{equation}\label{eq:ChristoffelSymbols0th}
+        \Gamma_{ij}^k = \frac{1}{2} g^{kl} \left( \partial_i g_{jl} + \partial_j g_{il} - \partial_l g_{ij} \right) ;
+    \end{equation}
+this follows from \eqref{Nabla basic formula} and the fact that $[\partial_i,\partial_j]=0$.
+
+The Riemann curvature tensor is defined by
+\begin{equation}\label{eqn:Rm curv def}
+   R(X,Y)Z := \nabla_X (\nabla_Y Z) - \nabla_Y (\nabla_X Z) - \nabla_{[X,Y]} Z .
+\end{equation}
+
+The components of the Riemann curvature tensor are defined by
+\begin{equation}
+    R_{ijk}^l \partial_l = R(\partial_i,\partial_j)\partial_k . 
+\end{equation}
+Using
+\begin{equation*}
+    \nabla_{\partial_i}(\nabla_{\partial_j}\partial_k) = \nabla_{\partial_i}(\Gamma_{jk}^\ell \partial_\ell) 
+    = \partial_i \Gamma_{jk}^{\ell}
++ \Gamma_{jk}^p \nabla_{\partial_i}\partial_p , 
+\end{equation*}
+we compute that
+    \begin{equation}\label{eq:Rijkl equation 0th}
+        R_{ijk}^{\ell} = \partial_i \Gamma_{jk}^{\ell} - \partial_j \Gamma_{ik}^{\ell} + \Gamma_{jk}^{p}\Gamma_{ip}^{\ell} - \Gamma_{ik}^{p}\Gamma_{jp}^{\ell}.
+    \end{equation}
+
+As a $(0,4)$-tensor, $\operatorname{Rm}$ is defined by
+\begin{equation}
+    \operatorname{Rm}(X,Y,Z,W) := \langle R(X,Y)Z,W \rangle . 
+\end{equation}
+Its components are defined by
+\begin{equation}
+    R_{ijkl} :=\operatorname{Rm}(\partial_i,\partial_j,\partial_k,\partial_l) .
+\end{equation}
+Raising and lowering the final index gives
+\begin{equation}
+    R_{ijkl}=R_{ijk}^m g_{ml} \quad \text{and} \quad R_{ijk}^l = R_{ijkm} g^{ml} . 
+\end{equation}
+
+For appendix convenience, we record the three-dimensional curvature identity
+used in the main curvature-algebra section.  This is the same classical identity
+used in Lemma~\ref{lem:3d-curvature-identities}; the appendix version keeps its
+own label for reference.
+
+\begin{lemma}\label{lem:3D Riem as Ricci and R}
+    If $n=3$, then
+\begin{equation}
+    R_{ijkl} = R_{il}g_{jk} - R_{jl}g_{ik} 
+    - R_{ik}g_{jl} + R_{jk}g_{il}
+    - \frac{1}{2} R (g_{il}g_{jk} - g_{jl}g_{ik}) .
+\end{equation}
+\end{lemma}
+
+\subsection{Tensor calculus}\label{subsec:TensorCalculus}
+
+\subsubsection{Tensors}
+\vspacesub 
+
+Many geometric quantities appearing in Riemannian geometry---such as the metric,
+curvature, and their covariant derivatives---are naturally expressed as tensors.
+
+\begin{definition}[$(r,s)$-Tensor]
+\label{def:rs_tensor}
+    Let $(M,g)$ be a smooth manifold and let $p\in M$.  Let $T_pM$ be
+    the tangent space and let $T_p^*M$ be the cotangent space at $p$.
+
+    An \textbf{$(r,s)$-tensor} at $p$ is a multilinear map
+    \begin{equation}
+        T: \underbrace{T_p^* M \times \dots \times T_p^* M}_{r \text{ times}} \times \underbrace{T_p M \times \dots \times T_p M}_{s \text{ times}} \to \mathbb{R}.
+    \end{equation}
+    Thus $T$ takes $r$ covectors and $s$ vectors as input, returns a real
+    number, and is linear in each argument.
+
+    A \textbf{smooth $(r,s)$-tensor field} is a smooth assignment of such a
+    multilinear map to every point $p\in M$.  Equivalently, it can be viewed
+    as a $C^\infty(M)$-multilinear map from $r$ smooth $1$-forms and $s$
+    smooth vector fields to smooth functions:
+    \begin{equation}
+        T: \Omega^1(M)^r \times \mathfrak{X}(M)^s \to C^\infty(M),
+    \end{equation}
+where $\Omega^1(M)$ denotes the space of smooth $1$-forms and
+$\mathfrak{X}(M)$ the space of smooth vector fields on $M$.
+\end{definition}
+
+\subsubsection{Covariant differentiation of tensors}
+
+\vspacesub 
+
+Since the Levi-Civita connection is defined on vector fields, we first extend
+the notion of covariant differentiation to covariant objects, beginning with
+1-forms.
+
+\begin{definition}[Covariant Derivative of a 1-form]
+\label{def:cov_dev_1form}
+    Let $\nabla$ denote the Levi-Civita connection on $(M,g)$.  Let
+    $\omega\in\Omega^1(M)$ be a smooth $1$-form and let
+    $X,Y\in\mathfrak{X}(M)$.  The \textbf{covariant derivative} of
+    $\omega$ in the direction $X$, denoted $\nabla_X\omega$, is the
+    $1$-form defined by
+    \begin{equation}
+        (\nabla_X \omega)(Y) = X(\omega(Y)) - \omega(\nabla_X Y).
+    \end{equation}
+Equivalently, this is the product rule for the scalar function
+$\omega(Y)$, with the correction term accounting for the variation of the
+input vector field $Y$.
+\end{definition}
+
+The same rule extends to any smooth $(r,s)$-tensor field $T$.  Since
+$\nabla_X$ already acts on functions, vector fields, and $1$-forms, the
+general formula is dictated by the Leibniz rule:
+
+\begin{definition}[Covariant Derivative of an $(r,s)$-Tensor]
+\label{def:cov_dev_general}
+    We extend the covariant derivative to a smooth $(r,s)$-tensor field $T$
+    by requiring that $\nabla_X$ act as a derivation with respect to tensor
+    contraction.  Explicitly, for any $X\in\mathfrak{X}(M)$, $r$
+    $1$-forms $\omega^1,\dots,\omega^r$, and $s$ vector fields
+    $Y_1,\dots,Y_s$, the tensor $\nabla_XT$ is defined by
+    \begin{align}
+        (\nabla_X T)(\omega^1, \dots, \omega^r, Y_1, \dots, Y_s) &= X \big( T(\omega^1, \dots, \omega^r, Y_1, \dots, Y_s) \big) \nonumber \\
+        &\quad - \sum_{k=1}^r T(\omega^1, \dots, \nabla_X \omega^k, \dots, \omega^r, Y_1, \dots, Y_s) \nonumber \\
+        &\quad - \sum_{l=1}^s T(\omega^1, \dots, \omega^r, Y_1, \dots, \nabla_X Y_l, \dots, Y_s).
+    \end{align}
+This is the corresponding product rule for tensor evaluation: each input
+slot contributes a correction term.
+    
+    The \textbf{total covariant derivative} $\nabla T$ is the $(r, s+1)$-tensor field obtained by viewing the differentiation direction as an input argument. We adopt the convention that the differentiation slot comes first:
+    \begin{equation}
+        (\nabla T)(X, \omega^1, \dots, \omega^r, Y_1, \dots, Y_s) := (\nabla_X T)(\omega^1, \dots, \omega^r, Y_1, \dots, Y_s).
+    \end{equation}
+\end{definition}
+
+\begin{remark}
+    Observe that if $T$ is a $(0,1)$-tensor (a 1-form), the general definition agrees with Definition \ref{def:cov_dev_1form}. In this case ($r=0, s=1$), the first summation is empty, and the formula reduces to
+    \begin{equation}
+        (\nabla_X T)(Y_1) = X(T(Y_1)) - T(\nabla_X Y_1),
+    \end{equation}
+    which is exactly the definition of the covariant derivative of a 1-form.
+\end{remark}
+
+Since estimates for higher derivatives of the metric in local coordinates
+are obtained by controlling covariant derivatives of curvature, we introduce
+iterated covariant derivatives of tensor fields.
+
+\begin{definition}[High-Order Covariant Derivatives]
+\label{def:high_order_cov_dev}
+    We define the $k$-th covariant derivative of a smooth $(r,s)$-tensor field $T$ recursively.
+    
+    For $k=0$, we set $\nabla^{(0)} T = T$. For $k \geq 1$, the $k$-th covariant derivative $\nabla^{(k)} T$ is the $(r, s+k)$-tensor field defined as the total covariant derivative of the $(k-1)$-th derivative:
+    \begin{equation}
+        \nabla^{(k)} T := \nabla (\nabla^{(k-1)} T).
+    \end{equation}
+    In terms of arguments, if $T$ is a $(0,s)$-tensor, this recursion implies that
+    \begin{equation}
+        (\nabla^{(k)} T)(X_1, \dots, X_k, Y_1, \dots, Y_s) = (\nabla_{X_1} (\nabla^{(k-1)} T))(X_2, \dots, X_k, Y_1, \dots, Y_s)
+    \end{equation}
+    for vector fields $X_1, \dots, X_k, Y_1, \dots, Y_s$.
+    Note that under this convention, the \emph{first} argument $X_1$ corresponds to the \emph{outermost} (most recent) differentiation operation.
+\end{definition}
+
+\begin{remark}
+We compute that
+\begin{align*}
+    (\nabla^{(2)}Z)(X,Y) & = (\nabla_X (\nabla Z)) (Y) \\
+    & = \nabla_X( (\nabla Z)(Y)) - (\nabla Z) (\nabla_X Y) \\
+    & = \nabla_X(\nabla_Y Z) - \nabla_{\nabla_X Y} Z 
+\end{align*}
+for vector fields $X,Y,Z$. 
+Therefore we may rewrite the definition \eqref{eqn:Rm curv def} of the Riemann curvature tensor as
+\begin{equation}
+    R(X,Y)Z = (\nabla^{(2)}Z)(X,Y) - (\nabla^{(2)}Z)(Y,X) .
+\end{equation}
+\end{remark}
+
+\subsubsection{Index notation for tensors}
+
+\vspacesub
+
+A choice of local coordinates determines a coordinate basis for the
+tangent bundle, allowing tensor fields to be expressed through their
+components in index notation.
+
+\begin{definition}[Tensor Components and Covariant Derivatives]
+\label{def:tensor_components}
+    Let $\alpha$ be a smooth $(0,s)$-tensor field. The \textbf{components} of $\alpha$ in the local frame are the smooth functions defined by:
+    \begin{equation}
+        \alpha_{i_1 \cdots i_s} := \alpha (\partial_{i_1}, \ldots, \partial_{i_s}).
+    \end{equation}
+    The $k$-th covariant derivative $\nabla^{(k)} \alpha$ is a $(0, k+s)$-tensor field. We denote its components by the symbol $\nabla_{j_1}\cdots \nabla_{j_k} \alpha_{i_1 \cdots i_s}$, defined as the evaluation of the tensor on the coordinate basis:
+    \begin{equation}
+        \nabla_{j_1}\cdots \nabla_{j_k} \alpha_{i_1 \cdots i_s} := (\nabla^{(k)}\alpha) (\partial_{j_1}, \ldots, \partial_{j_k}, \partial_{i_1}, \ldots, \partial_{i_s}).
+    \end{equation}
+\end{definition}
+
+\subsubsection{The Ricci Identities}
+\vspacesub 
+
+The non-commutativity of the covariant derivative is measured precisely by the Riemann curvature tensor. While this is often defined for vector fields, it extends naturally to all tensor fields. We first establish the action of curvature on 1-forms, then extend it to arbitrary tensors via the derivation principle.
+
+\begin{lemma}[Action of Curvature on 1-forms]
+\label{lem:curvature_on_1forms}
+    Let $\omega \in \Omega^1(M)$ be a smooth 1-form and let $X, Y, Z \in \mathfrak{X}(M)$. Then:
+    \begin{equation}\label{eq: commute CD 1-form}
+        (\nabla_X \nabla_Y \omega)(Z) - (\nabla_Y \nabla_X \omega)(Z) - (\nabla_{[X,Y]} \omega)(Z) = - \omega(R(X,Y)Z).
+    \end{equation}
+\end{lemma}
+
+\begin{proof}
+    By definition, $(\nabla_Y \omega)(Z) = Y(\omega(Z)) - \omega(\nabla_Y Z)$. Differentiating again in the direction $X$:
+    \begin{align*}
+        (\nabla_X \nabla_Y \omega)(Z) &= X \big( (\nabla_Y \omega)(Z) \big) - (\nabla_Y \omega)(\nabla_X Z) \\
+        &= X \big( Y(\omega(Z)) - \omega(\nabla_Y Z) \big) - \big[ Y(\omega(\nabla_X Z)) - \omega(\nabla_Y \nabla_X Z) \big] \\
+        &= XY(\omega(Z)) - X(\omega(\nabla_Y Z)) - Y(\omega(\nabla_X Z)) + \omega(\nabla_Y \nabla_X Z).
+    \end{align*}
+    Swapping $X$ and $Y$ and subtracting yields the commutator:
+    \begin{align*}
+        [\nabla_X, \nabla_Y]\omega(Z) &= [X,Y](\omega(Z)) - X(\omega(\nabla_Y Z)) + Y(\omega(\nabla_X Z)) \\
+        &\quad - \big( -Y(\omega(\nabla_X Z)) + X(\omega(\nabla_Y Z)) \big) + \omega(\nabla_Y \nabla_X Z - \nabla_X \nabla_Y Z) \\
+        &= [X,Y](\omega(Z)) - \omega(\nabla_X \nabla_Y Z - \nabla_Y \nabla_X Z).
+    \end{align*}
+    Meanwhile, the covariant derivative in the direction $[X,Y]$ is:
+    \begin{equation*}
+        (\nabla_{[X,Y]} \omega)(Z) = [X,Y](\omega(Z)) - \omega(\nabla_{[X,Y]} Z).
+    \end{equation*}
+    Subtracting these equations, the derivative terms on the function $\omega(Z)$ cancel, leaving:
+    \begin{align*}
+        \big([\nabla_X, \nabla_Y] \omega - \nabla_{[X,Y]} \omega\big)(Z) &= - \omega\big( \nabla_X \nabla_Y Z - \nabla_Y \nabla_X Z - \nabla_{[X,Y]} Z \big) \\
+        &= -\omega(R(X,Y)Z).
+    \end{align*}
+\end{proof}
+
+\begin{remark}
+We may rephrase equation \eqref{eq: commute CD 1-form} as
+\begin{equation}
+    (\nabla^{(2)} \omega)(X, Y, Z)
+- (\nabla^{(2)} \omega)(Y, X, Z) = - \omega(R(X,Y)Z).
+\end{equation}
+Equation \eqref{eq: commute CD 1-form} says, in local coordinates, that
+\begin{equation}\label{eq: commute CD 1-form coord}
+    \nabla_i \nabla_j \omega_k - \nabla_j \nabla_i \omega_k = - R_{ijk}^m \omega_m = - R_{ijk\ell}g^{\ell m} \omega_m . 
+\end{equation}
+\end{remark}
+
+Generalizing \eqref{eq: commute CD 1-form coord} to covariant tensors, we have:
+
+\begin{theorem}[Ricci Identity for $(0,s)$-Tensors]
+\label{thm:ricci_identity}
+    Let $\alpha$ be a smooth $(0,s)$-tensor field. In local coordinates, the commutator of second covariant derivatives is given by:
+    \begin{equation}
+        \nabla_{i}\nabla_{j}\alpha_{k_{1}\cdots k_{s}} - \nabla_{j}\nabla_{i}\alpha_{k_{1}\cdots k_{s}} 
+        = - \sum_{q=1}^{s} \sum_{m=1}^n R_{ijk_{q}}^{m} \alpha_{k_{1}\cdots k_{q-1} m k_{q+1}\cdots k_{s}}.
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+    We proceed invariantly. Let $R(X,Y)$ denote the curvature operator acting on the tensor algebra as a derivation. The invariant form of the commutation formula is:
+    \begin{equation}
+        (\nabla^{(2)} \alpha)(X, Y, \dots) - (\nabla^{(2)} \alpha)(Y, X, \dots) = (R(X,Y) \cdot \alpha)(\dots).
+    \end{equation}
+    Since the covariant derivative $\nabla$ satisfies the product rule, the curvature operator $R(X,Y) = [\nabla_X, \nabla_Y] - \nabla_{[X,Y]}$ also acts as a derivation on tensor products. For a tensor $\alpha = \omega^1 \otimes \dots \otimes \omega^s$, the action is:
+    \begin{equation}
+        R(X,Y) \cdot (\omega^1 \otimes \dots \otimes \omega^s) = \sum_{q=1}^s \omega^1 \otimes \dots \otimes (R(X,Y) \cdot \omega^q) \otimes \dots \otimes \omega^s.
+    \end{equation}
+    Using Lemma \ref{lem:curvature_on_1forms}, the action on the $q$-th slot is given by contraction with $-R(X,Y)Z_q$.
+    
+    Now, specialize to a local coordinate chart with basis vectors $\partial_i$. We set $X = \partial_i$ and $Y = \partial_j$. Note that coordinate vector fields commute, so $[\partial_i, \partial_j] = 0$. The invariant definition of the second derivative implies:
+    \begin{equation}
+        (\nabla^{(2)} \alpha)(\partial_i, \partial_j, \partial_{k_1}, \dots, \partial_{k_s}) = \nabla_i (\nabla_j \alpha_{k_1 \dots k_s}) = \nabla_i \nabla_j \alpha_{k_1 \dots k_s}.
+    \end{equation}
+    Thus, the commutator becomes:
+    \begin{equation}
+        \nabla_i \nabla_j \alpha_{k_1 \dots k_s} - \nabla_j \nabla_i \alpha_{k_1 \dots k_s} = \sum_{q=1}^s \alpha(\partial_{k_1}, \dots, R(\partial_i, \partial_j)\cdot \omega^{k_q}, \dots, \partial_{k_s}).
+    \end{equation}
+    Using the definition of the Riemann curvature tensor components $R(\partial_i, \partial_j) \partial_{k_q} = \sum_m R_{ijk_q}^m \partial_m$, and Lemma \ref{lem:curvature_on_1forms} which provides the sign factor, the action on the $q$-th input slot yields:
+    \begin{equation}
+        - \sum_{m=1}^n R_{ijk_q}^m \alpha_{k_1 \dots m \dots k_s}.
+    \end{equation}
+    Summing over all slots $q=1, \dots, s$ gives the result.
+\end{proof}
+
+\begin{remark}[Ricci Identity for $(r,s)$-Tensors]
+    More generally, if $\beta $ is any $\left(  r,s\right)  $-tensor field, one has the
+commutator
+\begin{align}
+\left[  \nabla_{i},\nabla_{j}\right]  \beta_{k_{1}\cdots k_{s}}^{l_{1}%
+\cdots l_{r}}  &  := \nabla_{i}\nabla_{j}\beta_{k_{1}\cdots k_{s}}^{l
+_{1}\cdots l_{r}}-\nabla_{j}\nabla_{i}\beta_{k_{1}\cdots k_{s}}^{l_{1}\cdots l_{r}} \nonumber \\
+&  =\sum_{p=1}^{r} \sum_{m=1}^n R_{ijm}^{l_{p}}\beta_{k_{1}\cdots k_{s}}^{l_{1}\cdots
+l_{p-1}ml_{p+1}\cdots l_{r}}-\sum_{q=1}^{s} \sum_{m=1}^n R_{ijk_{q}}^{m}%
+\beta_{k_{1}\cdots k_{q-1}mk_{q+1}\cdots k_{s}}^{l_{1}\cdots l_{r}}. \label{eq: commutatorRStensor}
+\end{align}
+\end{remark}
+
+
+For example, for a $(1,1)$-tensor $\beta$, we have
+\begin{equation}\label{eq:CD commutator 11 tensor}
+    \nabla_i\nabla_j \beta_k^l - \nabla_j \nabla_i \beta_k^l =
+    R_{ijm}^l\beta_k^m - R_{ijk}^m \beta_m^l.
+\end{equation}
+
+\subsubsection{Inner products and norms of tensors}
+
+\begin{definition}[Tensor Inner Product]
+\label{def:tensor_inner_product}
+    Let $(M, g)$ be a Riemannian manifold and let $\alpha, \beta$ be $(0,s)$-tensor fields.
+    Their \textbf{inner product} is the scalar function $\langle \alpha, \beta \rangle \in C^\infty(M)$ defined at each point $p$ by contracting with respect to a local orthonormal basis $\{e_k\}_{k=1}^n$:
+    \begin{equation}
+        \langle \alpha , \beta \rangle := \sum_{k_1, \dots, k_s=1}^{n} \alpha (e_{k_1}, \dots, e_{k_s}) \beta (e_{k_1}, \dots, e_{k_s}).
+    \end{equation}
+    In general local coordinates, this corresponds to the full contraction:
+    \begin{equation}
+        \langle \alpha , \beta \rangle = g^{i_1 j_1} \dots g^{i_s j_s} \alpha_{i_1 \dots i_s} \beta_{j_1 \dots j_s}.
+    \end{equation}
+    The norm of a tensor is defined by 
+\begin{equation}
+    |\alpha|^2 := \langle \alpha, \alpha \rangle ,
+\end{equation}
+so $|\alpha| = \sqrt{\langle \alpha, \alpha \rangle}$.
+\end{definition}
+
+For example, if $T$ is a $(0,s)$-tensor and $k\geq 0$, then 
+\begin{equation}
+    |\nabla^{(k)}T|^2 = g^{i_1 j_1} \cdots g^{i_{s+k} j_{s+k}} \nabla_{i_1}\cdots \nabla_{i_k}T_{i_{k+1} \cdots i_{k+s}} \nabla_{j_1} \cdots \nabla_{j_k}T_{j_{k+1} \cdots j_{k+s}} .  
+\end{equation}
+
+\subsection{The Laplace operator}
+
+For the purposes of this appendix, the rough Laplacian is recorded as the
+metric trace of the second covariant derivative.  The main text explains how
+the project realizes such identities through invariant, coordinate, or local
+frame interfaces when they are used in Lean.
+
+\subsubsection{The rough Laplacian and the divergence}
+
+\vspacesub 
+
+The Laplacian is the fundamental second-order differential operator in
+geometric analysis, obtained by taking the metric trace of the second
+covariant derivative.
+
+\begin{definition}[Rough Laplacian]
+\label{def:rough_laplacian}
+    Let $(M, g)$ be a Riemannian manifold and let $\alpha$ be a $(0,s)$-tensor field.
+    The \textbf{rough Laplacian} $\Delta \alpha$ is defined by the metric trace of the second covariant derivative over its first two arguments:
+    \begin{equation}
+        \Delta \alpha := \operatorname{tr}_{1,2} \big( \nabla^{(2)} \alpha \big).
+    \end{equation}
+    Explicitly, if $\{e_k\}_{k=1}^n$ is a local orthonormal frame, this trace is given by
+    \begin{equation}
+        \operatorname{tr}_{1,2} \big( \nabla^{(2)} \alpha \big) (\cdot, \dots, \cdot) := \sum_{k=1}^n (\nabla^{(2)} \alpha)(e_k, e_k, \cdot, \dots, \cdot).
+    \end{equation}
+    In local coordinates, this corresponds to the contraction:
+    \begin{equation}
+        (\Delta \alpha)_{i_1 \dots i_s} = g^{jk} \nabla_j \nabla_k \alpha_{i_1 \dots i_s}.
+    \end{equation}
+\end{definition}
+
+The divergence is a fundamental first-order operator in geometric
+analysis, obtained by taking the metric trace of the covariant derivative.
+
+
+\begin{definition}[Divergence]
+\label{def:divergence}
+    Let $(M, g)$ be a Riemannian manifold and let $\alpha$ be a $(0,s)$-tensor field with $s \ge 1$.
+    The \textbf{divergence} of $\alpha$ is the $(0,s-1)$-tensor field defined by the metric trace of the covariant derivative $\nabla \alpha$ over its first two arguments:
+    \begin{equation}
+        \mathrm{div}(\alpha) := \operatorname{tr}_{1,2} (\nabla \alpha).
+    \end{equation}
+    In local coordinates, this corresponds to contracting the derivative index with the first index of $\alpha$:
+    \begin{equation}
+        \big(\mathrm{div}(\alpha) \big)_{i_2 \dots i_s} = g^{jk} \nabla_j \alpha_{k i_2 \dots i_s}.
+    \end{equation}
+With respect to an orthonormal frame $\{e_i\}_{i=1}^n$,
+\begin{equation}
+  \mathrm{div}(\alpha) = \sum_{i=1}^n (\nabla_{e_i} \alpha ) (e_i,\cdot,\ldots,\cdot) .  
+\end{equation}
+\end{definition}
+
+\begin{remark}[Factorization of the Laplacian]
+\label{rem:laplacian_div_grad}
+    It follows directly from the definitions that the Laplacian factors as the divergence of the covariant derivative:
+    \begin{equation}
+        \Delta \alpha = \operatorname{div} ( \nabla \alpha ).
+    \end{equation}
+    Note that this composition is well-typed: if $\alpha$ is a $(0,s)$-tensor, then $\nabla \alpha$ is a $(0,s+1)$-tensor (satisfying the rank requirement for divergence), and the resulting divergence maps it back to a $(0,s)$-tensor.
+\end{remark}
+
+\subsubsection{The fundamental Bochner formula}
+
+\begin{lemma}
+\label{ex:laplace_u_squared}
+Let $(M,g)$ be a Riemannian manifold and let $u\in C^\infty(M)$ be a
+smooth function. Then the Laplacian of the square satisfies
+    \begin{align}
+        \frac{1}{2}\Delta (u^2) &= \operatorname{div}(u\nabla u)
+        = u \Delta u + |\nabla u|^2. \label{eq:Laplace_of_u_squared}
+    \end{align}
+\end{lemma}
+
+A fundamental identity in geometric analysis describes how the Laplacian
+fails to commute with the exterior derivative, with the failure measured
+by the Ricci curvature.
+
+\begin{lemma}[Commutator of $\Delta$ and $d$]
+\label{lem:laplace_d_commutator}
+    Let $u \in C^3(M)$ be a smooth function on a Riemannian manifold. Then
+    \begin{equation}
+        \Delta(du) = d(\Delta u) + \operatorname{Ric}(du),
+        \label{eq:Laplace_Nabla_Commutator}
+    \end{equation}
+    where $\operatorname{Ric}$ acts on $1$-forms via the identification with tangent vectors (that is, $(\operatorname{Ric}(\alpha))(W) := \alpha(\operatorname{Ric}(W))$).
+\end{lemma}
+
+\begin{proof}
+    Let $\{e_i\}_{i=1}^n$ be a local orthonormal frame field. We compute the action of the Laplacian on the 1-form $du$ applied to a vector $W$.
+    
+    By the definition of the rough Laplacian (Definition \ref{def:rough_laplacian}), we sum over the frame:
+    \begin{align}
+        (\Delta(du))(W) 
+        &= \sum_{i=1}^n (\nabla^{(2)} du)(e_i, e_i, W) \nonumber \\
+        \intertext{The tensor $\nabla^{(2)} u$ (the Hessian) is symmetric. Since covariant differentiation preserves symmetry in the trailing arguments, the $3$-tensor $\nabla^{(3)} u = \nabla^{(2)}(du)$ is symmetric in its last two slots. We swap $e_i$ and $W$:}
+        &= \sum_{i=1}^n (\nabla^{(2)} du)(e_i, W, e_i) \nonumber \\
+        \intertext{We now commute the first two derivatives using the Ricci identity for $1$-forms. This introduces a curvature term:}
+        &= \sum_{i=1}^n \left[ (\nabla^{(2)} du)(W, e_i, e_i) + du \big( \operatorname{Rm}(e_i, W)e_i \big) \right] \nonumber \\
+        \intertext{The first term is the derivative of the trace (the Laplacian). The second term contracts to the Ricci curvature:}
+        &= W \left( \sum_{i=1}^n (\nabla^{(2)} du)(e_i, e_i, \cdot) \right) + du \left( \sum_{i=1}^n \operatorname{Rm}(e_i, W)e_i \right) \nonumber \\
+        &= W(\Delta u) + du(\operatorname{Ric}(W)) \nonumber \\
+        &= (d(\Delta u))(W) + \operatorname{Ric}(du)(W). \nonumber
+    \end{align}
+    Since this holds for all $W$, the identity follows.
+\end{proof}
+
+\begin{remark}
+    In local coordinates, the commutator formula
+    \eqref{eq:Laplace_Nabla_Commutator} for $\Delta$ and $d$ becomes
+\begin{align}
+    g^{jk} \nabla_j \nabla_k \nabla_i u & =  \nabla_i ( g^{jk} \nabla_j \nabla_k u)  + R_{ij} g^{jk} \nabla_k u \nonumber \\
+    & = g^{jk} \nabla_i \nabla_j \nabla_k u + R_{ij} g^{jk} \nabla_k u . \label{eqn:fund Bochner coord}
+\end{align}
+Here we use the Einstein summation convention: whenever an index
+appears once as an upper index and once as a lower index, it is
+understood to be summed from $1$ to $n$, the dimension of $M$.
+Note that we can commute $\nabla_i$ and $ g^{jk}$ since $\nabla g=0$.
+
+We can also compute \eqref{eqn:fund Bochner coord} directly using local coordinate notation:
+\begin{align*}
+    g^{jk} \nabla_j \nabla_k \nabla_i u 
+& = g^{jk} \nabla_j \nabla_i \nabla_k u \\
+& = g^{jk} \nabla_i \nabla_j \nabla_k u - g^{jk} R_{jik\ell} g^{\ell m} \nabla_m u \\
+& = g^{jk} \nabla_i \nabla_j \nabla_k u + R_{i\ell} g^{\ell m} \nabla_m u .
+\end{align*}
+\end{remark}
+
+\begin{remark}[Directional Covariant Derivatives and Normal Coordinates]
+\label{rem:normal_coords}
+    If $X$ is a tangent vector (or vector field), we denote the covariant derivative in the direction of $X$ by $\nabla_X$. For a tensor $\alpha$, this is the contraction of $\nabla \alpha$ with $X$:
+    \begin{equation}
+        \nabla_X \alpha := i_X (\nabla \alpha).
+    \end{equation}
+    Similarly, we denote the second covariant derivative in the directions $X, Y$ by
+    \begin{equation}
+        \nabla^2_{X,Y} \alpha := (\nabla^{(2)} \alpha)(X, Y, \cdot).
+    \end{equation}
+    
+    \textbf{Warning:} In general, the iterated derivative $\nabla_X (\nabla_Y \alpha)$ is \emph{not} equal to the Hessian component $\nabla^2_{X,Y} \alpha$. They are related by the product rule identity:
+    \begin{equation}
+        \nabla^2_{X,Y} \alpha = \nabla_X (\nabla_Y \alpha) - \nabla_{\nabla_X Y} \alpha.
+    \end{equation}
+    However, to simplify calculations like the proof of Proposition \ref{prop:FundBochnerFormNormSq}, we often choose a \textbf{geodesic frame} (or normal coordinates) at a specific point $p$. In such a frame, $(\nabla_{e_i} e_j)|_p = 0$. Consequently, at the point $p$, the Hessian matches the iterated derivative:
+    \begin{equation}
+        \nabla^2_{e_k, e_k} \alpha \bigg|_p = \nabla_{e_k} ( \nabla_{e_k} \alpha ) \bigg|_p .
+    \end{equation}
+    This allows us to compute Laplacians as sums of pure second derivatives, $\Delta \alpha = \sum_k \nabla_{e_k} \nabla_{e_k} \alpha$, valid \emph{at the center of normal coordinates}.
+\end{remark}
+
+A central identity in geometric analysis is the Bochner formula,
+which relates the Laplacian of the squared gradient of a function
+to its Hessian and the Ricci curvature.
+
+
+\begin{proposition}[Fundamental Bochner Formula]
+\label{prop:FundBochnerFormNormSq}
+\index{Bochner formula}
+    For any smooth function $u$ on a Riemannian manifold $(M^n, g)$, we have
+    \begin{equation}
+        \frac{1}{2}\Delta |d u |^{2} = \langle d u, d ( \Delta u ) \rangle + |\nabla du |^{2} + \operatorname{Ric}(\nabla u,\nabla u) .
+    \end{equation}
+    In terms of the gradient vector field $\nabla u$, this is equivalently stated as:
+    \begin{equation} \label{eq:FundBochnerFormulaU}
+        \frac{1}{2}\Delta |\nabla u |^{2} = \langle \nabla u, \nabla (\Delta u) \rangle + | \nabla^{(2)} u |^{2} + \operatorname{Ric}(\nabla u,\nabla u) .
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    We compute the Laplacian of the energy density directly. Let $\{e_k\}$ be a local orthonormal frame.
+    Recall that $\Delta f = \sum_k \nabla_{e_k} \nabla_{e_k} f$. Applying this to $f = |du|^2 = \langle du, du \rangle$:
+    \begin{align*}
+        \Delta \langle du, du \rangle 
+        &= \sum_{k=1}^n \nabla_{e_k} \nabla_{e_k} \langle du, du \rangle \\
+        &= \sum_{k=1}^n \nabla_{e_k} \left( 2 \langle \nabla_{e_k} du, du \rangle \right) \quad \text{(Metric compatibility)} \\
+        &= 2 \sum_{k=1}^n \left( \langle \nabla_{e_k} \nabla_{e_k} du, du \rangle + \langle \nabla_{e_k} du, \nabla_{e_k} du \rangle \right) \quad \text{(Product rule)} \\
+        &= 2 \Big\langle \sum_{k=1}^n \nabla^{(2)}_{e_k, e_k} du, du \Big\rangle + 2 \sum_{k=1}^n |\nabla_{e_k} du|^2.
+    \end{align*}
+    Identifying terms, the first sum is the Laplacian $\Delta(du)$ and the second sum is the full squared norm $|\nabla^{(2)} u|^2$. Thus:
+    \begin{equation*}
+        \Delta |du|^2 = 2 \langle \Delta(du), du \rangle + 2 |\nabla^{(2)} u|^2.
+    \end{equation*}
+    Now substitute the commutator identity from Lemma \ref{lem:laplace_d_commutator}:
+    \begin{align*}
+        \frac{1}{2} \Delta |du|^2 &= \langle d(\Delta u) + \operatorname{Ric}(du), du \rangle + |\nabla^{(2)} u|^2 \\
+        &= \langle d(\Delta u), du \rangle + \operatorname{Ric}(\nabla u, \nabla u) + |\nabla^{(2)} u|^2.
+    \end{align*}
+\end{proof}
+
+\subsection{First variation of the Christoffel symbols}\label{subsec:1stVarFormulaChristoffel}
+
+\begin{lemma}[Evolution of Christoffel Symbols]
+\label{lem:christoffel_evolution}
+    Let $\mathbf{g}(t)$ be a smooth 1-parameter family of Riemannian metrics on $M$. Let $h(t) := \partial_t \mathbf{g}(t)$ denote the variation tensor.
+    The variation of the Christoffel symbols is a $(1,2)$-tensor given by
+    \begin{equation}
+        \partial_t \Gamma_{ij}^k = \frac{1}{2} g^{kl} \big( \nabla_i h_{jl} + \nabla_j h_{il} - \nabla_l h_{ij} \big).
+    \end{equation}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma \ref{lem:christoffel_evolution}]
+    The time derivative $\partial_t \Gamma_{ij}^k$ represents the difference between two connections (infinitesimally), and is therefore a valid $(1,2)$-tensor field. To compute its components, we fix a point $p \in M$ and a time $t_0$, and choose geodesic normal coordinates for the metric $\mathbf{g}(t_0)$ centered at $p$.
+    
+    In these coordinates, at the point $p$, we have $g_{ij} = \delta_{ij}$ and $\partial_k g_{ij} = 0$ (and thus $\Gamma_{ij}^k = 0$).
+    Recall the formula \eqref{eq:ChristoffelSymbols0th} for the Christoffel symbols:
+    \begin{equation}\label{eq:ChristoffelSymbols}
+        \Gamma_{ij}^k = \frac{1}{2} g^{kl} \left( \partial_i g_{jl} + \partial_j g_{il} - \partial_l g_{ij} \right).
+    \end{equation}
+    We differentiate this equation with respect to $t$. By the product rule, we obtain a term involving $\partial_t g^{kl}$ and a term involving the derivatives of the bracket.
+    However, since $\partial_k g_{ab} = 0$ at $p$, the bracket term $(\partial_i g_{jl} + \dots)$ vanishes at $p$. Thus, the term involving $\partial_t g^{kl}$ vanishes. We are left with:
+    \begin{equation*}
+        \partial_t \Gamma_{ij}^k \bigg|_p = \frac{1}{2} g^{kl} \left( \partial_t \partial_i g_{jl} + \partial_t \partial_j g_{il} - \partial_t \partial_l g_{ij} \right).
+    \end{equation*}
+    Since partial derivatives commute ($\partial_t \partial_i = \partial_i \partial_t$) and $h_{ij} = \partial_t g_{ij}$, this becomes:
+    \begin{equation*}
+        \partial_t \Gamma_{ij}^k \bigg|_p = \frac{1}{2} g^{kl} \left( \partial_i h_{jl} + \partial_j h_{il} - \partial_l h_{ij} \right).
+    \end{equation*}
+    Finally, since $\Gamma=0$ at $p$, the covariant derivative coincides with the partial derivative ($\nabla_i h_{jl} = \partial_i h_{jl}$). Substituting these yields:
+    \begin{equation*}
+        \partial_t \Gamma_{ij}^k \bigg|_p = \frac{1}{2} g^{kl} \big( \nabla_i h_{jl} + \nabla_j h_{il} - \nabla_l h_{ij} \big).
+    \end{equation*}
+    Since both sides of the equation are tensors and they agree in this specific coordinate system at $p$, they must agree in all coordinate systems at all points.
+\end{proof}
+
+Applying this general variation formula to the Ricci flow immediately yields the evolution equation for the Christoffel symbols.
+
+\begin{corollary}[Evolution of Christoffel Symbols under Ricci Flow]
+\label{cor:christoffel_evolution_RF}
+    Let $(M, \mathbf{g}(t))$ be a solution to the Ricci flow on an interval $I$. Then the Christoffel symbols evolve according to:
+    \begin{equation}
+        \partial_t \Gamma_{ij}^k = - g^{kl} \big( \nabla_i R_{jl} + \nabla_j R_{il} - \nabla_l R_{ij} \big).
+    \end{equation}
+\end{corollary}
+
+\begin{proof}[Proof of Corollary \ref{cor:christoffel_evolution_RF}]
+    The Ricci flow is defined by the evolution equation $\partial_t g_{ij} = -2 R_{ij}$. We apply Lemma \ref{lem:christoffel_evolution} with the variation tensor $h_{ij} = -2 R_{ij}$.
+    Substituting this into the evolution formula:
+    \begin{align*}
+        \partial_t \Gamma_{ij}^k &= \frac{1}{2} g^{kl} \big( \nabla_i (-2 R_{jl}) + \nabla_j (-2 R_{il}) - \nabla_l (-2 R_{ij}) \big) \\
+        &= - g^{kl} \big( \nabla_i R_{jl} + \nabla_j R_{il} - \nabla_l R_{ij} \big).
+    \end{align*}
+\end{proof}
+
+\subsection{Short time existence}\label{subsec:ShortTimeExistence}
+
+This subsection records the textbook DeTurck route to short-time existence.
+The difficulty is that Ricci flow is diffeomorphism-invariant and therefore only
+weakly parabolic.  Hamilton's original proof used the Nash--Moser inverse
+function theorem \cite[\S 4--6]{MR664497}; DeTurck's proof
+\cite{MR697987,DeTurck2003} breaks the diffeomorphism invariance by adding a
+gauge-fixing Lie-derivative term.  The analytic short-time existence and
+uniqueness theorem for strictly parabolic systems is treated here as the
+standard analytic input recorded in the main text.  Thus the derivation below
+explains the mathematical route, while the main text records the current Lean
+status of the short-time and maximal-flow interfaces.  For background on
+second-order parabolic equations, see \cite{MR181836}, \cite{MR241822}, and
+\cite{MR1465184}.
+
+\begin{proof}[Proof of Theorem \ref{thm:rf-short-time-existence}]
+Set $\tilde g:=g_0$, and let $\widetilde{\nabla}$ denote the Levi--Civita
+connection of $\tilde g$.  For any metric $h$, define the DeTurck vector field by
+\[
+W(h)^k :=  h^{pq}\bigl(\Gamma(h)^k_{pq}-\Gamma(\tilde g)^k_{pq}\bigr).
+\]
+This is a well-defined global vector field on $M$, since the difference of
+two linear connections is a tensor.
+Consider the Ricci--DeTurck flow
+\begin{equation}\label{eq:ricci-detruck-short-time}
+\partial_t h = -2\operatorname{Ric}(h)+\mathcal L_{W(h)}h,
+\qquad
+h(0)=g_0.
+\end{equation}
+Relative to the fixed background connection $\widetilde{\nabla}$, this system has
+the local form
+(see e.g.~\cite[(2.51)]{MR2274812})
+\[
+\partial_t h_{ij}
+=
+h^{pq}\widetilde{\nabla}_p\widetilde{\nabla}_q h_{ij}
++
+F_{ij}(x,h,\widetilde{\nabla}h),
+\]
+where $F_{ij}$ is smooth in its arguments and contains no second derivatives of
+$h$. Hence \eqref{eq:ricci-detruck-short-time} is a quasilinear strictly parabolic
+system. Since $M$ is closed, standard parabolic theory yields $\varepsilon>0$ and a
+unique smooth solution $h(t)$ on $[0,\varepsilon)$.\smallskip 
+
+We next show that the Ricci--DeTurck flow is geometrically equivalent to
+the Ricci flow.  Let $\varphi_t:M\to M$ be the family of diffeomorphisms
+solving
+\begin{equation}\label{eq: dphi dt -W phi}
+\partial_t\varphi_t=-W(h(t))\circ\varphi_t,
+\qquad
+\varphi_0=\operatorname{id}_M.
+\end{equation}
+Because $M$ is compact, this ODE has a smooth solution for all
+$t\in[0,\varepsilon)$, and each $\varphi_t$ is a diffeomorphism. Define
+\[
+g(t) :=  \varphi_t^*h(t).
+\]
+Using the general identity
+\[
+\frac{d}{dt}\,\varphi_t^*T
+=
+\varphi_t^*\!\left(\partial_t T+\mathcal L_{X_t}T\right)
+\quad\text{whenever}\quad
+\partial_t\varphi_t=X_t\circ\varphi_t,
+\]
+with $X_t=-W(h(t))$, we obtain
+\begin{align*}
+\partial_t g(t)
+&=
+\varphi_t^*\!\left(\partial_t h+\mathcal L_{-W(h(t))}h\right) \\
+&=
+\varphi_t^*\!\left(-2\operatorname{Ric}(h)+\mathcal L_{W(h)}h-\mathcal L_{W(h)}h\right) \\
+&=
+-2\operatorname{Ric}(\varphi_t^*h)
+=
+-2\operatorname{Ric}(g(t)).
+\end{align*}
+Also $g(0)=g_0$. Therefore $g(t)$ is a Ricci flow with initial metric $g_0$, which proves
+short-time existence.  Thus a Ricci--DeTurck solution produces a genuine
+Ricci-flow solution by pullback along the diffeomorphisms generated by
+\eqref{eq: dphi dt -W phi}.
+
+Note that \eqref{eq: dphi dt -W phi} is equivalent to the harmonic map heat flow equation
+\[
+\partial_t \varphi_t = \Delta_{g(t),g_0}\varphi_t,
+\qquad\text{where } g(t):=\varphi_t^*h(t)
+\]
+and where $\Delta_{g(t),g_0}$ is the map-Laplacian from $(M,g(t))$ to $(M,g_0)$
+(see \cite[\S 4.3 of Chapter 3]{MR2061425} or \cite[p.~117]{MR2274812}).\smallskip 
+
+
+For uniqueness, let $g_1(t)$ and $g_2(t)$ be two Ricci flows on a common time
+interval with $g_1(0)=g_2(0)=g_0$. For $i=1,2$, let
+\[
+\psi_i(t): (M,g_i(t))\to (M,g_0)
+\]
+solve the harmonic map heat flow
+\[
+\partial_t\psi_i=\Delta_{g_i(t),g_0}\psi_i,
+\qquad
+\psi_i(0)=\operatorname{id}_M.
+\]
+On a closed manifold, 
+by standard parabolic theory
+these solutions exist for short time and remain
+diffeomorphisms after shrinking the time interval if necessary. Define
+\[
+h_i(t) :=  (\psi_i(t)^{-1})^*g_i(t).
+\]
+By the converse direction of DeTurck's trick, each $h_i$ solves the same
+Ricci--DeTurck flow \eqref{eq:ricci-detruck-short-time} with the same initial
+metric $g_0$. By uniqueness for the strictly parabolic system, $h_1=h_2$.
+Moreover, the harmonic map heat flow identity gives
+\[
+\partial_t\psi_i=-W(h_i(t))\circ\psi_i.
+\]
+Hence $\psi_1$ and $\psi_2$ satisfy the same ODE with the same initial
+condition, so $\psi_1=\psi_2$, and therefore $g_1=g_2$. This proves uniqueness.
+Conversely, starting from a solution of the Ricci flow, one recovers a solution of the Ricci--DeTurck flow by solving the harmonic map heat flow with target $(M,g_0)$ and pushing the metric forward by the resulting diffeomorphisms.
+\end{proof}
+
+\subsection{Maximal Ricci flow interval}\label{subsec:MaxRicciFlowInterval}
+
+This subsection records the standard mathematical relation between maximality,
+bounded-curvature continuation, and singularity formation.  In the main text,
+the corresponding Lean-facing Hamilton endpoint consumes this material through
+the maximal-flow package and the extension/no-bounded-curvature continuation
+input, rather than through a closed native proof of the full continuation
+theorem.
+
+\begin{definition}[Maximal time]\label{def: max Ricci flow}
+    Let $(M^n,g(t))$, $t\in [\alpha,\omega)$, where $-\infty < \alpha < \omega <  \infty$, be a Ricci
+flow on a closed manifold.
+We say that it is \emph{maximal} if it cannot be extended, as a Ricci
+flow, past time $\omega$.
+That is, there does not exist $\epsilon >0$ and a Ricci flow $(M^n,\widehat{g}(t))$, $t\in [\alpha,\omega+\epsilon)$, such that $g(t)=\widehat{g}(t)$ for $t\in [\alpha,\omega)$.
+We call $\omega$ the \emph{maximal time} of the flow.
+\end{definition}
+
+\begin{definition}[Singular time]
+    A Ricci flow $(M^n,g(t))$, $[\alpha,\omega)$, where $-\infty < \alpha < \omega < \infty$, on a closed manifold \emph{forms a singularity at time} $\omega$ if $\sup_{M^n\times [\alpha,\omega) } |\Rm| = \infty$.
+    We call $\omega$ the \emph{singular time}.
+\end{definition}
+
+\begin{lemma}[Singular $\Leftrightarrow$ maximal]
+\label{lem: sing time iff max time}
+    A Ricci flow $(M^n,g(t))$, $[\alpha,\omega)$, where $-\infty < \alpha < \omega < \infty$, forms a singularity at time $\omega$ if and only if it is maximal.
+\end{lemma}
+
+\begin{proof}
+(\emph{Only if.})
+    Suppose, for a contradiction, there exists $\epsilon >0$ and a Ricci flow $(M^n,g'(t))$, $t\in [\alpha,\omega+\epsilon)$, such that $g(t)=g'(t)$ for $t\in [\alpha,\omega)$.
+Then
+\begin{equation}
+    \sup_{M^n\times [\alpha,\omega) } |\Rm(g(t))|
+= \sup_{M^n\times [\alpha,\omega) } |\Rm(g'(t))| \leq \max_{M^n\times [\alpha,\omega] } |\Rm(g'(t))| < \infty ,
+\end{equation}
+which is a contradiction.\smallskip 
+
+(\emph{If.})
+Suppose that $(M^n,g(t))$, $[\alpha,\omega)$, is a maximal Ricci flow.
+Suppose, for a contradiction, that 
+\begin{equation}
+    \sup_{M^n\times [\alpha,\omega) } |\Rm(g(t))| < \infty ,
+\end{equation}
+The standard bounded-curvature continuation input gives smooth convergence,
+after passing to time $\omega$, to a smooth Riemannian metric $g_\omega$ on
+$M^n$.  By the short-time existence theorem, there exists $\epsilon>0$ and a
+solution to the Ricci flow $\widetilde{g}(t)$,
+$t\in [\omega,\omega+\epsilon)$, with $\widetilde{g}(\omega)=g_\omega$.
+By standard regularity theory, the concatenated family of metrics defined by
+\begin{equation}
+    g'(t) := \left\{ 
+    \begin{tabular}{cl}
+        $g(t)$ & if $t\in [\alpha , \omega)$,\smallskip \\
+        $\widetilde{g}(t)$ & if $t\in [\omega, \omega+\epsilon)$ 
+    \end{tabular}
+    \right. 
+\end{equation}
+is smooth on $M^n \times [\alpha , \omega +\epsilon)$.
+Therefore $(M^n,g'(t))$, $t\in [\alpha, \omega+\epsilon)$, is a smooth Ricci flow.
+This is a contradiction to the maximality of $(M^n,g(t))$, $[\alpha,\omega)$.
+\end{proof}
+
+\begin{definition}[Extinction time]
+    Let $(M^n,g(t))$, $t\in [\alpha,\omega)$, where $-\infty < \alpha < \omega < \infty$, be a Ricci flow on a closed, connected manifold.
+    We say that it \emph{becomes volume extinct at time $\omega$} if $\liminf_{t\to\omega} \Vol (g(t))=0 $.
+For a disconnected manifold, extinction is understood componentwise:
+a component becomes extinct when its volume tends to zero, and the corresponding time $\omega$ is called its \emph{extinction time}.
+\end{definition}
+
+\begin{lemma}[Extinction $\Rightarrow$ maximal]
+\label{lem: vol extinct implies max}
+    If a Ricci flow $(M^n,g(t))$, $t\in [\alpha,\omega)$, where $-\infty < \alpha < \omega < \infty$, becomes volume extinct, then it is maximal.
+\end{lemma}
+
+\begin{proof}
+    Suppose, for a contradiction, there exists $\epsilon >0$ and a Ricci flow $(M^n,g'(t))$, $t\in [\alpha,\omega+\epsilon)$, such that $g(t)=g'(t)$ for $t\in [\alpha,\omega)$.
+Then
+\begin{equation}
+    \Vol (g'(\omega)) = \lim_{t\to \omega} \Vol (g'(t)) = \liminf_{t\to\omega} \Vol (g(t))=0,
+\end{equation}
+where the first equality follows from the assumption that the flow extends smoothly past time $\omega$.
+This is a contradiction.
+\end{proof}
+
+As an immediate consequence of Lemma \ref{lem: vol extinct implies max} and Lemma \ref{lem: sing time iff max time}, we have that if a Ricci flow becomes volume extinct at time $\omega$, then it forms a singularity at time $\omega$.
+We have the following slight improvement.
+
+\begin{lemma}[Extinction $\Rightarrow$ singular, improved]
+    If a Ricci flow $(M^n,g(t))$, $t\in [\alpha,\omega)$ becomes volume extinct at time $\omega<\infty$, then $\sup_{M^n \times [\alpha,\omega)}R=\infty$.
+    In particular, it forms a singularity at time $\omega$.
+\end{lemma}
+
+\begin{proof}
+Suppose for a contradiction that 
+$\sup_{M^n \times [\alpha,\omega)}R=:K <\infty$.
+Then 
+\begin{align}
+    \frac{d}{dt} \Vol (g(t)) = -\int_{M^n} R(g(t)) \, dv(g(t)) \geq - K \Vol (g(t))  . 
+\end{align}
+It follows that
+\begin{equation}
+    \Vol (g(t)) \geq \Vol (g(\alpha)) \E^{-K(t-\alpha)} .
+\end{equation}
+This positive lower bound contradicts volume extinction.
+\end{proof}
+
+\bibliographystyle{amsalpha}
+\bibliography{references}
+
+\end{document}

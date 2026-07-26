@@ -96,13 +96,7 @@ class HasOrientableBoundary
     {I : ModelWithCorners ℝ E H} [hI : HasSmoothBoundary E H I]
     (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Prop
 where
-  /-- For any two manifold base points `α₀, α₁ : M` and any boundary point `y`
-  in their chart sources, the chart-α₀ inward-direction representative at `y`
-  differs from a strictly positive scalar multiple of the chart-α₁
-  inward-direction representative at `y` by a boundary-tangent vector at `y`.
 
-  Concretely: there exists `c : ℝ` with `0 < c` and
-  `inwardCoordAt α₀ y - c • inwardCoordAt α₁ y ∈ Set.range (dincl y)`. -/
   inwardCoord_chart_consistent :
     ∀ (α₀ α₁ : BoundaryManifold I M) (y : BoundaryManifold I M),
       (y : M) ∈ (chartAt H (α₀ : M)).source →

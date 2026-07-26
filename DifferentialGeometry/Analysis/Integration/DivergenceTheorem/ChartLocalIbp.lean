@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
 import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
@@ -138,11 +140,9 @@ private lemma vwIntegrandOnE_contDiffOn_target [I.Boundaryless]
   intro y hy
   rw [vwIntegrandOnE_apply_of_mem (I := I) g α X i hy]
 
-/-- The chart-pullback of `φ : M → ℝ`, extended by zero outside the chart
-target. -/
-private def phiOnE (α : M) (φ : M → ℝ) : E → ℝ :=
-  fun y => (extChartAt I α).target.indicator
-    (fun z => φ ((extChartAt I α).symm z)) y
+/-- Internal compatibility name for the public zero-extended chart pullback. -/
+private abbrev phiOnE (α : M) (φ : M → ℝ) : E → ℝ :=
+  chartPullZero (I := I) α φ
 
 private lemma phiOnE_apply_of_mem (α : M) (φ : M → ℝ) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
@@ -153,6 +153,168 @@ private lemma phiOnE_apply_of_notMem (α : M) (φ : M → ℝ) {y : E}
     (hy : y ∉ (extChartAt I α).target) :
     phiOnE (I := I) α φ y = 0 :=
   Set.indicator_of_notMem hy _
+
+/-- A chart coefficient extended by zero off the chart target. -/
+private noncomputable def coeffZero
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (i : Fin (Module.finrank ℝ E)) : E → ℝ :=
+  by
+    classical
+    exact (extChartAt I α).target.piecewise
+      (chartCoeffOnE (I := I) α X i) (fun _ => 0)
+
+/-- The measurable coordinate representative of a tangent action. -/
+private def chartActionE
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (φ : M → ℝ) : E → ℝ := fun y =>
+  ∑ i : Fin (Module.finrank ℝ E),
+    coeffZero (I := I) α X i y *
+      lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+
+/-- The extended chart coordinate, with value zero off the chart source. -/
+private noncomputable def chartCoordZero (α : M) : M → E :=
+  by
+    classical
+    exact (chartAt H α).source.piecewise (fun x => extChartAt I α x) (fun _ => 0)
+
+/-- The chart-coordinate tangent-action representative, extended by zero off
+the chart source. -/
+private noncomputable def chartActionM
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (φ : M → ℝ) : M → ℝ :=
+  by
+    classical
+    exact (chartAt H α).source.indicator
+      (fun x => chartActionE (I := I) α X φ (chartCoordZero (I := I) α x))
+
+private lemma coeffZero_meas
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (i : Fin (Module.finrank ℝ E)) :
+    Measurable (coeffZero (I := I) α X i) := by
+  classical
+  unfold coeffZero
+  exact ContinuousOn.measurable_piecewise
+    (chartCoeffOnE_contDiffOn (I := I) α X i).continuousOn
+    continuousOn_const (measurableSet_extChartAt_target (I := I) α)
+
+private lemma chartActionE_meas
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} (hφ : Continuous (phiOnE (I := I) α φ)) :
+    Measurable (chartActionE (I := I) α X φ) := by
+  unfold chartActionE
+  refine Finset.measurable_sum _ (fun i _ => ?_)
+  exact (coeffZero_meas (I := I) α X i).mul (measurable_lineDeriv hφ)
+
+private lemma chartCoordZero_meas (α : M) :
+    Measurable (chartCoordZero (I := I) α) := by
+  classical
+  unfold chartCoordZero
+  have hsource : MeasurableSet (chartAt H α).source :=
+    (chartAt H α).open_source.measurableSet
+  have hext : ContinuousOn (fun x : M => extChartAt I α x)
+      (chartAt H α).source := by
+    rw [← extChartAt_source_eq_chartAt_source (I := I)]
+    exact continuousOn_extChartAt α
+  exact ContinuousOn.measurable_piecewise hext continuousOn_const hsource
+
+private lemma chartActionM_meas
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} (hφ : Continuous (phiOnE (I := I) α φ)) :
+    Measurable (chartActionM (I := I) α X φ) := by
+  unfold chartActionM
+  exact ((chartActionE_meas (I := I) α X hφ).comp
+    (chartCoordZero_meas (I := I) α)).indicator
+      (chartAt H α).open_source.measurableSet
+
+/-- The intrinsic tangent action agrees almost everywhere with its measurable
+zero-extended chart representative at differentiability points of the pulled
+back scalar function. -/
+private lemma tangent_ae_chart [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (phiOnE (I := I) α φ))
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    tangentSectionAction (I := I) X φ =ᵐ[chartLocalMeasure (I := I) g α]
+      chartActionM (I := I) α X φ := by
+  classical
+  have hdiff : ∀ᵐ y ∂(modelHaar (E := E)),
+      DifferentiableAt ℝ (phiOnE (I := I) α φ) y :=
+    hφ_lip.ae_differentiableAt
+  have hchart : ∀ᵐ x ∂(chartLocalMeasure (I := I) g α),
+      x ∈ (chartAt H α).source →
+        DifferentiableAt ℝ (phiOnE (I := I) α φ) (extChartAt I α x) :=
+    ae_chart_of_haar (I := I) g α
+      (measurableSet_of_differentiableAt ℝ (phiOnE (I := I) α φ)) hdiff
+  filter_upwards [hchart] with x hx
+  by_cases hxsrc : x ∈ (chartAt H α).source
+  · have hxext : x ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]
+      exact hxsrc
+    have hxy : extChartAt I α x ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hxext
+    rw [tangent_chart_diff (I := I) α X hxsrc (hx hxsrc)]
+    unfold chartActionM
+    rw [Set.indicator_of_mem hxsrc]
+    unfold chartCoordZero
+    rw [Set.piecewise_eq_of_mem _ _ _ hxsrc]
+    unfold chartActionE
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    unfold coeffZero
+    rw [Set.piecewise_eq_of_mem _ _ _ hxy]
+    unfold chartCoeffOnE
+    rw [(extChartAt I α).left_inv hxext]
+  · have hxsupp : x ∉ tsupport φ := fun h => hxsrc (hφ_supp h)
+    have hev : φ =ᶠ[𝓝 x] (fun _ : M => (0 : ℝ)) :=
+      notMem_tsupport_iff_eventuallyEq.mp hxsupp
+    have hmf : mfderiv I 𝓘(ℝ) φ x = 0 := by
+      rw [hev.mfderiv_eq, mfderiv_const]
+      rfl
+    unfold tangentSectionAction chartActionM
+    rw [hmf, Set.indicator_of_notMem hxsrc]
+    rfl
+
+/-- A chart-Lipschitz scalar with support inside the chart has a measurable
+intrinsic tangent action for the corresponding chart-local measure. -/
+theorem tangent_aesm [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (chartPullZero (I := I) α φ))
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    AEStronglyMeasurable (tangentSectionAction (I := I) X φ)
+      (chartLocalMeasure (I := I) g α) := by
+  exact (chartActionM_meas (I := I) α X hφ_lip.continuous).aestronglyMeasurable.congr
+    (tangent_ae_chart (I := I) g α X hφ_lip hφ_supp).symm
+
+/-- A scalar function is globally continuous when its zero-extended chart
+pullback is Lipschitz and its topological support stays inside the chart. -/
+private lemma phi_cont_of_lip
+    (α : M) {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (phiOnE (I := I) α φ))
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    Continuous φ := by
+  have hext : ContinuousOn (extChartAt I α) (chartAt H α).source := by
+    rw [← extChartAt_source_eq_chartAt_source (I := I)]
+    exact continuousOn_extChartAt α
+  have hcomp : ContinuousOn
+      (fun x => phiOnE (I := I) α φ (extChartAt I α x))
+      (chartAt H α).source :=
+    hφ_lip.continuous.comp_continuousOn hext
+  have hφ_on : ContinuousOn φ (chartAt H α).source := by
+    refine hcomp.congr ?_
+    intro x hx
+    have hxext : x ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]
+      exact hx
+    have hxy : extChartAt I α x ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hxext
+    change φ x = phiOnE (I := I) α φ (extChartAt I α x)
+    rw [phiOnE_apply_of_mem (I := I) α φ hxy,
+      (extChartAt I α).left_inv hxext]
+  exact hφ_on.continuous_of_tsupport_subset
+    (chartAt H α).open_source hφ_supp
 
 /-- On the chart target, `phiOnE α φ` agrees with `scalarOnE α φ`. -/
 private lemma phiOnE_eq_scalarOnE_on_target
@@ -472,6 +634,170 @@ private theorem ibp_per_index [I.Boundaryless]
   exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable hf'g_int hfg'_int hfg_int
     hvw_diff_tsupp_phi hphi_diff_tsupp_vw
 
+/-- The chart-local integration-by-parts identity for one coordinate direction
+when the scalar factor is only Lipschitz. A compact plateau localizes the
+smooth coefficient before applying Euclidean Lipschitz integration by parts. -/
+private theorem ibp_lip_index [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (phiOnE (I := I) α φ))
+    (hφ_compactSupp : HasCompactSupport φ)
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (i : Fin (Module.finrank ℝ E)) :
+    (∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
+        -∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          ∂(modelHaar (E := E))) ∧
+      Integrable (fun y =>
+        partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+          phiOnE (I := I) α φ y) (modelHaar (E := E)) ∧
+      Integrable (fun y => vwIntegrandOnE (I := I) g α X i y *
+        lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+        (modelHaar (E := E)) := by
+  let K : Set E := chartImageOfTsupport (I := I) α φ
+  let U : Set E := (extChartAt I α).target
+  have hK : IsCompact K := by
+    simpa only [K] using
+      chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp
+  have hU : IsOpen U := by
+    simpa only [U] using isOpen_extChartAt_target (I := I) α
+  have hKU : K ⊆ U := by
+    simpa only [K, U] using
+      chartImageOfTsupport_subset_target (I := I) α hφ_supp
+  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_one, hχ_supp, _hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact hK hU hKU
+  let q : E → ℝ := fun y => χ y * vwIntegrandOnE (I := I) g α X i y
+  have hq_smooth : ContDiff ℝ ∞ q := by
+    have hsmul := DifferentialGeometry.Analysis.contDiff_cutoff_smul
+      hU hχ_smooth hχ_supp
+        (vwIntegrandOnE_contDiffOn_target (I := I) g α X i)
+    simpa only [q, smul_eq_mul] using hsmul
+  have hq_compact : HasCompactSupport q := by
+    simpa only [q] using hχ_compact.mul_right
+  obtain ⟨D, hq_lip⟩ : ∃ D, LipschitzWith D q :=
+    ContDiff.lipschitzWith_of_hasCompactSupport hq_compact hq_smooth (by simp)
+  let v : E := (chartModelBasis E) i
+  have hq_vw_nhds {y : E} (hy : y ∈ K) :
+      q =ᶠ[𝓝 y] vwIntegrandOnE (I := I) g α X i := by
+    have hχ_one_y : χ =ᶠ[𝓝 y] (1 : E → ℝ) :=
+      hχ_one.filter_mono (nhds_le_nhdsSet hy)
+    filter_upwards [hχ_one_y] with z hz
+    simp only [q, hz, Pi.one_apply, one_mul]
+  have hleft_ae :
+      (fun y => lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y) =ᵐ[
+        modelHaar (E := E)]
+      (fun y => vwIntegrandOnE (I := I) g α X i y *
+        lineDeriv ℝ (phiOnE (I := I) α φ) y v) :=
+    Filter.Eventually.of_forall fun y => by
+      by_cases hy : y ∈ tsupport (phiOnE (I := I) α φ)
+      · have hyK : y ∈ K := by
+          simpa only [K] using
+            phiOnE_tsupport_subset_chartImage (I := I) α hφ_compactSupp hφ_supp hy
+        change lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y =
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y v
+        rw [(hq_vw_nhds hyK).self_of_nhds]
+        ring
+      · have hline :=
+          ((HasFDerivAt.of_notMem_tsupport ℝ hy).hasLineDerivAt v).lineDeriv
+        simp only [ContinuousLinearMap.zero_apply] at hline
+        change lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y =
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y v
+        rw [hline]
+        simp only [zero_mul, mul_zero]
+  have hleft := integral_congr_ae hleft_ae
+  have hright_ae :
+      (fun y => lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y) =ᵐ[
+        modelHaar (E := E)]
+      (fun y => -(partialDeriv (E := E) i
+        (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y)) :=
+    Filter.Eventually.of_forall fun y => by
+      by_cases hy : y ∈ tsupport (phiOnE (I := I) α φ)
+      · have hyK : y ∈ K := by
+          simpa only [K] using
+            phiOnE_tsupport_subset_chartImage (I := I) α hφ_compactSupp hφ_supp hy
+        have hvw_diff : DifferentiableAt ℝ
+            (vwIntegrandOnE (I := I) g α X i) y :=
+          vwIntegrandOnE_differentiableOn_target (I := I) g α X i y (hKU hyK)
+        have hline : lineDeriv ℝ q y (-v) =
+            -partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
+          rw [(hq_vw_nhds hyK).lineDeriv_eq]
+          rw [hvw_diff.lineDeriv_eq_fderiv]
+          simp only [v, partialDeriv, map_neg]
+        change lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y =
+          -(partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y)
+        rw [hline]
+        ring
+      · have hφ_zero : phiOnE (I := I) α φ y = 0 :=
+          image_eq_zero_of_notMem_tsupport hy
+        change lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y =
+          -(partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y)
+        rw [hφ_zero]
+        simp only [mul_zero, neg_zero]
+  have hright :
+      ∫ y, lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y
+          ∂(modelHaar (E := E)) =
+        -∫ y, partialDeriv (E := E) i
+              (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y
+          ∂(modelHaar (E := E)) := by
+    rw [← integral_neg]
+    exact integral_congr_ae hright_ae
+  have hibp := LipschitzWith.integral_lineDeriv_mul_eq
+    (μ := modelHaar (E := E)) hφ_lip hq_lip hq_compact v
+  rw [hleft, hright] at hibp
+  have heq :
+      ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
+        -∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          ∂(modelHaar (E := E)) := by
+    simpa only [v] using (show
+      ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
+        -∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y v
+          ∂(modelHaar (E := E)) by linarith)
+  have hq_int : Integrable q (modelHaar (E := E)) :=
+    hq_smooth.continuous.integrable_of_hasCompactSupport hq_compact
+  have hphi_int : Integrable (phiOnE (I := I) α φ) (modelHaar (E := E)) :=
+    hφ_lip.continuous.integrable_of_hasCompactSupport
+      (phiOnE_hasCompactSupport (I := I) α hφ_compactSupp hφ_supp)
+  have hleft0 : Integrable
+      (fun y => lineDeriv ℝ (phiOnE (I := I) α φ) y v * q y)
+      (modelHaar (E := E)) := by
+    simpa only [smul_eq_mul, mul_comm] using
+      hq_int.smul_of_top_left
+        (hφ_lip.memLp_lineDeriv (μ := modelHaar (E := E)) v)
+  have hrhs : Integrable
+      (fun y => vwIntegrandOnE (I := I) g α X i y *
+        lineDeriv ℝ (phiOnE (I := I) α φ) y v)
+      (modelHaar (E := E)) :=
+    hleft0.congr hleft_ae
+  have hright0 : Integrable
+      (fun y => lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y)
+      (modelHaar (E := E)) := by
+    simpa only [smul_eq_mul, mul_comm] using
+      hphi_int.smul_of_top_left
+        (hq_lip.memLp_lineDeriv (μ := modelHaar (E := E)) (-v))
+  have hneg_lhs : Integrable
+      (fun y => -(partialDeriv (E := E) i
+        (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y))
+      (modelHaar (E := E)) :=
+    hright0.congr hright_ae
+  have hlhs : Integrable
+      (fun y => partialDeriv (E := E) i
+        (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y)
+      (modelHaar (E := E)) :=
+    integrable_neg_iff.mp (by simpa only [Pi.neg_apply] using hneg_lhs)
+  refine ⟨heq, hlhs, ?_⟩
+  simpa only [v] using hrhs
+
 /-- On the chart target, `partialDeriv i (vwIntegrandOnE g α X i) y` equals
 `partialDeriv i (chartCoeffOnE α X i · chartDensityOnE g α) y` (since the
 two functions agree on the open neighborhood `target`). -/
@@ -680,6 +1006,145 @@ private lemma rhs_chart_target [I.Boundaryless]
       tangentSectionAction (I := I) X φ ((extChartAt I α).symm y) = _
   rw [htsa_eq]
   rfl
+
+/-- Pull the tangent-action integral of a chart-Lipschitz scalar to its
+almost-everywhere coordinate line-derivative representative. -/
+private lemma rhs_lip_target [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (phiOnE (I := I) α φ))
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    ∫ x, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g α) =
+      ∫ y in (extChartAt I α).target,
+        ∑ i : Fin (Module.finrank ℝ E),
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+        ∂(modelHaar (E := E)) := by
+  classical
+  calc
+    ∫ x, tangentSectionAction (I := I) X φ x
+          ∂(chartLocalMeasure (I := I) g α) =
+        ∫ x, chartActionM (I := I) α X φ x
+          ∂(chartLocalMeasure (I := I) g α) :=
+      integral_congr_ae (tangent_ae_chart (I := I) g α X hφ_lip hφ_supp)
+    _ = _ := by
+      rw [integral_chartLocalMeasure (I := I) g α
+        (chartActionM (I := I) α X φ)
+        (chartActionM_meas (I := I) α X hφ_lip.continuous)]
+      refine setIntegral_congr_fun
+        (measurableSet_extChartAt_target (I := I) α) ?_
+      intro y hy
+      have hsymmsrc : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+        (extChartAt I α).map_target hy
+      have hsymmchart : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+        rw [← extChartAt_source_eq_chartAt_source (I := I)]
+        exact hsymmsrc
+      have hcoord : chartCoordZero (I := I) α ((extChartAt I α).symm y) = y := by
+        unfold chartCoordZero
+        rw [Set.piecewise_eq_of_mem _ _ _ hsymmchart,
+          (extChartAt I α).right_inv hy]
+      change chartDensity (I := I) g α ((extChartAt I α).symm y) *
+          chartActionM (I := I) α X φ ((extChartAt I α).symm y) = _
+      unfold chartActionM
+      rw [Set.indicator_of_mem hsymmchart, hcoord]
+      unfold chartActionE
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl ?_
+      intro i _
+      unfold coeffZero
+      rw [Set.piecewise_eq_of_mem _ _ _ hy,
+        vwIntegrandOnE_apply_of_mem (I := I) g α X i hy]
+      unfold chartDensityOnE
+      ring
+
+/-- The intrinsic tangent action of a compactly supported chart-Lipschitz
+scalar is integrable for the corresponding chart-local measure. -/
+theorem tangent_lip_int [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (chartPullZero (I := I) α φ))
+    (hφ_compactSupp : HasCompactSupport φ)
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    Integrable (tangentSectionAction (I := I) X φ)
+      (chartLocalMeasure (I := I) g α) := by
+  classical
+  let μ₀ : Measure E :=
+    (modelHaar (E := E)).restrict (extChartAt I α).target
+  let w : E → ENNReal := fun y =>
+    ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y))
+  let μ₁ : Measure E := μ₀.withDensity w
+  have htarget : MeasurableSet (extChartAt I α).target :=
+    measurableSet_extChartAt_target (I := I) α
+  have hsymm : AEMeasurable (extChartAt I α).symm μ₁ := by
+    have hbase : AEMeasurable (extChartAt I α).symm μ₀ := by
+      simpa only [μ₀] using
+        aemeasurable_extChartAt_symm_restrict_target (I := I) (E := E) α
+    exact hbase.mono_ac (withDensity_absolutelyContinuous μ₀ w)
+  have hw : AEMeasurable w μ₀ := by
+    simpa only [w, μ₀] using
+      aemeasurable_chartDensity_symm_pullback (I := I) g α
+  have hw_top : ∀ᵐ y ∂μ₀, w y < (⊤ : ENNReal) :=
+    Filter.Eventually.of_forall fun _ => by simp only [w, ENNReal.ofReal_lt_top]
+  have hidx (i : Fin (Module.finrank ℝ E)) :=
+    ibp_lip_index (I := I) g α X hφ_lip hφ_compactSupp hφ_supp i
+  have hsum : Integrable
+      (fun y => ∑ i : Fin (Module.finrank ℝ E),
+        vwIntegrandOnE (I := I) g α X i y *
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+      (modelHaar (E := E)) := by
+    exact integrable_finset_sum _ fun i _ => (hidx i).2.2
+  have hsum_on : Integrable
+      (fun y => ∑ i : Fin (Module.finrank ℝ E),
+        vwIntegrandOnE (I := I) g α X i y *
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) μ₀ := by
+    simpa only [μ₀] using hsum.integrableOn
+  have hweighted : Integrable
+      (fun y => (w y).toReal •
+        chartActionM (I := I) α X φ ((extChartAt I α).symm y)) μ₀ := by
+    refine hsum_on.congr ?_
+    filter_upwards [ae_restrict_mem htarget] with y hy
+    have hsymmsrc : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+      (extChartAt I α).map_target hy
+    have hsymmchart : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+      rw [← extChartAt_source_eq_chartAt_source (I := I)]
+      exact hsymmsrc
+    have hcoord : chartCoordZero (I := I) α ((extChartAt I α).symm y) = y := by
+      unfold chartCoordZero
+      rw [Set.piecewise_eq_of_mem _ _ _ hsymmchart,
+        (extChartAt I α).right_inv hy]
+    have hdens : (w y).toReal =
+        chartDensity g α ((extChartAt I α).symm y) := by
+      have hbase : (extChartAt I α).symm y ∈
+          (trivializationAt E (TangentSpace I) α).baseSet := hsymmchart
+      exact ENNReal.toReal_ofReal
+        (chartDensity_pos (I := I) g α hbase).le
+    symm
+    change (w y).toReal *
+        chartActionM (I := I) α X φ ((extChartAt I α).symm y) = _
+    rw [hdens]
+    unfold chartActionM
+    rw [Set.indicator_of_mem hsymmchart, hcoord]
+    unfold chartActionE
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    unfold coeffZero
+    rw [Set.piecewise_eq_of_mem _ _ _ hy,
+      vwIntegrandOnE_apply_of_mem (I := I) g α X i hy]
+    unfold chartDensityOnE
+    ring
+  have hrep : Integrable (chartActionM (I := I) α X φ)
+      (chartLocalMeasure (I := I) g α) := by
+    have hact := chartActionM_meas (I := I) α X hφ_lip.continuous
+    have hmap : Integrable (chartActionM (I := I) α X φ)
+        (Measure.map (extChartAt I α).symm μ₁) :=
+      (integrable_map_measure hact.aestronglyMeasurable hsymm).2
+        ((integrable_withDensity_iff_integrable_smul₀' hw hw_top).2 hweighted)
+    simpa only [chartLocalMeasure, μ₁, μ₀, w] using hmap
+  exact hrep.congr
+    (tangent_ae_chart (I := I) g α X hφ_lip hφ_supp).symm
 
 /-- Each summand `∂_i (vwIntegrandOnE) · phiOnE α φ` is `C^∞` on `E` and has
 compact support. -/
@@ -935,6 +1400,112 @@ theorem chart_local_ibp [I.Boundaryless]
   rw [vwIntegrandOnE_apply_of_mem (I := I) g α X i hy]
   rw [partialDeriv_phiOnE_eq_on_target (I := I) α φ i hy]
   ring
+
+/-- The chart-local integration-by-parts identity when the zero-extended chart
+pullback of the scalar factor is Lipschitz. -/
+theorem chart_local_ibp_lip [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {φ : M → ℝ} {C : NNReal}
+    (hφ_lip : LipschitzWith C (chartPullZero (I := I) α φ))
+    (hφ_compactSupp : HasCompactSupport φ)
+    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    ∫ x, localDivergence (I := I) g α X x * φ x
+        ∂(chartLocalMeasure (I := I) g α) =
+      -∫ x, tangentSectionAction (I := I) X φ x
+        ∂(chartLocalMeasure (I := I) g α) := by
+  classical
+  have hφ_cont : Continuous φ :=
+    phi_cont_of_lip (I := I) α hφ_lip hφ_supp
+  rw [lhs_chart_target (I := I) g α X hφ_cont hφ_supp]
+  rw [rhs_lip_target (I := I) g α X hφ_lip hφ_supp]
+  have hidx (i : Fin (Module.finrank ℝ E)) :=
+    ibp_lip_index (I := I) g α X hφ_lip hφ_compactSupp hφ_supp i
+  have hLHS_to_E :
+      ∫ y in (extChartAt I α).target,
+        (∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+            phiOnE (I := I) α φ y
+        ∂(modelHaar (E := E)) =
+      ∫ y, (∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+            phiOnE (I := I) α φ y
+        ∂(modelHaar (E := E)) := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero
+      (μ := modelHaar (E := E)) (s := (extChartAt I α).target)
+      (f := fun y => (∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          phiOnE (I := I) α φ y) ?_
+    intro y hy
+    change (∑ i : Fin (Module.finrank ℝ E),
+      partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+        phiOnE (I := I) α φ y = 0
+    rw [phiOnE_apply_of_notMem (I := I) α φ hy, mul_zero]
+  rw [hLHS_to_E]
+  have h_sum_int :
+      ∫ y, (∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+            phiOnE (I := I) α φ y
+        ∂(modelHaar (E := E)) =
+      ∑ i : Fin (Module.finrank ℝ E),
+        ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y
+          ∂(modelHaar (E := E)) := by
+    rw [show (fun y => (∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+            phiOnE (I := I) α φ y) =
+        (fun y => ∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+            phiOnE (I := I) α φ y) from by
+      funext y
+      rw [Finset.sum_mul]]
+    rw [integral_finset_sum]
+    intro i _
+    exact (hidx i).2.1
+  rw [h_sum_int]
+  rw [Finset.sum_congr rfl (fun i _ => (hidx i).1)]
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+        -∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          ∂(modelHaar (E := E))) =
+      -∑ i : Fin (Module.finrank ℝ E),
+        ∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          ∂(modelHaar (E := E)) from by
+    rw [← Finset.sum_neg_distrib]]
+  have h_sum_back :
+      ∑ i : Fin (Module.finrank ℝ E),
+        ∫ y, vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          ∂(modelHaar (E := E)) =
+      ∫ y, ∑ i : Fin (Module.finrank ℝ E),
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+        ∂(modelHaar (E := E)) := by
+    rw [← integral_finset_sum]
+    intro i _
+    exact (hidx i).2.2
+  rw [h_sum_back]
+  have hE_to_target :
+      ∫ y, ∑ i : Fin (Module.finrank ℝ E),
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+        ∂(modelHaar (E := E)) =
+      ∫ y in (extChartAt I α).target,
+        ∑ i : Fin (Module.finrank ℝ E),
+          vwIntegrandOnE (I := I) g α X i y *
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+        ∂(modelHaar (E := E)) := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero
+      (μ := modelHaar (E := E)) (s := (extChartAt I α).target)
+      (f := fun y => ∑ i : Fin (Module.finrank ℝ E),
+        vwIntegrandOnE (I := I) g α X i y *
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) ?_]
+    intro y hy
+    refine Finset.sum_eq_zero ?_
+    intro i _
+    rw [vwIntegrandOnE_apply_of_notMem (I := I) g α X i hy, zero_mul]
+  rw [hE_to_target]
 
 end DivergenceTheorem
 end Integral

@@ -434,16 +434,16 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-instance tensorRSSpace_totalSpace_topologicalSpace (r s : ℕ) :
+def tensorRSSpace_totalSpace_topologicalSpace (r s : ℕ) :
     TopologicalSpace (Bundle.TotalSpace (TensorRSModel r s ℝ E)
       (TensorRSSpace r s I (M := M))) :=
   Tensor0SBundle.tensorRSBundle_topology r s
 
-instance tensorRSSpace_fiberBundle (r s : ℕ) :
+def tensorRSSpace_fiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (TensorRSSpace r s I (M := M)) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
 
-instance tensorRSSpace_vectorBundle (r s : ℕ) :
+def tensorRSSpace_vectorBundle (r s : ℕ) :
     VectorBundle ℝ (TensorRSModel r s ℝ E) (TensorRSSpace r s I (M := M)) :=
   Tensor0SBundle.tensorRSBundle_vector r s
 

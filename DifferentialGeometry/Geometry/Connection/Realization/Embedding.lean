@@ -59,22 +59,20 @@ noncomputable def vectorFieldActionSmooth
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : C^∞⟮I, M; ℝ⟯) : C^∞⟮I, M; ℝ⟯ :=
   ⟨vectorFieldAction I M X f, by
     intro x₀
-    -- Step 1: The tangent map of f is C^∞
+
     have hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := f.2
     have htangent : ContMDiff (I.prod 𝓘(ℝ, E)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
         (tangentMap I 𝓘(ℝ, ℝ) f) := by
       apply ContMDiff.contMDiff_tangentMap hf
       simp
-    -- Step 2: Compose with the smooth section X to get M → TangentBundle 𝓘(ℝ,ℝ) ℝ
+
     have hcomp : ContMDiffAt I (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
         (fun x => tangentMap I 𝓘(ℝ, ℝ) f ⟨x, X x⟩) x₀ :=
       (htangent.contMDiffAt).comp x₀ (X.contMDiff.contMDiffAt)
-    -- Step 3: Extract the fiber component using contMDiffAt_totalSpace
+
     rw [contMDiffAt_totalSpace] at hcomp
     obtain ⟨_, hfiber⟩ := hcomp
-    -- hfiber gives smoothness of the trivialized fiber component.
-    -- For the model space 𝓘(ℝ,ℝ), the trivialization is the identity
-    -- (by trivializationAt_model_space_apply), so this is exactly our function.
+
     convert hfiber using 1
     ext x
     simp only [vectorFieldAction, extDerivFun, tangentMap,
@@ -122,10 +120,10 @@ theorem vectorFieldActionSmooth_smul
   have hf := contMDiffMap_mdifferentiableAt I M f x
   have hmfderiv : mfderiv I 𝓘(ℝ, ℝ) (c • (f : M → ℝ)) x = c • mfderiv I 𝓘(ℝ, ℝ) f x :=
     (hf.hasMFDerivAt.const_smul c).mfderiv
-  -- Unfold extDerivFun to fromTangentSpace.toCLM ∘L mfderiv, substitute hmfderiv
+
   simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
     hmfderiv]
-  -- fromTangentSpace on ℝ is the identity; reduce and conclude
+
   change (NormedSpace.fromTangentSpace _) ((c • mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x)) =
     c * (NormedSpace.fromTangentSpace _) ((mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x))
   simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
@@ -145,12 +143,12 @@ theorem vectorFieldActionSmooth_leibniz
   unfold vectorFieldAction
   have hf := contMDiffMap_mdifferentiableAt I M f x
   have hg := contMDiffMap_mdifferentiableAt I M g x
-  -- Rewrite pointwise multiplication as scalar multiplication for mfderiv API
+
   rw [show ((f * g : C^∞⟮I, M; ℝ⟯) : M → ℝ) = (f : M → ℝ) • (g : M → ℝ) from by
     ext y; simp [Pi.mul_apply, smul_eq_mul]]
-  -- Apply the product rule for mfderiv of scalar multiplication
+
   have h := fromTangentSpace_mfderiv_smul_apply (I := I) hf hg (X x)
-  -- Align the goal with h using the fact that extDerivFun = fromTangentSpace ∘ mfderiv
+
   change (extDerivFun (I := I) ((f : M → ℝ) • (g : M → ℝ)) x) (X x) =
     (f : M → ℝ) x * (extDerivFun (I := I) (g : M → ℝ) x) (X x) +
     (g : M → ℝ) x * (extDerivFun (I := I) (f : M → ℝ) x) (X x)
@@ -225,12 +223,11 @@ theorem embedDeriv_smul
   change vectorFieldAction I M (φ • X) f x =
     ((φ • embedDeriv I M X) f : M → ℝ) x
   simp only [vectorFieldAction]
-  -- LHS: extDerivFun f x ((φ • X) x) = extDerivFun f x (φ x • X x)
-  -- Since extDerivFun f x is a CLM: = φ x • extDerivFun f x (X x)
+
   rw [show (φ • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = φ x • X x from by
     simp [ContMDiffSection.coe_smulContMDiffMap]]
   rw [ContinuousLinearMap.map_smul]
-  -- RHS: (φ • D) f = φ • D f, and (φ • g) x = φ x • g x = φ x * g x
+
   change φ x • extDerivFun (I := I) f x (X x) =
     ((φ • embedDeriv I M X) f : M → ℝ) x
   simp only [Derivation.coe_smul, Pi.smul_apply, smul_eq_mul]
@@ -278,29 +275,29 @@ private theorem mfderiv_extChartAt_ne_zero
 theorem embedLinearMap_injective :
     Function.Injective (embedLinearMap I M) := by
   intro X Y hXY
-  -- Reduce to showing X x = Y x for all x
+
   apply ContMDiffSection.ext
   intro x₀
-  -- Suppose for contradiction that X x₀ ≠ Y x₀
+
   by_contra hne
-  -- The difference D = X - Y satisfies embedDeriv I M D = 0
+
   have hD : embedLinearMap I M (X - Y) = 0 := by
     rw [map_sub, sub_eq_zero]
     exact hXY
-  -- So for all smooth f and all x: extDerivFun f x ((X - Y) x) = 0
+
   have hD_action : ∀ (f : C^∞⟮I, M; ℝ⟯) (x : M),
       vectorFieldAction I M (X - Y) f x = 0 := by
     intro f x
     have h := DFunLike.congr_fun (Derivation.ext_iff.mp hD f) x
     simpa [embedLinearMap, embedDeriv, vectorFieldActionSmooth] using h
-  -- In particular, at x₀:
+
   set v := (X - Y) x₀ with hv_def
   have hv : v ≠ 0 := by
     intro heq
     apply hne
     have : X x₀ - Y x₀ = 0 := heq
     exact sub_eq_zero.mp this
-  -- Step 1: mfderiv of extChartAt at x₀ applied to v is nonzero (chart mfderiv is invertible)
+
   have hmem : x₀ ∈ (extChartAt I x₀).source := mem_extChartAt_source x₀
   have hinv := isInvertible_mfderiv_extChartAt (I := I) hmem
   set w := mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) x₀ v
@@ -309,7 +306,7 @@ theorem embedLinearMap_injective :
     apply hv
     apply hinv.injective
     rw [map_zero]; exact heq
-  -- Step 2: Find a coordinate functional ℓ : E →ₗ[ℝ] ℝ with ℓ(w) ≠ 0
+
   have : ∃ i, (Module.finBasis ℝ E).coord i w ≠ 0 := by
     by_contra h
     apply hw
@@ -318,79 +315,64 @@ theorem embedLinearMap_injective :
   obtain ⟨i, hi⟩ := this
   set ℓ := (Module.finBasis ℝ E).coord i
   set ℓ_clm := LinearMap.toContinuousLinearMap ℓ
-  -- Step 3: Construct the global smooth test function
-  -- Take a smooth bump function at x₀
+
   obtain ⟨ψ⟩ : Nonempty (SmoothBumpFunction I x₀) := inferInstance
-  -- Define local function g(x) = ℓ(extChartAt I x₀ x - extChartAt I x₀ x₀)
+
   set g : M → ℝ := fun x => ℓ_clm (extChartAt I x₀ x - extChartAt I x₀ x₀)
-  -- g is smooth on the chart source
+
   have hg_smooth : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ g (chartAt H x₀).source := by
     apply ContinuousLinearMap.contMDiff (𝕜 := ℝ) (ℓ_clm) |>.comp_contMDiffOn
     exact (contMDiffOn_extChartAt (I := I)).sub contMDiffOn_const
-  -- f := ψ • g is globally smooth
+
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => ψ x • g x) :=
     ψ.contMDiff_smul hg_smooth
   set f : C^∞⟮I, M; ℝ⟯ := ⟨fun x => ψ x • g x, fun x => hf_smooth.contMDiffAt⟩
-  -- Step 4: Near x₀, ψ = 1, so f = g locally
+
   have hψ_eq_one : ψ =ᶠ[𝓝 x₀] 1 := ψ.eventuallyEq_one
   have hf_eq_g : (fun x => ψ x • g x) =ᶠ[𝓝 x₀] g := by
     filter_upwards [hψ_eq_one] with x hx
     simp [hx]
-  -- mfderiv of f at x₀ equals mfderiv of g at x₀
+
   have hf_mfderiv : mfderiv I 𝓘(ℝ, ℝ) (fun x => ψ x • g x) x₀ = mfderiv I 𝓘(ℝ, ℝ) g x₀ :=
     hf_eq_g.mfderiv_eq
-  -- Step 5: Compute mfderiv of g at x₀
+
   have h_ext_diff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I x₀) x₀ :=
     mdifferentiableAt_extChartAt (mem_chart_source H x₀)
   have h_sub_diff : MDifferentiableAt I 𝓘(ℝ, E)
       (fun x => extChartAt I x₀ x - extChartAt I x₀ x₀) x₀ :=
     h_ext_diff.sub mdifferentiableAt_const
-  -- g = ℓ_clm ∘ (extChartAt - const), which has same mfderiv as ℓ_clm ∘ extChartAt
+
   have h_mfderiv_g : mfderiv I 𝓘(ℝ, ℝ) g x₀ =
       ℓ_clm.comp (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) x₀) := by
-    -- Step 1: g =ᶠ ℓ_clm ∘ extChartAt - const (using linearity of ℓ_clm)
+
     have hg_eq : g =ᶠ[𝓝 x₀]
         ((fun x => ℓ_clm (extChartAt I x₀ x)) - fun _ => ℓ_clm (extChartAt I x₀ x₀)) := by
       filter_upwards with x
       simp [g, sub_eq_add_neg]
-    -- Step 2: mfderiv g = mfderiv (ℓ_clm ∘ extChartAt - const)
+
     rw [hg_eq.mfderiv_eq]
-    -- Step 3: mfderiv of (f - const) = mfderiv f
+
     have h_comp_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun x => ℓ_clm (extChartAt I x₀ x)) x₀ :=
       ℓ_clm.mdifferentiableAt.comp x₀ h_ext_diff
     rw [mfderiv_sub h_comp_diff mdifferentiableAt_const, mfderiv_const, sub_zero]
-    -- Step 4: chain rule: mfderiv (ℓ_clm ∘ extChartAt) = ℓ_clm ∘L mfderiv extChartAt
+
     rw [show (fun x => ℓ_clm (extChartAt I x₀ x)) = ℓ_clm ∘ (extChartAt I x₀) from rfl]
     rw [mfderiv_comp x₀ ℓ_clm.mdifferentiableAt h_ext_diff, ℓ_clm.mfderiv_eq]
-  -- Step 6: Derive contradiction
-  -- vectorFieldAction (X - Y) f x₀ = 0 (from hD_action)
+
   have h_zero := hD_action f x₀
-  -- The action at x₀ is: extDerivFun (↑f) x₀ v
-  -- = (fromTangentSpace (f x₀)) ∘L mfderiv (↑f) x₀) v
-  -- = (fromTangentSpace _) (mfderiv g x₀ v)     [since f =ᶠ g near x₀]
-  -- = (fromTangentSpace _) (ℓ_clm (mfderiv (extChartAt) x₀ v))  [by chain rule]
-  -- = (fromTangentSpace _) (ℓ_clm w)
-  -- But ℓ w ≠ 0 and fromTangentSpace is an equiv, so this is ≠ 0. Contradiction.
-  -- Compute: mfderiv f x₀ v = ℓ_clm w
+
   have hf_mfderiv_v : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ v = ℓ_clm w := by
     have h1 : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ = mfderiv I 𝓘(ℝ, ℝ) g x₀ := hf_mfderiv
     rw [h1, h_mfderiv_g]
     rfl
-  -- The action value is:
-  -- vectorFieldAction (X - Y) f x₀
-  -- = extDerivFun (↑f) x₀ v
-  -- = (fromTangentSpace (f x₀)) (mfderiv (↑f) x₀ v)
-  -- = (fromTangentSpace _) (ℓ_clm w)
-  -- This must equal 0, but ℓ w ≠ 0.
-  -- Expand h_zero to get a contradiction
+
   change extDerivFun (I := I) (f : M → ℝ) x₀ ((X - Y) x₀) = 0 at h_zero
-  -- extDerivFun = fromTangentSpace ∘L mfderiv
+
   rw [show extDerivFun (I := I) (f : M → ℝ) x₀ ((X - Y) x₀) =
     (NormedSpace.fromTangentSpace ((f : M → ℝ) x₀))
       (mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ v) from rfl] at h_zero
   rw [hf_mfderiv_v] at h_zero
-  -- h_zero : (fromTangentSpace _) (ℓ_clm w) = 0
-  -- fromTangentSpace is an equiv, so ℓ_clm w = 0
+
   have h_ℓw : (ℓ_clm : E → ℝ) w = 0 :=
     (NormedSpace.fromTangentSpace ((f : M → ℝ) x₀)).injective
       (by rw [map_zero]; exact h_zero)
@@ -421,27 +403,12 @@ noncomputable def mlieBracketSection
   ⟨VectorField.mlieBracket I X Y, by
     have hX := X.contMDiff
     have hY := Y.contMDiff
-    -- The Lie bracket of C^∞ vector fields is C^∞.
-    -- We use ContMDiffAt.mlieBracket_vectorField with m = ∞ and n = ∞.
-    -- Need: IsManifold I (∞ + 1) M and minSmoothness ℝ (∞ + 1) ≤ ∞.
-    -- In ℕ∞, ∞ + 1 = ∞, so both reduce to what we already have.
-    -- We need several IsManifold instances that Lean can't find automatically.
-    -- For ℝ-manifolds: minSmoothness ℝ n = n, and ∞ + 1 = ∞ in ℕ∞.
-    -- Provide IsManifold instances needed by mlieBracket_vectorField
+
     haveI : IsManifold I (minSmoothness ℝ 2) M := by
       rw [minSmoothness_of_isRCLikeNormedField]; infer_instance
     haveI : IsManifold I (minSmoothness ℝ 3) M := by
       rw [minSmoothness_of_isRCLikeNormedField]; infer_instance
-    -- The Lie bracket of C^∞ vector fields is C^∞.
-    -- We directly use ContDiff.mlieBracket_vectorField after providing the needed instance.
-    -- The function needs [IsManifold I (n + 1) M] where n : ℕ∞.
-    -- For n = ⊤ : ℕ∞, (⊤ + 1 : ℕ∞) = ⊤, so IsManifold I ↑⊤ M = IsManifold I ∞ M.
-    -- We just need Lean to see through this.
-    -- Use ContDiff.mlieBracket_vectorField with n = ⊤ : ℕ∞, m = ⊤ : ℕ∞.
-    -- Need: IsManifold I (⊤ + 1) M and minSmoothness ℝ (⊤ + 1) ≤ ⊤.
-    -- Both follow from ⊤ + 1 = ⊤ in ℕ∞.
-    -- Provide IsManifold I ((⊤ : ℕ∞) + 1) M needed by mlieBracket_vectorField.
-    -- In ℕ∞, ⊤ + 1 = ⊤, so this is just IsManifold I ∞ M which we have.
+
     haveI : IsManifold I ((⊤ : ℕ∞) + 1) M := by
       have : ((⊤ : ℕ∞) + 1 : WithTop ℕ∞) = ∞ := by
         show ((⊤ : ℕ∞) + 1 : WithTop ℕ∞) = ∞
@@ -468,7 +435,7 @@ theorem embedDeriv_mlieBracket
   simp only [vectorFieldAction, mlieBracketSection, ContMDiffSection.coeFn_mk]
   simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
   simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
-  -- Setup chart coordinates
+
   set φ := extChartAt I x₀ with hφ
   set y₀ := φ x₀ with hy₀
   set s := Set.range I with hs
@@ -479,14 +446,14 @@ theorem embedDeriv_mlieBracket
   set g := (f : M → ℝ) ∘ φ.symm
   set V' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm (fun x => X x) s
   set W' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm (fun x => Y x) s
-  -- mfderiv I 𝓘(ℝ,ℝ) h x₀ = fderivWithin ℝ (h ∘ φ⁻¹) s y₀
+
   have mfderiv_eq : ∀ (h : M → ℝ), MDifferentiableAt I 𝓘(ℝ, ℝ) h x₀ →
       mfderiv I 𝓘(ℝ, ℝ) h x₀ = fderivWithin ℝ (h ∘ φ.symm) s y₀ := by
     intro h hh; simp only [mfderiv, if_pos hh]; congr 1
   have hf_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ :=
     f.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   rw [mfderiv_eq _ hf_diff]
-  -- mlieBracket = lieBracketWithin via mfderiv_extChartAt_self
+
   have bracket_eq : VectorField.mlieBracket I (fun x => X x) (fun x => Y x) x₀ =
       VectorField.lieBracketWithin ℝ V' W' s y₀ := by
     have h1 : VectorField.mlieBracket I (fun x => X x) (fun x => Y x) x₀ =
@@ -497,7 +464,7 @@ theorem embedDeriv_mlieBracket
     erw [ContinuousLinearMap.inverse_id, ContinuousLinearMap.id_apply]
     simp only [Set.preimage_univ, Set.univ_inter]
   rw [bracket_eq]
-  -- V' y₀ = X x₀, W' y₀ = Y x₀
+
   have hV'_y₀ : V' y₀ = X x₀ := by
     simp only [V', VectorField.mpullbackWithin]
     rw [φ.left_inv hmem]
@@ -506,12 +473,12 @@ theorem embedDeriv_mlieBracket
     simp only [W', VectorField.mpullbackWithin]
     rw [φ.left_inv hmem]
     exact mfderivWithin_extChartAt_symm_inverse_apply (I := I) _
-  -- Smoothness of g
+
   have hg_smooth : ContDiffWithinAt ℝ ∞ g s y₀ :=
     (contMDiffAt_iff.mp (f.contMDiff.contMDiffAt (x := x₀))).2
-  -- y₀ ∈ closure (interior s)
+
   have hy₀_closure : y₀ ∈ closure (interior s) := I.range_subset_closure_interior hy₀s
-  -- DifferentiableWithinAt for V', W'
+
   have hV'_diff : DifferentiableWithinAt ℝ V' s y₀ := by
     have hX_mdiff : MDifferentiableWithinAt _ _
         (fun x => (⟨x, X x⟩ : TangentBundle I M)) Set.univ x₀ :=
@@ -526,113 +493,75 @@ theorem embedDeriv_mlieBracket
     have h := hY_mdiff.differentiableWithinAt_mpullbackWithin_vectorField (I := I)
     simp only [Set.preimage_univ, Set.univ_inter] at h
     exact h
-  -- RHS differentiability
+
   have hYf_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (vectorFieldActionSmooth I M Y f : M → ℝ) x₀ :=
     (vectorFieldActionSmooth I M Y f).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hXf_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (vectorFieldActionSmooth I M X f : M → ℝ) x₀ :=
     (vectorFieldActionSmooth I M X f).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  -- Reduce to fderivWithin equality
+
   suffices hsuff : fderivWithin ℝ g s y₀ (VectorField.lieBracketWithin ℝ V' W' s y₀) =
     fderivWithin ℝ (↑(vectorFieldActionSmooth I M Y f) ∘ ↑φ.symm) s y₀ (X x₀) -
     fderivWithin ℝ (↑(vectorFieldActionSmooth I M X f) ∘ ↑φ.symm) s y₀ (Y x₀) by
     simp only [mfderiv_eq _ hYf_diff, mfderiv_eq _ hXf_diff] at hsuff ⊢
     exact hsuff
-  -- Yf ∘ φ⁻¹ =ᶠ fun y => fderivWithin g s y (W' y) near y₀ within s
-  -- For y ∈ φ.target, Yf(φ.symm y) = mfderiv f (φ.symm y) (Y(φ.symm y))
-  -- and fderivWithin g s y (W' y) = fderivWithin g s y ((mfderivWithin φ.symm s y).inverse (Y(φ.symm y)))
-  -- The key identity follows from:
-  -- mfderiv f z = fderivWithin (writtenInExtChartAt) s (φ z), where writtenInExtChartAt = g ∘ chartchange
-  -- At z ∈ φ.source: f =ᶠ g ∘ φ near z, so mfderiv f z = mfderiv (g∘φ) z
-  -- By chain rule: mfderiv (g∘φ) z v = mfderiv g (φ z) (mfderiv φ z v)
-  -- For model space: mfderiv g y = fderiv g y
-  -- And W'(φ z) = mfderiv φ z (Y z) by definition of mpullbackWithin and invertibility
-  -- So mfderiv f z (Y z) = fderiv g (φ z) (W'(φ z))
-  -- The remaining issue is fderiv vs fderivWithin, handled by DifferentiableAt
-  -- Helper: mfderiv f z = fderivWithin g s (φ z) ∘L mfderiv φ z for z ∈ φ.source
-  -- This follows from f =ᶠ g ∘ φ near z, the manifold chain rule within φ.source,
-  -- and mfderivWithin_eq_fderivWithin for the model space.
-  -- Chain rule: mfderiv f z = fderivWithin g s (φ z) ∘L mfderiv φ z for z ∈ φ.source
-  -- Proof: f =ᶠ g ∘ φ near z; by manifold chain rule within φ.source (open),
-  -- mfderiv (g∘φ) z = mfderivWithin g s (φ z) ∘L mfderiv φ z;
-  -- for model space, mfderivWithin = fderivWithin.
+
   have mfderiv_fderivWithin_chain : ∀ z ∈ φ.source,
       mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) z =
         (fderivWithin ℝ g s (φ z)).comp (mfderiv I 𝓘(ℝ, E) φ z) := by
     intro z hz
-    -- Step 1: Basic chart facts
+
     have hφ_open : IsOpen φ.source := isOpen_extChartAt_source x₀
     have hz_chart : z ∈ (chartAt H x₀).source := by
       rwa [extChartAt_source (I := I)] at hz
     have hφz_tgt : φ z ∈ φ.target := φ.map_source hz
-    -- Step 2: f =ᶠ g ∘ φ near z (since φ.left_inv on φ.source)
+
     have hf_eq : (f : M → ℝ) =ᶠ[𝓝 z] g ∘ φ := by
       filter_upwards [hφ_open.mem_nhds hz] with w hw
       simp only [Function.comp_def, g, φ.left_inv hw]
-    -- Step 3: mfderiv f z = mfderiv (g ∘ φ) z
+
     rw [hf_eq.mfderiv_eq]
-    -- Step 4: φ is MDifferentiableAt/Within at z
+
     have hφ_diff : MDifferentiableAt I 𝓘(ℝ, E) φ z :=
       mdifferentiableAt_extChartAt hz_chart
     have hφ_diffWithin : MDifferentiableWithinAt I 𝓘(ℝ, E) φ φ.source z :=
       hφ_diff.mdifferentiableWithinAt
-    -- Step 5: g is DifferentiableWithinAt within s at φ z
-    -- Use contMDiffAt_iff which gives ContDiffWithinAt for writtenInExtChartAt
-    -- For f : M → ℝ smooth at z, with chart φ = extChartAt I x₀:
-    -- writtenInExtChartAt I 𝓘(ℝ,ℝ) z f = extChartAt 𝓘(ℝ,ℝ) (f z) ∘ f ∘ (extChartAt I z).symm
-    -- We need g = f ∘ φ.symm differentiable within s at φ z.
-    -- Use that f ∘ φ.symm = f ∘ (extChartAt I x₀).symm is ContDiffWithinAt ∞ within range I at φ z
-    -- via chart compatibility.
+
     have hg_diffWithin : DifferentiableWithinAt ℝ g s (φ z) := by
-      -- f is smooth, hence ContMDiffAt I 𝓘(ℝ,ℝ) at φ.symm (φ z) = z
+
       have hf_at_z := f.contMDiff.contMDiffAt (x := z)
-      -- φ.symm is ContMDiffWithinAt 𝓘(ℝ,E) I within s at φ z
+
       have hφsymm : ContMDiffWithinAt 𝓘(ℝ, E) I ∞ φ.symm s (φ z) :=
         contMDiffWithinAt_extChartAt_symm_range x₀ hφz_tgt
-      -- Compose: g = f ∘ φ.symm is ContMDiffWithinAt 𝓘(ℝ,E) 𝓘(ℝ,ℝ) within s at φ z
+
       have hg_cmd : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ g s (φ z) := by
         have h_eq : φ.symm (φ z) = z := φ.left_inv hz
         exact hf_at_z.comp_contMDiffWithinAt_of_eq hφsymm h_eq
-      -- For maps between model spaces, ContMDiffWithinAt ↔ ContDiffWithinAt
+
       exact (contMDiffWithinAt_iff_contDiffWithinAt.mp hg_cmd).differentiableWithinAt
         (by simp : (∞ : WithTop ℕ∞) ≠ 0)
     have hg_mdiffWithin : MDifferentiableWithinAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) g s (φ z) :=
       mdifferentiableWithinAt_iff_differentiableWithinAt.mpr hg_diffWithin
-    -- Step 6: φ maps φ.source into s = range I
+
     have h_maps : φ.source ⊆ φ ⁻¹' s := fun w hw =>
       extChartAt_target_subset_range x₀ (φ.map_source hw)
-    -- Step 7: UniqueMDiffWithinAt on open set φ.source
+
     have hUniq : UniqueMDiffWithinAt I φ.source z :=
       hφ_open.uniqueMDiffWithinAt hz
-    -- Step 8: Within-chain rule
+
     have hchain := mfderivWithin_comp z hg_mdiffWithin hφ_diffWithin h_maps hUniq
-    -- Step 9: Simplify mfderivWithin to mfderiv on open set φ.source
+
     rw [mfderivWithin_eq_mfderiv hUniq hφ_diff] at hchain
     have hgφ_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (g ∘ φ) z := by
       have hf_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) (f : M → ℝ) z :=
         f.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
       exact hf_eq.mdifferentiableAt_iff.mp hf_mdiff
     rw [mfderivWithin_eq_mfderiv hUniq hgφ_diff] at hchain
-    -- Step 10: mfderivWithin on model space = fderivWithin
+
     rw [mfderivWithin_eq_fderivWithin] at hchain
     exact hchain
-  -- W' y = (mfderivWithin φ.symm s y).inverse (Y(φ.symm y))
-  -- = mfderiv φ (φ.symm y) (Y(φ.symm y)) when y ∈ φ.target
-  -- So fderivWithin g s y (W' y) = fderivWithin g s y (mfderiv φ (φ.symm y) (Y(φ.symm y)))
-  -- = mfderiv f (φ.symm y) (Y(φ.symm y)) by mfderiv_fderivWithin_chain
-  -- For y ∈ φ.target: mfderiv f (φ.symm y) (V(φ.symm y)) = fderivWithin g s y (V' y)
-  -- This follows from mfderiv_fderivWithin_chain and invertibility of chart derivatives:
-  -- mfderiv f z (V z) = fderivWithin g s (φ z) (mfderiv φ z (V z))
-  --                    = fderivWithin g s (φ z) (V'(φ z))
-  -- where the last step uses V'(φ z) = (mfderivWithin φ.symm s (φ z)).inverse (V z) = mfderiv φ z (V z)
-  -- EventuallyEq: Yf ∘ φ.symm =ᶠ fun y => fderivWithin g s y (W' y)
-  -- For y ∈ φ.target: by mfderiv_fderivWithin_chain and invertibility of chart derivatives,
-  -- mfderiv f (φ.symm y) (Y(φ.symm y)) = fderivWithin g s y (mfderiv φ (φ.symm y) (Y(φ.symm y)))
-  --   = fderivWithin g s y (W' y)
-  -- where W' y = (mfderivWithin φ.symm s y).inverse (Y(φ.symm y)) = mfderiv φ (φ.symm y) (Y(φ.symm y))
-  -- Helper: for y ∈ φ.target, W' y = mfderiv φ (φ.symm y) (Y (φ.symm y))
-  -- This follows from inverse_eq applied to the chart derivative pair.
+
   have W'_eq : ∀ y ∈ φ.target,
       W' y = mfderiv I 𝓘(ℝ, E) φ (φ.symm y) (Y (φ.symm y)) := by
     intro y hy
@@ -650,7 +579,7 @@ theorem embedDeriv_mlieBracket
     exact ContinuousLinearMap.inverse_eq
       (mfderivWithin_extChartAt_symm_comp_mfderiv_extChartAt (I := I) hy)
       (mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm (I := I) hy)
-  -- Helper: extDerivFun f x v = mfderiv f x v (since fromTangentSpace on ℝ is id)
+
   have extDerivFun_eq_mfderiv : ∀ (x : M) (v : TangentSpace I x),
       extDerivFun (I := I) (f : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x v := by
     intro x v
@@ -663,11 +592,11 @@ theorem embedDeriv_mlieBracket
     simp only [Function.comp_def, vectorFieldActionSmooth, ContMDiffMap.coeFn_mk,
       vectorFieldAction]
     rw [extDerivFun_eq_mfderiv]
-    -- y ∈ φ.target, φ.symm y ∈ φ.source
+
     have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
-    -- By mfderiv_fderivWithin_chain at z = φ.symm y:
+
     have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_src
-    -- mfderiv f (φ.symm y) (Y (φ.symm y)) = fderivWithin g s (φ (φ.symm y)) (mfderiv φ (φ.symm y) (Y (φ.symm y)))
+
     have h2 : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) (φ.symm y) (Y (φ.symm y)) =
         fderivWithin ℝ g s (φ (φ.symm y)) (mfderiv I 𝓘(ℝ, E) φ (φ.symm y) (Y (φ.symm y))) := by
       rw [h1]; rfl

@@ -105,7 +105,7 @@ def uncurryFinCLM :
     (E →L[𝕜] E [⋀^Fin n]→L[𝕜] F) →L[𝕜] E [⋀^Fin (n + 1)]→L[𝕜] F :=
   LinearMap.mkContinuous
     { toFun := uncurryFin (𝕜 := 𝕜) (E := E) (F := F) (n := n)
-      map_add' := by exact uncurryFin_add -- TODO: why does it fail without `by exact`?
+      map_add' := by exact uncurryFin_add
       map_smul' := by exact uncurryFin_smul }
     (n + 1) norm_uncurryFin_le
 
@@ -334,10 +334,10 @@ theorem uncurrySum.summand_eq_zero_of_smul_invariant (f : E [⋀^ι]→L[𝕜] E
     ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply,
     uncurrySum.summand]
   intro hσ
-  -- TODO: Remove use of `cases'` tactic
+
   cases' hi : σ⁻¹ i with val val <;> cases' hj : σ⁻¹ j with val_1 val_1 <;>
     rw [Equiv.Perm.inv_eq_iff_eq] at hi hj <;> substs hi hj <;> revert val val_1
-  -- the term pairs with and cancels another term
+
   case inl.inr =>
     intro i' j' _ _ hσ
     obtain ⟨⟨sl, sr⟩, hσ⟩ := QuotientGroup.leftRel_apply.mp (Quotient.exact' hσ)
@@ -354,7 +354,7 @@ theorem uncurrySum.summand_eq_zero_of_smul_invariant (f : E [⋀^ι]→L[𝕜] E
     rw [smul_eq_mul, ← Equiv.mul_swap_eq_swap_mul, mul_inv_rev, Equiv.swap_inv,
       inv_mul_cancel_right] at hσ
     simp at hσ
-  -- the term does not pair but is zero
+
   case inr.inr =>
     intro i' j' hv hij _
     convert smul_zero (M := ℤˣ) (A := F) _
@@ -455,7 +455,7 @@ theorem summand_left_match
       ⟨Quotient.mk'' σ, shuffleLeftRestrict_subtype_of_inv σ hσ⟩) :
     uncurrySum.summand F (Quotient.mk'' σ) w =
       uncurrySum.summand (curryFin F x) (Quotient.mk'' σ') (w ∘ Sum.map Fin.succ id) := by
-  -- Step 1: Replace σ' by the canonical representative `shuffleLeftFwd σ hσ`.
+
   have h_coset : (Quotient.mk'' σ' :
       Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1))) =
       Quotient.mk'' (shuffleLeftFwd σ hσ) := by
@@ -473,7 +473,7 @@ theorem summand_left_match
   set k := hσ.choose
   set hk := hσ.choose_spec
   set σ_can := shuffleLeftFwd σ hσ
-  -- Step 2: Sign computation: sign σ_can = sign σ * sign (swap 0 k).
+
   have h_sign : Equiv.Perm.sign σ_can =
       Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap 0 k) := by
     show Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _

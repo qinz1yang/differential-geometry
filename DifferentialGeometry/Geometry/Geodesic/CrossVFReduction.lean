@@ -424,6 +424,31 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
     rw [hXval, geodesicVectorField_snd]
   apply Prod.ext hfst hsnd
 
+/-- The basepoint-free geodesic spray is smooth as a section of `T(TM)`.
+
+Locally it is the chart-fixed geodesic vector field based at the foot of the
+chosen tangent vector, so smoothness follows from the fixed-chart construction
+and `geodesicVectorFieldChart_eq_geodesicVectorField`. -/
+theorem geodesicVF_smooth
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) :
+    ContMDiff I.tangent I.tangent.tangent ∞
+      (fun p : TangentBundle I M =>
+        (⟨p, geodesicVectorField (I := I) g p⟩ :
+          TangentBundle I.tangent (TangentBundle I M))) := by
+  intro p
+  let α : M := p.proj
+  have hp : p.proj ∈ (chartAt H α).source := by
+    simp [α]
+  have hsmooth := geodesicVectorFieldChart_contMDiffAt (I := I) g α hp
+  refine hsmooth.congr_of_eventuallyEq ?_
+  have hnhds : geodesicChartDomain (I := I) α ∈ nhds p :=
+    (geodesicChartDomain_isOpen (I := I) (M := M) α).mem_nhds hp
+  filter_upwards [hnhds] with q hq
+  refine TotalSpace.ext rfl ?_
+  exact heq_of_eq ((geodesicVectorFieldChart_eq_geodesicVectorField
+    (I := I) g α hq).symm)
+
 /-- **Cross-basepoint pointwise coincidence of the chart-fixed geodesic vector
 field.** At a tangent-bundle point `p` whose foot lies in both chart-sources,
 the chart-`α` and chart-`α'` fixed geodesic vector fields agree as elements of

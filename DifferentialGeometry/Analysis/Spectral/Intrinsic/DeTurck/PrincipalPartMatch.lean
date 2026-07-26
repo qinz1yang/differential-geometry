@@ -80,7 +80,7 @@ symbol.  It is `deturck_ricci_rhs_linearization_at_g0` re-exported under a name
 that flags its role in the splitting; the witness coefficient
 `deTurckSymbolCoeff g₀ x ξ = −|ξ|²_{g₀}` is literally the rough-Laplacian symbol
 coefficient. -/
-theorem deTurckRicciRHS_principalSymbol_eq_roughLaplacianSymbol
+theorem deTurckRicciRHS_principalSymbol_eq_roughLaplacianSymbol [I.Boundaryless]
     (g_bg g₀ : SmoothRiemannianMetric I M) :
     ∃ σ : DifferentialGeometry.PDE.DeTurck.TensorSymbol (E := E) I M,
       σ = DifferentialGeometry.PDE.DeTurck.isotropicSymbol

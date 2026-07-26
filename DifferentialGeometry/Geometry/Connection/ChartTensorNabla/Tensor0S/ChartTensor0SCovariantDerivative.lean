@@ -424,9 +424,18 @@ lemma chartTensor0SCovariantDerivative_succ_add (s : ℕ)
             chartTensor0SSlotCorrection (I := I) (s + 1) g α T₁ X b k) +
           (∑ k : Fin (s + 1),
               chartTensor0SSlotCorrection (I := I) (s + 1) g α T₂ X b k) := by
-    rw [← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl (fun k _ => ?_)
-    exact chartTensor0SSlotCorrection_add (I := I) (s + 1) g α T₁ T₂ X b k
+    rw [show (∑ k : Fin (s + 1),
+          chartTensor0SSlotCorrection (I := I) (s + 1) g α (T₁ + T₂) X b k) =
+        ∑ k : Fin (s + 1),
+          (chartTensor0SSlotCorrection (I := I) (s + 1) g α T₁ X b k
+            + chartTensor0SSlotCorrection (I := I) (s + 1) g α T₂ X b k) from
+      Finset.sum_congr rfl (fun k _ =>
+        chartTensor0SSlotCorrection_add (I := I) (s + 1) g α T₁ T₂ X b k)]
+    exact Finset.sum_add_distrib
+      (f := fun k : Fin (s + 1) =>
+        chartTensor0SSlotCorrection (I := I) (s + 1) g α T₁ X b k)
+      (g := fun k : Fin (s + 1) =>
+        chartTensor0SSlotCorrection (I := I) (s + 1) g α T₂ X b k)
   rw [hsplit_slot]
   abel
 

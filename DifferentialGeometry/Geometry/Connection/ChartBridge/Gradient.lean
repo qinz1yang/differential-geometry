@@ -46,13 +46,21 @@ namespace Integral
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [Module.Finite ℝ E] [FiniteDimensional ℝ E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+
+/-- The connection-layer and chart-local gradient functions are the same
+pointwise metric dual of the differential. -/
+theorem gradient_eq_gradFun
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
+    gradientFun (I := I) g f x = gradFun (I := I) g f x := rfl
+
+variable [InnerProductSpace ℝ E] [Module.Finite ℝ E]
+  [NeZero (Module.finrank ℝ E)]
 
 /-- **Metric duality of the gradient with the differential.** For every smooth scalar
 function `f : M → ℝ` and every tangent vector `v : T_x M`,
@@ -170,6 +178,45 @@ theorem gradFun_add
     rw [hsum, extDerivFun_add hf hh, ContinuousLinearMap.add_apply]
   rw [h_left, ← h_right]
 
+/-- The gradient of a finite sum of functions differentiable at a point is
+the finite sum of their gradients at that point. -/
+theorem gradFun_finset
+    (g : SmoothRiemannianMetric I M) {ι : Type*} (s : Finset ι)
+    (f : ι → M → ℝ) {x : M}
+    (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    gradFun (I := I) g (s.sum f) x =
+      s.sum (fun i => gradFun (I := I) g (f i) x) := by
+  classical
+  have hsum_diff : ∀ t : Finset ι,
+      (∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) →
+      MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := by
+    intro t ht
+    induction t using Finset.induction_on with
+    | empty =>
+        simpa only [Finset.sum_empty] using
+          (mdifferentiableAt_const :
+            MDifferentiableAt I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) x)
+    | @insert i t hit ih =>
+        have hi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x :=
+          ht i (Finset.mem_insert_self i t)
+        have htail : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x :=
+          fun j hj => ht j (Finset.mem_insert_of_mem hj)
+        rw [Finset.sum_insert hit]
+        exact hi.add (ih htail)
+  induction s using Finset.induction_on with
+  | empty =>
+      simpa only [Finset.sum_empty] using gradFun_zero (I := I) g x
+  | @insert i s his ih =>
+      have hi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x :=
+        hf i (Finset.mem_insert_self i s)
+      have hs : ∀ j ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x :=
+        fun j hj => hf j (Finset.mem_insert_of_mem hj)
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (s.sum f) x :=
+        hsum_diff s hs
+      rw [Finset.sum_insert his, Finset.sum_insert his]
+      change gradFun (I := I) g (fun y => f i y + s.sum f y) x = _
+      rw [gradFun_add (I := I) g hi hsum, ih hs]
+
 /-- The gradient is `ℝ`-linear in `f`: a scalar multiple `c • f` of a differentiable
 function `f : M → ℝ` has gradient `c • gradFun g f`.
 
@@ -202,6 +249,37 @@ theorem gradFun_const_smul
     rw [h]
     rfl
   rw [h_left, ← h_right]
+
+/-- The gradient of the negation of a differentiable scalar is the negation
+of its gradient. -/
+theorem gradFun_neg
+    (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
+    gradFun (I := I) g (fun y => -f y) x =
+      -gradFun (I := I) g f x := by
+  have hneg : (fun y : M => -f y) = (-1 : ℝ) • f := by
+    funext y
+    simp only [Pi.smul_apply, neg_smul, one_smul]
+  rw [hneg, gradFun_const_smul (I := I) g (-1 : ℝ) hf]
+  simp only [neg_smul, one_smul]
+
+/-- The gradient of a difference of differentiable scalars is the difference
+of their gradients. -/
+theorem gradFun_sub
+    (g : SmoothRiemannianMetric I M) {f h : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x) :
+    gradFun (I := I) g (fun y => f y - h y) x =
+      gradFun (I := I) g f x - gradFun (I := I) g h x := by
+  change gradFun (I := I) g (fun y => f y + -h y) x = _
+  calc
+    gradFun (I := I) g (fun y => f y + -h y) x =
+        gradFun (I := I) g f x +
+          gradFun (I := I) g (fun y => -h y) x :=
+      gradFun_add (I := I) g hf hh.neg
+    _ = gradFun (I := I) g f x - gradFun (I := I) g h x := by
+      rw [gradFun_neg (I := I) g hh]
+      rw [sub_eq_add_neg]
 
 /-- Under `[I.Boundaryless]`, the gradient of a smooth scalar function is smooth as a
 total-space section of the tangent bundle. -/

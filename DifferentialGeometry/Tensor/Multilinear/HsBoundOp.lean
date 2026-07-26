@@ -58,34 +58,32 @@ theorem opNorm_sq_le_sum_sq_basisEval
     {j : ℕ} (A : ContinuousMultilinearMap ℝ (fun _ : Fin j => E) ℝ) :
     ‖A‖ ^ 2 ≤ ∑ idx : Fin j → ι, |A (fun k => b (idx k))| ^ 2 := by
   classical
-  -- Abbreviation for the right-hand-side sum and a name for its square root.
+
   set S : ℝ := ∑ idx : Fin j → ι, |A (fun k => b (idx k))| ^ 2 with hS_def
   have hS_nonneg : 0 ≤ S := by
     refine Finset.sum_nonneg ?_
     intro idx _
     exact sq_nonneg _
-  -- Step 1: pointwise bound `|A v| ≤ Real.sqrt S * ∏ k, ‖v k‖`.
+
   have hpoint : ∀ v : Fin j → E, ‖A v‖ ≤ Real.sqrt S * ∏ k, ‖v k‖ := by
     intro v
-    -- Expand each `v k` in the orthonormal basis.
+
     have hv : ∀ k : Fin j, v k = ∑ i : ι, ⟪b i, v k⟫ • b i := by
       intro k
       exact (b.sum_repr' (v k)).symm
-    -- Apply the multilinear map to the expanded form using `map_sum` from the
-    -- underlying `MultilinearMap`, then pull each scalar factor out via
-    -- `map_smul_univ`.
+
     have hAv : A v = ∑ idx : Fin j → ι,
         (∏ k : Fin j, ⟪b (idx k), v k⟫) • A (fun k => b (idx k)) := by
       have hexp : A v = A (fun k => ∑ i : ι, ⟪b i, v k⟫ • b i) := by
         refine congrArg A ?_
         funext k
         exact hv k
-      -- Use `MultilinearMap.map_sum`.
+
       have hstep1 : A (fun k => ∑ i : ι, ⟪b i, v k⟫ • b i)
           = ∑ idx : Fin j → ι, A (fun k => ⟪b (idx k), v k⟫ • b (idx k)) := by
         have := A.toMultilinearMap.map_sum
           (g := fun (k : Fin j) (i : ι) => ⟪b i, v k⟫ • b i)
-        -- `A` and `A.toMultilinearMap` coerce to the same function.
+
         simpa using this
       have hstep2 : ∀ idx : Fin j → ι,
           A (fun k => ⟪b (idx k), v k⟫ • b (idx k))
@@ -95,9 +93,9 @@ theorem opNorm_sq_le_sum_sq_basisEval
           (fun k : Fin j => ⟪b (idx k), v k⟫) (fun k : Fin j => b (idx k))
       rw [hexp, hstep1]
       exact Finset.sum_congr rfl fun idx _ => hstep2 idx
-    -- For ℝ-valued `A`, `‖A v‖ = |A v|`.
+
     have hAv_abs : ‖A v‖ = |A v| := Real.norm_eq_abs _
-    -- Bound `|A v|` via Cauchy–Schwarz on the index sum.
+
     have habs : |A v|
         = |∑ idx : Fin j → ι,
             (∏ k : Fin j, ⟪b (idx k), v k⟫) * A (fun k => b (idx k))| := by
@@ -108,7 +106,7 @@ theorem opNorm_sq_le_sum_sq_basisEval
         intro idx _
         rw [smul_eq_mul]
       rw [this]
-    -- Square version of Cauchy–Schwarz on finsets.
+
     have hCS : (∑ idx : Fin j → ι,
         (∏ k : Fin j, ⟪b (idx k), v k⟫) * A (fun k => b (idx k))) ^ 2
         ≤ (∑ idx : Fin j → ι, (∏ k : Fin j, ⟪b (idx k), v k⟫) ^ 2) *
@@ -126,7 +124,7 @@ theorem opNorm_sq_le_sum_sq_basisEval
         (∏ k : Fin j, ⟪b (idx k), v k⟫) * A (fun k => b (idx k))) ^ 2
         ≤ (∑ idx : Fin j → ι, (∏ k : Fin j, ⟪b (idx k), v k⟫) ^ 2) * S := by
       rw [hS_eq]; exact hCS
-    -- Take square roots: `|x| = √(x²) ≤ √(C · S) = √C · √S`.
+
     have hsumC_nonneg :
         0 ≤ ∑ idx : Fin j → ι, (∏ k : Fin j, ⟪b (idx k), v k⟫) ^ 2 :=
       Finset.sum_nonneg fun _ _ => sq_nonneg _
@@ -150,18 +148,18 @@ theorem opNorm_sq_le_sum_sq_basisEval
           * Real.sqrt S :=
       Real.sqrt_mul hsumC_nonneg _
     rw [heq1, heq2] at hsqrt_le
-    -- Identify the inner-product sum with `∏ k, ‖v k‖²` via Parseval.
+
     have hParseval :
         ∑ idx : Fin j → ι, (∏ k : Fin j, ⟪b (idx k), v k⟫) ^ 2
           = ∏ k : Fin j, ‖v k‖ ^ 2 := by
-      -- First: `(∏ k, c k)^2 = ∏ k, (c k)^2`.
+
       have hsq :
           ∑ idx : Fin j → ι, (∏ k : Fin j, ⟪b (idx k), v k⟫) ^ 2
           = ∑ idx : Fin j → ι, ∏ k : Fin j, ⟪b (idx k), v k⟫ ^ 2 := by
         refine Finset.sum_congr rfl ?_
         intro idx _
         rw [← Finset.prod_pow]
-      -- Second: `∑ idx, ∏ k, f k (idx k) = ∏ k, ∑ i, f k i`.
+
       have hprod_sum :
           ∑ idx : Fin j → ι, ∏ k : Fin j, ⟪b (idx k), v k⟫ ^ 2
           = ∏ k : Fin j, ∑ i : ι, ⟪b i, v k⟫ ^ 2 := by
@@ -169,12 +167,12 @@ theorem opNorm_sq_le_sum_sq_basisEval
           (κ := fun _ : Fin j => ι)
           (t := fun _ : Fin j => (Finset.univ : Finset ι))
           (f := fun k i => ⟪b i, v k⟫ ^ 2))
-        -- `Finset.piFinset (fun _ => univ) = univ`.
+
         have hpi : (Fintype.piFinset (fun _ : Fin j => (Finset.univ : Finset ι)))
                     = (Finset.univ : Finset (Fin j → ι)) := by
           ext idx; simp
         rw [h, hpi]
-      -- Third: each slot is `‖v k‖²` by Parseval.
+
       have hslot : ∀ k : Fin j, ∑ i : ι, ⟪b i, v k⟫ ^ 2 = ‖v k‖ ^ 2 := by
         intro k
         exact b.sum_sq_inner_right (v k)
@@ -182,7 +180,7 @@ theorem opNorm_sq_le_sum_sq_basisEval
       refine Finset.prod_congr rfl ?_
       intro k _
       exact hslot k
-    -- Combine.
+
     have hsqrt_prod :
         Real.sqrt (∏ k : Fin j, ‖v k‖ ^ 2) = ∏ k : Fin j, ‖v k‖ := by
       have hnonneg : ∀ k ∈ (Finset.univ : Finset (Fin j)), 0 ≤ ‖v k‖ ^ 2 :=
@@ -191,8 +189,7 @@ theorem opNorm_sq_le_sum_sq_basisEval
       refine Finset.prod_congr rfl ?_
       intro k _
       rw [Real.sqrt_sq (norm_nonneg _)]
-    -- Chain the inequalities:
-    -- `‖A v‖ = |A v| = |∑ ...| ≤ √(∑ C²) · √S = √(∏ ‖v k‖²) · √S = (∏ ‖v k‖) · √S`.
+
     calc ‖A v‖
         = |A v| := hAv_abs
       _ = |∑ idx : Fin j → ι,
@@ -203,12 +200,12 @@ theorem opNorm_sq_le_sum_sq_basisEval
       _ = Real.sqrt (∏ k : Fin j, ‖v k‖ ^ 2) * Real.sqrt S := by rw [hParseval]
       _ = (∏ k : Fin j, ‖v k‖) * Real.sqrt S := by rw [hsqrt_prod]
       _ = Real.sqrt S * ∏ k : Fin j, ‖v k‖ := by ring
-  -- Step 2: from the pointwise bound deduce `‖A‖ ≤ Real.sqrt S`.
+
   have hopNorm_le : ‖A‖ ≤ Real.sqrt S := by
     refine ContinuousMultilinearMap.opNorm_le_bound (Real.sqrt_nonneg _) ?_
     intro v
     exact hpoint v
-  -- Step 3: square both sides.
+
   have hopNorm_nonneg : 0 ≤ ‖A‖ := norm_nonneg _
   have hsq : ‖A‖ ^ 2 ≤ (Real.sqrt S) ^ 2 :=
     pow_le_pow_left₀ hopNorm_nonneg hopNorm_le 2

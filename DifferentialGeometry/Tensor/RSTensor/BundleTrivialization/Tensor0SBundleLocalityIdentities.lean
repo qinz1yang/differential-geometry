@@ -141,18 +141,17 @@ theorem triv_continuousLinearMapAt_eq_compContinuousLinearMap
     (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
     (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀ with he_def
   have hbase : b ∈ e.baseSet := hb
-  -- `e.continuousLinearMapAt ℝ b T = (e ⟨b, T⟩).2` on the base set.
+
   have h_cLMA : (e.continuousLinearMapAt ℝ b T :
       ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
       (e ⟨b, T⟩).2 := by
     have h := congrFun (e.coe_linearMapAt_of_mem (R := ℝ) hbase) T
     simpa [Bundle.Trivialization.continuousLinearMapAt_apply] using h
   rw [h_cLMA]
-  -- Both sides are continuous multilinear maps; check on inputs.
+
   apply ContinuousMultilinearMap.ext
   intro w
-  -- Forward trivialization formula is definitional: `(e ⟨b, T⟩).2 w =
-  -- T (fun i => (triv_E b₀).symmL ℝ b (w i))`.
+
   change T (fun i : Fin s => (trivializationAt E (TangentSpace I) b₀).symmL ℝ b (w i)) = _
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
 
@@ -180,19 +179,19 @@ theorem multilinear_trivAt_symmL_apply_eq_self_on_locality
     ((trivializationAt (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
         (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).symmL ℝ b T :
         ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) = T := by
-  -- Trivialization at `b₀` has base set `(chartAt H b₀).source`.
+
   have h_base : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [tangent_trivializationAt_baseSet (I := I) b₀]
     exact h_src
-  -- Tangent-bundle forward map is the identity on the locality neighbourhood.
+
   have h_clmAt_id := tangent_trivb₀_clmAt_eq_id_of_chartAt_eq (I := I) (M := M)
     h_chart h_src
-  -- Apply the multilinear-bundle inverse formula.
+
   rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
     (𝕜 := ℝ) (F := E) (E := (TangentSpace I : M → Type _)) (s := s) b₀ b h_base T]
-  -- After rewriting with `h_clmAt_id`, the precomposition is with `1`.
+
   rw [h_clmAt_id]
-  -- `T.compContinuousLinearMap (fun _ => 1) = T`.
+
   apply ContinuousMultilinearMap.ext
   intro v
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
@@ -212,14 +211,14 @@ theorem multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
           ℝ b T :
         ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
       (T : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) := by
-  -- Trivialization at `b₀` has base set `(chartAt H b₀).source`.
+
   have h_base : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [tangent_trivializationAt_baseSet (I := I) b₀]
     exact h_src
-  -- Tangent-bundle inverse map is the identity on the locality neighbourhood.
+
   have h_symmL_id := tangent_trivb₀_symmL_eq_id_of_chartAt_eq (I := I) (M := M)
     h_chart h_src
-  -- Apply the multilinear-bundle forward formula.
+
   rw [triv_continuousLinearMapAt_eq_compContinuousLinearMap (I := I)
     (s := s) b₀ b h_base T]
   rw [h_symmL_id]
@@ -241,8 +240,7 @@ theorem tensor0S_trivAt_symmL_eq_one_on_locality
     ((trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) b₀).symmL ℝ b T :
         ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) = T := by
-  -- The trivialization at `b₀` for `Tensor0SSpace` reduces to that for
-  -- `Bundle.continuousMultilinearMap` via `tensor0SBundle_fiber`.
+
   change (trivializationAt
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
       (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).symmL ℝ b T = T
@@ -261,8 +259,7 @@ theorem tensor0S_trivAt_continuousLinearMapAt_eq_one_on_locality
         (fun y : M => Tensor0SSpace s I y) b₀).continuousLinearMapAt ℝ b T :
         ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
       (T : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) := by
-  -- The trivialization at `b₀` for `Tensor0SSpace` reduces to that for
-  -- `Bundle.continuousMultilinearMap` via `tensor0SBundle_fiber`.
+
   change (trivializationAt
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
       (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).continuousLinearMapAt

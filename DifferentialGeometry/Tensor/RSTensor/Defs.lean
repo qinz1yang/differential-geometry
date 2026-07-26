@@ -146,6 +146,7 @@ instance tensor0SSpace_instFunLike (s : ℕ) (x : M) :
   inferInstanceAs (FunLike
     (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I) x) _ _)
 
+omit [FiniteDimensional 𝕜 E] in
 /-- Extensionality for `Tensor0SSpace`. Since the type is a non-reducible `def`, Lean
 cannot find the underlying `ContinuousMultilinearMap.ext` automatically; we re-export it
 at the `Tensor0SSpace` level. -/
@@ -154,6 +155,94 @@ theorem tensor0SSpace_ext (s : ℕ) (x : M)
     {T T' : Tensor0SSpace s I x}
     (h : ∀ v : Fin s → TangentSpace I x, T v = T' v) : T = T' :=
   ContinuousMultilinearMap.ext (M₁ := fun _ : Fin s => TangentSpace I x) (M₂ := 𝕜) h
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.zero_apply (s : ℕ) (x : M)
+    (v : Fin s → TangentSpace I x) :
+    (0 : Tensor0SSpace s I x) v = 0 := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.add_apply (s : ℕ) (x : M)
+    (A B : Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (A + B) v = A v + B v := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.smul_apply (s : ℕ) (x : M)
+    (c : 𝕜) (A : Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (c • A) v = c • A v := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.nsmul_apply (s : ℕ) (x : M)
+    (n : ℕ) (A : Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (n • A) v = n • A v := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.neg_apply (s : ℕ) (x : M)
+    (A : Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (-A) v = -A v := by
+  rw [show -A = (-1 : 𝕜) • A by exact (neg_one_smul 𝕜 A).symm,
+    Tensor0SSpace.smul_apply, neg_one_smul]
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.sub_apply (s : ℕ) (x : M)
+    (A B : Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (A - B) v = A v - B v := by
+  rw [sub_eq_add_neg, Tensor0SSpace.add_apply, Tensor0SSpace.neg_apply,
+    sub_eq_add_neg]
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.sum_apply {α : Type*} (t : Finset α) (s : ℕ) (x : M)
+    (A : α → Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    (∑ i ∈ t, A i) v = ∑ i ∈ t, A i v := by
+  classical
+  induction t using Finset.induction with
+  | empty => simp only [Finset.sum_empty, Tensor0SSpace.zero_apply]
+  | insert a t ha =>
+      simp only [Finset.sum_insert ha, Tensor0SSpace.add_apply, *]
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem Tensor0SSpace.domDomCongr_apply {s s' : ℕ} {x : M}
+    (e : Fin s ≃ Fin s') (A : Tensor0SSpace s I x)
+    (v : Fin s' → TangentSpace I x) :
+    (ContinuousMultilinearMap.domDomCongr e A) v = A (fun i => v (e i)) := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+theorem Tensor0SSpace.map_update_smul {s : ℕ} {x : M}
+    (A : Tensor0SSpace s I x) (m : Fin s → TangentSpace I x)
+    (i : Fin s) (c : 𝕜) (v : TangentSpace I x) :
+    A (Function.update m i (c • v)) = c • A (Function.update m i v) :=
+  ContinuousMultilinearMap.map_update_smul A m i c v
+
+omit [FiniteDimensional 𝕜 E] in
+theorem Tensor0SSpace.map_update_add {s : ℕ} {x : M}
+    (A : Tensor0SSpace s I x) (m : Fin s → TangentSpace I x)
+    (i : Fin s) (v w : TangentSpace I x) :
+    A (Function.update m i (v + w)) =
+      A (Function.update m i v) + A (Function.update m i w) :=
+  ContinuousMultilinearMap.map_update_add A m i v w
+
+omit [FiniteDimensional 𝕜 E] in
+theorem Tensor0SSpace.map_smul_univ {s : ℕ} {x : M}
+    (A : Tensor0SSpace s I x) (c : Fin s → 𝕜)
+    (v : Fin s → TangentSpace I x) :
+    A (fun i => c i • v i) = (∏ i, c i) • A v :=
+  ContinuousMultilinearMap.map_smul_univ A c v
+
+omit [FiniteDimensional 𝕜 E] in
+theorem Tensor0SSpace.map_sum {s : ℕ} {x : M}
+    (A : Tensor0SSpace s I x) {α : Fin s → Type*}
+    [∀ i, Fintype (α i)]
+    (g : ∀ i, α i → TangentSpace I x) :
+    A (fun i => ∑ j, g i j) = ∑ r : ∀ i, α i, A (fun i => g i (r i)) :=
+  ContinuousMultilinearMap.map_sum A g
 
 /-- `NormedAddCommGroup` on `Tensor0SSpace s I x` inherited from the bundle's CMM fiber.
 
@@ -239,6 +328,24 @@ instance tensorRSSpace_instContinuousLinearMapClass (r s : ℕ) (x : M) :
   inferInstanceAs (ContinuousLinearMapClass
     (Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x) 𝕜 _ _)
 
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem TensorRSSpace.zero_apply (r s : ℕ) (x : M)
+    (A : Tensor0SSpace r I x) :
+    (0 : TensorRSSpace r s I x) A = 0 := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem TensorRSSpace.add_apply (r s : ℕ) (x : M)
+    (T U : TensorRSSpace r s I x) (A : Tensor0SSpace r I x) :
+    (T + U) A = T A + U A := rfl
+
+omit [FiniteDimensional 𝕜 E] in
+@[simp]
+theorem TensorRSSpace.smul_apply (r s : ℕ) (x : M)
+    (c : 𝕜) (T : TensorRSSpace r s I x) (A : Tensor0SSpace r I x) :
+    (c • T) A = c • T A := rfl
+
 /-- A `TensorRSSpace` element converted to a `ContinuousLinearMap`. Since the underlying
 type is `Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x`, this is just the identity. -/
 def TensorRSSpace.toCLM {r s : ℕ} {x : M} (T : TensorRSSpace r s I x) :
@@ -248,6 +355,7 @@ def TensorRSSpace.toCLM {r s : ℕ} {x : M} (T : TensorRSSpace r s I x) :
 def TensorRSSpace.ofCLM {r s : ℕ} {x : M}
     (T : Tensor0SSpace r I x →L[𝕜] Tensor0SSpace s I x) : TensorRSSpace r s I x := T
 
+omit [FiniteDimensional 𝕜 E] in
 /-- Extensionality for `TensorRSSpace`. Since the type is a non-reducible `def`, Lean
 cannot find the underlying `ContinuousLinearMap.ext` automatically; we re-export it
 at the `TensorRSSpace` level. -/
@@ -479,21 +587,25 @@ theorem toModel_add {s : ℕ} {x : M} (T₁ T₂ : Tensor0SSpace s I x) :
     toModel (T₁ + T₂) = toModel T₁ + toModel T₂ :=
   map_add (tensor0SSpace_continuousLinearEquiv s x) T₁ T₂
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_smul {s : ℕ} {x : M} (c : 𝕜) (T : Tensor0SSpace s I x) :
     toModel (c • T) = c • toModel T :=
   map_smul (tensor0SSpace_continuousLinearEquiv s x) c T
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_zero {s : ℕ} {x : M} :
     toModel (0 : Tensor0SSpace s I x) = 0 :=
   map_zero (tensor0SSpace_continuousLinearEquiv s x)
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_neg {s : ℕ} {x : M} (T : Tensor0SSpace s I x) :
     toModel (-T) = -toModel T :=
   map_neg (tensor0SSpace_continuousLinearEquiv s x) T
 
+omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem toModel_sub {s : ℕ} {x : M} (T₁ T₂ : Tensor0SSpace s I x) :
     toModel (T₁ - T₂) = toModel T₁ - toModel T₂ :=
@@ -788,7 +900,8 @@ noncomputable instance tensorRSBundle_topology (r s : ℕ) :
 noncomputable instance tensorRSBundle_fiber (r s : ℕ) :
     @FiberBundle M (TensorRSModel r s 𝕜 E) _ (by infer_instance : TopologicalSpace _)
       (fun x : M => TensorRSSpace r s I x)
-      (tensorRSBundle_topology r s) _ :=
+      (tensorRSBundle_topology r s)
+      (fun x : M => tensorRSSpace_topologicalSpace r s x) :=
   Bundle.ContinuousLinearMap.fiberBundle (RingHom.id 𝕜)
     (Tensor0SModel r 𝕜 E)
     (fun (x : M) => Tensor0SSpace r I x)

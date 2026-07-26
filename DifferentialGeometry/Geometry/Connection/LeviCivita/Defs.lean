@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartMetric
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 
 /-!
 # The Levi-Civita covariant derivative on a smooth Riemannian manifold
@@ -241,32 +242,76 @@ lemma leviCivitaStitched_isCovariantDerivativeOn_univ
   exact IsCovariantDerivativeOn.iUnion (s := fun α => chartLeviCivitaGoodSet (I := I) α)
     (fun α => leviCivitaStitched_isCovariantDerivativeOn (I := I) g α)
 
-/-- The **Levi-Civita covariant derivative** on the tangent bundle of a smooth
-Riemannian manifold, as a bundled `CovariantDerivative I E (TangentSpace I)`. The
-underlying function is the stitched chart-local construction, and the global
-`IsCovariantDerivativeOn _ Set.univ` axioms come from gluing the chart-local axioms
-over the open cover of chart-local good sets. -/
+/-- The **Levi-Civita covariant derivative** of a smooth Riemannian metric, as a bundled
+`CovariantDerivative I E (TangentSpace I)`.
+
+This is now *defined* as the direct Koszul connection `leviCivitaConnectionOfMetric g` (aliased
+`metricCov`) — there is one canonical Levi-Civita connection.  Prefer `metricCov` /
+`leviCivitaConnectionOfMetric` in new code; `LeviCivita` is retained as a compatibility name for the
+`ricciTensor`/`riemannOp`/chart-bridge layer that already refers to it.  The former *stitched*
+chart-glued construction is no longer the definition (the chart machinery below survives only as the
+proof of the coordinate bridge `LeviCivita_chart_apply`).  Local smoothness is
+`leviCivita_contMDiffCovariantDerivativeLocally` (do not carry it as a hypothesis). -/
 def LeviCivita (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I E (TangentSpace I : M → Type _) :=
-  CovariantDerivative.of_isCovariantDerivativeOn_of_open_cover
-    (s := fun α : M => chartLeviCivitaGoodSet (I := I) α)
-    (cov := leviCivitaStitched (I := I) g)
-    (fun α => leviCivitaStitched_isCovariantDerivativeOn (I := I) g α)
-    (iUnion_chartLeviCivitaGoodSet (I := I) (M := M))
+  leviCivitaConnectionOfMetric (I := I) g
 
-@[simp] lemma LeviCivita_toFun (g : SmoothRiemannianMetric I M) :
-    (LeviCivita (I := I) g).toFun = leviCivitaStitched (I := I) g := rfl
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+/-- `LeviCivita` is definitionally the canonical Koszul connection.  The collapse identity that
+makes the two former curvature worlds (`ricciTensor` vs `metricRicciAt`) coincide. -/
+theorem LeviCivita_eq_leviCivitaConnectionOfMetric (g : SmoothRiemannianMetric I M) :
+    LeviCivita (I := I) g = leviCivitaConnectionOfMetric (I := I) g := rfl
 
-/-- **Chart-overlap formula** for the bundled Levi-Civita derivative: at any point
-`x ∈ chartLeviCivitaGoodSet α` and any section `σ` differentiable at `x`, the bundled
-Levi-Civita value coincides with the chart-local value at `α`. -/
+omit [BoundarylessManifold I M] in
+/-- **Chart-coordinate bridge** for the Levi-Civita derivative: at any point
+`x ∈ chartLeviCivitaGoodSet α` and any section `σ` differentiable at `x`, the canonical
+Levi-Civita value coincides with the chart-local Christoffel value at `α`.  Both connections are
+torsion-free and metric-compatible on the good set, so they agree there by Koszul local
+uniqueness. -/
 theorem LeviCivita_chart_apply (g : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     {σ : Π x : M, TangentSpace I x} (hσ : MDiffAt (T% σ) x)
     (v : TangentSpace I x) :
     (LeviCivita (I := I) g).toFun σ x v = chartLeviCivita (I := I) g α σ x v := by
-  rw [LeviCivita_toFun]
-  exact leviCivitaStitched_eq_chart (I := I) g α hx hσ v
+  classical
+  obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
+    (F := E) (V := (TangentSpace I : M → Type _)) x v
+  have hX : MDiffAt (T% fun y => X y) x := X.mdifferentiableAt
+  set s : Set M := {x} with hs
+  have hxs : x ∈ s := rfl
+  have htor0 : (leviCivitaConnectionOfMetric (I := I) g).torsion = 0 :=
+    funext fun y => leviCivitaConnectionOfMetric_isTorsionFree (I := I) g y
+  have hTF₁ : ∀ ⦃A B : Π y : M, TangentSpace I y⦄ ⦃y : M⦄,
+      MDiffAt (T% A) y → MDiffAt (T% B) y → y ∈ s →
+      (leviCivitaConnectionOfMetric (I := I) g).toFun B y (A y) -
+        (leviCivitaConnectionOfMetric (I := I) g).toFun A y (B y) =
+        VectorField.mlieBracket I A B y := by
+    intro A B y hA hB _
+    exact (CovariantDerivative.torsion_eq_zero_iff
+      (leviCivitaConnectionOfMetric (I := I) g)).mp htor0 hA hB
+  have hTF₂ : ∀ ⦃A B : Π y : M, TangentSpace I y⦄ ⦃y : M⦄,
+      MDiffAt (T% A) y → MDiffAt (T% B) y → y ∈ s →
+      chartLeviCivita (I := I) g α B y (A y) -
+        chartLeviCivita (I := I) g α A y (B y) =
+        VectorField.mlieBracket I A B y := by
+    intro A B y hA hB hy
+    have hyx : y = x := hy
+    subst hyx
+    exact chartLeviCivita_torsion_free_on (I := I) g α hA hB hx
+  have hMC₁ : IsMetricCompatibleOn (leviCivitaConnectionOfMetric (I := I) g).toFun g s := by
+    intro Y Z y hY hZ _ v
+    obtain ⟨W, hWy⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
+      (F := E) (V := (TangentSpace I : M → Type _)) y v
+    have hW : MDiffAt (T% fun b => W b) y := W.mdifferentiableAt
+    have hgen := leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g y W Y Z hW hY hZ
+    rw [hWy] at hgen
+    exact hgen
+  have hMC₂ : IsMetricCompatibleOn (chartLeviCivita (I := I) g α) g s :=
+    (chartLeviCivita_isMetricCompatibleOn (I := I) g α).mono
+      (by intro y hy; have : y = x := hy; subst this; exact hx)
+  have hloc :=
+    koszul_local_uniqueness (s := s) hTF₁ hTF₂ hMC₁ hMC₂ hX hσ hxs
+  simpa [hXx] using hloc
 
 /-- The bundled Levi-Civita covariant derivative is **torsion-free**: its torsion
 tensor vanishes identically. This follows from the chart-local torsion-free identity

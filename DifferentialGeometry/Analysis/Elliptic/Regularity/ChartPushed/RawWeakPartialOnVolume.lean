@@ -115,29 +115,29 @@ noncomputable def chartPushedRawPartial
 structure ChartPushedRawPartialLipschitz
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) where
-  /-- The Lipschitz constant. -/
+
   C : ℝ
-  /-- Non-negativity of the constant. -/
+
   C_nonneg : 0 ≤ C
-  /-- The chart-pushed raw partial is in `MemLp 2` for every smooth scalar. -/
+
   memLp : ∀ v : SmoothScalar g,
     MemLp (chartPushedRawPartial (I := I) (M := M) g α j v) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-  /-- The H¹-Lipschitz bound. -/
+
   bound : ∀ v : SmoothScalar g,
     eLpNorm (chartPushedRawPartial (I := I) (M := M) g α j v) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) ≤
       ENNReal.ofReal C * (‖v‖₊ : ℝ≥0∞)
-  /-- The chart-pushed raw partial is additive in `v`. -/
+
   add : ∀ v w : SmoothScalar g,
     chartPushedRawPartial (I := I) (M := M) g α j (v + w) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
       fun y => chartPushedRawPartial (I := I) (M := M) g α j v y +
         chartPushedRawPartial (I := I) (M := M) g α j w y
-  /-- The chart-pushed raw partial is `ℝ`-linear in `v`. -/
+
   smul : ∀ (c : ℝ) (v : SmoothScalar g),
     chartPushedRawPartial (I := I) (M := M) g α j (c • v) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict

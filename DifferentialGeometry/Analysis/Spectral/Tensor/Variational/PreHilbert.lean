@@ -156,7 +156,7 @@ theorem tensorH1Inner_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
 /-- Compactly-supported smooth `(r, s)`-tensor section wrapped to carry the
 `H^1` pre-Hilbert structure, a distinct Lean type from `SmoothCcTensor`. -/
 structure SmoothCcTensorH1 (g : SmoothRiemannianMetric I M) (r s : ℕ) where
-  /-- The underlying `L^2`-wrapped compactly-supported smooth section. -/
+
   toCcTensor : SmoothCcTensor g r s
 
 namespace SmoothCcTensorH1

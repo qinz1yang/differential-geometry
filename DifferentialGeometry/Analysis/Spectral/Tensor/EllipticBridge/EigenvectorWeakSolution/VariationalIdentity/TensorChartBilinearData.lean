@@ -142,12 +142,7 @@ structure TensorChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (_P₀ : TensorCompIdx (E := E) r s) where
-  /-- The underlying scalar chart-bilinear divergence-form data: the chart
-  component `u_chart`, its explicit weak partials, the right-hand side
-  `f_chart`, their `L²` integrability, and the density-weighted variational
-  identity. The per-component identity has the scalar principal symbol
-  `weightedInvGramOnEuclid g α`, so the per-component tensor data is exactly
-  this scalar structure. -/
+
   toChartData : ChartBilinearH1ComplData (I := I) (M := M) g α
 
 namespace TensorChartBilinearH1ComplData

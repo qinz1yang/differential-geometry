@@ -185,28 +185,6 @@ theorem chartGramMatrix_lifted
       chartBasisVecFiber_lifted (I := I) (M := M) g α' j x' hx']
   rfl
 
-/-- **Chart-basepoint coordinate identity under the universal cover.**
-
-For any cover-point `x' ∈ (chartAt H α').source`, the extended-chart
-coordinate of `x'` in the cover-chart at `α'` agrees with the
-extended-chart coordinate of `proj x'` in the base-chart at `proj α'`.
-Direct consequence of `uc_coverChartAt_extend_conjugacy` applied
-pointwise at `x'`, identifying `extChartAt I α' = (coverChartAt α').extend I`
-and using `localSection α' x' = proj x'`. -/
-lemma extChartAt_proj_eq
-    (α' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-    (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :
-    extChartAt I α' x' = extChartAt I (proj (X := M) α') (proj (X := M) x') := by
-  have hConj := (uc_coverChartAt_extend_conjugacy (I := I) α').1
-  have := congrArg (fun f => f x') hConj
-  simp only [Function.comp_apply] at this
-  have hLS : (localSection α') x' = proj x' := by
-    have := congrArg (fun f => f x') (proj_eq_localSection α')
-    simpa using this.symm
-  change ((coverChartAt α').extend I) x' = _ at this
-  rw [hLS] at this
-  exact this
-
 /-- **`chartChristoffel` is natural under universal-cover projection.**
 
 For any chart anchor `α' : UC M`, lower indices `i j` and upper index `k`,

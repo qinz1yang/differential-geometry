@@ -50,7 +50,7 @@ the bundled linearized symbol `DeTurck.deTurckSymbol g₀ g_bg`, as recorded in
 build the two symbols, not a genuine ambiguity in the principal part).  We pick the
 geometer-sign witness here because it is the one already used by the downstream
 strict-parabolicity consumer. -/
-theorem deturck_ricci_rhs_linearization_at_g0
+theorem deturck_ricci_rhs_linearization_at_g0 [I.Boundaryless]
     (g_bg g₀ : SmoothRiemannianMetric I M) :
     ∃ σ : DifferentialGeometry.PDE.DeTurck.TensorSymbol (E := E) I M,
       σ = DifferentialGeometry.PDE.DeTurck.isotropicSymbol

@@ -229,6 +229,40 @@ private lemma pou_term_le_chartLocalMeasure
           rw [lintegral_indicator htsup_meas, Measure.restrict_restrict htsup_meas,
               setLIntegral_const, one_mul, Set.inter_comm]
 
+/-- Per-chart upper decomposition of the canonical Riemannian volume measure: the volume
+of a measurable set `S` is at most the sum over chart indices `α` of the chart-local
+measure of the part of `S` inside the support of the corresponding partition-of-unity
+bump. Only countably many summands are nonzero — the bump supports `tsupport (ρ α)` are
+locally finite — so the right-hand side is the usable (finite up to bounded overcounting)
+upper bound. This is the public form of the decomposition used inline in
+`riemannianMeasure_compact_lt_top`. -/
+theorem vol_le_tsum_supp
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    {S : Set M} (hS : MeasurableSet S) :
+    riemannianVolumeMeasure (I := I) (M := M) g S ≤
+      ∑' α : M, chartLocalMeasure (I := I) g α (S ∩ tsupport (chartAtlasPOU I M α)) := by
+  rw [riemannianVolumeMeasure_def, riemannianMeasure_def, Measure.sum_apply _ hS]
+  exact ENNReal.tsum_le_tsum
+    (fun α => pou_term_le_chartLocalMeasure g (chartAtlasPOU I M) hS α)
+
+/-- Coarser per-chart upper bound (the shape named by the A0′ area lane), obtained from
+`vol_le_tsum_supp` by dropping the partition-of-unity support restriction:
+`riemannianVolumeMeasure g S ≤ ∑' α, chartLocalMeasure g α S`.
+
+Warning: for a fixed positive-measure `S` the right-hand side is generically `⊤`
+(uncountably many chart sources meet `S`, each contributing a positive summand), so this
+bound is usually vacuous. Prefer `vol_le_tsum_supp`, whose summands vanish off the
+countable partition-of-unity support. -/
+theorem vol_le_tsum_chart
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    {S : Set M} (hS : MeasurableSet S) :
+    riemannianVolumeMeasure (I := I) (M := M) g S ≤
+      ∑' α : M, chartLocalMeasure (I := I) g α S :=
+  (vol_le_tsum_supp g hS).trans
+    (ENNReal.tsum_le_tsum (fun _ => measure_mono Set.inter_subset_left))
+
 /-- The glued Riemannian measure is finite on compact sets. -/
 theorem riemannianMeasure_compact_lt_top
     [T2Space M] [SigmaCompactSpace M]

@@ -323,12 +323,9 @@ private theorem trivializationAt_separableFormBundleSection_eval_basis
   rw [separableFormAt_apply]
   refine Finset.prod_congr rfl ?_
   intro k _
-  -- Goal: g.inner b (chartBasisVecFiber α (φ_first k) b)
-  --        ((trivializationAt E (TangentSpace I) α).symmL ℝ b ((chartModelBasis E) (ψ k)))
-  --     = chartGramMatrix g α b (φ_first k) (ψ k)
+
   rw [chartGramMatrix_apply]
-  -- Now need: g.inner b vfirst (symmL e_ψ) = g.inner b vfirst (chartBasisVecFiber α (ψ k) b).
-  -- These are equal because chartBasisVecFiber α j b = symmL ℝ b (e_j) by definition.
+
   rfl
 
 /-- The `(0, r)` separable-form bundle section is smooth on the chart base set at `α`. -/
@@ -338,15 +335,7 @@ private lemma contMDiffOn_separableFormBundleSection
     ContMDiffOn I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
       (separableFormBundleSection (I := I) (M := M) g r α φ_first)
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- Use `contMDiffOn_section_baseSet_iff` for the trivialization at α to reduce
-  -- to smoothness of the trivialization fiber.
-  -- The function unfolded:
-  --   separableFormBundleSection g r α φ_first b
-  --     = ⟨b, ofModel(separableFormAt g b r (chartBasisVecFiber α (φ_first ·) b))⟩
-  -- The trivialization base sets at α agree:
-  --   (trivializationAt (Tensor0SModel r ℝ E) ... α).baseSet =
-  --     (trivializationAt E (TangentSpace I) α).baseSet  (definitionally).
-  -- Take the trivialization for the (0, r) bundle.
+
   set e : Trivialization (Tensor0SModel r ℝ E)
     (Bundle.TotalSpace.proj :
       Bundle.TotalSpace (Tensor0SModel r ℝ E)
@@ -359,28 +348,19 @@ private lemma contMDiffOn_separableFormBundleSection
       (separableFormAt (I := I) (M := M) g b r
         (fun k : Fin r => chartBasisVecFiber (I := I) α (φ_first k) b)))
   rw [hbaseSet_eq] at h_iff
-  -- Convert the LHS of h_iff into the goal form.
-  -- LHS: ContMDiffOn I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
-  --   (fun b => TotalSpace.mk' (Tensor0SModel r ℝ E)
-  --     (E := fun y => Tensor0SSpace r I y) b (ofModel(separableForm)))
-  --   (chart base set)
-  -- This equals the goal by definition of `separableFormBundleSection`.
+
   refine h_iff.mpr ?_
-  -- Goal (under hbaseSet_eq): ContMDiffOn I 𝓘(ℝ, Tensor0SModel r ℝ E) ∞
-  --   (fun b => (e ⟨b, ofModel(separableForm)⟩).2) (chart base set)
-  -- Use the basis-tuple bridge.
+
   refine contMDiffOn_into_tensor0SModel_of_eval_basis _ ?_
   intro ψ
-  -- For each ψ, smoothness of `b ↦ (e ⟨b, ofModel(separableForm)⟩).2 e_ψ`.
-  -- This equals the product of chart-Gram-matrix entries.
-  -- First prove the product is smooth.
+
   have h_prod_smooth : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun b : M => ∏ k : Fin r,
         chartGramMatrix (I := I) g α b (φ_first k) (ψ k))
       (trivializationAt E (TangentSpace I) α).baseSet := by
     refine contMDiffOn_finset_prod (fun k _ => ?_)
     exact chartGramMatrix_entry_contMDiffOn (I := I) g α (φ_first k) (ψ k)
-  -- Then transfer via congruence on the chart base set.
+
   refine h_prod_smooth.congr (fun b hb => ?_)
   exact trivializationAt_separableFormBundleSection_eval_basis
     (I := I) (M := M) g r α φ_first hb ψ
@@ -408,10 +388,10 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
         (fun i : Fin (r + s) =>
           chartBasisVecFiber (I := I) α (φ i) b))
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- For each x₀ ∈ chart base set, prove ContMDiffAt at x₀.
+
   intro x₀ hx₀
   refine ContMDiffAt.contMDiffWithinAt ?_
-  -- Step 1: The (0, r) separable-form bundle section is smooth at x₀.
+
   have h_sep_smooth_at :
       ContMDiffAt I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
         (separableFormBundleSection (I := I) (M := M) g r α
@@ -420,7 +400,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
     (contMDiffOn_separableFormBundleSection (I := I) (M := M) g r α
       (fun k : Fin r => φ (Fin.castAdd s k))).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx₀)
-  -- Step 2: The section S is smooth on the chart base set, hence `ContMDiffAt` at `x₀`.
+
   have h_S_smooth_at :
       ContMDiffAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
         (fun b : M =>
@@ -428,7 +408,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
             (E := fun y : M => TensorRSSpace r s I y) b (S b)) x₀ :=
     hS.contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx₀)
-  -- Step 3: Apply S via clm_bundle_apply, getting smoothness of the (0, s) bundle section.
+
   have h_applied : ContMDiffAt I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
       (fun b : M =>
         TotalSpace.mk' (Tensor0SModel s ℝ E)
@@ -450,7 +430,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
             (fun k : Fin r =>
               chartBasisVecFiber (I := I) α (φ (Fin.castAdd s k)) b)))
       h_S_smooth_at h_sep_smooth_at
-  -- Step 4: Smooth tangent sections (chartBasisVec) at x₀.
+
   have h_tangent_smooth_at : ∀ j : Fin s,
       ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M =>
@@ -460,7 +440,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
     have hcm := chartBasisVec_contMDiffOn (I := I) α (φ (Fin.natAdd r j))
     exact hcm.contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx₀)
-  -- Step 5: Apply the pointwise (`At`) multilinear-bundle-evaluation lemma.
+
   have h_eval := TensorMultilinear.contMDiffAt_section_apply (I := I) (M := M)
     (T := fun b : M =>
       (S b)
@@ -472,10 +452,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
     (v := fun (j : Fin s) (b : M) =>
       chartBasisVecFiber (I := I) α (φ (Fin.natAdd r j)) b)
     h_tangent_smooth_at
-  -- Step 6: Show this matches the goal up to definitional rewriting. The TensorRSSpace.toModel
-  -- equivalence is `arrowCongr` of two `tensor0SSpace_continuousLinearEquiv` CLEs, so for
-  -- T : Tensor0SSpace r b →L[ℝ] Tensor0SSpace s b and α' : Tensor0SModel r ℝ E,
-  -- TensorRSSpace.toModel(T)(α') = Tensor0SSpace.toModel (T (Tensor0SSpace.ofModel α')).
+
   refine h_eval.congr_of_eventuallyEq ?_
   filter_upwards with b
   rw [lowerAllUpperIndices_apply]

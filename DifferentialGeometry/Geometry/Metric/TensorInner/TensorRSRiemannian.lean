@@ -200,8 +200,7 @@ lemma chartTensorInnerPointwise_zero_left
     (S : TensorRSModel r s ℝ E) :
     chartTensorInnerPointwise (I := I) (M := M) g α r s b 0 S = 0 := by
   rw [chartTensorInnerPointwise_apply, loweredCompose_zero]
-  -- Reduces to: chartTensorInnerPointwise_0s ... 0 (loweredCompose ...) = 0.
-  -- This uses left-additivity on `0 + 0 = 0`.
+
   have h := chartTensorInnerPointwise_0s_add_left
     (I := I) (M := M) g α b (r + s) (0 : Tensor0SModel (r + s) ℝ E) 0
     (loweredCompose (I := I) (M := M) g r s α b S)
@@ -331,8 +330,7 @@ theorem chartLocal_continuous_inner_of_smooth_sections
             (𝕜 := ℝ) (E := E) (I := I) (M := M) (r := r) (s := s) (x := b)
             (S b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  -- Use the bridge identity to convert to `chartTensorInnerPointwise`, then
-  -- apply `chartTensorInnerPointwise_continuousOn`.
+
   have hbridge : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel

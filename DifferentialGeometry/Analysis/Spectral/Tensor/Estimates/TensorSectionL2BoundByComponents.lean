@@ -253,6 +253,20 @@ private lemma tensorInner_le_const_mul_sum_scalar_sq
     h_CS.trans (mul_le_mul_of_nonneg_left h_per_α hN_nn)
   linarith [h_combined, (show N * (Cmax * sumSS) = N * Cmax * sumSS by ring)]
 
+/-- **Pointwise finite-component reconstruction.** The intrinsic squared fibre
+norm of a smooth mixed tensor is controlled by the finite sum of squares of
+its partition-of-unity weighted chart-frame scalar components. -/
+theorem fiber_sq_le_comps
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g r s) (b : M),
+      tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ≤
+        C * ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
+            (tensorChartComponentScalar (I := I) (M := M)
+              g r s S α Idx Jdx b) ^ 2 := by
+  simpa only [sumScalarSq] using
+    tensorInner_le_const_mul_sum_scalar_sq (E := E) (I := I) (M := M) g r s
+
 section ScalarHelpers
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)

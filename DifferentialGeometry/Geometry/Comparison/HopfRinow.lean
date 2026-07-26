@@ -32,6 +32,17 @@ For a smooth Riemannian metric `g` on a connected, sigma-compact,
 boundaryless smooth manifold `M` that is metric-complete as a
 `PseudoEMetricSpace`, this file packages the classical Hopf-Rinow chain.
 
+> **Sorry status (audited 2026-07-05):** this file carries 4 `sorry`s in 3
+> statement-level frontiers (`exists_continuous_path_realizing_riemannianEDist`,
+> `minimizing_path_is_smooth_geodesic`, `unit_speed_rescale`).  A reference scan
+> found **no downstream consumers** of these three declarations — they are dead
+> `sorry`s and do NOT poison the HCG/C4 chain, whose proper-realization needs are
+> served sorry-free by `HopfRinowProper.lean` (a separate route through
+> `MinimizingGeodesic`).  Keep them as recorded frontiers for the intrinsic
+> Hopf–Rinow completion, or discharge them; do not cite this file's presence in
+> an import closure as evidence of a sorry-tainted capstone without checking
+> `#print axioms` on the capstone itself.
+
 ## Geodesic-completeness chain
 
 * `gc_constant_speed` -- a geodesic has constant `g`-speed.
@@ -54,13 +65,6 @@ boundaryless smooth manifold `M` that is metric-complete as a
   the intrinsic cross-chart right-completeness, assembling the iterated
   single-step extensions into a geodesic on `Ici 0` (resp. `Ioi a₀`).
 
-## Exponential-map totality
-
-* `expMap_continuous_of_geodesic_complete` -- continuity of
-  `expMap g p` on the entire tangent space, given geodesic
-  completeness.
-* `expMap_total` -- totality plus continuity packaged.
-
 ## Hopf-Rinow existence of minimisers
 
 * `exists_continuous_path_realizing_riemannianEDist` -- the infimum `riemannianEDist I p q`
@@ -71,11 +75,6 @@ boundaryless smooth manifold `M` that is metric-complete as a
   to unit-speed.
 * `exists_unit_speed_minimizing_geodesic_between_points` -- existence of a
   unit-speed minimising geodesic between any two points.
-
-## Exponential surjectivity on the closed ball
-
-* `expMap_surjective_on_closedBall_of_ediam_le` -- under a diameter bound,
-  `expMap g p` surjects onto `M` from a closed ball in `T_p M`.
 
 ## File layout
 
@@ -115,7 +114,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+  [T2Space M] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 
 section GeodesicCompleteness
@@ -729,38 +728,6 @@ theorem isGeodesicOn_Ici_of_complete_Ioo
 
 end GeodesicCompleteness
 
-section ExpMapTotality
-
-variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-
-/-- **Continuity of `expMap g p` on the whole tangent space.** Under
-geodesic completeness (`isGeodesicOn_Ici_of_complete`), the exponential map
-at `p` is continuous on the entire tangent space `T_p M`.
-
-**Status: DEFERRED — the proof body is `sorry`.** The intended argument
-propagates the smooth dependence of geodesics on initial conditions
-chart-locally along the compact arc `[0, 1]`, but this is not yet formalized.
-Consumers (`expMap_total`, and transitively the Bonnet–Myers compactness /
-finite-fundamental-group corollaries) therefore also depend on `sorryAx`. -/
-theorem expMap_continuous_of_geodesic_complete
-    (g : SmoothRiemannianMetric I M) (p : M) :
-    Continuous (expMap (I := I) g p) := by
-  sorry
-
-/-- **Total continuity of `expMap g p`.** The exponential map at `p`
-is a total continuous function from the tangent space `T_p M` to `M`,
-under the geodesic-completeness conclusion of `isGeodesicOn_Ici_of_complete`.
-The membership conjunct `expMap g p v \in Set.univ` is trivial. -/
-theorem expMap_total
-    (g : SmoothRiemannianMetric I M) (p : M) :
-    Continuous (expMap (I := I) g p) ∧
-      ∀ v : TangentSpace I p,
-        expMap (I := I) g p v ∈ (Set.univ : Set M) :=
-  ⟨expMap_continuous_of_geodesic_complete (I := I) g p,
-    fun _ => Set.mem_univ _⟩
-
-end ExpMapTotality
-
 section MinimiserExistence
 
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -810,7 +777,7 @@ over paths is attained). The proof builds a length-minimising sequence of
 `C¹` paths whose lengths converge to `riemannianEDist I p q` and extracts a
 continuous limit curve. -/
 theorem exists_continuous_path_realizing_riemannianEDist
-    (g : SmoothRiemannianMetric I M) (p q : M) :
+    [ConnectedSpace M] (g : SmoothRiemannianMetric I M) (p q : M) :
     ∃ γ : ℝ → M,
       Continuous γ ∧ γ 0 = p ∧ γ 1 = q ∧
         pathELength I γ 0 1 = riemannianEDist I p q := by
@@ -864,22 +831,19 @@ theorem minimizing_path_is_smooth_geodesic
   sorry
 
 /-- **Auxiliary: `IsGeodesicOn` is preserved under affine
-reparametrisation.** If `γ` is a geodesic on `[a, b]` and
-`c, d : ℝ`, then `s ↦ γ (c · s + d)` is a geodesic on the
-preimage interval. The lifted curve is `s ↦ ⟨γ(c s + d), c • γ'(c s + d)⟩`,
-which is an integral curve of the same chart-fixed geodesic vector field
-on `TM` by the second-order chain rule combined with the quadratic scaling
-`Γ(c v, c v) = c² · Γ(v, v)` of the Christoffel contraction.
-
-The full chain-rule computation on `TM` is deferred: this is the
-substantial step in the unit-speed rescale theorem, and the missing
-TM-derivative infrastructure makes the proof open in this file. -/
+reparametrisation.** If `γ` is a geodesic on `[a, b]` and `c, d : ℝ`, then
+`s ↦ γ (c · s + d)` is a geodesic on the preimage interval.  This is the
+moving-foot reading of the second-order chain rule: at each time the chart
+velocity scales by `c`, the chart acceleration by `c²`, and the Christoffel
+contraction by `c²` (`Γ(c v, c v) = c² · Γ(v, v)`), so the geodesic identity
+carries over after factoring out `c²`.  Proved generally in
+`Geodesic.Equation.isGeodesicOn_comp_affine`. -/
 private theorem isGeodesicOn_affineReparam
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b c d : ℝ}
-    (_hγ_geod : IsGeodesicOn (I := I) g γ (Set.Icc a b)) :
+    (hγ_geod : IsGeodesicOn (I := I) g γ (Set.Icc a b)) :
     IsGeodesicOn (I := I) g (fun s => γ (c * s + d))
-      {s : ℝ | c * s + d ∈ Set.Icc a b} := by
-  sorry
+      {s : ℝ | c * s + d ∈ Set.Icc a b} :=
+  isGeodesicOn_comp_affine (I := I) hγ_geod
 
 /-- **Unit-speed reparametrisation of a geodesic of positive length.**
 A geodesic `\gamma : [a, b] \to M` whose `pathELength` equals
@@ -974,7 +938,7 @@ distance, `riemannianEDist I p q = ENNReal.ofReal L`. Assembled from
 `exists_continuous_path_realizing_riemannianEDist`, `minimizing_path_is_smooth_geodesic`, and
 `unit_speed_rescale`. -/
 theorem exists_unit_speed_minimizing_geodesic_between_points
-    (g : SmoothRiemannianMetric I M) (p q : M) :
+    [ConnectedSpace M] (g : SmoothRiemannianMetric I M) (p q : M) :
     ∃ (γ : ℝ → M) (L : ℝ),
       0 ≤ L ∧ γ 0 = p ∧ γ L = q ∧
         ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 L) ∧
@@ -1089,33 +1053,6 @@ theorem exists_unit_speed_minimizing_geodesic_between_points
       exact riemannianEDist_self
 
 end MinimiserExistence
-
-section ExpMapSurjectivity
-
-variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-
-/-- **`expMap g p` covers `M` from the closed ball of radius `R` in `T_p M`
-under a diameter bound.** On a complete Riemannian manifold
-(`IsRiemannianManifold I M`, `CompleteSpace M`), if the metric diameter of
-`Set.univ` is at most `ENNReal.ofReal R` (`R ≥ 0`), then `Set.univ` is
-contained in the image of `Metric.closedBall (0 : T_p M) R` under
-`expMap g p`.
-
-**Status: DEFERRED — the proof body is `sorry`.** Intended construction (not
-yet formalized): for each `q`, a unit-speed minimising geodesic from `p` to `q`
-has length `L = riemannianDist p q ≤ R` and initial velocity `L • v₀` in the
-closed ball, with `expMap g p (L • v₀) = q`. The Bonnet–Myers compactness /
-finite-fundamental-group corollaries that consume this lemma therefore depend
-on `sorryAx`. -/
-theorem expMap_surjective_on_closedBall_of_ediam_le
-    (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ} (hR : 0 ≤ R)
-    (hdiam : Metric.ediam (Set.univ : Set M) ≤ ENNReal.ofReal R) :
-    (Set.univ : Set M) ⊆
-      (expMap (I := I) g p) ''
-        (Metric.closedBall (0 : TangentSpace I p) R) := by
-  sorry
-
-end ExpMapSurjectivity
 
 end HopfRinow
 end Riemannian

@@ -169,12 +169,12 @@ private theorem dualMultilinearInverseAux_basisElem (r : ℕ)
     continuousMultilinearMap_finiteDimensional r
   let b := Module.finBasis 𝕜 F
   let bMLF := continuousMultilinearMap_basis (𝕜 := 𝕜) (F := F) b r
-  -- bMLF σ definitionally equals continuousMultilinearMap_basisElem b r σ.
+
   have hb_eq : (bMLF σ : ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜) =
       continuousMultilinearMap_basisElem b r σ :=
     congr_fun (Module.Basis.coe_mk
       (continuousMultilinearMap_basisElem_linearIndependent b r) _) σ
-  -- Unfold the definition to expose the Basis.constr.
+
   change LinearMap.toContinuousLinearMap
       (bMLF.constr 𝕜 (fun σ => Ψ (fun i =>
         LinearMap.toContinuousLinearMap (b.coord (σ i)))))

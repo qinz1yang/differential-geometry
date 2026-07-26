@@ -5,7 +5,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import Mathlib.Topology.Covering
+import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
+import DifferentialGeometry.Geometry.Curvature.MetricSectional
+import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
@@ -51,6 +53,104 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M] [PseudoEMetricSpace M] [SecondCountableTopology M]
 
+omit [PseudoEMetricSpace M] in
+/-- The canonical lowered metric curvature of the lifted metric is the
+base curvature evaluated at the projected point. -/
+theorem metricRm_lifted
+    (g : SmoothRiemannianMetric I M)
+    (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+    (X Y Z W : E) :
+    metricRm04StdAt
+        (I := I)
+        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (liftedMetric (I := I) g) x' X Y Z W =
+      metricRm04StdAt (I := I) (M := M) g (proj (X := M) x') X Y Z W := by
+  classical
+  have hR :
+      chartRiemannCLM
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) g) x' X Y Z =
+        chartRiemannCLM (I := I) (M := M) g (proj (X := M) x') X Y Z := by
+    rw [chartRiemannCLM_apply, chartRiemannCLM_apply]
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    refine Finset.sum_congr rfl ?_
+    intro j _
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    refine Finset.sum_congr rfl ?_
+    intro l _
+    rw [chartRiemannTensor_lifted (I := I) (M := M) g x' x'
+      (mem_chart_source H x') i j k l]
+  rw [metricRm04StdAt_eq_chartRiemannCLM,
+    metricRm04StdAt_eq_chartRiemannCLM, hR]
+  rfl
+
+omit [PseudoEMetricSpace M] in
+/-- A positive constant-sectional-curvature metric, scaled by its curvature
+constant and lifted to the universal cover, has the curvature-one tensor
+formula. -/
+theorem metricRm_lift_one
+    (g : SmoothRiemannianMetric I M) (c : Real) (hc : 0 < c)
+    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        c * (g.inner x X X * g.inner x Y Y -
+          g.inner x X Y * g.inner x X Y)) :
+    ∀ (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (X Y Z W : E),
+      metricRm04StdAt
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) (scaleMetric (I := I) c hc g))
+          x' X Y Z W =
+        (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' Y Z *
+            (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' X W -
+          (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' X Z *
+            (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' Y W := by
+  intro x' X Y Z W
+  rw [metricRm_lifted]
+  exact metricRm_scale_one (I := I) (M := M) g (proj (X := M) x') c hc
+    (hsec (proj (X := M) x')) X Y Z W
+
+omit [PseudoEMetricSpace M] in
+/-- The normalized lifted metric of a positive constant-sectional-curvature
+metric has the curvature-one operator formula. -/
+theorem riemannOp_lift_one
+    (g : SmoothRiemannianMetric I M) (c : Real) (hc : 0 < c)
+    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        c * (g.inner x X X * g.inner x Y Y -
+          g.inner x X Y * g.inner x X Y)) :
+    ∀ (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+        (X Y Z : E),
+      riemannOp
+          (LeviCivita (I := I)
+            (liftedMetric (I := I) (scaleMetric (I := I) c hc g)))
+          x' X Y Z =
+        (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' Y Z • X -
+          (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' X Z • Y := by
+  intro x' X Y Z
+  have hRm : ∀ A B C D : E,
+      metricRm04StdAt
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) (scaleMetric (I := I) c hc g))
+          x' A B C D =
+        1 * ((liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' B C *
+            (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' A D -
+          (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' A C *
+            (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' B D) := by
+    intro A B C D
+    simpa only [one_mul] using
+      metricRm_lift_one (I := I) (M := M) g c hc hsec x' A B C D
+  simpa only [one_smul] using
+    riemannOp_of_rm
+      (I := I)
+      (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+      (liftedMetric (I := I) (scaleMetric (I := I) c hc g)) x' 1 hRm X Y Z
+
+omit [NeZero (Module.finrank ℝ E)] [PseudoEMetricSpace M] in
 /-- **Naturality of the Levi-Civita connection under `proj`.**
 The Levi-Civita connection of the lifted metric on `M'` agrees, fibrewise
 through the linear isometric equivalence `liftedMetric_inner_eq`, with the
@@ -64,6 +164,7 @@ theorem leviCivita_lifted_eq_pullback (g : SmoothRiemannianMetric I M) :
     LeviCivita (I := I) (liftedMetric (I := I) g) =
       LeviCivita (I := I) (liftedMetric (I := I) g) := rfl
 
+omit [PseudoEMetricSpace M] in
 /-- **Naturality of `riemannOp` under `proj`.**
 For any `x' : M'` and lifted tangent vectors `v', w', u'`, the Riemann
 curvature operator on `M'` (built from the lifted Levi-Civita) commutes with
@@ -128,6 +229,7 @@ theorem riemannOp_lifted_natural (g : SmoothRiemannianMetric I M)
       (mem_chart_source H x') i j k l
   rw [hT]
 
+omit [PseudoEMetricSpace M] in
 /-- **Naturality of `ricciTensor` under `proj`.**
 For any `x' : M'` and lifted tangent vectors `v', w'`,
 `ricciTensor (liftedMetric g) x' v' w' = ricciTensor g (proj x') v' w'`.
@@ -164,6 +266,7 @@ theorem ricciTensor_lifted_natural (g : SmoothRiemannianMetric I M)
       (DifferentialGeometry.Integral.Measure.chartModelBasis E i) v' w' h_lifted h_base
   rw [hRiem]
 
+omit [PseudoEMetricSpace M] in
 /-- **Ricci lower bound transfers to the universal cover.**
 If `RicciBoundedBelow g κ` holds on `M` (i.e. `Ric_g ≥ κ · g`), then
 `RicciBoundedBelow (liftedMetric g) κ` holds on the universal cover.

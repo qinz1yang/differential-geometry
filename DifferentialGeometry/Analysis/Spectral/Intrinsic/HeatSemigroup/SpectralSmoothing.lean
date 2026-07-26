@@ -91,11 +91,11 @@ against the intrinsic compactness witness
 theorem tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 ≤ t) (u₀ : TensorL2 r s g)
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
+    (i : TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s) :
     tensorL2Coeff (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         (tensorHeatSemigroup (I := I) (M := M) g r s t u₀) i =
-      Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
+      Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           u₀ i := by
@@ -112,7 +112,7 @@ private def baseHZero (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)).symm u₀
 
 private lemma baseHZero_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (u₀ : TensorL2 r s g) (i : TensorEigenIdx (I := I) (M := M) g r s) :
+    (u₀ : TensorL2 r s g) (i : TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s) :
     (baseHZero (I := I) (M := M) g r s u₀).coeff i =
       tensorL2Coeff (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
@@ -133,9 +133,9 @@ def heatHsWitness (g : SmoothRiemannianMetric I M) (r s : ℕ)
 intrinsic eigenbasis coordinate of `u₀`. -/
 @[simp] theorem heatHsWitness_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
-    (i : TensorEigenIdx (I := I) (M := M) g r s) :
+    (i : TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s) :
     (heatHsWitness (I := I) (M := M) g r s σ ht u₀).coeff i =
-      Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
+      Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           u₀ i := by
@@ -174,7 +174,7 @@ theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ
           (I := I) (M := M) h_compact).repr
         (tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
           h_compact hσ (heatHsWitness (I := I) (M := M) g r s σ ht u₀))) i =
-        Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
+        Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
           tensorL2Coeff (I := I) (M := M) h_compact u₀ i := by
     have h := tensorHsToL2_tensorL2Coeff
       (I := I) (M := M) (h_compact := h_compact) hσ
@@ -185,7 +185,7 @@ theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ
       ((tensorResolventHilbertEigenbasisSigma
           (I := I) (M := M) h_compact).repr
         (tensorHeatSemigroup (I := I) (M := M) g r s t u₀)) i =
-        Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
+        Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
           tensorL2Coeff (I := I) (M := M) h_compact u₀ i := by
     have h := tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
       (I := I) (M := M) g r s ht.le u₀ i

@@ -143,6 +143,72 @@ inner-product isometry on representatives. -/
       rw [hS, hT]]
   exact UniformSpace.Completion.inner_coe S T
 
+set_option linter.unusedSectionVars false in
+/-- The embedding `toL2` is injective on representatives: two
+compactly-supported smooth sections with the same `L²` class are equal.
+
+Although the `L²` (semi-)norm on `SmoothCcTensor g r s` is only a
+seminorm — its kernel a priori contains sections vanishing almost
+everywhere — every representative is *continuous*, so a representative of
+zero `L²` norm vanishes everywhere against the full-support Riemannian
+volume measure. Concretely, `toL2 S = toL2 T` forces the diagonal `L²`
+norm of `S - T` to vanish, hence the nonnegative continuous integrand
+`x ↦ ⟨(S - T)(x), (S - T)(x)⟩_{g(x)}` is zero almost everywhere; being
+continuous against an `IsOpenPosMeasure`, it is zero *everywhere*, and
+pointwise positive-definiteness then forces `(S - T)(x) = 0` for every
+`x`, so `S = T`. -/
+theorem smoothCcTensor_eq_of_toL2_eq (S T : SmoothCcTensor g r s)
+    (h : toL2 (g := g) (r := r) (s := s) S =
+      toL2 (g := g) (r := r) (s := s) T) : S = T := by
+  have hsub : S - T = 0 := by
+    have hnorm0 : ‖S - T‖ = 0 := by
+      have hmap : toL2 (g := g) (r := r) (s := s) (S - T) = 0 := by
+        rw [map_sub, h, sub_self]
+      have := congrArg norm hmap
+      rwa [norm_toL2 (g := g) (r := r) (s := s) (S - T), norm_zero] at this
+    have hinner0 :
+        tensorL2Inner (I := I) (M := M) g r s (S - T).toFun (S - T).toFun = 0 := by
+      have hsqrt : tensorL2Norm (I := I) (M := M) g r s (S - T).toFun = 0 := by
+        rw [← SmoothCcTensor.norm_def (I := I) (M := M) (S - T)]
+        exact hnorm0
+      rw [tensorL2Norm_def] at hsqrt
+      exact (Real.sqrt_eq_zero
+        (tensorL2Inner_nonneg (I := I) (M := M) g r s (S - T).toFun)).mp hsqrt
+    have hae :
+        (fun x : M => tensorInnerPointwise (I := I) (M := M) g r s x
+            ((S - T).toFun x) ((S - T).toFun x))
+          =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g] 0 :=
+      (MeasureTheory.integral_eq_zero_iff_of_nonneg
+        (fun x : M => tensorInnerPointwise_nonneg (I := I) (M := M) g r s x
+          ((S - T).toFun x))
+        (SmoothCcTensor.memL2_toFun (I := I) (M := M) (S - T))).mp hinner0
+    haveI : (riemannianVolumeMeasure (I := I) (M := M) g).IsOpenPosMeasure :=
+      riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
+    have heq :
+        (fun x : M => tensorInnerPointwise (I := I) (M := M) g r s x
+            ((S - T).toFun x) ((S - T).toFun x)) = 0 :=
+      (Continuous.ae_eq_iff_eq (riemannianVolumeMeasure (I := I) (M := M) g)
+        (SmoothCcTensor.continuous_inner_self (I := I) (M := M) (S - T))
+        continuous_const).mp hae
+    have hsection : (S - T).toSection = 0 := by
+      refine ContMDiffSection.ext (fun x => ?_)
+      have hx : tensorInnerPointwise (I := I) (M := M) g r s x
+          ((S - T).toFun x) ((S - T).toFun x) = 0 := congrFun heq x
+      have hfun : (S - T).toFun x = 0 :=
+        (tensorInnerPointwise_eq_zero_iff (I := I) (M := M) g r s x
+          ((S - T).toFun x)).mp hx
+      have hmodel : TensorRSSpace.toModel ((S - T).toSection x) = 0 := hfun
+      have hzero : TensorRSSpace.toModel
+          ((0 : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+            (fun x : M => TensorRSSpace r s I x)⟯) x) = 0 := by
+        rw [ContMDiffSection.coe_zero, Pi.zero_apply, TensorRSSpace.toModel_zero]
+      exact TensorRSSpace.toModel_injective (𝕜 := ℝ) (E := E) (I := I) (M := M)
+        (hmodel.trans hzero.symm)
+    refine SmoothCcTensor.ext ?_
+    rw [SmoothCcTensor.toSection_zero]
+    exact hsection
+  exact sub_eq_zero.mp hsub
+
 end DenseEmbedding
 
 end SmoothCcTensor

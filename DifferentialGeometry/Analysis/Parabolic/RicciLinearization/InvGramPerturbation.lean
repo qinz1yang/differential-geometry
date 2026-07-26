@@ -172,11 +172,11 @@ steps; in practice a chart-supported perturbation is extended smoothly to all of
 before being packaged here. -/
 structure ChartMetricPerturbation (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] where
-  /-- The component fields: `toFun i j` is `h_{ij}` in chart coordinates. -/
+
   toFun : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → (E → ℝ)
-  /-- Symmetry of the perturbation in its two indices. -/
+
   symm' : ∀ i j y, toFun i j y = toFun j i y
-  /-- Smoothness of every component field. -/
+
   smooth' : ∀ i j, ContDiff ℝ ∞ (toFun i j)
 
 namespace ChartMetricPerturbation

@@ -43,6 +43,9 @@ Hilbert-space-valued object, only real functions of time.
 * `perModeConv_deriv_sq_integral_le` — the resulting `L²` bound on the time
   derivative, `∫₀ᵀ (φ_λ')² ≤ 4·∫₀ᵀ f²`.
 * `continuous_perModeConv` — `φ_λ` is continuous (an indefinite integral).
+* `perModeConv_contDiff_of_contDiff` / `perModeConv_contDiff_top` — `φ_λ` inherits
+  the `Cⁿ` (resp. `C∞`) smoothness of the forcing term `f`, the classical scalar-ODE
+  time-regularity bootstrap.
 
 ## Proof of the maximal-regularity estimate
 
@@ -73,7 +76,7 @@ trivial.
 noncomputable section
 
 open Set MeasureTheory Filter intervalIntegral
-open scoped Topology
+open scoped Topology ContDiff
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -685,6 +688,64 @@ theorem perModeConv_deriv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
     _ = 4 * ∫ t in (0 : ℝ)..T, f t ^ 2 := by ring
 
 end Derivative
+
+section Smoothness
+
+/-- **The `Cᵏ` bootstrap step (natural-number order).**  If the forcing term `f`
+is `Cᵏ`, then so is the per-mode convolution `perModeConv lam f`.  The proof is the
+classical scalar-ODE regularity bootstrap by induction on `k`: the order-`0` case is
+the continuity of an indefinite integral (`continuous_perModeConv`); the inductive
+step uses that the time derivative of `perModeConv lam f` is `f − lam·perModeConv lam f`
+(`perModeConv_hasDerivAt`, hence `deriv_eq`), which is `Cᵏ` whenever `f` and
+`perModeConv lam f` are, so `perModeConv lam f` is `Cᵏ⁺¹`. -/
+private theorem perModeConv_contDiff_natCast (lam : ℝ) :
+    ∀ (k : ℕ) (f : ℝ → ℝ), ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) f →
+      ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConv lam f) := by
+  intro k
+  induction k with
+  | zero =>
+      intro f hf
+      rw [Nat.cast_zero, contDiff_zero] at hf ⊢
+      exact continuous_perModeConv lam hf
+  | succ k ih =>
+      intro f hf
+      have hfcont : Continuous f := hf.continuous
+      have hf_low : ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) f :=
+        hf.of_le (by rw [Nat.cast_succ]; exact le_self_add)
+      have hphi_low : ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConv lam f) :=
+        ih f hf_low
+      have hderiv_eq : deriv (perModeConv lam f)
+          = fun t => f t - lam * perModeConv lam f t :=
+        deriv_eq (fun t => perModeConv_hasDerivAt lam hfcont t)
+      have hdiff : Differentiable ℝ (perModeConv lam f) :=
+        fun t => (perModeConv_hasDerivAt lam hfcont t).differentiableAt
+      rw [Nat.cast_succ, contDiff_succ_iff_deriv]
+      refine ⟨hdiff, fun hω => absurd hω (by simp), ?_⟩
+      rw [hderiv_eq]
+      exact hf_low.sub (contDiff_const.mul hphi_low)
+
+/-- **Time regularity of the per-mode convolution.**  For every smoothness order
+`n : ℕ∞`, if the forcing term `f` is `Cⁿ` then so is the per-mode convolution
+`perModeConv lam f`.  This is the classical scalar-ODE regularity fact: the solution
+of `φ' + lam·φ = f`, `φ(0) = 0`, is exactly one derivative smoother than the data, and
+in particular at least as smooth as `f`.  The `n = ∞` case follows from the
+finite-order cases via `contDiff_infty`. -/
+theorem perModeConv_contDiff_of_contDiff (n : ℕ∞) (lam : ℝ) (f : ℝ → ℝ)
+    (hf : ContDiff ℝ n f) : ContDiff ℝ n (perModeConv lam f) := by
+  induction n using ENat.recTopCoe with
+  | top =>
+      rw [show ((⊤ : ℕ∞) : WithTop ℕ∞) = ∞ from rfl, contDiff_infty] at hf ⊢
+      exact fun k => perModeConv_contDiff_natCast lam k f (hf k)
+  | coe k => exact perModeConv_contDiff_natCast lam k f hf
+
+/-- **`C∞` time regularity of the per-mode convolution.**  For a `C∞` forcing term
+`f`, the per-mode convolution `perModeConv lam f` is `C∞`.  This is the `n = ∞`
+specialization of `perModeConv_contDiff_of_contDiff`. -/
+theorem perModeConv_contDiff_top (lam : ℝ) (f : ℝ → ℝ)
+    (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (perModeConv lam f) :=
+  perModeConv_contDiff_of_contDiff ⊤ lam f hf
+
+end Smoothness
 
 end MaximalRegularity
 end Parabolic

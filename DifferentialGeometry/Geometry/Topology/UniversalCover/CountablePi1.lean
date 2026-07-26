@@ -591,27 +591,26 @@ lemma uc_pi1_countable_telescope
       (⟦F (Fin.last n)⟧) (⟦c (Fin.last n).succ⟧)).symm
 
 /-- Given a countable open basis `B : ℕ → Set X` whose sets are
-path-connected, whose ambient loops are null-homotopic, and whose pairwise
-intersections are path-connected, the fundamental group `FundamentalGroup X x`
+path-connected and whose ambient loops are null-homotopic, the fundamental group
+`FundamentalGroup X x`
 of a second-countable connected locally-path-connected
 semi-locally-simply-connected space is the surjective image of a countable
 indexing type: there exist a countable `S` and a surjection
 `f : S → FundamentalGroup X x`.
 
 The good basis is a supplied hypothesis here (`hBopen`, `hBpc`, `hBnull`,
-`hBbasis`, `hpcInter`); it is produced for an arbitrary such space by
+`hBbasis`); it is produced for an arbitrary such space by
 `uc_pi1_countable_basis_refinement`.
 
-Argument (classical Hatcher §1.3 / Spanier §2.4 polygonal reduction). Using
-the countable anchors of `uc_pi1_countable_anchors`, the indexing type is
-`S := Σ k : ℕ, Fin k → ℕ` (a sequence of basis indices, one per segment),
-which is countable, and `f s` is the class of the polygonal loop whose
-vertices are the chosen anchors. Surjectivity: an arbitrary loop is
+Argument (classical Hatcher §1.3 / Spanier §2.4 polygonal reduction). The
+indexing type records a basis index for each segment and a refinement-basis
+index for each internal vertex. The polygonal loop uses a chosen point of the
+refinement set as its vertex. Surjectivity: an arbitrary loop is
 Lebesgue-subdivided (`uc_pi1_countable_lebesgue_subdivision`) into truncations
 each lying inside a single basis set `B (idx i)`; each truncation is replaced
 by the canonical anchor-to-anchor segment in `B (idx i)` using the homotopy
 uniqueness of `uc_pi1_countable_piece_homotopy` together with
-`Path.trans_truncate_homotopic`, so the loop's class equals `f ⟨k, idx⟩`. -/
+`Path.trans_truncate_homotopic`. -/
 theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     (X : Type*) [TopologicalSpace X]
     [SecondCountableTopology X] [ConnectedSpace X] [LocPathConnectedSpace X]
@@ -623,11 +622,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     (hBnull : ∀ n, ∀ (y : X) (_ : y ∈ B n) (γ : _root_.Path y y),
       Set.range γ.toContinuousMap ⊆ B n →
         (⟦γ⟧ : _root_.Path.Homotopic.Quotient y y) = ⟦_root_.Path.refl y⟧)
-    (hBbasis : TopologicalSpace.IsTopologicalBasis (Set.range B))
-    (hpcInter :
-      ∀ (m n : ℕ),
-        ∀ a, a ∈ B m → a ∈ B n → ∀ b, b ∈ B m → b ∈ B n →
-          JoinedIn (B m ∩ B n) a b) :
+    (hBbasis : TopologicalSpace.IsTopologicalBasis (Set.range B)) :
     ∃ (S : Type) (_ : Countable S) (f : S → FundamentalGroup X x),
       Function.Surjective f := by
   classical
@@ -636,40 +631,44 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
   have hBcov : (⋃ n, B n) = (Set.univ : Set X) := by
     have hsu : ⋃₀ (Set.range B) = (Set.univ : Set X) := hBbasis.sUnion_eq
     rw [Set.sUnion_range] at hsu; exact hsu
-  obtain ⟨anchor, hanchor⟩ := uc_pi1_countable_anchors X B
-  let S : Type := Σ k : ℕ, Fin k → ℕ
+  let anchor : ℕ → X := fun n => (hBpc n).nonempty.choose
+  have hanchor : ∀ n, anchor n ∈ B n :=
+    fun n => (hBpc n).nonempty.choose_spec
+  let S : Type := Σ k : ℕ, (Fin k → ℕ) × (Fin k → ℕ)
   haveI hScount : Countable S := inferInstance
-  let polyVertex : ∀ {k : ℕ}, (Fin k → ℕ) → Fin (k + 1) → X :=
-    fun {k} idx i =>
+  let polyVertex : ∀ {k : ℕ}, (Fin k → ℕ) → (Fin k → ℕ) →
+      Fin (k + 1) → X :=
+    fun {k} _idx ref i =>
       if h : 0 < (i : ℕ) ∧ (i : ℕ) < k then
-        anchor (idx ⟨(i : ℕ) - 1, by omega⟩, idx ⟨(i : ℕ), h.2⟩)
+        anchor (ref ⟨(i : ℕ), h.2⟩)
       else x
   have polyVertex_zero :
-      ∀ {k : ℕ} (idx : Fin k → ℕ),
-        polyVertex idx (0 : Fin (k + 1)) = x := by
-    intro k idx
+      ∀ {k : ℕ} (idx ref : Fin k → ℕ),
+        polyVertex idx ref (0 : Fin (k + 1)) = x := by
+    intro k idx ref
     simp [polyVertex]
   have polyVertex_last :
-      ∀ {k : ℕ} (idx : Fin k → ℕ),
-        polyVertex idx (Fin.last k) = x := by
-    intro k idx
+      ∀ {k : ℕ} (idx ref : Fin k → ℕ),
+        polyVertex idx ref (Fin.last k) = x := by
+    intro k idx ref
     simp [polyVertex, Fin.val_last]
   let f : S → FundamentalGroup X x := fun s =>
     let k := s.fst
-    let idx := s.snd
+    let idx := s.snd.1
+    let ref := s.snd.2
     if hvalid :
         ∀ i : Fin k,
-          (polyVertex idx i.castSucc ∈ B (idx i)) ∧
-          (polyVertex idx i.succ ∈ B (idx i)) then
+          (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
+          (polyVertex idx ref i.succ ∈ B (idx i)) then
       let seg : (i : Fin k) → _root_.Path
-          (polyVertex idx i.castSucc) (polyVertex idx i.succ) :=
+          (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
         fun i =>
           ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath
-      let p₀ : Fin (k + 1) → X := fun j => polyVertex idx j
+      let p₀ : Fin (k + 1) → X := fun j => polyVertex idx ref j
       let polyLoop : _root_.Path x x :=
         (_root_.Path.concat p₀ seg).cast
-          (show x = p₀ 0 from (polyVertex_zero idx).symm)
-          (show x = p₀ (Fin.last k) from (polyVertex_last idx).symm)
+          (show x = p₀ 0 from (polyVertex_zero idx ref).symm)
+          (show x = p₀ (Fin.last k) from (polyVertex_last idx ref).symm)
       FundamentalGroup.fromPath ⟦polyLoop⟧
     else
       FundamentalGroup.fromPath ⟦_root_.Path.refl x⟧
@@ -685,7 +684,6 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     apply Fin.monotone_iff_le_succ.mpr
     intro i
     exact Subtype.coe_le_coe.mp (htmono' i)
-  refine ⟨⟨k, idx⟩, ?_⟩
   have hγ0 : γ (t 0 : unitInterval) = x := by rw [ht0]; exact γ.source
   have hγlast : γ (t (Fin.last k) : unitInterval) = x := by
     rw [htlast]; exact γ.target
@@ -699,6 +697,44 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     fun i => hidx i (t i.castSucc) (le_refl _) (htle i)
   have hγ_succ_in : ∀ i : Fin k, γ (t i.succ) ∈ B (idx i) :=
     fun i => hidx i (t i.succ) (htle i) (le_refl _)
+  have href_exists :
+      ∀ i : Fin k, 0 < (i : ℕ) →
+        ∃ n, γ (t i.castSucc) ∈ B n ∧
+          B n ⊆ B (idx ⟨(i : ℕ) - 1, by omega⟩) ∩ B (idx i) := by
+    intro i hi
+    let ip : Fin k := ⟨(i : ℕ) - 1, by omega⟩
+    have hip_succ : ip.succ = i.castSucc := by
+      apply Fin.ext
+      change (i : ℕ) - 1 + 1 = (i : ℕ)
+      omega
+    have hγ_prev : γ (t i.castSucc) ∈ B (idx ip) := by
+      have := hγ_succ_in ip
+      rwa [hip_succ] at this
+    have hγ_curr : γ (t i.castSucc) ∈ B (idx i) :=
+      hγ_castSucc_in i
+    have hγ_inter :
+        γ (t i.castSucc) ∈ B (idx ip) ∩ B (idx i) :=
+      ⟨hγ_prev, hγ_curr⟩
+    obtain ⟨V, ⟨n, rfl⟩, hγV, hVsub⟩ :=
+      hBbasis.exists_subset_of_mem_open
+        hγ_inter ((hBopen (idx ip)).inter (hBopen (idx i)))
+    exact ⟨n, hγV, by simpa [ip] using hVsub⟩
+  let ref : Fin k → ℕ := fun i =>
+    if hi : 0 < (i : ℕ) then (href_exists i hi).choose else 0
+  have href_mem :
+      ∀ (i : Fin k) (hi : 0 < (i : ℕ)),
+        γ (t i.castSucc) ∈ B (ref i) := by
+    intro i hi
+    simp only [ref, dif_pos hi]
+    exact (href_exists i hi).choose_spec.1
+  have href_sub :
+      ∀ (i : Fin k) (hi : 0 < (i : ℕ)),
+        B (ref i) ⊆
+          B (idx ⟨(i : ℕ) - 1, by omega⟩) ∩ B (idx i) := by
+    intro i hi
+    simp only [ref, dif_pos hi]
+    exact (href_exists i hi).choose_spec.2
+  refine ⟨⟨k, idx, ref⟩, ?_⟩
   let T : (i : Fin k) →
       _root_.Path (γ.extend ((t i.castSucc : unitInterval) : ℝ))
                   (γ.extend ((t i.succ : unitInterval) : ℝ)) :=
@@ -743,11 +779,10 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
   have hcast_val : ∀ i : Fin k, (i.castSucc : ℕ) = (i : ℕ) := fun i => rfl
   have hsucc_val : ∀ i : Fin k, (i.succ : ℕ) = (i : ℕ) + 1 := fun i => rfl
   have hVertex_castSucc : ∀ i : Fin k,
-      polyVertex idx i.castSucc ∈ B (idx i) := by
+      polyVertex idx ref i.castSucc ∈ B (idx i) := by
     intro i
-    have hi_lt_k : (i : ℕ) < k := i.isLt
     by_cases h0 : (i : ℕ) = 0
-    · have hpv : polyVertex idx i.castSucc = x := by
+    · have hpv : polyVertex idx ref i.castSucc = x := by
         change (if h : 0 < (i.castSucc : ℕ) ∧ (i.castSucc : ℕ) < k
               then anchor _ else x) = x
         rw [dif_neg]
@@ -763,60 +798,23 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       have hxγ : γ (t i.castSucc) = x := by rw [ht_eq, hγ0]
       rw [← hxγ]
       exact hγ_castSucc_in i
-    · have hpos : 0 < (i.castSucc : ℕ) := by rw [hcast_val]; omega
-      have hlt_k : (i.castSucc : ℕ) < k := by rw [hcast_val]; exact hi_lt_k
-      have hi_prev_lt_k : (i : ℕ) - 1 < k := by omega
-      let ip : Fin k := ⟨(i : ℕ) - 1, hi_prev_lt_k⟩
-      have hip_succ_val : (ip.succ : ℕ) = (i : ℕ) := by
-        change (ip : ℕ) + 1 = (i : ℕ)
-        change (i : ℕ) - 1 + 1 = (i : ℕ)
-        omega
-      have ht_ip_succ_eq : t ip.succ = t i.castSucc := by
-        apply congrArg
-        apply Fin.ext
-        rw [hip_succ_val, hcast_val]
-      have ht_ip_castSucc_le : ((t ip.castSucc : unitInterval) : ℝ)
-          ≤ ((t i.castSucc : unitInterval) : ℝ) := by
-        apply Subtype.coe_le_coe.mpr
-        apply htmono
-        change ip.castSucc ≤ i.castSucc
-        apply Fin.mk_le_mk.mpr
-        change (i : ℕ) - 1 ≤ (i : ℕ)
-        omega
-      have hγ_at_ip : γ (t i.castSucc) ∈ B (idx ip) := by
-        refine hidx ip (t i.castSucc) ht_ip_castSucc_le ?_
-        rw [← ht_ip_succ_eq]
-      have hγ_at_i : γ (t i.castSucc) ∈ B (idx i) := hγ_castSucc_in i
-      have hnonempty : (B (idx ip) ∩ B (idx i)).Nonempty :=
-        ⟨γ (t i.castSucc), hγ_at_ip, hγ_at_i⟩
-      have hanchor_mem : anchor (idx ip, idx i)
-          ∈ B (idx ip) ∩ B (idx i) :=
-        hanchor (idx ip, idx i) hnonempty
-      have hpv : polyVertex idx i.castSucc
-          = anchor (idx ⟨(i.castSucc : ℕ) - 1,
-              by rw [hcast_val]; omega⟩, idx ⟨(i.castSucc : ℕ), hlt_k⟩) := by
+    · have hpos : 0 < (i : ℕ) := Nat.pos_of_ne_zero h0
+      have hpos' : 0 < (i.castSucc : ℕ) := by simpa [hcast_val]
+      have hlt : (i.castSucc : ℕ) < k := by
+        simp
+      have hpv : polyVertex idx ref i.castSucc = anchor (ref i) := by
         change (if h : 0 < (i.castSucc : ℕ) ∧ (i.castSucc : ℕ) < k
-              then anchor (idx ⟨(i.castSucc : ℕ) - 1, by omega⟩,
-                idx ⟨(i.castSucc : ℕ), h.2⟩) else x)
-            = anchor _
-        rw [dif_pos ⟨hpos, hlt_k⟩]
+              then anchor (ref ⟨(i.castSucc : ℕ), h.2⟩) else x)
+            = anchor (ref i)
+        rw [dif_pos ⟨hpos', hlt⟩]
+        congr 2
       rw [hpv]
-      have hidx_eq1 : (⟨(i.castSucc : ℕ) - 1,
-          by rw [hcast_val]; omega⟩ : Fin k) = ip := by
-        apply Fin.ext
-        change (i.castSucc : ℕ) - 1 = (i : ℕ) - 1
-        rw [hcast_val]
-      have hidx_eq2 : (⟨(i.castSucc : ℕ), hlt_k⟩ : Fin k) = i := by
-        apply Fin.ext; rw [hcast_val]
-      rw [hidx_eq1, hidx_eq2]
-      exact hanchor_mem.2
+      exact ((href_sub i hpos) (hanchor (ref i))).2
   have hVertex_succ : ∀ i : Fin k,
-      polyVertex idx i.succ ∈ B (idx i) := by
+      polyVertex idx ref i.succ ∈ B (idx i) := by
     intro i
-    have hi_lt_k : (i : ℕ) < k := i.isLt
-    have hsucc_lt : (i.succ : ℕ) ≤ k := Nat.lt_succ_iff.mp i.succ.isLt
     by_cases hk : (i : ℕ) + 1 = k
-    · have hpv : polyVertex idx i.succ = x := by
+    · have hpv : polyVertex idx ref i.succ = x := by
         change (if h : 0 < (i.succ : ℕ) ∧ (i.succ : ℕ) < k
               then anchor _ else x) = x
         rw [dif_neg]
@@ -833,81 +831,55 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     · have hi_next_lt_k : (i : ℕ) + 1 < k := by
         rw [← hsucc_val] at hk ⊢
         omega
-      have hpos : 0 < (i.succ : ℕ) := by rw [hsucc_val]; omega
-      have hlt : (i.succ : ℕ) < k := by rw [hsucc_val]; exact hi_next_lt_k
       let i_next : Fin k := ⟨(i : ℕ) + 1, hi_next_lt_k⟩
-      have hin_castSucc_val : (i_next.castSucc : ℕ) = (i : ℕ) + 1 := by rfl
-      have ht_in_castSucc_eq : t i_next.castSucc = t i.succ := by
-        apply congrArg; apply Fin.ext
-        rw [hin_castSucc_val, hsucc_val]
-      have ht_in_succ_ge : ((t i.succ : unitInterval) : ℝ)
-          ≤ ((t i_next.succ : unitInterval) : ℝ) := by
-        apply Subtype.coe_le_coe.mpr
-        apply htmono
-        change i.succ ≤ i_next.succ
-        apply Fin.mk_le_mk.mpr
-        change (i : ℕ) + 1 ≤ (i : ℕ) + 1 + 1
+      have hnext_pos : 0 < (i_next : ℕ) := by
+        change 0 < (i : ℕ) + 1
         omega
-      have hγ_at_in : γ (t i.succ) ∈ B (idx i_next) := by
-        refine hidx i_next (t i.succ) ?_ ht_in_succ_ge
-        rw [← ht_in_castSucc_eq]
-      have hγ_at_i : γ (t i.succ) ∈ B (idx i) := hγ_succ_in i
-      have hnonempty : (B (idx i) ∩ B (idx i_next)).Nonempty :=
-        ⟨γ (t i.succ), hγ_at_i, hγ_at_in⟩
-      have hanchor_mem : anchor (idx i, idx i_next)
-          ∈ B (idx i) ∩ B (idx i_next) :=
-        hanchor (idx i, idx i_next) hnonempty
-      have hpv : polyVertex idx i.succ
-          = anchor (idx ⟨(i.succ : ℕ) - 1,
-              by rw [hsucc_val]; omega⟩, idx ⟨(i.succ : ℕ), hlt⟩) := by
+      have hpv : polyVertex idx ref i.succ = anchor (ref i_next) := by
         change (if h : 0 < (i.succ : ℕ) ∧ (i.succ : ℕ) < k
-              then anchor (idx ⟨(i.succ : ℕ) - 1, by omega⟩,
-                idx ⟨(i.succ : ℕ), h.2⟩) else x)
-            = anchor _
-        rw [dif_pos ⟨hpos, hlt⟩]
+              then anchor (ref ⟨(i.succ : ℕ), h.2⟩) else x)
+            = anchor (ref i_next)
+        rw [dif_pos ⟨by rw [hsucc_val]; omega, by simpa [hsucc_val]⟩]
+        congr 2
       rw [hpv]
-      have hidx_eq1 : (⟨(i.succ : ℕ) - 1,
-          by rw [hsucc_val]; omega⟩ : Fin k) = i := by
+      have hprev_eq : (⟨(i_next : ℕ) - 1, by omega⟩ : Fin k) = i := by
         apply Fin.ext
-        change (i.succ : ℕ) - 1 = (i : ℕ)
-        rw [hsucc_val]; omega
-      have hidx_eq2 : (⟨(i.succ : ℕ), hlt⟩ : Fin k) = i_next := by
-        apply Fin.ext
-        change (i.succ : ℕ) = (i : ℕ) + 1
-        rw [hsucc_val]
-      rw [hidx_eq1, hidx_eq2]
-      exact hanchor_mem.1
+        change ((i : ℕ) + 1) - 1 = (i : ℕ)
+        omega
+      have hmem := ((href_sub i_next hnext_pos) (hanchor (ref i_next))).1
+      rwa [hprev_eq] at hmem
   have hvalid : ∀ i : Fin k,
-      (polyVertex idx i.castSucc ∈ B (idx i)) ∧
-      (polyVertex idx i.succ ∈ B (idx i)) :=
+      (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
+      (polyVertex idx ref i.succ ∈ B (idx i)) :=
     fun i => ⟨hVertex_castSucc i, hVertex_succ i⟩
   let seg : (i : Fin k) → _root_.Path
-      (polyVertex idx i.castSucc) (polyVertex idx i.succ) :=
+      (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
     fun i =>
       ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath
   have hseg_range : ∀ i : Fin k, ∀ s : unitInterval,
       (seg i s : X) ∈ B (idx i) := by
     intro i s
     exact ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath_mem s
-  let p₀ : Fin (k + 1) → X := fun j => polyVertex idx j
+  let p₀ : Fin (k + 1) → X := fun j => polyVertex idx ref j
   let polyLoop : _root_.Path x x :=
     (_root_.Path.concat p₀ seg).cast
-      (show x = p₀ 0 from (polyVertex_zero idx).symm)
-      (show x = p₀ (Fin.last k) from (polyVertex_last idx).symm)
-  have hf_unfold : f ⟨k, idx⟩ = FundamentalGroup.fromPath ⟦polyLoop⟧ := by
+      (show x = p₀ 0 from (polyVertex_zero idx ref).symm)
+      (show x = p₀ (Fin.last k) from (polyVertex_last idx ref).symm)
+  have hf_unfold :
+      f ⟨k, (idx, ref)⟩ = FundamentalGroup.fromPath ⟦polyLoop⟧ := by
     change (if hv :
         ∀ i : Fin k,
-          (polyVertex idx i.castSucc ∈ B (idx i)) ∧
-          (polyVertex idx i.succ ∈ B (idx i)) then
+          (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
+          (polyVertex idx ref i.succ ∈ B (idx i)) then
       let seg' : (i : Fin k) → _root_.Path
-          (polyVertex idx i.castSucc) (polyVertex idx i.succ) :=
+          (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
         fun i =>
           ((hBpc (idx i)).joinedIn _ (hv i).1 _ (hv i).2).somePath
-      let p₀' : Fin (k + 1) → X := fun j => polyVertex idx j
+      let p₀' : Fin (k + 1) → X := fun j => polyVertex idx ref j
       let polyLoop' : _root_.Path x x :=
         (_root_.Path.concat p₀' seg').cast
-          (show x = p₀' 0 from (polyVertex_zero idx).symm)
-          (show x = p₀' (Fin.last k) from (polyVertex_last idx).symm)
+          (show x = p₀' 0 from (polyVertex_zero idx ref).symm)
+          (show x = p₀' (Fin.last k) from (polyVertex_last idx ref).symm)
       FundamentalGroup.fromPath ⟦polyLoop'⟧
     else
       FundamentalGroup.fromPath ⟦_root_.Path.refl x⟧)
@@ -926,8 +898,8 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     exact congrArg FundamentalGroup.fromPath this
   let γv : Fin (k + 1) → X := fun i => γ.extend ((t i : unitInterval) : ℝ)
   have hγv_eq : ∀ i : Fin (k + 1), γv i = γ (t i) := fun i => hExtend i
-  have hp0 : p₀ (0 : Fin (k + 1)) = x := polyVertex_zero idx
-  have hplast : p₀ (Fin.last k) = x := polyVertex_last idx
+  have hp0 : p₀ (0 : Fin (k + 1)) = x := polyVertex_zero idx ref
+  have hplast : p₀ (Fin.last k) = x := polyVertex_last idx ref
   have hγv0 : γv (0 : Fin (k + 1)) = x := by
     change γ.extend ((t 0 : unitInterval) : ℝ) = x; rw [← ha_eq]
   have hγvlast : γv (Fin.last k) = x := by
@@ -998,28 +970,30 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
           set jf : Fin k := ⟨(j : ℕ), hjlt⟩ with hjf_def
           set jb : Fin k := ⟨(j : ℕ) - 1, hjb_lt⟩ with hjb_def
           have hjf_cast : jf.castSucc = (j : Fin (k + 1)) := by apply Fin.ext; rfl
-          have hjb_succ : jb.succ = (j : Fin (k + 1)) := by
-            apply Fin.ext
-            change ((j : ℕ) - 1) + 1 = (j : ℕ); omega
-          have hp0_in_f : p₀ j ∈ B (idx jf) := by
-            have := hp0_castSucc_in jf; rwa [hjf_cast] at this
-          have hp0_in_b : p₀ j ∈ B (idx jb) := by
-            have := hp0_succ_in jb; rwa [hjb_succ] at this
-          have hgv_in_f : γv j ∈ B (idx jf) := by
-            have := hγv_castSucc_in jf; rwa [hjf_cast] at this
-          have hgv_in_b : γv j ∈ B (idx jb) := by
-            have := hγv_succ_in jb; rwa [hjb_succ] at this
-          have hjoin : JoinedIn (B (idx jb) ∩ B (idx jf)) (p₀ j) (γv j) :=
-            hpcInter (idx jb) (idx jf) (p₀ j) hp0_in_b hp0_in_f
-              (γv j) hgv_in_b hgv_in_f
+          have hjf_pos : 0 < (jf : ℕ) := by simpa [jf] using hjpos
+          have hp0_ref : p₀ j ∈ B (ref jf) := by
+            change (if h : 0 < (j : ℕ) ∧ (j : ℕ) < k then
+                anchor (ref ⟨(j : ℕ), h.2⟩) else x) ∈ B (ref jf)
+            rw [dif_pos (And.intro hjpos hjlt)]
+            simpa [jf] using hanchor (ref jf)
+          have hgv_ref : γv j ∈ B (ref jf) := by
+            rw [hγv_eq]
+            have := href_mem jf hjf_pos
+            rwa [hjf_cast] at this
+          have href_adj : B (ref jf) ⊆ B (idx jb) ∩ B (idx jf) := by
+            simpa [jf, jb] using href_sub jf hjf_pos
+          have hjoin : JoinedIn (B (ref jf)) (p₀ j) (γv j) :=
+            (hBpc (ref jf)).joinedIn _ hp0_ref _ hgv_ref
           refine ⟨hjoin.somePath, ?_, ?_, ?_⟩
           · intro hj s
             have hidxeq : (⟨(j : ℕ), hj⟩ : Fin k) = jf := by apply Fin.ext; rfl
-            rw [hidxeq]; exact (hjoin.somePath_mem s).2
+            rw [hidxeq]
+            exact (href_adj (hjoin.somePath_mem s)).2
           · intro hj s
             have hidxeq : (⟨(j : ℕ) - 1, by omega⟩ : Fin k) = jb := by
               apply Fin.ext; rfl
-            rw [hidxeq]; exact (hjoin.somePath_mem s).1
+            rw [hidxeq]
+            exact (href_adj (hjoin.somePath_mem s)).1
           · intro hbd; omega
     choose c hc_f hc_b hc_bdry using buildVertex
     refine ⟨c, ?_, ?_, ?_, ?_⟩

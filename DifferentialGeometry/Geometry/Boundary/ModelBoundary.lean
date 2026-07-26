@@ -114,110 +114,60 @@ class HasSmoothBoundary
     (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     (H : Type*) [TopologicalSpace H]
     (I : ModelWithCorners ℝ E H) where
-  /-- The normed model space for the boundary. Typically `E` minus a
-  one-dimensional subspace (e.g., `EuclideanSpace ℝ (Fin (n-1))` when
-  `E = EuclideanSpace ℝ (Fin n)`). -/
+
   boundaryE : Type*
-  /-- Normed-additive-group structure on `boundaryE`. -/
+
   [boundaryENormedGroup : NormedAddCommGroup boundaryE]
-  /-- Real normed-space structure on `boundaryE`. -/
+
   [boundaryENormedSpace : NormedSpace ℝ boundaryE]
-  /-- Inner-product-space structure on `boundaryE` (used downstream to inherit
-  the induced Riemannian metric on the boundary). -/
+
   [boundaryEInnerProductSpace : InnerProductSpace ℝ boundaryE]
-  /-- Finite-dimensionality of `boundaryE`, matching the standing assumption
-  on the ambient model space `E`. -/
+
   [boundaryEFiniteDimensional : FiniteDimensional ℝ boundaryE]
-  /-- The topological model space for the boundary. Typically a topological
-  subspace of `H` corresponding to its boundary stratum. -/
+
   boundaryH : Type*
-  /-- Topology on `boundaryH`. -/
+
   [boundaryHTopologicalSpace : TopologicalSpace boundaryH]
-  /-- The model with corners on `(boundaryE, boundaryH)`. Required to be
-  boundaryless: the boundary of the boundary is empty. -/
+
   boundaryI : ModelWithCorners ℝ boundaryE boundaryH
-  /-- Boundarylessness of `boundaryI`: the boundary of the boundary is empty
-  (no corners). -/
+
   [boundaryIBoundaryless : boundaryI.Boundaryless]
-  /-- Topological inclusion of the boundary topological model into the ambient
-  topological model. -/
+
   inclH : boundaryH → H
-  /-- Continuity of the topological inclusion. -/
+
   inclH_continuous : Continuous inclH
-  /-- Injectivity of the topological inclusion. -/
+
   inclH_injective : Function.Injective inclH
-  /-- The inclusion `inclH` is a topological inducing map: the topology on
-  `boundaryH` is the topology induced from `H` by `inclH`. -/
+
   inclH_isInducing : IsInducing inclH
-  /-- The image of `inclH`, after applying `I`, is closed in `E`. This
-  expresses that the boundary stratum is a closed subset of the ambient
-  normed space (equivalently, of `range I`). -/
+
   inclH_isClosed_image : IsClosed (Set.range (I ∘ inclH))
-  /-- Continuous projection from the ambient normed model `E` onto the
-  boundary normed model `E'`. -/
+
   projE : E → boundaryE
-  /-- Continuity of the projection. -/
+
   projE_continuous : Continuous projE
-  /-- Smoothness of the projection: `projE : E → boundaryE` is `C^∞` as a map
-  between normed spaces. For the canonical `EuclideanHalfSpace n` instance,
-  `projE` drops a coordinate of `EuclideanSpace ℝ (Fin n)`, which is a
-  continuous linear map and hence smooth. -/
+
   projE_contDiff : ContDiff ℝ ∞ projE
-  /-- Smoothness of the embedding read in `boundaryE`: the composite
-  `I ∘ inclH ∘ boundaryI.symm : boundaryE → E` is `C^∞`. Since `boundaryI`
-  is required to be boundaryless (`[boundaryI.Boundaryless]`),
-  `boundaryI.symm` is a continuous map defined on all of `boundaryE`, and
-  the composite expresses how the boundary submanifold sits inside the
-  ambient model space. For the canonical `EuclideanHalfSpace n` instance,
-  this composite inserts a coordinate `0` and is a continuous linear map,
-  hence smooth. -/
+
   I_inclH_boundaryI_symm_contDiff : ContDiff ℝ ∞ (I ∘ inclH ∘ boundaryI.symm)
-  /-- Range identity: the image of `inclH` after `I` is exactly the model-level
-  boundary `frontier (Set.range I)`. -/
+
   range_I_inclH : Set.range (I ∘ inclH) = frontier (Set.range I)
-  /-- Coordinate compatibility: composing the projection with `I` and the
-  inclusion recovers the boundary chart `boundaryI`. Equivalently,
-  `projE ∘ I ∘ inclH = boundaryI`. -/
+
   proj_inclH_compat : ∀ x : boundaryH, projE (I (inclH x)) = boundaryI x
-  /-- A distinguished "inward direction" in the ambient normed model space.
-  Geometrically, this is the direction in which the half-space chart points
-  into the interior at the boundary. For the canonical `EuclideanHalfSpace n`
-  instance, this is the standard basis vector `e_0` (the unit in coordinate
-  `0`). The vector is required to be transverse to the boundary tangent
-  space, i.e., not in the image of the boundary inclusion's derivative; this
-  is the codimension-one transversality condition. -/
+
   inwardCoordE : E
-  /-- Codimension-one transversality: the inward direction is everywhere
-  transverse to the boundary tangent space. Concretely, for every point
-  `y : boundaryE`, the inward direction `inwardCoordE` does not lie in the
-  image of the Fréchet derivative of `I ∘ inclH ∘ boundaryI.symm` at `y`.
-  Combined with injectivity of the inclusion's derivative, this forces the
-  ambient tangent space to split as the direct sum of the boundary tangent
-  space and the line spanned by `inwardCoordE`. -/
+
   inwardCoordE_transverse :
     ∀ y : boundaryE, inwardCoordE ∉ Set.range
       (fderiv ℝ ((I : H → E) ∘ inclH ∘ boundaryI.symm) y)
-  /-- Codimension-one null-set property: the model-level boundary
-  `frontier (Set.range I)` is a Haar null set in `E` with respect to the
-  canonical additive Haar measure attached to the basis of `E`.
-  Geometrically, this expresses that the boundary stratum sits as a smooth
-  codimension-one submanifold of the ambient model space `E`, and so contributes
-  zero volume. The `letI`/`haveI` block installs the canonical Borel
-  structure on `E`. The forall over `[FiniteDimensional ℝ E]` is necessary
-  because `Module.finBasis ℝ E` requires a finite-dimensional structure that is
-  not part of the typeclass header. -/
+
   range_frontier_basis_addHaar_zero :
     ∀ [_h : FiniteDimensional ℝ E],
       letI : MeasurableSpace E := borel E
       haveI : BorelSpace E := ⟨rfl⟩
       ((Module.finBasis ℝ E).addHaar : MeasureTheory.Measure E)
           (frontier (Set.range I)) = 0
-  /-- Codimension-one dimension condition: the boundary normed model space has
-  dimension exactly one less than the ambient. This expresses the geometric
-  fact that the smooth boundary is an `(n-1)`-dimensional submanifold of an
-  `n`-dimensional ambient. Combined with the codim-1 null-set field, this
-  ensures the boundary is a *smooth codimension-one* submanifold (no corners,
-  exact dimension match). -/
+
   finrank_boundaryE_succ :
     ∀ [_h : FiniteDimensional ℝ E],
       Module.finrank ℝ boundaryE + 1 = Module.finrank ℝ E

@@ -224,6 +224,32 @@ lemma metric_compat_hasDerivAt_inner_of_chartCurveDeriv
   simp only [← hDVchart, ← hDWchart]
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
+/-- Pointwise metric-compatibility wrapper for the `g`-inner product of two
+sections along a curve.  It supplies the chart-trajectory derivative from
+`ContMDiffAt` at the point, then delegates to
+`metric_compat_hasDerivAt_inner_of_chartCurveDeriv`. -/
+lemma inner_deriv_at
+    {n : WithTop ℕ∞} (hn : 1 ≤ n)
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V W : ∀ t, TangentSpace I (γ t)) (t₀ : ℝ)
+    (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I n γ t₀)
+    (hVdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t₀) t₀)
+    (hWdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ W t₀) t₀) :
+    HasDerivAt (fun s : ℝ => g.inner (γ s) (V s) (W s))
+      (g.inner (γ t₀) (covDerivAlong (I := I) g γ V t₀) (W t₀)
+        + g.inner (γ t₀) (V t₀) (covDerivAlong (I := I) g γ W t₀)) t₀ := by
+  have hn0 : n ≠ 0 := by
+    intro h; rw [h] at hn; exact absurd hn (by simp)
+  have hchartDeriv : DifferentiableAt ℝ (chartCurve (I := I) (γ t₀) γ) t₀ := by
+    have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) n ((extChartAt I (γ t₀)) ∘ γ) t₀ := by
+      have hφ : ContMDiffAt I 𝓘(ℝ, E) n (extChartAt I (γ t₀)) (γ t₀) :=
+        (contMDiffAt_extChartAt (I := I) (x := γ t₀)).of_le (by exact_mod_cast le_top)
+      exact hφ.comp t₀ hγ
+    exact (contMDiffAt_iff_contDiffAt.mp hmdiff).differentiableAt hn0
+  exact metric_compat_hasDerivAt_inner_of_chartCurveDeriv (I := I) g γ V W t₀
+    hγ.continuousAt hchartDeriv hVdiff hWdiff
+
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 /-- **Metric compatibility (Leibniz rule) for the `g`-inner product of two
 sections along a smooth curve.** Smooth-curve wrapper of
 `metric_compat_hasDerivAt_inner_of_chartCurveDeriv`: from `ContMDiff … ∞ γ` it
@@ -239,16 +265,7 @@ lemma metric_compat_hasDerivAt_inner
     HasDerivAt (fun s : ℝ => g.inner (γ s) (V s) (W s))
       (g.inner (γ t₀) (covDerivAlong (I := I) g γ V t₀) (W t₀)
         + g.inner (γ t₀) (V t₀) (covDerivAlong (I := I) g γ W t₀)) t₀ := by
-  have hn0 : n ≠ 0 := by
-    intro h; rw [h] at hn; exact absurd hn (by simp)
-  have hchartDeriv : DifferentiableAt ℝ (chartCurve (I := I) (γ t₀) γ) t₀ := by
-    have hmdiff : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) n ((extChartAt I (γ t₀)) ∘ γ) t₀ := by
-      have hφ : ContMDiffAt I 𝓘(ℝ, E) n (extChartAt I (γ t₀)) (γ t₀) :=
-        (contMDiffAt_extChartAt (I := I) (x := γ t₀)).of_le (by exact_mod_cast le_top)
-      exact hφ.comp t₀ (hγ.contMDiffAt)
-    exact (contMDiffAt_iff_contDiffAt.mp hmdiff).differentiableAt hn0
-  exact metric_compat_hasDerivAt_inner_of_chartCurveDeriv (I := I) g γ V W t₀
-    hγ.continuous.continuousAt hchartDeriv hVdiff hWdiff
+  exact inner_deriv_at (I := I) hn g γ V W t₀ hγ.contMDiffAt hVdiff hWdiff
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 /-- **Intrinsic mixed-covariant commutation at the central curve.** For a smooth
@@ -998,6 +1015,128 @@ theorem first_variation_of_arcLength_free_endpoints
       (∫ t in (0 : ℝ)..L, A t) 0 := hS2
   rw [hAB] at hS2A
   exact hS2A
+
+/-- For a unit-speed geodesic `γ` and any smooth variation whose central curve
+is `γ` and whose final endpoint is fixed, the first variation of length is the
+negative initial boundary term. This is the moving-start, fixed-target form
+needed for the distance-gradient theorem. -/
+theorem first_variation_geodesic_fixed_end
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ)
+    (hf : IsSmoothVariation (I := I) f) (hL : 0 < L)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) (hfc : ∀ t : ℝ, f 0 t = γ t)
+    (hfixL : ∀ s : ℝ, f s L = γ L)
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t)
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1) :
+    HasDerivAt (fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L)
+      (- g.inner (γ 0)
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u 0) 0 (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ))) 0 := by
+  classical
+  open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
+  have hfγ : (fun v : ℝ => f 0 v) = γ := by
+    funext v; exact hfc v
+  have hfv := first_variation_of_arcLength_free_endpoints (I := I) g f L hf hL
+    (by
+      intro t ht
+      rw [hfc t, hfγ]
+      exact hUnit t ht)
+  have hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) γ := by
+    have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)
+        (fun v : ℝ => ((0 : ℝ), v)) :=
+      contMDiff_const.prodMk contMDiff_id
+    exact hfγ ▸ (hf : ContMDiff _ _ _ _).comp hincl
+  have haccel0 : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
+        (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) v (1 : ℝ)) t = 0 := by
+    intro t ht
+    have hgeo : HasGeodesicEquationAt (I := I) g γ t := hγ t ht
+    have hzero : covDerivAlong (I := I) g γ
+        (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)) t = 0 :=
+      covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2 (I := I) g γ t
+        (hγ_smooth.contMDiffAt.of_le
+          (by exact_mod_cast (by norm_num : (2 : ℕ) ≤ 8))) hgeo
+    rw [hfγ]
+    exact hzero
+  have hVL : mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u L) 0 (1 : ℝ) = 0 := by
+    have hconst : (fun u : ℝ => f u L) = (fun _ : ℝ => γ L) := by
+      funext u; exact hfixL u
+    rw [hconst, mfderiv_const]
+    rfl
+  have hint0 : (∫ t in (0 : ℝ)..L,
+      g.inner (f 0 t)
+        (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
+        (covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
+          (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) v (1 : ℝ)) t)) = 0 := by
+    have hcongr : (∫ t in (0 : ℝ)..L,
+        g.inner (f 0 t)
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
+          (covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
+            (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) v (1 : ℝ)) t))
+        = ∫ _t in (0 : ℝ)..L, (0 : ℝ) := by
+      refine intervalIntegral.integral_congr (fun t ht => ?_)
+      rw [Set.uIcc_of_le (le_of_lt hL)] at ht
+      rw [haccel0 t ht, ContinuousLinearMap.map_zero]
+    rw [hcongr, intervalIntegral.integral_zero]
+  rw [hint0] at hfv
+  rw [hVL, ContinuousLinearMap.map_zero, ContinuousLinearMap.zero_apply] at hfv
+  have hcentral0 :
+      mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f 0 u) 0 (1 : ℝ) =
+        mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ) := by
+    rw [hfγ]
+    rfl
+  rw [hcentral0] at hfv
+  rw [hfc 0] at hfv
+  simpa using hfv
+
+/-- **Distance derivative from a length-realising fixed-end variation.** If a
+smooth variation by unit-speed geodesics has fixed final endpoint and its
+arc length locally equals the distance from the moving initial endpoint to that
+fixed endpoint, then the derivative of that distance is the negative initial
+boundary term. This isolates the remaining geometric input for the
+`grad (1/2 d^2)` theorem: constructing the local length-realising variation. -/
+theorem dist_deriv_of_length [PseudoMetricSpace M]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ)
+    (hf : IsSmoothVariation (I := I) f) (hL : 0 < L)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) (hfc : ∀ t : ℝ, f 0 t = γ t)
+    (hfixL : ∀ s : ℝ, f s L = γ L)
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t)
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1)
+    (hdist : (fun s : ℝ => dist (f s 0) (γ L)) =ᶠ[nhds (0 : ℝ)]
+        (fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L)) :
+    HasDerivAt (fun s : ℝ => dist (f s 0) (γ L))
+      (- g.inner (γ 0)
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u 0) 0 (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ))) 0 := by
+  exact (first_variation_geodesic_fixed_end (I := I) g γ f L hf hL hγ hfc hfixL hUnit)
+    |>.congr_of_eventuallyEq hdist
+
+/-- The corresponding derivative of `1/2 * d^2` along a length-realising
+fixed-end geodesic variation. The derivative is `L` times the derivative of the
+distance, so the only extra hypothesis is the distance value at the central
+curve. -/
+theorem halfSq_deriv_length [PseudoMetricSpace M]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ)
+    (hf : IsSmoothVariation (I := I) f) (hL : 0 < L)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) (hfc : ∀ t : ℝ, f 0 t = γ t)
+    (hfixL : ∀ s : ℝ, f s L = γ L)
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t)
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1)
+    (hdist : (fun s : ℝ => dist (f s 0) (γ L)) =ᶠ[nhds (0 : ℝ)]
+        (fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L))
+    (hdist0 : dist (f 0 0) (γ L) = L) :
+    HasDerivAt (fun s : ℝ => (1 / 2 : ℝ) * dist (f s 0) (γ L) ^ 2)
+      (L * (- g.inner (γ 0)
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u 0) 0 (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ)))) 0 := by
+  have hd := dist_deriv_of_length (I := I) g γ f L hf hL hγ hfc hfixL hUnit hdist
+  have hsq := (hd.pow 2).const_mul (1 / 2 : ℝ)
+  simpa [hdist0, pow_two, mul_assoc, mul_left_comm, mul_comm] using hsq
 
 /-- For a unit-speed geodesic `γ` and any endpoint-fixed smooth
 variation `f` whose central curve is `γ`, the first variation of

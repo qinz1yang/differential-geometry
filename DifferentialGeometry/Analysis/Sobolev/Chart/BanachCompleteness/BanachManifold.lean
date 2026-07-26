@@ -28,11 +28,13 @@ The pieces developed here are:
 3. The per-chart Euclidean Banach completeness application yielding, for each
    chart `α`, a Sobolev limit `chartLimit α : EuclN → ℝ` in
    `MemWkp k p (chartTargetEuclid α)`.
-4. The manifold-side candidate limit
+4. The fact that `chartLimit α` vanishes almost everywhere outside the fixed
+   compact Euclidean image of the partition-of-unity kernel.
+5. The manifold-side candidate limit
    `manifoldLimitFun(x) := Σ_{β ∈ chartAtlasPOU_finset} pullbackToManifold β
    (chartLimit β) (x)`,
    defined as a finite POU-pulled-back sum.
-5. The pointwise per-iterate POU decomposition
+6. The pointwise per-iterate POU decomposition
    `wkpChartFun u (x) = Σ_β pullbackToManifold β (chartPushed β (wkpChartFun u))
    (x)`.
 
@@ -258,6 +260,136 @@ lemma chartLimit_tendsto
           (chartTargetEuclid (I := I) (M := M) α))
       atTop (𝓝 0) :=
   (exists_chart_limit (I := I) (M := M) g hp_one hp_top h_cauchy α).choose_spec.2
+
+/-- The chosen per-chart Sobolev limit vanishes almost everywhere, inside the
+chart target, away from the fixed compact Euclidean image of the support of
+the canonical partition-of-unity factor. -/
+lemma chartLimit_ae_zero
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
+    {hp : 1 ≤ p}
+    {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
+    (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
+      wkpNormChart (I := I) (M := M) g k p
+        (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
+        ENNReal.ofReal ε)
+    (α : M) :
+    chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α
+      =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
+        (chartTargetEuclid (I := I) (M := M) α \
+          toEuclidean ''
+            ((extChartAt I α) ''
+              (tsupport
+                ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ))))]
+        0 := by
+  classical
+  have h_v := chartLimit_tendsto (I := I) (M := M) (g := g)
+    hp_one hp_top h_cauchy α
+  have h_eLp : Tendsto
+      (fun n => eLpNorm
+        (fun y => chartPushed (I := I) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+          (wkpChartFun (f n)) y -
+          chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α y)
+        p (volume.restrict (chartTargetEuclid (I := I) (M := M) α)))
+      atTop (𝓝 0) := by
+    rw [ENNReal.tendsto_atTop_zero]
+    intro ε hε_pos
+    rw [ENNReal.tendsto_atTop_zero] at h_v
+    obtain ⟨N, hN⟩ := h_v ε hε_pos
+    refine ⟨N, ?_⟩
+    intro n hn
+    have h_eLp_le_wkp :=
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_iterWeakPartial_le_wkpNorm
+        (d := Module.finrank ℝ E) (k := k) p
+        (fun y => chartPushed (I := I) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+          (wkpChartFun (f n)) y -
+          chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α y)
+        (chartTargetEuclid (I := I) (M := M) α) 0 (Nat.zero_le _) ![]
+    rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_zero]
+      at h_eLp_le_wkp
+    exact le_trans h_eLp_le_wkp (hN n hn)
+  have hp_zero : p ≠ 0 := by
+    intro h
+    rw [h] at hp_one
+    exact absurd hp_one (by norm_num : ¬ ((1 : ℝ≥0∞) ≤ 0))
+  have h_aesm_seq : ∀ n, AEStronglyMeasurable
+      (chartPushed (I := I) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+        (wkpChartFun (f n)))
+      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
+    ((wkpChartFun_memWkpChart (f n)) α).memLp.aestronglyMeasurable
+  have h_aesm_lim : AEStronglyMeasurable
+      (chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α)
+      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
+    (chartLimit_memWkp (I := I) (M := M) (g := g)
+      hp_one hp_top h_cauchy α).memLp.aestronglyMeasurable
+  have h_meas : TendstoInMeasure
+      (volume.restrict (chartTargetEuclid (I := I) (M := M) α))
+      (fun n => chartPushed (I := I) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+        (wkpChartFun (f n)))
+      atTop (chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α) :=
+    tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top
+      h_aesm_seq h_aesm_lim h_eLp
+  obtain ⟨ns, _hns, h_ae⟩ := h_meas.exists_seq_tendsto_ae
+  have hK_compact : IsCompact
+      (toEuclidean ''
+        ((extChartAt I α) ''
+          (tsupport
+            ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)))) := by
+    have h_tsupport : IsCompact
+        (tsupport
+          ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)) :=
+      (isClosed_tsupport _).isCompact
+    have h_sub :
+        tsupport
+            ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ) ⊆
+          (extChartAt I α).source := by
+      intro x hx
+      have hx_source : x ∈ (chartAt H α).source :=
+        DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx
+      rwa [extChartAt_source]
+    have h_chart_image : IsCompact
+        ((extChartAt I α) ''
+          (tsupport
+            ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ))) :=
+      h_tsupport.image_of_continuousOn ((continuousOn_extChartAt α).mono h_sub)
+    exact h_chart_image.image toEuclidean.continuous
+  have h_off_meas : MeasurableSet
+      (chartTargetEuclid (I := I) (M := M) α \
+        toEuclidean ''
+          ((extChartAt I α) ''
+            (tsupport
+              ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)))) :=
+    (chartTargetEuclid_measurableSet (I := I) (M := M) α).diff
+      hK_compact.measurableSet
+  have h_ae_off :
+      ∀ᵐ y ∂(volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
+        (chartTargetEuclid (I := I) (M := M) α \
+          toEuclidean ''
+            ((extChartAt I α) ''
+              (tsupport
+                ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α : M → ℝ)))),
+        Tendsto
+          (fun i => chartPushed (I := I) (M := M)
+            (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+            (wkpChartFun (f (ns i))) y)
+          atTop
+          (𝓝 (chartLimit (I := I) (M := M) hp_one hp_top h_cauchy α y)) :=
+    h_ae.filter_mono
+      (ae_mono (Measure.restrict_mono_set volume Set.diff_subset))
+  filter_upwards [h_ae_off, ae_restrict_mem h_off_meas] with y hy_tendsto hy_off
+  have hzero : ∀ i, chartPushed (I := I) (M := M)
+      (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
+      (wkpChartFun (f (ns i))) y = 0 := by
+    intro i
+    exact chartPushed_support_subset_compact_in_target (I := I) (M := M)
+      α (wkpChartFun (f (ns i))) y hy_off.1 hy_off.2
+  exact tendsto_nhds_unique hy_tendsto
+    (by simpa only [hzero] using tendsto_const_nhds)
 
 /-- The candidate manifold limit, defined as the finite POU-pulled-back sum of
 the per-chart Euclidean Sobolev limits. The sum is over `chartAtlasPOU_finset`,

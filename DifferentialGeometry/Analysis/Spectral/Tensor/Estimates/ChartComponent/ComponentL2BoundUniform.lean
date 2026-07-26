@@ -257,6 +257,84 @@ lemma tensorChartComponentScalar_sq_le_const_mul_tensorInner
     rw [hzero_sq]
     exact h_RHS_nn
 
+/-- **Pointwise reverse fibre bound for the raw chart component.**
+On the closed support of the chart-atlas partition-of-unity weight at `α`, the
+square of the raw chart-frame scalar component `tensorChartComponentRaw g r s S α
+Idx Jdx b` is bounded by a uniform constant (depending only on `(g, r, s, α)`)
+times the model pointwise self-inner product `tensorInnerPointwise g r s b (S.toFun
+b) (S.toFun b)`.
+
+This is the un-partition-of-unity-weighted twin of
+`tensorChartComponentScalar_sq_le_const_mul_tensorInner`: the raw component is the
+fixed chart-frame projection of the trivialisation image `tensorTrivProj g r s S α
+b`, whose squared norm is controlled by the pointwise fibre inner product
+(`tensorTrivProj_norm_sq_le_const_mul_tensorInner`); the chart-frame projections
+have a uniform operator-norm bound. It is the converse of the forward bound
+`riemannianFiberNormSq_le_raw_components_on_pouTsupport`, supplying the order-`0`
+reverse fibre control consumed by the reverse-Christoffel order-peeling. -/
+lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (S : SmoothCcTensor g r s)
+        (Idx : Fin r → Fin (Module.finrank ℝ E))
+        (Jdx : Fin s → Fin (Module.finrank ℝ E))
+        (b : M),
+        b ∈ tsupport (fun x : M =>
+            ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
+        (tensorChartComponentRaw (I := I) (M := M)
+            g r s S α Idx Jdx b) ^ 2 ≤
+          C * tensorInnerPointwise (I := I) (M := M) g r s b
+            (S.toFun b) (S.toFun b) := by
+  classical
+  obtain ⟨K, hK_nn, h_norm⟩ :=
+    tensorTrivProj_norm_sq_le_const_mul_tensorInner
+      (I := I) (M := M) (E := E) g r s α
+  set C_proj : ℝ := chartComponentProjectionUniformBound (E := E) r s
+  have hC_proj_nn : 0 ≤ C_proj :=
+    chartComponentProjectionUniformBound_nonneg (E := E) r s
+  refine ⟨C_proj ^ 2 * K, mul_nonneg (sq_nonneg _) hK_nn, ?_⟩
+  intro S Idx Jdx b hb
+  set T : TensorRSModel r s ℝ E :=
+    tensorTrivProj (I := I) (M := M) g r s S α b
+  set P_IJ : TensorRSModel r s ℝ E →L[ℝ] ℝ :=
+    tensorChartComponentProjection (E := E) r s Idx Jdx
+  have hQ_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g r s b
+      (S.toFun b) (S.toFun b) :=
+    tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _
+  have hraw_eq : tensorChartComponentRaw (I := I) (M := M)
+      g r s S α Idx Jdx b = P_IJ T := rfl
+  have h_proj_le : ‖P_IJ T‖ ≤ C_proj * ‖T‖ :=
+    (ContinuousLinearMap.le_opNorm _ _).trans
+      (mul_le_mul_of_nonneg_right
+        (tensorChartComponentProjection_norm_le_uniform (E := E) r s Idx Jdx)
+        (norm_nonneg _))
+  have h_proj_sq_le : (P_IJ T) ^ 2 ≤ C_proj ^ 2 * ‖T‖ ^ 2 := by
+    have h_abs : (P_IJ T) ^ 2 = ‖P_IJ T‖ ^ 2 := by
+      rw [Real.norm_eq_abs, sq_abs]
+    rw [h_abs]
+    have hsq := mul_self_le_mul_self (norm_nonneg _) h_proj_le
+    have h_rhs : (C_proj * ‖T‖) * (C_proj * ‖T‖) = C_proj ^ 2 * ‖T‖ ^ 2 := by ring
+    have h_lhs : ‖P_IJ T‖ * ‖P_IJ T‖ = ‖P_IJ T‖ ^ 2 := by rw [sq]
+    linarith [hsq, h_lhs.symm.le, h_rhs.symm.le, h_lhs.le, h_rhs.le]
+  have h_triv_sq_le : ‖T‖ ^ 2 ≤ K *
+      tensorInnerPointwise (I := I) (M := M) g r s b
+        (S.toFun b) (S.toFun b) := h_norm S b hb
+  have hC_proj_sq_nn : 0 ≤ C_proj ^ 2 := sq_nonneg _
+  have h_chain_sq : (P_IJ T) ^ 2 ≤
+      C_proj ^ 2 *
+        (K * tensorInnerPointwise (I := I) (M := M) g r s b
+            (S.toFun b) (S.toFun b)) :=
+    h_proj_sq_le.trans (mul_le_mul_of_nonneg_left h_triv_sq_le hC_proj_sq_nn)
+  rw [hraw_eq]
+  have h_rhs_rearr :
+      C_proj ^ 2 *
+        (K * tensorInnerPointwise (I := I) (M := M) g r s b
+            (S.toFun b) (S.toFun b)) =
+        C_proj ^ 2 * K *
+          tensorInnerPointwise (I := I) (M := M) g r s b
+            (S.toFun b) (S.toFun b) := by ring
+  linarith [h_chain_sq, h_rhs_rearr.le, h_rhs_rearr.symm.le]
+
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
     {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by

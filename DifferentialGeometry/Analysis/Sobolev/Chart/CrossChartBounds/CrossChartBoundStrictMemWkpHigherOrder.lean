@@ -46,13 +46,13 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- **Headline theorem (`MemWkp k p` inputs, arbitrary `k`).** For two chart
+/-- **Joint cross-chart theorem (`MemWkp k p` inputs, arbitrary `k`).** For two chart
 points `γ α : M` on a closed Riemannian manifold and a fixed compact set
 `K_α ⊆ (chartAt H α).source`, there exists a positive constant `K` such that
 for every `v ∈ MemWkp k p` on the chart-α Euclidean target whose closed support
 sits inside the chart-α Euclidean image of `K_α`, the chart-γ pushed
-cross-pullback satisfies the `W^{k,p}` bound. -/
-theorem cross_chart_bound_strict_strong_memWkp_k
+cross-pullback remains in `MemWkp k p` and satisfies the `W^{k,p}` bound. -/
+theorem crossChartJointK
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
@@ -66,16 +66,22 @@ theorem cross_chart_bound_strict_strong_memWkp_k
             (chartTargetEuclid (I := I) (M := M) α) →
         tsupport v ⊆
           (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_α →
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
-          (d := Module.finrank ℝ E) k p
-          (chartPushed (I := I) (M := M)
-            (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
-            (chartPullback I α v))
-          (chartTargetEuclid (I := I) (M := M) γ) ≤
-        ENNReal.ofReal K *
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+            (d := Module.finrank ℝ E) k p
+            (chartPushed (I := I) (M := M)
+              (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
+              (chartPullback I α v))
+            (chartTargetEuclid (I := I) (M := M) γ) ∧
           DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
-            (d := Module.finrank ℝ E) k p v
-            (chartTargetEuclid (I := I) (M := M) α) := by
+            (d := Module.finrank ℝ E) k p
+            (chartPushed (I := I) (M := M)
+              (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
+              (chartPullback I α v))
+            (chartTargetEuclid (I := I) (M := M) γ) ≤
+          ENNReal.ofReal K *
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
+              (d := Module.finrank ℝ E) k p v
+              (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   let _ := g
   set K_M : Set M := K_α ∩ tsupport
@@ -92,6 +98,9 @@ theorem cross_chart_bound_strict_strong_memWkp_k
     have h_pushed_zero := chartPushed_chartPullback_zero_of_K_M_empty
       (I := I) (M := M) γ α hK_α_in_α hKM_empty hv_supp
     rw [h_pushed_zero]
+    refine ⟨DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero_fun
+      (d := Module.finrank ℝ E) hp_one
+      (chartTargetEuclid_isOpen (I := I) (M := M) γ), ?_⟩
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
       (d := Module.finrank ℝ E) hp_one
       (chartTargetEuclid_isOpen (I := I) (M := M) γ)]
@@ -323,6 +332,9 @@ theorem cross_chart_bound_strict_strong_memWkp_k
     exact Function.mem_support.mpr h_η_ne
   have hψ_total_supp_Ωγα : tsupport ψ_total ⊆ Ω_γα :=
     hψ_total_supp_in_η_combined.trans hη_combined_supp_Ωγα
+  have hψ_total_cpt : HasCompactSupport ψ_total :=
+    hη_combined_cpt.of_isClosed_subset (isClosed_tsupport _)
+      hψ_total_supp_in_η_combined
   have h_pointwise_eq : ∀ y ∈ Ωγ_target,
       chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
@@ -505,8 +517,6 @@ theorem cross_chart_bound_strict_strong_memWkp_k
     refine (ae_restrict_iff' hΩγ_target_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall ?_
     intro y hy; exact h_pointwise_eq y hy
-  rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_congr_ae
-        (d := Module.finrank ℝ E) hp_one hΩγ_target_open h_ae_eq]
   have h_χ_loc_comp_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα :=
@@ -521,6 +531,24 @@ theorem cross_chart_bound_strict_strong_memWkp_k
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.smul_smooth_bounded
       (d := Module.finrank ℝ E) k hp_one hΩγα_open hη_combined_smooth h_bound
       h_χ_loc_comp_mem
+  have hψ_total_mem_target :
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) k p ψ_total Ωγ_target :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
+      (d := Module.finrank ℝ E) hp_one hp_top hΩγα_open hΩγ_target_open
+      hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_Ωγα hψ_total_cpt
+  have h_pushed_mem :
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) k p
+        (chartPushed (I := I) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
+          (chartPullback I α v)) Ωγ_target :=
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
+      (d := Module.finrank ℝ E) hp_one hΩγ_target_open h_ae_eq).mpr
+        hψ_total_mem_target
+  refine ⟨h_pushed_mem, ?_⟩
+  rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_congr_ae
+        (d := Module.finrank ℝ E) hp_one hΩγ_target_open h_ae_eq]
   have h_bridge_γ :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
         (d := Module.finrank ℝ E) k p ψ_total Ωγ_target ≤
@@ -583,6 +611,37 @@ theorem cross_chart_bound_strict_strong_memWkp_k
     rw [ENNReal.ofReal_mul hK_leib_pos.le]
     ring
   exact h_K_eq ▸ le_refl _
+
+/-- Compatibility wrapper retaining the original norm-only cross-chart API. -/
+theorem cross_chart_bound_strict_strong_memWkp_k
+    [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
+    (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
+    (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ {v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ},
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+            (d := Module.finrank ℝ E) k p v
+            (chartTargetEuclid (I := I) (M := M) α) →
+        tsupport v ⊆
+          (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_α →
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
+          (d := Module.finrank ℝ E) k p
+          (chartPushed (I := I) (M := M)
+            (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
+            (chartPullback I α v))
+          (chartTargetEuclid (I := I) (M := M) γ) ≤
+        ENNReal.ofReal K *
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm
+            (d := Module.finrank ℝ E) k p v
+            (chartTargetEuclid (I := I) (M := M) α) := by
+  obtain ⟨K, hK, hjoint⟩ := crossChartJointK (I := I) (M := M)
+    g k hp_one hp_top γ α hK_compact hK_α_in_α
+  refine ⟨K, hK, ?_⟩
+  intro v hv hv_supp
+  exact (hjoint hv hv_supp).2
 
 end Chart
 end Sobolev

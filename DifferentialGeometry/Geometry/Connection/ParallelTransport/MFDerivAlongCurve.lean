@@ -4,6 +4,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Analysis.Calculus.ContDiff.Comp
+import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
 /-!
 # Local chart-coordinate continuity of `mfderiv` along a smooth curve
@@ -153,6 +154,38 @@ theorem chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
             (mfderiv 𝓘(ℝ, ℝ) I γ t)) (1 : ℝ) := by
     rw [← hmf_eq_f, hchain]; rfl
   rw [hRHS]; rfl
+
+/-- The velocity field of a pointwise `C²` curve has a differentiable
+coordinate representation in the chart pinned at the current foot. -/
+theorem velocity_coord_diff
+    (γ : ℝ → M) (t : ℝ) (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :
+    DifferentiableAt ℝ
+      (fun u : ℝ =>
+        ((trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt ℝ (γ u))
+          (mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ))) t := by
+  set α : M := γ t
+  have hchart : ContDiffAt ℝ 2 (fun u : ℝ => extChartAt I α (γ u)) t :=
+    contMDiffAt_iff_contDiffAt.mp
+      ((contMDiffAt_extChartAt (I := I) (x := α)).comp t hγ)
+  set sec : ℝ → E := fun u : ℝ =>
+    fderiv ℝ (fun w : ℝ => extChartAt I α (γ w)) u (1 : ℝ)
+  have hsec : ContDiffAt ℝ 1 sec t :=
+    (ContinuousLinearMap.apply ℝ E (1 : ℝ)).contDiff.contDiffAt.comp t
+      (hchart.fderiv_right (by norm_num))
+  have hγ' : ∀ᶠ u in 𝓝 t, ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ u :=
+    (contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hγ
+  have hsrc : {u : ℝ | γ u ∈ (chartAt H α).source} ∈ 𝓝 t :=
+    hγ.continuousAt.preimage_mem_nhds
+      ((chartAt H α).open_source.mem_nhds (mem_chart_source H (γ t)))
+  have heq :
+      (fun u : ℝ =>
+        ((trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt ℝ (γ u))
+          (mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ))) =ᶠ[𝓝 t] sec := by
+    filter_upwards [hsrc, hγ'] with u hu hu2
+    have hbridge := chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
+      (I := I) (M := M) (hu2.mdifferentiableAt (by decide)) α hu
+    simpa only [sec, α] using hbridge
+  exact (heq.differentiableAt_iff).mpr (hsec.differentiableAt (by norm_num))
 
 /-- The chart-`α`-pullback `t ↦ (fderiv ℝ (extChartAt I α ∘ γ) t : ℝ → E) 1`
 is continuous on the open set `U := γ ⁻¹ ((chartAt H α).source)`. -/

@@ -201,6 +201,145 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
   rw [hR_self]
   simp only [map_zero, ContinuousLinearMap.zero_apply, zero_add]
 
+/-- The Ricci trace over an orthonormal basis of the perpendicular complement
+holds for every nonzero vector, without normalizing it in the conclusion. -/
+theorem ricci_eq_sum_perp
+    (g : SmoothRiemannianMetric I M) (x : M) (X : E)
+    (hPos : 0 < g.inner x X X)
+    (e : Fin (Module.finrank ℝ E - 1) → E)
+    (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0)
+    (hPerp : ∀ i, g.inner x (e i) X = 0) :
+    (∑ i : Fin (Module.finrank ℝ E - 1),
+        g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i))
+      = ricciTensor (I := I) g x X X := by
+  classical
+  let a : ℝ := Real.sqrt (g.inner x X X)
+  let X₀ : E := a⁻¹ • X
+  have ha : 0 < a := Real.sqrt_pos.2 hPos
+  have ha_ne : a ≠ 0 := ha.ne'
+  have ha_sq : a ^ 2 = g.inner x X X := by
+    simpa only [a] using Real.sq_sqrt hPos.le
+  have hX : a • X₀ = X := by
+    dsimp only [X₀]
+    rw [smul_smul, mul_inv_cancel₀ ha_ne, one_smul]
+  have bilinear_smul
+      (B : E →L[ℝ] E →L[ℝ] ℝ) (c : ℝ) (v w : E) :
+      B (c • v) (c • w) = c ^ 2 * B v w := by
+    calc
+      B (c • v) (c • w) = (c • B v) (c • w) := by
+        rw [B.map_smul]
+      _ = c * B v (c • w) := by
+        rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      _ = c * (c * B v w) := by
+        rw [(B v).map_smul, smul_eq_mul]
+      _ = c ^ 2 * B v w := by ring
+  have vector_bilinear_smul
+      (T : E →L[ℝ] E →L[ℝ] E) (c : ℝ) (v w : E) :
+      T (c • v) (c • w) = c ^ 2 • T v w := by
+    calc
+      T (c • v) (c • w) = (c • T v) (c • w) := by
+        rw [T.map_smul]
+      _ = c • T v (c • w) := by
+        rw [ContinuousLinearMap.smul_apply]
+      _ = c • (c • T v w) := by rw [(T v).map_smul]
+      _ = c ^ 2 • T v w := by
+        rw [smul_smul]
+        congr 1
+        ring
+  have hUnit : g.inner x X₀ X₀ = 1 := by
+    dsimp only [X₀]
+    calc
+      g.inner x (a⁻¹ • X) (a⁻¹ • X) =
+          a⁻¹ ^ 2 * g.inner x X X :=
+        bilinear_smul (g.inner x) a⁻¹ X X
+      _ = 1 := by
+        rw [← ha_sq]
+        field_simp [ha_ne]
+  have hPerp₀ : ∀ i, g.inner x (e i) X₀ = 0 := by
+    intro i
+    dsimp only [X₀]
+    have h := (g.inner x (e i)).map_smul a⁻¹ X
+    simpa only [smul_eq_mul, hPerp i, mul_zero] using h
+  have htrace :=
+    ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
+      (I := I) g x X₀ hUnit e hON hPerp₀
+  have hcurv (i : Fin (Module.finrank ℝ E - 1)) :
+      g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i) =
+        a ^ 2 *
+          g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
+    calc
+      g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i) =
+          g.inner x
+            (riemannOp (LeviCivita (I := I) g) x (e i) (a • X₀) (a • X₀))
+              (e i) := by rw [hX]
+      _ = g.inner x
+          (a ^ 2 • riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
+        exact congrArg (fun z : E => g.inner x z (e i))
+          (vector_bilinear_smul
+            (riemannOp (LeviCivita (I := I) g) x (e i)) a X₀ X₀)
+      _ = a ^ 2 *
+          g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
+        have h := congrArg (fun L : E →L[ℝ] ℝ => L (e i))
+          ((g.inner x).map_smul (a ^ 2)
+            (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀))
+        simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+  have hric :
+      ricciTensor (I := I) g x X X =
+        a ^ 2 * ricciTensor (I := I) g x X₀ X₀ := by
+    calc
+      ricciTensor (I := I) g x X X =
+          ricciTensor (I := I) g x (a • X₀) (a • X₀) := by rw [hX]
+      _ = a ^ 2 * ricciTensor (I := I) g x X₀ X₀ :=
+        bilinear_smul (ricciTensor (I := I) g x) a X₀ X₀
+  calc
+    (∑ i : Fin (Module.finrank ℝ E - 1),
+        g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i)) =
+        ∑ i : Fin (Module.finrank ℝ E - 1), a ^ 2 *
+          g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) :=
+      Finset.sum_congr rfl fun i _ => hcurv i
+    _ = a ^ 2 *
+        ∑ i : Fin (Module.finrank ℝ E - 1),
+          g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X₀ X₀) (e i) := by
+      rw [Finset.mul_sum]
+    _ = a ^ 2 * ricciTensor (I := I) g x X₀ X₀ := by rw [htrace]
+    _ = ricciTensor (I := I) g x X X := hric.symm
+
+/-- In model dimension one, every smooth Riemannian metric has Ricci curvature
+bounded below by zero. -/
+theorem ricciLower_dim1
+    (g : SmoothRiemannianMetric I M)
+    (h1 : Module.finrank ℝ E = 1) :
+    RicciBoundedBelow (I := I) g 0 := by
+  classical
+  intro x X
+  simp only [zero_mul]
+  by_cases hX : X = 0
+  · subst X
+    simp
+  · have hPos : 0 < g.inner x X X := g.pos x X hX
+    have hd0 : Module.finrank ℝ E - 1 = 0 := by omega
+    let e : Fin (Module.finrank ℝ E - 1) → E :=
+      fun i => Fin.elim0 (hd0 ▸ i)
+    have hON :
+        ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0 := by
+      intro i
+      exact Fin.elim0 (hd0 ▸ i)
+    have hPerp : ∀ i, g.inner x (e i) X = 0 := by
+      intro i
+      exact Fin.elim0 (hd0 ▸ i)
+    have hsum :=
+      ricci_eq_sum_perp (I := I) g x X hPos e hON hPerp
+    have hempty :
+        (∑ i : Fin (Module.finrank ℝ E - 1),
+          g.inner x
+            (riemannOp (LeviCivita (I := I) g) x (e i) X X)
+            (e i)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _
+      exact Fin.elim0 (hd0 ▸ i)
+    rw [hempty] at hsum
+    exact hsum.le
+
 /-- Pointwise integrand identity used by `sum_index_form_frame_evaluation`.
 At each `t ∈ [0, L]`, the sum of per-`i` index-form integrands for
 `V_i := sin(πt/L) • e_i` equals the trig–Ricci expression. Derivation:

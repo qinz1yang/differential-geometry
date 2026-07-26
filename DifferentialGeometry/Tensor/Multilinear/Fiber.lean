@@ -76,17 +76,16 @@ theorem topology_eq (s : ℕ) (x : B) :
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜))) := by
   change instTopologicalSpaceContinuousMultilinearMap 𝕜 s F E x = _
   simp only [instTopologicalSpaceContinuousMultilinearMap]
-  -- Step 1: Factor pretriv ∘ mk' = Prod.mk x ∘ g where g is the fiber map
+
   set e := trivializationAt F E x
   set g : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜 →L[𝕜]
       ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜 :=
     ContinuousMultilinearMap.compContinuousLinearMapL (fun _ => e.symmL 𝕜 x) with hg_def
   have hfactor : (↑(Pretrivialization.continuousMultilinearMap 𝕜 s e) ∘
       TotalSpace.mk' _ x) = Prod.mk x ∘ g := by funext; rfl
-  -- Step 2: Decompose via induced_compose and isInducing_prodMkRight
+
   rw [hfactor, ← induced_compose, (isInducing_prodMkRight x).eq_induced.symm]
-  -- Goal: induced g τ_norm = τ_norm
-  -- Step 3: g is a homeomorphism (continuous with continuous inverse), hence inducing
+
   set g' := ContinuousMultilinearMap.compContinuousLinearMapL (F := 𝕜)
     (E₁ := fun _ : Fin s => F) (E := fun _ : Fin s => E x)
     (fun _ => e.continuousLinearMapAt 𝕜 x) with hg'_def
@@ -233,15 +232,14 @@ theorem triv_zero_symmL_apply_elim0 (x₀ x : B)
   set e := trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin 0 => F) 𝕜)
     (Bundle.continuousMultilinearMap 𝕜 0 F E) x₀ with he_def
   have hbase : x ∈ e.baseSet := hx
-  -- `e.symmL 𝕜 x ω₀` and `e.symm x ω₀` agree as fiber elements (definitional via simps).
+
   have hsymmL : (e.symmL 𝕜 x ω₀ : Bundle.continuousMultilinearMap 𝕜 0 F E x) =
       e.symm x ω₀ := by
     simp [Trivialization.symmL_apply]
   rw [hsymmL]
-  -- Apply triv_zero_apply_eq to the fiber element T = e.symm x ω₀, with input 0.
+
   have h1 := triv_zero_apply_eq (F := F) (E := E) x₀ x (e.symm x ω₀) 0
-  -- h1 : (e ⟨x, e.symm x ω₀⟩).2 0 = (e.symm x ω₀) Fin.elim0
-  -- Use that e ⟨x, e.symm x ω₀⟩ = (x, ω₀) via apply_mk_symm.
+
   have h2 : (e ⟨x, e.symm x ω₀⟩ : B × _) = (x, ω₀) :=
     e.apply_mk_symm hbase ω₀
   rw [show (e ⟨x, e.symm x ω₀⟩ : B × _).2 = ω₀ from congrArg Prod.snd h2] at h1
@@ -274,45 +272,35 @@ theorem triv_symmL_eq_compContinuousLinearMap {s : ℕ} (x₀ x : B)
   set e := trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
     (Bundle.continuousMultilinearMap 𝕜 s F E) x₀ with he_def
   have hbase : x ∈ e.baseSet := hx
-  -- Convert `e.symmL` to `e.symm` (they agree as functions).
+
   have hsymmL : (e.symmL 𝕜 x T : Bundle.continuousMultilinearMap 𝕜 s F E x) =
       e.symm x T := by
     simp [Trivialization.symmL_apply]
   rw [hsymmL]
-  -- Both sides are continuous multilinear maps on `E x`. Check equality on any input.
+
   apply Bundle.continuousMultilinearMap.ext
   intro v
-  -- RHS at v: T (fun i => (trivAt F E x₀).continuousLinearMapAt 𝕜 x (v i))
+
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
-  -- LHS at v: (e.symm x T) v
-  -- Use the round-trip: `(e ⟨x, e.symm x T⟩).2 = T` (by `e.apply_mk_symm`).
-  -- The forward trivialization formula gives:
-  -- `(e ⟨x, M⟩).2 w = M (fun i => (trivAt F E x₀).symmL 𝕜 x (w i))` (definitionally).
-  -- So `T w = (e.symm x T) (fun i => (trivAt F E x₀).symmL 𝕜 x (w i))`.
-  -- Setting `w i = (trivAt F E x₀).continuousLinearMapAt 𝕜 x (v i)`:
-  -- `T (fun i => e.cLMA x (v i)) = (e.symm x T) (fun i => e.symmL x (e.cLMA x (v i)))`
-  -- `= (e.symm x T) (fun i => v i)` by `symmL_continuousLinearMapAt`.
-  -- This is `(e.symm x T) v`. ✓
+
   have h_fwd : ∀ (M : Bundle.continuousMultilinearMap 𝕜 s F E x)
       (w : Fin s → F),
       (e ⟨x, M⟩).2 w = M (fun i => (trivializationAt F E x₀).symmL 𝕜 x (w i)) := by
     intro M w; rfl
   have h_rt : (e ⟨x, e.symm x T⟩ : B × _) = (x, T) :=
     e.apply_mk_symm hbase T
-  -- From h_rt: `(e ⟨x, e.symm x T⟩).2 = T`.
+
   have h_snd : (e ⟨x, e.symm x T⟩ : B × _).2 = T := congrArg Prod.snd h_rt
-  -- From h_fwd with M = e.symm x T, w i = (trivAt F E x₀).continuousLinearMapAt 𝕜 x (v i):
+
   have h_apply := h_fwd (e.symm x T)
     (fun i => (trivializationAt F E x₀).continuousLinearMapAt 𝕜 x (v i))
-  -- h_apply: (e ⟨x, e.symm x T⟩).2 (fun i => e.cLMA x (v i))
-  --        = (e.symm x T) (fun i => e.symmL x (e.cLMA x (v i)))
+
   rw [h_snd] at h_apply
-  -- h_apply: T (fun i => e.cLMA x (v i)) = (e.symm x T) (fun i => e.symmL x (e.cLMA x (v i)))
-  -- The RHS of h_apply simplifies: e.symmL x ∘ e.cLMA x = id (by symmL_continuousLinearMapAt).
+
   conv_rhs at h_apply =>
     arg 2; ext i
     rw [(trivializationAt F E x₀).symmL_continuousLinearMapAt hx (v i)]
-  -- h_apply: T (fun i => e.cLMA x (v i)) = (e.symm x T) v
+
   exact h_apply.symm
 
 /-!

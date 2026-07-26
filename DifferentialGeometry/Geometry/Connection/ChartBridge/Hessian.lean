@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Bundle.SmoothScalarGerm
+import Mathlib.Analysis.Calculus.FDeriv.Congr
 
 /-!
 # Bridge between the chart Hessian carrier and the Levi-Civita Hessian
@@ -878,6 +880,139 @@ theorem chartHessianMatrixIdentity_holds [I.Boundaryless]
   rw [hkey]
   rw [hLHS, hRHS_2]
   rw [chartHessianTensor_def]
+
+/-- For a globally smooth scalar function, the chart Hessian agrees pointwise
+with the abstract Levi-Civita Hessian. -/
+theorem hessFun_eq_abstract [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
+    (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w =
+      abstractHessian (I := I) g f x v w := by
+  simpa only [abstractHessianBilin_apply] using
+    hessFun_eq_abstractHessianBilin_of_matrix_identity (I := I) g f x
+      (chartHessianMatrixIdentity_holds (I := I) g hf x) v w
+
+/-- For a globally smooth scalar function, the chart Hessian is the metric
+pairing with the Levi-Civita derivative of `gradientFun`. -/
+theorem hessFun_eq_cov_grad [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
+    (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w =
+      g.inner x ((LeviCivita (I := I) g).toFun
+        (fun b => gradientFun (I := I) g f b) x v) w := by
+  rw [hessFun_eq_abstract (I := I) g hf x v w]
+  simpa only [gradient_eq_gradFun] using
+    (abstractHessian_eq_inner_cov_gradFun_extend (I := I) g hf x v w).symm
+
+/-- The chart Hessian at a point depends only on the germ of the scalar
+function at that point. -/
+theorem hessFun_congr
+    (g : SmoothRiemannianMetric I M) {f f' : M → ℝ} {x : M}
+    (h : f =ᶠ[𝓝 x] f') :
+    hessFun (I := I) g f x = hessFun (I := I) g f' x := by
+  classical
+  let y₀ : E := extChartAt I x x
+  have hleft : (extChartAt I x).symm y₀ = x := by
+    exact (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
+  have htend : Filter.Tendsto (fun y : E => (extChartAt I x).symm y)
+      (𝓝 y₀) (𝓝 x) := by
+    have hcont : ContinuousAt (fun y : E => (extChartAt I x).symm y) y₀ := by
+      simpa only [y₀] using continuousAt_extChartAt_symm (I := I) x
+    simpa only [ContinuousAt, hleft, Function.comp_def] using hcont
+  have hscalar : scalarOnE (I := I) x f =ᶠ[𝓝 y₀]
+      scalarOnE (I := I) x f' := by
+    simpa only [scalarOnE_def, Function.comp_apply] using htend.eventually h
+  have hpartial (j : Fin (Module.finrank ℝ E)) :
+      partialDeriv (E := E) j (scalarOnE (I := I) x f) =ᶠ[𝓝 y₀]
+        partialDeriv (E := E) j (scalarOnE (I := I) x f') := by
+    filter_upwards [hscalar.fderiv (𝕜 := ℝ)] with y hy
+    unfold partialDeriv
+    rw [hy]
+  have hfirst (j : Fin (Module.finrank ℝ E)) :
+      partialDeriv (E := E) j (scalarOnE (I := I) x f) y₀ =
+        partialDeriv (E := E) j (scalarOnE (I := I) x f') y₀ := by
+    unfold partialDeriv
+    rw [hscalar.fderiv_eq (𝕜 := ℝ)]
+  have hiter (i j : Fin (Module.finrank ℝ E)) :
+      chartIteratedPartialDeriv (I := I) x f i j y₀ =
+        chartIteratedPartialDeriv (I := I) x f' i j y₀ := by
+    change (fderiv ℝ
+        (partialDeriv (E := E) j (scalarOnE (I := I) x f)) y₀)
+          ((chartModelBasis E) i) =
+      (fderiv ℝ
+        (partialDeriv (E := E) j (scalarOnE (I := I) x f')) y₀)
+          ((chartModelBasis E) i)
+    rw [(hpartial j).fderiv_eq (𝕜 := ℝ)]
+  have htensor (i j : Fin (Module.finrank ℝ E)) :
+      chartHessianTensor (I := I) g x f i j x =
+        chartHessianTensor (I := I) g x f' i j x := by
+    simp only [chartHessianTensor_def]
+    change chartIteratedPartialDeriv (I := I) x f i j y₀ - _ =
+      chartIteratedPartialDeriv (I := I) x f' i j y₀ - _
+    rw [hiter i j]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [hfirst k]
+  ext v w
+  rw [hessFun_apply, hessFun_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [htensor i j]
+
+/-- On an open set where a scalar function is smooth, its chart Hessian is the
+metric pairing with the Levi-Civita derivative of its gradient. -/
+theorem hessFun_eq_cov_local [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} {U : Set M} {x : M} (hU : IsOpen U)
+    (hf : ContMDiffOn I 𝓘(ℝ) ∞ f U) (hx : x ∈ U)
+    (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w =
+      g.inner x ((LeviCivita (I := I) g).toFun
+        (fun b => gradientFun (I := I) g f b) x v) w := by
+  obtain ⟨F, hF, hFf⟩ :=
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
+  have hgrad : (fun b => gradientFun (I := I) g F b) =ᶠ[𝓝 x]
+      (fun b => gradientFun (I := I) g f b) := by
+    filter_upwards [hFf.eventuallyEq_nhds] with y hy
+    unfold gradientFun
+    rw [hy.mfderiv_eq]
+  have hgrad_total :
+      (T% fun b => gradientFun (I := I) g F b) =ᶠ[𝓝 x]
+        (T% fun b => gradientFun (I := I) g f b) := by
+    filter_upwards [hgrad] with y hy
+    change TotalSpace.mk' E y (gradientFun (I := I) g F y) =
+      TotalSpace.mk' E y (gradientFun (I := I) g f y)
+    rw [hy]
+  have hgradF_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (T% fun b => gradientFun (I := I) g F b) := by
+    simpa only [gradient_eq_gradFun] using
+      gradFun_contMDiff_total_section (I := I) g hF
+  have hgradF_at : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
+      (T% fun b => gradientFun (I := I) g F b) x := hgradF_smooth x
+  have hgradf_at : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
+      (T% fun b => gradientFun (I := I) g f b) x :=
+    hgradF_at.congr_of_eventuallyEq hgrad_total.symm
+  have hcov :
+      (LeviCivita (I := I) g).toFun
+          (fun b => gradientFun (I := I) g F b) x =
+        (LeviCivita (I := I) g).toFun
+          (fun b => gradientFun (I := I) g f b) x :=
+    (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      (hgradF_at.mdifferentiableAt (by simp))
+      (hgradf_at.mdifferentiableAt (by simp)) Filter.univ_mem hgrad
+  calc
+    hessFun (I := I) g f x v w = hessFun (I := I) g F x v w := by
+      exact congrArg (fun B => B v w) (hessFun_congr (I := I) g hFf.symm)
+    _ = g.inner x ((LeviCivita (I := I) g).toFun
+          (fun b => gradientFun (I := I) g F b) x v) w :=
+      hessFun_eq_cov_grad (I := I) g hF x v w
+    _ = g.inner x ((LeviCivita (I := I) g).toFun
+          (fun b => gradientFun (I := I) g f b) x v) w := by rw [hcov]
 
 /-- For `b` in the chart-α good set, the dual-pairing scalar
 `(extDerivFun f) b (chartBasisVecFiber α j b)` equals

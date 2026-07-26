@@ -113,7 +113,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M]
+  [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -337,6 +337,7 @@ bound `eventually_riemannianEDist_lt` and the triangle inequality; closed: the
 infinite locus is open by the same bound) and contains `p`, so by connectedness it
 is everything. -/
 theorem riemannianEDist_ne_top
+    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (p q : M) : riemannianEDist I p q ≠ (⊤ : ℝ≥0∞) := by
   haveI : LocallyCompactSpace M :=
@@ -391,6 +392,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 /-- The real-valued radial distance-to-`q` along the ray,
 `t ↦ (riemannianEDist I (γ t) q).toReal`, is continuous. -/
 theorem radialDistToReal_continuous
+    [ConnectedSpace M]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -422,6 +424,7 @@ is closed: it is the intersection of the closed `Icc 0 r` with the equalizer of
 the two continuous real functions `t ↦ (riemannianEDist I (γ t) q).toReal`
 (`radialDistToReal_continuous`) and `t ↦ r - t`. -/
 theorem propagationSet_isClosed
+    [ConnectedSpace M]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -594,6 +597,126 @@ theorem intrinsicGeodesic_riemannianEDist_le
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
+/-- Every point on an intrinsic radial geodesic has finite distance to a
+target which already has finite distance from the launch point. -/
+theorem radial_dist_ne_top
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p q : M) (u : TangentSpace I p)
+    (hpq : riemannianEDist I p q ≠ ⊤) (t : ℝ) :
+    riemannianEDist I
+      (expMapIntrinsic (I := I) g hEnorm p (t • u)) q ≠ ⊤ := by
+  have hpr :
+      riemannianEDist I p
+        (expMapIntrinsic (I := I) g hEnorm p (t • u)) ≠ ⊤ := by
+    by_cases ht : 0 ≤ t
+    · have hle := intrinsicGeodesic_riemannianEDist_le
+        (I := I) g hEnorm p u (s := 0) (t := t) ht
+      rw [intrinsicGeodesic_zero (I := I) g hEnorm p u] at hle
+      have heq :
+          expMapIntrinsic (I := I) g hEnorm p (t • u) =
+            intrinsicGeodesic (I := I) g hEnorm p u t := by
+        rw [expMapIntrinsic_def,
+          intrinsicGeodesic_smul (I := I) g hEnorm p u t]
+      rw [heq]
+      exact ne_of_lt (hle.trans_lt ENNReal.ofReal_lt_top)
+    · have ht' : t ≤ 0 := le_of_not_ge ht
+      have hle := intrinsicGeodesic_riemannianEDist_le
+        (I := I) g hEnorm p u (s := t) (t := 0) ht'
+      rw [intrinsicGeodesic_zero (I := I) g hEnorm p u] at hle
+      have heq :
+          expMapIntrinsic (I := I) g hEnorm p (t • u) =
+            intrinsicGeodesic (I := I) g hEnorm p u t := by
+        rw [expMapIntrinsic_def,
+          intrinsicGeodesic_smul (I := I) g hEnorm p u t]
+      rw [heq, riemannianEDist_comm]
+      exact ne_of_lt (hle.trans_lt ENNReal.ofReal_lt_top)
+  have hrp :
+      riemannianEDist I
+        (expMapIntrinsic (I := I) g hEnorm p (t • u)) p ≠ ⊤ := by
+    rw [riemannianEDist_comm]
+    exact hpr
+  have htri :
+      riemannianEDist I
+          (expMapIntrinsic (I := I) g hEnorm p (t • u)) q ≤
+        riemannianEDist I
+            (expMapIntrinsic (I := I) g hEnorm p (t • u)) p +
+          riemannianEDist I p q :=
+    riemannianEDist_triangle
+  exact ne_of_lt (htri.trans_lt
+    (ENNReal.add_lt_top.mpr
+      ⟨lt_of_le_of_ne le_top hrp, lt_of_le_of_ne le_top hpq⟩))
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- The real-valued radial distance-to-`q` is continuous when the target has
+finite distance from the launch point. -/
+private theorem radialDist_cont_ne
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p q : M) (u : TangentSpace I p)
+    (hpq : riemannianEDist I p q ≠ ⊤) :
+    Continuous (fun t : ℝ =>
+      (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal) := by
+  have hray : Continuous (fun t : ℝ =>
+      expMapIntrinsic (I := I) g hEnorm p (t • u)) :=
+    radialRay_continuous (I := I) g hEnorm p u
+  have hdist : Continuous (fun x : M => riemannianEDist I x q) :=
+    continuous_riemannianEDist_to (I := I) q
+  have hcomp : Continuous (fun t : ℝ =>
+      riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q) :=
+    hdist.comp hray
+  refine ENNReal.continuousOn_toReal.comp_continuous hcomp (fun t => ?_)
+  rw [Set.mem_setOf_eq]
+  exact radial_dist_ne_top (I := I) g hEnorm p q u hpq t
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Closedness of the propagation set under a point-pair finiteness
+hypothesis. -/
+private theorem propSet_closed_ne
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p q : M) (u : TangentSpace I p) (r : ℝ)
+    (hpq : riemannianEDist I p q ≠ ⊤) :
+    IsClosed
+      {t : ℝ | t ∈ Set.Icc (0 : ℝ) r ∧
+        (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
+          = r - t} := by
+  have hdistCont : Continuous (fun t : ℝ =>
+      (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal) :=
+    radialDist_cont_ne (I := I) g hEnorm p q u hpq
+  have hlinCont : Continuous (fun t : ℝ => r - t) :=
+    continuous_const.sub continuous_id
+  have heq : IsClosed
+      {t : ℝ |
+        (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
+          = r - t} :=
+    isClosed_eq hdistCont hlinCont
+  have hsplit :
+      {t : ℝ | t ∈ Set.Icc (0 : ℝ) r ∧
+        (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
+          = r - t} =
+      Set.Icc (0 : ℝ) r ∩
+        {t : ℝ |
+          (riemannianEDist I (expMapIntrinsic (I := I) g hEnorm p (t • u)) q).toReal
+            = r - t} := by
+    ext t
+    simp only [Set.mem_setOf_eq, Set.mem_inter_iff]
+  rw [hsplit]
+  exact isClosed_Icc.inter heq
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
 /-- **The intrinsic geodesic with zero launch velocity is the constant `p`.**
 In particular `expMapIntrinsic g hEnorm p 0 = p` (target value at `t = 1`).
 Zero launch speed makes the length-distance bound
@@ -651,6 +774,85 @@ theorem exists_expMapIntrinsic_eq_expMap_radius
   have hv₂ : Real.sqrt (g.inner p (v : E) (v : E)) < ρ₂ :=
     lt_of_lt_of_le hv (min_le_right _ _)
   exact hbridge hv₁ (hfoot hv₂)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- A named positive radius on which the realized normal-coordinate
+exponential and the intrinsic exponential agree.  The radius also lies below
+`expRadiusGp`, so its `g_p`-ball is contained in the source of
+`NormalCoordinates.expMapDiffeo`. -/
+noncomputable def expDiffeoRadius
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) : ℝ :=
+  min
+    (Classical.choose
+      (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p))
+    (expRadiusGp (I := I) g p)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- The named intrinsic/realized exponential agreement radius is positive. -/
+theorem expDiffeoRadius_pos
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) :
+    0 < expDiffeoRadius (I := I) g hEnorm p := by
+  rw [expDiffeoRadius, lt_min_iff]
+  exact ⟨(Classical.choose_spec
+      (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p)).1,
+    expRadiusGp_pos (I := I) g p⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- A vector inside `expDiffeoRadius` belongs to the source of the realized
+exponential partial diffeomorphism. -/
+theorem expDiffeo_mem_of_lt
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) {v : TangentSpace I p}
+    (hv : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expDiffeoRadius (I := I) g hEnorm p) :
+    (v : E) ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source := by
+  have hvGp : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expRadiusGp (I := I) g p :=
+    lt_of_lt_of_le hv (min_le_right _ _)
+  have hvNorm :=
+    norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p hvGp
+  exact mem_expMapDiffeo_source_of_norm_lt_radius (I := I) g p hvNorm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Inside `expDiffeoRadius`, the realized normal-coordinate exponential is
+the intrinsic exponential. -/
+theorem expDiffeo_eq_intr
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p : M) {v : TangentSpace I p}
+    (hv : Real.sqrt (g.inner p (v : E) (v : E)) <
+      expDiffeoRadius (I := I) g hEnorm p) :
+    NormalCoordinates.expMapDiffeo (I := I) g p (v : E) =
+      expMapIntrinsic (I := I) g hEnorm p v := by
+  have hvAgree : Real.sqrt (g.inner p (v : E) (v : E)) <
+      Classical.choose
+        (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p) :=
+    lt_of_lt_of_le hv (min_le_left _ _)
+  have hvSrc := expDiffeo_mem_of_lt (I := I) g hEnorm p hv
+  rw [NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hvSrc]
+  exact ((Classical.choose_spec
+    (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p)).2 hvAgree).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -1138,12 +1340,23 @@ theorem sphere_jump
     obtain ⟨P, hP0, hP1, hP_C1, hP_len⟩ := exists_lt_of_riemannianEDist_lt hlt
     set h : ℝ → ℝ := fun t => (riemannianEDist I x (P t)).toReal with hh_def
     have hP_contOn : ContinuousOn P (Set.Icc (0 : ℝ) 1) := hP_C1.continuousOn
+    have hP_fin : ∀ t ∈ Set.Icc (0 : ℝ) 1, riemannianEDist I x (P t) ≠ ⊤ := by
+      intro t ht
+      have hC1_sub : ContMDiffOn 𝓘(ℝ, ℝ) I 1 P (Set.Icc 0 t) :=
+        hP_C1.mono (Set.Icc_subset_Icc le_rfl ht.2)
+      have hdist_le : riemannianEDist I x (P t) ≤ pathELength I P 0 t :=
+        riemannianEDist_le_pathELength (I := I) (γ := P) (a := 0) (b := t)
+          hC1_sub hP0 rfl ht.1
+      have hlen_le : pathELength I P 0 t ≤ pathELength I P 0 1 :=
+        pathELength_mono le_rfl ht.2
+      exact ne_of_lt ((hdist_le.trans hlen_le).trans_lt
+        (hP_len.trans ENNReal.ofReal_lt_top))
     have hh_contOn : ContinuousOn h (Set.Icc (0 : ℝ) 1) := by
       have hdistP : ContinuousOn (fun t : ℝ => riemannianEDist I x (P t)) (Set.Icc 0 1) :=
         hcont_from_x.comp_continuousOn hP_contOn
       refine ENNReal.continuousOn_toReal.comp' hdistP ?_
-      intro t _
-      exact riemannianEDist_ne_top (I := I) x (P t)
+      intro t ht
+      exact hP_fin t ht
     have hh0 : h 0 = 0 := by
       simp only [hh_def, hP0, riemannianEDist_self, ENNReal.toReal_zero]
     have hh1 : h 1 = ρ := by
@@ -1153,7 +1366,7 @@ theorem sphere_jump
     obtain ⟨ts, hts_mem, hts_eq⟩ :=
       intermediate_value_Icc (zero_le_one) hh_contOn hδ_mem
     set z : M := P ts with hz_def
-    have hz_fin : riemannianEDist I x z ≠ ⊤ := riemannianEDist_ne_top (I := I) x z
+    have hz_fin : riemannianEDist I x z ≠ ⊤ := hP_fin ts hts_mem
     have hdxz : riemannianEDist I x z = ENNReal.ofReal δ := by
       have : (riemannianEDist I x z).toReal = δ := hts_eq
       rw [← this, ENNReal.ofReal_toReal hz_fin]
@@ -2013,13 +2226,13 @@ geodesics `Γu := intrinsicGeodesic p u` (on `[0, t₀]`) and `σ := intrinsicGe
 identifies the forward radial direction at the foot with `w₂`.  The autonomous
 time-translation continuation `intrinsicGeodesic_continuation` then forces
 `Γu(t₀ + δ') = σ δ' = y₁`, so `t₀ + δ' ∈ A`, contradicting `δ' > 0` and `t₀ = sSup A`. -/
-theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
+theorem minExp_of_ne_top
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
-    (p q : M) :
+    (p q : M) (hfin : riemannianEDist I p q ≠ ⊤) :
     ∃ v : TangentSpace I p, expMapIntrinsic (I := I) g hEnorm p v = q ∧
       Real.sqrt (g.inner p v v) = (riemannianEDist I p q).toReal := by
   classical
@@ -2032,7 +2245,7 @@ theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
       rw [hexp0, hpq]
     · have h0 : g.inner p (0 : TangentSpace I p) (0 : TangentSpace I p) = 0 := by simp
       rw [h0, Real.sqrt_zero, hr_def, hpq0, ENNReal.toReal_zero]
-  · have hr_ne_top : riemannianEDist I p q ≠ ⊤ := riemannianEDist_ne_top (I := I) p q
+  · have hr_ne_top : riemannianEDist I p q ≠ ⊤ := hfin
     have hr_pos : 0 < r := by
       rw [hr_def]
       exact ENNReal.toReal_pos hpq_pos hr_ne_top
@@ -2049,7 +2262,7 @@ theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
       (riemannianEDist I (γ t) q).toReal = r - t} with hA_def
     have hA_closed : IsClosed A := by
       rw [hA_def, hγ_def]
-      exact propagationSet_isClosed (I := I) g hEnorm p q u r
+      exact propSet_closed_ne (I := I) g hEnorm p q u r hfin
     have hγ0 : γ 0 = p := by
       rw [hγ_def]; simp only [zero_smul]
       exact expMapIntrinsic_zero (I := I) g hEnorm p
@@ -2094,7 +2307,9 @@ theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
       set c : M := Γu t₀ with hc_def
       set ρc : ℝ := r - t₀ with hρc_def
       have hρc_pos : 0 < ρc := by rw [hρc_def]; linarith
-      have hcq_fin : riemannianEDist I c q ≠ ⊤ := riemannianEDist_ne_top (I := I) c q
+      have hcq_fin : riemannianEDist I c q ≠ ⊤ := by
+        rw [hc_def, ← hγ_eq, hγ_def]
+        exact radial_dist_ne_top (I := I) g hEnorm p q u hfin t₀
       have hcq_eq : riemannianEDist I c q = ENNReal.ofReal ρc := by
         rw [← ENNReal.ofReal_toReal hcq_fin]
         congr 1
@@ -2183,12 +2398,47 @@ theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
     have hr_dist : (riemannianEDist I (γ r) q).toReal = 0 := by
       have hd := ht₀_dist; rw [ht₀_eq_r] at hd; rw [hd, sub_self]
     have hr_dist0 : riemannianEDist I (γ r) q = 0 := by
-      have hne_top : riemannianEDist I (γ r) q ≠ ⊤ := riemannianEDist_ne_top (I := I) _ q
+      have hne_top : riemannianEDist I (γ r) q ≠ ⊤ := by
+        rw [hγ_def]
+        exact radial_dist_ne_top (I := I) g hEnorm p q u hfin r
       exact ((ENNReal.toReal_eq_zero_iff _).mp hr_dist).resolve_right hne_top
     have hγr_eq_q : γ r = q := riemannianEDist_eq_zero_imp_eq (I := I) (γ r) q hr_dist0
     refine ⟨r • u, ?_, ?_⟩
     · rw [hγ_def] at hγr_eq_q; exact hγr_eq_q
     · rw [sqrt_gInner_smul_self (I := I) g p hr_pos.le u, hu_unit, Real.sqrt_one, mul_one]
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- Compatibility name for the finite-pair minimizing exponential theorem.
+New code should use `minExp_of_ne_top`. -/
+theorem hopf_rinow_expMapIntrinsic_surjective_minimizing_of_ne_top
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p q : M) (hfin : riemannianEDist I p q ≠ ⊤) :
+    ∃ v : TangentSpace I p, expMapIntrinsic (I := I) g hEnorm p v = q ∧
+      Real.sqrt (g.inner p v v) = (riemannianEDist I p q).toReal :=
+  minExp_of_ne_top (I := I) g hEnorm p q hfin
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+/-- **Hopf–Rinow surjectivity with a minimizing witness.** On a connected
+complete Riemannian manifold every target is at finite Riemannian distance, so
+the point-pair theorem applies. -/
+theorem hopf_rinow_expMapIntrinsic_surjective_minimizing
+    [ConnectedSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (p q : M) :
+    ∃ v : TangentSpace I p, expMapIntrinsic (I := I) g hEnorm p v = q ∧
+      Real.sqrt (g.inner p v v) = (riemannianEDist I p q).toReal :=
+  minExp_of_ne_top
+    (I := I) g hEnorm p q (riemannianEDist_ne_top (I := I) p q)
 
 end Exponential
 end Riemannian

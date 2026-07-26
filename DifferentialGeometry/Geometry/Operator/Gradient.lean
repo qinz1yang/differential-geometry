@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Geometry.Operator.Operators
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
@@ -87,40 +88,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-/-- The "musical flat" linear map at `x : M`: sends a tangent vector `v` to the
-linear functional `w ↦ g.inner x v w`. -/
-def metricFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
-    TangentSpace I x →ₗ[ℝ] (TangentSpace I x →ₗ[ℝ] ℝ) where
-  toFun v := (g.inner x v).toLinearMap
-  map_add' v w := by
-    ext u
-    change g.inner x (v + w) u = g.inner x v u + g.inner x w u
-    rw [map_add, ContinuousLinearMap.add_apply]
-  map_smul' c v := by
-    ext u
-    change g.inner x (c • v) u = c • g.inner x v u
-    rw [map_smul, ContinuousLinearMap.smul_apply]
-
-@[simp] lemma metricFlatLinear_apply (g : SmoothRiemannianMetric I M) (x : M)
-    (v w : TangentSpace I x) :
-    metricFlatLinear (I := I) g x v w = g.inner x v w := rfl
-
-/-- The flat linear map is injective: from positive-definiteness of `g.inner x`. -/
-lemma metricFlatLinear_injective (g : SmoothRiemannianMetric I M) (x : M) :
-    Function.Injective (metricFlatLinear (I := I) g x) := by
-  intro v w hvw
-  have hzero : ∀ z : TangentSpace I x, g.inner x (v - w) z = 0 := by
-    intro z
-    have h := congrArg (fun L : TangentSpace I x →ₗ[ℝ] ℝ => L z) hvw
-    simp only [metricFlatLinear_apply] at h
-    have hsub : g.inner x (v - w) z = g.inner x v z - g.inner x w z := by
-      rw [map_sub, ContinuousLinearMap.sub_apply]
-    rw [hsub, sub_eq_zero]
-    exact h
-  by_contra hne
-  have hvw_ne : v - w ≠ 0 := sub_ne_zero.mpr hne
-  have hpos : 0 < g.inner x (v - w) (v - w) := g.pos x (v - w) hvw_ne
-  exact (lt_irrefl 0) (hzero (v - w) ▸ hpos)
+/- The musical-flat map, its `_apply`/`_injective` lemmas, and the sharp map
+(`metricSharp`, `inner_metricSharp`, `inner_metricSharp_right`) are the canonical ones from
+`Integral.Connection` (`Operator/Operators.lean`).  They are **re-exported** here — rather than
+re-defined — so the divergence-theorem layer and its consumers reference a single, unambiguous
+declaration (opening both `Integral.Connection` and `Integral.DivergenceTheorem` no longer makes
+these names `Ambiguous`).  The `metricFlatMap`/`gradFun`/divergence-theorem API below builds on
+these exported maps. -/
+export DifferentialGeometry.Integral.Connection
+  (metricFlatLinear metricFlatLinear_apply metricFlatLinear_injective
+   metricSharp inner_metricSharp inner_metricSharp_right)
 
 /-- `TangentSpace I x` is finite-dimensional over `ℝ`. -/
 private instance tangentSpace_finiteDimensional (x : M) :
@@ -157,27 +134,9 @@ lemma metricFlatMap_apply_symm (g : SmoothRiemannianMetric I M) (x : M)
   rw [metricFlatMap_apply] at hh
   exact hh
 
-/-- The pointwise gradient (sharp) of a covector at a point. -/
-def metricSharp (g : SmoothRiemannianMetric I M) (x : M)
-    (α : TangentSpace I x →ₗ[ℝ] ℝ) : TangentSpace I x :=
-  (metricFlatMap (I := I) g x).symm α
-
 @[simp] lemma metricSharp_def (g : SmoothRiemannianMetric I M) (x : M)
     (α : TangentSpace I x →ₗ[ℝ] ℝ) :
     metricSharp (I := I) g x α = (metricFlatMap (I := I) g x).symm α := rfl
-
-/-- Defining identity for the sharp: `g.inner x (sharp α) w = α w`. -/
-lemma inner_metricSharp (g : SmoothRiemannianMetric I M) (x : M)
-    (α : TangentSpace I x →ₗ[ℝ] ℝ) (w : TangentSpace I x) :
-    g.inner x (metricSharp (I := I) g x α) w = α w :=
-  metricFlatMap_apply_symm (I := I) g x α w
-
-/-- Symmetric form: `g.inner x w (sharp α) = α w`. -/
-lemma inner_metricSharp_right (g : SmoothRiemannianMetric I M) (x : M)
-    (α : TangentSpace I x →ₗ[ℝ] ℝ) (w : TangentSpace I x) :
-    g.inner x w (metricSharp (I := I) g x α) = α w := by
-  rw [g.symm x w (metricSharp (I := I) g x α)]
-  exact inner_metricSharp (I := I) g x α w
 
 /-- The pointwise gradient of a function `f : M → ℝ` at `x : M`. -/
 def gradFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
@@ -207,7 +166,7 @@ lemma gradFun_eq_zero_of_mfderiv_eq_zero
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) {x : M}
     (hf : mfderiv I 𝓘(ℝ, ℝ) f x = 0) :
     gradFun (I := I) g f x = (0 : TangentSpace I x) := by
-  unfold gradFun metricSharp
+  rw [gradFun_def, metricSharp_def]
   have htoLM : (mfderiv I 𝓘(ℝ, ℝ) f x).toLinearMap =
       (0 : TangentSpace I x →ₗ[ℝ] ℝ) := by
     rw [hf]; rfl
@@ -635,6 +594,41 @@ lemma gradChartLocal_eq_gradFun
   intro k _
   congr 1
   rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k, hmfderiv_basis k]
+
+/-- At a differentiability point in a boundaryless chart, the squared metric
+norm of `gradFun` is the inverse Gram quadratic form in the chart partials. -/
+theorem grad_norm_sq_chart
+    (g : SmoothRiemannianMetric I M) [I.Boundaryless]
+    (α : M) {f : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hx : x ∈ (chartAt H α).source) :
+    g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) =
+      ∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j *
+        partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) *
+        partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+  classical
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hx
+  have hx_int : extChartAt I α x ∈ interior (extChartAt I α).target := by
+    have hxsrc : x ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]
+      exact hx
+    exact extChartAt_target_subset_interior_of_boundaryless (I := I) α
+      ((extChartAt I α).map_source hxsrc)
+  have hgrad := gradChartLocal_eq_gradFun (I := I) g α hf hbase hx_int
+  rw [inner_gradFun (I := I) g f x, ← hgrad]
+  unfold gradChartLocal
+  rw [map_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  rw [map_smul,
+    mfderiv_chartBasisVecFiber_of_mdifferentiableAt
+      (I := I) α hf hx hx_int i]
+  change gradChartCoeff (I := I) g α f i x *
+      partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) = _
+  unfold gradChartCoeff
+  rw [Finset.sum_mul]
 
 /-- The pointwise `g`-norm bound on the gradient: for `f` differentiable at `x`
 and `x` in the chart-`α` source on a boundaryless model,

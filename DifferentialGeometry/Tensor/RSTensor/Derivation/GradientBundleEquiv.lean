@@ -153,7 +153,7 @@ def covGradBundleEquiv (r s : ℕ) (x : M) :
     ((covGradModelEquiv (E := E) r s).trans
       (tensorRSSpace_continuousLinearEquiv (I := I) r (s + 1) x).symm)
 
-set_option backward.isDefEq.respectTransparency true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Closed form of the forward map: `covGradBundleEquiv r s x Φ` is obtained by
 pushing `Φ` to the model fibre, applying `covGradModelEquiv`, and pulling back. -/
 theorem covGradBundleEquiv_apply (r s : ℕ) (x : M)
@@ -165,7 +165,7 @@ theorem covGradBundleEquiv_apply (r s : ℕ) (x : M)
             Φ : TangentSpace I x →L[ℝ] TensorRSModel r s ℝ E))) :=
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Closed form of the inverse map: `(covGradBundleEquiv r s x).symm T` is
 obtained by pushing `T` to the model fibre, applying `(covGradModelEquiv).symm`,
 and pulling back the resulting covariant-gradient model element. -/
@@ -178,7 +178,7 @@ theorem covGradBundleEquiv_symm_apply (r s : ℕ) (x : M)
           (TensorRSSpace.toModel T)) :=
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Evaluating the `(r, s + 1)`-tensor `covGradBundleEquiv r s x Φ` at a
 `(0, r)`-tensor `D` and a `Fin (s + 1)`-tuple `v` recovers `Φ (v 0) D (tail v)`:
 the tangent direction is read off the first (leftmost) slot. -/
@@ -194,7 +194,7 @@ theorem covGradBundleEquiv_apply_eval (r s : ℕ) (x : M)
   rw [covGradBundleEquiv_apply (I := I) (M := M) r s x Φ]
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Evaluating the inverse: the covariant-gradient fibre element
 `(covGradBundleEquiv r s x).symm T`, taken along `w` and applied to a
 `(0, r)`-tensor `D`, gives the `(0, s)`-tensor whose value at a `Fin s`-tuple `v`
@@ -329,14 +329,13 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
       (fun x : M => Tensor0SSpace s I x) α).baseSet := hb
   have hb_s1 : b ∈ (trivializationAt (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x) α).baseSet := hb
-  -- Reduce to an equality of `(0, r)-model → (0, s + 1)-model` continuous linear maps.
+
   apply ContinuousLinearMap.ext
   intro D
-  -- Reduce to an equality of `(0, s + 1)`-model tensors, evaluated at every tuple.
+
   apply ContinuousMultilinearMap.ext
   intro v
-  -- The `(r, s + 1)`-tensor bundle is the hom bundle of the `(0, r)`- and
-  -- `(0, s + 1)`-tensor bundles; expand its trivialisation-fibre.
+
   have hLHS_fibre :
       (trivializationAt (TensorRSModel r (s + 1) ℝ E)
         (fun y : M => TensorRSSpace r (s + 1) I y) α
@@ -347,8 +346,7 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
             covGradBundleEquiv (I := I) (M := M) r s b Φ).comp
           ((trivializationAt (Tensor0SModel r ℝ E)
             (fun x : M => Tensor0SSpace r I x) α).symmL ℝ b)) := rfl
-  -- The covariant-gradient bundle is the hom bundle of the tangent bundle and the
-  -- `(r, s)`-tensor bundle; expand its trivialisation-fibre.
+
   have hG_fibre :
       (trivializationAt (E →L[ℝ] TensorRSModel r s ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y) α
@@ -356,8 +354,7 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
       ((trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b).comp
         (Φ.comp ((trivializationAt E (TangentSpace I) α).symmL ℝ b)) := rfl
-  -- The `(r, s)`-tensor bundle is the hom bundle of the `(0, r)`- and
-  -- `(0, s)`-tensor bundles; expand its trivialisation-fibre.
+
   have hRS_fibre : ∀ Ψ : TensorRSSpace r s I b,
       (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α ⟨b, Ψ⟩).2 =
@@ -367,7 +364,7 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
           ((trivializationAt (Tensor0SModel r ℝ E)
             (fun x : M => Tensor0SSpace r I x) α).symmL ℝ b)) :=
     fun Ψ => rfl
-  -- `continuousLinearMapAt` agrees with the trivialisation-fibre on the base set.
+
   have hclmAt_r : ∀ Z : Tensor0SSpace r I b,
       (trivializationAt (Tensor0SModel r ℝ E)
         (fun x : M => Tensor0SSpace r I x) α).continuousLinearMapAt ℝ b Z =
@@ -401,11 +398,11 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
     rw [Trivialization.continuousLinearMapAt_apply,
       Trivialization.coe_linearMapAt_of_mem _ (show b ∈ _ from
         (tensorRSBundle_baseSet_eq (I := I) r s α).symm ▸ hb)]
-  -- Abbreviation for the `(0, r)`-tensor obtained by trivialising back `D`.
+
   set Dr : Tensor0SSpace r I b :=
     (trivializationAt (Tensor0SModel r ℝ E)
       (fun x : M => Tensor0SSpace r I x) α).symmL ℝ b D with hDr
-  -- Compute the left-hand side.
+
   have hLHS :
       (trivializationAt (TensorRSModel r (s + 1) ℝ E)
         (fun y : M => TensorRSSpace r (s + 1) I y) α
@@ -423,7 +420,7 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
             covGradBundleEquiv (I := I) (M := M) r s b Φ) Dr) v = _
     rw [hclmAt_s1, tensor0S_trivFibre_apply (I := I) (M := M) (s + 1) α hb_s1]
     rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r s b Φ Dr]
-  -- Compute the right-hand side.
+
   have hRHS :
       covGradModelEquiv (E := E) r s
         ((trivializationAt (E →L[ℝ] TensorRSModel r s ℝ E)
