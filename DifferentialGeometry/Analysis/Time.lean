@@ -183,3 +183,5 @@ theorem dt_apply_sum (td : TimeDerivativeData R A Time) [TimeRegularFam td]
 end TimeDerivativeData
 
 end Analysis
+
+end DifferentialGeometry

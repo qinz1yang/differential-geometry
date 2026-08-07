@@ -46,7 +46,6 @@ omit [FiniteDimensional ℝ E]
   [IsManifold I ∞ M]
   [CompactSpace M]
   [I.Boundaryless]
-
   [T2Space M]
   [BoundarylessManifold I M] in
 @[simp] theorem trScalar_apply
@@ -59,7 +58,6 @@ omit [FiniteDimensional ℝ E]
   [IsManifold I ∞ M]
   [CompactSpace M]
   [I.Boundaryless]
-
   [T2Space M]
   [BoundarylessManifold I M] in
 @[simp] theorem trScalar_image
