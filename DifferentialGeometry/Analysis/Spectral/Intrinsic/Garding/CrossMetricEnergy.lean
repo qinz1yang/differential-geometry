@@ -41,7 +41,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -50,7 +50,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem normSq0S_nonneg
     (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) :
@@ -66,7 +66,7 @@ private theorem normSq0S_nonneg
   exact Finset.sum_nonneg fun _ _ => sq_nonneg _
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem normSqRS_nonneg
     (g : SmoothRiemannianMetric I M) (x : M) (r s : Nat)
     (A : TensorRSSpace r s I x) :
@@ -90,7 +90,6 @@ private theorem add_sq_le (a b : Real) :
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 private theorem cross_point_le
     (q k : SmoothRiemannianMetric I M) (Ce R : Real)
     (hEq : DifferentialGeometry.HCGCompactness.MetricUniformEquivalentOn

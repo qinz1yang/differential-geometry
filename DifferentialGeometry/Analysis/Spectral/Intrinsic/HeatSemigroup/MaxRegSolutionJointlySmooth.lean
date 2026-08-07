@@ -47,12 +47,11 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tensorL2_ext_of_tensorL2Coeff_jsmooth
+private theorem tensorL2_ext_of_tensorL2Coeff_jsmooth [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator
       (Analysis.Parabolic.TensorSpectral.tensorResolventL2 (I := I) (M := M) g r s))
@@ -71,7 +70,7 @@ private theorem tensorL2_ext_of_tensorL2Coeff_jsmooth
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem ccTensorBilinSymm_zero_apply_jsmooth (g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2) x v w = 0 := by

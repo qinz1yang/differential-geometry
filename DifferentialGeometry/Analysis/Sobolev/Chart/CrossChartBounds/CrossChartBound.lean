@@ -59,13 +59,13 @@ lemma crossChartCompact_subset_chartAt_source_α
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx.2
 
 lemma crossChartCompact_isCompact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (γ α : M) :
+    [CompactSpace M] [T2Space M] (γ α : M) :
     IsCompact (crossChartCompact (I := I) (M := M) γ α) :=
   (crossChartCompact_isClosed (I := I) (M := M) γ α).isCompact
 
 theorem cross_chart_diffeo_exists
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (γ α : M) :
     ∃ (Ω_γα Ω_αγ : Set EuclN)
       (_hΩ_γα : IsOpen Ω_γα) (_hΩ_αγ : IsOpen Ω_αγ),
@@ -87,7 +87,7 @@ theorem cross_chart_diffeo_exists
 
 theorem cross_chart_bound_empty
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (γ α : M)
     (hempty : crossChartCompact (I := I) (M := M) γ α = ∅)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) :

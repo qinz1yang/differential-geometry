@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -66,7 +66,7 @@ private local instance edgePartnerTensorRSFiberBundle (r s : ℕ) :
   Tensor0SBundle.tensorRSBundle_fiber r s
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma edge_symm_eq (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -99,7 +99,7 @@ private lemma edge_symm_eq (g : SmoothRiemannianMetric I M)
     show (1 / 2 : Real) * 2 = 1 by norm_num, one_smul]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private theorem edge_full_split
     (g gm : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) g gm =
@@ -124,7 +124,7 @@ private theorem edge_full_split
     rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem edge_insert_add
     (g : SmoothRiemannianMetric I M) (s : Nat)
@@ -152,7 +152,7 @@ private theorem edge_insert_add
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private lemma edge_endo_id_zero (g : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (v : TangentSpace I x) :
@@ -249,7 +249,7 @@ theorem edgeFull_one (g : SmoothRiemannianMetric I M) :
   simpa [Finset.sum_range_succ, Finset.sum_range_one] using h
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- A relative inverse-metric insertion is uniformly bounded on the half
 operator ball. -/
 theorem edgeFull_zero
@@ -282,7 +282,7 @@ theorem edgeFull_zero
   nlinarith [mul_nonneg hd hfrac0]
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private lemma edge_app_le (g : SmoothRiemannianMetric I M)
     (r s : Nat) (Phi : SmoothCcTensor g r s)
     (W : SmoothCcTensor g 0 r) (x : M) :
@@ -901,7 +901,7 @@ theorem edgePartner_one (g : SmoothRiemannianMetric I M) :
     (fun _ => le_rfl) sigma x
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma edge_bound_mono (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {a b : Real} (hab : a ≤ b)
     (ha : metricCauchySchwarzBound (I := I) (M := M) g

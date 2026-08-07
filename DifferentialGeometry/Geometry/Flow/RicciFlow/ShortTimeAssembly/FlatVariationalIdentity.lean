@@ -38,10 +38,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem flatVariationalIdentity_eq_rawFderiv_add_movingTrivCorrection
     (X : Cₛ^∞⟮I; E, (TangentSpace I)⟯)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (t : ℝ) (x : M) (v : TangentSpace I x)
@@ -74,7 +74,7 @@ theorem flatVariationalIdentity_eq_rawFderiv_add_movingTrivCorrection
     (X : ∀ y : M, TangentSpace I y) (mfderiv I I (Φ_fam t : M → M) x v) hRdiff hCdiff
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem flat_raw_variational_identity
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (X : ℝ → ∀ x : M, TangentSpace I x)
@@ -113,7 +113,6 @@ theorem flat_raw_variational_identity
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem flat_christoffel_correction_eqn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -165,7 +164,7 @@ theorem flat_christoffel_correction_eqn
   abel
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem flat_value_jet_identity
     (X : Cₛ^∞⟮I; E, (TangentSpace I)⟯)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (t : ℝ) (x : M) (v : TangentSpace I x)

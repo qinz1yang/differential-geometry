@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -42,8 +42,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma extDerivFun_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
     extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
   simp only [extDerivFun, ContinuousLinearMap.comp_apply,
@@ -52,8 +52,8 @@ private lemma extDerivFun_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace
     LinearEquiv.coe_mk]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma covGradBundle_trivFibre_eq
     (r s : ℕ) (α : M) (b : M)
     (Φ : TangentSpace I b →L[ℝ] TensorRSSpace r s I b) :
@@ -128,8 +128,8 @@ theorem tensorChartComponentRaw_prependCovGradSlot
     ContinuousMultilinearMap.smul_apply, smul_eq_mul]
   congr 1
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 private lemma partialDeriv_scalarOnE_eq_euclidPartial
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -162,7 +162,7 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial
   rw [partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial
     (ζ : C^∞⟮I, M; ℝ⟯) (α : M)
     (m : Fin (Module.finrank ℝ E))
@@ -193,7 +193,6 @@ private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial
   exact partialDeriv_scalarOnE_eq_euclidPartial (I := I) (M := M)
     (ζ : M → ℝ) α m hy
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorCovDerivAt_sum_smul_dir
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -213,7 +212,7 @@ private lemma tensorCovDerivAt_sum_smul_dir
   rw [ContinuousLinearMap.map_smul]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma symm_mem_chartLeviCivitaGoodSet
     (α : M) {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
@@ -234,8 +233,8 @@ private lemma symm_mem_chartLeviCivitaGoodSet
   · rw [extChartAt_source]; exact hb_chart
   · rw [TangentBundle.trivializationAt_baseSet]; exact hb_chart
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma tensorTrivCLM_sum (r s : ℕ) (α b : M) {ι : Type*} (t : Finset ι)
     (u : ι → TensorRSSpace r s I b) :
     (trivializationAt (TensorRSModel r s ℝ E)
@@ -249,8 +248,8 @@ private lemma tensorTrivCLM_sum (r s : ℕ) (α b : M) {ι : Type*} (t : Finset 
   | insert i A hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi, ContinuousLinearMap.map_add, ih]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma tensorChartComponentProjection_sum (r s : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -331,7 +330,7 @@ noncomputable def crossLeftTestCoeff
       covChartMetricGramInv (I := I) (M := M) g r s α y
         (Q.1, Matrix.vecTail Q.2) P₀
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma crossLeftTestCoeff_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : CompIdx E r s) (Q : CompIdx E r (s + 1)) (y : EuclN) :
@@ -341,7 +340,7 @@ lemma crossLeftTestCoeff_def
         covChartMetricGramInv (I := I) (M := M) g r s α y
           (Q.1, Matrix.vecTail Q.2) P₀ := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem crossLeftTestCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : CompIdx E r s) (Q : CompIdx E r (s + 1)) :
@@ -414,7 +413,7 @@ noncomputable def gradChartCoeffEuclid
       chartInvGramEuclid (I := I) g α m j y *
         euclidPartial (E := E) j (chartPushedRaw I α ζ) y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 theorem gradChartCoeff_eq_gradChartCoeffEuclid
     (g : SmoothRiemannianMetric I M) (α : M) (ζ : M → ℝ)
     (m : Fin (Module.finrank ℝ E))
@@ -431,7 +430,7 @@ theorem gradChartCoeff_eq_gradChartCoeffEuclid
     rw [chartInvGramEuclid_def, chartInvGramOnE_def]]
   rw [partialDeriv_scalarOnE_eq_euclidPartial (I := I) (M := M) ζ α j hy]
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradChartCoeffEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -447,7 +446,7 @@ theorem gradChartCoeffEuclid_contDiffOn
   exact (chartInvGramEuclid_contDiffOn (I := I) (M := M) g α m j).mul
     (euclidPartial_contDiffOn_target (I := I) (M := M) α j hbump)
 
-omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covDerivLowerOrderTerm_rotatedTestSection_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -476,7 +475,7 @@ noncomputable def crossRightTestGradCoeff
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) l y *
       gramInvEntry (I := I) (M := M) g r s α Q P₀ y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma crossRightTestGradCoeff_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : CompIdx E r s) (Q : CompIdx E r s)
@@ -497,7 +496,7 @@ noncomputable def crossRightTestValueCoeff
             (gramInvEntry (I := I) (M := M) g r s α Q P₀) y +
           lowerOrderRotationLOCoeff (I := I) (M := M) g r s α P₀ m Q y)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma crossRightTestValueCoeff_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : CompIdx E r s) (Q : CompIdx E r s) (y : EuclN) :
@@ -509,7 +508,6 @@ lemma crossRightTestValueCoeff_def
               (gramInvEntry (I := I) (M := M) g r s α Q P₀) y +
             lowerOrderRotationLOCoeff (I := I) (M := M) g r s α P₀ m Q y) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem crossRightTestGradCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -521,7 +519,6 @@ theorem crossRightTestGradCoeff_contDiffOn
       (chartAtlasPOU I M α).contMDiff.contMDiffOn l).mul
     (gramInvEntry_contDiffOn (I := I) (M := M) g r s α Q P₀)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem crossRightTestValueCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

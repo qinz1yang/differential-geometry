@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -174,7 +174,6 @@ def crossRightDivFactor
       crossRightTestGradCoeff (I := I) (M := M) g r s α P₀ Q l y
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossRightDivFactor_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -188,7 +187,6 @@ lemma crossRightDivFactor_contDiffOn
     (crossRightTestGradCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q l)
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma euclidPartial_crossRightDivFactor_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -202,7 +200,7 @@ lemma euclidPartial_crossRightDivFactor_contDiffOn
   euclidPartial_contDiffOn_target (I := I) (M := M) α l
     (crossRightDivFactor_contDiffOn (I := I) (M := M) g r s α P₀ l P Q)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartPushedRaw_pou_eq_zero_off_chartPouKernel
     (α : M) {y : EuclN} (hy : y ∉ chartPouKernel (I := I) (M := M) α) :
     chartPushedRaw I α ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y = 0 := by
@@ -468,8 +466,8 @@ private lemma differentiableAt_cutoffComponentEuclid
   ((cutoffComponentEuclid_contDiff_section (I := I) (M := M)
     g r s S α Idx Jdx).differentiable (by norm_num)).differentiableAt
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma tendsto_sum3
     (α : M) {κ₁ κ₂ κ₃ : Type*}
     [Fintype κ₁] [Fintype κ₂] [Fintype κ₃]

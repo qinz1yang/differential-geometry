@@ -28,7 +28,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 theorem quasilinear_strictlyParabolic_2ndOrder_shortTimeExistence
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))

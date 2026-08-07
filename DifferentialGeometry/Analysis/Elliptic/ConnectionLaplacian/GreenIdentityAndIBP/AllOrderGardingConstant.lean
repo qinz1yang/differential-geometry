@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -319,7 +319,7 @@ theorem exists_iteratedRoughLapGrad_commutator_l2Norm_le
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero, Nat.add_zero] using h
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private theorem rawTensorConnLapIter_rawTensorConnLapSmooth
     (g : SmoothRiemannianMetric I M) (s : ℕ) (i : ℕ) (S : SmoothCcTensor g 0 s) :
     rawTensorConnLapIter (I := I) g 0 s i (rawTensorConnLapSmooth (I := I) g 0 s S) =

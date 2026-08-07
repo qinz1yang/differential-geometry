@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -73,7 +73,7 @@ section LieCorr0BoundsF1
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lc0b_rfns_neg (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
@@ -107,7 +107,7 @@ lemma lc0b_normSq_icg_sub_le (g : SmoothRiemannianMetric I M) (r s q : ℕ)
   exact h
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lc0b_rfns_toSection_sub_le (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) (x : M) :

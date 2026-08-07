@@ -45,10 +45,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 theorem interior_local_flow_existence
     (X_DT : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hCont : ContinuousOn (Function.uncurry (fun t x => X_DT t x))
@@ -69,7 +69,7 @@ theorem interior_local_flow_existence
   time_dependent_vf_chart_local_picard_with_lipschitz (I := I) X_DT α hCont hLip
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem chartcover_orbit_is_bare_integral_curve
     (X : ℝ → ∀ x : M, TangentSpace I x) (_hX : AutonomizedFieldJointC1 (I := I) X)
     (T : ℝ) (_hT : 0 < T) (Φcc : ℝ → M → M)
@@ -181,7 +181,7 @@ private noncomputable def glueFlow
   (time_dependent_vf_global_flow_glue (I := I) Y hperY).choose_spec.2.choose_spec.2.choose
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem glueFlow_spec
     (Y : ℝ → ∀ x : M, TangentSpace I x)
     (hperY : ∀ α : M, ChartLocalPicardData (I := I) Y α) :
@@ -216,7 +216,7 @@ private noncomputable def flowBijectiveHorizon
       (fun x => let ⟨α, _, h⟩ := (glueFlow_spec (I := I) (fun t x => -(X t x)) hperNeg).2 x;
         ⟨α, h⟩)) |>.choose
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 theorem interior_flow_uniqueness_glue
     (X : ℝ → ∀ x : M, TangentSpace I x) (hX : AutonomizedFieldJointC1 (I := I) X)
     (T : ℝ) (hT : 0 < T)

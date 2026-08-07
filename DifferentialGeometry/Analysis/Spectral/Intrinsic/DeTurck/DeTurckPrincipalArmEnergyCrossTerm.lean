@@ -43,7 +43,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace r s I y)]
@@ -551,8 +551,8 @@ private lemma smoothCcToTensorHs_subCross (g₀ : SmoothRiemannianMetric I M) (�
   simp only [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff, smoothCcToTensorHs_coeff,
     map_add, map_neg, tensorL2Coeff_eq_inner, inner_add_right, inner_neg_right]
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma rawConnLap_oneMinusConnLap_comm (g₀ : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+private lemma rawConnLap_oneMinusConnLap_comm [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (oneMinusConnLapSmooth (I := I) g₀ 0 2 S) =
       oneMinusConnLapSmooth (I := I) g₀ 0 2 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by

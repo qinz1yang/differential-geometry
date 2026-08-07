@@ -41,7 +41,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def diffChartBilinearH1ComplData_of_smoothToH1Compl_unconditional
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)

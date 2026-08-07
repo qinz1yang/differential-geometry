@@ -419,7 +419,7 @@ namespace TensorWMPSectionCore
 
 omit [IsManifold I 2 M] in
 theorem ofCompact
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -473,7 +473,7 @@ theorem ofCompact
 
 omit [IsManifold I 2 M] in
 theorem ofTotal
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -532,7 +532,7 @@ theorem ofTotal
 
 omit [IsManifold I 2 M] in
 theorem ofSmoothMetric
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     {S : TwoTensorSecFamily (I := I) (M := M)}
@@ -629,7 +629,7 @@ def toCore
 
 omit [IsManifold I 2 M] in
 theorem ofCompact
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -701,7 +701,7 @@ theorem ofCompact
 
 omit [IsManifold I 2 M] in
 theorem ofTotal
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -778,7 +778,7 @@ theorem ofTotal
 
 omit [IsManifold I 2 M] in
 theorem ofSmoothMetric
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     {S : TwoTensorSecFamily (I := I) (M := M)}

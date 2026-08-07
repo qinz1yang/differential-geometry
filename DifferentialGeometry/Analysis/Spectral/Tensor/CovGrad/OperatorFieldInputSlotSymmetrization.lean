@@ -26,11 +26,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [BoundarylessManifold I M] [T2Space M] [CompleteSpace E] in
 private lemma ofModel_add {s : ℕ} {x : M}
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (f + g) : Tensor0SSpace s I x) =
@@ -38,7 +38,7 @@ private lemma ofModel_add {s : ℕ} {x : M}
   map_add (tensor0SSpace_continuousLinearEquiv s x).symm f g
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [BoundarylessManifold I M] [T2Space M] [CompleteSpace E] in
 private lemma ofModel_smul {s : ℕ} {x : M} (c : ℝ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (c • f) : Tensor0SSpace s I x) =
@@ -75,7 +75,7 @@ def inputSlotSwapFib (x : M) : Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 @[simp] lemma slotSwapFib_apply (x : M) (D : Tensor0SSpace 2 I x) :
     inputSlotSwapFib (I := I) (M := M) x D =
       Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
@@ -86,7 +86,7 @@ def ccSlotSwapFib (x : M) : TensorRSSpace 2 2 I x :=
   inputSlotSwapFib (I := I) (M := M) x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
+    [CompleteSpace E] in
 theorem ccSlotSwapFib_contMDiff :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -141,7 +141,7 @@ def ccInputSlotSwapField (g : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 2
       contMDiff_toFun := ccSlotSwapFib_contMDiff (I := I) (M := M) }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 @[simp] lemma ccSlotSwapField_toSection (g : SmoothRiemannianMetric I M) (x : M) :
     (ccInputSlotSwapField (I := I) (M := M) g).toSection x =
@@ -152,7 +152,7 @@ def ccInputSlotSymm (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2) 
   (1 / 2 : ℝ) • (C + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 C
     (ccInputSlotSwapField (I := I) (M := M) g))
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 lemma ccInputSymm_toSection (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2)
     (x : M) :

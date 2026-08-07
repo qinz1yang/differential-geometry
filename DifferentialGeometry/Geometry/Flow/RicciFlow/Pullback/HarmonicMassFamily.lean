@@ -38,7 +38,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 private local instance : MeasurableSpace M := borel M
 

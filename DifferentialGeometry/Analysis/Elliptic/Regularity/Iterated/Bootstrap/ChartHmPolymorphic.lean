@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 theorem chartPushed_memWkp_unconditional_of_laplacianDomainPow_le_two
     (g : SmoothRiemannianMetric I M) (α : M) {k : ℕ} (hk : k ≤ 2)

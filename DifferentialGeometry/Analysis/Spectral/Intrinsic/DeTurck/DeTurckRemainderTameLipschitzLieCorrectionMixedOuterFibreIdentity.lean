@@ -19,14 +19,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma lc0AMixOuterField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) :
     (lc0AMixOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
@@ -38,7 +38,7 @@ lemma lc0AMixOuterField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (lc0Tr (I := I) (M := M) g₀ g₁ 4 lieCorr0AMixPerm1)
     (lc0AMixLiftedField (I := I) (M := M) g₀ g₁ g_bg) x
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma lc0b_amix_outer_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from

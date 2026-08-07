@@ -26,7 +26,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 private lemma norm_heatSemigroup_sub_le_heatSemigroup_diff
     (g : SmoothRiemannianMetric I M)

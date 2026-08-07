@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -42,7 +42,7 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma coframeS_one_eq_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin 1 → Fin n) :
     coframeS (I := I) (M := M) g₀ x 1 e K = g0FlatCLM (I := I) g₀ x (e (K 0)) := by
@@ -57,7 +57,7 @@ private lemma coframeS_one_eq_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x :
   rw [g0FlatCLM_apply, dualToCotangent_apply]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma fiberNormSqComponent_sharpFlatEndoCc
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
@@ -94,7 +94,7 @@ private lemma fiberNormSqComponent_sharpFlatEndoCc
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (_hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1)
     (g₁ : SmoothRiemannianMetric I M)
@@ -166,7 +166,7 @@ theorem riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
         ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma g0_inner_sharpFlatRaiseEndo_eq_g1
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     g₀.inner x (sharpFlatRaiseEndo (I := I) g₀ g₁ x v) w = g₁.inner x v w := by
@@ -176,7 +176,7 @@ private lemma g0_inner_sharpFlatRaiseEndo_eq_g1
   rw [cotangentToDual_g0FlatCLM (I := I) g₁ x v w]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma g1_self_upper_bound
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -199,7 +199,7 @@ private lemma g1_self_upper_bound
   linarith [hle]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem sqrt_inner_sharpFlatRaiseEndo_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -263,7 +263,6 @@ theorem sqrt_inner_sharpFlatRaiseEndo_le
     exact le_of_mul_le_mul_right h2 hNppos
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma fiberNormSqComponent_raisedKoszul
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
@@ -460,7 +459,7 @@ private lemma fiberNormSqComponent_covGrad_raisedKoszul
   rw [cotangentToDual_g0FlatCLM (I := I) g₀ x (e (K 0))]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 private lemma sqrt_g0_inner_add_le_arm
     (g₀ : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
@@ -506,14 +505,13 @@ def sharpFlatRaiseEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
   contMDiff_toFun := sharpFlatRaiseEndo_contMDiff (I := I) g₀ g₁
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma sharpFlatRaiseEndoField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (sharpFlatRaiseEndoField (I := I) (M := M) g₀ g₁ x) =
       sharpFlatRaiseEndo (I := I) g₀ g₁ x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
-private lemma covDerivRaisedKoszulVec_eq_endoCov_add_sharpFlat
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma covDerivRaisedKoszulVec_eq_endoCov_add_sharpFlat [SigmaCompactSpace M]
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     covDerivRaisedKoszulVec (I := I) g₀ g₁ X Y Z x =
@@ -610,7 +608,7 @@ private lemma covDerivRaisedKoszulVec_eq_endoCov_add_sharpFlat
   abel_nf
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem cotangent_g0FlatY_mdiffAtCotangent_g1
     (g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
@@ -629,7 +627,6 @@ private theorem cotangent_g0FlatY_mdiffAtCotangent_g1
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
 private theorem endoCov_sharpFlatRaiseField_apply
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
@@ -694,7 +691,6 @@ private theorem endoCov_sharpFlatRaiseField_apply
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [SigmaCompactSpace M] in
 private theorem g0_inner_endoCov_sharpFlatRaise_eq
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v z : TangentSpace I x) :
@@ -756,7 +752,7 @@ private theorem g0_inner_endoCov_sharpFlatRaise_eq
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma sqrt_g1_le_sqrt_g0_of_realize
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -779,7 +775,7 @@ private lemma sqrt_g1_le_sqrt_g0_of_realize
           rw [Real.sqrt_mul (le_of_lt hd)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma abs_g1_inner_le_one_add_delta_mul_sqrt_g0
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -809,7 +805,7 @@ private lemma abs_g1_inner_le_one_add_delta_mul_sqrt_g0
         ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma connDiff_quadratic_inner_bounds
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -890,7 +886,7 @@ private lemma connDiff_quadratic_inner_bounds
   exact ⟨hT2, hT5⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma sqrt_self_of_inner_le
     (g₀ : SmoothRiemannianMetric I M) (x : M) (u : TangentSpace I x) (K : ℝ) (hK : 0 ≤ K)
     (hbd : ∀ z : TangentSpace I x, g₀.inner x u z ≤ K * Real.sqrt (g₀.inner x z z)) :
@@ -1155,7 +1151,7 @@ private lemma half_iteratedCovGrad_symmS_combination_le
     _ = (3 / 2) * G * Na * Nc * Nb * Nd := by dsimp only [A]; ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma sqrt_g0_self_of_g1_inner_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (h : ∀ y v w, g₁.inner y v w =
@@ -1851,7 +1847,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
         rw [hsq]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma fiberNormSqComponent_flatArmCc
     (g₀ g₁ : SmoothRiemannianMetric I M) (kind : Bool) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)

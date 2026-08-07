@@ -55,7 +55,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ u₀ : SmoothCcTensor g₀ 0 2,
@@ -146,8 +146,8 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
           · exact mul_nonneg (hCfL_nn 0)
               (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+private theorem armLadder_rawConnLap_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (A + B) =
       rawTensorConnLapSmooth (I := I) g r s A + rawTensorConnLapSmooth (I := I) g r s B := by
@@ -160,8 +160,8 @@ private theorem armLadder_rawConnLap_add (g : SmoothRiemannianMetric I M) (r s :
     rawTensorConnLapSmooth_sub (I := I) (M := M) g r s 0 B, h0]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_oneMinusConnLapSmooth_add (g : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+private theorem armLadder_oneMinusConnLapSmooth_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A + B) =
       oneMinusConnLapSmooth (I := I) g r s A + oneMinusConnLapSmooth (I := I) g r s B := by
@@ -169,8 +169,8 @@ private theorem armLadder_oneMinusConnLapSmooth_add (g : SmoothRiemannianMetric 
   rw [armLadder_rawConnLap_add (I := I) (M := M) g r s A B]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_iterL_add (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
+omit [I.Boundaryless] in
+private theorem armLadder_iterL_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s j (A + B) =
       oneMinusConnLapSmoothIter (I := I) g r s j A +
@@ -193,8 +193,8 @@ private theorem armLadder_covGrad_oneMinusConnLapSmooth (g : SmoothRiemannianMet
   rw [hcomm]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_iterL_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+private theorem armLadder_iterL_one [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 1 S = oneMinusConnLapSmooth (I := I) g r s S := by
   rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_zero]
@@ -281,22 +281,22 @@ theorem armLadder_pairing_abs_le_transport (g : SmoothRiemannianMetric I M)
     (oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X)
     (oneMinusConnLapSmoothIter (I := I) g 0 σ r Y)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem armAsm_l2Inner_zero_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem armAsm_l2Inner_zero_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (0 : SmoothCcTensor g 0 σ).toFun Z.toFun = 0 := by
   rw [SmoothCcTensor.toFun_zero]
   exact tensorL2Inner_zero_left (I := I) (M := M) g 0 σ Z.toFun
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem armAsm_l2Inner_zero_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private theorem armAsm_l2Inner_zero_right [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun (0 : SmoothCcTensor g 0 σ).toFun = 0 := by
   rw [SmoothCcTensor.toFun_zero]
   exact tensorL2Inner_zero_right (I := I) (M := M) g 0 σ Z.toFun
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem armAsm_l2Inner_add_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (A B Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (A + B).toFun Z.toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ A.toFun Z.toFun +
@@ -309,8 +309,8 @@ theorem armAsm_l2Inner_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
     armAsm_l2Inner_zero_left (I := I) (M := M) g σ Z]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem armAsm_l2Inner_add_right [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z A B : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun (A + B).toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun A.toFun +
@@ -323,8 +323,8 @@ theorem armAsm_l2Inner_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
     armAsm_l2Inner_zero_right (I := I) (M := M) g σ Z]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armAsm_l2Inner_sum_left (g : SmoothRiemannianMetric I M) (σ c : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem armAsm_l2Inner_sum_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ c : ℕ)
     (f : ℕ → SmoothCcTensor g 0 σ) (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (∑ i ∈ Finset.range c, f i).toFun Z.toFun =
       ∑ i ∈ Finset.range c, tensorL2Inner (I := I) (M := M) g 0 σ (f i).toFun Z.toFun := by
@@ -565,7 +565,7 @@ theorem armAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem armSwap_appFullSec_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (A B : SmoothCcTensor g 0 (t + 2)) :
@@ -631,8 +631,8 @@ theorem armSwap_iterL_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
         (oneMinusConnLapSmoothIter (I := I) g 0 (t + 2) d U),
       oneMinusConnLapSmoothIter_succ]
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+private theorem armLadder_oneMinusConnLapSmooth_sub [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A - B) =
       oneMinusConnLapSmooth (I := I) g r s A - oneMinusConnLapSmooth (I := I) g r s B := by
@@ -640,8 +640,8 @@ private theorem armLadder_oneMinusConnLapSmooth_sub (g : SmoothRiemannianMetric 
   rw [rawTensorConnLapSmooth_sub (I := I) (M := M) g r s A B]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem armLadder_iterL_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
+omit [I.Boundaryless] in
+theorem armLadder_iterL_sub [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s j (A - B) =
       oneMinusConnLapSmoothIter (I := I) g r s j A -

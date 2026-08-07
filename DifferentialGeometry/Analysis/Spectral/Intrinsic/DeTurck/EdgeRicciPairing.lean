@@ -47,7 +47,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -91,7 +91,7 @@ private lemma ricUpdate2Zero (a b c : E) :
   fin_cases i <;> simp [Function.update]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private theorem permCoeff_smooth (_g : SmoothRiemannianMetric I M) {d : Nat}
     (rho : Equiv.Perm (Fin d)) :
     ContMDiff I (I.prod 𝓘(Real, Tensor0SBundle.TensorRSModel d d Real E)) ∞
@@ -114,7 +114,7 @@ private theorem permCoeff_smooth (_g : SmoothRiemannianMetric I M) {d : Nat}
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x t) rfl
 
 /-- Smooth operator field which permutes all covariant output slots. -/
-def permCoeff (g : SmoothRiemannianMetric I M) {d : Nat}
+def permCoeff [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) {d : Nat}
     (rho : Equiv.Perm (Fin d)) : SmoothCcTensor g d d where
   toSection :=
     { toFun := fun x : M =>
@@ -123,7 +123,7 @@ def permCoeff (g : SmoothRiemannianMetric I M) {d : Nat}
       contMDiff_toFun := permCoeff_smooth (I := I) (M := M) g rho }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-private def ricQuad0 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad0 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricPerm3201)
@@ -133,7 +133,7 @@ private def ricQuad0 (g gm : SmoothRiemannianMetric I M) :
         (permCoeff (I := I) (M := M) g ricPerm102)
         (connDiffContrInsertionInnerField (I := I) g gm)))
 
-private def ricQuad1 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad1 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
@@ -145,7 +145,7 @@ private def ricQuad1 (g gm : SmoothRiemannianMetric I M) :
           (connDiffContrInsertionInnerField (I := I) g gm))))
     innerContractionSwapPerm
 
-private def ricQuad2 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad2 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricPerm3102)
@@ -155,7 +155,7 @@ private def ricQuad2 (g gm : SmoothRiemannianMetric I M) :
         (permCoeff (I := I) (M := M) g ricPerm120)
         (connDiffContrInsertionInnerField (I := I) g gm)))
 
-private def ricQuad3 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad3 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
@@ -165,7 +165,7 @@ private def ricQuad3 (g gm : SmoothRiemannianMetric I M) :
         (connDiffContrInsertionInnerField (I := I) g gm)))
     innerContractionSwapPerm
 
-private def ricQuad4 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad4 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
       (permCoeff (I := I) (M := M) g ricPerm1203)
@@ -173,7 +173,7 @@ private def ricQuad4 (g gm : SmoothRiemannianMetric I M) :
       (connDiffContrInsertionField (I := I) g gm)
       (connDiffContrInsertionInnerField (I := I) g gm))
 
-private def ricQuad5 (g gm : SmoothRiemannianMetric I M) :
+private def ricQuad5 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
@@ -185,13 +185,13 @@ private def ricQuad5 (g gm : SmoothRiemannianMetric I M) :
           (connDiffContrInsertionInnerField (I := I) g gm))))
     innerContractionSwapPerm
 
-private def ricDer0 (g gm : SmoothRiemannianMetric I M) :
+private def ricDer0 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
     (permCoeff (I := I) (M := M) g ricPerm3012)
     (connDiffGradContrInsertionField (I := I) g gm)
 
-private def ricDer1 (g gm : SmoothRiemannianMetric I M) :
+private def ricDer1 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
@@ -201,7 +201,7 @@ private def ricDer1 (g gm : SmoothRiemannianMetric I M) :
 
 /-- The six connection-difference-quadratic arms of the order-zero Ricci
 kernel. -/
-def ricciAAKer (g gm : SmoothRiemannianMetric I M) :
+def ricciAAKer [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ricQuad0 (I := I) (M := M) g gm +
     ricQuad1 (I := I) (M := M) g gm +
@@ -212,7 +212,7 @@ def ricciAAKer (g gm : SmoothRiemannianMetric I M) :
 
 /-- The signed two-arm part of the order-zero Ricci kernel which is linear in
 the covariant derivative of the connection difference. -/
-def ricciDAKer (g gm : SmoothRiemannianMetric I M) :
+def ricciDAKer [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   -ricDer0 (I := I) (M := M) g gm -
     ricDer1 (I := I) (M := M) g gm
@@ -236,14 +236,14 @@ theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
   module
 
 /-- Four-trace contraction of the quadratic kernel arms. -/
-def ricciAAArm (g gm : SmoothRiemannianMetric I M) :
+def ricciAAArm [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
     (ricciCometricFourTraceCastG0 (I := I) g gm)
     (ricciAAKer (I := I) (M := M) g gm)
 
 /-- Four-trace contraction of the derivative-only kernel arms. -/
-def ricciDAArm (g gm : SmoothRiemannianMetric I M) :
+def ricciDAArm [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
     (ricciCometricFourTraceCastG0 (I := I) g gm)
@@ -262,7 +262,7 @@ theorem ricciCoeff_split (g gm : SmoothRiemannianMetric I M) :
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ricPerm3012_eval (x : M) (D : Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
     Tensor0SSpace.toModel (slotPermCLM (I := I) ricPerm3012 x D)
@@ -274,7 +274,7 @@ private lemma ricPerm3012_eval (x : M) (D : Tensor0SSpace 4 I x)
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ricPerm2013_eval (x : M) (D : Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
     Tensor0SSpace.toModel (slotPermCLM (I := I) ricPerm2013 x D)
@@ -286,7 +286,7 @@ private lemma ricPerm2013_eval (x : M) (D : Tensor0SSpace 4 I x)
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ricPerm2_eval (x : M) (D : Tensor0SSpace 2 I x)
     (a b : TangentSpace I x) :
     Tensor0SSpace.toModel (slotPermCLM (I := I) innerContractionSwapPerm x D)
@@ -337,7 +337,7 @@ theorem ricciDAKer_eval (g gm : SmoothRiemannianMetric I M) (x : M)
   simp
   simp only [DA]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 /-- A single moving-metric trace is a `g`-orthonormal diagonal trace with
 one relative inverse-metric insertion. -/
 theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
@@ -384,7 +384,7 @@ theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
 /-! ## The genuine one-moving-trace flux -/
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma ricUnit_sub (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (A - B) x =
@@ -404,7 +404,7 @@ private lemma ricUnit_sub (g : SmoothRiemannianMetric I M) (s : Nat)
   rw [unitModel, unitModel, unitModel, h, Tensor0SSpace.toModel_sub]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma ricUnit_add (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (A + B) x =
@@ -422,7 +422,7 @@ private lemma ricUnit_add (g : SmoothRiemannianMetric I M) (s : Nat)
   rw [ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma ricUnit_smul (g : SmoothRiemannianMetric I M) (s : Nat)
     (c : Real) (A : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (c • A) x =
@@ -440,7 +440,7 @@ private lemma ricUnit_smul (g : SmoothRiemannianMetric I M) (s : Nat)
 
 /-- Rank-four flux left after the signed Ricci four-trace cancellation.  It
 contains exactly one relative inverse-metric insertion. -/
-def ricciDAFlux (g gm : SmoothRiemannianMetric I M)
+def ricciDAFlux [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   let WR : SmoothCcTensor g 0 2 :=
     pairSlot2 (I := I) (M := M) g
@@ -450,7 +450,7 @@ def ricciDAFlux (g gm : SmoothRiemannianMetric I M)
   P - domDomCongrSection (I := I) g ricPerm1203 P
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Component formula for `ricciDAFlux`.  In a `g`-orthonormal frame it is
 `W[p,u] W(L v,r) - W[u,v] W(L p,r)`. -/
 theorem ricciDAFlux_eval (g gm : SmoothRiemannianMetric I M)
@@ -487,7 +487,7 @@ theorem ricciDAFlux_eval (g gm : SmoothRiemannianMetric I M)
 /-- Covariant derivative of the lowered connection difference, with slots
 ordered as `[r,p,u,v]`.  Thus its component at those slots is
 `g ((nabla_p A) u v) r`. -/
-def ricciDAG (g gm : SmoothRiemannianMetric I M) :
+def ricciDAG [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 0 4 :=
   domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 4) 1)
     (covGrad (I := I) (M := M) g 0 3
@@ -497,7 +497,7 @@ def ricciDAG (g gm : SmoothRiemannianMetric I M) :
 /-- The two-term Ricci derivative partner, ordered to pair directly with
 `ricciDAG`.  At slots `[r,p,u,v]` it is
 `W[p,u] W(L v,r) - W[u,v] W(L p,r)`. -/
-def ricciDAPart (g gm : SmoothRiemannianMetric I M)
+def ricciDAPart [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   domDomCongrSection (I := I) g ricPerm3012.symm
     (ricciDAFlux (I := I) (M := M) g gm W)
@@ -583,7 +583,7 @@ theorem ricciDAG_eval (g gm : SmoothRiemannianMetric I M)
   fin_cases i <;> rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 private lemma ricLow_unitModel (g gm : SmoothRiemannianMetric I M)
     (x : M) :
     unitModel (I := I) (M := M) g 3
@@ -602,7 +602,7 @@ private lemma ricLow_unitModel (g gm : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 private lemma ricLow_eval (g gm : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g 3
@@ -613,7 +613,7 @@ private lemma ricLow_eval (g gm : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma ricInterior_eval (s : Nat) (x : M)
     (v : TangentSpace I x) (D : Tensor0SSpace (s + 1) I x)
     (w : Fin s → TangentSpace I x) :
@@ -637,10 +637,10 @@ private lemma ricCDual_coord
   exact congrArg (fun L : E →ₗ[Real] Real => LinearMap.toContinuousLinearMap L)
     (congrFun (Module.Basis.coe_dualBasis B) k)
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
+  [T2Space M] in
+private lemma ricRS13_pair [SigmaCompactSpace M] (x : M) (B : TensorRSSpace 1 3 I x)
     (beta : Tensor0SSpace 1 I x) (v : Fin 3 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[Real] Tensor0SSpace 3 I x from B)
@@ -724,7 +724,7 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
   exact Finset.sum_congr rfl (fun i _ => by
     rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul])
 
-omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 /-- Public realization of the connection difference by raising the first
 slot of its lowered covariant tensor. -/
 theorem connRaise_eq (g gm : SmoothRiemannianMetric I M) :
@@ -879,7 +879,7 @@ theorem ricciDAG_pair (g gm : SmoothRiemannianMetric I M) (x : M)
   rw [g.symm x R r, ← hp]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private lemma ricL_self (g gm : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     g.inner x (fullRaisedEndoField (I := I) (M := M) g gm x v) w =
@@ -958,7 +958,7 @@ theorem ricDAVec_symm (g gm : SmoothRiemannianMetric I M) (x : M)
   exact covDerivConnDiff_symm23 (I := I) (M := M) gm g X Y Z x
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ricW_expand (g : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M)
     (y z : TangentSpace I x) :
@@ -1123,7 +1123,7 @@ private lemma ricPair_alg {A : Type*} [Fintype A]
   rw [hL, hR, hFP]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma ricInner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
@@ -1175,7 +1175,7 @@ private lemma ricInner0 (g : SmoothRiemannianMetric I M) (s : Nat)
   rw [hcomp A Fin.elim0 J, hcomp B Fin.elim0 J]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ricSmooth_basis (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ bse : Module.Basis (Fin (Module.finrank Real E)) Real
         (TangentSpace I x),
@@ -1211,7 +1211,7 @@ private lemma ricSmooth_basis (g : SmoothRiemannianMetric I M) (x : M) :
   exact congrFun (coe_basisOfLinearIndependentOfCardEqFinrank he_li hcard) i
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 set_option backward.isDefEq.respectTransparency false in
 private lemma ricSwap_point (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 4) (x : M) :
@@ -1277,7 +1277,7 @@ theorem ricSwap_l2 (g : SmoothRiemannianMetric I M)
   exact ricSwap_point (I := I) (M := M) g A B x
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Component formula for the slot-aligned Ricci derivative partner. -/
 theorem ricciDAPart_eval (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
@@ -1452,7 +1452,7 @@ theorem ricciDAOut_eval (g gm : SmoothRiemannianMetric I M)
   ring
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma ricW_symm (g : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1923,13 +1923,13 @@ theorem ricciDA_pair (g gm : SmoothRiemannianMetric I M)
 
 /-- Rotated lowered connection difference whose covariant derivative is the
 unswapped carrier underlying `ricciDAG`. -/
-def ricciDABase (g gm : SmoothRiemannianMetric I M) :
+def ricciDABase [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 0 3 :=
   domDomCongrSection (I := I) g (finRotate 3)
     (connDiffLoweredCc (I := I) g gm)
 
 /-- Formal adjoint of the slot-aligned Ricci derivative partner. -/
-def ricciDAAdj (g gm : SmoothRiemannianMetric I M)
+def ricciDAAdj [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 3 :=
   covDivergence (I := I) (M := M) g 3
     (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 4) 1)

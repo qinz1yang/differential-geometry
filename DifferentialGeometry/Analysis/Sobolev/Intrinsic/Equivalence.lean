@@ -353,7 +353,7 @@ private lemma memW1p_chartPushedExt
         (hsmooth.of_le (by norm_cast))
 
 private theorem memW1p_chartPushed_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) {p : ℝ≥0∞} (hp : 1 ≤ p) :
     DeGiorgi.MemW1p p
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u)
@@ -382,7 +382,7 @@ private theorem memW1p_chartPushed_of_contMDiff
     (chartTargetEuclid_isOpen' (I := I) (M := M) α) hae_eq).mp hExt_memW1p
 
 theorem MemWkpChart_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -402,7 +402,7 @@ theorem MemWkpChart_of_contMDiff
       (d := Module.finrank ℝ E) hMW1p i
 
 theorem MemW1pIntrinsic_of_contMDiff_explicit
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.Intrinsic.MemW1pIntrinsic
@@ -411,7 +411,7 @@ theorem MemW1pIntrinsic_of_contMDiff_explicit
     (I := I) (M := M) g p hu
 
 theorem memWkpChart_iff_memW1pIntrinsic_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -424,7 +424,7 @@ theorem memWkpChart_iff_memW1pIntrinsic_of_contMDiff
   · exact MemWkpChart_of_contMDiff (I := I) (M := M) g hp_one hu_smooth
 
 theorem wkpNormChart_lt_top_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -433,7 +433,7 @@ theorem wkpNormChart_lt_top_of_contMDiff
     (MemWkpChart_of_contMDiff (I := I) (M := M) g hp hu)
 
 theorem w1pNormIntrinsic_lt_top_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.Intrinsic.w1pNormIntrinsic

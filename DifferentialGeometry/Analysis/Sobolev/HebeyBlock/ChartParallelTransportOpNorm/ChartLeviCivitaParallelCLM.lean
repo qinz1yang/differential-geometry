@@ -136,7 +136,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 omit [FiniteDimensional ℝ E] in
 theorem chartTrivInv_opNorm_isBounded_on_compact_unconditional
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)
     (hK_base : K ⊆ (trivializationAt E (TangentSpace I) α).baseSet) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
@@ -281,7 +281,7 @@ private lemma norm_basis_le_modelBasisVecSup
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 private lemma christoffelCorrection_summand_opNorm_le_unconditional
-    [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) (Y : E)
     (i j k : Fin (Module.finrank ℝ E))
     (C_J : ℝ)
@@ -427,7 +427,7 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
-    [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
       g.toContinuousRiemannianMetric
@@ -556,7 +556,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport_unconditional
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport_unconditional
-    [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
       g.toContinuousRiemannianMetric

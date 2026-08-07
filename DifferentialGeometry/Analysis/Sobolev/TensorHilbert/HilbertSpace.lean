@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -50,13 +50,13 @@ namespace SmoothCcTensorHs
 variable {g : SmoothRiemannianMetric I M} {r s k : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[ext] theorem ext {S T : SmoothCcTensorHs g r s k}
     (h : S.toCcTensor = T.toCcTensor) : S = T := by
   cases S; cases T; congr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma toCcTensor_injective :
     Function.Injective
       (fun S : SmoothCcTensorHs g r s k => S.toCcTensor) := by
@@ -73,23 +73,23 @@ instance : SMul ℝ (SmoothCcTensorHs g r s k) :=
   ⟨fun c S => ⟨c • S.toCcTensor⟩⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma toCcTensor_zero :
     (0 : SmoothCcTensorHs g r s k).toCcTensor = 0 := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma toCcTensor_add (S T : SmoothCcTensorHs g r s k) :
     (S + T).toCcTensor = S.toCcTensor + T.toCcTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma toCcTensor_neg (S : SmoothCcTensorHs g r s k) :
     (-S).toCcTensor = -S.toCcTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma toCcTensor_sub (S T : SmoothCcTensorHs g r s k) :
     (S - T).toCcTensor = S.toCcTensor - T.toCcTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma toCcTensor_smul (c : ℝ) (S : SmoothCcTensorHs g r s k) :
     (c • S).toCcTensor = c • S.toCcTensor := rfl
 
@@ -131,7 +131,7 @@ instance : AddCommGroup (SmoothCcTensorHs g r s k) :=
     toCcTensor_nsmul
     toCcTensor_zsmul
 
-def toCcTensorAddHom :
+def toCcTensorAddHom [SigmaCompactSpace M] :
     SmoothCcTensorHs g r s k →+ SmoothCcTensor g r s where
   toFun := fun S => S.toCcTensor
   map_zero' := toCcTensor_zero
@@ -143,7 +143,7 @@ instance : Module ℝ (SmoothCcTensorHs g r s k) :=
 end SmoothCcTensorHs
 
 
-private noncomputable def hkIntegrand
+private noncomputable def hkIntegrand [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -168,7 +168,7 @@ private noncomputable def hkIntegrand
             (Fin (Module.finrank ℝ E)) ℝ (basisIdx i)))
 
 
-private noncomputable def hkOneTerm
+private noncomputable def hkOneTerm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -180,7 +180,7 @@ private noncomputable def hkOneTerm
       Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))))
 
 
-private noncomputable def sobolevHkInner
+private noncomputable def sobolevHkInner [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) : ℝ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -191,8 +191,8 @@ private noncomputable def sobolevHkInner
           hkOneTerm (I := I) (M := M) T S α IJ j basisIdx
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkIntegrand_continuousOn
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkIntegrand_continuousOn [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -322,8 +322,8 @@ private lemma hkIntegrand_continuousOn
     (h_eval_contOn S.toCcTensor))
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkIntegrand_zero_off_compact
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkIntegrand_zero_off_compact [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -453,8 +453,8 @@ private lemma hkIntegrand_integrableOn
   exact h_int_T
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma hkIntegrand_symm
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma hkIntegrand_symm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -467,8 +467,8 @@ private lemma hkIntegrand_symm
   ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkIntegrand_add_left
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkIntegrand_add_left [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T₁ T₂ S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -491,8 +491,8 @@ private lemma hkIntegrand_add_left
   ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkIntegrand_smul_left
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkIntegrand_smul_left [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (c : ℝ) (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -514,8 +514,8 @@ private lemma hkIntegrand_smul_left
   ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkOneTerm_symm
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkOneTerm_symm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -550,8 +550,8 @@ private lemma hkOneTerm_add_left
   exact hkIntegrand_add_left (I := I) (M := M) T₁ T₂ S α IJ j basisIdx hy
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkOneTerm_smul_left
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkOneTerm_smul_left [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (c : ℝ) (T S : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -567,8 +567,8 @@ private lemma hkOneTerm_smul_left
   exact hkIntegrand_smul_left (I := I) (M := M) c T S α IJ j basisIdx hy
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hkOneTerm_self_nonneg
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hkOneTerm_self_nonneg [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T : SmoothCcTensorHs g r s k) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -971,7 +971,7 @@ abbrev TensorPouSobolevHilbert
 
 namespace SmoothCcTensor
 
-noncomputable def toHs {g : SmoothRiemannianMetric I M} {r s : ℕ} (k : ℕ)
+noncomputable def toHs [SigmaCompactSpace M] {g : SmoothRiemannianMetric I M} {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) :
     TensorPouSobolevHilbert (I := I) (M := M) g r s k :=
   ((⟨T⟩ : SmoothCcTensorHs g r s k) : TensorPouSobolevHilbert g r s k)

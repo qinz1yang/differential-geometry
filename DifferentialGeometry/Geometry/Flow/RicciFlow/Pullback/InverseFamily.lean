@@ -317,12 +317,11 @@ identity for a harmonic-map heat-flow gauge starting from `id`. -/
       deTurckVF (I := I) g g_bg x := by
   rw [Diffeomorph.pullbackMetric_refl, Diffeomorph.pushforward_refl]
 
-omit [CompactSpace M] in
 /-- Pulling a Ricci flow back by a jointly smooth diffeomorphism family whose
 velocity is the pushforward of the DeTurck field produces the Ricci--DeTurck
 PDE.  This is the reverse gauge identity; it does not assert existence of the
 required diffeomorphism family. -/
-theorem ricci_pullback_DT
+theorem ricci_pullback_DT [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

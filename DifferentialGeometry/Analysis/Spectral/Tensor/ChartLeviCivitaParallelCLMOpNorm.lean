@@ -27,12 +27,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLeviCivitaParallelCLM_general_opNorm_le_factors
     (g : SmoothRiemannianMetric I M) (α b : M)
     (X : Π b' : M, TangentSpace I b')

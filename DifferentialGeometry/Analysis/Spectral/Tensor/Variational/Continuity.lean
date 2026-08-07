@@ -49,16 +49,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDeriv_chartBasis_contMDiffOn
+lemma tensorCovDeriv_chartBasis_contMDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -99,9 +98,8 @@ lemma tensorCovDeriv_chartBasis_contMDiffOn
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx₀)
   exact hcov_at.clm_bundle_apply hX_at
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDeriv_chartBasis_trivImage_contMDiffOn
+lemma tensorCovDeriv_chartBasis_trivImage_contMDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -212,7 +210,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_local
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
@@ -235,7 +233,7 @@ private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_local
   exact ((evalAtBasisCLELocal (E := E) n).symm_apply_apply (Φ b)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma loweredCompose_at_basis_tuple_local
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T : TensorRSModel r s ℝ E)
@@ -249,7 +247,7 @@ private lemma loweredCompose_at_basis_tuple_local
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartGramMatrixInv_entry_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -273,7 +271,7 @@ private lemma chartGramMatrixInv_entry_contMDiffOn
   have hpos_ne : (chartGramMatrix (I := I) g α b).det ≠ 0 := ne_of_gt hpos
   exact (ContMDiffWithinAt.inv₀ hdet hpos_ne).mul hadj
 
-private noncomputable def separableFormBundleSectionLocal
+private noncomputable def separableFormBundleSectionLocal [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (φ_first : Fin r → Fin (Module.finrank ℝ E)) :
     M → TotalSpace (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y) :=
@@ -284,8 +282,8 @@ private noncomputable def separableFormBundleSectionLocal
         (fun k : Fin r => chartBasisVecFiber (I := I) α (φ_first k) b)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private theorem trivializationAt_separableFormBundleSectionLocal_eval_basis
+    in
+private theorem trivializationAt_separableFormBundleSectionLocal_eval_basis [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (φ_first : Fin r → Fin (Module.finrank ℝ E)) {b : M}
     (ψ : Fin r → Fin (Module.finrank ℝ E)) :
@@ -308,8 +306,8 @@ private theorem trivializationAt_separableFormBundleSectionLocal_eval_basis
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma contMDiffOn_separableFormBundleSectionLocal
+    in
+private lemma contMDiffOn_separableFormBundleSectionLocal [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (φ_first : Fin r → Fin (Module.finrank ℝ E)) :
     ContMDiffOn I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
@@ -341,9 +339,8 @@ private lemma contMDiffOn_separableFormBundleSectionLocal
   exact trivializationAt_separableFormBundleSectionLocal_eval_basis
     (I := I) (M := M) g r α φ_first ψ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma contMDiffOn_lower_chartCov_at_basis
+private lemma contMDiffOn_lower_chartCov_at_basis [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (i : Fin (Module.finrank ℝ E))
@@ -430,9 +427,8 @@ private lemma contMDiffOn_lower_chartCov_at_basis
   rw [lowerAllUpperIndices_apply]
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma contMDiffOn_loweredCompose_chartCov
+private lemma contMDiffOn_loweredCompose_chartCov [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -453,9 +449,8 @@ private lemma contMDiffOn_loweredCompose_chartCov
           (chartBasisVecFiber (I := I) α i b))) φ).symm)
   exact contMDiffOn_lower_chartCov_at_basis (I := I) (M := M) g r s S α i φ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma continuousOn_loweredCompose_chartCov
+private lemma continuousOn_loweredCompose_chartCov [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -467,9 +462,8 @@ private lemma continuousOn_loweredCompose_chartCov
       (trivializationAt E (TangentSpace I) α).baseSet :=
   (contMDiffOn_loweredCompose_chartCov (I := I) (M := M) g r s S α i).continuousOn
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma continuousOn_tensorInnerPointwise_chartCov
+private lemma continuousOn_tensorInnerPointwise_chartCov [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -506,9 +500,8 @@ private lemma continuousOn_tensorInnerPointwise_chartCov
       (tensorCovDerivAt (I := I) (M := M) g r s T b
         (chartBasisVecFiber (I := I) α j b)))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartTensorCovDerivPointwiseInner_continuousOn
+private lemma chartTensorCovDerivPointwiseInner_continuousOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M) :
     ContinuousOn
@@ -522,9 +515,8 @@ private lemma chartTensorCovDerivPointwiseInner_continuousOn
   · exact (chartGramMatrixInv_entry_contMDiffOn (I := I) (M := M) g α i j).continuousOn
   · exact continuousOn_tensorInnerPointwise_chartCov (I := I) (M := M) g r s S T α i j
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorCovDerivPointwiseInner_continuous
+theorem tensorCovDerivPointwiseInner_continuous [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) :
     Continuous (tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T) := by
@@ -548,9 +540,8 @@ theorem tensorCovDerivPointwiseInner_continuous
     h_chart_cont.congr h_cong
   exact h_local.continuousAt (hOpen.mem_nhds hx_base)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorCovDerivPointwiseInner_integrable
+theorem tensorCovDerivPointwiseInner_integrable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) :
     MeasureTheory.Integrable

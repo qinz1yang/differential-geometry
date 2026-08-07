@@ -28,14 +28,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-noncomputable def tensorChartComponentSqrtPou
+noncomputable def tensorChartComponentSqrtPou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -45,8 +45,8 @@ noncomputable def tensorChartComponentSqrtPou
     Real.sqrt (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b) *
       tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx b
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma tensorChartComponentSqrtPou_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma tensorChartComponentSqrtPou_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -55,8 +55,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
       Real.sqrt (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b) *
         tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx b := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-lemma tensorChartComponentSqrtPou_sq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma tensorChartComponentSqrtPou_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -330,8 +330,8 @@ theorem eLpNorm_tensorChartComponentSqrtPou_le_uniform
     ENNReal.ofReal_mul (Real.sqrt_nonneg _)] at h_eLpNorm_le
   exact h_eLpNorm_le
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma support_sqrt_pou_eq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma support_sqrt_pou_eq [SigmaCompactSpace M]
     (α : M) :
     Function.support
         (fun b : M => Real.sqrt
@@ -347,8 +347,8 @@ private lemma support_sqrt_pou_eq
       (chartAtlasPOU I M).nonneg α b
     exact hb (le_antisymm hle hρ_nn)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tsupport_tensorChartComponentSqrtPou_subset
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tsupport_tensorChartComponentSqrtPou_subset [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -367,8 +367,8 @@ private lemma tsupport_tensorChartComponentSqrtPou_subset
   unfold tsupport
   rw [support_sqrt_pou_eq (I := I) (M := M) α]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma continuous_tensorChartComponentSqrtPou
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma continuous_tensorChartComponentSqrtPou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -413,8 +413,8 @@ private lemma continuous_tensorChartComponentSqrtPou
       by_contra hne; exact hy_notsupp hne
     exact hzero.symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma measurable_tensorChartComponentSqrtPou
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma measurable_tensorChartComponentSqrtPou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -424,8 +424,8 @@ private lemma measurable_tensorChartComponentSqrtPou
   (continuous_tensorChartComponentSqrtPou (I := I) (M := M)
     g r s S α Idx Jdx).measurable
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hsNorm_zero_integrand_eq_sq_eLpNorm_chartPushedRaw
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hsNorm_zero_integrand_eq_sq_eLpNorm_chartPushedRaw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -817,8 +817,8 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
     _ = Real.sqrt Ksum * L := by
         rw [Real.sqrt_mul hKsum_nn, Real.sqrt_sq hL_nn]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-lemma tensorL2Norm_toFun_eq_norm
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma tensorL2Norm_toFun_eq_norm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (S : SmoothCcTensor g r s) :
     tensorL2Norm (I := I) (M := M) g r s S.toFun = ‖S‖ := by
   have h_sq := SmoothCcTensor.norm_sq_eq_inner_self

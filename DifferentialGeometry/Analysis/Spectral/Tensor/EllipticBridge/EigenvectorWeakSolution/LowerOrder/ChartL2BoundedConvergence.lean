@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -37,8 +37,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma memLp_bdd_mul
     (α : M) {c : EuclN → ℝ} {C : ℝ} (hC : 0 ≤ C) (hc_bd : ∀ y, ‖c y‖ ≤ C)
     (hc_meas : AEStronglyMeasurable c (chartL2Measure (I := I) (M := M) α))
@@ -62,8 +62,8 @@ lemma memLp_bdd_mul
         eLpNorm_const_smul (C : ℝ) f 2 _
     _ < ⊤ := ENNReal.mul_lt_top (by simp) hf.2
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma eLpNorm_bdd_mul_le
     (α : M) {c : EuclN → ℝ} {C : ℝ} (hC : 0 ≤ C) (hc_bd : ∀ y, ‖c y‖ ≤ C)
     (f : EuclN → ℝ) :
@@ -87,8 +87,8 @@ lemma eLpNorm_bdd_mul_le
           eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) := by
         rw [Real.enorm_eq_ofReal hC]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma tendsto_bdd_mul
     (α : M) {c : EuclN → ℝ} {C : ℝ} (hC : 0 ≤ C) (hc_bd : ∀ y, ‖c y‖ ≤ C)
     (hc_meas : AEStronglyMeasurable c (chartL2Measure (I := I) (M := M) α))
@@ -239,8 +239,8 @@ lemma chosenWeakPartial'_tensorChartComponent_ae_eq
   refine h_ae.trans (Filter.EventuallyEq.of_eq ?_)
   funext y; rw [euclidPartial_def]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma coeFn_finsetSum_lp
     (α : M) {ι : Type*} (s : Finset ι)
     (G : ι → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
@@ -259,8 +259,8 @@ lemma coeFn_finsetSum_lp
       filter_upwards [ih] with y hy
       rw [Pi.add_apply, hy, Finset.sum_insert ha]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma coeFn_finsetSum_toLp
     (α : M) {ι : Type*} (s : Finset ι)
     {f : ι → EuclN → ℝ}
@@ -278,8 +278,8 @@ lemma coeFn_finsetSum_toLp
       filter_upwards [ih, MemLp.coeFn_toLp (hf a)] with y hy hya
       rw [Finset.sum_insert ha, Finset.sum_insert ha, hya, hy]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma toLp_finsetSum_congr
     (α : M) {ι : Type*} (s : Finset ι)
     {f : ι → EuclN → ℝ}
@@ -294,8 +294,8 @@ lemma toLp_finsetSum_congr
   exact (MemLp.coeFn_toLp hF).trans
     (hFeq.trans (coeFn_finsetSum_toLp (I := I) (M := M) α s hf).symm)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma tendsto_toLp_finsetSum
     (α : M) {ι : Type*} (s : Finset ι)
     {f : ι → ℕ → EuclN → ℝ} {flim : ι → EuclN → ℝ}
@@ -346,8 +346,8 @@ lemma memLp_indicatorFactor_mul_lp
   exact memLp_bdd_mul (I := I) (M := M) α hC_nn hci_bd
     (aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc) (Lp.memLp G)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma tendsto_sumToLp
     (α : M) {ι : Type*} [Fintype ι]
     {f : ι → ℕ → EuclN → ℝ} {flim : ι → EuclN → ℝ}
@@ -381,8 +381,8 @@ lemma euclidPartial_finsetSum
   rw [euclidPartial_def, fderiv_fun_sum hf, ContinuousLinearMap.sum_apply]
   exact Finset.sum_congr rfl (fun a _ => by rw [euclidPartial_def])
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma tendsto_sum4
     (α : M) {κ₁ κ₂ κ₃ κ₄ : Type*}
     [Fintype κ₁] [Fintype κ₂] [Fintype κ₃] [Fintype κ₄]
@@ -434,8 +434,8 @@ lemma tendsto_sum4
           (hf := fun d n => hf a b c d n) (hflim := fun d => hflim a b c d)
           (h_tendsto a b c))))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma tendsto_sum5
     (α : M) {κ₁ κ₂ κ₃ κ₄ κ₅ : Type*}
     [Fintype κ₁] [Fintype κ₂] [Fintype κ₃] [Fintype κ₄] [Fintype κ₅]
@@ -484,8 +484,8 @@ lemma tendsto_sum5
       (fun b c d e => hflim a b c d e)
       (fun b c d e => h_tendsto a b c d e))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 lemma differentiableAt_of_contDiffOn_chartTarget
     (α : M) {c : EuclN → ℝ}
     (hc : ContDiffOn ℝ ∞ c (chartTargetEuclid (I := I) (M := M) α))
@@ -507,8 +507,8 @@ lemma differentiableAt_tensorChartComponent
   ((tensorChartComponent_contDiff' (I := I) (M := M) g r s S α Idx Jdx).differentiable
     (by simp)).differentiableAt
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma toLp_add_eq
     (α : M) {f₁ f₂ F : EuclN → ℝ}
     (hf₁ : MemLp f₁ 2 (chartL2Measure (I := I) (M := M) α))

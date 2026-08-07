@@ -24,10 +24,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 theorem corrected_chart_local_picard_from_zero
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (r : ℝ) (hr : 0 < r)
     (hCont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))

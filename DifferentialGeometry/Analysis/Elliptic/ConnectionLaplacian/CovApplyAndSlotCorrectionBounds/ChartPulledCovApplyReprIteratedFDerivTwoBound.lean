@@ -30,11 +30,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma intrinsicPiece_contDiffAt_two
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -103,7 +103,7 @@ private lemma intrinsicPiece_contDiffAt_two
     exact h_at_top.of_le h2_le
   exact hc_at.clm_apply hu_at
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inputSlotPiece_contDiffAt_two
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -197,7 +197,7 @@ private lemma inputSlotPiece_contDiffAt_two
       (by rw [hx'_inv]; exact hx'_src) k
   exact h_kernel_F_at.congr_of_eventuallyEq h_evt
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma outputSlotPiece_contDiffAt_two
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -291,9 +291,8 @@ private lemma outputSlotPiece_contDiffAt_two
       (by rw [hx'_inv]; exact hx'_src) l
   exact h_kernel_F_at.congr_of_eventuallyEq h_evt
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chart_pulled_covApply_repr_eventuallyEq'
+private lemma chart_pulled_covApply_repr_eventuallyEq' [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -44,7 +44,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma sum_wkpNorm_sq_α_le_wtwokTwoNorm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :

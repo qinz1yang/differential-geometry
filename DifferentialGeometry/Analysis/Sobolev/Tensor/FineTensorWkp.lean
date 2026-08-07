@@ -41,7 +41,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -51,7 +51,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 /-! ## Scalar-module laws for the explicit quotient operations -/
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qone_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
@@ -64,7 +64,7 @@ theorem qone_smul
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
   rw [one_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qmul_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (a b : ℝ)
@@ -80,7 +80,7 @@ theorem qmul_smul
       (a • b • S)
   rw [mul_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qsmul_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) :
@@ -93,7 +93,7 @@ theorem qsmul_zero
   rw [smul_zero]
   exact TensorAEEq.rfl (I := I) (M := M) g 0
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qsmul_add
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ)
@@ -111,7 +111,7 @@ theorem qsmul_add
       (c • S + c • T)
   rw [smul_add]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qadd_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (a b : ℝ)
@@ -128,7 +128,7 @@ theorem qadd_smul
       (a • S + b • S)
   rw [add_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem qzero_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
@@ -488,7 +488,7 @@ private theorem chartMul_mem
 canonical POU-weighted component and then multiplies it by the additional
 fine partition weight `φ`.  The raw pushforward makes the result identically
 zero outside the chart target. -/
-noncomputable def fineLocComp
+noncomputable def fineLocComp [SigmaCompactSpace M]
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
@@ -498,7 +498,7 @@ noncomputable def fineLocComp
         ((φ : M → ℝ) x *
           secCompRaw (I := I) (M := M) r s S α P.1 P.2 x))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- On the chart target, fine localization is ordinary scalar
 multiplication of the canonical tensor component. -/
 theorem fineLoc_apply
@@ -516,7 +516,7 @@ theorem fineLoc_apply
   unfold secCompPou
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- Fine-localized components vanish outside their chart target. -/
 theorem fineLoc_apply_off
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
@@ -528,7 +528,7 @@ theorem fineLoc_apply_off
   exact Chart.chartPushedRaw_apply_of_notMem
     (I := I) (M := M) α _ hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- Fine localization is additive before passing to either quotient. -/
 theorem fineLoc_add
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
@@ -554,7 +554,7 @@ theorem fineLoc_add
       fineLoc_apply_off (I := I) (M := M) r s φ T α P hy]
     simp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- Fine localization commutes with real scalar multiplication before
 passing to either quotient. -/
 theorem fineLoc_smul
@@ -606,7 +606,7 @@ theorem fineLoc_compact
       (fun x => (φ : M → ℝ) x *
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem fineLoc_target_ae
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -623,7 +623,7 @@ private theorem fineLoc_target_ae
       (fun x => (φ : M → ℝ) x *
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem secComp_target_ae
     (r s : ℕ) (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
@@ -759,7 +759,7 @@ noncomputable def fineLocWkp
   ⟨fineLocComp (I := I) (M := M) r s φ S.1 α P,
     fineLoc_mem_univ (I := I) (M := M) g r s k hp hp_top φ α P S⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- Tensor a.e. equality descends through every fine localization. -/
 theorem fineLoc_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

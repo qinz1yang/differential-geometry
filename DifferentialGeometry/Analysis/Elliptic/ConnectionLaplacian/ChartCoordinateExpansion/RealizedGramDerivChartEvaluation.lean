@@ -35,13 +35,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma ccTensorBilin_chartBasis_eq_tensorChartComponent
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
+lemma ccTensorBilin_chartBasis_eq_tensorChartComponent [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     smoothCcTensorBilinForm (I := I) g₀ W x (chartModelBasis E a) (chartModelBasis E b) =
@@ -51,7 +51,7 @@ lemma ccTensorBilin_chartBasis_eq_tensorChartComponent
   exact unitModel_basisChart_eq_tensorChartComponent (I := I) (M := M) g₀ W x a b
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cometricFinBasisTrace_eq_chartInvGram_bilin
     (g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -124,7 +124,7 @@ lemma unitModel4SlotBilin_apply
       f (Function.update (Function.update base i c) j v) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma partialDeriv_scalarOnE_eq_euclidPartial_local
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -161,9 +161,9 @@ lemma partialDeriv_scalarOnE_eq_euclidPartial_local
   rw [partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
+lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (m₁ m₂ : Fin (Module.finrank ℝ E)) (a b : Fin (Module.finrank ℝ E)) :
     euclidPartial (E := E) m₂
@@ -233,8 +233,7 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
   rw [Filter.EventuallyEq.fderiv_eq hscalarOnE_gm]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
+lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -265,9 +264,9 @@ lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
   rw [scalarOnE_def, scalarOnE_def]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma scalarOnE_contDiffOn_tensorChartComponentRaw
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
+private lemma scalarOnE_contDiffOn_tensorChartComponentRaw [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
@@ -293,8 +292,8 @@ private lemma scalarOnE_contDiffOn_tensorChartComponentRaw
   rw [scalarOnE_def]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (m : Fin (Module.finrank ℝ E)) (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ
@@ -319,8 +318,7 @@ private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt
   exact (hpd.contDiffAt (isOpen_interior.mem_nhds hint)).differentiableAt (by simp)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
+lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2 [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -414,8 +412,8 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
   ring
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     euclidPartial (E := E) a
@@ -469,8 +467,7 @@ lemma euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw
   exact (hsymm2 _ _).symm
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
+lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -562,9 +559,9 @@ private lemma sum_pi_fin_succ' {n : ℕ} {β : Type*} [AddCommMonoid β]
   rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma covDerivLowerOrderTerm02_center_eq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
+lemma covDerivLowerOrderTerm02_center_eq [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (m p q : Fin (Module.finrank ℝ E)) :
     covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 2 S x m ![] ![p, q]
@@ -686,7 +683,7 @@ lemma covDerivLowerOrderTerm02_center_eq
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma covDerivLowerOrderTerm03_center_hout
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (m b c d : Fin (Module.finrank ℝ E))
@@ -751,9 +748,9 @@ private lemma sum_fin3_collapse_gen
   rw [show (default : Fin 1) = (0 : Fin 1) from rfl]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma covDerivLowerOrderTerm03_center_eq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
+lemma covDerivLowerOrderTerm03_center_eq [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 3) (x : M)
     (m b c d : Fin (Module.finrank ℝ E)) :
     covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 3 W x m ![] ![b, c, d]
@@ -871,8 +868,8 @@ lemma covDerivLowerOrderTerm03_center_eq
   · intro h; exact absurd (Finset.mem_univ _) h
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma euclidPartial_covDerivLowerOrderTerm02_center_eq_sum
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma euclidPartial_covDerivLowerOrderTerm02_center_eq_sum [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     euclidPartial (E := E) a

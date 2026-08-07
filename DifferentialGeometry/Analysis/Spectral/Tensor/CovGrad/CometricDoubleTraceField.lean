@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 noncomputable def modelRankCast {m n : ℕ} (h : m = n) :
     Tensor0SBundle.Tensor0SModel m ℝ E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E :=
@@ -49,8 +49,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 theorem interiorProductField_contMDiff (s : ℕ)
     (α : ∀ x : M, Tensor0SBundle.Tensor0SSpace (s + 1) I x)
     (hα : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)) ∞
@@ -105,8 +105,8 @@ theorem interiorProductField_contMDiff (s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 theorem contractTraceField_contMDiff (r s : ℕ)
     (T : ∀ x : M, Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I x)
     (hT : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E)) ∞
@@ -251,8 +251,8 @@ theorem contractTraceField_contMDiff (r s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 theorem tensor0SField_castRank_contMDiff {m n : ℕ} (h : m = n)
     (Y : ∀ x : M, Tensor0SBundle.Tensor0SSpace m I x)
     (hY : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel m ℝ E)) ∞
@@ -307,8 +307,8 @@ noncomputable def ricciCometricDoubleTraceFib (g₀ : SmoothRiemannianMetric I M
             x).toContinuousLinearMap))
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 @[simp] theorem ricciCometricDoubleTraceFib_toModel (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (x : M)
     (D : Tensor0SBundle.Tensor0SSpace (4 + a) I x) :
@@ -375,8 +375,8 @@ noncomputable def cometricRaiseSlot0Fib (g₀ : SmoothRiemannianMetric I M) (s :
       (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (s + 2) x).toContinuousLinearMap)
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 @[simp] theorem cometricRaiseSlot0Fib_toModel (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace (s + 2) I x) :
     Tensor0SBundle.TensorRSSpace.toModel (cometricRaiseSlot0Fib (I := I) g₀ s x D) =
@@ -385,8 +385,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [BoundarylessManifold I M]
+    in
 theorem cometricRaiseSlot0Fib_section_contMDiff (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Y : ∀ x : M, Tensor0SBundle.Tensor0SSpace (s + 2) I x)
     (hY : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (s + 2) ℝ E)) ∞
@@ -424,8 +424,8 @@ theorem cometricRaiseSlot0Fib_section_contMDiff (g₀ : SmoothRiemannianMetric I
   congr 1
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem contract_trace_unitZero_toModel (s : ℕ) (x : M)
     (T : Tensor0SBundle.TensorRSSpace 1 (s + 1) I x) :
     Tensor0SBundle.Tensor0SSpace.toModel
@@ -440,8 +440,8 @@ theorem contract_trace_unitZero_toModel (s : ℕ) (x : M)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+omit [BoundarylessManifold I M] in
 theorem ricciCometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M) (a : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel (4 + a) (2 + a) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel (4 + a) (2 + a) ℝ E)
@@ -510,7 +510,7 @@ noncomputable def cometricDoubleTraceFib (g₀ : SmoothRiemannianMetric I M) (p 
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[simp] theorem cometricDoubleTraceFib_toModel (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace (p + 2) I x) :
     Tensor0SBundle.Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₀ p x D) =
@@ -523,8 +523,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+omit [BoundarylessManifold I M] in
 theorem cometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M) (p : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel (p + 2) p ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel (p + 2) p ℝ E)
@@ -581,7 +581,7 @@ noncomputable def secondMetricCometricDoubleTraceField
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 @[simp] theorem cometricDoubleTraceField_toSection (g₀ : SmoothRiemannianMetric I M) (p : ℕ)
     (x : M) :
     (cometricDoubleTraceField (I := I) g₀ p).toSection x =
@@ -612,8 +612,8 @@ private theorem model_cons_slot0_smul {s : ℕ} (c : ℝ) (u : E)
   rw [h, map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul, ← h]
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem smoothOrthoFrame_basis_at (g₀ : SmoothRiemannianMetric I M) (x : M) {y : M}
     (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) :
     ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y),
@@ -647,8 +647,8 @@ private theorem smoothOrthoFrame_basis_at (g₀ : SmoothRiemannianMetric I M) (x
     fun i => congrFun (coe_basisOfLinearIndependentOfCardEqFinrank he_li hcard) i⟩
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem smoothOrthoFrame_expansion_at (g₀ : SmoothRiemannianMetric I M) (x : M) {y : M}
     (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) (u : TangentSpace I y) :
     u = ∑ i : Fin (Module.finrank ℝ E),
@@ -681,8 +681,8 @@ private theorem smoothOrthoFrame_expansion_at (g₀ : SmoothRiemannianMetric I M
       rw [hcoeff i, hbse i]
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem cometricLmodel_dualBasis_inner (g₀ : SmoothRiemannianMetric I M) (y : M)
     (k : Fin (Module.finrank ℝ E)) (u : TangentSpace I y) :
     g₀.inner y (cometricLmodel (I := I) g₀ y
@@ -712,8 +712,8 @@ private theorem cometricLmodel_dualBasis_inner (g₀ : SmoothRiemannianMetric I 
   rw [LinearMap.coe_toContinuousLinearMap', Module.Basis.coord_apply]
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 theorem cometric_dualTrace_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (x : M) {y : M}
     (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x)
@@ -804,7 +804,7 @@ theorem cometric_dualTrace_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M
                 ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E), ← hcurry]
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem tensor0SCovDeriv_finset_sum (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     {ι : Type*} (fs : Finset ι)
@@ -842,8 +842,8 @@ private theorem tensor0SCovDeriv_finset_sum (g₀ : SmoothRiemannianMetric I M) 
     rw [hadd, ih, Finset.sum_cons]
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 theorem cometricDoubleTraceFib_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M)
     (p : ℕ) (x : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x)
     (D : Tensor0SBundle.Tensor0SSpace (p + 2) I y) :
@@ -886,8 +886,7 @@ theorem cometricDoubleTraceFib_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric
       (vs := Fin.cons ((smoothOrthoFrame (I := I) g₀ x i y : TangentSpace I y) : E) mm)]
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] in
 private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
     (v : E) (T : Tensor0SBundle.Tensor0SModel (p + 2) ℝ E) (mm : Fin p → E) :
     (∑ i : Fin (Module.finrank ℝ E),
@@ -979,8 +978,7 @@ private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric
   exact add_neg_cancel _
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] in
 private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
     (v : E) (W : Tensor0SBundle.Tensor0SSpace (p + 2) I x) :
     (∑ i : Fin (Module.finrank ℝ E),
@@ -1051,7 +1049,7 @@ private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetri
     (Tensor0SBundle.Tensor0SSpace.toModel W) mm
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 private theorem covDeriv_doubleInsert_leibniz (g₀ : SmoothRiemannianMetric I M) (p : ℕ)
     (w : ∀ y : M, Tensor0SBundle.Tensor0SSpace (p + 2) I y)

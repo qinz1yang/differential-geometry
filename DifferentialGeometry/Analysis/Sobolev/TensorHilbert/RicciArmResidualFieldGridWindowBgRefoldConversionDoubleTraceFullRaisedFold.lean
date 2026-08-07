@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -47,7 +47,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma mvDoubleTraceField_self_eq (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₀ s = cometricDoubleTraceField
       (I := I) g₀ s := by
@@ -59,7 +59,7 @@ lemma mvDoubleTraceField_self_eq (s : ℕ) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInsertEndoCc_add_local (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -83,7 +83,7 @@ private lemma slotInsertEndoCc_add_local (s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma fullRaisedEndoField_diff_split_local :
     fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
       gInvDiffRaisedEndoField (I := I) g₀ g₁ +
@@ -106,7 +106,7 @@ private lemma fullRaisedEndoField_diff_split_local :
     rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma appCcRS_slotInsert_id_eq (s c : ℕ) (Φ : SmoothCcTensor g₀ (s + 1) c) :
     ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s
@@ -133,7 +133,7 @@ private lemma appCcRS_slotInsert_id_eq (s c : ℕ) (Φ : SmoothCcTensor g₀ (s 
   rw [Function.update_eq_self]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma mvDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -282,7 +282,7 @@ private lemma mvDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
         rw [← hrep0]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma mvDoubleTraceField_cross_split (s : ℕ) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -305,7 +305,7 @@ def secondMetricPairTraceOp : SmoothCcTensor g₀ 6 2 :=
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 lemma mvPairTraceOp_apply_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -387,7 +387,6 @@ def riemannCometricDoubleTraceFold : SmoothCcTensor g₀ 2 4 :=
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)))
 
 set_option backward.isDefEq.respectTransparency false in
-omit [SigmaCompactSpace M] in
 lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
     (m : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel

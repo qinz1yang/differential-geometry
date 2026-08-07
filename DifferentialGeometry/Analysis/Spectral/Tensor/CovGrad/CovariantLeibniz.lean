@@ -28,14 +28,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-noncomputable def scalarSmul
+noncomputable def scalarSmul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w : SmoothCcTensor g r s) : SmoothCcTensor g r s where
   toSection :=
@@ -106,7 +106,7 @@ theorem tensorCovDerivAt_scalarSmul
   rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
     ContinuousLinearMap.smulRight_apply]
 
-noncomputable def tensorCovDerivCrossLeft
+noncomputable def tensorCovDerivCrossLeft [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -117,7 +117,7 @@ noncomputable def tensorCovDerivCrossLeft
             (tensorCovDerivAt (I := I) (M := M) g r s w x ((chartModelBasis E) i)))
           (S.toFun x))
 
-noncomputable def tensorCovDerivCrossRight
+noncomputable def tensorCovDerivCrossRight [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -128,9 +128,8 @@ noncomputable def tensorCovDerivCrossRight
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) j))))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivCrossLeft_def
+lemma tensorCovDerivCrossLeft_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivCrossLeft (I := I) (M := M) g r s ζ w S x =
@@ -143,9 +142,8 @@ lemma tensorCovDerivCrossLeft_def
                   ((chartModelBasis E) i)))
               (S.toFun x)) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivCrossRight_def
+lemma tensorCovDerivCrossRight_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivCrossRight (I := I) (M := M) g r s ζ w S x =
@@ -234,9 +232,8 @@ private lemma tensorCovDerivPointwiseInner_scalarSmul_right_summand
   simp only [tensorInnerPointwise_smul_right]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma smul_const_tensorCovDerivPointwiseInner
+private lemma smul_const_tensorCovDerivPointwiseInner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),

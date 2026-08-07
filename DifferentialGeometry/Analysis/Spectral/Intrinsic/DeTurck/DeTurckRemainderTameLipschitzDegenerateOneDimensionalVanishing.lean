@@ -89,7 +89,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -142,7 +142,7 @@ lemma dim1_domDomCongr_eq (h1 : Module.finrank ℝ E = 1) {d : ℕ}
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma dim1_slotPermCLM_eq (h1 : Module.finrank ℝ E = 1) {d : ℕ}
     (ρ : Equiv.Perm (Fin d)) (x : M) (D : Tensor0SBundle.Tensor0SSpace d I x) :
@@ -153,7 +153,7 @@ private lemma dim1_slotPermCLM_eq (h1 : Module.finrank ℝ E = 1) {d : ℕ}
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma ricciCometricFourTraceCLM_eq_zero_of_finrank_eq_one (h1 : Module.finrank ℝ E = 1)
     (g₁ : SmoothRiemannianMetric I M) (x : M) :
@@ -209,7 +209,6 @@ lemma dim1_linearizedRicciConnDiffOrder0CoeffField_eq_zero
 omit [CompactSpace M] [I.Boundaryless] in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma dim1_riemannOp_first_two_eq_zero (h1 : Module.finrank ℝ E = 1)
     (g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x)
     (hw : w ≠ 0) :
@@ -236,7 +235,7 @@ private lemma dim1_riemannOp_first_two_eq_zero (h1 : Module.finrank ℝ E = 1)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma dim1_smoothOrthoFrame_ne_zero (g₁ : SmoothRiemannianMetric I M) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x a x ≠ 0 := by

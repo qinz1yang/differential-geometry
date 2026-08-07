@@ -121,7 +121,7 @@ private lemma memLp_cutoff_mul
   exact MemLp.mono (hv.const_mul M_χ) (hχ_aesm.mul hv.aestronglyMeasurable) h_pt_le
 
 theorem gTotal_le_data_eLpNorm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
     {M_χ M_dχ : ℝ}

@@ -38,7 +38,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 
 
@@ -58,9 +58,8 @@ variable
 
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem heatTraceWeighted_summable_of_tailSummable
+theorem heatTraceWeighted_summable_of_tailSummable [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (htail : EigenvalueTailSummable (I := I) (M := M) g r s)
     (σ : ℝ) (hσ : 0 ≤ σ) {ε : ℝ} (hε : 0 < ε) :
@@ -92,9 +91,8 @@ theorem heatTraceWeighted_summable_of_tailSummable
           exact Real.rpow_nonneg hbase_pos.le _
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem hom_integral_eq
+private theorem hom_integral_eq [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g 0 2)
@@ -188,9 +186,8 @@ private theorem coeffFun_u_eq
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem duhamel_integral_abs_le
+private theorem duhamel_integral_abs_le [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ} (hT : 0 ≤ T)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2)
@@ -209,9 +206,8 @@ private theorem duhamel_integral_abs_le
   exact hbound
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem u0_coeff_sq_summable
+private theorem u0_coeff_sq_summable [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} (ha2 : 0 ≤ a + 2)
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2)) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 => (u₀.coeff i) ^ 2) := by
@@ -224,9 +220,8 @@ private theorem u0_coeff_sq_summable
         mul_le_mul_of_nonneg_right hw (sq_nonneg _)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem hom_majorant_summable
+private theorem hom_majorant_summable [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} (ha2 : 0 ≤ a + 2)
     (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 2)
@@ -263,9 +258,8 @@ private theorem hom_majorant_summable
     nlinarith [hkey, hA2, hB2]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem norm_derivModeCoeff_le
+private theorem norm_derivModeCoeff_le [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ} (hT : 0 ≤ T)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
@@ -275,9 +269,8 @@ private theorem norm_derivModeCoeff_le
   exact perModeConvDerivL2_sq_le _ (tensor_lambda_nonneg (I := I) (M := M) i) hT _
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem duhamel_majorant_summable
+private theorem duhamel_majorant_summable [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 2)
@@ -332,9 +325,8 @@ private theorem duhamel_majorant_summable
             + (1 + lam) ^ (-p)) := by rw [hA2, hB2]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tsum_singleModeCLM_coeff
+private theorem tsum_singleModeCLM_coeff [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {σ : ℝ}
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ)
     (hsum : Summable (fun j => singleModeCLM (I := I) (M := M) (g := g) (r := 0) (s := 2) (σ := σ) j
@@ -361,9 +353,8 @@ private theorem tsum_singleModeCLM_coeff
   rw [tsum_congr hterm, tsum_ite_eq i c]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem continuousOn_coeffFun_u
+private theorem continuousOn_coeffFun_u [SigmaCompactSpace M]
     {g_bg : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     (u : MaxRegSolutionSpace (I := I) (M := M) a T)
     (i : TensorEigenIdx (I := I) (M := M) g_bg 0 2) :
@@ -378,9 +369,8 @@ private theorem continuousOn_coeffFun_u
   simpa only [coeffCLM_apply] using hcomp
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem norm_singleModeCLM_eq
+private theorem norm_singleModeCLM_eq [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {σ : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) (c : ℝ) :
     ‖singleModeCLM (I := I) (M := M) (g := g) (r := 0) (s := 2) (σ := σ) i c‖

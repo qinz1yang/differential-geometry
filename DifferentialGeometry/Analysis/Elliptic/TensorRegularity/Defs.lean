@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 def euclidPartial (i : Fin (Module.finrank ℝ E))
     (u : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ)
@@ -45,7 +45,7 @@ def chartInvGramEuclid (g : SmoothRiemannianMetric I M) (α : M)
   fun y => chartInvGramOnE (I := I) g α k l (toEuclidean.symm y)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma chartInvGramEuclid_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E))
@@ -59,7 +59,7 @@ def chartChristoffelEuclid (g : SmoothRiemannianMetric I M) (α : M)
   fun y => chartChristoffel (I := I) g α k l m (toEuclidean.symm y)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma chartChristoffelEuclid_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l m : Fin (Module.finrank ℝ E))
@@ -75,7 +75,7 @@ def weightedInvGramEuclid (g : SmoothRiemannianMetric I M) (α : M)
       chartInvGramEuclid (I := I) g α k l y
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma weightedInvGramEuclid_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E))
@@ -85,7 +85,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
         chartInvGramEuclid (I := I) g α k l y := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 private lemma toEuclidean_symm_mem_extChartAt_target
     {α : M} {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -99,12 +99,12 @@ private lemma toEuclidean_symm_mem_extChartAt_target
   exact hz_mem
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+    [CompactSpace M] [T2Space M] in
 private lemma extChartAt_target_eq_interior (α : M) :
     (extChartAt I α).target = interior ((extChartAt I α).target : Set E) :=
   (isOpen_extChartAt_target (I := I) α).interior_eq.symm
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartInvGramEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -126,7 +126,7 @@ theorem chartInvGramEuclid_contDiffOn
       exact toEuclidean_symm_mem_extChartAt_target (I := I) (M := M) hy
   exact hcomp
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartChristoffelEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -153,7 +153,7 @@ theorem chartChristoffelEuclid_contDiffOn
       exact toEuclidean_symm_mem_extChartAt_target (I := I) (M := M) hy
   exact hcomp
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem weightedInvGramEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)

@@ -463,7 +463,7 @@ private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
   rw [h_weight_eq i j, h_partial_f i, h_partial_psi j, hB_match i j]
 
 private theorem bilinear_identity_of_supp_in_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)
@@ -920,7 +920,7 @@ private lemma principalIntegrand_cutoff_eq
     rw [ContinuousLinearMap.zero_apply]; ring
 
 private theorem bilinear_identity_of_smooth
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)
@@ -1040,7 +1040,7 @@ private theorem bilinear_identity_of_smooth
   rw [h_LHS_invariant, h_step3, h_RHS_invariant]
 
 theorem chart_pulled_smooth_weak_solution
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)

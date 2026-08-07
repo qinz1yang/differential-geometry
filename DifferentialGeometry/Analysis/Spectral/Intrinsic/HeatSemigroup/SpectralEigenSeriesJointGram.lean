@@ -52,12 +52,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem ccTensorBilinSymm_add (g : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensor g 0 2) (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) g (S + T) x v w =
@@ -159,7 +159,7 @@ def fibreSymmBilinForm (x : M) (T : Tensor0SBundle.TensorRSSpace 0 2 I x)
         (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) ![w, v])
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem ccTensorBilinSymm_eq_fibreSymmBilinForm (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) g S x v w =
@@ -168,7 +168,7 @@ theorem ccTensorBilinSymm_eq_fibreSymmBilinForm (g : SmoothRiemannianMetric I M)
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem fibreSymmBilinForm_add (x : M) (T₁ T₂ : Tensor0SBundle.TensorRSSpace 0 2 I x)
     (v w : TangentSpace I x) :
     fibreSymmBilinForm (I := I) x (T₁ + T₂) v w =
@@ -185,7 +185,7 @@ theorem fibreSymmBilinForm_add (x : M) (T₁ T₂ : Tensor0SBundle.TensorRSSpace
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem fibreSymmBilinForm_smul (x : M) (a : ℝ) (T : Tensor0SBundle.TensorRSSpace 0 2 I x)
     (v w : TangentSpace I x) :
     fibreSymmBilinForm (I := I) x (a • T) v w = a * fibreSymmBilinForm (I := I) x T v w := by
@@ -199,7 +199,7 @@ theorem fibreSymmBilinForm_smul (x : M) (a : ℝ) (T : Tensor0SBundle.TensorRSSp
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem fibreSymmBilinForm_sum {ι : Type*} (s : Finset ι) (x : M)
     (c : ι → ℝ) (T : ι → Tensor0SBundle.TensorRSSpace 0 2 I x)
     (v w : TangentSpace I x) :
@@ -218,8 +218,8 @@ theorem fibreSymmBilinForm_sum {ι : Type*} (s : Finset ι) (x : M)
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (tensorChartComponentRaw) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem ccTensorBilinSymm_eq_sum_chartBasis (g : SmoothRiemannianMetric I M)
+    [T2Space M] in
+theorem ccTensorBilinSymm_eq_sum_chartBasis [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (β : M) {b : M} (hb : b ∈ (chartAt H β).source)
     (v w : TangentSpace I b) :
     ccTensorBilinSymm (I := I) g S b v w =
@@ -1018,8 +1018,8 @@ lemma tensorChartComponentRaw_finiteEigenCombo
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma pdIter_rawCompOnE_contDiffOn
+    in
+lemma pdIter_rawCompOnE_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (L : List E) :
     ContDiffOn ℝ ∞
@@ -1280,8 +1280,7 @@ theorem eigenTimeSpatialProductMode_iteratedFDerivWithin_summable_majorant_ofOrd
           · exact mul_nonneg hSs_nn (tensorSobolevWeight_nonneg (I := I) (M := M) i _)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-lemma chartGramOnE_realize_eq_add_half_rawCompOnE
+lemma chartGramOnE_realize_eq_add_half_rawCompOnE [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g S) δ)

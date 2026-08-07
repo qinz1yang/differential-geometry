@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -156,8 +156,8 @@ theorem tensorCovDerivCrossLeft_integral_eq_chartPull
     (prependCovGradSlot_tsupport_subset (I := I) (M := M) g r s
       (chartAtlasPOU I M α) S)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma gramMatrixAt_inv_symm
     (g : SmoothRiemannianMetric I M) (x : M)
     (k l : Fin (Module.finrank ℝ E)) :
@@ -167,7 +167,6 @@ private lemma gramMatrixAt_inv_symm
   have h := hHerm.apply l k
   rwa [star_trivial] at h
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorCovDerivCrossRight_eq_crossLeft
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

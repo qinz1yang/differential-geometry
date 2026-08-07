@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -37,8 +37,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem tensor0S_curry_covGradBundleEquiv_unit
     (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 2 I x)
     (v : TangentSpace I x) :
@@ -72,7 +72,7 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
     funext k; rw [Matrix.vecTail, Function.comp_apply, Fin.cons_succ]
   rw [hzero, htail]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGradBundleEquiv_tensorCov_unit_curry_eq_abstractCovDeriv
     (g : SmoothRiemannianMetric I M)

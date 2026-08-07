@@ -98,7 +98,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
 
 
 
@@ -183,7 +183,7 @@ theorem tendsto_nhdsLT_of_bounded_deriv
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chartGramMatrix_tendsto_nhdsLT_of_bounded_deriv
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (hαomega : α < omega)
     (x₀ x : M) (i j : Fin (Module.finrank ℝ E))
@@ -262,7 +262,6 @@ structure CinftyLimitData
 
 
 
-omit [SigmaCompactSpace M] in
 theorem restart_short_time (gomega : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, 0 < T ∧ ∃ r : ℝ → SmoothRiemannianMetric I M,
       r 0 = gomega ∧
@@ -303,14 +302,14 @@ def gluedFamily
   fun s => if s < omega then g_fam s else r (s - omega)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 @[simp] theorem gluedFamily_of_lt
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) {s : ℝ} (hs : s < omega) :
     gluedFamily (I := I) g_fam r omega s = g_fam s := by
   simp [gluedFamily, hs]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 @[simp] theorem gluedFamily_of_ge
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) {s : ℝ} (hs : omega ≤ s) :
     gluedFamily (I := I) g_fam r omega s = r (s - omega) := by
@@ -321,7 +320,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem gluedFamily_eq_left
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) :
     ∀ s : ℝ, s < omega → gluedFamily (I := I) g_fam r omega s = g_fam s :=
@@ -330,7 +329,7 @@ theorem gluedFamily_eq_left
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 @[simp] theorem gluedFamily_at_endpoint
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) :
     gluedFamily (I := I) g_fam r omega omega = r 0 := by
@@ -360,7 +359,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem gluedFamily_pde_cross_of_matching
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (gomega : SmoothRiemannianMetric I M)
     {α omega : ℝ} (hαomega : α < omega) (hr0 : r 0 = gomega)
@@ -453,7 +451,6 @@ theorem gluedFamily_pde_cross_of_matching
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem gluedFamily_pde
     (g_fam r : ℝ → SmoothRiemannianMetric I M) {α omega ε T : ℝ}
     (hαω : α < omega) (hε : 0 < ε) (hεT : ε ≤ T)
@@ -647,7 +644,6 @@ structure CinftyGlueData
 
 
 
-omit [SigmaCompactSpace M] in
 theorem ricci_flow_extends_construction
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (hαomega : α < omega)
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,

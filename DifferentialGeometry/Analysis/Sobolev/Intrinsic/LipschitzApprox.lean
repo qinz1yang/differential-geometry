@@ -96,7 +96,7 @@ private lemma raw_fderiv_eq
   rfl
 
 private lemma raw_sub_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) {u v : M → ℝ} {L B : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
       riemannianEDistOf (I := I) g x y)
@@ -167,7 +167,7 @@ private lemma raw_wkp_eq
     (I := I) (M := M) (chartAtlasPOU I M) α u).symm
 
 private lemma grad_eq_pou
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x)
@@ -218,7 +218,7 @@ private lemma gNorm_sum_le
 /-- At a common differentiability point, the metric norm of the gradient of a
 difference is bounded by the sum of the norms of its canonical POU pieces. -/
 theorem gNorm_sub_le_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x)
@@ -239,7 +239,7 @@ theorem gNorm_sub_le_sum
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x)
 
 private noncomputable def gramSup
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) : ℝ := by
   classical
   let K : Set M := tsupport
@@ -255,7 +255,7 @@ private noncomputable def gramSup
   · exact 0
 
 private lemma gramSup_nonneg
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     0 ≤ gramSup (I := I) (M := M) g α := by
   classical
@@ -277,7 +277,7 @@ private lemma gramSup_nonneg
   · rw [dif_neg hK]
 
 private lemma gram_le_sup
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ tsupport
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
@@ -300,7 +300,7 @@ private lemma gram_le_sup
 /-- The metric gradient error is bounded, on every active canonical chart, by
 a single metric-dependent constant times the coordinate partial square sum. -/
 theorem grad_sub_chart_le
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {α : M}, α ∈ chartAtlasPOU_finset (I := I) (M := M) →
@@ -348,7 +348,7 @@ theorem grad_sub_chart_le
   exact hbase.trans (mul_le_mul_of_nonneg_right hcoef hsum)
 
 private lemma local_grad_l2_le
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α : M)
     (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
@@ -569,7 +569,7 @@ private lemma local_grad_l2_le
 /-- On a compact manifold, chart-Sobolev approximation controls the intrinsic
 `L²` norm of the metric gradient error. -/
 theorem grad_sub_l2_le
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u v : M → ℝ} {L B : NNReal},
@@ -712,7 +712,7 @@ theorem grad_sub_l2_le
 /-- A bounded intrinsically Lipschitz function admits smooth approximants with
 arbitrarily small intrinsic `L²` metric-gradient error. -/
 theorem exists_smooth_grad
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L B : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
@@ -754,7 +754,7 @@ theorem exists_smooth_grad
 approximants with the same prescribed open support margin and simultaneous
 `L²` function and metric-gradient control. -/
 theorem exists_smooth_supp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L B : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *

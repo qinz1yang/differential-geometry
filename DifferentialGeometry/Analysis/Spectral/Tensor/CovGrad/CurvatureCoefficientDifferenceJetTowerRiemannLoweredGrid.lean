@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -49,7 +49,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -61,7 +61,6 @@ def quadraticConnDiffCc (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 private lemma quadraticConnDiffCc_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (w : Fin 3 → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -119,7 +118,7 @@ private def covectorExtensionSection (g₀ : SmoothRiemannianMetric I M) (x : M)
      exact ContMDiff.clm_bundle_apply (b := id) (g0FlatField_contMDiff (I := I) g₀) hU⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma covectorExtensionSection_self (g₀ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) :
     covectorExtensionSection (I := I) (M := M) g₀ x om x = om := by
@@ -468,7 +467,7 @@ private def perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma perturbationSharpEndoFib_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (v : TangentSpace I x) :
     perturbationSharpEndoFib (I := I) (M := M) g₀ T x v =
@@ -477,7 +476,7 @@ private lemma perturbationSharpEndoFib_apply (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma inner_perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
     g₀.inner x (perturbationSharpEndoFib (I := I) (M := M) g₀ T x v) w =
@@ -488,8 +487,8 @@ private lemma inner_perturbationSharpEndoFib (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem perturbationSharpEndoFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem perturbationSharpEndoFib_contMDiff [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
@@ -546,7 +545,7 @@ def perturbationSharpEndoField (g₀ : SmoothRiemannianMetric I M)
   contMDiff_toFun := perturbationSharpEndoFib_contMDiff (I := I) (M := M) g₀ T
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma unitModel_eq_ccTensorBilin_pt (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (b : M) (u w : TangentSpace I b) :
     unitModel (I := I) (M := M) g₀ 2 S b ![u, w] = smoothCcTensorBilinForm (I := I) g₀ S b u w := by
@@ -775,7 +774,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
     (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3))]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma rfns_eq_sum_componentSq_of_horth_pt
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : TensorRSSpace r s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x) (hn : n = Module.finrank ℝ E)
@@ -810,7 +809,7 @@ private lemma rfns_eq_sum_componentSq_of_horth_pt
     horth
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma fiberNormSqComponent_zero_toModel_pt
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : SmoothCcTensor g₀ 0 s)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin 0 → Fin n) (L : Fin s → Fin n) :
@@ -826,7 +825,7 @@ private lemma fiberNormSqComponent_zero_toModel_pt
   rfl
 
 omit [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma rfns_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1204,7 +1203,7 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
 end NormedRiemannLoweredGrid
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMetric I M)
     (x : M) (G : TangentSpace I x →ₗ[ℝ] TangentSpace I x) :
     LinearMap.trace ℝ (TangentSpace I x) G =
@@ -1263,7 +1262,7 @@ private lemma linearMap_trace_eq_orthoFrame_inner_sum (g₀ : SmoothRiemannianMe
   rw [LinearMap.toMatrix_apply, hrepr (G (bB i)) i, hbB_coe i]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma interiorProduct_toModel_eval_lc (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -1277,7 +1276,7 @@ private lemma interiorProduct_toModel_eval_lc (s : ℕ) (x : M) (v : TangentSpac
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma toModel_om_eval_lc (x : M) (om : Tensor0SSpace 1 I x) (V : TangentSpace I x) :
     Tensor0SSpace.toModel om (fun _ : Fin 1 => (V : E)) =
       cotangentToDual (I := I) om V := by

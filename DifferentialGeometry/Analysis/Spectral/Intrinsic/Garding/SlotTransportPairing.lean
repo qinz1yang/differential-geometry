@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -88,18 +88,18 @@ theorem slot_pair_step (g : SmoothRiemannianMetric I M) (σ k : ℕ)
   rw [covGrad_iterL (I := I) (M := M) g σ k V]
   rw [covGrad_appCcRS_eq (I := I) (M := M) g 0 σ σ C V]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem l2_zero_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+private theorem l2_zero_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ
         (0 : SmoothCcTensor g 0 σ).toFun Z.toFun = 0 := by
   rw [SmoothCcTensor.toFun_zero]
   exact tensorL2Inner_zero_left (I := I) (M := M) g 0 σ Z.toFun
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem l2_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
+private theorem l2_add_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (A B Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ (A + B).toFun Z.toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ A.toFun Z.toFun +
@@ -109,9 +109,9 @@ private theorem l2_add_left (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) A Z)
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) B Z)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem l2_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
+private theorem l2_add_right [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (Z A B : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun (A + B).toFun =
       tensorL2Inner (I := I) (M := M) g 0 σ Z.toFun A.toFun +
@@ -121,9 +121,9 @@ private theorem l2_add_right (g : SmoothRiemannianMetric I M) (σ : ℕ)
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) Z A)
     (SmoothCcTensor.integrable_inner_cross (I := I) (M := M) Z B)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem l2_sum_left (g : SmoothRiemannianMetric I M) (σ c : ℕ)
+private theorem l2_sum_left [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ c : ℕ)
     (f : ℕ → SmoothCcTensor g 0 σ) (Z : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ
         (∑ i ∈ Finset.range c, f i).toFun Z.toFun =
@@ -138,13 +138,13 @@ private theorem l2_sum_left (g : SmoothRiemannianMetric I M) (σ c : ℕ)
         l2_add_left (I := I) (M := M) g σ
           (∑ i ∈ Finset.range d, f i) (f d) Z, ih]
 
-private def slotEnergy (g : SmoothRiemannianMetric I M) (σ k : ℕ)
+private def slotEnergy [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ k : ℕ)
     (C : SmoothCcTensor g σ σ) (V : SmoothCcTensor g 0 σ) : ℝ :=
   tensorL2Inner (I := I) (M := M) g 0 σ
     (oneMinusConnLapSmoothIter (I := I) g 0 σ k V).toFun
     (ccOperatorFieldComp (I := I) (M := M) g 0 σ σ C V).toFun
 
-private def slotStage (g : SmoothRiemannianMetric I M) (σ m k : ℕ)
+private def slotStage [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (σ m k : ℕ)
     (C : SmoothCcTensor g σ σ) (V : SmoothCcTensor g 0 σ) : ℝ :=
   slotEnergy (I := I) (M := M) g (σ + m) k
     (slotExtendIter (I := I) (M := M) g σ σ m C)
@@ -266,7 +266,7 @@ private theorem jet_one_win (g : SmoothRiemannianMetric I M) (σ m : ℕ)
   rw [Finset.mem_range]
   omega
 
-private def ShiftWin (g : SmoothRiemannianMetric I M)
+private def ShiftWin [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (sigma m c : ℕ) (Phi : SmoothCcTensor g (sigma + m) c)
     (cc : ℕ → ℝ) : Prop :=
   ∀ (V : SmoothCcTensor g 0 sigma) (p : ℕ),

@@ -39,9 +39,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-noncomputable def kPouCompact (α : M) : Set EuclN :=
+noncomputable def kPouCompact [SigmaCompactSpace M] (α : M) : Set EuclN :=
   (toEuclidean : E ≃L[ℝ] EuclN) ''
     ((extChartAt I α) '' (tsupport (fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x)))
@@ -70,8 +70,8 @@ theorem kPouCompact_isCompact (α : M) :
     h_tsupp_compact.image_of_continuousOn h_ext_cont
   exact h_ext_image_compact.image (toEuclidean (E := E)).continuous
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-theorem kPouCompact_subset_chartTargetEuclid (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem kPouCompact_subset_chartTargetEuclid [SigmaCompactSpace M] (α : M) :
     kPouCompact (I := I) (M := M) α ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
   classical
@@ -90,8 +90,8 @@ theorem kPouCompact_subset_chartTargetEuclid (α : M) :
     rw [← hxz]; exact (extChartAt I α).map_source hxsrc
   refine ⟨z, hz_target, hzy⟩
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-theorem smoothChartExt_support_subset_kPouCompact
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem smoothChartExt_support_subset_kPouCompact [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     Function.support (smoothChartExt (I := I) (M := M) g α v) ⊆
       kPouCompact (I := I) (M := M) α := by
@@ -210,7 +210,7 @@ theorem chartPulledWeightedMeasure_kPouCompact_lt_top
   exact lt_of_le_of_lt h_int_bd
     (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hK_compact.measure_lt_top)
 
-noncomputable def chartPushedPartialLpLin
+noncomputable def chartPushedPartialLpLin [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E)) :
     SmoothScalar g →ₗ[ℝ]
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict

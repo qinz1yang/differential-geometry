@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 set_option backward.isDefEq.respectTransparency false in

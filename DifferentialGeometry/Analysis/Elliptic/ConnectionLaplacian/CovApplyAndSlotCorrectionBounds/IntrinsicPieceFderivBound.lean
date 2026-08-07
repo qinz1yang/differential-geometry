@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -83,7 +83,7 @@ private lemma two_product_sum_le
         (mul_le_mul_of_nonneg_left hq ha)
     _ = C * (a + b) := by ring
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma u_contDiffOn_goodSet
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -99,8 +99,8 @@ private lemma u_contDiffOn_goodSet
       (chartLeviCivitaGoodSet (I := I) α) := hB_total.contMDiffOn
   exact chartE_pullback_contDiffOn_goodSet (I := I) α hB_on
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma pouTsupport_subset_goodSet (α : M) :
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma pouTsupport_subset_goodSet [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       chartLeviCivitaGoodSet (I := I) α := by

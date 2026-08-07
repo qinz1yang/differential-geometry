@@ -65,12 +65,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem extChartAt_self_mem_interior_target (α : M) :
     extChartAt I α α ∈ interior ((extChartAt I α).target : Set E) := by
   rw [(isOpen_extChartAt_target (I := I) α).interior_eq]
@@ -80,7 +80,7 @@ theorem extChartAt_self_mem_interior_target (α : M) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem singleton_chartCenter_subset_interior_target (α : M) :
     ({extChartAt I α α} : Set E) ⊆ interior ((extChartAt I α).target : Set E) :=
   Set.singleton_subset_iff.mpr (extChartAt_self_mem_interior_target (I := I) α)
@@ -93,7 +93,6 @@ theorem singleton_chartCenter_subset_interior_target (α : M) :
 
 
 omit [CompactSpace M] in
-omit [SigmaCompactSpace M] in
 theorem abstractRHSFrameComponent_diff_abs_le_jet2_chartCenter
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 < C ∧ ∀ i j : Fin (Module.finrank ℝ E),
@@ -111,7 +110,7 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2_chartCenter
 
 
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem exists_finite_chartSource_cover :
     ∃ s : Finset M, (⋃ α ∈ s, (chartAt H α).source) = Set.univ := by
   classical
@@ -141,7 +140,6 @@ theorem exists_finite_chartSource_cover :
 
 
 omit [CompactSpace M] in
-omit [SigmaCompactSpace M] in
 theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M)
     {ι : Type*} (t : Finset ι) (α : ι → M) (K : ι → Set E)

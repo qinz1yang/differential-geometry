@@ -39,7 +39,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def chartPushedChosenFirstPartial
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -179,7 +179,7 @@ theorem chartPushedWeakPartialLp_ae_eq_chosenFirstPartial_on_precompact_open
     h_chartPushed_locInt h_chosenFirst_locInt
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartTargetEuclid_sigmaCompact_cover
     (α : M) :
     ∃ K : ℕ → Set EuclN,

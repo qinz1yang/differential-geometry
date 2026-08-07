@@ -21,10 +21,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma toEucl_symm_preimage_target (α : M) :
     ((toEuclidean (E := E)).symm) ⁻¹' (extChartAt I α).target =
       chartTargetEuclid (I := I) (M := M) α := by
@@ -38,8 +38,8 @@ private lemma toEucl_symm_preimage_target (α : M) :
     rw [Set.mem_preimage, h_eq]; exact hz_tgt
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma raw_pull_contDiffOn
+    [T2Space M] in
+private lemma raw_pull_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -88,8 +88,8 @@ private lemma raw_pull_contDiffOn
     h_toEucl_symm_smooth.contDiffOn h_maps
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma iteratedFDeriv_chain_rule
+    in
+private lemma iteratedFDeriv_chain_rule [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -144,8 +144,8 @@ private lemma iteratedFDeriv_chain_rule
   exact h_chain
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma opNorm_sq_le_basis_sum_sq
+    in
+private lemma opNorm_sq_le_basis_sum_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -249,8 +249,8 @@ private lemma opNorm_sq_le_basis_sum_sq
             |B (fun k => EuclideanSpace.basisFun
               (Fin (Module.finrank ℝ E)) ℝ (idx k))| ^ 2) := by ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma pouPull_contOn (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma pouPull_contOn [SigmaCompactSpace M] (α : M) :
     ContinuousOn
       (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
         (chartAtlasPOU I M α : M → ℝ)
@@ -279,8 +279,8 @@ private lemma pouPull_contOn (α : M) :
   exact hPOU_cont.comp_continuousOn' h_inner
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma iteratedFDeriv_basisEval_contOn
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+private lemma iteratedFDeriv_basisEval_contOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -322,8 +322,8 @@ private lemma iteratedFDeriv_basisEval_contOn
   exact h_apply.comp_continuousOn h_iter_contOn
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hsIntegrand_real_contOn
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hsIntegrand_real_contOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -347,8 +347,8 @@ private lemma hsIntegrand_real_contOn
   exact h_pou.mul (h_eval.abs.pow 2)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hsIntegrand_real_aestronglyMeasurable
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hsIntegrand_real_aestronglyMeasurable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -375,8 +375,8 @@ private lemma hsIntegrand_real_aestronglyMeasurable
   exact h_cont.aestronglyMeasurable h_meas
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma hsIntegrand_aemeasurable
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma hsIntegrand_aemeasurable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -402,8 +402,8 @@ private lemma hsIntegrand_aemeasurable
       (I := I) (M := M) g r s T α Idx Jdx j basisIdx).aemeasurable
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma per_alpha_j_integral_bound
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma per_alpha_j_integral_bound [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

@@ -165,7 +165,7 @@ theorem metricGainAt_of_timeSlabQuadBound
 
 omit [IsManifold I 2 M] in
 theorem metricGainAt_of_totalCont
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -222,7 +222,7 @@ theorem metricGainAt_of_totalCont
 
 omit [IsManifold I 2 M] in
 theorem metricGainAt_of_metricVariationDerivAt
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
@@ -285,7 +285,7 @@ theorem metricGainAt_of_metricVariationDerivAt
 
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariation
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
@@ -349,7 +349,7 @@ theorem metricGainControl_of_metricVariation
 
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariationOn
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
     (Ric : RicciTensorField (I := I) (M := M) Real)
@@ -427,7 +427,7 @@ theorem metricGainControl_of_metricVariationOn
 
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariationOn_closedOpen
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {omega T : Real} (h0ω : 0 < omega) (hTω : T < omega)
     (G : RealizedMetricFamilyOn (I := I) (M := M)
       (RealTimeInterval.closedOpen 0 omega h0ω))

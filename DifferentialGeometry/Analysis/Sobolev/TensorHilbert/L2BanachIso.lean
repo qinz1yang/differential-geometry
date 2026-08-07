@@ -25,9 +25,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-noncomputable def smoothCcTensorHsLinearEquiv
+noncomputable def smoothCcTensorHsLinearEquiv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorHs g r s 0 ≃ₗ[ℝ] SmoothCcTensor g r s where
   toFun := SmoothCcTensorHs.toCcTensor
@@ -37,13 +37,13 @@ noncomputable def smoothCcTensorHsLinearEquiv
   map_add' S T := SmoothCcTensorHs.toCcTensor_add S T
   map_smul' c S := SmoothCcTensorHs.toCcTensor_smul c S
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma smoothCcTensorHsLinearEquiv_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma smoothCcTensorHsLinearEquiv_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensorHs g r s 0) :
     smoothCcTensorHsLinearEquiv (I := I) (M := M) g r s S = S.toCcTensor := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma smoothCcTensorHsLinearEquiv_symm_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma smoothCcTensorHsLinearEquiv_symm_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     (smoothCcTensorHsLinearEquiv (I := I) (M := M) g r s).symm T = ⟨T⟩ := rfl
 
@@ -64,7 +64,7 @@ private lemma smoothCcTensorHs_norm_eq
   rw [h_eq] at h1
   linarith
 
-noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv
+noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C₁ C₂ : ℝ)
     (h_norm_le : ∀ T : SmoothCcTensor g r s,
@@ -156,7 +156,7 @@ theorem exists_tensorPouSobolevHsNorm_zero_le_const_mul_norm
   DifferentialGeometry.Analysis.Sobolev.Tensor.tensorPouSobolevHsNorm_zero_toReal_le_norm
     (I := I) (M := M) g r s
 
-noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv_of_forward
+noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv_of_forward [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C₁ : ℝ)
     (h_norm_le : ∀ T : SmoothCcTensor g r s,

@@ -50,7 +50,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 namespace RicciContInMetricAux
 
@@ -59,7 +59,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- `chartGramOnE` is twice differentiable at any point of the chart-target interior. -/
 private lemma chartGramOnE_diffAt_int
     (g : SmoothRiemannianMetric I M) (α : M) (i j : Fin (Module.finrank ℝ E))
@@ -71,7 +71,7 @@ private lemma chartGramOnE_diffAt_int
   exact (hcd.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- The Fréchet derivative `fderiv (chartGramOnE g α i j)` is differentiable at any
 point of the chart-target interior (the chart-Gram entry is `C^∞`, hence `C²`). -/
 private lemma fderiv_chartGramOnE_diffAt_int
@@ -87,7 +87,7 @@ private lemma fderiv_chartGramOnE_diffAt_int
   exact hderiv.differentiableAt (by simp)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- The second directional partial of `chartGramOnE` equals the value of the second
 iterated Fréchet derivative on the two basis directions, at a chart-target interior point. -/
 private lemma partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
@@ -109,7 +109,7 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
   simp [ContinuousLinearMap.flip_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma chartGramOnE_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (i j : Fin (Module.finrank ℝ E))
     (y : E) (s : Set ℝ)
@@ -125,7 +125,7 @@ private lemma chartGramOnE_continuous_of_hC2
     iteratedFDeriv_zero_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma partialDeriv_chartGramOnE_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (l i j : Fin (Module.finrank ℝ E)) (y : E) (s : Set ℝ)
@@ -143,7 +143,7 @@ private lemma partialDeriv_chartGramOnE_continuous_of_hC2
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma partialDeriv_partialDeriv_chartGramOnE_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (m l i j : Fin (Module.finrank ℝ E)) {y : E}
@@ -163,7 +163,7 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_continuous_of_hC2
     (I := I) (g_DT t) α i j m l hy]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma gramBracket_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (i j l : Fin (Module.finrank ℝ E)) (y : E) (s : Set ℝ)
@@ -184,7 +184,7 @@ private lemma gramBracket_continuous_of_hC2
   · exact partialDeriv_chartGramOnE_continuous_of_hC2 (I := I) g_DT α l i j y s (h1 i j)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma gramBracketDeriv_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (m i j l : Fin (Module.finrank ℝ E)) {y : E}
@@ -212,7 +212,7 @@ private lemma gramBracketDeriv_continuous_of_hC2
       (I := I) g_DT α m l i j hy s (h2 i j)
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_chartInvGramOnE_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
@@ -251,7 +251,7 @@ private lemma partialDeriv_chartInvGramOnE_continuous_of_hC2
   · exact partialDeriv_chartGramOnE_continuous_of_hC2 (I := I) g_DT α m a b y s (h1 a b)
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_chartChristoffel_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
@@ -294,7 +294,7 @@ private lemma partialDeriv_chartChristoffel_continuous_of_hC2
   · exact gramBracketDeriv_continuous_of_hC2 (I := I) g_DT α m i j l hy s h2
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartRiemannTensor_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
@@ -342,7 +342,7 @@ private lemma chartRiemannTensor_continuous_of_hC2
       (ContinuousOn.mul (hΓ k n r) (hΓ i j n))
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartRicciTensor_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
@@ -371,7 +371,7 @@ private lemma chartRicciTensor_continuous_of_hC2
   exact chartRiemannTensor_continuous_of_hC2 (I := I) g_DT α i j k j hy s hx h0 h1 h2
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartDeTurckVFComp_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -398,7 +398,7 @@ private lemma chartDeTurckVFComp_continuous_of_hC2
   exact chartDeTurckVFComp_continuous_in_metric_at (I := I) g_bg α y s g_DT hentry h_partial hx k
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_chartDeTurckVFComp_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -453,7 +453,7 @@ private lemma partialDeriv_chartDeTurckVFComp_continuous_of_hC2
       (I := I) g_DT α m a b k hy s hx h0 h1 h2).sub continuousOn_const
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartLieDeTurckComp_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M) (α : M)
@@ -521,7 +521,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 variable (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- The joint `0`-jet chart-Gram value continuity, from the `iteratedFDeriv 0` joint input. -/
 private lemma jointGram_continuousOn
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -537,7 +537,7 @@ private lemma jointGram_continuousOn
     iteratedFDeriv_zero_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- The joint `1`-jet directional chart-Gram partial continuity. -/
 private lemma jointGramPartial_continuousOn
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -556,7 +556,7 @@ private lemma jointGramPartial_continuousOn
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- The joint `2`-jet directional second chart-Gram partial continuity, on good-set points. -/
 private lemma jointGramPartialPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -579,7 +579,7 @@ private lemma jointGramPartialPartial_continuousOn
     (I := I) (g_DT q.1) α a b m l hy]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint determinant continuity of the chart Gram matrix (a Leibniz polynomial). -/
 private lemma jointDet_continuousOn
     (hentry : ∀ a b : Fin (Module.finrank ℝ E),
@@ -601,7 +601,7 @@ private lemma jointDet_continuousOn
   exact continuousOn_finset_prod _ (fun k _ => hentry (σ k) k)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint adjugate-entry continuity of the chart Gram matrix. -/
 private lemma jointAdjugate_continuousOn
     (hentry : ∀ a b : Fin (Module.finrank ℝ E),
@@ -643,7 +643,7 @@ private lemma jointAdjugate_continuousOn
     rw [heq]; exact hentry (σ k) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint inverse-Gram entry continuity (Cramer's rule, non-vanishing det on good-set points). -/
 private lemma jointInvGram_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -692,7 +692,7 @@ private lemma jointInvGram_continuousOn
   rw [this]; exact ne_of_gt hpos
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint `gramBracket` continuity (a `1`-jet chart-Gram combination). -/
 private lemma jointGramBracket_continuousOn
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -714,7 +714,7 @@ private lemma jointGramBracket_continuousOn
     (jointGramPartial_continuousOn g_DT α Sp h1 l i j)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint `gramBracketDeriv` continuity (a `2`-jet chart-Gram combination), good-set points. -/
 private lemma jointGramBracketDeriv_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -742,7 +742,7 @@ private lemma jointGramBracketDeriv_continuousOn
     (jointGramPartialPartial_continuousOn g_DT α Sp hgood h2 m l i j)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint directional inverse-Gram partial continuity, good-set points. -/
 private lemma jointInvGramPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -780,7 +780,7 @@ private lemma jointInvGramPartial_continuousOn
     (jointGramPartial_continuousOn g_DT α Sp h1 m a b)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint chart-Christoffel value continuity, good-set points. -/
 private lemma jointChristoffel_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -825,7 +825,7 @@ private lemma jointChristoffel_continuousOn
       (jointGramPartial_continuousOn g_DT α Sp h1 l i j)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint directional chart-Christoffel partial continuity, good-set points. -/
 private lemma jointChristoffelPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -868,7 +868,7 @@ private lemma jointChristoffelPartial_continuousOn
   · exact jointGramBracketDeriv_continuousOn g_DT α Sp hgood h2 m i j l
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint chart-Riemann-tensor entry continuity, good-set points. -/
 private lemma jointRiemann_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -910,7 +910,7 @@ private lemma jointRiemann_continuousOn
     exact ((hΓ j n r).mul (hΓ i k n)).sub ((hΓ k n r).mul (hΓ i j n))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- Joint chart-Ricci-tensor entry continuity, good-set points. -/
 private lemma jointRicci_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -940,7 +940,7 @@ end RicciContJointAux
 namespace MovingPushforwardAux
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private lemma moving_chartCoord_continuousWithinAt
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x : M) (u : TangentSpace I x)
     (α : M) (S : Set ℝ) (s₀ : ℝ)
@@ -980,7 +980,7 @@ private lemma moving_chartCoord_continuousWithinAt
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hbase0]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem moving_chartCoord_jointContinuousWithinAt
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x₀ : M) (i : Fin (Module.finrank ℝ E)) (α : M)
     (S : Set (ℝ × M)) (p₀ : ℝ × M)
@@ -1047,7 +1047,6 @@ private lemma repr_continuousWithinAt {S : Set ℝ} {s₀ : ℝ} {f : ℝ → E}
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma ricci_moving_chart_sum
     (g : SmoothRiemannianMetric I M) (α : M) {y : M}
     (hy : y ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -1082,9 +1081,9 @@ private lemma ricci_moving_chart_sum
 
 end MovingPushforwardAux
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gfam_inner_continuous_on
+theorem gfam_inner_continuous_on [SigmaCompactSpace M]
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (_hT : 0 < T)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x : M) (v w : TangentSpace I x)
     (hg_joint : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
@@ -1198,8 +1197,7 @@ theorem gfam_inner_continuous_on
     exact hsum s hb hsr
   · exact hsum s₀ hbase0 hsrc0
 
-omit [CompactSpace M] in
-theorem ricci_gfam_continuous_on
+theorem ricci_gfam_continuous_on [SigmaCompactSpace M]
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (_hT : 0 < T)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x : M) (v w : TangentSpace I x)
     (hC2 : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
@@ -1322,7 +1320,6 @@ theorem ricci_gfam_continuous_on
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem ricci_continuous_in_metric_time
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ) (x : M) (v w : TangentSpace I x)
     (hC2 : ∀ (α : M) (y : M), y ∈ chartLeviCivitaGoodSet (I := I) α →
@@ -1382,7 +1379,7 @@ theorem ricci_continuous_in_metric_time
     hx_base h0 h1 h2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- **Public joint `(t, x)` chart-Ricci-tensor continuity.**
 
 Re-exports the joint-continuity machinery in `RicciContJointAux` (whose lemmas are
@@ -1409,7 +1406,7 @@ theorem chartRicci_jointContinuousOn
   RicciContJointAux.jointRicci_continuousOn g_DT α Sp hgood h0 h1 h2 i k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 /-- **Public joint `(t, x)` chart-Riemann-tensor continuity.**  Companion of
 `chartRicci_jointContinuousOn`, for the `(1,3)` chart-Riemann entry. -/
 theorem chartRiemann_jointContinuousOn
@@ -1431,7 +1428,6 @@ theorem chartRiemann_jointContinuousOn
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 /-- **Joint `(t, x)` continuity of the chart-frame Ricci components.**
 
 Combines chart-Ricci continuity with the chart-frame Ricci identity to produce
@@ -1459,7 +1455,6 @@ theorem ricciChartFrameComp_jointContinuousOn [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem metricScalar_chartTrace_eq [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
@@ -1502,7 +1497,7 @@ theorem metricScalar_chartTrace_eq [I.Boundaryless]
     (chartBasisVecFiber (I := I) α i x) (chartBasisVecFiber (I := I) α j x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [SigmaCompactSpace M] in
+    in
 /-- **Joint `(t, x)` continuity of scalar curvature in the chart-`α` frame.**  From the chart-Gram
 jets (orders 0,1,2) the scalar curvature `(t, x) ↦ metricScalarAt (g_DT t) x` is jointly continuous
 on a good-set domain `Sp`.  Sums the chart-frame trace `metricScalar_chartTrace_eq` over the frame:
@@ -1537,7 +1532,6 @@ open RicciContInMetricAux
   DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem lieDeriv_deTurckVF_continuous_in_metric_time
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (x : M) (v w : TangentSpace I x)

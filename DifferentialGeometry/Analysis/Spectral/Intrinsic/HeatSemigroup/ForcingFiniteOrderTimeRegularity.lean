@@ -40,7 +40,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -316,7 +316,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
         = (S : TensorL2 0 2 g₀) from rfl, hS]
   rw [hSL2, hu_coeff i]
 
-private def deTurckRHSReconSectionFiniteOrder (g₀ g_bg : SmoothRiemannianMetric I M)
+private def deTurckRHSReconSectionFiniteOrder [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ) :
     SmoothCcTensor g₀ 0 2 :=
@@ -1123,10 +1123,10 @@ section IterLaplacianInduction
 
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 set_option backward.isDefEq.respectTransparency false in
-private lemma tensorChartComponentRaw_congr_toSection
+private lemma tensorChartComponentRaw_congr_toSection [SigmaCompactSpace M]
     {g₁ g₂ : SmoothRiemannianMetric I M}
     (S₁ : SmoothCcTensor g₁ 0 2) (S₂ : SmoothCcTensor g₂ 0 2)
     (h : ∀ x : M, S₁.toSection x = S₂.toSection x) (α : M)
@@ -1147,8 +1147,8 @@ private lemma tensorChartComponentRaw_congr_toSection
   rw [h x]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentRaw_sub_eq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentRaw_sub_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S₁ S₂ : SmoothCcTensor g 0 2) (α : M)
     (Idx : Fin 0 → Fin (Module.finrank ℝ E))
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (x : M) :
@@ -1192,8 +1192,8 @@ private lemma reconFO_raw_eq_chartRHS
       g_bg (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS) α hgood ![] Jdx,
     chartDeTurckRicciRHS_def]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma pouRegion_open (α : M) :
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma pouRegion_open [SigmaCompactSpace M] (α : M) :
     IsOpen ((toEuclidean (E := E)) '' ((extChartAt I α) ''
       {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x})) := by
   classical
@@ -1216,8 +1216,8 @@ private lemma pouRegion_open (α : M) :
       (isOpen_extChartAt_target (I := I) α) hU_open
   exact (toEuclidean (E := E)).isOpenMap _ himg_open
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouRegion_subset_chartTargetEuclid (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouRegion_subset_chartTargetEuclid [SigmaCompactSpace M] (α : M) :
     (toEuclidean (E := E)) '' ((extChartAt I α) ''
       {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x}) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
@@ -1228,8 +1228,8 @@ private lemma pouRegion_subset_chartTargetEuclid (α : M) :
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hx))
   exact ⟨extChartAt I α x, (extChartAt I α).map_source hx_src, rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouRegion_mem_facts (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouRegion_mem_facts [SigmaCompactSpace M] (α : M)
     {ŷ : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hŷ : ŷ ∈ (toEuclidean (E := E)) '' ((extChartAt I α) ''
       {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x})) :
@@ -1554,8 +1554,8 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
   exact hGf.comp_contMDiffWithinAt (hf_smooth q hq) hmaps
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {T : ℝ} (k : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (hraw : ∀ (α : M) (Jdx : Fin 2 → Fin (Module.finrank ℝ E)),

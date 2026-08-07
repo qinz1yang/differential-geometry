@@ -31,7 +31,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -43,7 +43,7 @@ section SecondOrderInterpInfra
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem continuous_riemannianFiberNormSq_section
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Integral.L2.SmoothCcTensor g r s) :

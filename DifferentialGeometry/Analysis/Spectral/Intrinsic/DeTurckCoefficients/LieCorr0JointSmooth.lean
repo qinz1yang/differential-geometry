@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckLieWEndo deTurckLieWEndo_apply deTurckLieWEndo_homSection_contMDiff
@@ -66,7 +66,7 @@ variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 variable {δ δ' : ℝ}
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem lieCorr0_jhom_sub_local {S : Set ℝ}
     (A B : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -101,7 +101,7 @@ private theorem lieCorr0_jhom_sub_local {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem lieCorr0_jhom_smulConst_local {S : Set ℝ} (c : ℝ)
     (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -130,7 +130,7 @@ private theorem lieCorr0_jhom_smulConst_local {S : Set ℝ} (c : ℝ)
       c (A p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem lieCorr0_j0S_add_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -164,7 +164,7 @@ private theorem lieCorr0_j0S_add_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem lieCorr0_j0S_smulConst_local {d : ℕ} {S : Set ℝ} (c : ℝ)
     (A : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -193,7 +193,7 @@ private theorem lieCorr0_j0S_smulConst_local {d : ℕ} {S : Set ℝ} (c : ℝ)
       c (A p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem lieCorr0_toModel_g0Flat (g : SmoothRiemannianMetric I M) (x : M)
     (w t : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -361,8 +361,7 @@ private theorem lieCorr0NEndo_realizedFam_jointContMDiffOn
   refine hsub2.congr (fun p _ => ?_)
   rfl
 
-omit [CompactSpace M] in
-private theorem lieCorr0TraceStepFam_jointContMDiffOn (p : ℕ) (σ : Equiv.Perm (Fin (p + 2)))
+private theorem lieCorr0TraceStepFam_jointContMDiffOn [SigmaCompactSpace M] (p : ℕ) (σ : Equiv.Perm (Fin (p + 2)))
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (Z : ∀ pp : M × ℝ, Tensor0SSpace (p + 2) I pp.1)
@@ -384,8 +383,8 @@ private theorem lieCorr0TraceStepFam_jointContMDiffOn (p : ℕ) (σ : Equiv.Perm
     (E := fun z : M => Tensor0SSpace p I z) pp.1 t) ?_
   rw [lieCorr0TraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] in
 private theorem lieCorr0TraceStepFixed_jointContMDiffOn (g : SmoothRiemannianMetric I M)
     (p : ℕ) (σ : Equiv.Perm (Fin (p + 2))) {S : Set ℝ}
     (Z : ∀ pp : M × ℝ, Tensor0SSpace (p + 2) I pp.1)
@@ -628,8 +627,7 @@ private theorem lieCorr0AMixFib_apply_jointContMDiffOn
   rw [lieCorr0AMixFib]
   rfl
 
-omit [CompactSpace M] in
-private theorem lieCorr0RiemFib_apply_jointContMDiffOn
+private theorem lieCorr0RiemFib_apply_jointContMDiffOn [SigmaCompactSpace M]
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯) :

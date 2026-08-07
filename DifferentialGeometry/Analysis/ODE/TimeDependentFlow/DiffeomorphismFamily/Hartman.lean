@@ -12,7 +12,7 @@ theorem time_dependent_vf_globalflow_diffeomorph
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {T : ℝ} (_hT : 0 < T)
     {Φ Ψ : ℝ → M → M}
     (_hΦ_init : ∀ x, Φ 0 x = x) (_hΨ_init : ∀ x, Ψ 0 x = x)
@@ -41,10 +41,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem picard_data_flow_initial_value_manifold
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hper : ChartLocalPicardData X α)
@@ -61,7 +61,7 @@ theorem picard_data_flow_initial_value_manifold
   exact (chartAt H α).left_inv hx_source
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chart_coord_roundtrip
     (α x : M) (hx : x ∈ (chartAt H α).source) :
     (chartAt H α).symm (I.symm (I ((chartAt H α) x))) = x := by
@@ -69,7 +69,7 @@ theorem chart_coord_roundtrip
   exact (chartAt H α).left_inv hx
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem picard_data_chart_coord_in_closedBall
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hper : ChartLocalPicardData X α)

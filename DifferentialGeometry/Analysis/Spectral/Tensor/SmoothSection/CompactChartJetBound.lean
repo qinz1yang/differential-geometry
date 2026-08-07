@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma exists_lowerOrderCoeff_uniform_bound_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) (N : ℕ)
     {K : Set EuclN} (hK : IsCompact K) (hK_sub : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -81,7 +81,7 @@ lemma exists_lowerOrderCoeff_uniform_bound_on_compact
       (Finset.le_sup' Cw (Finset.mem_univ ⟨m, Idx, Jdx', p⟩))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma exists_christoffel_bound_valence_range_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) (P N : ℕ)
     {K : Set EuclN} (hK : IsCompact K) (hK_sub : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -235,7 +235,7 @@ lemma iteratedFDeriv_rawPullR_le_zeroContent_sum_on_compact
         apply mul_le_mul_of_nonneg_right (le_max_right _ _) hRHSsum_nn
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -313,7 +313,7 @@ lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner_on_compact
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 lemma exists_zeroContentR_le_fiberNorm_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {K_M : Set M} (hK_M : IsCompact K_M)

@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 section
 
@@ -62,7 +62,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma kscr_g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
     {a b : TangentSpace I x} (hab : ∀ u : TangentSpace I x, g₁.inner x a u = g₁.inner x b u) :
@@ -78,7 +78,7 @@ private lemma kscr_g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M
   exact absurd hzero (ne_of_gt hpos)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma kscr_cometricLmodel_covectorOfCLM_inner_loc
     (g₁ : SmoothRiemannianMetric I M) (y : M)
@@ -98,7 +98,7 @@ private lemma kscr_cometricLmodel_covectorOfCLM_inner_loc
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma kscr_cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     cometricLmodel (I := I) g₀ x
@@ -112,7 +112,7 @@ private lemma kscr_cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma kscr_flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (b : Fin n) :
     ∑ k : Fin (Module.finrank ℝ E),
@@ -155,7 +155,7 @@ private lemma kscr_flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x 
   exact kscr_cometricLmodel_covOf_g0flat_eq (I := I) g₀ x (e b)
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma kscr_deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (w : Tensor0SSpace 4 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -199,7 +199,7 @@ private lemma kscr_deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
     ((Module.finBasis ℝ E).cDualBasis k)]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma kscr_deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
@@ -357,7 +357,7 @@ private lemma kscr_deTurckCoeff_componentSqSum_eq (n : ℕ) (f : Fin n → Fin n
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma riemannianFiberNormSq_deTurckPrincipalCometricCoeff_sub_le
     (g₀ ga gb : SmoothRiemannianMetric I M)
     (ha hb : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -489,7 +489,7 @@ private lemma kscr_combinedTrace42Model_apply_symbolic
   congr 1
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma kscr_ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
@@ -529,7 +529,7 @@ private lemma kscr_ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
   ring
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma kscr_traceHessianCoeff_sub_eq_reindex_pcc
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =
@@ -549,7 +549,7 @@ private lemma kscr_traceHessianCoeff_sub_eq_reindex_pcc
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem reindexCoeffGen_map_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) :
     reindexCoeffGen (I := I) (M := M) g₀ 4 2 (A - B) ρ =
@@ -567,7 +567,7 @@ theorem reindexCoeffGen_map_sub (g₀ : SmoothRiemannianMetric I M)
     reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem kscr_jointTotalSpaceRS_sub {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
@@ -604,7 +604,7 @@ private theorem kscr_jointTotalSpaceRS_sub {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem kscr_jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)

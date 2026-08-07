@@ -29,7 +29,7 @@ theorem logSobolev_closed
     [FiniteDimensional Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (hdim : Module.finrank Real E = 3)
     (tauMax : Real) :
     ∃ L : Real, ∀ {tau : Real}, tau ∈ Ioc 0 tauMax ->

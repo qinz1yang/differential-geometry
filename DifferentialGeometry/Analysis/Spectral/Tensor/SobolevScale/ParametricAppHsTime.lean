@@ -40,14 +40,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCc_time_deriv
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ dΦ : ℝ → SmoothCcTensor g b c) {S : Set ℝ}
@@ -99,7 +99,7 @@ private theorem affine_uIcc {S : Set ℝ} {a h : ℝ}
   · exact Or.inr ⟨by nlinarith, by nlinarith⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem joint_affine
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : ℝ → SmoothCcTensor g b c) {S : Set ℝ}
@@ -124,7 +124,7 @@ private theorem joint_affine
   exact hjoint.comp harg (fun p hp => ⟨Set.mem_univ p.1, hp.2⟩)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem joint_const
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) (S : Set ℝ) :
@@ -137,7 +137,7 @@ private theorem joint_const
   simpa only using Φ.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem joint_affine_sub
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : ℝ → SmoothCcTensor g b c) {S : Set ℝ}
@@ -238,7 +238,7 @@ private theorem affine_eventually {P : ℝ → Prop} {a : ℝ}
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 private theorem coeff_secant
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ dΦ : ℝ → SmoothCcTensor g b c) {S : Set ℝ} (hS : IsOpen S)

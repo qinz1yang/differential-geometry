@@ -40,7 +40,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -54,7 +54,7 @@ abbrev ScalarH2Core (g : SmoothRiemannianMetric I M) :=
     (I := I) (M := M) (g := g) (r := 0) (s := 0) 2
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
     Tensor0SSpace.toRS0 (A - B) =
       Tensor0SSpace.toRS0 A - Tensor0SSpace.toRS0 B := by

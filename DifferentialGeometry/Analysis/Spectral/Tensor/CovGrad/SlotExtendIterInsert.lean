@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 private local instance slotIterTensorRSModelNormedAddCommGroup (r s : ℕ) :
@@ -53,7 +53,7 @@ private local instance slotIterTensorRSFiberBundle (r s : ℕ) :
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
@@ -87,7 +87,7 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem app_slotExt_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))

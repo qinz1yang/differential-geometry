@@ -59,7 +59,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -218,7 +218,7 @@ against the output vector itself, bound each right-hand term by the multilinear 
 a=0 atom `connDiffVec_norm_le` + `lcDiff_norm_le`, then convert `g₁ ↔ g₂` by comparability. -/
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Currency bridge: the bundled `∇₂g₁` field `totalNabla0S 2 (LC g₂) (metricTensorField g₁)` used by
 `connDiff_koszul_deriv` is the HCG metric covariant derivative `metricCovDeriv g₁ g₂ 1`. -/
 private theorem field_eq_mcd1
@@ -240,7 +240,7 @@ private theorem field_eq_mcd1
     (Tensor0SBundle.metricTensorField (I := I) g₁) x).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Currency bridge (order 2): the directional derivative `nabla0SFun 3 (LC g₂) W (∇₂g₁-field)` of the
 bundled first metric covariant derivative equals the second metric covariant derivative
 `metricCovDeriv g₁ g₂ 2` with the derivative direction `W x` in the leading slot. -/
@@ -266,7 +266,7 @@ private theorem nabla3_eq_mcd2
     (metricCovDeriv (I := I) g₁ g₂ 1) x slots).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- General-order `(0,s)` norm comparison under `MetricUniformEquivalentOn K g₂ g₁ Λ`:
 `√normSq0S(g₁, s, A) ≤ √(Λ^s) · √normSq0S(g₂, s, A)`.  General-`s` sibling of
 `sqrt_normSq0S_three_le_of_metricUniformEquivalentOn` (used at `s = 3` and `s = 4`). -/

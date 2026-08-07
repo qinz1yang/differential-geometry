@@ -49,7 +49,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -720,9 +720,9 @@ theorem linearizedRicciArm0CorrField_allOrder_tameEnvelope_interface
     linarith
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+theorem linearizedRicciThreeArmHjoint_add [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
     (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
@@ -739,9 +739,9 @@ theorem linearizedRicciThreeArmHjoint_add (g₀ : SmoothRiemannianMetric I M) (r
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+theorem linearizedRicciThreeArmHjoint_add_smul [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
     (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
@@ -762,9 +762,9 @@ theorem linearizedRicciThreeArmHjoint_add_smul (g₀ : SmoothRiemannianMetric I 
     SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private theorem threeArmHjoint_const_smul_fw (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private theorem threeArmHjoint_const_smul_fw [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r

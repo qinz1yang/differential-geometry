@@ -276,7 +276,7 @@ theorem exists_chart_metric_bilinearForm
   exists_smooth_metric_extension (I := I) (M := M) g α hK hK_target
 
 theorem chart_pulled_smooth_weak_solution_of_chartIdentity
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)

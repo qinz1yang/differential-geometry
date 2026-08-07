@@ -29,13 +29,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma g_inner_self_nonneg
     (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     0 ≤ g.inner x v v := by
@@ -44,7 +44,7 @@ private lemma g_inner_self_nonneg
   · exact (g.pos x v hv0).le
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma riemannianFiberNormSq_eq_sum_toModel_sq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (Tr : TensorRSSpace 0 s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -132,7 +132,7 @@ private lemma riemannianFiberNormSq_eq_sum_toModel_sq
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma orthoWeighted_frame_sum_collapse
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -153,7 +153,7 @@ private lemma orthoWeighted_frame_sum_collapse
   · intro h; exact absurd (Finset.mem_univ a₀) h
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma frame_field_energy_eq_sum_trace_fiberNormSq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)

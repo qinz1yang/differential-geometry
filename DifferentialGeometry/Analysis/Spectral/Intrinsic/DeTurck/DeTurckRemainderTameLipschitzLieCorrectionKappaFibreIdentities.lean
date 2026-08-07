@@ -49,7 +49,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -73,14 +73,14 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma lc0b_unitTensor_toModel (x : M) (m : Fin 0 → E) :
     Tensor0SSpace.toModel (unitTensor (I := I) (M := M) x) m = 1 := by
   rw [unitTensor, Tensor0SSpace.toModel_ofModel]
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma lc0b_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
     tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v0 =
       (Tensor0SSpace.toModel D (fun _ : Fin 1 => v0)) • unitTensor (I := I) (M := M) x := by
@@ -102,14 +102,14 @@ private lemma lc0b_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma lc0b_clm_unit_smul (x : M) (s : ℕ)
     (A : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) (c : ℝ) :
     A (c • unitTensor (I := I) (M := M) x) = c • A (unitTensor (I := I) (M := M) x) :=
   A.map_smul c _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
@@ -151,7 +151,7 @@ lemma lc0b_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
          fin_cases k <;> rfl)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 1) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -214,7 +214,7 @@ lemma lc0b_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
          fin_cases k <;> rfl)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
@@ -285,7 +285,7 @@ lemma lc0b_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
          fin_cases k <;> rfl)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
@@ -346,7 +346,6 @@ lemma lc0b_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma lc0b_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (lc0Kappa (I := I) (M := M) g₀ g₁ gB).toSection x)
@@ -364,7 +363,7 @@ lemma lc0b_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 lemma lc0b_traceStep_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from

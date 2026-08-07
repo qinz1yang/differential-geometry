@@ -35,11 +35,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -204,7 +204,7 @@ private noncomputable def wTraceCoordPullback
         chartInvGramEuclid (I := I) g α k l y *
           chartChristoffelEuclid (I := I) g α l k m y
 
-omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wTraceCoordPullback_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) (m : Fin (Module.finrank ℝ E)) :
@@ -216,7 +216,6 @@ private lemma wTraceCoordPullback_contDiffOn
   exact (chartInvGramEuclid_contDiffOn (I := I) g α k l).mul
     (chartChristoffelEuclid_contDiffOn (I := I) g α l k m)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma christoffelTrace_proj_eq_wCoord_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -338,7 +337,6 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [hInvGramEval k l, hChristEval k l m]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartα_proj_covRS_chartBasis_eq_euclidPartial_plus_lower
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -407,7 +405,7 @@ private noncomputable def christoffelTracePrincipalCoeff
       (- wTraceCoordPullback (I := I) (M := M) g α m y)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma christoffelTracePrincipalCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -436,7 +434,7 @@ private noncomputable def christoffelTraceZerothCoeff
         covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx I' Jdx J' y
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma christoffelTraceZerothCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -453,7 +451,6 @@ private lemma christoffelTraceZerothCoeff_contDiffOn
   exact (wTraceCoordPullback_contDiffOn (I := I) (M := M) g α m).neg.mul
     (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M) g r s α m Idx I' Jdx J')
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffelTrace_correction_eq_T₀_linear
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

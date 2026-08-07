@@ -35,7 +35,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 namespace CutoffExtensionAux
 
@@ -74,14 +74,14 @@ theorem cutoffEta_mem_Icc_of_ne_zero (a b δ s : ℝ) (hδ : 0 < δ)
     exact hs rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 omit [IsManifold I ∞ M] in
 theorem cutoffEta_section_contMDiff (a b δ : ℝ) :
     ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun q : ℝ × M => cutoffEta a b δ q.1) :=
   (cutoffEta_contDiff a b δ).contMDiff.comp contMDiff_fst
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem smul_tangentMap_cmdwa
     (X : ℝ → ∀ x : M, TangentSpace I x) (η : ℝ → ℝ)
     {u : Set (ℝ × M)} {q₀ : ℝ × M}
@@ -108,7 +108,7 @@ theorem smul_tangentMap_cmdwa
       (e.linear ℝ (FiberBundle.mem_baseSet_trivializationAt' q₀.2)).2 (η q₀.1) (X q₀.1 q₀.2)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [T2Space M] in
 theorem smul_tangentMap_global
     (X : ℝ → ∀ x : M, TangentSpace I x) (η : ℝ → ℝ) (T : ℝ)
@@ -155,7 +155,7 @@ end CutoffExtensionAux
 
 open CutoffExtensionAux in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem interior_field_global_cutoff_extension
     (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -223,7 +223,7 @@ theorem interior_field_global_cutoff_extension
     exact autonomizedFieldJointC1_of_contMDiff (fun s x => cutoffEta a b δ s • X_DT s x) hsm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem deturck_vf_autonomized_c1
     (Xt : ℝ → ∀ x : M, TangentSpace I x)
     (hXt : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞

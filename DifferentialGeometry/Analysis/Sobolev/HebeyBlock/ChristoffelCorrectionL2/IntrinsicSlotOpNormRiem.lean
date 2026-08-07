@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -42,7 +42,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tensorRSTriv_baseSet_eq_chartSource (r s : ℕ) (α : M) :
     (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).baseSet =
@@ -62,7 +62,7 @@ private lemma tensorRSTriv_baseSet_eq_chartSource (r s : ℕ) (α : M) :
     DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotConjFactor_self_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Π b' : M, TangentSpace I b') {b : M}
@@ -217,7 +217,7 @@ private lemma slotOutputConjCLM_prod_norm_le_on_pouTsupport
     _ = (max C₀ 1) ^ s := by rw [Finset.prod_const]; simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma inputSlotChartKernel_apply_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b') (i : Fin r) (b : M)
@@ -239,7 +239,7 @@ private lemma inputSlotChartKernel_apply_norm_le
         ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma outputSlotChartKernel_apply_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b') (l : Fin s) (b : M)

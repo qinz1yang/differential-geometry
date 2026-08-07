@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 /-- A jointly continuous scalar family which vanishes on one compact slice is
 uniformly small on that compact factor for all parameters sufficiently close
@@ -78,7 +78,7 @@ theorem jointSmall_compact
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- A uniform bound on the quadratic form of a symmetric bilinear field over
 the fixed metric's unit tangent bundle implies the intrinsic bilinear
 operator bound with the same constant. -/
@@ -317,7 +317,7 @@ theorem metricDiff_smallC0
 /-! ## Transfer from a fixed initial metric to a moving carrier -/
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 /-- If two metrics are both `Îµ`-close to `q`, then their difference is
 `2Îµ / (1 - Îµ)`-small relative to the first metric.
 

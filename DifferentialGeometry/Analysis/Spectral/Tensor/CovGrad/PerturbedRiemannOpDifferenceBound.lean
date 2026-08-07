@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M ↦ Tensor0SBundle.TensorRSSpace r s I b)]
@@ -42,7 +42,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 private lemma gNorm_self_triangle
     (g : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
@@ -79,7 +79,7 @@ private lemma gNorm_self_triangle
   linarith [hcs]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 private lemma gNorm_self_sub_triangle
     (g : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :

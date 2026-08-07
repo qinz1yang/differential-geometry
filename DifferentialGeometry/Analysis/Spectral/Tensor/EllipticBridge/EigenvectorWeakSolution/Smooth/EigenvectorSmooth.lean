@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 lemma toEuclidean_extChartAt_mem_chartTargetEuclid
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source) :
     (toEuclidean (E := E)) (extChartAt I α x) ∈
@@ -52,7 +52,7 @@ lemma toEuclidean_extChartAt_mem_chartTargetEuclid
     (by rw [extChartAt_source (I := I)]; exact hx)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 lemma symm_toEuclidean_symm_toEuclidean_extChartAt
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source) :
     (extChartAt I α).symm

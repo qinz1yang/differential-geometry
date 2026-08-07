@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -34,16 +34,15 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
-def connLaplacianMixed (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def connLaplacianMixed [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯)
     (x : M) : TensorRSSpace r s I x :=
   rawTensorConnLap (I := I) g r s (fun b : M => T b) x
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma connLaplacianMixed_def
+@[simp] lemma connLaplacianMixed_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯) (x : M) :
@@ -51,16 +50,15 @@ omit [NeZero (Module.finrank ℝ E)] in
       rawTensorConnLap (I := I) g r s (fun b : M => T b) x := rfl
 
 
-def connLaplacianMixedSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def connLaplacianMixedSection [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯) :
     M → (Π x : M, TensorRSSpace r s I x) :=
   fun _ x => connLaplacianMixed (I := I) g r s T x
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connLaplacianMixed_scalar_eq_function
+theorem connLaplacianMixed_scalar_eq_function [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 0 ℝ E,
       (fun x : M => TensorRSSpace 0 0 I x)⟯)

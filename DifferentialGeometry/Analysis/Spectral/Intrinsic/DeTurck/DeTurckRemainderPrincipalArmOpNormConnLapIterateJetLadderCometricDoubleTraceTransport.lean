@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 section BalLadder
 
@@ -98,7 +98,7 @@ private lemma bal_rawLap_frame_sum_eval (g : SmoothRiemannianMetric I M) (r s : 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Tensor0SBundle in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma bal_appCcRS_cometric_eval (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (K : SmoothCcTensor g r (s + 2)) (x : M) (D : Tensor0SSpace r I x)
     (m : Fin s → TangentSpace I x) :
@@ -171,8 +171,8 @@ private lemma bal_appCc_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
     appCc_smul_right (I := I) (M := M) g r s (-1 : ℝ) Φ B,
     neg_one_smul, ← sub_eq_add_neg]
 
-omit [CompactSpace M] [I.Boundaryless] in
-lemma oneMinusConnLapSmoothIter_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
+omit [I.Boundaryless] in
+lemma oneMinusConnLapSmoothIter_sub [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s q (A - B) =
       oneMinusConnLapSmoothIter (I := I) g r s q A -
@@ -186,8 +186,8 @@ lemma oneMinusConnLapSmoothIter_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     rw [rawTensorConnLapSmooth_sub]
     abel
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma bal_lap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+private lemma bal_lap_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (A + B) =
       rawTensorConnLapSmooth (I := I) g r s A + rawTensorConnLapSmooth (I := I) g r s B := by
@@ -204,8 +204,8 @@ private lemma bal_lap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [sub_neg_eq_add, hneg, sub_neg_eq_add] at this
   exact this
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma bal_P_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+private lemma bal_P_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A + B) =
       oneMinusConnLapSmooth (I := I) g r s A + oneMinusConnLapSmooth (I := I) g r s B := by

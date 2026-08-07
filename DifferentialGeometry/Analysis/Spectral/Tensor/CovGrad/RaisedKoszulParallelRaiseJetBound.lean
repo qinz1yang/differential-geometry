@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma real_quarter_scale_bound {S R : ℝ}
     (hS : S ≤ 4 * R ^ 2 + 4 * R ^ 2 + 2 * R ^ 2) :
@@ -51,7 +51,7 @@ private lemma iteratedCovGrad_smul' (g : SmoothRiemannianMetric I M) (r s j : �
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =

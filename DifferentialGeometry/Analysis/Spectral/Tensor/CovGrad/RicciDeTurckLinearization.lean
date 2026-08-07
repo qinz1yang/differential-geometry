@@ -40,12 +40,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [T2Space M] in
 private theorem zeroTensor_eq_smul_unitTensor (x : M)
     (D : Tensor0SSpace 0 I x) :
     D = (Tensor0SNabla.tensor0Iso I M x D) • unitTensor (I := I) (M := M) x := by
@@ -57,8 +57,8 @@ private theorem zeroTensor_eq_smul_unitTensor (x : M)
   apply (Tensor0SNabla.tensor0Iso I M x).injective
   rw [map_smul, hunit, smul_eq_mul, mul_one]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [T2Space M] in
 private theorem tensor0s_clm_ext_unit {s : ℕ} {x : M}
     {φ ψ : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x}
     (h : φ (unitTensor (I := I) (M := M) x) = ψ (unitTensor (I := I) (M := M) x)) :
@@ -67,8 +67,8 @@ private theorem tensor0s_clm_ext_unit {s : ℕ} {x : M}
   ext D
   rw [zeroTensor_eq_smul_unitTensor (I := I) (M := M) x D, map_smul, map_smul, h]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [T2Space M] in
 theorem smoothCcTensor_ext_of_unitModel (g : SmoothRiemannianMetric I M) {s : ℕ}
     {S S' : SmoothCcTensor g 0 s}
     (h : ∀ x : M, unitModel (I := I) (M := M) g s S x = unitModel (I := I) (M := M) g s S' x) :
@@ -86,8 +86,8 @@ theorem smoothCcTensor_ext_of_unitModel (g : SmoothRiemannianMetric I M) {s : �
     simpa [unitModel] using this
   exact tensor0s_clm_ext_unit (I := I) (M := M) hval
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] in
 private theorem unitModel_add (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S S' : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (S + S') x =
@@ -105,12 +105,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] in
 private theorem unitModel_castRankCc (g : SmoothRiemannianMetric I M) {a b : ℕ} (h : a = b)
     (W : SmoothCcTensor g 0 a) (x : M) :
     unitModel (I := I) (M := M) g b (h ▸ W) x =
@@ -126,12 +126,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem domDomCongrField_contMDiff (g : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
@@ -189,7 +189,7 @@ noncomputable def domDomCongrSection (g : SmoothRiemannianMetric I M) {s : ℕ}
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem domDomCongrSection_unitModel (g : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (domDomCongrSection (I := I) g σ S) x =
@@ -215,7 +215,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 

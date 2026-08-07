@@ -34,7 +34,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 

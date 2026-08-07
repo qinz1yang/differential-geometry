@@ -453,7 +453,7 @@ private lemma integral_riemannianVolume_compactSupport_finset_sum
 
 omit [InnerProductSpace ℝ E] in
 private lemma integral_riemannianVolume_eq_chartLocal_of_support_in_chart
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α₀ : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α₀).source) :
@@ -605,7 +605,7 @@ private lemma integral_riemannianVolume_eq_chartLocal_of_compactSupport_in_chart
 
 omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX_int : tsupport X ⊆ I.interior M) :

@@ -65,7 +65,7 @@ private lemma exists_bound_continuous_compactSpace
 
 omit [InnerProductSpace ℝ E] in
 private lemma continuous_memLp_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
@@ -229,7 +229,7 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
 
 omit [InnerProductSpace ℝ E] in
 private lemma memLp_g_norm_gradFun_interior_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_int : tsupport u ⊆ I.interior M) :
@@ -257,7 +257,7 @@ private lemma memLp_g_norm_gradFun_interior_smooth
 
 omit [InnerProductSpace ℝ E] in
 private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_interior
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_int : tsupport u ⊆ I.interior M) :
@@ -296,7 +296,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff_interior
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -320,7 +320,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth_interior
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -515,7 +515,7 @@ private lemma g_inner_gradFun_gradFun_continuous
 
 omit [InnerProductSpace ℝ E] in
 private lemma memLp_g_norm_gradFun_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemLp (fun x : M => Real.sqrt
@@ -620,7 +620,7 @@ private lemma continuous_g_inner_gradFun_section
 
 omit [InnerProductSpace ℝ E] in
 private lemma hasWeakRiemannianGradLp_withBoundary_gradFun_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u
@@ -645,7 +645,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_contMDiff
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -667,7 +667,7 @@ theorem MemW1pIntrinsicLp_withBoundary_of_MemWkpChart_smooth
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -681,7 +681,7 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
@@ -708,7 +708,7 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
     [Module.Finite ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -734,7 +734,7 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
 
 omit [InnerProductSpace ℝ E] in
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -780,7 +780,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
     {n : ℕ} [NeZero n]
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace n) M]
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
     {u : M → ℝ} (hu_smooth :
@@ -843,7 +843,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
     {n : ℕ} [NeZero n]
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace n) M]
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →
@@ -888,7 +888,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_uniform
     {n : ℕ} [NeZero n]
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace n) M]
     [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →

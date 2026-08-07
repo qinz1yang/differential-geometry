@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -40,7 +40,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannSec_covApply_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
@@ -63,7 +63,7 @@ theorem riemannSec_covApply_fiberNormSq_le
   rw [riemannSec_eq_riemannOp_smooth (cov := tensorCov (I := I) g 0 2) hX hY hZ]
   exact hbound (X x) (Y x) _
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem riemannSec_orthoFrame_covApply_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
@@ -88,7 +88,7 @@ theorem riemannSec_orthoFrame_covApply_fiberNormSq_le
   rw [hortho] at hbound
   simpa using hbound
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem orthoFrame_pair_covApply_commutator
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)

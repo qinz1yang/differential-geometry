@@ -41,11 +41,11 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
     (Φ : ℝ → M → M) {lo hi : ℝ} (hlo : lo < 0) (hhi : 0 < hi)
     (hΦsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
@@ -160,7 +160,7 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
     (Φ : ℝ → M → M) {lo hi : ℝ}
     (hΦsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)

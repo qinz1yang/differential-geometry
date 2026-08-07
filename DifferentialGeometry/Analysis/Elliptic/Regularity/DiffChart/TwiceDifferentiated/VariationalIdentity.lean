@@ -56,7 +56,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -688,7 +688,7 @@ theorem twice_differentiated_variational_identity_holds
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
       (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
   let ψl₂ : EuclN → ℝ := fun y => (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
-   
+
   have hψl₂_smooth : ContDiff ℝ (⊤ : ℕ∞) ψl₂ :=
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l₂
   have hψl₂_cs : HasCompactSupport ψl₂ :=

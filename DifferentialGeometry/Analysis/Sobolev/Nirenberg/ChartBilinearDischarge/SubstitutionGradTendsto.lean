@@ -66,7 +66,7 @@ private lemma fderiv_standardNirenbergTest_apply
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffQuot_chi_sub_one_uChart_vanishes
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ}
@@ -119,7 +119,7 @@ private lemma diffQuot_chi_sub_one_uChart_vanishes
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffQuot_dx_chi_uChart_vanishes
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ}
@@ -372,7 +372,7 @@ private lemma eLpNorm_mul_bounded
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ : ContDiff ℝ (⊤ : ℕ∞) χ) (hχ_cs : HasCompactSupport χ)

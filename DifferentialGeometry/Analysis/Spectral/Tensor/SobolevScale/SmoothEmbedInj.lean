@@ -30,7 +30,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 /-- The generic smooth covariant-tensor spectral embedding is injective at
 every real Sobolev order. -/

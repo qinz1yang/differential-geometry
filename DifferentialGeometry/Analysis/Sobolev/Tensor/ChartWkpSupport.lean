@@ -34,17 +34,17 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- A POU-weighted tensor chart component vanishes pointwise, inside the chart
 target, off the fixed Euclidean image of the POU kernel. -/
-theorem secComp_zero_kernel
+theorem secComp_zero_kernel [SigmaCompactSpace M]
     (r s : ℕ) (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))

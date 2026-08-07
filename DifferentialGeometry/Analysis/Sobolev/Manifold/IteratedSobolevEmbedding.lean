@@ -211,7 +211,7 @@ theorem MemWkpChart.le_one
   MemWkpChart.le_of_le hk h
 
 theorem iterated_sobolev_embedding_chart_C0_supercritical
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k)
@@ -752,7 +752,7 @@ theorem wkpNormChart_succ_subcritical_step
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
@@ -938,7 +938,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 private def Statement
@@ -1085,7 +1085,7 @@ private theorem statement_holds_aux :
         [FiniteDimensional ℝ E]
         {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
         {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-        [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+        [CompactSpace M] [T2Space M] [I.Boundaryless]
         [NeZero (Module.finrank ℝ E)],
       ∀ (g : DifferentialGeometry.SmoothRiemannianMetric I M),
       ∀ {p : ℝ}, 1 ≤ p →
@@ -1097,14 +1097,14 @@ private theorem statement_holds_aux :
   intro k
   induction k with
   | zero =>
-      intro E _ _ _ H _ I M _ _ _ _ _ _ _ _ g p hp_one _hreg hkp u hu_meas hu
+      intro E _ _ _ H _ I M _ _ _ _ _ _ _ g p hp_one _hreg hkp u hu_meas hu
       have hp_dim : (Module.finrank ℝ E : ℝ) < p := by
         have : ((0 : ℕ) + 1 : ℝ) * p = p := by ring
         linarith [hkp, this]
       exact iterated_sobolev_embedding_chart_C0_supercritical (I := I) (M := M) g
         (k := 1) (Nat.le_refl 1) hp_one hp_dim hu_meas hu
   | succ k ih =>
-      intro E _ _ _ H _ I M _ _ _ _ _ _ _ _ g p hp_one hreg hkp u hu_meas hu
+      intro E _ _ _ H _ I M _ _ _ _ _ _ _ g p hp_one hreg hkp u hu_meas hu
       have hp_ne_n : p ≠ (Module.finrank ℝ E : ℝ) :=
         hreg.p_ne_n_of_one_le (by omega)
       rcases lt_or_gt_of_ne hp_ne_n with hp_lt | hp_gt
@@ -1184,7 +1184,7 @@ theorem iterated_sobolev_embedding_chart_C0
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k) {p : ℝ} (hp_one : 1 ≤ p)
@@ -1211,7 +1211,7 @@ theorem sobolev_embedding_chart_C0_Hk
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
@@ -1615,7 +1615,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k) {p : ℝ} (hp_one : 1 ≤ p)

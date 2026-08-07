@@ -30,7 +30,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 lemma exists_chart_cutoff_M
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     ∃ b : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ b ∧
       Set.range b ⊆ Set.Icc (0 : ℝ) 1 ∧
       (∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
@@ -273,7 +273,7 @@ lemma smoothExtensionScalar_iteratedFDeriv_bound
   exact iteratedFDeriv_uniformBound_of_compactSupport hψ_smooth hψ_compact k
 
 lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b φ u : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1)
@@ -311,7 +311,7 @@ lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
     rw [hb_x]; ring
 
 theorem MemWkpChart_smooth_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)

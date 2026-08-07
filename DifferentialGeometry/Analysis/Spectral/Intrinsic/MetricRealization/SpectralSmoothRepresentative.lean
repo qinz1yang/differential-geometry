@@ -97,7 +97,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -108,7 +108,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 
-def MemAllTensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def MemAllTensorHs [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) : Prop :=
   ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
     ∃ v : tensorHs (I := I) (M := M) g r s σ,
@@ -236,7 +236,6 @@ def EigenvalueTailSummable (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenvalueTail_eq_weight
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (p : ℝ)
@@ -343,7 +342,7 @@ theorem spectralCoeff_weightedPow_summable
 
 
 
-def TensorSuperCriticalReconstruct (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+def TensorSuperCriticalReconstruct [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Prop :=
   ∀ w : TensorL2 r s g,
     (∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -362,7 +361,7 @@ def TensorSuperCriticalReconstruct (g : SmoothRiemannianMetric I M) (r s : ℕ) 
 
 
 
-def SpectralChartRegularity (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
+def SpectralChartRegularity [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
   ∀ u : TensorL2 r s g, MemAllTensorHs (I := I) (M := M) g r s u →
     ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

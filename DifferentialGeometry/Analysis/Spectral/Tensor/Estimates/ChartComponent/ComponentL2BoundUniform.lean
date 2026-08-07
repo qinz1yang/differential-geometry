@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -43,8 +43,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma chartTensorInner_tensorTrivProj_eq_tensorInner_toFun
+    in
+lemma chartTensorInner_tensorTrivProj_eq_tensorInner_toFun [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :

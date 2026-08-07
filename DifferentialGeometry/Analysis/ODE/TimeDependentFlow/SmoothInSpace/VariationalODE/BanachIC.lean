@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 section SmoothLocalFlow
 
@@ -139,7 +139,7 @@ open scoped NNReal Topology
 variable [CompleteSpace E]
 
 omit [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem ChartLocalPicardData.contDiffOn_top
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hper : ChartLocalPicardData X α)

@@ -46,9 +46,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
-def deTurckSmoothRemainderTensorHs (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+def deTurckSmoothRemainderTensorHs [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
@@ -612,9 +612,8 @@ theorem smoothCcToTensorHs_smul (g₀ : SmoothRiemannianMetric I M) (σ : ℝ) (
     tensorL2Coeff_smul]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorHs_norm_smul (g₀ : SmoothRiemannianMetric I M) {σ : ℝ} (c : ℝ)
+theorem tensorHs_norm_smul [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) {σ : ℝ} (c : ℝ)
     (x : tensorHs (I := I) (M := M) g₀ 0 2 σ) :
     ‖c • x‖ = |c| * ‖x‖ := by
   have h1 : ‖c • x‖ =
@@ -764,7 +763,7 @@ theorem deTurckSmoothN_embedding_wellDefined (g₀ g_bg : SmoothRiemannianMetric
   rw [norm_eq_zero, sub_eq_zero] at hzero
   exact hzero
 
-def radialScaleSmooth (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R₀ : ℝ)
+def radialScaleSmooth [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R₀ : ℝ)
     (T : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 2 :=
   (min 1 (R₀ / ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖)) • T
 
@@ -792,7 +791,7 @@ theorem smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction
   rw [radialScaleSmooth, smoothCcToTensorHs_smul, ballRetraction]
 
 open Classical in
-def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
+def deTurckSobolevNonlinearity [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
     tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>
@@ -1111,7 +1110,7 @@ theorem exists_norm_smoothCcToTensorHs_symmS_le (g₀ : SmoothRiemannianMetric I
     _ = Ca * Cb * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) T‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem symmS_eq_self_of_ccTensorBilin_symm (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -1143,7 +1142,7 @@ theorem symmS_eq_self_of_ccTensorBilin_symm (g₀ : SmoothRiemannianMetric I M)
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 open Classical in
-def deTurckSobolevNonlinearitySymm (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
+def deTurckSobolevNonlinearitySymm [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
     tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>

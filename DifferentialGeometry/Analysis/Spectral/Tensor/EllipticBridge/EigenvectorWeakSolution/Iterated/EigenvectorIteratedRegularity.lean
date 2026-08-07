@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma memWkp_succ_of_chosenWeakPartial_memWkp

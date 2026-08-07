@@ -27,9 +27,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-noncomputable def tensorPouSobolevHsNorm
+noncomputable def tensorPouSobolevHsNorm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
   (∑' α : M,
@@ -53,8 +53,8 @@ noncomputable def tensorPouSobolevHsNorm
               Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))))) ^
     (1 / 2 : ℝ)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorPouSobolevHsNorm_eq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorPouSobolevHsNorm_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     tensorPouSobolevHsNorm (I := I) (M := M) g k T =
@@ -79,16 +79,16 @@ theorem tensorPouSobolevHsNorm_eq
                   Measure (EuclideanSpace ℝ
                     (Fin (Module.finrank ℝ E))))) ^ (1 / 2 : ℝ) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorPouSobolevHsNorm_nonneg
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorPouSobolevHsNorm_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     0 ≤ tensorPouSobolevHsNorm (I := I) (M := M) g k T :=
   zero_le _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_comp_euclid_zero_section
+    in
+private lemma tensorChartComponentRaw_comp_euclid_zero_section [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -130,8 +130,8 @@ private lemma tensorChartComponentRaw_comp_euclid_zero_section
     exact this
   exact hM
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorPouSobolevHsNorm_zero_section
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorPouSobolevHsNorm_zero_section [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ) :
     tensorPouSobolevHsNorm (I := I) (M := M) g k
         (0 : SmoothCcTensor g r s) = 0 := by
@@ -218,8 +218,8 @@ theorem tensorPouSobolevHsNorm_zero_section
   rw [htsum]
   exact ENNReal.zero_rpow_of_pos (by norm_num)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorPouSobolevHsNorm_le_succ
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorPouSobolevHsNorm_le_succ [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     tensorPouSobolevHsNorm (I := I) (M := M) g k T ≤
@@ -317,8 +317,8 @@ theorem tensorPouSobolevHsNorm_le_succ
   exact ENNReal.rpow_le_rpow htsum_le (by norm_num)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_comp_euclid_smul_eq
+    in
+private lemma tensorChartComponentRaw_comp_euclid_smul_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -339,8 +339,8 @@ private lemma tensorChartComponentRaw_comp_euclid_smul_eq
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRawEuclidPull_contDiffOn
+    in
+private lemma tensorChartComponentRawEuclidPull_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -388,8 +388,8 @@ private lemma tensorChartComponentRawEuclidPull_contDiffOn
   exact h_raw_pull_contDiffOn.comp
     h_toEucl_symm_smooth.contDiffOn h_maps
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem iteratedFDeriv_basisEval_smul_eq
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem iteratedFDeriv_basisEval_smul_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -436,8 +436,8 @@ theorem iteratedFDeriv_basisEval_smul_eq
   rw [iteratedFDeriv_const_smul_apply h_cdAt_n]
   exact ContinuousMultilinearMap.smul_apply _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem tensorPouSobolevHsNorm_smul
+omit [NeZero (Module.finrank ℝ E)] in
+theorem tensorPouSobolevHsNorm_smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (c : ℝ) (T : SmoothCcTensor g r s) :
     tensorPouSobolevHsNorm (I := I) (M := M) g k (c • T) =
@@ -616,8 +616,8 @@ theorem tensorPouSobolevHsNorm_smul
   rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
   simp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem tensorPouSobolevHsNorm_neg
+omit [NeZero (Module.finrank ℝ E)] in
+theorem tensorPouSobolevHsNorm_neg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     tensorPouSobolevHsNorm (I := I) (M := M) g k (-T) =
@@ -933,13 +933,13 @@ theorem tensorPouSobolevHsNorm_lt_top
   exact tensorPouSobolevHsNorm_inner_integral_lt_top'
     (I := I) (M := M) g r s T α IJ.1 IJ.2 j basisIdx
 
-noncomputable def tensorPouSobolevHsNormSq
+noncomputable def tensorPouSobolevHsNormSq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
   tensorPouSobolevHsNorm (I := I) (M := M) g k T ^ 2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorPouSobolevHsNormSq_eq_inner_sum
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorPouSobolevHsNormSq_eq_inner_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     tensorPouSobolevHsNormSq (I := I) (M := M) g k T =
@@ -980,8 +980,8 @@ theorem tensorPouSobolevHsNormSq_lt_top
     (tensorPouSobolevHsNorm_lt_top (I := I) (M := M) g k T)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_comp_euclid_add_eq
+    in
+private lemma tensorChartComponentRaw_comp_euclid_add_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₁ T₂ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -1000,8 +1000,8 @@ private lemma tensorChartComponentRaw_comp_euclid_add_eq
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
   exact h
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem iteratedFDeriv_basisEval_add_eq
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem iteratedFDeriv_basisEval_add_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₁ T₂ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

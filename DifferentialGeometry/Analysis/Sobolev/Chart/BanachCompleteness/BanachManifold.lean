@@ -71,7 +71,7 @@ variable [NeZero (Module.finrank ℝ E)]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChart_cauchy_of_seminormCauchySeq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -107,7 +107,7 @@ theorem wkpNormChart_cauchy_of_seminormCauchySeq
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_cauchy_of_wkpNormChart_cauchy
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -163,7 +163,7 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
   exact le_trans h_summand_le_tsum h_le
 
 theorem exists_chart_limit
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -201,7 +201,7 @@ theorem exists_chart_limit
     k p hp_one hp_top h_chart_mem h_chart_cauchy
 
 noncomputable def chartLimit
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -215,7 +215,7 @@ noncomputable def chartLimit
   (exists_chart_limit (I := I) (M := M) g hp_one hp_top h_cauchy α).choose
 
 lemma chartLimit_memWkp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -232,7 +232,7 @@ lemma chartLimit_memWkp
   (exists_chart_limit (I := I) (M := M) g hp_one hp_top h_cauchy α).choose_spec.1
 
 lemma chartLimit_tendsto
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -258,7 +258,7 @@ lemma chartLimit_tendsto
 chart target, away from the fixed compact Euclidean image of the support of
 the canonical partition-of-unity factor. -/
 lemma chartLimit_ae_zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -388,7 +388,7 @@ lemma chartLimit_ae_zero
 the per-chart Euclidean Sobolev limits. The sum is over `chartAtlasPOU_finset`,
 a finite set on a compact manifold. -/
 noncomputable def manifoldLimitFun
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -404,7 +404,7 @@ noncomputable def manifoldLimitFun
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma wkpChartFun_eq_finset_sum_pullback
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     (u : WkpChart (I := I) (M := M) g k p hp) :

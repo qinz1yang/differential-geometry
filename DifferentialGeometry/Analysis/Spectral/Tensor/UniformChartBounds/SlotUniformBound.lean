@@ -41,18 +41,17 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma section_norm_eq_toFun_norm
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensor g r s) (b : M) :
     ‖S.toSection b‖ = ‖S.toFun b‖ := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma tsupport_chartAtlasPOU_subset_chartAt_source (α : M) :
+private lemma tsupport_chartAtlasPOU_subset_chartAt_source [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       (chartAt H α).source := by
@@ -62,8 +61,8 @@ private lemma tsupport_chartAtlasPOU_subset_chartAt_source (α : M) :
   rw [trivializationAt_baseSet_eq_chartAt_source (I := I)] at hb_base
   exact hb_base
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem tsupport_chartAtlasPOU_subset_chartAt_source_of_isSubordinate (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private theorem tsupport_chartAtlasPOU_subset_chartAt_source_of_isSubordinate [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       (chartAt H α).source :=
@@ -131,7 +130,7 @@ private lemma norm_basis_le_chartModelBasisVecSup
     (f := fun k => ‖(chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 private lemma christoffelCorrection_summand_opNorm_le
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) (Y : E)
     (i j k : Fin (Module.finrank ℝ E))
@@ -262,7 +261,7 @@ private lemma christoffelCorrection_summand_opNorm_le
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-private def pouTsupportSet (α : M) : Set M :=
+private def pouTsupportSet [SigmaCompactSpace M] (α : M) : Set M :=
   tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
@@ -271,8 +270,8 @@ private theorem pouTsupportSet_isCompact (α : M) :
     IsCompact (pouTsupportSet (I := I) (M := M) α) :=
   (isClosed_tsupport _).isCompact
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem pouTsupportSet_subset_chartAt_source (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private theorem pouTsupportSet_subset_chartAt_source [SigmaCompactSpace M] (α : M) :
     pouTsupportSet (I := I) (M := M) α ⊆ (chartAt H α).source :=
   (chartAtlasPOU_isSubordinate I M) α
 
@@ -307,7 +306,7 @@ private lemma norm_basis_le_chartModelBasisVecSup'
     (Finset.mem_univ _)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLeviCivitaParallelCLM_chartBasisVecFiber_opNorm_le_factors
     (g : SmoothRiemannianMetric I M) (α b : M)
     (j : Fin (Module.finrank ℝ E))
@@ -476,7 +475,7 @@ theorem chartLeviCivitaParallelCLM_chartBasisVec_opNorm_isBounded_on_pouTsupport
   exact h_clm_le.trans h_chain
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tensorSlotSubstCLM_apply_norm_le (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b))
     (x : Tensor0SSpace n I b) :
@@ -534,7 +533,7 @@ private lemma tensorSlotSubstCLM_apply_norm_le (n : ℕ) (b : M)
   exact hCLM_le'
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 private lemma tangentSlotCLM_factor_norm_le (n : ℕ) (b : M)
     (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b)
     (i : Fin n) :
@@ -549,7 +548,7 @@ private lemma tangentSlotCLM_factor_norm_le (n : ℕ) (b : M)
     exact h_id.trans (le_max_right _ _)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 private lemma tangentSlotCLM_prod_norm_le (n : ℕ) (b : M)
     (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b) :
     (∏ i : Fin n, ‖tangentSlotCLM (I := I) n k Φ i‖) ≤

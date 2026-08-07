@@ -38,7 +38,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -95,9 +95,8 @@ structure IsConjGalSubseq
         (ulim t i) ^ 2 ≤ Bound
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem gal_lim_mass
+private theorem gal_lim_mass [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) {tau : Real}
     (Fs : Nat → Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (phi : Nat → Nat)
@@ -481,7 +480,7 @@ theorem scalar_gal_subseq
 
 /-- The order-`m` Sobolev realization of the limiting Galerkin coefficients at
 one time in the compactness interval. -/
-noncomputable def galLimHs
+noncomputable def galLimHs [SigmaCompactSpace M]
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -500,7 +499,7 @@ noncomputable def galLimHs
   weighted_summable := ((hlim.lim_mass m).choose_spec t ht).1
 
 
-noncomputable def galLimPath
+noncomputable def galLimPath [SigmaCompactSpace M]
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}

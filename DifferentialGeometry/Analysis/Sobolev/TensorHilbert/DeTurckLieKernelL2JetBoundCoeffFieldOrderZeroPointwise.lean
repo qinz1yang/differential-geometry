@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -43,8 +43,8 @@ noncomputable def covDerivConnDiffSqrt
     (smoothExtensionTangent (I := I) x u) x
   Real.sqrt (g₀.inner x A A)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem connDiffCovDerivOp_sqrt_le_of_bounds
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private theorem connDiffCovDerivOp_sqrt_le_of_bounds [SigmaCompactSpace M]
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (Cq Cbg CaB Cc κ CK : ℝ)
     (hCq_nn : 0 ≤ Cq) (hCbg_nn : 0 ≤ Cbg) (hCaB_nn : 0 ≤ CaB)
@@ -413,7 +413,7 @@ private theorem deTurckLieConnDiffDerivCoeffField_fiberNormSq_le_of_kernel_bound
         ring
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private theorem smoothOrthoFrame_g0Norm_le_of_perturbation
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {δP δ₁ κ : ℝ}
@@ -458,7 +458,7 @@ private theorem smoothOrthoFrame_g0Norm_le_of_perturbation
     _ = κ := hκ_def.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem connDiff_sqrt_le_of_firstCovGrad_norm_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (Ca0 N1 B CaB : ℝ) (hCa0_nn : 0 ≤ Ca0) (hN1_le : N1 ≤ B)
@@ -484,7 +484,7 @@ private theorem connDiff_sqrt_le_of_firstCovGrad_norm_le
         ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem connDiff_background_sqrt_le
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) (CaB Cc : ℝ)
     (hconn_g1 : ∀ u v : TangentSpace I x,
@@ -530,7 +530,7 @@ noncomputable def tensorRSRiemannianNorm
   ‖W‖
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem tensorRSRiemannianNorm_nonneg
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (W : TensorRSSpace r s I x) :

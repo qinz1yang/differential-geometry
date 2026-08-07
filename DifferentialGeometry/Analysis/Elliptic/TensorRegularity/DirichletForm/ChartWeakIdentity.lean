@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -70,8 +70,8 @@ theorem tensorCovDerivPointwiseInner_integral_chart_pull
   refine setIntegral_congr_fun hctE_meas (fun y hy => ?_)
   rw [tensorCovDerivPointwiseInner_chart_eq (I := I) (M := M) g r s S T α hy]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 theorem chartPushedRaw_bump_contDiffOn
     (α : M) {χ : M → ℝ}
     (hχs : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ χ (chartAt H α).source) :
@@ -117,8 +117,8 @@ lemma euclidPartial_mul
     ContinuousLinearMap.smul_apply, smul_eq_mul, smul_eq_mul]
   ring
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 private lemma euclidPartial_contDiffOn_chartTarget
     (α : M) (l : Fin (Module.finrank ℝ E))
     {u : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
@@ -154,7 +154,7 @@ noncomputable def gramInvEntry
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   fun y => covChartMetricGramInv (I := I) (M := M) g r s α y Q P₀
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gramInvEntry_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -163,7 +163,7 @@ lemma gramInvEntry_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α) :=
   covChartMetricGramInv_entry_contDiffOn (I := I) (M := M) g r s α Q P₀
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartPushedRaw_rotatedTestSection_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -207,8 +207,8 @@ noncomputable def covPrincipalRotationRemainder
                     (gramInvEntry (I := I) (M := M) g r s α Q P₀) y *
                   chartPushedRaw I α χ y)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 lemma covPrincipalRotationRemainder_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -231,7 +231,7 @@ lemma covPrincipalRotationRemainder_def
                       (gramInvEntry (I := I) (M := M) g r s α Q P₀) y *
                     chartPushedRaw I α χ y) := rfl
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covPrincipalRotationRemainder_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -334,7 +334,7 @@ theorem covPrincipalRotationRemainder_contDiffOn
     ContDiffOn.sum (fun P _ => ContDiffOn.sum (fun Q _ => hsummand P Q))
   exact hsum
 
-omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma euclidPartial_chartPushedRaw_rotatedTestSection_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -390,7 +390,7 @@ lemma euclidPartial_chartPushedRaw_rotatedTestSection_eqOn
       (hopen.mem_nhds hy)
   exact euclidPartial_mul (E := E) l hGinv_diff hbump_diff
 
-omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covPrincipalIntegrand_rotated_collapse
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -544,8 +544,8 @@ theorem covPrincipalIntegrand_rotated_collapse
       exact absurd (Finset.mem_univ P₀) hP₀
   rw [hbump_collapse]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma weightedInvGramEuclid_eq_density_mul_invGram
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E))
@@ -555,7 +555,7 @@ private lemma weightedInvGramEuclid_eq_density_mul_invGram
         chartInvGramEuclid (I := I) g α k l y :=
   rfl
 
-omit [CompleteSpace E] [CompactSpace M] in
+omit [CompleteSpace E] in
 theorem weightedInvGram_principalIntegrand_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))}

@@ -115,7 +115,7 @@ lemma per_chart_integrand_hasDerivAt
   exact hprod
 
 theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     (h : M → ℝ) (hh_cont : Continuous h) :
     ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -157,7 +157,7 @@ theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
   rw [hswap, hintegrand_eq]
 
 theorem volume_variation_formula_clean_of_chart_derivs
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)
     (hf_cont : ∀ᶠ s in 𝓝 t, Continuous (f s))
@@ -499,7 +499,7 @@ private lemma chartDensity_nonneg_of_base
 
 
 lemma per_chart_hasDerivAt
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M} {f : ℝ → M → ℝ} {t : ℝ}
     (hreg : MetricFamilyRegularAt (I := I) g_fam t)
     (hf : FunctionRegularAt f t)
@@ -999,7 +999,7 @@ section CleanTheorem
 variable {g_fam : ℝ → SmoothRiemannianMetric I M}
 
 theorem first_variation_of_volume
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}
     {f : ℝ → M → ℝ} {t₀ : ℝ}
     (hg : MetricFamilyRegularAt (I := I) g_fam t₀)

@@ -30,13 +30,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [CompleteSpace E] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma rfns_repr_of_orthoFrame_cb
     (g : SmoothRiemannianMetric I M) (t : ℕ) (x : M) (S : TensorRSSpace 0 t I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -159,7 +159,7 @@ lemma rfns_repr_of_orthoFrame_cb
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [BoundarylessManifold I M] [T2Space M] [CompleteSpace E] in
 private lemma fiberNormSqComponent_comp_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (Φx : TensorRSSpace r s I x) (Wx : TensorRSSpace 0 r I x)
@@ -216,7 +216,7 @@ private lemma fiberNormSqComponent_comp_eq
 
 
 omit [CompactSpace M] [I.Boundaryless] [CompleteSpace E] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem riemannianFiberNormSq_comp_le_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (Φx : TensorRSSpace r s I x) (Wx : TensorRSSpace 0 r I x) :

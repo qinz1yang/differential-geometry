@@ -25,15 +25,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorChartComponentScalar_measurable
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorChartComponentScalar_measurable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -49,7 +49,7 @@ private abbrev Triple (r s : ℕ) :=
     (Fin r → Fin (Module.finrank ℝ E)) ×
     (Fin s → Fin (Module.finrank ℝ E))
 
-private noncomputable def tripleFinset (r s : ℕ) :
+private noncomputable def tripleFinset [SigmaCompactSpace M] (r s : ℕ) :
     Finset (Triple (I := I) (M := M) r s) :=
   Finset.univ
 
@@ -118,8 +118,8 @@ private lemma single_triple_extraction
     rw [h_vol, ← h2_eq]
     exact h_tendsto
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tendsto_eLpNorm_diff_comp
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tendsto_eLpNorm_diff_comp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

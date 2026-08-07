@@ -19,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -213,7 +213,7 @@ lemma wkpNorm_indicatorFactor_mul_atom_le
   exact hC_bd
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-  [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [T2Space M] in
 lemma memWkp_finsetSum
     {α : M} {K : ℕ} {ι : Type*} (T : Finset ι)
     {F : ι → EuclN → ℝ}
@@ -242,7 +242,7 @@ lemma memWkp_finsetSum
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open hj_mem hsum
 
 omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma wkpNorm_finsetSum_le_const_mul_atomSum
     {α : M} {K : ℕ} {ι κ : Type*}
@@ -405,7 +405,7 @@ lemma hasWeakPartialDeriv_ae_zero_off_of_ae_zero_off
   exact hy ⟨hy_mem, hy_notKc⟩
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [I.Boundaryless] [T2Space M] in
 lemma exists_uniform_const_of_finite_wkpNorm_bounds
     {α : M} {K : ℕ} {ι κ : Type*} [Finite ι]
     (F : ι → EuclN → ℝ) (atom : κ → EuclN → ℝ) (proj : ι → κ)

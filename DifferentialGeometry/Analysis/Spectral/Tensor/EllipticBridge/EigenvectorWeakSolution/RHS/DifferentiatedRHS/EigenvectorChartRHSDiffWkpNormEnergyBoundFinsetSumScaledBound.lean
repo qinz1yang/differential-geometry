@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -38,7 +38,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 omit [FiniteDimensional ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 lemma finsetSum_eNNReal_ofReal_mul_le
     {ι : Type*} (s : Finset ι) (f : ι → ℝ≥0∞) (C : ι → ℝ) (A : ℝ≥0∞)
     (hC : ∀ j ∈ s, 0 ≤ C j)

@@ -43,14 +43,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 section JointSmoothness
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointField_add {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -85,7 +85,7 @@ private theorem jointField_add {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointField_sub {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -120,7 +120,7 @@ private theorem jointField_sub {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointField_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -150,7 +150,7 @@ private theorem jointField_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
       a (A p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointField_neg {d : ℕ} {S : Set ℝ}
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -169,7 +169,7 @@ private theorem jointField_neg {d : ℕ} {S : Set ℝ}
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem slotPermField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d)) {S : Set ℝ}
     (Z : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hZ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -190,7 +190,7 @@ private theorem slotPermField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem tensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
     (P : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace m I p.1)
     (Q : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace k I p.1)
@@ -264,7 +264,7 @@ private theorem tensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem connContrField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
     (Bf : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace 1 (k + 1) I p.1)
     (hBf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 1 (k + 1) ℝ E)) ∞
@@ -565,8 +565,7 @@ private theorem order0CLM_realizedFam_jointContMDiffOn
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [CompactSpace M] in
-private theorem fourTrace_realizedFam_jointContMDiffOn
+private theorem fourTrace_realizedFam_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')

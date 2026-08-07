@@ -569,7 +569,7 @@ theorem christD2_abs_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christD2_pou_bnd
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -676,7 +676,7 @@ theorem christD2_pou_bnd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christD2_pou_lip
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)

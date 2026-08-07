@@ -200,7 +200,7 @@ theorem volume_chartImage_tsupport_lt_top
   exact hK.measure_lt_top
 
 theorem chartPushed_memLp_of_memWkpChart_subexp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hqp : q ≤ p) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
@@ -267,7 +267,7 @@ theorem chartPushed_memLp_of_memWkpChart_subexp
   exact (MeasureTheory.memLp_congr_ae hae.symm).mp h_fclean_memLp_q
 
 theorem eLpNorm_chartPushed_q_le_chartPushed_p_subexp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
@@ -366,7 +366,7 @@ theorem eLpNorm_chartPushed_q_le_chartPushed_p_subexp
   exact h_le.trans h_step1
 
 theorem eLpNorm_chartPushed_q_le_wkpNorm_one_subexp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
@@ -407,7 +407,7 @@ theorem eLpNorm_chartPushed_q_le_wkpNorm_one_subexp
   exact h1.trans h3
 
 theorem lqChartSum_le_wkpNormChart_subexp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hq_pos : q ≠ 0) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u) :
@@ -482,7 +482,7 @@ theorem chartPushed_memLp_p
   (hu α).memLp
 
 theorem chartPushed_memLq_le_p
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (_hq_one : 1 ≤ q) (hqp : q ≤ p) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :

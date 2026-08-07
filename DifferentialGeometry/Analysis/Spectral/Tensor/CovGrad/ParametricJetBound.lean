@@ -33,10 +33,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem joint_rfns_cont
@@ -154,7 +154,7 @@ theorem joint_jet_rfns
     (fun t => iteratedCovGrad (I := I) g₀ r s i (Φ t)) hKS
     (covGrad_iter_joint (I := I) (M := M) g₀ r s i Φ S hjoint)
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 private theorem joint_small
     (f : ℝ → M → ℝ) {S : Set ℝ} {t₀ : ℝ}
     (hS : S ∈ 𝓝 t₀)

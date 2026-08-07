@@ -28,11 +28,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma reprT_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
@@ -121,7 +121,7 @@ private lemma reprT_contDiffOn_goodSet
   exact interior_subset
     (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx'_good)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma uB_contDiffOn_goodSet
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -137,7 +137,7 @@ private lemma uB_contDiffOn_goodSet
       (chartLeviCivitaGoodSet (I := I) α) := hB_total.contMDiffOn
   exact chartE_pullback_contDiffOn_goodSet (I := I) α hB_on
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma intrinsicPiece_differentiableAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -178,7 +178,7 @@ private lemma intrinsicPiece_differentiableAt
       (hU_open.mem_nhds hx_mem)
   exact hF2_diff.clm_apply hu_diff
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inputSlotPiece_differentiableAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -262,7 +262,7 @@ private lemma inputSlotPiece_differentiableAt
     exact h_factor
   exact (h_evt.differentiableAt_iff).mpr h_clm_diff
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma outputSlotPiece_differentiableAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -346,9 +346,8 @@ private lemma outputSlotPiece_differentiableAt
     exact h_factor
   exact (h_evt.differentiableAt_iff).mpr h_clm_diff
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chart_pulled_covApply_repr_eventuallyEq
+private lemma chart_pulled_covApply_repr_eventuallyEq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -82,7 +82,7 @@ def connDiffLoweredCovec (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 @[simp] lemma connDiffLoweredCovec_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     connDiffLoweredCovec (I := I) g₀ g₁ x m =
@@ -90,7 +90,6 @@ omit [T2Space M] [SigmaCompactSpace M] in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffLoweredScalar_contMDiffAt (g₀ g₁ : SmoothRiemannianMetric I M)
     (V0 V1 V2 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x₀ : M) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
@@ -112,7 +111,6 @@ private lemma connDiffLoweredScalar_contMDiffAt (g₀ g₁ : SmoothRiemannianMet
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connDiffLoweredCovec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 3 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 3 ℝ E)
@@ -164,7 +162,6 @@ def connDiffLoweredCc (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor 
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffLoweredCc_unitModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 3 (connDiffLoweredCc (I := I) g₀ g₁) x =
       Tensor0SSpace.toModel (connDiffLoweredCovec (I := I) g₀ g₁ x) := by
@@ -180,7 +177,6 @@ private lemma connDiffLoweredCc_unitModel (g₀ g₁ : SmoothRiemannianMetric I 
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffLoweredCc_unitModel_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (connDiffLoweredCc (I := I) g₀ g₁) x m =
@@ -191,7 +187,7 @@ private lemma connDiffLoweredCc_unitModel_apply (g₀ g₁ : SmoothRiemannianMet
 end NormedConnectionDifferenceLowering
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -205,7 +201,7 @@ private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace 
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem riemannianFiberNormSq_neg_value
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
@@ -219,7 +215,6 @@ private theorem riemannianFiberNormSq_neg_value
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffSection_eq_cometricRaiseSlot0Field (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -322,7 +317,6 @@ theorem connLow_rfns
         rw [connDiffSection_eq_cometricRaiseSlot0Field]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma flatArmCoeffCc_true_eq_cometricRaiseSlot0Field
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     flatArmCoeffCc (I := I) g₀ g₁ true =

@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -72,7 +72,7 @@ lemma rawConnLap_covGrad_curry_eq_abstractRoughLap_curry
   rw [rawTensorConnLap_covGrad_unit_eval_eq_abstract_roughLap (I := I) (M := M) g T₀ x]
   rw [smoothExtensionTangent_eq]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covApply_unit_eval_eq_two
     (g : SmoothRiemannianMetric I M)
@@ -99,7 +99,7 @@ noncomputable def covApplyT₀Section
     (covApplyRS_contMDiff (I := I) g 0 2 (T := fun y => T₀.toSection y)
       T₀.toSection.contMDiff hX)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma covApplyT₀Section_apply
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
@@ -121,7 +121,7 @@ noncomputable def covApplyBcovApplyT₀Section
       (covApplyRS_contMDiff (I := I) g 0 2 (T := fun u => T₀.toSection u)
         T₀.toSection.contMDiff hW) hB)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 lemma frameTraceSummand_unit_eq_abstract
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) (i : Fin (Module.finrank ℝ E)) :

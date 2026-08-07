@@ -38,7 +38,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 noncomputable def boundaryFaceSum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : ℝ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -47,7 +47,7 @@ noncomputable def boundaryFaceSum
 
 omit [InnerProductSpace ℝ E] in
 @[simp] lemma boundaryFaceSum_def
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     boundaryFaceSum (I := I) g X =
@@ -61,7 +61,7 @@ variable [hI : HasSmoothBoundary E H I]
 
 omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∫ x, divergence_g_with_boundary (I := I) g X x
@@ -162,7 +162,7 @@ private lemma f_mul_Δ_hasCompactSupport
 omit hI in
 omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_integrable
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -177,7 +177,7 @@ private lemma f_mul_Δ_integrable
 omit hI in
 omit [InnerProductSpace ℝ E] in
 private lemma inner_grad_grad_integrable
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -192,7 +192,7 @@ private lemma inner_grad_grad_integrable
 
 omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -257,7 +257,7 @@ theorem green_first_with_boundary
 
 omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -286,7 +286,7 @@ theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
 
 omit [InnerProductSpace ℝ E] in
 private theorem green_first_with_boundary_swap
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M) :
@@ -301,7 +301,7 @@ private theorem green_first_with_boundary_swap
 
 omit [InnerProductSpace ℝ E] in
 theorem green_second_with_boundary
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M)

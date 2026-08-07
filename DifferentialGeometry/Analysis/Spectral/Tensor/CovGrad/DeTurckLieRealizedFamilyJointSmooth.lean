@@ -36,12 +36,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem jointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -76,7 +76,7 @@ theorem jointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem jointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -111,7 +111,7 @@ theorem jointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem jointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
     {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f)
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
@@ -147,7 +147,7 @@ theorem jointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
       (f p₀.2) (A p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
     (A : ∀ pp : M × ℝ, Tensor0SBundle.Tensor0SSpace p I pp.1)
     (B : ∀ pp : M × ℝ, Tensor0SBundle.Tensor0SSpace q I pp.1)
@@ -223,8 +223,7 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
     rfl
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private theorem realizedFam_chartDeTurckVFComp_jointContMDiffOn
+private theorem realizedFam_chartDeTurckVFComp_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -261,8 +260,7 @@ private theorem realizedFam_chartDeTurckVFComp_jointContMDiffOn
   exact (hentryM.comp_contMDiffWithinAt p hmoveAt).congr (fun q _ => rfl) rfl
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private theorem deTurckVFChartLocal_realizedFam_jointContMDiffOn
+private theorem deTurckVFChartLocal_realizedFam_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -320,8 +318,7 @@ private theorem deTurckVFChartLocal_realizedFam_jointContMDiffOn
     rw [Trivialization.mem_source, he, trivializationAt_baseSet_eq_chartAt_source (I := I)]
     exact hqx
 
-omit [CompactSpace M] in
-theorem deTurckVF_realizedFam_jointContMDiffOn
+theorem deTurckVF_realizedFam_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -373,7 +370,7 @@ private def arm1LowerSwapPermA : Equiv.Perm (Fin 3) :=
 private def arm1LowerSwapPermC : Equiv.Perm (Fin 3) :=
   ⟨![2, 1, 0], ![2, 1, 0], by decide, by decide⟩
 
-private noncomputable def covGradSymmSValue (g₀ : SmoothRiemannianMetric I M)
+private noncomputable def covGradSymmSValue [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (x : M) : Tensor0SBundle.Tensor0SSpace 3 I x :=
   (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
     (covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ V)).toSection x)
@@ -456,7 +453,7 @@ private theorem covGradSymmSValueFam_jointContMDiffOn (g₀ : SmoothRiemannianMe
   rw [covGradSymmSValue_convexPerturbation]
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem connDiff_split_middle (gA gC gB : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) gA gB x u v =
@@ -479,7 +476,6 @@ private theorem connDiff_split_middle (gA gC gB : SmoothRiemannianMetric I M) (x
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 private theorem metricConnDiffLoweredFib_split (gm gA gC gB : SmoothRiemannianMetric I M)
     (x : M) :
     metricConnDiffLoweredFib (I := I) gm gA gB x =
@@ -496,8 +492,7 @@ private theorem metricConnDiffLoweredFib_split (gm gA gC gB : SmoothRiemannianMe
 
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private theorem metricConnDiffLowered_fixedPair_affine (g₀ : SmoothRiemannianMetric I M)
+private theorem metricConnDiffLowered_fixedPair_affine [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')

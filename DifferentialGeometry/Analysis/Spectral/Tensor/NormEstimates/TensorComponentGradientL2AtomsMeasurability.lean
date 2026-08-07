@@ -44,22 +44,21 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_measurableSet_meas (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_measurableSet_meas [SigmaCompactSpace M] (α : M) :
     MeasurableSet (tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
   (isClosed_tsupport _).measurableSet
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma scalarOnE_raw_eq_raw_on_pouTsupport_meas
+private lemma scalarOnE_raw_eq_raw_on_pouTsupport_meas [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -81,8 +80,7 @@ private lemma scalarOnE_raw_eq_raw_on_pouTsupport_meas
     (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx) hb_ext
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma tensorChartComponentRaw_continuousOn_pouTsupport
+private lemma tensorChartComponentRaw_continuousOn_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -104,8 +102,7 @@ private lemma tensorChartComponentRaw_continuousOn_pouTsupport
   exact hb_base
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma scalarOnE_raw_continuousOn_pouTsupport
+private lemma scalarOnE_raw_continuousOn_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -126,8 +123,7 @@ private lemma scalarOnE_raw_continuousOn_pouTsupport
     (I := I) (M := M) g r s α S Idx Jdx hb
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma abs_scalarOnE_raw_continuousOn_pouTsupport
+private lemma abs_scalarOnE_raw_continuousOn_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -200,7 +196,7 @@ private def trivInput
     (chartTensorRSInputSlotCorrection (I := I) r s g α
       (fun b' => T b') (chartBasisVecFiber (I := I) α j) b k)
 
-private def trivOutput
+private def trivOutput [SigmaCompactSpace M]
     (T : Π b' : M, TensorRSSpace r s I b') (b : M) (l : Fin s) :
     TensorRSModel r s ℝ E :=
   (trivializationAt (TensorRSModel r s ℝ E)
@@ -208,7 +204,7 @@ private def trivOutput
     (chartTensorRSOutputSlotCorrection (I := I) r s g α
       (fun b' => T b') (chartBasisVecFiber (I := I) α j) b l)
 
-private def christoffelAtomIntegrand
+private def christoffelAtomIntegrand [SigmaCompactSpace M]
     (T : Π b' : M, TensorRSSpace r s I b') (b : M) : ℝ :=
   ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
     Real.sqrt
@@ -216,7 +212,7 @@ private def christoffelAtomIntegrand
        (∑ l : Fin s, ‖trivOutput (I := I) g r s α j T b l‖ ^ 2))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma triv_continuousLinearMapAt_eq_triv_snd
     {b : M} (hb : b ∈ (chartAt H α).source) (v : TensorRSSpace r s I b) :
     (trivializationAt (TensorRSModel r s ℝ E)
@@ -242,7 +238,7 @@ private lemma triv_continuousLinearMapAt_eq_triv_snd
   exact congrFun hcoe _
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma trivInput_continuousOn_chartSource (S : SmoothCcTensor g r s)
     (k : Fin r) :
     ContinuousOn (fun b : M => trivInput (I := I) g r s α j S.toSection b k)
@@ -260,8 +256,8 @@ private lemma trivInput_continuousOn_chartSource (S : SmoothCcTensor g r s)
       (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b k)
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma trivOutput_continuousOn_chartSource (S : SmoothCcTensor g r s)
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+private lemma trivOutput_continuousOn_chartSource [SigmaCompactSpace M] (S : SmoothCcTensor g r s)
     (l : Fin s) :
     ContinuousOn (fun b : M => trivOutput (I := I) g r s α j S.toSection b l)
       ((chartAt H α).source) := by
@@ -278,8 +274,8 @@ private lemma trivOutput_continuousOn_chartSource (S : SmoothCcTensor g r s)
       (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b l)
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma christoffelAtomIntegrand_continuousOn_chartSource
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma christoffelAtomIntegrand_continuousOn_chartSource [SigmaCompactSpace M]
     (S : SmoothCcTensor g r s) :
     ContinuousOn (christoffelAtomIntegrand (I := I) g r s α j S.toSection)
       ((chartAt H α).source) := by
@@ -303,8 +299,8 @@ private lemma christoffelAtomIntegrand_continuousOn_chartSource
   exact h_pou.mul h_sqrt
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma christoffelAtomIntegrand_continuousOn_pouTsupport
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma christoffelAtomIntegrand_continuousOn_pouTsupport [SigmaCompactSpace M]
     (S : SmoothCcTensor g r s) :
     ContinuousOn (christoffelAtomIntegrand (I := I) g r s α j S.toSection)
       (tsupport (fun x : M =>
@@ -315,8 +311,8 @@ private lemma christoffelAtomIntegrand_continuousOn_pouTsupport
   exact pouTsupport_subset_baseSet (I := I) (M := M) α hb
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma christoffelAtomIntegrand_zero_outside_pouTsupport
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma christoffelAtomIntegrand_zero_outside_pouTsupport [SigmaCompactSpace M]
     (T : Π b' : M, TensorRSSpace r s I b') {b : M}
     (hb : b ∉ tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :
@@ -328,8 +324,8 @@ private lemma christoffelAtomIntegrand_zero_outside_pouTsupport
   simp [christoffelAtomIntegrand, hρ_zero]
 
 variable {g r s α j} in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma christoffelAtomIntegrand_eq_indicator
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma christoffelAtomIntegrand_eq_indicator [SigmaCompactSpace M]
     (T : Π b' : M, TensorRSSpace r s I b') :
     christoffelAtomIntegrand (I := I) g r s α j T =
       (tsupport (fun x : M =>

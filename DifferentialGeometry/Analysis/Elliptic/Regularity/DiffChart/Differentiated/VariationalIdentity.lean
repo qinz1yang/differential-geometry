@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_fderiv_apply_single
@@ -654,7 +654,7 @@ private lemma weightedInvGram_ibp_double_sum
   rw [hLHS_neg]
   exact h_distribute
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma density_coef_ibp
     (g : SmoothRiemannianMetric I M) (α : M)
     (l : Fin (Module.finrank ℝ E))

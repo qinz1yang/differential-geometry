@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -205,7 +205,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private theorem tchr_model_triv_per_direction_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) {b : M}

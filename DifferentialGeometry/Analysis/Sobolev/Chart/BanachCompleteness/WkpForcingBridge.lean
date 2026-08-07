@@ -32,7 +32,7 @@ variable {E H : Type*}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (⊤ : WithTop ℕ∞) M]
 abbrev WkpTimeL2
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) (T : ℝ) : Type _ :=
   MeasureTheory.Lp
@@ -44,7 +44,7 @@ abbrev WkpTimeL2
 to make its time-`L²` forcing carrier complete. -/
 theorem wkpTime_complete
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (T : ℝ) :
@@ -57,7 +57,7 @@ fixed point.  The `CompleteSpace` input is supplied locally by
 `wkpTime_complete`; no global instance is registered. -/
 theorem wkpTime_fixed
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (T : ℝ) {K : NNReal}

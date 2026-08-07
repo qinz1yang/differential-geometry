@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance balancedTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
@@ -164,9 +164,9 @@ private theorem iterL_norm_le (g : SmoothRiemannianMetric I M) (s a : ℕ) :
   refine ⟨C 0, hC_nn 0, fun v => ?_⟩
   simpa only [Nat.zero_add, iteratedCovGrad_zero] using hC 0 v
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem inner_abs_le (g : SmoothRiemannianMetric I M) (s : ℕ)
+private theorem inner_abs_le [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) :
     |tensorL2Inner (I := I) (M := M) g 0 s A.toFun B.toFun| ≤ ‖A‖ * ‖B‖ := by
   rw [← SmoothCcTensor.inner_def (I := I) (M := M) A B]

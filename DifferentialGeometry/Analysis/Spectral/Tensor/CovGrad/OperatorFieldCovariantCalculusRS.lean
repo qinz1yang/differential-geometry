@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -44,7 +44,7 @@ def appCcRSFib (g : SmoothRiemannianMetric I M) (a b c : ℕ)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
+    [CompleteSpace E] in
 theorem appCcRSFib_contMDiff (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel a c ℝ E)) ∞
@@ -83,7 +83,7 @@ def ccOperatorFieldComp (g : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 @[simp] lemma appCcRS_toSection (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) (x : M) :
@@ -93,7 +93,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCcRS_zero_eq_appCc (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
@@ -106,7 +106,7 @@ theorem appCcRS_zero_eq_appCc (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem operatorFieldApply_assoc (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (C : SmoothCcTensor g a b)
@@ -123,7 +123,7 @@ theorem operatorFieldApply_assoc (g : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCcRS_add_right (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (W₁ W₂ : SmoothCcTensor g a b) :
@@ -144,7 +144,7 @@ theorem appCcRS_add_right (g : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCcRS_smul_right (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (k : ℝ) (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) :
@@ -185,7 +185,7 @@ theorem ccOperatorFieldComp_sub_right (g : SmoothRiemannianMetric I M) (a b c : 
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCcRS_add_left (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) :
@@ -422,7 +422,7 @@ theorem covGrad_appCcRS_eq (g : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 private lemma exists_orthoFrame_repr_anyRank
     (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x)
@@ -462,7 +462,7 @@ private lemma exists_orthoFrame_repr_anyRank
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [BoundarylessManifold I M] [T2Space M] [CompleteSpace E] in
 private lemma fiberNormSqComponent_comp_anyRank_eq
     (g : SmoothRiemannianMetric I M) (a b c : ℕ) (x : M)
     (Φx : TensorRSSpace b c I x) (Wx : TensorRSSpace a b I x)
@@ -519,7 +519,7 @@ private lemma fiberNormSqComponent_comp_anyRank_eq
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 theorem riemannianFiberNormSq_compRS_le_mul
     (g : SmoothRiemannianMetric I M) (a b c : ℕ) (x : M)
     (Φx : TensorRSSpace b c I x) (Wx : TensorRSSpace a b I x) :
@@ -603,7 +603,7 @@ theorem exists_uniform_riemannianFiberNormSq_appCcRS_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g a b x (W.toSection x))
 
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCcRS_castRankCc_db {a a' b b' : ℕ} (g : SmoothRiemannianMetric I M) (r : ℕ)
     (ha : a = a') (hb : b = b')
@@ -847,7 +847,7 @@ theorem exists_jet_bound_of_normalFormRS (g : SmoothRiemannianMetric I M) (r : �
     _ = (p + 1 : ℝ) * (∑ k ∈ Finset.range (p + 1), C k) * ∑ k ∈ Finset.range (p + 1), a k := by ring
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCc_assoc (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (C : SmoothCcTensor g a b)

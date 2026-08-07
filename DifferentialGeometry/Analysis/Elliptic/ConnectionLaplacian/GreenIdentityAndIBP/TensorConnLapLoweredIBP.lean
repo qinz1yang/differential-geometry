@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
   [BoundarylessManifold I M]
 
 private local instance : MeasurableSpace E := borel E
@@ -35,16 +35,16 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-def loweredCovDerivAlongVFraw
+def loweredCovDerivAlongVFraw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Π y : M, Tensor0SSpace (r + s) I y :=
   fun y => loweredCovDerivAt (I := I) (M := M) g r s S y (X y)
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma loweredCovDerivAlongVFraw_eq_covApply
+lemma loweredCovDerivAlongVFraw_eq_covApply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -55,10 +55,10 @@ lemma loweredCovDerivAlongVFraw_eq_covApply
   funext y
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma loweredCovDerivAlongVFraw_contMDiff
+lemma loweredCovDerivAlongVFraw_contMDiff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -89,10 +89,10 @@ lemma loweredCovDerivAlongVFraw_contMDiff
   rw [← contMDiffOn_univ]
   exact hOn
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma loweredCovDerivAlongVFraw_eq_zero_off_tsupport
+lemma loweredCovDerivAlongVFraw_eq_zero_off_tsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -171,7 +171,7 @@ lemma loweredCovDerivAlongVFraw_hasCompactSupport
   rw [loweredCovDerivAlongVFraw_eq_zero_off_tsupport (I := I) (M := M) g r s S X hynot,
     Tensor0SSpace.toModel_zero]
 
-def loweredCovDerivAlongVF
+def loweredCovDerivAlongVF [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -180,10 +180,10 @@ def loweredCovDerivAlongVF
     (fun y : M => loweredCovDerivAlongVFraw (I := I) (M := M) g r s S X y)
     (loweredCovDerivAlongVFraw_contMDiff (I := I) (M := M) g r s S X)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma loweredCovDerivAlongVF_apply
+@[simp] lemma loweredCovDerivAlongVF_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -191,8 +191,8 @@ omit [NeZero (Module.finrank ℝ E)] in
       loweredCovDerivAt (I := I) (M := M) g r s S y (X y) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] [BoundarylessManifold I M] in
-lemma tensorInnerScalar_contMDiff
+    [BoundarylessManifold I M] in
+lemma tensorInnerScalar_contMDiff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯) :
     ContMDiff I 𝓘(ℝ) ∞

@@ -46,7 +46,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 
 theorem chartBilinear_master_nonsmooth_discharge
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (B : SmoothEllipticBilinearForm

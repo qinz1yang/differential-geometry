@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -111,9 +111,8 @@ private theorem perModeConv_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : 
     _ ≤ T * ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
         exact mul_le_mul htT hint_le hint_t_nn hT
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
+private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {T : ℝ} (hT : 0 ≤ T) (k : ℕ)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ (k : ℕ) (f i))
@@ -259,9 +258,8 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
             have h2 := mul_le_mul_of_nonneg_left hlam_sq_term (by norm_num : (0 : ℝ) ≤ 2)
             linarith
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem perModeConv_finiteOrder_timeJet_spectralMass_gain
+theorem perModeConv_finiteOrder_timeJet_spectralMass_gain [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {T : ℝ} (hT : 0 ≤ T) (k : ℕ)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ (k : ℕ) (f i))

@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -158,7 +158,7 @@ def strongCross
     exact hincl.symm.trans (heq.trans hfun)
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- A zero-initial-data homogeneous strong pair is zero.  This is the linear
 energy uniqueness theorem needed for reverse Duhamel realization. -/
 theorem strongPair_zero (hT : 0 < T)
@@ -255,7 +255,7 @@ theorem strongPair_zero (hT : 0 < T)
   · exact hfield
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- The canonical top-scale Duhamel field and the canonical `timeH1` Duhamel
 map represent the same lower-scale `L²` class. -/
 theorem duhField_pin (hT : 0 < T) (hT1 : T ≤ 1)
@@ -294,7 +294,7 @@ theorem duhField_pin (hT : 0 < T) (hT1 : T ≤ 1)
   exact hit.trans (hst.trans hft.symm)
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Reverse Duhamel realization: an arbitrary strong pair with the correct
 trace, cross-scale link, and linear equation is the canonical Duhamel pair. -/
 theorem strongPair_eq_duh (hT : 0 < T) (hT1 : T ≤ 1)
@@ -347,7 +347,7 @@ theorem strongPair_eq_duh (hT : 0 < T) (hT1 : T ≤ 1)
   exact ⟨sub_eq_zero.mp hf, sub_eq_zero.mp hu⟩
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- A strong pair whose forcing is its Nemytskii nonlinearity yields exactly
 the forcing fixed-point representation consumed by
 `quasilinear_strong_unique`. -/
@@ -383,7 +383,7 @@ theorem strongNemy_fixed {L : ℝ≥0}
       rw [hfield]
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Two independently supplied strong pairs for the same Lipschitz
 quasilinear tensor heat equation and the same initial datum coincide.  This is
 the local strong-solution uniqueness theorem obtained by feeding the reverse

@@ -57,13 +57,13 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 
 
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram_Ioo
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
@@ -301,7 +301,7 @@ private lemma matrixAdjugate_contDiffOn {n : ℕ} {s : Set ℝ}
     exact hN a b
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- The chart inverse-Gram entry is `C∞`-in-time, from `C∞`-in-time of the chart-Gram entries plus
 positive-definiteness (so the determinant is non-zero).  `ContDiff` analog of
 `chartInvGramOnE_continuous_in_metric_at`: same Cramer identity `G⁻¹ = (det)⁻¹ • adjugate`, with
@@ -344,7 +344,7 @@ private lemma chartInvGramOnE_contDiff_in_metric_at
   rw [heq]; exact ne_of_gt hpos
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- `gramBracket` (a `1`-jet chart-Gram combination) is `C∞`-in-time. -/
 private lemma gramBracket_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (i j l : Fin (Module.finrank ℝ E))
@@ -363,7 +363,7 @@ private lemma gramBracket_contDiff
   exact ((hp1 i l j).add (hp1 j l i)).sub (hp1 l i j)
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- `gramBracketDeriv` (a `2`-jet chart-Gram combination) is `C∞`-in-time. -/
 private lemma gramBracketDeriv_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (m i j l : Fin (Module.finrank ℝ E))
@@ -387,7 +387,7 @@ private lemma gramBracketDeriv_contDiff
   exact ((hp2 m i l j).add (hp2 m j l i)).sub (hp2 m l i j)
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- Directional inverse-Gram partial `∂_m G^{kl}` is `C∞`-in-time (Cramer identity at an interior
 chart point). -/
 private lemma partialDeriv_chartInvGramOnE_contDiff
@@ -416,7 +416,7 @@ private lemma partialDeriv_chartInvGramOnE_contDiff
     (chartInvGramOnE_contDiff_in_metric_at (I := I) g_DT α y s hp0 hx b l)).mul (hp1 m a b)
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- Chart Christoffel symbol value is `C∞`-in-time (Koszul formula `Γ = ½ ∑ G^{kl}(∂G+∂G−∂G)`). -/
 private lemma chartChristoffel_contDiff_in_metric_at
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (a b k : Fin (Module.finrank ℝ E))
@@ -448,7 +448,7 @@ private lemma chartChristoffel_contDiff_in_metric_at
   · exact ((hp1 a l b).add (hp1 b l a)).sub (hp1 l a b)
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- Directional Christoffel partial `∂_m Γ^k_{ij}` is `C∞`-in-time (interior chart point). -/
 private lemma partialDeriv_chartChristoffel_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (m i j k : Fin (Module.finrank ℝ E))
@@ -485,7 +485,7 @@ private lemma partialDeriv_chartChristoffel_contDiff
   · exact gramBracketDeriv_contDiff (I := I) g_DT α m i j l y s hp2
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- Chart Riemann tensor entry is `C∞`-in-time (interior chart point). -/
 private lemma chartRiemannTensor_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (i j k r : Fin (Module.finrank ℝ E))
@@ -523,7 +523,7 @@ private lemma chartRiemannTensor_contDiff
     exact ((hΓ j n r).mul (hΓ i k n)).sub ((hΓ k n r).mul (hΓ i j n))
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 /-- Chart Ricci tensor entry is `C∞`-in-time (interior chart point). -/
 private lemma chartRicciTensor_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (i k : Fin (Module.finrank ℝ E))
@@ -549,7 +549,7 @@ private lemma chartRicciTensor_contDiff
   exact chartRiemannTensor_contDiff (I := I) g_DT α i j k j hy s hx hp0 hp1 hp2
 
 omit [CompactSpace M] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 /-- Time-slice of a jointly-`C∞` function on `Ioo a b ×ˢ interior(chart target)` at a fixed interior
 point `y` is `C∞`-in-time on `Ioo a b`. -/
 private lemma chartTimeSlice_contDiffOn {α : M} {J : Set ℝ} {y : E}
@@ -563,7 +563,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [I.Boundaryless]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- The chart-pulled Gram function is jointly `C∞` on `J × interior (chart target)`, read from joint
 manifold chart-Gram smoothness through the chart inverse. -/
 theorem chartGramOnE_set
@@ -619,7 +619,7 @@ omit [CompactSpace M]
   [BoundarylessManifold I M]
   [I.Boundaryless]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint chart-reading on an open time interval. -/
 theorem chartGramOnE_jointContDiffOn
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ) (α : M)
@@ -640,7 +640,7 @@ omit [CompactSpace M]
   [BoundarylessManifold I M]
   [I.Boundaryless]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- Spatial chart-Gram jets of order at most two are jointly continuous on any
 unique-differentiability time set. -/
 theorem chartGram_jet_set
@@ -678,7 +678,7 @@ omit [CompactSpace M]
   [BoundarylessManifold I M]
   [I.Boundaryless]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- Spatial iterated Fréchet derivatives of `chartGramOnE` are jointly continuous on an open time
 interval and the chart good set. -/
 theorem chartGram_iteratedFDeriv_jointContinuousOn_of_contMDiffOn
@@ -720,7 +720,7 @@ theorem chartGram_iteratedFDeriv_jointContinuousOn_of_contMDiffOn
 
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricFrameComp_jointContMDiffOn_of_chartGram
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
@@ -770,7 +770,6 @@ theorem metricFrameComp_jointContMDiffOn_of_chartGram
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem metricVariationEquationOn_of_pde
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (hpde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
@@ -791,7 +790,7 @@ theorem metricVariationEquationOn_of_pde
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem metricFamilySmoothOn_of_chartGram
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -872,7 +871,7 @@ theorem metricFamilySmoothOn_of_chartGram
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of the canonical Ricci family from joint chart-Gram `C∞` regularity on a
 unique-differentiability time set. -/
 theorem ricciCont_of_joint [I.Boundaryless]
@@ -923,7 +922,7 @@ theorem ricciCont_of_joint [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of the Ricci family on an open time interval. -/
 theorem ricciCont_interior_of_chartGram [I.Boundaryless]
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
@@ -939,7 +938,7 @@ theorem ricciCont_interior_of_chartGram [I.Boundaryless]
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 /-- Coordinate-frame components of the canonical lowered Riemann tensor are
 the metric lowering of the chart Riemann components. -/
 theorem rm04_coord_eq [I.Boundaryless]
@@ -969,7 +968,7 @@ theorem rm04_coord_eq [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of the lowered Riemann family from joint chart-Gram `C∞` regularity on a
 unique-differentiability time set. -/
 theorem rm04Cont_of_joint [I.Boundaryless]
@@ -1023,7 +1022,7 @@ theorem rm04Cont_of_joint [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of the lowered Riemann family on an open time interval. -/
 theorem rm04Cont_interior_of_chartGram [I.Boundaryless]
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
@@ -1040,7 +1039,7 @@ theorem rm04Cont_interior_of_chartGram [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of scalar curvature from joint chart-Gram `C∞` regularity on a
 unique-differentiability time set. -/
 theorem scalarCont_of_joint [I.Boundaryless]
@@ -1074,7 +1073,7 @@ theorem scalarCont_of_joint [I.Boundaryless]
 omit [CompactSpace M] in
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- Joint continuity of scalar curvature on an open time interval. -/
 theorem scalarCont_interior_of_chartGram [I.Boundaryless]
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
@@ -1087,7 +1086,7 @@ theorem scalarCont_interior_of_chartGram [I.Boundaryless]
       (Set.Ioo a b ×ˢ (Set.univ : Set M)) :=
   scalarCont_of_joint (I := I) g (Set.Ioo a b) isOpen_Ioo.uniqueDiffOn hsmooth
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 /-- Within-time differentiability of scalar curvature from joint chart-Gram `C∞` regularity on a
 unique-differentiability time set. -/
@@ -1148,7 +1147,7 @@ theorem scalarTime_of_joint [I.Boundaryless]
     rw [ricciTensor_chartBasisVec_alpha_eq (I := I) (g s') x i j hgood]
   exact ((hcd.congr (fun s' _ => hsum_eq s')).differentiableOn (by simp)) t ht
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 /-- Within-time differentiability of scalar curvature on an open time interval. -/
 theorem scalarTime_interior_of_chartGram [I.Boundaryless]
@@ -1165,7 +1164,7 @@ theorem scalarTime_interior_of_chartGram [I.Boundaryless]
 
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem solutionOn_of_joint [I.Boundaryless]
     {a b : ℝ} (hab : a < b) (g : ℝ → SmoothRiemannianMetric I M)
     (hjoint : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -1250,7 +1249,7 @@ theorem solutionOn_of_joint [I.Boundaryless]
 
 
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem isSolutionOn_of_extendData
     {α omega b : ℝ} (hαb : α < b) (hαω : α < omega)
     (g_ext : ℝ → SmoothRiemannianMetric I M)

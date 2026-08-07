@@ -29,9 +29,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-noncomputable def covLowerOrderIntegrand
+noncomputable def covLowerOrderIntegrand [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
@@ -62,8 +62,8 @@ noncomputable def covLowerOrderIntegrand
                         g r s T α l Q.1 Q.2 y)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma covLowerOrderIntegrand_def
+    in
+lemma covLowerOrderIntegrand_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -93,10 +93,9 @@ lemma covLowerOrderIntegrand_def
                         covDerivLowerOrderTerm (I := I) (M := M)
                           g r s T α l Q.1 Q.2 y) := rfl
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorCovDerivPointwiseInner_chart_eq
+theorem tensorCovDerivPointwiseInner_chart_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -122,8 +121,8 @@ theorem tensorCovDerivPointwiseInner_chart_eq
   ring
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem chartPushedRaw_tensorChartComponentRaw_contDiffOn
+    in
+theorem chartPushedRaw_tensorChartComponentRaw_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -172,8 +171,8 @@ theorem chartPushedRaw_tensorChartComponentRaw_contDiffOn
     (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx) hz
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem euclidPartial_chartPushedRaw_contDiffOn
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem euclidPartial_chartPushedRaw_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (k : Fin (Module.finrank ℝ E))
@@ -214,9 +213,9 @@ theorem euclidPartial_chartPushedRaw_contDiffOn
   rw [hu_def]
   rfl
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covLowerOrderIntegrand_contDiffOn
+theorem covLowerOrderIntegrand_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M) :
     ContDiffOn ℝ ∞
@@ -376,10 +375,9 @@ theorem covLowerOrderIntegrand_contDiffOn
     ContDiffOn.sum (fun P _ => ContDiffOn.sum (fun Q _ => hsummand P Q))
   exact hsum
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covLowerOrderIntegrand_eqOn
+theorem covLowerOrderIntegrand_eqOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M) :
     Set.EqOn (covLowerOrderIntegrand (I := I) (M := M) g r s S T α)
@@ -397,9 +395,9 @@ theorem covLowerOrderIntegrand_eqOn
   rw [h]
   ring
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covLowerOrderIntegrand_symm
+theorem covLowerOrderIntegrand_symm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :

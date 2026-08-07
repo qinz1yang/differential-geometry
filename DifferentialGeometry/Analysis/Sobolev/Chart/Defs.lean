@@ -375,7 +375,7 @@ theorem wkpNormChart_const_smul
     (hu α) c
 
 theorem wkpNormChart_lt_top_of_memWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) :

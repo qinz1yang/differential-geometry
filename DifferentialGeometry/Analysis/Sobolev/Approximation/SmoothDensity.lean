@@ -31,7 +31,7 @@ def chartImagePOUTsupport
       : C^∞⟮I, M; ℝ⟯) : M → ℝ)))
 
 lemma chartImagePOUTsupport_isCompact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     IsCompact (chartImagePOUTsupport (I := I) (M := M) α) := by
   set Tα : Set M := tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -75,7 +75,7 @@ lemma chartPushed_eq_zero_off_chartImagePOUTsupport
     hy_target hy_off
 
 theorem exists_chartCutoff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (α : M) :
     ∃ (δ : ℝ) (η : EuclN → ℝ),
@@ -147,7 +147,7 @@ lemma exists_grad_bound_of_compactSupport_smooth
     exact le_trans zero_le_one (le_max_right _ _)
 
 lemma chartCutoff_smul_chartPushed_eq_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) (u : M → ℝ)
     {δ : ℝ} (_hδ_pos : 0 < δ)
     {η : EuclN → ℝ}
@@ -172,7 +172,7 @@ lemma chartCutoff_smul_chartPushed_eq_chartPushed
     rw [hf_zero]; ring
 
 lemma chartCutoff_smul_chartPushed_memWkp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
@@ -200,7 +200,7 @@ lemma chartCutoff_smul_chartPushed_memWkp
     exact hη_bound_one x hx
 
 theorem exists_smooth_strong_support_approx
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

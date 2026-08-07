@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance offCentreFibreTensorRSRiemannianNormedAddCommGroup
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b)] (b : M) :
@@ -38,9 +38,9 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
+omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {K : Set M} (hK : IsCompact K) (hKsub : K ⊆ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=

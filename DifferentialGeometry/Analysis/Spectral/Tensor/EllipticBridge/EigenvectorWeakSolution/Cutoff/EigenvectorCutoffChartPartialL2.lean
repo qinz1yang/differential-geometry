@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -360,7 +360,6 @@ private def smoothCutoffChartPartialLpCLM
     smoothCutoffChartPartialLpCLM (I := I) (M := M) g r s α P₀ k S =
       smoothCutoffChartPartialLp (I := I) (M := M) g r s S α P₀ k := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma isUniformInducing_smoothToTensorH1Compl'
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :

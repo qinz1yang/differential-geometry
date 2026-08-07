@@ -53,7 +53,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 theorem chartSideH2kBridge_unconditional_le_two
     (g : SmoothRiemannianMetric I M) {k : ℕ} (hk : k ≤ 2)

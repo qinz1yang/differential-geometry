@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -39,7 +39,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-def covDerivAlongVFraw
+def covDerivAlongVFraw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -47,9 +47,9 @@ def covDerivAlongVFraw
   covApply (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g))
     (fun y : M => B y) (fun y : M => T y)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma covDerivAlongVFraw_apply
+@[simp] lemma covDerivAlongVFraw_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -57,9 +57,9 @@ omit [NeZero (Module.finrank ℝ E)] in
       (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g)).toFun
         (fun y : M => T y) y (B y) := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma covDerivAlongVFraw_contMDiff
+lemma covDerivAlongVFraw_contMDiff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -86,7 +86,7 @@ lemma covDerivAlongVFraw_contMDiff
   rw [← contMDiffOn_univ]
   exact hOn
 
-def covDerivAlongVFSection
+def covDerivAlongVFSection [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -95,9 +95,9 @@ def covDerivAlongVFSection
     (fun y : M => covDerivAlongVFraw (I := I) (M := M) g T B y)
     (covDerivAlongVFraw_contMDiff (I := I) (M := M) g T B)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma covDerivAlongVFSection_apply
+@[simp] lemma covDerivAlongVFSection_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -105,9 +105,9 @@ omit [NeZero (Module.finrank ℝ E)] in
       (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g)).toFun
         (fun y : M => T y) y (B y) := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma covDerivAlongVFSection_lowered_eq
+lemma covDerivAlongVFSection_lowered_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -118,9 +118,9 @@ lemma covDerivAlongVFSection_lowered_eq
     (I := I) (M := M) g T y (B y))]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma toModel_liftedTensorSection_covDerivAlongVFSection
+lemma toModel_liftedTensorSection_covDerivAlongVFSection [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -131,9 +131,9 @@ lemma toModel_liftedTensorSection_covDerivAlongVFSection
   rw [toModel_liftedTensorSection]
   exact covDerivAlongVFSection_lowered_eq (I := I) (M := M) g T B y
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma covDerivAlong_covDerivAlongVFSection_eq
+lemma covDerivAlong_covDerivAlongVFSection_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -152,9 +152,9 @@ lemma covDerivAlong_covDerivAlongVFSection_eq
       tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g) from rfl]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma toModel_loweredCovDerivAlongVF_covDerivAlongVFSection_eq
+lemma toModel_loweredCovDerivAlongVF_covDerivAlongVFSection_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
@@ -198,9 +198,9 @@ theorem integral_secondOrder_combined_eq_zero
   integral_tensorInner_covDeriv_combined_eq_zero (I := I) (M := M) g 0 2
     (covDerivAlongVFSection (I := I) (M := M) g T B) v B
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma covDerivAlong_secondOrder_eq_fixedFrame_summand
+lemma covDerivAlong_secondOrder_eq_fixedFrame_summand [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (T : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :

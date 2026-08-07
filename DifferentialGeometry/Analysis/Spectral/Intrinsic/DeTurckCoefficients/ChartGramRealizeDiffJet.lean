@@ -28,12 +28,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramOnE_realize_delta_irrel
-    (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
+theorem chartGramOnE_realize_delta_irrel (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
@@ -47,9 +45,7 @@ theorem chartGramOnE_realize_delta_irrel
     tensorSectionRealizeMetric_inner (I := I) g_bg T hδ'_lt hδ']
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent
-    (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
+theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
@@ -74,15 +70,15 @@ theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent
     g_bg T T' hδ_lt hδ hδ'_lt hδ' α a b y hp_src
   simpa using hkey
 
-def tensorChartComponentOnModel (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
+def tensorChartComponentOnModel [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) : E → ℝ :=
   fun y => tensorChartComponentRaw (I := I) (M := M) g 0 2 S α ![] Jdx ((extChartAt I α).symm y)
 
 open DifferentialGeometry.Analysis.Sobolev.Chart in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma rawCompOnE_contDiffOn (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
+    in
+lemma rawCompOnE_contDiffOn [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (tensorChartComponentOnModel (I := I) (M := M) g S α Jdx)
       (interior (extChartAt I α).target) := by
@@ -104,7 +100,7 @@ lemma rawCompOnE_contDiffOn (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hmem,
     (toEuclidean (E := E)).symm_apply_apply Y]
 
-def chartComponentJetSeminormSum (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
+def chartComponentJetSeminormSum [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (N : ℕ) (y : E) : ℝ :=
   ∑ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
     ∑ m ∈ Finset.range (N + 1),
@@ -112,16 +108,14 @@ def chartComponentJetSeminormSum (g : SmoothRiemannianMetric I M) (S : SmoothCcT
         (interior (extChartAt I α).target) y‖
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma bareChartJetContentOnE_nonneg (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
+    [T2Space M] in
+lemma bareChartJetContentOnE_nonneg [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (α : M) (N : ℕ) (y : E) :
     0 ≤ chartComponentJetSeminormSum (I := I) (M := M) g S α N y :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE
-    (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
+theorem chartGramJetDiffSeminormSum_realize_le_bareChartJetContentOnE (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

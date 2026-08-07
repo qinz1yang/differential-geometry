@@ -24,12 +24,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 variable (g : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_finiteEigenComboHs_self_le (σ : ℝ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))

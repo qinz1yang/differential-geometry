@@ -36,7 +36,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -54,7 +54,6 @@ noncomputable def conjCoeff
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem conjCoeff_apply
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
@@ -63,7 +62,7 @@ omit [SigmaCompactSpace M] in
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem conjCoeff_joint
+theorem conjCoeff_joint [SigmaCompactSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     ContMDiffOn ((modelWithCornersSelf Real Real).prod I)
@@ -83,7 +82,7 @@ noncomputable def conjCoeffRev
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem conjCoeff_rev
+theorem conjCoeff_rev [SigmaCompactSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
     ContMDiffOn (I.prod (modelWithCornersSelf Real Real))
@@ -289,7 +288,6 @@ theorem conjA1_short
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 theorem conjCoeff_bound
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :

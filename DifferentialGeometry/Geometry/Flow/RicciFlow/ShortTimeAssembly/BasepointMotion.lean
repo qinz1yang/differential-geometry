@@ -35,10 +35,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem basepoint_metric_along_curve
     (g : SmoothRiemannianMetric I M) (X : Cₛ^∞⟮I; E, (TangentSpace I)⟯)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (t : ℝ) (x : M) (v w : TangentSpace I x)
@@ -60,7 +60,6 @@ theorem basepoint_metric_along_curve
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem basepoint_motion_datum
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

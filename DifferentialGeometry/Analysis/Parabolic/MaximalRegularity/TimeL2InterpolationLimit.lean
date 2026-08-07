@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -39,7 +39,6 @@ def timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ) :
   (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ).compLpL 2
     (timeMeasure T)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s σ) T)
@@ -63,7 +62,6 @@ theorem timeModeCoeff_timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ
   filter_upwards [hincl] with t ht
   rw [ht, tensorHsInclusion_coeff_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -80,7 +78,6 @@ private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
     tensorSobolevWeight_nonneg (I := I) (M := M) j a
   positivity
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero {a : ℝ} {T : ℝ}
     (d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -326,7 +323,6 @@ theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
       hσ'σ''.le (d n)‖ ^ 2 := sq_nonneg _
   rwa [abs_of_nonneg hnn]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_le_sqrt_of_weightedMass_le {σ'' : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2

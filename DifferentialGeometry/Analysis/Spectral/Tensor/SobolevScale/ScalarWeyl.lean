@@ -35,9 +35,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
-private noncomputable def scalarCombo
+private noncomputable def scalarCombo [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 0))
     (c : TensorEigenIdx (I := I) (M := M) g 0 0 → ℝ) :
@@ -76,9 +76,9 @@ private lemma combo_val
       unfold scalarCombo at ih ⊢
       simp [hi, ih, smul_eq_mul]
 
-omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 open scoped Classical in
-private lemma basis_sum_coeff
+private lemma basis_sum_coeff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 0))
     (c : TensorEigenIdx (I := I) (M := M) g 0 0 → ℝ)

@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 theorem memWkpChart_two_two_smooth_mul_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)

@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -57,7 +57,6 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffSection_eq_armSlotEndoCc_zero_dla (g₀ gc : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) gc g₀ =
       armSlotEndoCc (I := I) (M := M) g₀ 0 (dLaConnArmPt (I := I) (M := M) g₀ gc) := by
@@ -95,7 +94,7 @@ private lemma connDiffSection_eq_armSlotEndoCc_zero_dla (g₀ gc : SmoothRiemann
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
@@ -611,7 +610,7 @@ lemma rfns_iCG_symmS_le_dla (g₀ : SmoothRiemannianMetric I M)
     ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma rfns_symmS_zero_le_dla (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

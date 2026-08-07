@@ -90,7 +90,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -113,7 +113,7 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_isOpen' (α : M) :
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartTargetEuclid_sdiff_chartPouKernel_subset' (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
@@ -273,7 +273,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 
 
-private def wChartComp (w : TensorL2 r s g) (α : M)
+private def wChartComp [SigmaCompactSpace M] (w : TensorL2 r s g) (α : M)
     (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P :
     Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
@@ -377,7 +377,7 @@ private lemma chosenComp_w_hsupp (w : TensorL2 r s g)
 
 
 
-private def wSmoothChart (w : TensorL2 r s g)
+private def wSmoothChart [SigmaCompactSpace M] (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
         (wChartComp (I := I) (M := M) g r s w α P₀)
@@ -449,7 +449,7 @@ private lemma tensorChartComponentRaw_wSmoothChart_eq_zero_off_source
 
 
 
-private def wSmooth (w : TensorL2 r s g)
+private def wSmooth [SigmaCompactSpace M] (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
         (wChartComp (I := I) (M := M) g r s w α P₀)
@@ -641,7 +641,7 @@ private lemma wSmoothChart_tensorL2ChartComponent_coeFn_aeEq (w : TensorL2 r s g
 
 
 
-private def chartKernelCutoffPushed (γ : M) : EuclN → ℝ :=
+private def chartKernelCutoffPushed [SigmaCompactSpace M] (γ : M) : EuclN → ℝ :=
   chartPushedRaw (I := I) (M := M) γ
     (fun x => ((chartKernelCutoff (I := I) (M := M) γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
@@ -685,7 +685,7 @@ private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedPouWeight_toEuclidean_extChartAt'
     (α : M) {z : M} (hz : z ∈ (chartAt H α).source) :
     chartPushedPouWeight (I := I) (M := M) α

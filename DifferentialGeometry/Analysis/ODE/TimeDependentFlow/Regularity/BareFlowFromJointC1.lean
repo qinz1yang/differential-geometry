@@ -128,10 +128,10 @@ theorem time_dependent_vf_bare_local_flow_exists_unique_of_jointC1 [CompleteSpac
     X hX (fun u : ℝ => fun _ : M => γ u) (fun u : ℝ => fun _ : M => γ' u) x x
     h0mem hγtwo hγ'two hstart t ht
 
-variable [CompactSpace M] [SigmaCompactSpace M]
+variable [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
-    [CompactSpace M] [SigmaCompactSpace M] in
+    [CompactSpace M] in
 theorem time_dependent_vf_bare_flow_family
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (hT : 0 < T) (Φ : ℝ → M → M)

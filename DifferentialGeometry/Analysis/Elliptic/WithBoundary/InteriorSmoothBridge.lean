@@ -34,9 +34,9 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-omit [SigmaCompactSpace M] [CompactSpace M] in
+omit [CompactSpace M] in
 lemma InteriorSmoothScalar.oneSubLap_continuous
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     Continuous (fun x : M =>

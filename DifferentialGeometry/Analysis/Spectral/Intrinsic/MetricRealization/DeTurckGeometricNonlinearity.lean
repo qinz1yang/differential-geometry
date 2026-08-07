@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -87,7 +87,7 @@ theorem realizeMetricAt_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
   rw [realizeMetricAt, dif_neg hu]
 
 open scoped Classical in
-def deTurckRemainderSection (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
+def deTurckRemainderSection [SigmaCompactSpace M] (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     (u : tensorHs (I := I) (M := M) g_bg 0 2 σ) :
     SmoothCcTensor g_bg 0 2 :=
   if h : isRealizableMetricPerturbationAt (I := I) g_bg u then
@@ -101,11 +101,11 @@ def deTurckRemainderSection (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
   else
     0
 
-private def hCompact (g_bg : SmoothRiemannianMetric I M) :
+private def hCompact [SigmaCompactSpace M] (g_bg : SmoothRiemannianMetric I M) :
     IsCompactOperator (tensorResolventL2 (I := I) (M := M) g_bg 0 2) :=
   tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2
 
-def deTurckGeometricN (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+def deTurckGeometricN [SigmaCompactSpace M] (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1)) :
     tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) where
   coeff i :=
@@ -150,7 +150,7 @@ open DifferentialGeometry.TensorMultilinear DifferentialGeometry.Tensor0SBundle
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma chartFrameVec_eq_chartBasisVecFiber_helper (α : M)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
     (trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i)
@@ -159,8 +159,7 @@ private lemma chartFrameVec_eq_chartBasisVecFiber_helper (α : M)
 
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn
+theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn [SigmaCompactSpace M]
     (g_bg g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -198,8 +197,7 @@ theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn
     (fun q _ => rfl) rfl
 
 
-omit [CompactSpace M] in
-theorem deTurckRHSField_realizeMetric_jointContMDiffOn
+theorem deTurckRHSField_realizeMetric_jointContMDiffOn [SigmaCompactSpace M]
     (g_bg g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -320,7 +318,7 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem smoothCcChartRepr_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
@@ -385,7 +383,7 @@ private theorem smoothCcChartRepr_jointContMDiffOn
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem smoothCcChartRepr_euclid_jointContDiffWithinAt
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
@@ -459,9 +457,8 @@ private theorem smoothCcChartRepr_euclid_jointContDiffWithinAt
   exact hself
 
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ) (α : M)
@@ -643,9 +640,8 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
     exact hform
 
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem smoothCcCovApplyChartRepr_manifold_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+private theorem smoothCcCovApplyChartRepr_manifold_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ) (α : M)
@@ -706,9 +702,8 @@ private theorem smoothCcCovApplyChartRepr_manifold_jointContMDiffOn
     rw [φ.left_inv hpsrc]
 
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem smoothCcCovApplySection_jointContMDiffOn
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+private theorem smoothCcCovApplySection_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ)
@@ -808,7 +803,7 @@ private theorem smoothCcCovApplySection_jointContMDiffOn
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem genChartRepr_jointContMDiffOn
     (S : Set ℝ) (α : M)
     (Tfam : ℝ → Cₛ^∞⟮I; Tensor0SBundle.TensorRSModel 0 2 ℝ E,
@@ -868,7 +863,7 @@ private theorem genChartRepr_jointContMDiffOn
     Bundle.Trivialization.continuousLinearMapAt_apply,
     Bundle.Trivialization.coe_linearMapAt_of_mem _ hx]
 
-private def toSmoothCcTensor
+private def toSmoothCcTensor [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (σ : Cₛ^∞⟮I; Tensor0SBundle.TensorRSModel 0 2 ℝ E,
       fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z⟯) :
@@ -878,7 +873,7 @@ private def toSmoothCcTensor
     IsCompact.of_isClosed_subset isCompact_univ (isClosed_tsupport _) (Set.subset_univ _)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] private lemma toSmoothCcTensor_toSection
     (g₀ : SmoothRiemannianMetric I M)
     (σ : Cₛ^∞⟮I; Tensor0SBundle.TensorRSModel 0 2 ℝ E,
@@ -907,7 +902,7 @@ private theorem covApplyGenFamily_jointContMDiffOn
   exact smoothCcCovApplySection_jointContMDiffOn (I := I) g₀
     (fun t => toSmoothCcTensor (I := I) g₀ (Tfam t)) S B hT
 
-private def covApplySection
+private def covApplySection [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : SmoothCcTensor g₀ 0 2) :
@@ -919,7 +914,7 @@ private def covApplySection
   contMDiff_toFun :=
     covApplyRS_contMDiff (I := I) g₀ 0 2 T.toSection.contMDiff_toFun B.contMDiff
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma covApplySection_apply
     (g₀ : SmoothRiemannianMetric I M)
@@ -929,7 +924,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
         B.toFun (fun z : M => T.toSection z) y := rfl
 
-private def christoffelSelfField
+private def christoffelSelfField [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
@@ -942,9 +937,8 @@ private def christoffelSelfField
     intro b
     exact hOn.contMDiffAt (Filter.univ_mem)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] private lemma christoffelSelfField_apply
     (g₀ : SmoothRiemannianMetric I M)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
@@ -976,9 +970,8 @@ private theorem traceTerm1_jointContMDiffOn
   exact hStep
 
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem traceTerm2_jointContMDiffOn
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+private theorem traceTerm2_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ)
@@ -999,7 +992,7 @@ private theorem traceTerm2_jointContMDiffOn
     (christoffelSelfField (I := I) g₀ B) hF
   exact hStep
 
-private def iteratedCovApplySection
+private def iteratedCovApplySection [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : SmoothCcTensor g₀ 0 2) :
@@ -1012,7 +1005,7 @@ private def iteratedCovApplySection
   contMDiff_toFun :=
     covApply_covApply_section_contMDiff (I := I) g₀ 0 2 T.toSection.contMDiff_toFun B.contMDiff
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma iteratedCovApplySection_apply
     (g₀ : SmoothRiemannianMetric I M)
@@ -1023,7 +1016,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
           B.toFun (fun z : M => T.toSection z)) y (B.toFun y) := rfl
 
-private def covApplyChristoffelSection
+private def covApplyChristoffelSection [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : SmoothCcTensor g₀ 0 2) :
@@ -1036,7 +1029,7 @@ private def covApplyChristoffelSection
   contMDiff_toFun :=
     covApply_christoffel_section_contMDiff (I := I) g₀ 0 2 T.toSection.contMDiff_toFun B.contMDiff
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma covApplyChristoffelSection_apply
     (g₀ : SmoothRiemannianMetric I M)
@@ -1048,7 +1041,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         ((LeviCivita (I := I) g₀).toFun B.toFun y (B.toFun y)) := rfl
 
 
-private theorem fixedFrameTrace_chartRepr_jointContMDiffOn
+private theorem fixedFrameTrace_chartRepr_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (F : ℝ → SmoothCcTensor g₀ 0 2)
     (S : Set ℝ) (α : M)

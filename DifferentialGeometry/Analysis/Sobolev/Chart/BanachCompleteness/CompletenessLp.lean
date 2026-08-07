@@ -110,7 +110,7 @@ lemma eLpNorm_chartPushed_eq_eLpNorm_chartPushedRaw_pou_mul
       (I := I) (M := M) ρ α u).symm
 
 lemma fun_eq_finset_sum_pou_mul
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (u : M → ℝ) :
     u = fun x =>
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
@@ -141,7 +141,7 @@ lemma eLpNorm_chartPushed_le_wkpNorm_chartPushed
   Euclidean.wkpNorm_zero_le_wkpNorm
 
 lemma exists_sup_chartDensity_on_pou_tsupport_image
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     (h_supp_ne : (tsupport
@@ -171,7 +171,7 @@ lemma exists_sup_chartDensity_on_pou_tsupport_image
     g α hK_compact hK_ne hK_sub_target
 
 lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -211,7 +211,7 @@ lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
   rw [hρu_def, ← h_eq]
 
 private noncomputable def chartLocalIntegralPouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ x, (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -219,7 +219,7 @@ private noncomputable def chartLocalIntegralPouTsupport
       ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α)
 
 private noncomputable def euclideanDensityIntegralPouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -234,7 +234,7 @@ private noncomputable def euclideanDensityIntegralPouTsupport
       ∂(volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))))
 
 private noncomputable def chartHaarFactor
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   chartLocalIntegralPouTsupport (I := I) (M := M) g α /

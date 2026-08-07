@@ -38,7 +38,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 section ReverseOrderZeroBridge
 
@@ -72,7 +72,7 @@ private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq'
   rw [h_inner_eq, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
   norm_num
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma hsNorm_zero_summand_eq_sq_eLpNorm_chartPushedSqrtPou
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
@@ -131,7 +131,7 @@ private lemma hsNorm_zero_summand_eq_sq_eLpNorm_chartPushedSqrtPou
     rw [sq_abs, sq_abs, hw_sq]
   · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma support_sqrt_pou_eq' (α : M) :
     Function.support
         (fun b : M => Real.sqrt
@@ -147,7 +147,7 @@ private lemma support_sqrt_pou_eq' (α : M) :
       (chartAtlasPOU I M).nonneg α b
     exact hb (le_antisymm hle hρ_nn)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma tsupport_sqrtPou_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
@@ -167,7 +167,7 @@ private lemma tsupport_sqrtPou_subset
   unfold tsupport
   rw [support_sqrt_pou_eq' (I := I) (M := M) α]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma continuous_sqrtPou
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
@@ -213,7 +213,7 @@ private lemma continuous_sqrtPou
       by_contra hne; exact hy_notsupp hne
     exact hzero.symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma measurable_sqrtPou
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)

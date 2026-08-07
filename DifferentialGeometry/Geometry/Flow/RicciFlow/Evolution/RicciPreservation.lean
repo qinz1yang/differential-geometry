@@ -453,7 +453,7 @@ theorem unitLower_raw
 
 
 theorem unitTan_compact
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     IsCompact (Set.univ : Set (UnitTangent (I := I) (M := M) g)) := by
   exact metricUnit_compact (I := I) (M := M) g
@@ -476,7 +476,7 @@ theorem unitRic_cont
 
 
 theorem unitLower_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     (D : MetricRicciData (I := I) (M := M) G Ric)
@@ -489,7 +489,7 @@ theorem unitLower_pos
 
 
 theorem metricMin_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     (D : MetricRicciData (I := I) (M := M) G Ric)
@@ -749,7 +749,7 @@ theorem pinchInit_ricMin
 
 
 theorem pinchInitLt_metric
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -766,7 +766,7 @@ theorem pinchInitLt_metric
 
 
 theorem pinchInit_metric
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -782,7 +782,7 @@ theorem pinchInit_metric
 
 
 theorem pinchInitLt_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -797,7 +797,7 @@ theorem pinchInitLt_pos
 
 
 theorem pinchInit_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}

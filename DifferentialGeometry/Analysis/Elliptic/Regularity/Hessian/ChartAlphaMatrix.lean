@@ -31,11 +31,10 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem chartAlphaMatrixIdentity_holds_chartSource
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) {x : M}
@@ -46,7 +45,7 @@ theorem chartAlphaMatrixIdentity_holds_chartSource
   exact chartAlphaMatrixIdentity_holds (I := I) g α hf hx i j
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartAlpha_swap_aux_holds
     (g : SmoothRiemannianMetric I M) (α : M)
     (f f' : M → ℝ) (x : M) :

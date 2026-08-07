@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -60,13 +60,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 private theorem lapDiff_rho
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -89,7 +88,6 @@ private theorem lapDiff_rho
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem lapDiff_fibreSmall
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -129,7 +127,6 @@ theorem lapDiff_fibreSmall
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem lapDiff_short
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -194,7 +191,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E

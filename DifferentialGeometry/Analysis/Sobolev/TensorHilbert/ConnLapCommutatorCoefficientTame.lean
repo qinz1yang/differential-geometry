@@ -47,14 +47,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma weight_natCast (g₀ : SmoothRiemannianMetric I M)
+private lemma weight_natCast [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g₀ 0 2) (n : ℕ) :
     tensorSobolevWeight (I := I) (M := M) i ((n : ℕ) : ℝ) =
@@ -424,8 +423,8 @@ private lemma coeffContraction_secondCovGrad_sub (g₀ : SmoothRiemannianMetric 
           (iteratedCovGrad (I := I) g₀ 0 2 2 v) := by
   rw [iteratedCovGrad_sub, appCc_sub_right]
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma rawConnLap_oneMinusConnLap_comm (g₀ : SmoothRiemannianMetric I M)
+omit [I.Boundaryless] in
+private lemma rawConnLap_oneMinusConnLap_comm [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (oneMinusConnLapSmooth (I := I) g₀ 0 2 S) =
       oneMinusConnLapSmooth (I := I) g₀ 0 2 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by

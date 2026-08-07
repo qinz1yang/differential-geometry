@@ -26,15 +26,15 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tensorInnerPointwise
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tensorInnerPointwise [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
     {M_F : ℝ} (hM_F_nn : 0 ≤ M_F)
@@ -173,9 +173,8 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
     ← ofReal_norm_eq_enorm x]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma integral_tensorInnerPointwise_diagonal_le_h1NormSq
+private lemma integral_tensorInnerPointwise_diagonal_le_h1NormSq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     ∫ b, tensorInnerPointwise (I := I) (M := M) g r s b
@@ -198,9 +197,8 @@ private lemma integral_tensorInnerPointwise_diagonal_le_h1NormSq
   rw [h_l2_norm_sq]
   exact SmoothCcTensorH1.l2NormSq_le_h1NormSq (I := I) (M := M) S
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_mul_h1Norm
+theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_mul_h1Norm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
     {M_F : ℝ} (hM_F_nn : 0 ≤ M_F)

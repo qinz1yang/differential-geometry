@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance tensorRSModelNormedAddCommGroup_local (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
@@ -41,10 +41,9 @@ private local instance tensorRSModelNormedSpace_local (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModel_normedSpace r s
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
+private theorem covApply_chartRepr_euclid_jointContDiffWithinAt [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : ℝ → SmoothCcTensor g₀ r s)
     (S : Set ℝ) (α : M)
@@ -271,10 +270,9 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
     simp only [Function.comp_apply] at hform
     exact hform
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem covApply_chartRepr_manifold_jointContMDiffOn
+private theorem covApply_chartRepr_manifold_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : ℝ → SmoothCcTensor g₀ r s)
     (S : Set ℝ) (α : M)
@@ -334,10 +332,9 @@ private theorem covApply_chartRepr_manifold_jointContMDiffOn
     have hpsrc : p.1 ∈ φ.source := by rw [hφ, extChartAt_source]; exact hpx
     rw [φ.left_inv hpsrc]
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covApply_section_jointContMDiffOn
+theorem covApply_section_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : ℝ → SmoothCcTensor g₀ r s)
     (S : Set ℝ)

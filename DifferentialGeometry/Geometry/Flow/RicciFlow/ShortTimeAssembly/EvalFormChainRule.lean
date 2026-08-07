@@ -39,10 +39,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem exists_jointFDerivWithinAt_evalForm_pullbackPart
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -73,7 +73,7 @@ theorem exists_jointFDerivWithinAt_evalForm_pullbackPart
   exact ⟨_, ((hclm t ht x).clm_apply (hpush_v t ht x v)).clm_apply (hpush_w t ht x w)⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem exists_jointFDerivWithinAt_evalFormTwoVar
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -102,7 +102,6 @@ theorem exists_jointFDerivWithinAt_evalFormTwoVar
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -217,7 +216,6 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem evalFormTwoVar_diag_hasDerivWithinAt_deTurckRicciRHS_chainRule
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

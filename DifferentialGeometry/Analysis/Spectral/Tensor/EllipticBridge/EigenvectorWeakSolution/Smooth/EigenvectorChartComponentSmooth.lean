@@ -33,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartComponent_exists_smooth_representative

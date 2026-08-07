@@ -40,14 +40,14 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-noncomputable def chartPouEucl (α : M) : EuclN → ℝ := by
+noncomputable def chartPouEucl [SigmaCompactSpace M] (α : M) : EuclN → ℝ := by
   classical
   exact fun y =>
     if y ∈ chartTargetEuclid (I := I) (M := M) α then
@@ -55,8 +55,8 @@ noncomputable def chartPouEucl (α : M) : EuclN → ℝ := by
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma chartPouEucl_apply_of_mem (α : M) {y : EuclN}
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma chartPouEucl_apply_of_mem [SigmaCompactSpace M] (α : M) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPouEucl (I := I) (M := M) α y =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
@@ -64,8 +64,8 @@ private lemma chartPouEucl_apply_of_mem (α : M) {y : EuclN}
   classical
   unfold chartPouEucl; exact if_pos hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma chartPouEucl_apply_of_notMem (α : M) {y : EuclN}
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma chartPouEucl_apply_of_notMem [SigmaCompactSpace M] (α : M) {y : EuclN}
     (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
     chartPouEucl (I := I) (M := M) α y = 0 := by
   classical
@@ -228,8 +228,8 @@ private lemma exists_chartPouEucl_fderiv_uniform_bound (α : M) :
   exact le_trans (hK_bound y) (le_max_left _ _)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma tensorChartComponentRaw_symm_contDiffOn_target
+    [T2Space M] in
+lemma tensorChartComponentRaw_symm_contDiffOn_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -254,8 +254,8 @@ lemma tensorChartComponentRaw_symm_contDiffOn_target
     hsmooth_on.comp hsymm hmaps
   exact hcomp.contDiffOn
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-lemma chartAtlasPOU_symm_contDiffOn_target (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+lemma chartAtlasPOU_symm_contDiffOn_target [SigmaCompactSpace M] (α : M) :
     ContDiffOn ℝ ∞
       ((fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∘
         (extChartAt I α).symm) ((extChartAt I α).target) := by
@@ -266,8 +266,8 @@ lemma chartAtlasPOU_symm_contDiffOn_target (α : M) :
   exact DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_contDiffOn
     (I := I) α hf_smooth
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-lemma chartAtlasPOU_symm_differentiableAt
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+lemma chartAtlasPOU_symm_differentiableAt [SigmaCompactSpace M]
     (α : M) {e : E} (he : e ∈ (extChartAt I α).target) :
     DifferentiableAt ℝ
       ((fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∘
@@ -281,8 +281,8 @@ lemma chartAtlasPOU_symm_differentiableAt
   exact hwithin.differentiableAt (h_open.mem_nhds he)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma tensorChartComponentRaw_symm_differentiableAt
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma tensorChartComponentRaw_symm_differentiableAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -300,8 +300,8 @@ lemma tensorChartComponentRaw_symm_differentiableAt
     (hcd _ he).differentiableWithinAt (by norm_num)
   exact hwithin.differentiableAt (h_open.mem_nhds he)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma tensorChartComp_eq_pou_mul_raw_pulled
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma tensorChartComp_eq_pou_mul_raw_pulled [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -317,8 +317,8 @@ private lemma tensorChartComp_eq_pou_mul_raw_pulled
   rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComp_toEuclidean_eq_pou_mul_raw
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComp_toEuclidean_eq_pou_mul_raw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -338,8 +338,8 @@ private lemma tensorChartComp_toEuclidean_eq_pou_mul_raw
     (I := I) (M := M) g r s T α Idx Jdx hy, h_eq]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pou_mul_raw_eq_tensorChartComp_toEuclidean
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pou_mul_raw_eq_tensorChartComp_toEuclidean [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -354,8 +354,8 @@ private lemma pou_mul_raw_eq_tensorChartComp_toEuclidean
   (tensorChartComp_toEuclidean_eq_pou_mul_raw
     (I := I) (M := M) g r s T α Idx Jdx he).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma chartPouEucl_toEuclidean_eq_pou_symm
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma chartPouEucl_toEuclidean_eq_pou_symm [SigmaCompactSpace M]
     (α : M) {e : E} (he : e ∈ (extChartAt I α).target) :
     chartPouEucl (I := I) (M := M) α ((toEuclidean (E := E)) e) =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
@@ -367,8 +367,8 @@ private lemma chartPouEucl_toEuclidean_eq_pou_symm
   rw [chartPouEucl_apply_of_mem (I := I) (M := M) α hy, h_eq]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma pou_mul_raw_symm_eventuallyEq_tensorChartComp_toEuclidean
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma pou_mul_raw_symm_eventuallyEq_tensorChartComp_toEuclidean [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -388,8 +388,8 @@ private lemma pou_mul_raw_symm_eventuallyEq_tensorChartComp_toEuclidean
     (I := I) (M := M) g r s T α Idx Jdx he'
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma fderiv_pou_mul_raw_symm_eq_fderiv_tensorChartComp_toEuclidean
+omit [NeZero (Module.finrank ℝ E)] in
+lemma fderiv_pou_mul_raw_symm_eq_fderiv_tensorChartComp_toEuclidean [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -472,8 +472,8 @@ private lemma fderiv_chartPouEucl_toEuclidean (α : M) (e : E) :
   congr 1
   exact (toEuclidean (E := E)).fderiv
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-lemma pou_symm_eventuallyEq_chartPouEucl_toEuclidean
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+lemma pou_symm_eventuallyEq_chartPouEucl_toEuclidean [SigmaCompactSpace M]
     (α : M) {e : E} (he : e ∈ (extChartAt I α).target) :
     (fun e' : E => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
         ((extChartAt I α).symm e'))

@@ -196,7 +196,7 @@ private theorem exists_smooth_metric_extension_with_density
 
 
 theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_supp : HasCompactSupport η)
@@ -1378,7 +1378,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
 
 
 theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)

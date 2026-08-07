@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -83,7 +83,7 @@ def sigmaE0dla : Equiv.Perm (Fin 6) :=
    by decide, by decide⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor0S_zero_rank_decomp_dla (x : M) (t : Tensor0SSpace 0 I x) :
     t = (Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0)) • unitTensor (I := I) (M := M) x := by
   apply Tensor0SSpace.toModel_injective
@@ -101,7 +101,7 @@ private lemma tensor0S_zero_rank_decomp_dla (x : M) (t : Tensor0SSpace 0 I x) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma slotExtendIter_two_toModel_dla (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x)
     (u : Fin 6 → TangentSpace I x) :
@@ -188,7 +188,7 @@ def cometricDoubleTraceSmoothCcTensor (g₀ g₁ : SmoothRiemannianMetric I M) (
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma toModel_cons_sum_smul_dla (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -222,7 +222,7 @@ lemma toModel_cons_sum_smul_dla (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma toModel_cons_cons_sum_smul_dla (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -258,7 +258,7 @@ lemma toModel_cons_cons_sum_smul_dla (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma smoothOrthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank ℝ E),

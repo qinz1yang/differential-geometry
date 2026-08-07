@@ -37,13 +37,13 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 theorem joint_rs_sub {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -78,7 +78,7 @@ theorem joint_rs_sub {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 theorem joint_rs_add {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -113,7 +113,7 @@ theorem joint_rs_add {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem rfns_joint_cont
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -174,7 +174,7 @@ private theorem rfns_joint_cont
       ((Φ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 private theorem path_field_congr
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ₁ Φ₂ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)

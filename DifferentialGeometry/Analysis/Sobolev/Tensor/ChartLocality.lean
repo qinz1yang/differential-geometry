@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComp_eq_zero_of_notMem_finset
@@ -121,8 +121,8 @@ theorem MemWtwokTwo.memWkp_chartComp_finset
       (chartTargetEuclid (I := I) (M := M) α) :=
   hT α Idx Jdx
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem MemWtwokTwo.memWkp_chartComp
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem MemWtwokTwo.memWkp_chartComp [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T)
@@ -151,7 +151,7 @@ theorem wtwokTwoNorm_eq_finset_sum
   exact wtwokTwoNorm_chartTerm_eq_zero_of_notMem_finset
     (I := I) (M := M) g k T hα
 
-def wtwokTwoChartTerm
+def wtwokTwoChartTerm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) (α : M) : ℝ≥0∞ :=
   ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -160,8 +160,8 @@ def wtwokTwoChartTerm
         (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma wtwokTwoChartTerm_def
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma wtwokTwoChartTerm_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) (α : M) :
     wtwokTwoChartTerm (I := I) (M := M) g k T α =
@@ -171,8 +171,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
             (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
             (chartTargetEuclid (I := I) (M := M) α) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem wtwokTwoChartTerm_lt_top
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem wtwokTwoChartTerm_lt_top [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) (α : M) :
@@ -184,8 +184,8 @@ theorem wtwokTwoChartTerm_lt_top
   intro Jdx _
   exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E) (hT α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem wtwokTwoChartTerm_ne_top
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem wtwokTwoChartTerm_ne_top [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) (α : M) :
@@ -239,8 +239,8 @@ theorem wkpNorm_tensorChartComp_le_wtwokTwoNorm
       (chartTargetEuclid (I := I) (M := M) α))
     (fun Jdx _ => zero_le _) (Finset.mem_univ Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorChartComp_reconstruct
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorChartComp_reconstruct [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -251,8 +251,8 @@ theorem tensorChartComp_reconstruct
             tensorChartBasisElement (E := E) r s Idx Jdx :=
   tensorChartPushed_eq_sum_tensorChartComp (I := I) (M := M) g r s T α y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorChartPushed_eqOn_zero_of_tensorChartComp_eqOn_zero
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorChartPushed_eqOn_zero_of_tensorChartComp_eqOn_zero [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (h : ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))

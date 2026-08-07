@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 section FiniteOrderPairing
 
@@ -46,7 +46,7 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Integral.Measure
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ∞} {n : ℕ}
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (n + 1) I p.1)
@@ -107,7 +107,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ�
     exact hpt
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞} : ∀ (n : ℕ)
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace n I p.1)
@@ -205,7 +205,7 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
       · intro k; simp [Fin.cons_succ]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M) (α : M) {T : ℝ} :
@@ -321,7 +321,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder
           exact hS ψ'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M) (α : M) {T : ℝ}
@@ -367,7 +367,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder
     (fun j => (hv j p hp).of_le hN)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorInnerPointwise_pair_section_jointContMDiffOn
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ}

@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -131,7 +131,6 @@ def connLaplacianL2Action (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     rw [h_lap_smul, SmoothCcTensor.toL2_smul]
     rfl
 
-omit [CompactSpace M] in
 @[simp] lemma connLaplacianL2Action_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     connLaplacianL2Action (I := I) g r s T =
@@ -145,7 +144,7 @@ def toL2RangeRestrict (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ((SmoothCcTensor.toL2 (g := g) (r := r) (s := s)).toLinearMap)
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma toL2RangeRestrict_surjective
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Function.Surjective (toL2RangeRestrict (I := I) g r s) := by
@@ -164,7 +163,7 @@ def smoothCcSection (g : SmoothRiemannianMetric I M) (r s : ℕ) :
         (toL2RangeRestrict_surjective (I := I) g r s)))
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma toL2RangeRestrict_smoothCcSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     (toL2RangeRestrict (I := I) g r s).comp (smoothCcSection (I := I) g r s) =
@@ -175,7 +174,7 @@ lemma toL2RangeRestrict_smoothCcSection
         (toL2RangeRestrict_surjective (I := I) g r s)))
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma toL2RangeRestrict_smoothCcSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : smoothCcToL2Submodule (I := I) g r s) :
@@ -185,7 +184,7 @@ lemma toL2RangeRestrict_smoothCcSection_apply
   exact congrArg (fun (f : _ →ₗ[ℝ] _) => f u) h
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma toL2_smoothCcSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : smoothCcToL2Submodule (I := I) g r s) :
@@ -210,7 +209,6 @@ def connLaplacianL2OnDomain (g : SmoothRiemannianMetric I M) (r s : ℕ) :
   (connLaplacianL2Action (I := I) g r s).comp
     (smoothCcSection (I := I) g r s)
 
-omit [CompactSpace M] in
 @[simp] lemma connLaplacianL2OnDomain_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : smoothCcToL2Submodule (I := I) g r s) :
@@ -225,14 +223,12 @@ def connLaplacianL2 (g : SmoothRiemannianMetric I M) (r s : ℕ) :
   toFun := connLaplacianL2OnDomain (I := I) g r s
 
 
-omit [CompactSpace M] in
 @[simp] theorem connLaplacianL2_domain_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     (connLaplacianL2 (I := I) g r s).domain =
       smoothCcToL2Submodule (I := I) g r s := rfl
 
 
-omit [CompactSpace M] in
 theorem connLaplacianL2_apply_toL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (hT : SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T ∈
@@ -244,7 +240,6 @@ theorem connLaplacianL2_apply_toL2
           ⟨SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T, hT⟩) := rfl
 
 
-omit [CompactSpace M] in
 theorem toL2_mem_connLaplacianL2_domain
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T ∈

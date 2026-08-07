@@ -41,7 +41,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section ChartPerturbedSource
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 theorem tensorComponent_perturbedSource_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

@@ -27,14 +27,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 omit [T2Space M] in
 private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
@@ -82,7 +82,7 @@ private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem tangentBilinFlip_curry_apply_contMDiff (r t : ℕ)
     :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
@@ -134,7 +134,7 @@ private theorem tangentBilinFlip_curry_apply_contMDiff (r t : ℕ)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
       tensorRSModel_normedAddCommGroup r (t + 2)
@@ -201,7 +201,7 @@ private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private theorem swapTwoCurryFib_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
       tensorRSModel_normedAddCommGroup r (t + 2)
@@ -249,7 +249,7 @@ private theorem swapTwoCurryFib_contMDiff (r t : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 omit [T2Space M] in
 private lemma swapTwoFib_fromCurry (r t : ℕ) (x : M)
     (T : TensorRSSpace r (t + 2) I x) :
@@ -261,7 +261,7 @@ private lemma swapTwoFib_fromCurry (r t : ℕ) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
       tensorRSModel_normedAddCommGroup r (t + 2)
@@ -319,7 +319,7 @@ private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem swapTwoFib_contMDiff (r t : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (t + 2) ℝ E →L[ℝ] TensorRSModel r (t + 2) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r (t + 2) ℝ E →L[ℝ] TensorRSModel r (t + 2) ℝ E)
@@ -342,7 +342,7 @@ noncomputable def swapTwoSec (r t : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma swapTwoSec_apply (r t : ℕ) (x : M) :
     (show TensorRSSpace r (t + 2) I x →L[ℝ] TensorRSSpace r (t + 2) I x from
       swapTwoSec (I := I) (M := M) (E := E) r t x) = swapTwoFib (I := I) (M := M) r t x := rfl

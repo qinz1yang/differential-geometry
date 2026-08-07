@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -222,7 +222,7 @@ private theorem christoffelCorrection_riem_norm_le_on_pouTsupport
     _ = (n : ℝ) ^ 3 * Cc ^ 2 * Cv * CΓ * ‖Y‖ * ‖w‖ := by ring
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma chrRiem_slotConjFactor_self_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Π b' : M, TangentSpace I b') {b : M}
@@ -379,7 +379,7 @@ private lemma chrRiem_slotOutputConjCLM_prod_norm_le_on_pouTsupport
     _ = (max C₀ 1) ^ s := by rw [Finset.prod_const]; simp
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma chrRiem_inputSlotChartKernel_apply_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b') (i : Fin r) (b : M)
@@ -401,7 +401,7 @@ private lemma chrRiem_inputSlotChartKernel_apply_norm_le
         ring
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma chrRiem_outputSlotChartKernel_apply_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b') (l : Fin s) (b : M)
@@ -421,7 +421,7 @@ private lemma chrRiem_outputSlotChartKernel_apply_norm_le
           (slotOutputConjCLM (I := I) g s α X l b)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma chrRiem_tensorRSTriv_baseSet_eq_chartSource (r s : ℕ) (α : M) :
     (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).baseSet =

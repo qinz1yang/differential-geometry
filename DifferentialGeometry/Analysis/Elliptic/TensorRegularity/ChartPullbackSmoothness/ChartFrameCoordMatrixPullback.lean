@@ -36,7 +36,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 theorem chartFrameNormGlobalSmoothCoordMatrix_pullback_contDiffOn_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
@@ -79,7 +79,7 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_pullback_contDiffOn_chartTarget
   exact (contMDiffOn_iff_contDiffOn).mp h_comp
 
 private noncomputable def coordMatrixOnEuclid
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E))
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) : ℝ :=
@@ -87,7 +87,7 @@ private noncomputable def coordMatrixOnEuclid
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
 
 private lemma coordMatrixOnEuclid_def
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E))
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -96,7 +96,7 @@ private lemma coordMatrixOnEuclid_def
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := rfl
 
 private lemma coordMatrixOnEuclid_contDiffOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (coordMatrixOnEuclid (I := I) (M := M) g α i k)
@@ -189,7 +189,7 @@ private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial_of_mdiff
     (I := I) (M := M) f α m hy
 
 private lemma extDerivFun_pull_eq_euclidPartial_on_target
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E)) :
     Set.EqOn
@@ -232,7 +232,7 @@ private lemma extDerivFun_pull_eq_euclidPartial_on_target
     (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k) α l hy hf_mdiff
 
 private lemma coordMatrixOnEuclid_eventuallyEq_chartPushedRaw
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     Set.EqOn
@@ -246,7 +246,7 @@ private lemma coordMatrixOnEuclid_eventuallyEq_chartPushedRaw
     (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k) hy]
 
 private lemma euclidPartial_chartPushedRaw_coordMatrix_contDiffOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
@@ -291,7 +291,7 @@ private lemma euclidPartial_chartPushedRaw_coordMatrix_contDiffOn
   rfl
 
 theorem chartFrameNormGlobalSmoothCoordMatrix_dirDeriv_pullback_contDiffOn_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞

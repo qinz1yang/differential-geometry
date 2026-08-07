@@ -23,31 +23,28 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorResolventL2_eq_comp (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+lemma tensorResolventL2_eq_comp [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     tensorResolventL2 (I := I) (M := M) g r s =
       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s).comp
         (tensorResolvent (I := I) (M := M) g r s) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorResolventL2_apply_eq_comp
+lemma tensorResolventL2_apply_eq_comp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (f : TensorL2 r s g) :
     (tensorResolventL2 (I := I) (M := M) g r s) f =
       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s)
         ((tensorResolvent (I := I) (M := M) g r s) f) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolventL2_isCompactOperator_of_isCompactOperator
+theorem tensorResolventL2_isCompactOperator_of_isCompactOperator [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (h_H1L2 :
       IsCompactOperator
@@ -61,9 +58,8 @@ theorem tensorResolventL2_isCompactOperator_of_isCompactOperator
     h_H1L2.comp_clm (tensorResolvent (I := I) (M := M) g r s)
   exact h_comp
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolventL2_isCompactOperator_and_isSelfAdjoint
+theorem tensorResolventL2_isCompactOperator_and_isSelfAdjoint [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (h_H1L2 :
       IsCompactOperator

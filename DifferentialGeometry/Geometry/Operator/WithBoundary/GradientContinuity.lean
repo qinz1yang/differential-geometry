@@ -265,7 +265,7 @@ theorem continuous_g_inner_gradFun_gradFun
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf hh
 
 theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
@@ -284,7 +284,7 @@ private local instance instMeasurableSpaceM_gradContinuity :
 private local instance instBorelSpaceM_gradContinuity : BorelSpace M := ⟨rfl⟩
 
 theorem integrable_g_inner_gradFun_gradFun
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)

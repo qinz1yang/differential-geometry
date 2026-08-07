@@ -407,7 +407,7 @@ theorem wkpNormChart_const_smul
     (hu α) c
 
 theorem wkpNormChart_lt_top_of_memWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)

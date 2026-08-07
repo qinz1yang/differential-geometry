@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -40,7 +40,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 private theorem fiber_contDiffOn_Icc_finiteOrder
     (f : M → ℝ → ℝ) {T : ℝ} {n : WithTop ℕ∞}
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) n (fun p : M × ℝ => f p.1 p.2)
@@ -56,7 +56,7 @@ private theorem fiber_contDiffOn_Icc_finiteOrder
   exact hcomp
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem partialSnd_contMDiffOn_Icc_finiteOrder
     (f : M → ℝ → ℝ) {T : ℝ} (N : ℕ)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((N : WithTop ℕ∞) + 1)
@@ -121,7 +121,7 @@ private theorem partialSnd_contMDiffOn_Icc_finiteOrder
       (fun q hq => hq.2) hUM
   simpa [inTangentCoordinates_model_space] using h_apply
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem hasDerivWithinAt_integral_param_Icc_finiteOrder
     (μ : Measure M) [IsFiniteMeasure μ] (f : M → ℝ → ℝ) {T : ℝ} (hT : 0 < T)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞)
@@ -215,7 +215,7 @@ private theorem hasDerivWithinAt_integral_param_Icc_finiteOrder
       hmeas hbnd (integrable_const C) hlim
     simpa [hG'] using this
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem contDiffOn_integral_of_jointContMDiffOn_Icc_finiteOrder
     (μ : Measure M) [IsFiniteMeasure μ] {T : ℝ} (hT : 0 < T) :
     ∀ (N : ℕ) (f : M → ℝ → ℝ),
@@ -300,7 +300,7 @@ theorem clm_comm_iteratedDerivWithin_finiteOrder {V W : Type*} [NormedAddCommGro
     iteratedDerivWithin_eq_iteratedFDerivWithin]
   rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem iteratedDerivWithin_integral_param_Icc_finiteOrder
     (μ : Measure M) [IsFiniteMeasure μ] {T : ℝ} (hT : 0 < T) :
     ∀ (j : ℕ) (f : M → ℝ → ℝ),

@@ -37,7 +37,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 
 
@@ -166,9 +166,8 @@ theorem realize_eval_carrier_factorization
     (I := I) (M := M) g_bg a ha T_z x v w).tsum_eq
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem pointwise_deriv_through_realize
+theorem pointwise_deriv_through_realize [SigmaCompactSpace M]
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T_s : ℝ → Integral.L2.SmoothCcTensor g_bg 0 2)

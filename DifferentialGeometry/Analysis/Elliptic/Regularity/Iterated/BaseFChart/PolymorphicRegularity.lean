@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private noncomputable def smoothScalarSub
     {g : SmoothRiemannianMetric I M}
@@ -52,14 +52,14 @@ private noncomputable def smoothScalarSub
   { toFun := fun x => v₁.toFun x - v₂.toFun x
     smooth := v₁.smooth.sub v₂.smooth }
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 private lemma smoothScalarSub_toFun
     {g : SmoothRiemannianMetric I M}
     (v₁ v₂ : SmoothScalar g) :
     (smoothScalarSub v₁ v₂).toFun = fun x => v₁.toFun x - v₂.toFun x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma wkpNormChart_one_le_succ
     (g : SmoothRiemannianMetric I M) (m : ℕ) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) g 1 2 u ≤
@@ -752,7 +752,7 @@ private lemma eLpNorm_tendsto_zero_of_wkpNorm_m_two_tendsto_zero
     (fun _ => zero_le _)
     (fun n => eLpNorm_le_wkpNorm_m_two m (fun y => u n y - F_lim y) Ω)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma volume_restrict_chartTarget_absolutelyContinuous_weighted
     (g : SmoothRiemannianMetric I M) (α : M) :
     (volume : Measure EuclN).restrict

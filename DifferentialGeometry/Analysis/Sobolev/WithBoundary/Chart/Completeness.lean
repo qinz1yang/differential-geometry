@@ -19,7 +19,7 @@ variable {M : Type*} [TopologicalSpace M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
 
 theorem wkpNormChart_cauchy_of_seminormCauchySeq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
@@ -56,7 +56,7 @@ theorem wkpNormChart_cauchy_of_seminormCauchySeq
   exact ENNReal.ofReal_le_ofReal hdist.le
 
 theorem chartPushed_cauchy_of_wkpNormChart_cauchy
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
@@ -120,7 +120,7 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
   exact le_trans h_summand_le_tsum h_le
 
 theorem exists_chart_limit
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
@@ -162,7 +162,7 @@ theorem exists_chart_limit
     k p hp_one hp_top h_chart_mem h_chart_cauchy
 
 theorem chartPushed_tendstoInMeasure
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
@@ -243,7 +243,7 @@ theorem chartPushed_tendstoInMeasure
     h_aesm_seq h_aesm_lim h_eLp
 
 theorem exists_subseq_chartPushed_ae_tendsto
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))

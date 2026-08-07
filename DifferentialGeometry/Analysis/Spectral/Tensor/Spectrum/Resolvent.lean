@@ -28,24 +28,22 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-noncomputable def tensorResolventL2 (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+noncomputable def tensorResolventL2 [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorL2 r s g →L[ℝ] TensorL2 r s g :=
   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s).comp
     (tensorResolvent (I := I) (M := M) g r s)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma tensorResolventL2_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
+@[simp] lemma tensorResolventL2_apply [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : TensorL2 r s g) :
     tensorResolventL2 (I := I) (M := M) g r s f =
       TensorH1ComplToTensorL2 (I := I) (M := M) g r s
         (tensorResolvent (I := I) (M := M) g r s f) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma inner_tensorResolventL2_eq_inner_tensorResolvent
+private lemma inner_tensorResolventL2_eq_inner_tensorResolvent [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f h : TensorL2 r s g) :
     ⟪tensorResolventL2 (I := I) (M := M) g r s f, h⟫_ℝ =
@@ -57,9 +55,8 @@ private lemma inner_tensorResolventL2_eq_inner_tensorResolvent
   rw [← hvar]
   exact real_inner_comm _ _
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolventL2_symm
+theorem tensorResolventL2_symm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f h : TensorL2 r s g) :
     ⟪tensorResolventL2 (I := I) (M := M) g r s f, h⟫_ℝ =
@@ -70,9 +67,8 @@ theorem tensorResolventL2_symm
   rw [inner_tensorResolventL2_eq_inner_tensorResolvent (I := I) (M := M) g r s h f]
   exact real_inner_comm _ _
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolventL2_isSelfAdjoint
+theorem tensorResolventL2_isSelfAdjoint [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsSelfAdjoint (tensorResolventL2 (I := I) (M := M) g r s) := by
   rw [ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric]

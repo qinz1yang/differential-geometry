@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -194,9 +194,8 @@ theorem maxRegDuhamelSolField_zero_zero {a : ℝ} {T : ℝ} (hT : 0 < T) (hT1 : 
   exact norm_le_zero_iff.mp h
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem nemytskii_time_mixed_bound (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
+theorem nemytskii_time_mixed_bound [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) {C₁ C₂ : ℝ≥0}
@@ -331,9 +330,8 @@ def nemytskiiMixedForcingMap (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : 
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem nemytskiiMixedForcingMap_apply (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
+@[simp] theorem nemytskiiMixedForcingMap_apply [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun)

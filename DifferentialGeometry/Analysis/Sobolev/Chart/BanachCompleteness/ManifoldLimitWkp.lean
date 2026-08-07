@@ -47,7 +47,7 @@ lemma pullback_eq_chart (α : M) (v : EuclN → ℝ) :
 `MemWkpChart g k p`. -/
 theorem limitFun_memWkp
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}

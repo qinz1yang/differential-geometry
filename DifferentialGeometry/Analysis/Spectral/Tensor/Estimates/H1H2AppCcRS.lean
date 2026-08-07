@@ -38,7 +38,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace M := borel M
@@ -88,15 +88,15 @@ theorem h1_jet_sq
       ‖S‖ ^ 2 + ‖covGrad (I := I) (M := M) g r s S‖ ^ 2 :=
   h1_norm_sq_jet (I := I) (M := M) g r s S
 
-private noncomputable def rsFiberFun
+private noncomputable def rsFiberFun [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) : M → ℝ := fun x =>
   Real.sqrt
     (riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-private theorem fiber_rs_cont
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] in
+private theorem fiber_rs_cont [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) : Continuous (rsFiberFun g r s S) := by
   apply Real.continuous_sqrt.comp
@@ -106,16 +106,16 @@ private theorem fiber_rs_cont
     (I := I) (M := M) g r s x (S.toSection x),
     ← SmoothCcTensor.toFun_apply (I := I) (M := M) S x]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-private theorem fiber_rs_nonneg
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] in
+private theorem fiber_rs_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (x : M) : 0 ≤ rsFiberFun g r s S x :=
   Real.sqrt_nonneg _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem tensor_l2_sq
+private theorem tensor_l2_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Norm (I := I) (M := M) g r s S.toFun ^ 2 =
       ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x)
@@ -127,9 +127,9 @@ private theorem tensor_l2_sq
   exact tensorL2Norm_sq_eq_integral_riemannianFiberNormSq
     (I := I) (M := M) g r s _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem normSq_le_int
+private theorem normSq_le_int [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) (F : M → ℝ)
     (hF : Integrable F (riemannianVolumeMeasure (I := I) (M := M) g))
@@ -147,9 +147,9 @@ private theorem normSq_le_int
     integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g r s C
   exact integral_mono hint hF (fun x => hpt x)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem fiber_rs_lp2
+private theorem fiber_rs_lp2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     lpNorm (rsFiberFun g r s S) 2

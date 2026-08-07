@@ -335,7 +335,7 @@ private lemma integrable_chartLocalMeasure_of_cs_chartSource
 
 omit [InnerProductSpace ℝ E] in
 theorem stokes_compact_via_pou
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∫ x, divergence_g_with_boundary (I := I) g X x

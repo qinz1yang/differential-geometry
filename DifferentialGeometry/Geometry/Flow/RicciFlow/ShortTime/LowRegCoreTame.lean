@@ -40,7 +40,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private theorem smoothHs_eq_ccHs
     (g₀ : SmoothRiemannianMetric I M) (sigma : ℝ)

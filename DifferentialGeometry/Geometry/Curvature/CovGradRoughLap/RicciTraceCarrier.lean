@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -67,7 +67,6 @@ def ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] lemma ricEndoRaisedFib_apply (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     ricEndoRaisedFib (I := I) g x v =
@@ -77,7 +76,6 @@ omit [SigmaCompactSpace M] in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma inner_ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     g.inner x (ricEndoRaisedFib (I := I) g x v) w = ricciTensor (I := I) g x v w := by
@@ -88,7 +86,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
+theorem ricEndoRaisedFib_contMDiff [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
@@ -160,7 +158,6 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] lemma ricSlotOpFib_apply (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) :
     ricSlotOpFib (I := I) (M := M) g s x D =
@@ -174,7 +171,6 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma ricSlotOpFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v0 : E) (vs : Fin s → E) :
     Tensor0SSpace.toModel (ricSlotOpFib (I := I) (M := M) g s x D) (Fin.cons v0 vs) =
@@ -195,7 +191,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
+theorem ricSlotOpFib_contMDiff [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel (s + 1) (s + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel (s + 1) (s + 1) ℝ E)
         (E := fun z : M => TensorRSSpace (s + 1) (s + 1) I z) x

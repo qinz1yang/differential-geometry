@@ -36,9 +36,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-noncomputable def chartPushedPartial
+noncomputable def chartPushedPartial [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) (v : SmoothScalar g) : EuclN → ℝ :=
   fun y =>
@@ -46,8 +46,8 @@ noncomputable def chartPushedPartial
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v.toFun) y)
       (EuclideanSpace.single j 1)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-@[simp] lemma chartPushedPartial_def
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma chartPushedPartial_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) (v : SmoothScalar g) (y : EuclN) :
     chartPushedPartial (I := I) (M := M) g α j v y =
@@ -55,7 +55,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v.toFun) y)
         (EuclideanSpace.single j 1) := rfl
 
-noncomputable def chartPushedPartialLp
+noncomputable def chartPushedPartialLp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) (v : SmoothScalar g)
     (h : MemLp (chartPushedPartial (I := I) (M := M) g α j v) 2
@@ -65,8 +65,8 @@ noncomputable def chartPushedPartialLp
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α)) :=
   h.toLp _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-lemma norm_chartPushedPartialLp
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma norm_chartPushedPartialLp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) (v : SmoothScalar g)
     (h : MemLp (chartPushedPartial (I := I) (M := M) g α j v) 2
@@ -80,8 +80,8 @@ lemma norm_chartPushedPartialLp
   unfold chartPushedPartialLp
   exact MeasureTheory.Lp.norm_toLp _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-lemma eLpNorm_chartPushedPartial_eq_ofReal_norm
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma eLpNorm_chartPushedPartial_eq_ofReal_norm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) (v : SmoothScalar g)
     (h : MemLp (chartPushedPartial (I := I) (M := M) g α j v) 2

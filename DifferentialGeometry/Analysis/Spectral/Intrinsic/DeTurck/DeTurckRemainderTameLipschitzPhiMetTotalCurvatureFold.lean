@@ -93,7 +93,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -102,7 +102,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_zero_fw (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     unitModel (I := I) (M := M) g s (0 : SmoothCcTensor g 0 s) x = 0 := by
   have h := unitModel_sub_local (I := I) g s 0 0 x
@@ -256,7 +256,7 @@ private lemma deTurckPhiMetTotal_realizedFam_eq_lieArm2PrincipalCoeff_sub_twoLic
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 theorem jointTotalSpaceRS_sub_fw {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
@@ -293,7 +293,7 @@ theorem jointTotalSpaceRS_sub_fw {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 theorem jointTotalSpaceRS_add_fw {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
@@ -368,7 +368,7 @@ theorem deTurckPhiMetTotal_realizedFam_jointSmooth
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-def deTurckPhiTotPathIntegral (g₀ g_bg : SmoothRiemannianMetric I M)
+def deTurckPhiTotPathIntegral [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -384,7 +384,7 @@ def deTurckPhiTotPathIntegral (g₀ g_bg : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma ccTensorBilin_sub_fw (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ (T - T') x v w =
@@ -408,7 +408,7 @@ lemma sq_bound_of_sqrt_le_fw {r Λv : ℝ} (hr : 0 ≤ r) (h : Real.sqrt r ≤ �
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma symmS_eq_self_of_symm_fw (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -439,9 +439,9 @@ private lemma symmS_eq_self_of_symm_fw (g₀ : SmoothRiemannianMetric I M)
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem threeArmHjoint_neg_two_smul_add_fw (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+theorem threeArmHjoint_neg_two_smul_add_fw [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (A B : ℝ → SmoothCcTensor g₀ r 2) {δ δ' : ℝ}
     (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r A (δ := δ) (δ' := δ'))
     (hB : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ r B (δ := δ) (δ' := δ')) :
@@ -1188,7 +1188,7 @@ theorem exists_iteratedCovGradTwo_gradSlotAntisym_curvatureCoeff
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCc_appCcRS_assoc_fw (g₀ : SmoothRiemannianMetric I M)
     (Φ : SmoothCcTensor g₀ 4 2) (C : SmoothCcTensor g₀ 2 4) (S : SmoothCcTensor g₀ 0 2) :
     operatorFieldApply (I := I) (M := M) g₀ 4 2 Φ
@@ -1203,7 +1203,7 @@ private theorem appCc_appCcRS_assoc_fw (g₀ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCc_smul_left_fw (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (c : ℝ)
     (Φ : SmoothCcTensor g₀ r s) (W : SmoothCcTensor g₀ 0 r) :
     operatorFieldApply (I := I) (M := M) g₀ r s (c • Φ) W = c • operatorFieldApply (I := I) (M := M)
@@ -1316,7 +1316,7 @@ private theorem traceHessianSlotPerm_inv_mul_apply_eq (σ : Equiv.Perm (Fin 4)) 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem lieTrace_eq_reindex_fw (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :
@@ -1347,7 +1347,7 @@ theorem lieTrace_eq_reindex_fw (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem reindexCoeffGen_sub_fw (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) :
     reindexCoeffGen (I := I) (M := M) g₀ 4 2 (A - B) ρ =
@@ -1382,7 +1382,7 @@ theorem normSq_icg_sub_le_fw (g : SmoothRiemannianMetric I M) (r s q : ℕ)
     sq_nonneg (‖iteratedCovGrad (I := I) g r s q A‖ - ‖iteratedCovGrad (I := I) g r s q B‖)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rfns_toSection_sub_le_fw (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1407,7 +1407,7 @@ theorem normSq_icg_reindex_eq_fw (g₀ : SmoothRiemannianMetric I M)
   exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 theorem gFibreOpBound_mono_fw (g₀ : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
@@ -1425,7 +1425,7 @@ theorem gFibreOpBound_mono_fw (g₀ : SmoothRiemannianMetric I M)
     _ = δ' * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) := by ring
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 theorem gFibreOpBound_min_fw (g₀ : SmoothRiemannianMetric I M)
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)

@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
@@ -35,7 +35,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma fin_cons_last_succ
     {a : Fin (Module.finrank ℝ E)} {m : ℕ}
@@ -47,7 +47,7 @@ private lemma fin_cons_last_succ
   rw [h, Fin.cons_succ]
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma fin_init_cons
     {a : Fin (Module.finrank ℝ E)} {m : ℕ}

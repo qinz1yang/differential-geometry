@@ -62,7 +62,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -73,7 +73,7 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- The `g`-norm triangle inequality on a fibre:
 `√(g(a+b,a+b)) ≤ √(g(a,a)) + √(g(b,b))`.  (Local copy of the private
 `gNorm_self_triangle` used in `PerturbedRiemannOpDifferenceBound`.) -/
@@ -252,7 +252,7 @@ asset's `htie` shape at role base = `gBase`, `g₁ = g₀`.  The two dischargers
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- The metric difference `metricDifferenceCcTensor gBase g₀` extracts, before
 symmetrization, to the pointwise metric difference `g₀ − gBase`. -/
 theorem metricDiff_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
@@ -268,7 +268,7 @@ theorem metricDiff_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- The metric difference realizes `g₀ − gBase` after symmetrization as well:
 the difference of two symmetric metrics is already symmetric. -/
 theorem metricDiff_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
@@ -283,7 +283,7 @@ theorem metricDiff_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- **Tie identity — the asset `htie` shape (role base = `gBase`, `g₁ = g₀`).**
 `g₀` is realized as `gBase` plus the symmetric perturbation
 `ccTensorBilinSymm gBase (metricDifferenceCcTensor gBase g₀)`.  This discharges
@@ -305,7 +305,7 @@ gBase g₀`), which realizes `g₀ − gBase`, has `gBase`-fibre operator norm a
 `δ₀ = Λ − 1 < 1`, i.e. the `Λ < 2` regime). -/
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- **Off-diagonal control from a diagonal bound** (the reusable "operator norm =
 diagonal norm" fact for a symmetric fibre form): a symmetric bilinear form `D`
 on a metric fibre with `|D u u| ≤ c · gBase(u,u)` on the diagonal satisfies
@@ -379,7 +379,7 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
       _ = c * a * b := by ring
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- The diagonal bound `|g₀(u,u) − gBase(u,u)| ≤ (Λ−1)·gBase(u,u)` from
 `Λ`-comparability (`|Λ⁻¹ − 1| = 1 − Λ⁻¹ ≤ Λ − 1` for `Λ ≥ 1`). -/
 private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
@@ -401,7 +401,7 @@ private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
   nlinarith [hlo, hprod]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- **Discharger 1.**  Under `Λ`-comparability, the symmetric perturbation
 `ccTensorBilinSymm gBase (metricDifferenceCcTensor gBase g₀)` realizing
 `g₀ − gBase` has `gBase`-fibre operator norm at most `Λ − 1`. -/
@@ -484,7 +484,7 @@ fibre-norm ↔ `normSq0S`-of-unit-value bridge (private in `MetricCovDerivBridge
 re-derived here since this leaf may not edit that file). -/
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- The `r = 0` index-lowering is unit-evaluation (local re-derivation of the
 private `MetricCovDerivBridge.lowerAllUpper_zero_eq_unit`). -/
 private lemma lowerAllUpper_zero_eq_unit'
@@ -503,7 +503,7 @@ private lemma lowerAllUpper_zero_eq_unit'
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- The `gBase`-Riemannian squared fibre norm of a smooth `(0, s)`-tensor section
 equals the intrinsic `normSq0S` of its unit-value (local re-derivation of the
 private `MetricCovDerivBridge.rfns_eq_normSq0S_unit`). -/
@@ -543,7 +543,7 @@ private lemma rfns_eq_normSq0S_unit'
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 /-- The intrinsic component of the unit-value of a `(0,2)`-tensor section against
 a basis pair is exactly the extracted bilinear form on the two basis vectors. -/
 private lemma component0S_unit_eq_ccBilin
@@ -568,7 +568,7 @@ private lemma component0S_unit_eq_ccBilin
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 /-- **Envelope term, order 0.**  The `gBase`-Riemannian fibre norm of the metric
@@ -794,7 +794,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- The fibre inner product of the convex-combination path is the convex combination of
 the two inner products. -/
 theorem convexCombPath_inner (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
@@ -808,7 +808,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- **(a)(i) Link comparability.**  For the interpolation path `g_t = t·g₀ + (1−t)·gBase`,
 consecutive metrics are mutually comparable with modulus `μ = |t − s|·Λ(Λ−1)`:
 `|g_t(v,v) − g_s(v,v)| ≤ μ·g_s(v,v)`.  With `μ < 1` this gives the two-sided bound
@@ -870,7 +870,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- The metric tensor field of the convex-combination path is the convex combination of the
 two metric tensor fields (linearity of `metricTensorField` in the metric argument). -/
 theorem metricTensorField_convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
@@ -887,7 +887,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Linearity of the fixed-`gBase` covariant metric derivative in the metric argument, along
 the convex-combination path: `∇^{gBase,a} g_t = t·∇^{gBase,a} g₀ + (1−t)·∇^{gBase,a} gBase`. -/
 theorem metricCovDeriv_convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
@@ -902,7 +902,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- At every order `a + 1 ≥ 1` the `gBase`-self derivative vanishes (metric compatibility),
 so the path derivative is simply `t·∇^{gBase,a+1} g₀`. -/
 theorem metricCovDeriv_convexCombPath_succ (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
@@ -916,7 +916,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- **(a)(ii) Link jet inheritance (fixed-`gBase` currency).**  A class metric-jet bound
 `MetricCovDerivOrderBoundOn (a+1) g₀ gBase Λ` transfers verbatim to every path metric `g_t`:
 `MetricCovDerivOrderBoundOn (a+1) g_t gBase Λ`, since `‖∇^{gBase,a+1} g_t‖ = t·‖∇^{gBase,a+1}

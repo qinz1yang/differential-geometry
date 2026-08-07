@@ -19,12 +19,12 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem gInvDiffRaisedEndo_inner_le_sqrt_mul
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -50,7 +50,7 @@ theorem gInvDiffRaisedEndo_inner_le_sqrt_mul
     _ = (δ / (1 - δ)) * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem gInvDiffRaisedEndo_inner_self_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -73,7 +73,7 @@ theorem gInvDiffRaisedEndo_inner_self_le
     _ = (δ / (1 - δ)) * g₀.inner x v v := by rw [hsq]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem abs_inner_gInvDiffRaisedEndo_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)

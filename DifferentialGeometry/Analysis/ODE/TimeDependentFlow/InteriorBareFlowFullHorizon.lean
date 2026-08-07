@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 noncomputable def timeWindowBump (a b δ : ℝ) (s : ℝ) : ℝ :=
   Real.smoothTransition ((s - (a - 2 * δ)) / δ) *
@@ -57,12 +57,12 @@ theorem timeWindowBump_mem_Icc_of_ne_zero (a b δ s : ℝ) (hδ : 0 < δ)
     exact hs rfl
 
 omit [IsManifold I ∞ M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] [CompleteSpace E] [CompactSpace M] [FiniteDimensional ℝ E] in
+  [CompleteSpace E] [CompactSpace M] [FiniteDimensional ℝ E] in
 theorem timeWindowBump_section_contMDiff (a b δ : ℝ) :
     ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun q : ℝ × M => timeWindowBump a b δ q.1) :=
   (timeWindowBump_contDiff a b δ).contMDiff.comp contMDiff_fst
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 theorem smul_tangentBundleSection_contMDiffWithinAt
     (X : ℝ → ∀ x : M, TangentSpace I x) (η : ℝ → ℝ)
     {u : Set (ℝ × M)} {q₀ : ℝ × M}
@@ -88,7 +88,7 @@ theorem smul_tangentBundleSection_contMDiffWithinAt
   · simpa using
       (e.linear ℝ (FiberBundle.mem_baseSet_trivializationAt' q₀.2)).2 (η q₀.1) (X q₀.1 q₀.2)
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 theorem smul_tangentBundleSection_contMDiff
     (X : ℝ → ∀ x : M, TangentSpace I x) (η : ℝ → ℝ) (T : ℝ)
     (hηsm : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun q : ℝ × M => η q.1))
@@ -130,7 +130,7 @@ theorem smul_tangentBundleSection_contMDiff
     · exact Or.inr h
   exact contMDiff_of_contMDiffOn_union_of_isOpen honU honV hcover hUopen hVopen
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 theorem interior_field_global_cutoff_extension_loc
     (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -197,7 +197,7 @@ theorem interior_field_global_cutoff_extension_loc
       exact smul_tangentBundleSection_contMDiff X_DT (timeWindowBump a b δ) T hηsm hint htsupp
     exact autonomizedFieldJointC1_of_contMDiff (fun s x => timeWindowBump a b δ s • X_DT s x) hsm
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem contMDiff_timeSlice_of_jointlyContMDiffOn
     {Ψ : M → ℝ → M} {a b : ℝ} (t : ℝ) (ht : t ∈ Set.Ioo a b)
     (hsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Ψ q.2 q.1)
@@ -215,7 +215,7 @@ theorem contMDiff_timeSlice_of_jointlyContMDiffOn
     exact h1.comp x (hpair x).contMDiffWithinAt hmaps
   exact hcomp.contMDiffAt (by simp)
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (f1 f2 : ℝ → M) {c c' : ℝ} (hcc' : c < c')
@@ -295,7 +295,6 @@ theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
       exact hmono.congr_of_eventuallyEq heq hval
 
 
-omit [SigmaCompactSpace M] in
 theorem exists_local_flow_anchored_at_interior_time
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -351,7 +350,7 @@ theorem exists_local_flow_anchored_at_interior_time
     rw [show ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ p t)))
         = ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φ p t))) by rw [heq]]
     exact hbare
-omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 omit [FiniteDimensional ℝ E] in
 theorem integralCurves_eqOn_Icc_of_agree_at_left
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
@@ -394,7 +393,7 @@ theorem integralCurves_eqOn_Icc_of_agree_at_left
 
 omit [CompactSpace M]
   [I.Boundaryless]
-  [SigmaCompactSpace M]
+
   [FiniteDimensional ℝ E] in
 /-- Two forward bare integral curves of a field which is smooth for positive
 time agree on the whole common half-open interval once the field has one
@@ -464,7 +463,7 @@ existing one-sided autonomous uniqueness theorem then applies on each compact in
 Unlike `bare_fromZero_full`, this theorem needs no separately supplied chart-Lipschitz datum.
 It is the shorter endpoint tool when a canonical parabolic solution already supplies joint
 smoothness of its vector field through `t = 0`. -/
-theorem bare_Ico_unique
+theorem bare_Ico_unique [CompactSpace M]
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
@@ -510,7 +509,7 @@ theorem bare_Ico_unique
 
 
 
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -669,7 +668,7 @@ private def existsForwardIntegralCurveUpTo (X : ℝ → ∀ x : M, TangentSpace 
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I c (Set.Ici (0:ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (c t)))
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem existsForwardIntegralCurveUpTo_mono (X : ℝ → ∀ x : M, TangentSpace I x) (x : M)
     {s s' : ℝ}
     (hss : s' ≤ s) (h : existsForwardIntegralCurveUpTo X x s) : existsForwardIntegralCurveUpTo X x
@@ -677,7 +676,7 @@ private theorem existsForwardIntegralCurveUpTo_mono (X : ℝ → ∀ x : M, Tang
   obtain ⟨c, hc0, hc⟩ := h
   exact ⟨c, hc0, fun t ht => hc t ⟨ht.1, lt_of_lt_of_le ht.2 hss⟩⟩
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem existsForwardIntegralCurveUpTo_extend
     (X : ℝ → ∀ x : M, TangentSpace I x) (x : M) {s e ρ : ℝ}
     (he0 : 0 < e) (hes : e < s) (hρ : 0 < ρ)
@@ -709,7 +708,7 @@ private theorem existsForwardIntegralCurveUpTo_extend
     exact hasMFDerivWithinAt_piecewise_of_agree_at_junction X c f2 (c := e) (c' := e + ρ)
       (by linarith) hagree hf1 hf1c hf2
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M]
-    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem existsForwardIntegralCurveUpTo_chain
     (X : ℝ → ∀ x : M, TangentSpace I x) (x : M)
     {δ β r : ℝ} (hδ : 0 < δ) (hr : 0 < r)

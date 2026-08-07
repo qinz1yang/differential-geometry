@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma h1ComplToLp_smoothToH1Compl_coeFn_aeEq_smooth
@@ -65,7 +65,7 @@ private lemma h1ComplToLp_smoothToH1Compl_measurable
   (Lp.stronglyMeasurable _).measurable
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma smoothScalar_toFun_measurable
     {g : SmoothRiemannianMetric I M} (v : SmoothScalar g) :
     Measurable (v.toFun : M → ℝ) :=
@@ -116,7 +116,7 @@ theorem laplacianDomainHessianChart_smooth_aeEq
     (chartPushed_smoothToH1Compl_coeFn_aeEq_chartPushed_v
       (I := I) (M := M) g α v)
 
-noncomputable def chartPushedEuclidHessian
+noncomputable def chartPushedEuclidHessian [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
@@ -127,8 +127,8 @@ noncomputable def chartPushedEuclidHessian
       (chartTargetEuclid (I := I) (M := M) α))
     (chartTargetEuclid (I := I) (M := M) α) y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma chartPushedEuclidHessian_def
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma chartPushedEuclidHessian_def [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
     chartPushedEuclidHessian (I := I) (M := M) (g := g) α v i j y =
@@ -151,7 +151,7 @@ theorem laplacianDomainHessianChart_eq_chartPushedEuclidHessian_aeEq
       chartPushedEuclidHessian (I := I) (M := M) (g := g) α v i j :=
   laplacianDomainHessianChart_smooth_aeEq (I := I) (M := M) g α v i j
 
-noncomputable def smoothEuclidHessianPairingChart
+noncomputable def smoothEuclidHessianPairingChart [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (y : EuclN) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
@@ -163,8 +163,8 @@ noncomputable def smoothEuclidHessianPairingChart
             chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
             chartPushedEuclidHessian (I := I) (M := M) (g := g) α v k l y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma smoothEuclidHessianPairingChart_def
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma smoothEuclidHessianPairingChart_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (y : EuclN) :
     smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v y =
@@ -227,7 +227,7 @@ theorem hessPairingChartLocal_smoothCase_aeEq_smoothEuclidPairing
   intro l _
   rw [hy (k, l)]
 
-noncomputable def hessPairingSmoothOnEuclid
+noncomputable def hessPairingSmoothOnEuclid [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (y : EuclN) : ℝ :=
   hessPairingChart (I := I) g φ
@@ -235,8 +235,8 @@ noncomputable def hessPairingSmoothOnEuclid
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-@[simp] lemma hessPairingSmoothOnEuclid_def
+    in
+@[simp] lemma hessPairingSmoothOnEuclid_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (y : EuclN) :
     hessPairingSmoothOnEuclid (I := I) (M := M) g α φ v y =

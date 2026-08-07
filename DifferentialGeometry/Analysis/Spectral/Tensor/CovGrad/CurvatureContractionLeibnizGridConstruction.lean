@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 section RankCast
@@ -64,8 +64,8 @@ private theorem iteratedCovGrad_covGrad_comm_heq_lg (g : SmoothRiemannianMetric 
       exact covGrad_heq_congr_lg g r (by omega : (s + 1) + k = s + (k + 1)) ih
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [CompleteSpace E] in
 private theorem rfns_toSection_heq_congr_lg (g : SmoothRiemannianMetric I M)
     (r : ℕ) {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b}
     (hYZ : HEq Y Z) (x : M) :
@@ -175,7 +175,7 @@ noncomputable def diffCurvPhi0Fib (g : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem diffCurvPhi0Fib_contMDiff (g : SmoothRiemannianMetric I M)
     {X Y : Π b : M, TangentSpace I b}

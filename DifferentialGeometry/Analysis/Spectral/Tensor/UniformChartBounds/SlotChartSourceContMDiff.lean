@@ -404,12 +404,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [CompactSpace M]
+  [T2Space M] [I.Boundaryless] [CompactSpace M]
 
 private local instance slotSubst_complete_E : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma chartLeviCivitaParallelCLM_chartBasisVec_matrixEntry_contMDiffOn_chartSource
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E))
@@ -467,7 +467,7 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_matrixEntry_contMDiffOn_c
     hcoord_smooth.comp_contMDiffOn hΦv_smooth
   exact hfinal
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [I.Boundaryless] [CompactSpace M] in
 private lemma chartJ_chartJinv_on_chartSource
     (α : M) {b : M} (hb : b ∈ (chartAt H α).source) (v : E) :
@@ -477,7 +477,7 @@ private lemma chartJ_chartJinv_on_chartSource
   have hbase : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := hb
   exact chartJ_chartJinv (I := I) (M := M) α hbase v
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [I.Boundaryless] [CompactSpace M] in
 private lemma chartJinv_chartJ_self_on_chartSource
     (α : M) {b : M} (hb : b ∈ (chartAt H α).source) (v : E) :
@@ -501,7 +501,7 @@ private lemma eval0SCLE_symm_pi_single_at_basis_tuple
   have h' := congr_fun h φ
   simpa [eval0SCLE_apply] using h'
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [I.Boundaryless]
     [CompactSpace M] in
 private lemma slotSubst_trivProj_entry_closedForm
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M) (k : Fin r)
@@ -873,7 +873,7 @@ private lemma slotSubst_trivProj_entry_closedForm
     rw [hphi_zero a]
     simp
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 theorem tensorSlotSubstCLM_chartLeviCivita_chartBasisVec_trivImage_contMDiffOn_chartSource
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (j : Fin (Module.finrank ℝ E)) (k : Fin r) :
@@ -976,12 +976,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [CompactSpace M]
+  [T2Space M] [I.Boundaryless] [CompactSpace M]
 
 private local instance slotCorrection_complete_E : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [I.Boundaryless]
     [CompactSpace M] in
 private lemma triv_compInput_eq_trivT_compL_trivS
     (r s : ℕ) (α : M) {b : M} (hb : b ∈ (chartAt H α).source)
@@ -1133,7 +1133,7 @@ private lemma triv_compInput_eq_trivT_compL_trivS
       (fun i => chartTrivializationLinearMapSymm (I := I) (M := M) α b (w i))
   rw [hinner_round_trip]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [I.Boundaryless]
     [CompactSpace M] in
 private lemma triv_compOutput_eq_trivS_compL_trivT
     (r s : ℕ) (α : M) {b : M} (hb : b ∈ (chartAt H α).source)
@@ -1283,7 +1283,7 @@ private lemma triv_compOutput_eq_trivS_compL_trivT
       (fun i => chartTrivializationLinearMapSymm (I := I) (M := M) α b (w i))
   rw [hround]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 theorem chartTensorRSInputSlotCorrection_chartBasisVec_trivImage_contMDiffOn_chartSource
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : Π b : M, TensorRSSpace r s I b)
@@ -1397,7 +1397,7 @@ theorem chartTensorRSInputSlotCorrection_chartBasisVec_trivImage_contMDiffOn_cha
   intro b hb
   exact hbridge b hb
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 theorem chartTensorRSOutputSlotCorrection_chartBasisVec_trivImage_contMDiffOn_chartSource
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : Π b : M, TensorRSSpace r s I b)

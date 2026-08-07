@@ -73,7 +73,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -108,7 +108,7 @@ private def kInPerm120 : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem slotPermCcFib_contMDiff (_g₀ : SmoothRiemannianMetric I M) {d : ℕ}
     (ρ : Equiv.Perm (Fin d)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel d d ℝ E)) ∞
@@ -135,7 +135,7 @@ private def slotPermCc (g₀ : SmoothRiemannianMetric I M) {d : ℕ} (ρ : Equiv
       contMDiff_toFun := slotPermCcFib_contMDiff (I := I) (M := M) g₀ ρ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem kernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder1KernelField (I := I) g₀ g₁ =
       -(reindexCoeffGen (I := I) (M := M) g₀ 3 4

@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -52,7 +52,7 @@ section UniformBound
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma flat_toModel_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
     (uu : TangentSpace I x) (v : Fin 1 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x uu) v =
@@ -73,7 +73,7 @@ private lemma flat_toModel_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
     (F : Tensor0SBundle.Tensor0SModel 1 ℝ E → E → ℝ)
     (hFβ : ∀ z : E, IsLinearMap ℝ (fun β => F β z))
@@ -181,7 +181,7 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
                     rw [Module.Basis.coord_apply]
                 _ = (e a : E) := hbe
 
-def fibPointwiseBound (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ) (c : ℝ)
+def fibPointwiseBound [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ) (c : ℝ)
     (Z : Tensor0SBundle.Tensor0SSpace d I x) : Prop :=
   0 ≤ c ∧ ∀ w : Fin d → TangentSpace I x,
     |Tensor0SBundle.Tensor0SSpace.toModel Z (fun j => (w j : E))| ≤
@@ -189,9 +189,9 @@ def fibPointwiseBound (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ) (c :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
-lemma fibPointwiseBound_coframe (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ)
+lemma fibPointwiseBound_coframe [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M) (d : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (K : Fin d → Fin n) :
@@ -209,9 +209,9 @@ lemma fibPointwiseBound_coframe (g₀ : SmoothRiemannianMetric I M) (x : M) (d :
   exact hcs
 
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma fibPointwiseBound_slotPerm (g₀ : SmoothRiemannianMetric I M) (x : M) {d : ℕ}
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
+private lemma fibPointwiseBound_slotPerm [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M) {d : ℕ}
     (ρ : Equiv.Perm (Fin d)) {c : ℝ} {Z : Tensor0SBundle.Tensor0SSpace d I x}
     (hZ : fibPointwiseBound (I := I) g₀ x d c Z) :
     fibPointwiseBound (I := I) g₀ x d c (slotPermCLM (I := I) ρ x Z) := by
@@ -230,17 +230,17 @@ private lemma fibPointwiseBound_slotPerm (g₀ : SmoothRiemannianMetric I M) (x 
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma fibPointwiseBound_prod_nonneg (g₀ : SmoothRiemannianMetric I M) (x : M) {d : ℕ}
     (w : Fin d → TangentSpace I x) :
     0 ≤ ∏ j, Real.sqrt (g₀.inner x (w j) (w j)) :=
   Finset.prod_nonneg (fun _ _ => Real.sqrt_nonneg _)
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
-lemma connDiff_flat_factor_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+omit [T2Space M] in
+lemma connDiff_flat_factor_bound [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     {CA : ℝ}
@@ -282,9 +282,9 @@ lemma connDiff_flat_factor_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M
   ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma fibPointwiseBound_connContr21 [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -425,9 +425,9 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
         ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma fibPointwiseBound_connContr11 [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -559,9 +559,9 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
         ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma fibPointwiseBound_connContr12 [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -696,9 +696,9 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
         ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma cometricDoubleTrace_toModel_bound [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -845,9 +845,9 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
         ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma fourTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma fourTrace_toModel_bound [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -915,9 +915,9 @@ lemma fourTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     _ = 2 * (n : ℝ) * q * c * W := by ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma fibPointwiseBound_order1CLM [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)
@@ -1001,9 +1001,9 @@ lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     _ ≤ 5 * ((n : ℝ) * CA * c) * P4 := by linarith
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma fibPointwiseBound_order0CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma fibPointwiseBound_order0CLM [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a)

@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -40,14 +40,13 @@ private local instance : BorelSpace M := ⟨rfl⟩
 abbrev TensorH1Compl (g : SmoothRiemannianMetric I M) (r s : ℕ) : Type _ :=
   UniformSpace.Completion (SmoothCcTensorH1 g r s)
 
-noncomputable def smoothToTensorH1Compl
+noncomputable def smoothToTensorH1Compl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorH1 g r s →L[ℝ] TensorH1Compl g r s :=
   UniformSpace.Completion.toComplL
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma smoothToTensorH1Compl_apply
+@[simp] lemma smoothToTensorH1Compl_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     smoothToTensorH1Compl (I := I) (M := M) g r s S =
@@ -55,8 +54,8 @@ omit [NeZero (Module.finrank ℝ E)] in
   rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-lemma SmoothCcTensor.norm_sq_eq_inner_self
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma SmoothCcTensor.norm_sq_eq_inner_self [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensor g r s) :
     ‖S‖ ^ 2 = tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun := by
@@ -65,9 +64,8 @@ lemma SmoothCcTensor.norm_sq_eq_inner_self
   exact h.symm
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma SmoothCcTensorH1.norm_sq_eq_inner_self
+lemma SmoothCcTensorH1.norm_sq_eq_inner_self [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensorH1 g r s) :
     ‖S‖ ^ 2 =
@@ -77,9 +75,8 @@ lemma SmoothCcTensorH1.norm_sq_eq_inner_self
   exact h.symm
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma SmoothCcTensorH1.l2NormSq_le_h1NormSq
+lemma SmoothCcTensorH1.l2NormSq_le_h1NormSq [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensorH1 g r s) :
     ‖S.toCcTensor‖ ^ 2 ≤ ‖S‖ ^ 2 := by
@@ -97,9 +94,8 @@ lemma SmoothCcTensorH1.l2NormSq_le_h1NormSq
   linarith
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma SmoothCcTensorH1.l2Norm_le_h1Norm
+lemma SmoothCcTensorH1.l2Norm_le_h1Norm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensorH1 g r s) :
     ‖S.toCcTensor‖ ≤ ‖S‖ := by
@@ -108,15 +104,14 @@ lemma SmoothCcTensorH1.l2Norm_le_h1Norm
   exact abs_le_of_sq_le_sq' h_sq h_rhs_nn |>.2
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma SmoothCcTensorH1.l2Norm_le_one_mul_h1Norm
+lemma SmoothCcTensorH1.l2Norm_le_one_mul_h1Norm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensorH1 g r s) :
     ‖S.toCcTensor‖ ≤ 1 * ‖S‖ := by
   rw [one_mul]; exact SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S
 
-noncomputable def smoothCcTensorH1ToTensorL2Lin
+noncomputable def smoothCcTensorH1ToTensorL2Lin [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorH1 g r s →ₗ[ℝ] TensorL2 r s g where
   toFun S := (S.toCcTensor : TensorL2 r s g)
@@ -131,17 +126,16 @@ noncomputable def smoothCcTensorH1ToTensorL2Lin
     rw [SmoothCcTensorH1.toCcTensor_smul]
     exact UniformSpace.Completion.coe_smul _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma smoothCcTensorH1ToTensorL2Lin_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma smoothCcTensorH1ToTensorL2Lin_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     smoothCcTensorH1ToTensorL2Lin (I := I) (M := M) g r s S =
       (S.toCcTensor : TensorL2 r s g) := rfl
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma smoothCcTensorH1ToTensorL2Lin_norm_le
+lemma smoothCcTensorH1ToTensorL2Lin_norm_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     ‖smoothCcTensorH1ToTensorL2Lin (I := I) (M := M) g r s S‖ ≤ 1 * ‖S‖ := by
@@ -154,23 +148,21 @@ lemma smoothCcTensorH1ToTensorL2Lin_norm_le
     _ ≤ 1 * ‖S‖ :=
       SmoothCcTensorH1.l2Norm_le_one_mul_h1Norm (I := I) (M := M) S
 
-noncomputable def smoothCcTensorH1ToTensorL2
+noncomputable def smoothCcTensorH1ToTensorL2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorH1 g r s →L[ℝ] TensorL2 r s g :=
   (smoothCcTensorH1ToTensorL2Lin (I := I) (M := M) g r s).mkContinuous 1
     (fun S => smoothCcTensorH1ToTensorL2Lin_norm_le (I := I) (M := M) g r s S)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma smoothCcTensorH1ToTensorL2_apply
+@[simp] lemma smoothCcTensorH1ToTensorL2_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     smoothCcTensorH1ToTensorL2 (I := I) (M := M) g r s S =
       (S.toCcTensor : TensorL2 r s g) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma denseRange_toComplL_smoothCcTensorH1
+private lemma denseRange_toComplL_smoothCcTensorH1 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     DenseRange
       (UniformSpace.Completion.toComplL :
@@ -182,9 +174,8 @@ private lemma denseRange_toComplL_smoothCcTensorH1
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.denseRange_coe
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma isUniformInducing_toComplL_smoothCcTensorH1
+private lemma isUniformInducing_toComplL_smoothCcTensorH1 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsUniformInducing
       (UniformSpace.Completion.toComplL :
@@ -196,16 +187,15 @@ private lemma isUniformInducing_toComplL_smoothCcTensorH1
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.isUniformInducing_coe (SmoothCcTensorH1 g r s)
 
-noncomputable def TensorH1ComplToTensorL2
+noncomputable def TensorH1ComplToTensorL2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorH1Compl g r s →L[ℝ] TensorL2 r s g :=
   ContinuousLinearMap.extend (smoothCcTensorH1ToTensorL2 (I := I) (M := M) g r s)
     (UniformSpace.Completion.toComplL :
       SmoothCcTensorH1 g r s →L[ℝ] TensorH1Compl g r s)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma TensorH1ComplToTensorL2_smoothToTensorH1Compl
+@[simp] lemma TensorH1ComplToTensorL2_smoothToTensorH1Compl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -218,9 +208,8 @@ omit [NeZero (Module.finrank ℝ E)] in
     (denseRange_toComplL_smoothCcTensorH1 (I := I) (M := M) g r s)
     (isUniformInducing_toComplL_smoothCcTensorH1 (I := I) (M := M) g r s) S
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe
+theorem TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     TensorH1ComplToTensorL2 (I := I) (M := M) g r s

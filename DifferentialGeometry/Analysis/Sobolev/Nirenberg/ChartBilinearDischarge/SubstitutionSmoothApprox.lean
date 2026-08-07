@@ -41,7 +41,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 theorem exists_chart_target_cutoff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {α : M}
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
     {_R₀ : ℝ} {h : ℝ}
@@ -79,7 +79,7 @@ theorem exists_chart_target_cutoff
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoff_uChart_memLp_two_univ
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -145,7 +145,7 @@ lemma cutoff_uChart_memLp_two_univ
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoff_uChart_partial_memLp_two_univ
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -302,7 +302,7 @@ lemma cutoff_uChart_partial_memLp_two_univ
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cutoff_uChart_hasWeakPartialDeriv_univ
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -656,7 +656,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoff_uChart_w1p_witness
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -681,7 +681,7 @@ theorem cutoff_uChart_w1p_witness
       hχ_smooth hχ_cs hχ_supp_in
 
 private noncomputable def cutoff_uChart_witness
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -736,7 +736,7 @@ private noncomputable def cutoff_uChart_witness
       hχ_smooth hχ_cs hχ_supp_in i
 
 theorem exists_smooth_uChart_approx
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -945,7 +945,7 @@ private lemma standardNirenbergTest_sub
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem standardNirenbergTest_seq_tendsto_eLpNorm
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)

@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 /-- The top-order tensors whose order-`a+1` view has norm at most `R`. -/
 def lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
@@ -41,8 +41,8 @@ def lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
   lowerBall (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)) R
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem zero_mem_lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+omit [NeZero (Module.finrank ℝ E)] in
+theorem zero_mem_lowerState [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ} (hR : 0 ≤ R) :
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ∈
       lowerState (I := I) (M := M) g₀ a R := by
@@ -95,10 +95,10 @@ theorem field_mem_lower
     _ ≤ 2 * ρ := mul_le_mul hsqrt hF (norm_nonneg F) (by positivity)
     _ ≤ R := hρR
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The mixed pointwise estimate on a lower-norm state set integrates to the
 same mixed time-`L²` estimate. -/
-theorem nemytskiiOn_mixed
+theorem nemytskiiOn_mixed [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     {L : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →

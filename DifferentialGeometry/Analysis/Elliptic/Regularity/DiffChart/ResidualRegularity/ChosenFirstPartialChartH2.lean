@@ -43,7 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def chosenMixedSecondPartial
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -136,9 +136,9 @@ theorem chartPushedChosenFirstPartial_memWkp_two_of_chartPushed_memWkp_three
     (I := I) (M := M) g α u_h h_chartPushed_memWkp_three l i
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartPushed_chosenFirstPartial_memWkp_two_two_of_laplacianDomainPow_two
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

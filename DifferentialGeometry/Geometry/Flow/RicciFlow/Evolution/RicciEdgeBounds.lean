@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
@@ -162,7 +162,7 @@ omit [NeZero (Module.finrank ℝ E)]
 weakly parabolic chart-Gram `2`-jet equation.  This is the coordinate PDE that
 an initial-edge gauge or boundary-regularity argument must improve to a
 strictly parabolic system; no such improvement is asserted here. -/
-theorem ricciEdgeChartPDE
+theorem ricciEdgeChartPDE [SigmaCompactSpace M]
     (g : ℝ → SmoothRiemannianMetric I M) {a b t : ℝ}
     (hpde : ∀ r ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g s).inner x v w)
@@ -197,7 +197,7 @@ theorem ricciEdgeChartPDE
 
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- On every compact time interval strictly inside the regular slab, the
 metric variation is the time integral of `-2 Ric`.  Joint interior
 chart-Gram smoothness supplies continuity (hence integrability) of the Ricci
@@ -246,7 +246,7 @@ theorem ricciEdgeIntegral
 
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+  in
 /-- The interior Ricci integrals have the correct improper limit at the
 initial edge.  This is deliberately an improper-limit statement: the exact
 endpoint hypotheses do not yet imply Lebesgue integrability of `Ric` on the

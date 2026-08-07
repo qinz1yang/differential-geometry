@@ -94,7 +94,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -497,7 +497,6 @@ theorem pAO_connDiffSection_jetL2_tame (g₀ : SmoothRiemannianMetric I M) (a : 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 private lemma pAO_connDiff_self_zero (gA : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) gA gA x u v = 0 := by
@@ -511,7 +510,6 @@ private lemma pAO_connDiff_self_zero (gA : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 private lemma pAO_connDiff_antisymm (gA gB : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) gA gB x u v =
@@ -523,7 +521,6 @@ private lemma pAO_connDiff_antisymm (gA gB : SmoothRiemannianMetric I M) (x : M)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (connDiffLoweredField) in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma pAO_lieArm1Kappa_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (lieArm1LoweredBgKappa (I := I) (M := M) g₀ g₁ g_bg) x m =

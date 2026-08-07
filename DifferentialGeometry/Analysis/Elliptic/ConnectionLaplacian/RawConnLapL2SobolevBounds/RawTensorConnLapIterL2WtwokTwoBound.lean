@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -51,11 +51,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] lemma rawTensorConnLapSmooth_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (x : M) :
@@ -71,19 +71,19 @@ noncomputable def rawTensorConnLapIter
   | k + 1, T => rawTensorConnLapSmooth (I := I) g r s
                   (rawTensorConnLapIter g r s k T)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] theorem rawTensorConnLapIter_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     rawTensorConnLapIter (I := I) g r s 0 T = T := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] theorem rawTensorConnLapIter_succ
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : SmoothCcTensor g r s) :
     rawTensorConnLapIter (I := I) g r s (k + 1) T =
       rawTensorConnLapSmooth (I := I) g r s
         (rawTensorConnLapIter (I := I) g r s k T) := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 lemma rawTensorConnLapIter_one
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     rawTensorConnLapIter (I := I) g r s 1 T =

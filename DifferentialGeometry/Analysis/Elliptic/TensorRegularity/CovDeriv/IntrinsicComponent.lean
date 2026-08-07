@@ -27,11 +27,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorRSChartE_section_repr_eq_tensorTrivProj
+    in
+theorem tensorRSChartE_section_repr_eq_tensorTrivProj [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) :
     tensorRSChartE_section_repr (I := I) r s α S.toSection =
@@ -39,8 +39,8 @@ theorem tensorRSChartE_section_repr_eq_tensorTrivProj
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorRSIntrinsicChartCLM_proj_eq_fderiv_component
+    in
+theorem tensorRSIntrinsicChartCLM_proj_eq_fderiv_component [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -77,8 +77,8 @@ theorem tensorRSIntrinsicChartCLM_proj_eq_fderiv_component
     hb_chart hb_int Idx Jdx (trivToE (I := I) α b v)]
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem tensorRSIntrinsicChartCLM_component_eq_euclidPartial
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem tensorRSIntrinsicChartCLM_component_eq_euclidPartial [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

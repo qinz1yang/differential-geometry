@@ -28,7 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma sum_tensorChartComponentRaw_sq_continuousOn_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ContinuousOn
@@ -60,7 +60,7 @@ lemma sum_tensorChartComponentRaw_sq_continuousOn_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_uniform_bound_sum_tensorChartComponentRaw_sq_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ∃ B : ℝ, 0 ≤ B ∧
@@ -98,7 +98,7 @@ lemma exists_uniform_bound_sum_tensorChartComponentRaw_sq_on_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ∃ Kα : ℝ, 0 ≤ Kα ∧
@@ -174,7 +174,7 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_bound_riemannianFiberNormSq_smoothCcTensor
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ b : M,

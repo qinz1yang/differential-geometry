@@ -44,32 +44,30 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-noncomputable def tensorCovDerivAt
+noncomputable def tensorCovDerivAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (x : M) (v : E) :
     TensorRSSpace r s I x :=
   tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
     (fun y : M => S.toSection y) x v
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivAt_def
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivAt_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (x : M) (v : E) :
     tensorCovDerivAt (I := I) (M := M) g r s S x v =
       tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
         (fun y : M => S.toSection y) x v := rfl
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivAt_add
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivAt_add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (x : M) (v : E) :
     tensorCovDerivAt (I := I) (M := M) g r s (S₁ + S₂) x v =
@@ -100,9 +98,8 @@ lemma tensorCovDerivAt_add
   rw [hclm]
   rfl
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivAt_smul
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivAt_smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (S : SmoothCcTensor g r s) (x : M) (v : E) :
     tensorCovDerivAt (I := I) (M := M) g r s (c • S) x v =
@@ -134,7 +131,7 @@ lemma tensorCovDerivAt_smul
   rw [hext_zero]
   simp [ContinuousLinearMap.smul_apply]
 
-noncomputable def tensorCovDerivPointwiseInner
+noncomputable def tensorCovDerivPointwiseInner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -145,9 +142,8 @@ noncomputable def tensorCovDerivPointwiseInner
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T x ((chartModelBasis E) j)))
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_def
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivPointwiseInner_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T x =
@@ -161,9 +157,8 @@ lemma tensorCovDerivPointwiseInner_def
               (tensorCovDerivAt (I := I) (M := M) g r s T x
                 ((chartModelBasis E) j))) := rfl
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_symm
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivPointwiseInner_symm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T x =
@@ -182,9 +177,8 @@ lemma tensorCovDerivPointwiseInner_symm
   rw [hG]
   rw [tensorInnerPointwise_symm]
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_add_left
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivPointwiseInner_add_left [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ T : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s (S₁ + S₂) T x =
@@ -205,9 +199,8 @@ lemma tensorCovDerivPointwiseInner_add_left
   rw [hAdd, TensorRSSpace.toModel_add, tensorInnerPointwise_add_left]
   ring
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_smul_left
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivPointwiseInner_smul_left [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (S T : SmoothCcTensor g r s) (x : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s (c • S) T x =
@@ -226,9 +219,8 @@ lemma tensorCovDerivPointwiseInner_smul_left
   rw [hSmul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left]
   ring
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_nonneg
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorCovDerivPointwiseInner_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (x : M) :
     0 ≤ tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S x := by
@@ -404,16 +396,15 @@ lemma tensorCovDerivPointwiseInner_nonneg
   exact tensorInnerPointwise_nonneg (I := I) (M := M) g r s x
     (∑ i : Fin n, U i k • vfam i)
 
-noncomputable def tensorH1Inner
+noncomputable def tensorH1Inner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) : ℝ :=
   tensorL2Inner (I := I) (M := M) g r s S.toFun T.toFun +
     ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorH1Inner_def
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+lemma tensorH1Inner_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) :
     tensorH1Inner (I := I) (M := M) g r s S T =

@@ -37,7 +37,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -49,7 +49,7 @@ section GeneralValenceRS
 
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla DifferentialGeometry.TensorMultilinear
 
-private noncomputable def lpFiberJetLadder_rs
+private noncomputable def lpFiberJetLadder_rs [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (u : Integral.L2.SmoothCcTensor g r s)
     (Λ₀ : ℝ) (i : ℕ) : ℝ :=
   if i = 0 then
@@ -63,7 +63,7 @@ private noncomputable def lpFiberJetLadder_rs
         ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) ^ ((i : ℝ) / (2 * k))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
-private theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
+private theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : Integral.L2.SmoothCcTensor g r s) :
     Integral.L2.tensorL2Norm (I := I) (M := M) g r s S.toFun ^ 2 =
       ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x)

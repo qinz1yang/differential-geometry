@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -779,7 +779,7 @@ theorem gInvDiffSlotCoeff_realizedFam_perOrder_l2_ballUniform
     hδP_le hδP htie hPball i hi
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem continuous_rfns_arm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -1273,7 +1273,6 @@ noncomputable def cometricDoubleTraceCastG0 (g₀ g₁ : SmoothRiemannianMetric 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem ricciArmOrder1KoszulCoeff_eq_raisedKoszul_contract_cometricDoubleTraceCastG0
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciArmOrder1KoszulCoeff
@@ -1497,8 +1496,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma cometricDoubleTraceFib_sub_toModel_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
     (w : Tensor0SSpace (p + 2) I x) (m : Fin p → E) :
@@ -1543,7 +1542,7 @@ lemma cometricDoubleTraceFib_sub_toModel_eq
     ((Module.finBasis ℝ E).cDualBasis k)]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma cometricCastG0_sub_doubleTrace_clm
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 1 I x from

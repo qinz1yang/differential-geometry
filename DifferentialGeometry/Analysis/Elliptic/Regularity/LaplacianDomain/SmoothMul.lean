@@ -25,7 +25,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimit
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimitGeneral
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def fHLeibnizResidualCLM
     (g : SmoothRiemannianMetric I M) (α : M) :

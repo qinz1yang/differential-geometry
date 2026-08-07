@@ -33,7 +33,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 theorem lower_coeff_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -100,7 +100,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
 /-- In dimension three, integral `H1` control of the order-zero coefficient
 and integral `H2` control of the order-one coefficient are sufficient for the

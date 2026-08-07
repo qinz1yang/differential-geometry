@@ -38,7 +38,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 /-- The tensor-bundle trivialization used in the raw-section transition
 proof.  It is definitionally the trivialization used by `transitionCoeff`. -/
@@ -50,7 +50,7 @@ proof.  It is definitionally the trivialization used by `transitionCoeff`. -/
     (fun y : M => TensorRSSpace r s I y) α
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem rawRSTriv_base (r s : ℕ) (α : M) :
     (rawRSTriv (E := E) (I := I) (M := M) r s α).baseSet =
       (chartAt H α).source := by
@@ -67,7 +67,7 @@ private theorem rawRSTriv_base (r s : ℕ) (α : M) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem coordChange_apply
     (r s : ℕ) (γ α : M) {x : M}
     (hxγ : x ∈ (chartAt H γ).source) (hxα : x ∈ (chartAt H α).source)
@@ -103,7 +103,7 @@ private theorem coordChange_apply
     Bundle.Trivialization.symmL_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 /-- On a chart overlap, the model value of an arbitrary raw section changes
 by the standard bundle coordinate-change map. -/
 theorem secTriv_trans
@@ -136,8 +136,8 @@ theorem secTriv_trans
   rw [Bundle.Trivialization.symmL_continuousLinearMapAt
     (rawRSTriv (E := E) (I := I) (M := M) r s γ) hxγ' (S x)]
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem secCompRaw_trans
+    [T2Space M] in
+theorem secCompRaw_trans [SigmaCompactSpace M]
     (r s : ℕ) (S : RSTensorSection I M r s) (γ α : M)
     (P₀ : TensorCompIdx (E := E) r s) {x : M}
     (hx : x ∈ (chartAt H γ).source ∩ (chartAt H α).source) :
@@ -193,7 +193,7 @@ theorem secCompRaw_trans
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 /-- In the source chart, trivializing `secModelPull α v` recovers the model
 field `v` at the corresponding Euclidean coordinate. -/
 theorem secPull_triv_eq
@@ -213,8 +213,8 @@ theorem secPull_triv_eq
   exact Bundle.Trivialization.continuousLinearMapAt_symmL
     (rawRSTriv (E := E) (I := I) (M := M) r s α) hx' _
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem secPull_raw_eq
+    [T2Space M] in
+theorem secPull_raw_eq [SigmaCompactSpace M]
     (r s : ℕ) (α : M)
     (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →
       TensorRSModel r s ℝ E)
@@ -229,10 +229,10 @@ theorem secPull_raw_eq
   rw [secPull_triv_eq (E := E) (I := I) (M := M) r s α v hx]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 /-- A target-chart raw component of a pulled-back weak model field is a finite
 transition-coefficient sum of the scalar source-model components. -/
-theorem secPull_raw_trans
+theorem secPull_raw_trans [SigmaCompactSpace M]
     (r s : ℕ) (β α : M)
     (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →
       TensorRSModel r s ℝ E)

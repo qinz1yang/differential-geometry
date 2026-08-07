@@ -250,7 +250,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [BoundarylessManifold I M]
 
 section FiniteNormed
 
@@ -259,7 +259,7 @@ variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
 
 /-- The moving HMF mass pairing restricted along a fixed finite-dimensional
 linear trial-space realization. -/
-noncomputable def hmfFinMass
+noncomputable def hmfFinMass [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
     V →L[ℝ] V →L[ℝ] ℝ :=
@@ -271,16 +271,16 @@ noncomputable def hmfFinMass
     (fun a u v => by
       simp only [map_smul, hmfMass_smul_right, smul_eq_mul])).toContinuousBilinearMap
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-@[simp] theorem hmfFinMass_apply
+@[simp] theorem hmfFinMass_apply [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) (u v : V) :
     hmfFinMass (I := I) (M := M) q h J u v =
       hmfMass (I := I) (M := M) q h (J u) (J v) := rfl
 
 /-- The moving HMF principal form restricted to the same trial space. -/
-noncomputable def hmfFinForm
+noncomputable def hmfFinForm [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
     V →L[ℝ] V →L[ℝ] ℝ :=
@@ -318,11 +318,11 @@ theorem hmfFinMass_cont
   simpa only [hmfFinMass_apply] using
     hmfMass_time_cont (I := I) (M := M) q g hK hcont (J u) (J v)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 /-- A reference-orthonormal finite realization and reverse volume domination
 give the explicit lower bound for the moving mass matrix. -/
-theorem hmfFinMass_lower
+theorem hmfFinMass_lower [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -351,12 +351,11 @@ section FiniteHilbert
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   [CompleteSpace V] [FiniteDimensional ℝ V]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-omit [CompleteSpace V] in
 /-- The finite moving mass matrix is coercive with the same explicit lower
 constant. -/
-theorem hmfFinMass_coercive
+theorem hmfFinMass_coercive [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -480,7 +479,7 @@ theorem hmfSpec_orthonormal
 
 /-- The canonical realization of a finite Euclidean coordinate vector as a
 smooth `(0,1)` eigen-tensor combination. -/
-noncomputable def hmfSpecIncl
+noncomputable def hmfSpecIncl [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     EuclideanSpace ℝ {i // i ∈ S} →ₗ[ℝ] SmoothCcTensor q 0 1 where

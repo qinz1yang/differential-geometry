@@ -43,12 +43,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem rank_zero_one (x : M) (c : Tensor0SSpace 0 I x) :
     tensor0SSpace_evalScalar x c •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
@@ -74,7 +74,7 @@ noncomputable def scalarCc (g : SmoothRiemannianMetric I M)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[simp] theorem scalar0_scalarCc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
@@ -170,7 +170,7 @@ theorem scalar0_smul_cc (g : SmoothRiemannianMetric I M)
     ContinuousMultilinearMap.smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem joint_rs_smul {r s : ℕ} {S : Set ℝ}
     (f : M × ℝ → ℝ)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ f
@@ -212,7 +212,7 @@ private theorem joint_rs_smul {r s : ℕ} {S : Set ℝ}
       exact mem_baseSet_trivializationAt _ _ x₀)).map_smul (f p₀) (A p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem scalarCc_joint (g : SmoothRiemannianMetric I M)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S : Set ℝ}
     (hzeta : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞

@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance tensorRSModelNormedAddCommGroup_local (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
@@ -46,7 +46,7 @@ private local instance tensorRSModelNormedSpace_local (r s : ℕ) :
   Tensor0SBundle.tensorRSModel_normedSpace r s
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem chartRepr_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : ℝ → SmoothCcTensor g₀ r s)
@@ -111,7 +111,7 @@ private theorem chartRepr_jointContMDiffOn
   rw [Bundle.Trivialization.coe_linearMapAt_of_mem _ hx]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem chartRepr_euclid_jointContDiffWithinAt
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : ℝ → SmoothCcTensor g₀ r s)

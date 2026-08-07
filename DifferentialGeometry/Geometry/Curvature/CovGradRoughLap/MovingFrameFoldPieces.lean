@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -77,7 +77,6 @@ theorem frameSummand_leadingSlot_secondOrder_commutation_orthoFrame
   exact covGrad_covDeriv_leadingSlot_secondOrder_commutation (I := I) (M := M) g s S hB hB x
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem frame_cyclic_second_bianchi_orthoFrame
     (g : SmoothRiemannianMetric I M)
     {Z W : Π b : M, TangentSpace I b} {x : M}
@@ -94,7 +93,6 @@ theorem frame_cyclic_second_bianchi_orthoFrame
   exact second_bianchi_levi_civita_metric (I := I) (M := M) g hB hB hZ hW
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem frameSummed_contracted_second_bianchi_eq_half_nablaScalar
     (g : SmoothRiemannianMetric I M)
     {V : Π b : M, TangentSpace I b} {x : M}

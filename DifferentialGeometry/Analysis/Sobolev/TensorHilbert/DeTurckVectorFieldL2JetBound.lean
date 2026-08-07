@@ -38,7 +38,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -386,7 +386,7 @@ private theorem raisedKoszul_rfns_lowOrder_le (g₀ : SmoothRiemannianMetric I M
   exact hkos
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma gInvRaisedEndo_self' (g₀ : SmoothRiemannianMetric I M) (x : M) :
     metricComparisonEndo (I := I) g₀ g₀ x =
       ContinuousLinearMap.id ℝ (TangentSpace I x) := by
@@ -395,7 +395,7 @@ private lemma gInvRaisedEndo_self' (g₀ : SmoothRiemannianMetric I M) (x : M) :
   rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM, ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma fullRaisedEndoField_decomp' (g₀ g₁ : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
       gInvDiffRaisedEndoField (I := I) g₀ g₁ +
@@ -416,7 +416,7 @@ private lemma fullRaisedEndoField_decomp' (g₀ g₁ : SmoothRiemannianMetric I 
   rw [gInvRaisedEndo_eq_diff_add_id]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInsertEndoCc_add' (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -438,7 +438,7 @@ private lemma slotInsertEndoCc_add' (g₀ : SmoothRiemannianMetric I M) (s : ℕ
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma sharpFlatEndoCc_eq_insert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -846,7 +846,6 @@ private theorem connDiffSection_lowOrder_jetL2_succ_generic
     exact Finset.sum_le_sum hterm
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffSection_eq_cometricRaiseSlot0Field' (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -948,7 +947,7 @@ private lemma norm_iCG_connDiffLoweredCc_eq_connDiffSection
   exact rfns_iCG_connDiffLoweredCc_eq_connDiffSection (I := I) (M := M) g₀ g₁ n x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_neg_local'
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =

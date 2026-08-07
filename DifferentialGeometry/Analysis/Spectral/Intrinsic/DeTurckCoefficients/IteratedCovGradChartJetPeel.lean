@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
@@ -40,15 +40,15 @@ def bareChartJetContent (g : SmoothRiemannianMetric I M) (r s : ℕ)
     ∑ m ∈ Finset.range (N + 1),
       ‖iteratedFDeriv ℝ m (tensorComponentEuclideanChart (I := I) (M := M) g r s X α q'.1 q'.2) y‖
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma bareChartJetContent_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) (N : ℕ) (y : EuclN) :
     0 ≤ bareChartJetContent (I := I) (M := M) g r s X α N y :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma iteratedFDeriv_rawPullR_le_bareChartJetContent
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M)
@@ -77,8 +77,8 @@ lemma iteratedFDeriv_rawPullR_le_bareChartJetContent
   refine hbig.trans (le_of_eq ?_)
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma bareChartJetContent_mono (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : SmoothCcTensor g r s) (α : M) {N N' : ℕ} (hN : N ≤ N') (y : EuclN) :
     bareChartJetContent (I := I) (M := M) g r s X α N y ≤

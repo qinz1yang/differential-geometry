@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -33,8 +33,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma tensorTrivProj_contMDiffOn_chart_source
+    in
+lemma tensorTrivProj_contMDiffOn_chart_source [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) :
     ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -74,8 +74,8 @@ lemma tensorTrivProj_contMDiffOn_chart_source
   rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma mdifferentiableAt_tensorTrivProj
+    in
+lemma mdifferentiableAt_tensorTrivProj [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source) :
@@ -89,8 +89,8 @@ lemma mdifferentiableAt_tensorTrivProj
   exact hAt.mdifferentiableAt (by simp)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma differentiableAt_tensorTrivProj_pullback
+    in
+lemma differentiableAt_tensorTrivProj_pullback [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)
@@ -129,8 +129,8 @@ lemma differentiableAt_tensorTrivProj_pullback
   exact hwithin.differentiableAt hrange_nhds
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem mfderiv_tensorTrivProj_eq_chart_fderiv
+    in
+theorem mfderiv_tensorTrivProj_eq_chart_fderiv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)
@@ -196,8 +196,8 @@ theorem mfderiv_tensorTrivProj_eq_chart_fderiv
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorTrivProj_chart_pullback_hasFDerivAt
+    in
+theorem tensorTrivProj_chart_pullback_hasFDerivAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)
@@ -213,8 +213,8 @@ theorem tensorTrivProj_chart_pullback_hasFDerivAt
     hb_chart hb_int).hasFDerivAt
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_pullback_eq
+    in
+private lemma tensorChartComponentRaw_pullback_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -227,8 +227,8 @@ private lemma tensorChartComponentRaw_pullback_eq
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_chart_pullback_hasFDerivAt
+    in
+theorem tensorChartComponentRaw_chart_pullback_hasFDerivAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -260,8 +260,8 @@ theorem tensorChartComponentRaw_chart_pullback_hasFDerivAt
   exact HasFDerivAt.comp (extChartAt I α b) hCLM_hasFDeriv htriv
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_chart_pullback_fderiv
+    in
+theorem tensorChartComponentRaw_chart_pullback_fderiv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -281,8 +281,8 @@ theorem tensorChartComponentRaw_chart_pullback_fderiv
     (I := I) (M := M) g r s S α Idx Jdx hb_chart hb_int).fderiv
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_partial_decomp
+    in
+theorem tensorChartComponentRaw_partial_decomp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)
@@ -305,8 +305,8 @@ theorem tensorChartComponentRaw_partial_decomp
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_mfderiv_decomp
+    in
+theorem tensorChartComponentRaw_mfderiv_decomp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)
@@ -350,8 +350,8 @@ theorem tensorChartComponentRaw_mfderiv_decomp
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_chartBasis_partial
+    in
+theorem tensorChartComponentRaw_chartBasis_partial [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb_chart : b ∈ (chartAt H α).source)

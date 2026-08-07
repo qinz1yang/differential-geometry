@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -34,7 +34,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 def chartPushedPouWeight (α : M) : EuclN → ℝ :=
   chartPushedRaw I α (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedPouWeight_abs_le_one (α : M) (y : EuclN) :
     |chartPushedPouWeight (I := I) (M := M) α y| ≤ 1 := by
   classical
@@ -51,13 +51,13 @@ private lemma chartPushedPouWeight_abs_le_one (α : M) (y : EuclN) :
   · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy, abs_zero]
     exact zero_le_one
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedPouWeight_norm_le_one (α : M) (y : EuclN) :
     ‖chartPushedPouWeight (I := I) (M := M) α y‖ ≤ 1 := by
   rw [Real.norm_eq_abs]
   exact chartPushedPouWeight_abs_le_one (I := I) (M := M) α y
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartPushedPouWeight_measurable (α : M) :
     Measurable (chartPushedPouWeight (I := I) (M := M) α) := by
   classical
@@ -65,13 +65,13 @@ lemma chartPushedPouWeight_measurable (α : M) :
   exact chartPushedRaw_measurable (I := I) (M := M) α
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff.continuous).measurable
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedPouWeight_aestronglyMeasurable (α : M) :
     AEStronglyMeasurable (chartPushedPouWeight (I := I) (M := M) α)
       (chartL2Measure (I := I) (M := M) α) :=
   (chartPushedPouWeight_measurable (I := I) (M := M) α).aestronglyMeasurable
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedPouWeight_mul_memLp
     (α : M) {f : EuclN → ℝ}
     (hf : MemLp f 2 (chartL2Measure (I := I) (M := M) α)) :
@@ -94,7 +94,7 @@ private lemma chartPushedPouWeight_mul_memLp
         eLpNorm_mono hpt
     _ < ⊤ := hf.2
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma eLpNorm_chartPushedPouWeight_mul_le
     (α : M) (f : EuclN → ℝ) :
     eLpNorm (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
@@ -118,7 +118,7 @@ private def boundedPouMulLp
     (fun y => chartPushedPouWeight (I := I) (M := M) α y *
       (f : EuclN → ℝ) y)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma boundedPouMulLp_coeFn
     (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     ((boundedPouMulLp (I := I) (M := M) α f :
@@ -129,7 +129,7 @@ private lemma boundedPouMulLp_coeFn
   unfold boundedPouMulLp
   exact MemLp.coeFn_toLp _
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma boundedPouMulLp_add
     (α : M) (f₁ f₂ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     boundedPouMulLp (I := I) (M := M) α (f₁ + f₂) =
@@ -144,7 +144,7 @@ private lemma boundedPouMulLp_add
     boundedPouMulLp_coeFn (I := I) (M := M) α f₂] with y hy_add hy₁ hy₂
   rw [Pi.add_apply, hy₁, hy₂, hy_add, Pi.add_apply, mul_add]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma boundedPouMulLp_smul
     (α : M) (c : ℝ) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     boundedPouMulLp (I := I) (M := M) α (c • f) =
@@ -165,13 +165,13 @@ private def boundedPouMulLpLin (α : M) :
   map_add' f₁ f₂ := boundedPouMulLp_add (I := I) (M := M) α f₁ f₂
   map_smul' c f := boundedPouMulLp_smul (I := I) (M := M) α c f
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] private lemma boundedPouMulLpLin_apply
     (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     boundedPouMulLpLin (I := I) (M := M) α f =
       boundedPouMulLp (I := I) (M := M) α f := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma boundedPouMulLpLin_norm_le
     (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     ‖boundedPouMulLpLin (I := I) (M := M) α f‖ ≤ 1 * ‖f‖ := by
@@ -188,13 +188,13 @@ def boundedPouMulLpCLM (α : M) :
   (boundedPouMulLpLin (I := I) (M := M) α).mkContinuous 1
     (boundedPouMulLpLin_norm_le (I := I) (M := M) α)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] private lemma boundedPouMulLpCLM_apply
     (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     boundedPouMulLpCLM (I := I) (M := M) α f =
       boundedPouMulLp (I := I) (M := M) α f := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma boundedPouMulLpCLM_coeFn
     (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     ((boundedPouMulLpCLM (I := I) (M := M) α f :
@@ -237,7 +237,7 @@ private lemma tensorChartComponentPou_eq_pou_mul_cutoffComponentScalar
   exact pou_smul_eq_pou_smul_cutoff_smul (I := I) (M := M) α x
     (tensorChartComponentRaw (I := I) (M := M) g r s S α P₀.1 P₀.2 x)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedRaw_pou_mul_eq_chartPushedPouWeight_mul
     (α : M) (F : M → ℝ) (y : EuclN) :
     chartPushedRaw I α

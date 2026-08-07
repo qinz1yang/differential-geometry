@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma real_le_sq_of_sqrt_le {y r : ℝ} (hy : 0 ≤ y) (hr : 0 ≤ r)
     (h : Real.sqrt y ≤ r) : y ≤ r ^ 2 := by
@@ -55,7 +55,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
     {a b : TangentSpace I x} (hab : ∀ u : TangentSpace I x, g₁.inner x a u = g₁.inner x b u) :
     a = b := by
@@ -71,7 +71,7 @@ private lemma g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma cometricLmodel_covectorOfCLM_inner_loc (g₁ : SmoothRiemannianMetric I M) (y : M)
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I y) :
     g₁.inner y (cometricLmodel (I := I) g₁ y
@@ -89,7 +89,7 @@ private lemma cometricLmodel_covectorOfCLM_inner_loc (g₁ : SmoothRiemannianMet
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem cometricLmodel_sub_eq_gInvDiffRaisedEndo
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (φ : E →L[ℝ] ℝ) :
     cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
@@ -116,7 +116,7 @@ theorem cometricLmodel_sub_eq_gInvDiffRaisedEndo
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem ricciArmPrincipalCoeffPure_appCc_sub_eq_gInvDiffContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -270,7 +270,7 @@ theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
   exact connLapCometric_g1_sub_g0_eq_gInvDiffContraction (I := I) (M := M) g₀ g₁ S x v
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma deTurckCoeff_clm_eq_doubleTrace_sub (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁).toSection x) =
@@ -281,7 +281,7 @@ private lemma deTurckCoeff_clm_eq_doubleTrace_sub (g₀ g₁ : SmoothRiemannianM
     ricciArmPrincipalCoeffPure_toSection (I := I) (M := M) g₀ g₀]
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (w : Tensor0SSpace 4 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -325,7 +325,7 @@ private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (
     ((Module.finBasis ℝ E).cDualBasis k)]
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ =
@@ -352,7 +352,7 @@ lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     cometricLmodel (I := I) g₀ x
@@ -366,7 +366,7 @@ private lemma cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (b : Fin n) :
     ∑ k : Fin (Module.finrank ℝ E),
@@ -409,7 +409,7 @@ private lemma flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
   exact cometricLmodel_covOf_g0flat_eq (I := I) g₀ x (e b)
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g₀.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
@@ -565,7 +565,7 @@ private lemma deTurckCoeff_componentSqSum_eq (n : ℕ) (f : Fin n → Fin n → 
   rw [Finset.sum_congr rfl (fun a _ => hstep a), ← Finset.mul_sum]
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -680,7 +680,7 @@ private lemma iteratedCovGrad_smul_local (g : SmoothRiemannianMetric I M) (r s j
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_smul_local (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -709,7 +709,7 @@ private lemma combinedTrace42Model_apply_symbolic
   congr 1
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma ricciArmPrincipalCoeff_sub_add_self_eq_reindexSum
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁
@@ -825,7 +825,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_l
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -1133,7 +1133,7 @@ theorem ricciArmPrincipalCoeff_sub_perOrder_rfns_le_gInvDiffSlotCoeff
                   (gInvDiffSlotCoeff (I := I) g₀ g₁)).toSection x) := by ring
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem deTurckPrincipalCometricCoeff_toSection_clm_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from

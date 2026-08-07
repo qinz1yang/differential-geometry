@@ -27,7 +27,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 namespace H1Intrinsic
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
 def dirichletForm (g : SmoothRiemannianMetric I M)
     (u v : H1Intrinsic (I := I) (M := M) g) : ℝ :=

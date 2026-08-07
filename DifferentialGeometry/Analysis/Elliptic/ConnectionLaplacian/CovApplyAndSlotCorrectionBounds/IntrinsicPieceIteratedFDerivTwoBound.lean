@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -103,7 +103,7 @@ private lemma iteratedFDeriv_two_fderiv_apply_norm_le
     norm_iteratedFDeriv_one (𝕜 := ℝ) F (x := x)] at h_leibniz_global
   exact h_leibniz_global
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma c_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -124,7 +124,7 @@ private lemma c_contDiffOn_goodSet
   have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
   exact hF_cd.fderiv_of_isOpen hU_open h_le
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma u_contDiffOn_goodSet'
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -140,8 +140,8 @@ private lemma u_contDiffOn_goodSet'
       (chartLeviCivitaGoodSet (I := I) α) := hB_total.contMDiffOn
   exact chartE_pullback_contDiffOn_goodSet (I := I) α hB_on
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma pouTsupport_subset_goodSet' (α : M) :
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma pouTsupport_subset_goodSet' [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       chartLeviCivitaGoodSet (I := I) α := by
@@ -152,7 +152,7 @@ private lemma pouTsupport_subset_goodSet' (α : M) :
   rw [h_eq, extChartAt_source_eq_chartAt_source (I := I)]
   exact (chartAtlasPOU_isSubordinate I M) α hb
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedFDeriv_u_continuousOn
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

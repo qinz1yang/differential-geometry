@@ -41,7 +41,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 theorem duhamel_integral_time_deriv
     (lam : ℝ) (_hlam : 0 ≤ lam) (f : ℝ → ℝ) {T : ℝ}

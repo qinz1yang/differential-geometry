@@ -25,7 +25,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def iteratedResolventL2 (g : SmoothRiemannianMetric I M) (k : ℕ) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) →L[ℝ]

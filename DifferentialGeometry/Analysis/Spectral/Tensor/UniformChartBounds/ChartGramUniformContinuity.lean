@@ -145,7 +145,7 @@ theorem chartInvGramMatrix_l1Sum_isBounded_on_compact
   exact exists_bound_on_compact_of_continuousOn (α := α) _ h_cont hK hKsub
 
 theorem chartInvGramMatrix_l1Sum_isBounded_on_pouTsupport
-    [SigmaCompactSpace M] [CompactSpace M]
+    [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 < C ∧
       ∀ b : M, b ∈ tsupport (fun x : M =>

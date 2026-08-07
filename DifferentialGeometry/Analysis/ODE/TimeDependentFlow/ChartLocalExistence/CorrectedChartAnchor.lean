@@ -30,10 +30,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma intervalIntegrable_chartTrivRepr_along_orbit
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (g : ℝ → E) (Tα C s : ℝ)
     (hs0 : 0 ≤ s) (hsT : s ≤ Tα)
@@ -72,7 +72,7 @@ private lemma intervalIntegrable_chartTrivRepr_along_orbit
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 theorem corrected_chart_anchor_flow_build
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hCont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))

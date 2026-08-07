@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -36,7 +36,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartTensorRSInputSlotCorrection_norm_sq_le_of_F_bound
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α : M)
     (T : Π b' : M, TensorRSSpace r s I b')
@@ -63,7 +63,7 @@ private lemma chartTensorRSInputSlotCorrection_norm_sq_le_of_F_bound
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartTensorRSOutputSlotCorrection_norm_sq_le_of_F_bound
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α : M)
     (T : Π b' : M, TensorRSSpace r s I b')
@@ -90,13 +90,13 @@ private lemma chartTensorRSOutputSlotCorrection_norm_sq_le_of_F_bound
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma section_norm_eq_toFun_norm
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensor g r s) (b : M) :
     ‖S.toSection b‖ = ‖S.toFun b‖ := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem
     exists_sum_chart_christoffel_correction_norm_sq_le_const_mul_tensorInnerPointwise_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

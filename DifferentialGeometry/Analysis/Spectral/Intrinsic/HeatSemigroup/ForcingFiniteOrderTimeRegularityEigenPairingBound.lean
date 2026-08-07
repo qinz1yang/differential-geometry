@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -52,7 +52,7 @@ private local instance tensorRSModelNormedSpace_local :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensor_path_toFun_contDiffWithinAt
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} {N : WithTop ℕ∞}
@@ -117,7 +117,7 @@ open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
     (f : M → ℝ → ℝ) {T : ℝ} (U : Set M) (N : ℕ)
@@ -185,7 +185,7 @@ private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
 
 set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
     {T : ℝ} (U : Set M) :
     ∀ (j : ℕ) (f : M → ℝ → ℝ) (N : ℕ),
@@ -219,7 +219,7 @@ private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
 
 set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     {T : ℝ} (U : Set M) (hT : 0 < T) (Vf : M → ℝ → V) (j N : ℕ)
@@ -295,7 +295,7 @@ private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
   exact (A.symm_apply_apply _).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 0 ℝ E)) ∞
@@ -335,7 +335,7 @@ private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
     ContinuousMultilinearMap.constOfIsEmpty_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop ℕ∞} {n : ℕ}
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
@@ -398,7 +398,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop ℕ∞} : ∀ (n : ℕ)
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace n I p.1)
@@ -496,7 +496,7 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
       · intro k; simp [Fin.cons_succ]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
@@ -614,7 +614,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M) (α : M) {T : ℝ}
@@ -660,7 +660,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
     (fun j => (hv j p hp).of_le hN)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 set_option backward.isDefEq.respectTransparency false in
 private lemma tensorInnerPointwise_abs_le_half_selfInner_add
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -731,7 +731,7 @@ private lemma eigenvectorSmooth_selfInner_integral_eq_one
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk j : ℕ) (hj : j ≤ kk)
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)

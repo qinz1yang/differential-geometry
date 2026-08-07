@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma real_le_of_sq_le_mul_self {N K : ℝ} (hN : 0 ≤ N) (hK : 0 ≤ K)
     (h : N ^ 2 ≤ K * N) : N ≤ K := by
@@ -69,7 +69,7 @@ def gInvDiffRaisedEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem inverseMetricSharpFib_g0FlatY_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -87,7 +87,7 @@ theorem inverseMetricSharpFib_g0FlatY_contMDiff
   rw [inverseMetricSharpFib_g0FlatCLM_eq_metricSharp (I := I) g₀ g₁ x (Y x)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem cotangent_g0FlatY_mdiffAtCotangent
     (g₀ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
@@ -107,7 +107,6 @@ private theorem cotangent_g0FlatY_mdiffAtCotangent
 set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem endoCov_gInvDiffRaisedField_apply
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
@@ -203,7 +202,7 @@ theorem endoCov_gInvDiffRaisedField_apply
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 private lemma sqrt_g0_inner_add_le'
     (g₀ : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
@@ -253,7 +252,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local2
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M ↦ Tensor0SBundle.TensorRSSpace r s I b)]

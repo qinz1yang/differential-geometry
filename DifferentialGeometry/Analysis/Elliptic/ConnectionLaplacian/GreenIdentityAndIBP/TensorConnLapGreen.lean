@@ -35,9 +35,9 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [T2Space M]
 
-omit [FiniteDimensional ℝ E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [CompactSpace M] [T2Space M] in
 theorem pou_tangentSectionAction_finset_sum_eq_zero
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (S : Finset M)
@@ -78,7 +78,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -88,7 +88,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 lemma tangentSectionAction_smoothSmul
     (ρ : M → ℝ) (hρ : ContMDiff I 𝓘(ℝ) ∞ ρ)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : M → ℝ) (x : M) :

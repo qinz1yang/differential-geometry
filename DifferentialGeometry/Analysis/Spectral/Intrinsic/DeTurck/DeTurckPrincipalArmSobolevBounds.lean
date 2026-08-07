@@ -42,7 +42,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace r s I y)]
@@ -89,9 +89,8 @@ theorem smoothCcToTensorHs_inner_order_congr (g₀ : SmoothRiemannianMetric I M)
   subst h; rfl
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma weight_natCast (g₀ : SmoothRiemannianMetric I M)
+private lemma weight_natCast [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g₀ 0 2) (n : ℕ) :
     tensorSobolevWeight (I := I) (M := M) i ((n : ℕ) : ℝ) =

@@ -36,9 +36,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma smoothRicciPairing_contMDiff
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -76,7 +75,6 @@ noncomputable def smoothRicciPairingBundle
     (gradFun (I := I) g φ b) (gradFun (I := I) g v.toFun b)
   smooth := smoothRicciPairing_contMDiff (I := I) (M := M) g φ v
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma smoothRicciPairingBundle_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)

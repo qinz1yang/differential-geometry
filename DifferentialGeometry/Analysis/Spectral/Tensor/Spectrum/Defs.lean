@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -37,7 +37,6 @@ noncomputable def tensorResolventEigenspace
   Module.End.eigenspace
     ((tensorResolventL2 (I := I) (M := M) g r s).toLinearMap) μ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma mem_tensorResolventEigenspace_iff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (μ : ℝ)
@@ -48,7 +47,6 @@ lemma mem_tensorResolventEigenspace_iff
   rw [Module.End.mem_eigenspace_iff]
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenspace_finiteDim
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -59,7 +57,6 @@ theorem tensorResolventEigenspace_finiteDim
       (I := I) (M := M) g r s μ) :=
   ContinuousLinearMap.finite_dimensional_eigenspace h_compact μ hμ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenspaces_iSup_orthogonal_eq_bot
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -73,7 +70,6 @@ theorem tensorResolventEigenspaces_iSup_orthogonal_eq_bot
   exact ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot
     h_compact hSymm
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensor_exists_unit_eigenvector
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -94,7 +90,6 @@ private lemma tensor_exists_unit_eigenvector
   · rw [norm_smul, norm_inv, norm_norm]
     exact inv_mul_cancel₀ (ne_of_gt hu_pos)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolvent_eigenvectors_orthogonal
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ ν : ℝ} (hμν : μ ≠ ν)
@@ -109,7 +104,6 @@ private lemma tensorResolvent_eigenvectors_orthogonal
   have hortho := hSymm.orthogonalFamily_eigenspaces hμν
   exact hortho ⟨u, hu⟩ ⟨v, hv⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolventL2_apply_eigenvector
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -118,7 +112,6 @@ private lemma tensorResolventL2_apply_eigenvector
     tensorResolventL2 (I := I) (M := M) g r s u = μ • u :=
   (mem_tensorResolventEigenspace_iff (I := I) (M := M) g r s μ u).mp hu
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolventL2_image_separated_of_distinct_eigenvalues
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -183,7 +176,6 @@ private lemma tensorResolventL2_image_separated_of_distinct_eigenvalues
   rw [← h_sqrt_eq]
   exact h_target
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolvent_eigenvalues_finite_above
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -252,7 +244,6 @@ theorem tensorResolvent_eigenvalues_finite_above
     dist_eq_norm _ _] at h_dist
   linarith [h_sep_specific, h_dist]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma denseRange_TensorH1ComplToTensorL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -279,7 +270,6 @@ private lemma denseRange_TensorH1ComplToTensorL2
     rw [← h_toL2, hS]
   exact h_dense_toL2.mono h_subset
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolvent_injective
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -321,7 +311,6 @@ theorem tensorResolvent_injective
     exact pow_eq_zero_iff (two_ne_zero) |>.mp h_pow_zero
   exact norm_eq_zero.mp h_norm_zero
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventL2_injective
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -350,7 +339,6 @@ theorem tensorResolventL2_injective
   rw [(tensorResolvent (I := I) (M := M) g r s).map_zero]
   exact h_resolvent_zero
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenspace_zero_eq_bot
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -360,7 +348,6 @@ theorem tensorResolventEigenspace_zero_eq_bot
   rw [LinearMap.ker_eq_bot]
   exact tensorResolventL2_injective (I := I) (M := M) g r s
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma mul_norm_sq_eq_h1Norm_tensorResolvent_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -391,7 +378,6 @@ private lemma mul_norm_sq_eq_h1Norm_tensorResolvent_sq
   rw [real_inner_self_eq_norm_sq] at h_h1
   linarith
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolvent_eigenvalue_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -409,7 +395,6 @@ private lemma tensorResolvent_eigenvalue_nonneg
   have h_prod_nn : 0 ≤ μ * (‖u‖ ^ 2) := h.symm ▸ h_rhs_nn
   exact (mul_nonneg_iff_of_pos_right hu_pos).mp h_prod_nn
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolvent_eigenvalue_le_one
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -466,7 +451,6 @@ private lemma tensorResolvent_eigenvalue_le_one
   have h_lt : μ < μ ^ 2 := by nlinarith
   linarith
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolvent_eigenvalue_pos
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {μ : ℝ}
@@ -489,7 +473,6 @@ private lemma tensorResolvent_eigenvalue_pos
         (by rw [hRu, (tensorResolventL2 (I := I) (M := M) g r s).map_zero])
     exact hu_ne hu_zero
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolvent_eigenvalue_mem_unit_interval
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

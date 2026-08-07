@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
@@ -939,7 +939,7 @@ private lemma transportChartCenters_subset_chartAtlasPOU_finset' (β : M) :
   rw [chartAtlasPOU_finset_mem]
   exact hγ.mono Set.inter_subset_left
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma chartPushedPouWeight_toEuclidean_extChartAt'
     (α : M) {z : M} (hz : z ∈ (chartAt H α).source) :
     chartPushedPouWeight (I := I) (M := M) α

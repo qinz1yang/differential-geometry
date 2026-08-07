@@ -21,18 +21,18 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[reducible] private def fullHomTensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
     FiniteDimensional ℝ (TensorRSSpace r t I x) :=
   Tensor0SBundle.tensorRSSpace_finiteDimensional r t x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[reducible] private def fullHomTensorRSSpaceT2 {r t : ℕ} {x : M} :
     T2Space (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
@@ -54,7 +54,7 @@ private noncomputable def chooseSecAtFull
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chooseSecAtFull_eq
     (g : SmoothRiemannianMetric I M) (r a : ℕ) (x : M) (v : TensorRSSpace r a I x) :
     (chooseSecAtFull (I := I) (M := M) g r a x v).toSection x = v :=
@@ -113,7 +113,7 @@ set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma valueLocalLinearHomFib_apply
     (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (F : SmoothCcTensor g r a → SmoothCcTensor g r c)
@@ -146,7 +146,7 @@ private lemma valueLocalLinearHomFib_apply
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem valueLocalLinearHomFib_contMDiff
     (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (F : SmoothCcTensor g r a → SmoothCcTensor g r c)
@@ -177,7 +177,7 @@ private theorem valueLocalLinearHomFib_contMDiff
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem exists_value_local_appFullSec (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (F : SmoothCcTensor g r a → SmoothCcTensor g r c)
     (hadd : ∀ (W₁ W₂ : SmoothCcTensor g r a) (x : M),

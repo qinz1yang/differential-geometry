@@ -26,9 +26,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-def chartComponentRawSobolevNorm
+def chartComponentRawSobolevNorm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -97,7 +97,7 @@ theorem wkpNormChartRaw_zero_section
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw
     (α : M) (ρ u : M → ℝ)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -123,7 +123,7 @@ theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw
     rw [mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw_funext
     (α : M) (ρ u : M → ℝ) :
     (chartPushedRaw (I := I) (M := M) α (fun x : M => ρ x * u x)) =
@@ -134,8 +134,8 @@ theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw_funext
   exact chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw
     (I := I) (M := M) α ρ u y
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw_raw
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem tensorChartComp_eq_chartSmoothExt_mul_chartPushedRaw_raw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -36,7 +36,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 section ExplicitNormBound
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [I.Boundaryless] [T2Space M]
 
 
 theorem eLpNorm_weighted_contDiffOn_mul_le

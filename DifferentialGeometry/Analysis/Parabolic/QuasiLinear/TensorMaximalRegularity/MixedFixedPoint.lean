@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -117,7 +117,7 @@ def mixedMap (a : Real) {T : Real} (hT : 0 < T) (hT1 : T ≤ 1)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u0 force)
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 @[simp] theorem mixedMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
     (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
@@ -137,7 +137,7 @@ omit [NeZero (Module.finrank ℝ E)]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- The mixed map has contraction modulus
 `L2 * (1 + T) + L1 * (2 * sqrt T)`. -/
 theorem mixedMap_dist_le
@@ -223,7 +223,7 @@ theorem mixedMap_dist_le
           ‖force - force'‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- The mixed forcing map is a contraction under its transparent combined
 smallness condition. -/
 theorem mixedMap_contract
@@ -257,7 +257,7 @@ theorem mixedMap_contract
     simpa only [NNReal.coe_mk] using h
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Strong existence for the fixed reference heat equation with a mixed
 critical--subcritical nonlinear forcing. -/
 theorem mixed_strong_exists
@@ -319,7 +319,7 @@ theorem mixed_strong_exists
     exact congrArg₂ (fun x y => x + y) rfl hforce
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Uniqueness of forcing-space fixed points for the same mixed nonlinear
 equation. -/
 theorem mixed_strong_unique

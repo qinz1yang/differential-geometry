@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -103,7 +103,7 @@ private lemma covGrad_l2Norm_le_one_mul_h1Norm
   rw [one_mul]
   exact covGrad_l2Norm_le_h1Norm (I := I) (M := M) g r s S
 
-noncomputable def covGradL2Lin
+noncomputable def covGradL2Lin [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorH1 g r s →ₗ[ℝ] TensorL2 r (s + 1) g where
   toFun w :=
@@ -145,7 +145,7 @@ private lemma covGradL2Lin_norm_le
   rw [covGradL2Lin_apply]
   exact covGrad_l2Norm_le_one_mul_h1Norm (I := I) (M := M) g r s w
 
-noncomputable def tensorCovGradL2
+noncomputable def tensorCovGradL2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensorH1 g r s →L[ℝ] TensorL2 r (s + 1) g :=
   (covGradL2Lin (I := I) (M := M) g r s).mkContinuous 1
@@ -159,9 +159,8 @@ omit [NeZero (Module.finrank ℝ E)] in
       ((covGrad (I := I) (M := M) g r s w.toCcTensor :
         SmoothCcTensor g r (s + 1)) : TensorL2 r (s + 1) g) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma denseRange_smoothToTensorH1Compl
+private lemma denseRange_smoothToTensorH1Compl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     DenseRange (smoothToTensorH1Compl (I := I) (M := M) g r s) := by
   rw [show (smoothToTensorH1Compl (I := I) (M := M) g r s :
@@ -171,9 +170,8 @@ private lemma denseRange_smoothToTensorH1Compl
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.denseRange_coe
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma isUniformInducing_smoothToTensorH1Compl
+private lemma isUniformInducing_smoothToTensorH1Compl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsUniformInducing (smoothToTensorH1Compl (I := I) (M := M) g r s) := by
   rw [show (smoothToTensorH1Compl (I := I) (M := M) g r s :
@@ -183,7 +181,7 @@ private lemma isUniformInducing_smoothToTensorH1Compl
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.isUniformInducing_coe (SmoothCcTensorH1 g r s)
 
-noncomputable def tensorCovGradL2Compl
+noncomputable def tensorCovGradL2Compl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorH1Compl g r s →L[ℝ] TensorL2 r (s + 1) g :=
   ContinuousLinearMap.extend (tensorCovGradL2 (I := I) (M := M) g r s)

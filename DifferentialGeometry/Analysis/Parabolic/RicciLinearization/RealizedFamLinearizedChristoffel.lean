@@ -27,9 +27,9 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
-def realizedLinearizedChristoffelPrincipal (g₀ : SmoothRiemannianMetric I M)
+def realizedLinearizedChristoffelPrincipal [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -45,7 +45,7 @@ def realizedLinearizedChristoffelPrincipal (g₀ : SmoothRiemannianMetric I M)
         partialDeriv (E := E) l
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y)
 
-def realizedChristoffelNonPrincipal (g₀ : SmoothRiemannianMetric I M)
+def realizedChristoffelNonPrincipal [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -60,8 +60,7 @@ def realizedChristoffelNonPrincipal (g₀ : SmoothRiemannianMetric I M)
       gramBracket (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x i j l y
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem linearizedChristoffel_eq_principal_add_nonPrincipal
+theorem linearizedChristoffel_eq_principal_add_nonPrincipal [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -83,8 +82,7 @@ theorem linearizedChristoffel_eq_principal_add_nonPrincipal
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal
+theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -116,8 +114,7 @@ theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal
   rw [hpd i l j, hpd j l i, hpd l i j]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem realizedGramDeriv_self_eq_zero (g₀ : SmoothRiemannianMetric I M)
+theorem realizedGramDeriv_self_eq_zero [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -126,8 +123,7 @@ theorem realizedGramDeriv_self_eq_zero (g₀ : SmoothRiemannianMetric I M)
   rw [realizedGramDeriv, sub_self]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem realizedLinearizedChristoffelPrincipal_self_eq_zero
+theorem realizedLinearizedChristoffelPrincipal_self_eq_zero [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

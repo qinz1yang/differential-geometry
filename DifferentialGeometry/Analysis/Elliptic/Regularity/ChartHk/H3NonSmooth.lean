@@ -35,7 +35,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_loc_of_diff_data_and_uniform_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (D_deriv : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -71,7 +71,7 @@ theorem chart_loc_of_diff_data_and_uniform_bound
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_loc_weak_partial_deriv_of_diff_data_and_uniform_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (D_deriv : ChartBilinearH1ComplData (I := I) (M := M) g α)

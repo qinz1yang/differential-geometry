@@ -34,9 +34,9 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma grad_g_congr
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf₁ hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -44,7 +44,7 @@ lemma grad_g_congr
       (grad_g (I := I) g ⟨_, hf₂⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
   refine ContMDiffSection.ext (fun _ => rfl)
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma Δ_g_congr_func
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf₁ hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
@@ -54,7 +54,7 @@ lemma Δ_g_congr_func
     divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₂⟩) x
   rw [h]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma grad_g_congr_funext
     (g : SmoothRiemannianMetric I M) {f₁ f₂ : M → ℝ}
     (hf₁ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₁) (hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₂)
@@ -65,7 +65,7 @@ lemma grad_g_congr_funext
   change gradFun (I := I) g f₁ x = gradFun (I := I) g f₂ x
   rw [h_eq]
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma Δ_g_congr_funext
     (g : SmoothRiemannianMetric I M) {f₁ f₂ : M → ℝ}
     (hf₁ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₁) (hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₂)
@@ -76,7 +76,7 @@ lemma Δ_g_congr_funext
     divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₂⟩) x
   rw [h]
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradFun_neg
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M}
@@ -89,7 +89,7 @@ lemma gradFun_neg
   rw [gradFun_const_smul (I := I) g (-1 : ℝ) hf]
   rw [neg_smul, one_smul]
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradFun_sub
     (g : SmoothRiemannianMetric I M) {f h : M → ℝ} {x : M}
@@ -108,7 +108,7 @@ lemma gradFun_sub
   rw [gradFun_neg (I := I) g hh]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma Δ_g_neg
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -129,7 +129,7 @@ lemma Δ_g_neg
     exact hΔ_sum_eq_zero
   linarith
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma Δ_g_sub
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
@@ -154,7 +154,7 @@ lemma Δ_g_sub
   rw [Δ_g_neg (I := I) g hh hneg x]
   ring
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma normGradSqFun_polar
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
@@ -174,9 +174,7 @@ lemma normGradSqFun_polar
     (gradFun (I := I) g (φ : M → ℝ) x)
     (gradFun (I := I) g (v : M → ℝ) x)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma ricciTensor_grad_polar
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     ricciTensor (I := I) g x
@@ -198,7 +196,6 @@ lemma ricciTensor_grad_polar
     (gradFun (I := I) g (φ : M → ℝ) x)
     (gradFun (I := I) g (v : M → ℝ) x)
 
-omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma g_inner_grad_lap_polar
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M)
@@ -271,7 +268,6 @@ lemma g_inner_grad_lap_polar
   rw [hp1, hp2]
   ring
 
-omit [CompactSpace M] in
 theorem bochner_polarised_pointwise
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
@@ -433,7 +429,6 @@ theorem bochner_polarised_pointwise
     linarith [h_hessPolar, h_ricciPolar, h_gradLapPolar]
   nlinarith [key]
 
-omit [CompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))

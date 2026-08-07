@@ -42,14 +42,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma weight_two_rpow_eq_sq (g : SmoothRiemannianMetric I M)
+private lemma weight_two_rpow_eq_sq [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) (pp : ℝ) :
     tensorSobolevWeight (I := I) (M := M) i (2 * pp)
       = ((1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ pp) ^ 2 := by
@@ -59,9 +58,8 @@ private lemma weight_two_rpow_eq_sq (g : SmoothRiemannianMetric I M)
   rw [show (2 : ℝ) * pp = pp * 2 by ring, Real.rpow_mul hbase_pos.le, Real.rpow_two]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma abs_le_sqrt_of_weight_sq_le (g : SmoothRiemannianMetric I M)
+lemma abs_le_sqrt_of_weight_sq_le [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) (pp : ℝ) {v C : ℝ}
     (h : tensorSobolevWeight (I := I) (M := M) i (2 * pp) * v ^ 2 ≤ C) :
     |v| ≤ Real.sqrt C * (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (-pp) := by

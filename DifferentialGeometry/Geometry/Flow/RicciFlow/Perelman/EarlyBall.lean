@@ -35,7 +35,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
-variable [T3Space M] [SigmaCompactSpace M] [ConnectedSpace M] [CompactSpace M]
+variable [T3Space M] [ConnectedSpace M] [CompactSpace M]
 variable [I.Boundaryless] [BoundarylessManifold I M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
@@ -93,9 +93,9 @@ theorem early_ball_low
     SolutionOn.family_metric] using
       hvol t ht B.center B.radius_pos hBrho hsq
 
-omit [NeZero (Module.finrank Real E)] [ConnectedSpace M] [CompactSpace M]
+omit [NeZero (Module.finrank Real E)] [ConnectedSpace M]
   [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem kappa_mono
+private theorem kappa_mono [SigmaCompactSpace M]
     {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D}
     {t : RealTimeInterval.FlowTime D} {B : FlowMetricBall S t}
     {kappa kappa' : Real} (hkappa : 0 < kappa) (hle : kappa ≤ kappa')

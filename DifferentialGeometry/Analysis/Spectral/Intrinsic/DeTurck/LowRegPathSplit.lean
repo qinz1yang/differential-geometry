@@ -42,7 +42,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -79,9 +79,9 @@ private theorem phi_dev_joint
     (E := fun z : M => TensorRSSpace 4 2 I z) p.1 t) ?_
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem norm_sq_add_le
+private theorem norm_sq_add_le [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g₀ r s) :
     ‖A + B‖ ^ 2 ≤ 2 * ‖A‖ ^ 2 + 2 * ‖B‖ ^ 2 := by
@@ -91,9 +91,9 @@ private theorem norm_sq_add_le
   have hAB : 0 ≤ ‖A + B‖ := norm_nonneg _
   nlinarith [sq_nonneg (‖A‖ - ‖B‖)]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem norm_sq_sub_le
+private theorem norm_sq_sub_le [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g₀ r s) :
     ‖A - B‖ ^ 2 ≤ 2 * ‖A‖ ^ 2 + 2 * ‖B‖ ^ 2 := by
@@ -114,7 +114,7 @@ private theorem reindex_norm_sq
     norm_reindexCoeffGen_eq (I := I) (M := M) g₀ r (s + i)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem reindex_sub
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g₀ r s) (ρ : Equiv.Perm (Fin r)) :

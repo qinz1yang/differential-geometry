@@ -33,7 +33,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def gradInnerCLM_imageLap_witness
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)

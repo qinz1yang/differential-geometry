@@ -41,9 +41,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma wkpNormChart_one_le_three
     (g : SmoothRiemannianMetric I M) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) g 1 2 u ≤
@@ -493,7 +493,7 @@ private lemma eLpNorm_tendsto_zero_of_wkpNorm_two_two_tendsto_zero
     (fun _ => zero_le _)
     (fun n => eLpNorm_le_wkpNorm_two_two (fun y => u n y - F_lim y) Ω)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma volume_restrict_chartTarget_absolutelyContinuous_weighted
     (g : SmoothRiemannianMetric I M) (α : M) :
     (volume : Measure EuclN).restrict

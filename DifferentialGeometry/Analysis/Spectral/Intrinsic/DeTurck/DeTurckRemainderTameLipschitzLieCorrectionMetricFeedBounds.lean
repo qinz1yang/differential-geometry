@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -76,7 +76,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndo g
   g0FlatCLM metricComparisonDiffEndo)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 lemma lc0b_toModel_om_single (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 1 → E) :
     Tensor0SSpace.toModel om m = cotangentToDual (I := I) (x := x) om (m 0) := by
   rw [cotangentToDual_apply]
@@ -87,7 +87,7 @@ lemma lc0b_toModel_om_single (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 1 → E
   rw [show k = (0 : Fin 1) from Subsingleton.elim k 0]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lc0b_g0_inner_sharp_mixed (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (v : TangentSpace I x) :
     g₀.inner x (inverseMetricSharpFib (I := I) g₁ x om) v =
@@ -109,7 +109,7 @@ private lemma lc0b_g0_inner_sharp_mixed (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [h1 (inverseMetricSharpFib (I := I) g₁ x om)]
   exact g₀.symm x (inverseMetricSharpFib (I := I) g₁ x om) v
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma lc0b_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -141,7 +141,7 @@ lemma lc0b_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiemannianMetri
   rw [fullRaisedEndoField_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_fullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
       gInvDiffRaisedEndoField (I := I) g₀ g₁ +
@@ -164,7 +164,7 @@ lemma lc0b_fullRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_slotInsert_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :

@@ -82,7 +82,7 @@ theorem memLp_two_continuous_compactSupport_restrict
   exact h_global.restrict _
 
 theorem loc_chart_pulled_manifold
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hu_cs : HasCompactSupport u)

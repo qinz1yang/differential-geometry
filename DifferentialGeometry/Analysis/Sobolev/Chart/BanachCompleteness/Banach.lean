@@ -49,7 +49,7 @@ lemma wkpNormChartReal_zero
   simp
 
 lemma wkpNormChartReal_add_le
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
@@ -74,7 +74,7 @@ lemma wkpNormChartReal_add_le
   exact hToReal
 
 lemma wkpNormChartReal_const_smul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) :
@@ -138,7 +138,7 @@ lemma norm_wkpChart_def
     ‖u‖ = (wkpNormChart (I := I) (M := M) g k p (wkpChartFun u)).toReal := rfl
 
 lemma wkpChart_seminormedSpace_core
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     SeminormedSpace.Core ℝ (WkpChart (I := I) (M := M) g k p hp) where
@@ -172,14 +172,14 @@ lemma wkpChart_seminormedSpace_core
     exact hToReal
 
 instance instSeminormedAddCommGroupWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     SeminormedAddCommGroup (WkpChart (I := I) (M := M) g k p hp) :=
   SeminormedAddCommGroup.ofCore (wkpChart_seminormedSpace_core (I := I) (M := M) g k p hp)
 
 instance instNormedSpaceRealWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedSpace ℝ (WkpChart (I := I) (M := M) g k p hp) where
@@ -192,20 +192,20 @@ instance instNormedSpaceRealWkpChart
     rw [ENNReal.toReal_mul, toReal_enorm]
 
 def WkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
   SeparationQuotient (WkpChart (I := I) (M := M) g k p hp)
 
 instance instAddCommGroupWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     AddCommGroup (WkpChartQuot (I := I) (M := M) g k p hp) :=
   inferInstanceAs (AddCommGroup (SeparationQuotient (WkpChart (I := I) (M := M) g k p hp)))
 
 instance instNormedAddCommGroupWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedAddCommGroup (WkpChartQuot (I := I) (M := M) g k p hp) :=
@@ -213,14 +213,14 @@ instance instNormedAddCommGroupWkpChartQuot
     (SeparationQuotient (WkpChart (I := I) (M := M) g k p hp)))
 
 instance instModuleWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     Module ℝ (WkpChartQuot (I := I) (M := M) g k p hp) :=
   inferInstanceAs (Module ℝ (SeparationQuotient (WkpChart (I := I) (M := M) g k p hp)))
 
 instance instNormedSpaceRealWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedSpace ℝ (WkpChartQuot (I := I) (M := M) g k p hp) :=

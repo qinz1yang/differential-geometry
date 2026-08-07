@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -52,8 +52,8 @@ private lemma norm_add_sq_le_two_mul_sq_add_sq
   exact hsq.trans (sq_add_le_two_mul_sq_add_sq _ _)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le
+    in
+theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -108,8 +108,8 @@ theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le
   linarith [hsq, hlhs_sq.symm.le, hlhs_sq.le, hrhs_sq.symm.le, hrhs_sq.le]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le_uniform
+    in
+theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le_uniform [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -151,8 +151,8 @@ theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_le_uniform
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem fderiv_tensorTrivProj_pullback_apply_norm_sq_two_term_split
+    in
+theorem fderiv_tensorTrivProj_pullback_apply_norm_sq_two_term_split [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (X : Π b' : M, TangentSpace I b')
@@ -201,8 +201,8 @@ theorem fderiv_tensorTrivProj_pullback_apply_norm_sq_two_term_split
   exact norm_add_sq_le_two_mul_sq_add_sq _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_two_term_split
+    in
+theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_two_term_split [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -283,8 +283,8 @@ theorem fderiv_tensorChartComponentRaw_pullback_norm_sq_two_term_split
   linarith [h_chain, h_rhs_eq.symm.le, h_rhs_eq.le]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem exists_const_fderiv_tensorChartComponentRaw_pullback_norm_sq_le
+    in
+theorem exists_const_fderiv_tensorChartComponentRaw_pullback_norm_sq_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s)

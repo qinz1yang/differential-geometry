@@ -58,7 +58,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma real_sq_add_three_le {a b c K0 K1 K2 W : ℝ}
     (_ha : 0 ≤ a) (_hb : 0 ≤ b) (_hc : 0 ≤ c)
@@ -73,7 +73,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 private lemma coeffOpApply_slotSwapField_eq_apply_of_symm (g₀ : SmoothRiemannianMetric I M)
     (D : SmoothCcTensor g₀ 2 2) (T : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -1108,7 +1107,6 @@ theorem exists_deTurckLieCovDerivArm_curvatureRefold_data
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckVF_background_sub_eq_connDiff_trace
     (g₁ gA gB : SmoothRiemannianMetric I M) (x : M) :
     (PDE.DeTurck.deTurckVF (I := I) g₁ gA :

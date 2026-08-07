@@ -477,7 +477,7 @@ theorem weak_partial_second_deriv_isMixedWeakPartial
   ⟨D.weak_partial_second_deriv_isWeakPartial i,
    D.base1.weak_partial_deriv_isWeakPartial i⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def chosenSecondPartialUChartDeriv
     {g : SmoothRiemannianMetric I M} {α : M}
@@ -593,7 +593,7 @@ private lemma chosenSecondPartialWeakPartialDeriv_memLp
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma memLp_restrict_of_memLp_chartTarget
     (α : M)
     {f : EuclN → ℝ}

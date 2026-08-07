@@ -41,10 +41,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+  [CompactSpace M] [T2Space M] [I.Boundaryless]
   [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_add_app
     (g : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g 0 2)
@@ -60,7 +60,7 @@ private theorem unitModel_add_app
       ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
   rw [hfun, ContinuousMultilinearMap.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_smul_app
     (g : SmoothRiemannianMetric I M) (c : ℝ) (A : SmoothCcTensor g 0 2)
@@ -74,7 +74,7 @@ private theorem unitModel_smul_app
       ContinuousLinearMap.smul_apply, Tensor0SSpace.toModel_smul]
   rw [hfun, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem jointRS_smul {r q : ℕ} {S : Set ℝ} (c : ℝ)
     (A : ∀ p : M × ℝ, TensorRSSpace r q I p.1)
@@ -104,9 +104,9 @@ private theorem jointRS_smul {r q : ℕ} {S : Set ℝ} (c : ℝ)
   · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_smul
       c (A p₀)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem hjoint_smul
+private theorem hjoint_smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ} (c : ℝ)
     (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
@@ -121,9 +121,9 @@ private theorem hjoint_smul
     (E := fun z : M => TensorRSSpace r 2 I z) p.1 t) ?_
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem hjoint_add
+private theorem hjoint_add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ Ψ : ℝ → SmoothCcTensor g r 2) {δ δ' : ℝ}
     (hΦ : linearizedRicciThreeArmHjoint (I := I) (M := M) g r Φ
@@ -143,7 +143,7 @@ private theorem hjoint_add
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+omit [T2Space M] [BoundarylessManifold I M] in
 private theorem symmS_eq_self_local
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (hS : ∀ (x : M) (v w : TangentSpace I x),
@@ -173,7 +173,7 @@ private theorem symmS_eq_self_local
   rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
-omit [CompactSpace M] [SigmaCompactSpace M]
+omit [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartLie_symm
@@ -212,8 +212,7 @@ private theorem chartLie_symm
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private theorem lieSlope_symm
+private theorem lieSlope_symm [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -303,7 +302,7 @@ theorem lieSum_eq_arms
 
 
 
-def rhsLow0Coeff
+def rhsLow0Coeff [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -318,7 +317,7 @@ def rhsLow0Coeff
 
 
 
-def rhsLow1Coeff
+def rhsLow1Coeff [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

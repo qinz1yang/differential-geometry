@@ -16,34 +16,34 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
 open DifferentialGeometry.Integral.Measure
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 private lemma isClosed_compl_chartAt_source_aux (α : M) :
     IsClosed ((chartAt H α).sourceᶜ) :=
   (chartAt H α).open_source.isClosed_compl
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma isClosed_tsupport_chartAtlasPOU_aux (α : M) :
+omit [I.Boundaryless] in
+private lemma isClosed_tsupport_chartAtlasPOU_aux [SigmaCompactSpace M] (α : M) :
     IsClosed (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   isClosed_tsupport _
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma tsupport_chartAtlasPOU_subset_aux (α : M) :
+omit [I.Boundaryless] in
+private lemma tsupport_chartAtlasPOU_subset_aux [SigmaCompactSpace M] (α : M) :
     tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
       (chartAt H α).source :=
   (chartAtlasPOU_isSubordinate I M) α
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma disjoint_complSource_tsupport_chartAtlasPOU_aux (α : M) :
+omit [I.Boundaryless] in
+private lemma disjoint_complSource_tsupport_chartAtlasPOU_aux [SigmaCompactSpace M] (α : M) :
     Disjoint ((chartAt H α).sourceᶜ)
       (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   Set.disjoint_compl_left_iff_subset.mpr
     (tsupport_chartAtlasPOU_subset_aux (I := I) α)
 
-private def chartStrictCutoffBundled (α : M) : C^∞⟮I, M; ℝ⟯ :=
+private def chartStrictCutoffBundled [SigmaCompactSpace M] (α : M) : C^∞⟮I, M; ℝ⟯ :=
   ((Classical.choose
     (exists_contMDiffMap_zero_one_nhds_of_isClosed (I := I) (M := M)
       (n := (⊤ : ℕ∞))

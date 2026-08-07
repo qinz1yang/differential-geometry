@@ -28,7 +28,7 @@ theorem sobolev_intrinsic
     [FiniteDimensional Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M)
     {p : Real} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank Real E : Real)) :
@@ -95,7 +95,7 @@ theorem sobolev_lpNorm
     [FiniteDimensional Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M)
     {p : Real} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank Real E : Real)) :

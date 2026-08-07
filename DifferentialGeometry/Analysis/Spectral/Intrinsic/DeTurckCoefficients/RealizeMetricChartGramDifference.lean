@@ -31,13 +31,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramMatrix_realize_apply
-    (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
+theorem chartGramMatrix_realize_apply (g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     (α x : M) (a b : Fin (Module.finrank ℝ E)) :
@@ -50,9 +48,7 @@ theorem chartGramMatrix_realize_apply
     tensorSectionRealizeMetric_inner (I := I) g_bg T hδ_lt hδ x]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramOnE_realize_sub_eq_symm_rawComponent
-    (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
+theorem chartGramOnE_realize_sub_eq_symm_rawComponent (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T') δ)
@@ -129,9 +125,7 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
-    (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
+theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

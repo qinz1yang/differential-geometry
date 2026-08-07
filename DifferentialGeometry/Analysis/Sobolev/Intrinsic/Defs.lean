@@ -86,7 +86,7 @@ private lemma exists_bound_continuous_compactSpace
     exact (hM ⟨x⟩).elim
 
 private lemma continuous_memLp_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
@@ -100,7 +100,7 @@ private lemma continuous_memLp_of_compactSpace
   exact MemLp.of_bound hmeas C (Filter.Eventually.of_forall (fun x => hC x))
 
 private lemma continuous_integrable_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : Continuous f) :
     Integrable f (riemannianVolumeMeasure I M g) := by
@@ -186,7 +186,7 @@ theorem hasWeakRiemannianGrad_grad_g_of_contMDiff
     (I := I) (M := M) g hu X hX
 
 theorem MemW1pIntrinsic_of_contMDiff
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemW1pIntrinsic (I := I) (M := M) g p u := by
@@ -197,7 +197,7 @@ theorem MemW1pIntrinsic_of_contMDiff
     exact continuous_memLp_of_compactSpace g p hcont
 
 theorem HasWeakRiemannianGrad.add
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M}
     {u v : M → ℝ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {G G' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
@@ -269,7 +269,7 @@ theorem HasWeakRiemannianGrad.add
   ring
 
 theorem MemW1pIntrinsic.add
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
     (hu : MemW1pIntrinsic (I := I) (M := M) g p u)
@@ -301,7 +301,7 @@ theorem HasWeakRiemannianGrad.zero
   simp [integral_zero]
 
 theorem MemW1pIntrinsic.zero
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
     MemW1pIntrinsic (I := I) (M := M) g p (fun _ : M => (0 : ℝ)) := by
   haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
@@ -321,7 +321,7 @@ theorem MemW1pIntrinsic.zero
     exact MemLp.zero
 
 theorem HasWeakRiemannianGrad.const_smul
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
     {G : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
@@ -362,7 +362,7 @@ theorem HasWeakRiemannianGrad.const_smul
   ring
 
 theorem MemW1pIntrinsic.const_smul
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
     (hu : MemW1pIntrinsic (I := I) (M := M) g p u) :
@@ -386,7 +386,7 @@ theorem HasWeakRiemannianGrad.pairing_inner_eq
   rw [h₁.pairing_eq X hX, h₂.pairing_eq X hX]
 
 theorem HasWeakRiemannianGrad.pairing_inner_diff_eq_zero
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {u : M → ℝ}
     {G G' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
     (h₁ : HasWeakRiemannianGrad (I := I) (M := M) g u G)
@@ -479,14 +479,14 @@ theorem w1pNormIntrinsic_zero
   · exact zero_le _
 
 theorem MemW1pIntrinsic.eLpNorm_lt_top
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     eLpNorm u p (riemannianVolumeMeasure I M g) < ⊤ :=
   h.memLp_self.2
 
 theorem MemW1pIntrinsic.gradInfimum_lt_top
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     gradInfimum (I := I) (M := M) g p u < ⊤ := by
@@ -496,7 +496,7 @@ theorem MemW1pIntrinsic.gradInfimum_lt_top
   exact hG_p.2
 
 theorem MemW1pIntrinsic.w1pNormIntrinsic_lt_top
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     w1pNormIntrinsic (I := I) (M := M) g p u < ⊤ := by
@@ -504,7 +504,7 @@ theorem MemW1pIntrinsic.w1pNormIntrinsic_lt_top
   exact ENNReal.add_lt_top.mpr ⟨h.eLpNorm_lt_top, h.gradInfimum_lt_top⟩
 
 private lemma gradInfimum_add_le_of_weakGrads
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
     (hu_p : MemLp u p (riemannianVolumeMeasure I M g))
@@ -661,7 +661,7 @@ private lemma gradInfimum_add_le_of_weakGrads
   exact gradInfimum_le_of_weakGrad g hsum_weak
 
 theorem w1pNormIntrinsic_add_le
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ}
     (hu : MemW1pIntrinsic (I := I) (M := M) g p u)

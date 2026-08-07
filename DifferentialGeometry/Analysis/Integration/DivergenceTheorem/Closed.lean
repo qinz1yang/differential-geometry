@@ -90,7 +90,7 @@ private lemma integrable_of_compactSupport_subset_chartSource
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
 
 lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α₀ : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α₀).source) :
@@ -163,7 +163,7 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
   rw [hsum_one, mul_one]
 
 theorem integral_divergence_eq_zero_of_compact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∫ x, divergence_g (I := I) g X x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by

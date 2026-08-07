@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedRaw_chartAtlasPOU_eq_zero_off_chartPouKernel
     (β : M) {y : EuclN} (hy : y ∉ chartPouKernel (I := I) (M := M) β) :
     chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) y = 0 := by
@@ -91,7 +91,7 @@ private lemma euclidPartial_chartPushedRaw_chartAtlasPOU_eq_zero_off_chartPouKer
   rw [euclidPartial_def, hevt.fderiv_eq]
   simp
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiffOn_euclidPartial_chartPushedRaw_chartAtlasPOU
     (β : M) (k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞

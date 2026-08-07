@@ -41,10 +41,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [CompactSpace M] in
-omit [SigmaCompactSpace M] in
 theorem smoothTensorPairing_eq_hessPairingChart_on_chartSource
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) {x : M} (hx : x ∈ (chartAt H α).source) :

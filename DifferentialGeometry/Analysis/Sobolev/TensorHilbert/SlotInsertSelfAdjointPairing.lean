@@ -31,12 +31,12 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
+    in
 theorem multilinear_slot0_pairing_self_adjoint
     (g₀ : SmoothRiemannianMetric I M) (x : M) {s : ℕ}
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
@@ -142,8 +142,8 @@ theorem multilinear_slot0_pairing_self_adjoint
   rw [hLHS, hRHS]
   rw [hadj wB wA, g₀.symm x wB (Λ wA)]
 
-omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
+    in
 theorem tensorInnerPointwise_slotΛ_self_adjoint
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)

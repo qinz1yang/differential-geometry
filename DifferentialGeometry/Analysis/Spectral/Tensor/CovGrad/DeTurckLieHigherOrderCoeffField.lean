@@ -40,14 +40,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
-private theorem connDiffFib_comp_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+omit [T2Space M] in
+private theorem connDiffFib_comp_eq [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SBundle.Tensor0SSpace 1 I x) :
     (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
       connDiffFib (I := I) g₁ g₀ x) om =
@@ -93,8 +93,7 @@ private theorem connDiffFib_comp_eq (g₀ g₁ : SmoothRiemannianMetric I M) (x 
     (I := I) g₁ x D u]
   rw [g₁.symm x D u, hu]
 
-omit [CompactSpace M] in
-private theorem deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn
+private theorem deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -139,8 +138,7 @@ private theorem deTurckLieKoszulTrace_realizedFam_apply_jointContMDiffOn
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     domDomCongrFibRank_apply, connDiffFib_comp_eq]
 
-omit [CompactSpace M] in
-private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn
+private theorem deTurckLiePairTrace_realizedFam_apply_jointContMDiffOn [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -361,7 +359,7 @@ theorem deTurckLieArm1Coeff_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetr
   deTurckLieArm1Coeff_realizedFam_jointContMDiff (I := I) g₀ T T' hδ hδ' g_bg
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem jointTangent_add_local {S : Set ℝ}
     (A B : ∀ p : M × ℝ, TangentSpace I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
@@ -392,7 +390,7 @@ private theorem jointTangent_add_local {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointTotalSpace0S_smulScalar_local {d : ℕ} {S : Set ℝ}
     (c : M × ℝ → ℝ)
     (hc : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ c ((Set.univ : Set M) ×ˢ S))
@@ -425,7 +423,7 @@ private theorem jointTotalSpace0S_smulScalar_local {d : ℕ} {S : Set ℝ}
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem dLieEvalScalar_section_contMDiff
     (U : ContMDiffSection I (Tensor0SBundle.Tensor0SModel 0 ℝ E) ∞
       (fun x : M => Tensor0SBundle.Tensor0SSpace 0 I x)) :
@@ -440,7 +438,7 @@ private theorem dLieEvalScalar_section_contMDiff
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem dLieEmbedRS_section_contMDiff {d : ℕ}
     (A : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -469,7 +467,7 @@ private theorem dLieEmbedRS_section_contMDiff {d : ℕ}
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x t) ?_
   rfl
 
-private noncomputable def dLiePack0S {d : ℕ} (g₀ : SmoothRiemannianMetric I M)
+private noncomputable def dLiePack0S [SigmaCompactSpace M] {d : ℕ} (g₀ : SmoothRiemannianMetric I M)
     (A : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
@@ -483,7 +481,7 @@ private noncomputable def dLiePack0S {d : ℕ} (g₀ : SmoothRiemannianMetric I 
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private theorem dLiePack0S_unitEval {d : ℕ} (g₀ : SmoothRiemannianMetric I M)
     (A : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -495,7 +493,7 @@ private theorem dLiePack0S_unitEval {d : ℕ} (g₀ : SmoothRiemannianMetric I M
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private theorem dLiePack0S_unitEvalSection {d : ℕ} (g₀ : SmoothRiemannianMetric I M)
     (A : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -507,7 +505,7 @@ private theorem dLiePack0S_unitEvalSection {d : ℕ} (g₀ : SmoothRiemannianMet
   exact dLiePack0S_unitEval (I := I) g₀ A hA y
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem dLiePack0S_family_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (g₀ : SmoothRiemannianMetric I M)
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
@@ -595,13 +593,13 @@ private theorem dLieCovGradVal_toNabla {d : ℕ} (g₀ : SmoothRiemannianMetric 
     covDeriv_unit_eval_eq_genVal (I := I) (M := M) g₀ d F.toSection x v0]
   rfl
 
-private def dLieTriEvalFn (V : Π b : M, Tensor0SBundle.Tensor0SSpace 3 I b)
+private def dLieTriEvalFn [SigmaCompactSpace M] (V : Π b : M, Tensor0SBundle.Tensor0SSpace 3 I b)
     (A B C : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun b => Tensor0SBundle.Tensor0SSpace.toModel (V b) (Fin.cons (A b) (Fin.cons (B b) ![C b]))
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 private lemma dLieTriMDiffAt_curried
     (s : ℕ) (W : Π x : M, Tensor0SBundle.Tensor0SSpace (s + 1) I x) {x : M}
     (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
@@ -623,9 +621,9 @@ private lemma dLieTriMDiffAt_curried
     (v := fun y : M => Y y) hCurried hY
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem dLieNabla3_consEval_leibnizDefect
+private theorem dLieNabla3_consEval_leibnizDefect [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (V : Π b : M, Tensor0SBundle.Tensor0SSpace 3 I b) {x : M}
     (hV : TensorSectionMDiffAt (I := I) 3 V x)
     (A B C : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x) :
@@ -754,7 +752,7 @@ private theorem dLieNabla3_consEval_leibnizDefect
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem dLie_toModel_g0Flat (g : SmoothRiemannianMetric I M) (x : M)
     (w t : TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel
@@ -775,7 +773,7 @@ private theorem dLie_toModel_g0Flat (g : SmoothRiemannianMetric I M) (x : M)
     (I := I) g x w t
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem dLieFlatSection_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
@@ -784,7 +782,7 @@ private theorem dLieFlatSection_contMDiff (g₀ : SmoothRiemannianMetric I M)
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ x (V x))) :=
   ContMDiff.clm_bundle_apply (b := id) (g0FlatField_contMDiff (I := I) g₀) V.contMDiff
 
-private noncomputable def dLieFlatPack (g₀ : SmoothRiemannianMetric I M)
+private noncomputable def dLieFlatPack [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : SmoothCcTensor g₀ 0 1 :=
   dLiePack0S (I := I) g₀
     (fun x : M =>
@@ -851,15 +849,15 @@ private theorem dLieFlatCovGradVal_eval (g₀ : SmoothRiemannianMetric I M)
   rw [hTfx]
   ring
 
-private noncomputable def dLieLoweredPack (g₀ gm gA gB : SmoothRiemannianMetric I M) :
+private noncomputable def dLieLoweredPack [SigmaCompactSpace M] (g₀ gm gA gB : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 0 3 :=
   dLiePack0S (I := I) g₀
     (fun x : M => metricConnDiffLoweredFib (I := I) gm gA gB x)
     (metricConnDiffLoweredFib_contMDiff (I := I) gm gA gB)
 
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem dLieDiagTrace_toModel (g₁ : SmoothRiemannianMetric I M) (p : ℕ) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace (p + 2) I x) (u : Fin p → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ p x D) u =
@@ -884,7 +882,7 @@ private theorem dLieDiagTrace_toModel (g₁ : SmoothRiemannianMetric I M) (p : �
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieFrameExpand_update (g₁ : SmoothRiemannianMetric I M) (x : M)
     (L3 : Tensor0SBundle.Tensor0SSpace 3 I x)
     (base : Fin 3 → TangentSpace I x) (i : Fin 3) (w : TangentSpace I x) :
@@ -946,7 +944,7 @@ private def dLieXiPermB : Equiv.Perm (Fin 4) :=
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieUpdateZero (x : M) (a b c u : TangentSpace I x) :
     Function.update (![a, b, c] : Fin 3 → TangentSpace I x) 0 u = ![u, b, c] := by
   funext j
@@ -954,7 +952,7 @@ private theorem dLieUpdateZero (x : M) (a b c u : TangentSpace I x) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieUpdateOne (x : M) (a b c u : TangentSpace I x) :
     Function.update (![a, b, c] : Fin 3 → TangentSpace I x) 1 u = ![a, u, c] := by
   funext j
@@ -962,15 +960,15 @@ private theorem dLieUpdateOne (x : M) (a b c u : TangentSpace I x) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieUpdateTwo (x : M) (a b c u : TangentSpace I x) :
     Function.update (![a, b, c] : Fin 3 → TangentSpace I x) 2 u = ![a, b, u] := by
   funext j
   fin_cases j <;> simp [Function.update]
 
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel
@@ -1053,8 +1051,8 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   exact congrArg _ (hupd _).symm
 
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel
@@ -1137,8 +1135,8 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   exact congrArg _ (hupd _).symm
 
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel
@@ -1429,8 +1427,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   simp only [map_sub, ContinuousLinearMap.sub_apply]
   ring
 
-omit [CompactSpace M] in
-theorem deTurckVectorFieldFlat_realizedFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckVectorFieldFlat_realizedFam_jointContMDiffOn [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1774,7 +1771,7 @@ private theorem deTurckLieEndoDerivation_realizedFam_apply_jointContMDiffOn
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieBiArgY (x : M) (u0 u1 u2 u3 : TangentSpace I x)
     (v : Fin 2 → TangentSpace I x) :
     ((fun i : Fin 6 =>
@@ -1785,7 +1782,7 @@ private theorem dLieBiArgY (x : M) (u0 u1 u2 u3 : TangentSpace I x)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieBiArgXi (x : M) (u0 u1 u2 u3 : TangentSpace I x)
     (v : Fin 2 → TangentSpace I x) :
     ((fun i : Fin 6 =>
@@ -1796,7 +1793,7 @@ private theorem dLieBiArgXi (x : M) (u0 u1 u2 u3 : TangentSpace I x)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieXiArgA (x : M) (a0 a1 a2 a3 : TangentSpace I x) :
     (fun i : Fin 4 => (![a0, a1, a2, a3] : Fin 4 → TangentSpace I x) (dLieXiPermA i)) =
       ![a0, a2, a3, a1] := by
@@ -1805,7 +1802,7 @@ private theorem dLieXiArgA (x : M) (a0 a1 a2 a3 : TangentSpace I x) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem dLieXiArgB (x : M) (a0 a1 a2 a3 : TangentSpace I x) :
     (fun i : Fin 4 => (![a0, a1, a2, a3] : Fin 4 → TangentSpace I x) (dLieXiPermB i)) =
       ![a1, a2, a3, a0] := by

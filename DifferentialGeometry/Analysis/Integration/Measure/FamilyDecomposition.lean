@@ -176,17 +176,17 @@ theorem ae_chart_of_haar
 /-- On a compact manifold, the set of indices where the chart-atlas POU has
 nonempty support is finite. -/
 lemma chartAtlasPOU_finite_support
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] :
+    [T2Space M] [CompactSpace M] :
     {α : M | (Function.support ((chartAtlasPOU I M) α)).Nonempty}.Finite :=
   LocallyFinite.finite_nonempty_of_compact
     (chartAtlasPOU I M).locallyFinite
 
 noncomputable def chartAtlasPOU_finset
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] : Finset M :=
+    [T2Space M] [CompactSpace M] : Finset M :=
   (chartAtlasPOU_finite_support (I := I) (M := M)).toFinset
 
 lemma chartAtlasPOU_finset_mem
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {α : M} :
+    [T2Space M] [CompactSpace M] {α : M} :
     α ∈ chartAtlasPOU_finset (I := I) (M := M) ↔
       (Function.support ((chartAtlasPOU I M) α)).Nonempty := by
   unfold chartAtlasPOU_finset
@@ -194,7 +194,7 @@ lemma chartAtlasPOU_finset_mem
   rfl
 
 lemma chartAtlasPOU_weight_zero_of_notMem
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) (x : M) :
     (chartAtlasPOU I M) α x = 0 := by
   rw [chartAtlasPOU_finset_mem] at hα
@@ -205,7 +205,7 @@ lemma chartAtlasPOU_weight_zero_of_notMem
   exact (Set.notMem_empty _) hx
 
 lemma chartAtlasPOU_withDensity_zero_of_notMem
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) :
     (chartLocalMeasure (I := I) g α).withDensity
@@ -486,7 +486,7 @@ lemma traceTimeDerivMetric_eq_trace_chartGramMatrix
     (I := I) (M := M) hreg x α hxx hxα
 
 theorem riemannianVolumeMeasure_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     riemannianVolumeMeasure (I := I) (M := M) g =
       ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -513,7 +513,7 @@ theorem riemannianVolumeMeasure_eq_finset_sum
   exact MeasureTheory.Measure.sum_coe_finset S f
 
 theorem integral_riemannianVolumeMeasure_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (h : M → ℝ)
     (hh_cont : Continuous h) :
@@ -553,7 +553,7 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
 /-- An integrable scalar function may be integrated globally by summing its
 partition-weighted chart-local integrals. -/
 theorem chart_sum_integral
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (h : M → ℝ)
     (hh_int : Integrable h (riemannianVolumeMeasure (I := I) (M := M) g)) :
     ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -596,7 +596,7 @@ theorem chart_sum_integral
   simp only [ENNReal.toReal_ofReal (hρ_nonneg x), smul_eq_mul, ρ, mul_comm]
 
 theorem volume_variation_formula_from_chart_derivs
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)
     (Iα : M → ℝ)
@@ -619,7 +619,7 @@ theorem volume_variation_formula_from_chart_derivs
 
 theorem integral_riemannianMeasureFamily_eq_finset_sum
     {P : Type*}
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : P → SmoothRiemannianMetric I M)
     (f : P → M → ℝ) (t : P)
     (hf_cont : Continuous (f t)) :
@@ -633,7 +633,7 @@ theorem integral_riemannianMeasureFamily_eq_finset_sum
     (g_fam t) (f t) hf_cont
 
 theorem volume_variation_formula
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)
     (Iα : M → ℝ) (Iglobal : ℝ)

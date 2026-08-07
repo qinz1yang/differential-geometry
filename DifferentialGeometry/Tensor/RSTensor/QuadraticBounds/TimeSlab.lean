@@ -435,7 +435,7 @@ theorem metricUnitTimeSlab_compact_of_param_cont_compactSpace
 
 
 theorem metricUnitTimeSlab_icc_compact_of_param_cont
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
     (g₀ : SmoothRiemannianMetric I M)
     (hcont :
@@ -466,7 +466,7 @@ theorem metricUnitTimeSlab_icc_compact_of_param_cont
 
 
 theorem metricUnitTimeSlab_icc_compact_of_bundle
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
     (g₀ : SmoothRiemannianMetric I M)
     (hquad :

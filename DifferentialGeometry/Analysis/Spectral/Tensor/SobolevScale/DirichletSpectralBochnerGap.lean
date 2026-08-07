@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [BoundarylessManifold I M] in
 private theorem tensorL2Inner_eq_tsum_l2Coeff_cross
@@ -482,7 +482,7 @@ private theorem norm_iteratedCovGrad_order_eq_local
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma contract_eq_covGradBundleEquiv_symm_local
     (s : ℕ) (x : M) (v : TangentSpace I x) (A : TensorRSSpace 0 (s + 1) I x) :
     Tensor0SBundle.contract_covariant 0 s x v A =
@@ -496,7 +496,7 @@ private lemma contract_eq_covGradBundleEquiv_symm_local
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma riemannianFiberNormSq_eq_sum_contract_orthoFrame_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A : TensorRSSpace 0 (s + 1) I x)
@@ -518,7 +518,7 @@ private lemma riemannianFiberNormSq_eq_sum_contract_orthoFrame_local
   rw [← hAeq, contract_eq_covGradBundleEquiv_symm_local (I := I) (M := M) s x (e a) A, hΦ_def]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma riemannianFiberNormSq_contract_le_succ_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A : TensorRSSpace 0 (s + 1) I x)
@@ -535,8 +535,7 @@ private lemma riemannianFiberNormSq_contract_le_succ_local
       (Tensor0SBundle.contract_covariant 0 s x (e a) A))
     (fun a _ => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 s x _) (Finset.mem_univ i)
 
-omit [CompactSpace M] in
-private lemma covDivergenceRaw_eq_sum_contract_covDeriv_local
+private lemma covDivergenceRaw_eq_sum_contract_covDeriv_local [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     covDivergenceRaw (I := I) (M := M) g₀ s V b =
       ∑ i : Fin (Module.finrank ℝ E),

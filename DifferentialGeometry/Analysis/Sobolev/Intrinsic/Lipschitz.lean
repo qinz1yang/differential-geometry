@@ -91,7 +91,7 @@ theorem intrinsic_lip_cont
   simpa only [riemannianEDistOf] using hu x y
 
 private theorem global_lip_ibp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {u : M → ℝ} {L B : NNReal}
@@ -257,7 +257,7 @@ private theorem global_lip_ibp
 /-- The pointwise metric gradient is a weak Riemannian gradient of every
 bounded function that is Lipschitz for the explicit Riemannian distance. -/
 theorem weak_grad_of_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L B : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
       riemannianEDistOf (I := I) g x y)
@@ -289,7 +289,7 @@ omit [IsManifold I ∞ M] in
 function is manifold-differentiable almost everywhere. -/
 theorem grad_norm_aesm
     [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (hu : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
       MDifferentiableAt I 𝓘(ℝ, ℝ) u x) :
@@ -377,7 +377,7 @@ theorem grad_norm_aesm
 /-- Every bounded intrinsically Lipschitz real function belongs to the
 intrinsic first-order Sobolev space at every exponent. -/
 theorem memW1p_of_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : ENNReal)
     {u : M → ℝ} {L B : NNReal}
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *

@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -78,7 +78,7 @@ noncomputable def lc0Tr (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) : SmoothCcTensor g₀ (p + 2) p :=
   reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p (lc0PureDT (I := I) (M := M) g₀ g₁ p) σ
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma lc0Tr_fiber_apply (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) (D : Tensor0SSpace (p + 2) I x) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
@@ -91,7 +91,7 @@ def lc0SwapOutPerm : Equiv.Perm (Fin 4) :=
   ⟨![0, 1, 3, 2], ![0, 1, 3, 2], by decide, by decide⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma lc0b_swapOut_traceStep (g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) (Z : Tensor0SSpace 4 I x) :
     domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
@@ -136,9 +136,7 @@ lemma lc0b_swapOut_traceStep (g₁ : SmoothRiemannianMetric I M)
   rw [hpt (σ i)]
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lc0RiemRest_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 4 ℝ E)

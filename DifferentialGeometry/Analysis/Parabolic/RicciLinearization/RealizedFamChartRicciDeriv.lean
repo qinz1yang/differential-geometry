@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma hasDerivAt_of_shift {f : ℝ → ℝ} {f' s₀ : ℝ}
     (hshift : HasDerivAt (fun u => f (s₀ + u)) f' 0) : HasDerivAt f f' s₀ := by
@@ -113,7 +113,7 @@ private lemma hasDerivAt_partialDeriv_comm_at
   unfold partialDeriv
   exact hasDerivAt_fderiv_comm_at Φ s₀ y₀ (chartModelBasis E p) hΦ
 
-def realizedGramDeriv (g₀ : SmoothRiemannianMetric I M)
+def realizedGramDeriv [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -124,8 +124,7 @@ def realizedGramDeriv (g₀ : SmoothRiemannianMetric I M)
     chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) α i j y -
       chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') α i j y
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_chartGramOnE [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -155,8 +154,7 @@ theorem hasDerivAt_realizedFam_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
   refine (hbase.congr_of_eventuallyEq heq).congr_deriv ?_
   rw [realizedGramDeriv, hF, hG]
 
-omit [CompactSpace M] in
-private lemma realizedGramDeriv_eq_deriv (g₀ : SmoothRiemannianMetric I M)
+private lemma realizedGramDeriv_eq_deriv [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -170,8 +168,7 @@ private lemma realizedGramDeriv_eq_deriv (g₀ : SmoothRiemannianMetric I M)
   funext y
   exact (hasDerivAt_realizedFam_chartGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' α i j y hs₀).deriv
 
-omit [CompactSpace M] in
-private lemma s_differentiableAt_realizedFam_chartInvGramOnE (g₀ : SmoothRiemannianMetric I M)
+private lemma s_differentiableAt_realizedFam_chartInvGramOnE [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -194,8 +191,7 @@ private lemma s_differentiableAt_realizedFam_chartInvGramOnE (g₀ : SmoothRiema
   rw [hcomp]
   exact (hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)).differentiableAt (by simp)
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_chartInvGramOnE (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_chartInvGramOnE [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -283,8 +279,7 @@ theorem hasDerivAt_realizedFam_chartInvGramOnE (g₀ : SmoothRiemannianMetric I 
   rw [zero_add] at hfinal
   exact hfinal
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_partial_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_partial_chartGramOnE [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -309,8 +304,7 @@ theorem hasDerivAt_realizedFam_partial_chartGramOnE (g₀ : SmoothRiemannianMetr
   congr 1
   exact realizedGramDeriv_eq_deriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j hs₀
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_gramBracket (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_gramBracket [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -345,8 +339,7 @@ theorem hasDerivAt_realizedFam_gramBracket (g₀ : SmoothRiemannianMetric I M)
     funext s; rw [gramBracket]
   rw [heq]; exact hsum
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_chartChristoffel (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_chartChristoffel [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -385,8 +378,7 @@ theorem hasDerivAt_realizedFam_chartChristoffel (g₀ : SmoothRiemannianMetric I
   have hbr := hasDerivAt_realizedFam_gramBracket (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j l hy hs₀
   exact hG.mul hbr
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_partial_chartChristoffel (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_partial_chartChristoffel [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -411,8 +403,7 @@ theorem hasDerivAt_realizedFam_partial_chartChristoffel (g₀ : SmoothRiemannian
     (fun r : ℝ × E =>
       chartChristoffel (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' r.1) x i j k r.2) m s₀ y hjoint
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_chartRiemannTensor (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_chartRiemannTensor [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -441,8 +432,7 @@ theorem hasDerivAt_realizedFam_chartRiemannTensor (g₀ : SmoothRiemannianMetric
   exact ((hjoint.comp s₀ ((contDiffAt_id).prodMk contDiffAt_const)).differentiableAt
     (by simp)).hasDerivAt
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedFam_chartRicciTensor (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedFam_chartRicciTensor [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -467,8 +457,7 @@ theorem hasDerivAt_realizedFam_chartRicciTensor (g₀ : SmoothRiemannianMetric I
   exact hasDerivAt_realizedFam_chartRiemannTensor (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j k j hy
     hs₀
 
-omit [CompactSpace M] in
-theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_realizedRicciChartSum_general [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

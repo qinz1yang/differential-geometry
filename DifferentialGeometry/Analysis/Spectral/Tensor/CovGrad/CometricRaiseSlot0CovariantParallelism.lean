@@ -28,12 +28,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma interior_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -47,7 +47,7 @@ private lemma interior_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma interior_product_eq_tensor0S_curry (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) :
     Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D =
@@ -59,9 +59,9 @@ private lemma interior_product_eq_tensor0S_curry (s : ℕ) (x : M) (v : TangentS
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := D) (v0 := (show E from v)) (vs := fun k => (show E from w k))]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma covDeriv_one_eq_dualToCotangent_cotangentCov
+private lemma covDeriv_one_eq_dualToCotangent_cotangentCov [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞ (fun y : M => Tensor0SSpace 1 I y))
     (x : M) (v0 : TangentSpace I x) :
@@ -104,9 +104,9 @@ private lemma covDeriv_one_eq_dualToCotangent_cotangentCov
   rw [hbridge, hpair]
   simp only [add_sub_cancel_right, ContinuousLinearMap.coe_coe]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma covDeriv_sharp_field_eq (g₀ : SmoothRiemannianMetric I M)
+private lemma covDeriv_sharp_field_eq [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞ (fun y : M => Tensor0SSpace 1 I y))
     {x : M} (v0 : TangentSpace I x)
     (hsharp : MDifferentiableAt I (I.prod 𝓘(ℝ, E))

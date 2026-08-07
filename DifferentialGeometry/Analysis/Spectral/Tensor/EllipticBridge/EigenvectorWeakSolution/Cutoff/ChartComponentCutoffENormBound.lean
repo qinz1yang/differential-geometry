@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 open DifferentialGeometry.Integral.Measure
@@ -99,8 +99,8 @@ private lemma cutoffComponentEuclid_support_subset_cutoffKernelEuclid
       hy_ne
 
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 private lemma eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN}
@@ -185,8 +185,8 @@ private def chartL2RestrictLin (α : M) (s : Set EuclN) :
     exact (Measure.restrict_le_self.absolutelyContinuous).ae_eq
       (Lp.coeFn_smul c lp)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma chartL2RestrictLin_norm_le (α : M) (s : Set EuclN)
     (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     ‖chartL2RestrictLin (I := I) (M := M) α s lp‖ ≤ 1 * ‖lp‖ := by
@@ -203,15 +203,15 @@ private def chartL2RestrictCLM (α : M) (s : Set EuclN) :
   (chartL2RestrictLin (I := I) (M := M) α s).mkContinuous 1
     (chartL2RestrictLin_norm_le (I := I) (M := M) α s)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 @[simp] private lemma chartL2RestrictCLM_apply (α : M) (s : Set EuclN)
     (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     chartL2RestrictCLM (I := I) (M := M) α s lp =
       ((Lp.memLp lp).restrict s).toLp (lp : EuclN → ℝ) := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma chartL2RestrictCLM_eq_zero_iff (α : M) (s : Set EuclN)
     (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     chartL2RestrictCLM (I := I) (M := M) α s lp = 0 ↔

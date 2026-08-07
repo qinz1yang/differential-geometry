@@ -36,7 +36,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma wkpNorm_succ_ge
     (d : ℕ) (k : ℕ) (p : ℝ≥0∞)
@@ -54,7 +54,7 @@ private lemma wkpNorm_succ_ge
     omega
   · intro _ _ _; exact zero_le _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma wkpNormChart_le_succ
     (g : SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
@@ -65,7 +65,7 @@ lemma wkpNormChart_le_succ
   refine ENNReal.tsum_le_tsum (fun α => ?_)
   exact wkpNorm_succ_ge (d := Module.finrank ℝ E) k p _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma wkpNormChart_one_le_two
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞) (u : M → ℝ) :

@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 attribute [local instance]
   rhsPointwiseModelDualNormedAddCommGroup
@@ -79,8 +79,8 @@ attribute [local instance]
   rhsPointwiseTensorRSTotalSpaceTopology
   rhsPointwiseTensorRSFiberBundle
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 theorem tensor03_pairing_contMDiff
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -123,8 +123,8 @@ theorem tensor03_pairing_contMDiff
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private theorem tensor03Cov_quad_apply_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -208,7 +208,7 @@ private theorem tensor03Cov_quad_apply_smooth
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply3_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -240,7 +240,7 @@ private theorem tensor03Cov_output_apply3_contMDiff
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply2_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -262,7 +262,7 @@ private theorem tensor03Cov_output_apply2_contMDiff
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -285,7 +285,7 @@ private theorem tensor03Cov_output_apply_contMDiff
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem tensor03Cov_output_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -311,7 +311,6 @@ private theorem tensor03Cov_output_contMDiff
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02CovIterate_metric_contMDiff
     (g₀ g : SmoothRiemannianMetric I M) :
@@ -347,7 +346,6 @@ theorem tensor02CovIterate_metric_contMDiff
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02Cov_metric_contMDiff
     (g₀ g : SmoothRiemannianMetric I M) :

@@ -27,11 +27,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma input_slot_pulled_eq_kernel_repr_eventually
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -85,7 +85,7 @@ private lemma input_slot_pulled_eq_kernel_repr_eventually
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
   exact h_factor
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma output_slot_pulled_eq_kernel_repr_eventually
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -139,7 +139,7 @@ private lemma output_slot_pulled_eq_kernel_repr_eventually
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
   exact h_factor
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inputSlotChartKernel_iteratedFDeriv_two_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -188,7 +188,7 @@ private lemma inputSlotChartKernel_iteratedFDeriv_two_continuousOn
     exact (h_eq hy).symm
   exact continuous_norm.comp_continuousOn h_iter_cont
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma outputSlotChartKernel_iteratedFDeriv_two_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -237,8 +237,8 @@ private lemma outputSlotChartKernel_iteratedFDeriv_two_continuousOn
     exact (h_eq hy).symm
   exact continuous_norm.comp_continuousOn h_iter_cont
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma pouTsupport_subset_goodSet (α : M) :
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma pouTsupport_subset_goodSet [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       chartLeviCivitaGoodSet (I := I) α := by

@@ -30,10 +30,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-theorem chartH4NonSmoothPOUWitness_of_memWkp_four
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem chartH4NonSmoothPOUWitness_of_memWkp_four [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {α : M}
     (h : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 4 2
@@ -44,8 +44,8 @@ theorem chartH4NonSmoothPOUWitness_of_memWkp_four
     ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α :=
   ChartH4NonSmoothPOUWitness.mk' (g := g) h
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-theorem chartH4NonSmoothPOUWitness_iff_memWkp_four
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem chartH4NonSmoothPOUWitness_iff_memWkp_four [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (u : M → ℝ) (α : M) :
     ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α ↔
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -57,7 +57,7 @@ theorem chartH4NonSmoothPOUWitness_iff_memWkp_four
   ⟨fun h => h.memWkp_four,
    fun h => chartH4NonSmoothPOUWitness_of_memWkp_four g (u := u) (α := α) h⟩
 
-def ChartSideH4Bridge (_g : SmoothRiemannianMetric I M) (u : M → ℝ) : Prop :=
+def ChartSideH4Bridge [SigmaCompactSpace M] (_g : SmoothRiemannianMetric I M) (u : M → ℝ) : Prop :=
   ∀ α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 4 2
@@ -66,8 +66,8 @@ def ChartSideH4Bridge (_g : SmoothRiemannianMetric I M) (u : M → ℝ) : Prop :
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-theorem chartH4NonSmoothPOUWitness_of_chartSideH4Bridge
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem chartH4NonSmoothPOUWitness_of_chartSideH4Bridge [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_bridge : ChartSideH4Bridge (I := I) (M := M) g u) :
     ∀ α : M, ChartH4NonSmoothPOUWitness (I := I) (M := M) g u α :=

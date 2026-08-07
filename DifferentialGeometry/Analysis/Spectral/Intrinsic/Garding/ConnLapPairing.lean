@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private noncomputable def pointInnerLeft
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
@@ -40,16 +40,16 @@ private noncomputable def pointInnerLeft
   map_add' := fun S₁ S₂ => tensorInnerPointwise_add_left
     (I := I) (M := M) g r s x S₁ S₂ T
 
-private noncomputable def pointInnerRight
+private noncomputable def pointInnerRight [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (S : TensorRSModel r s ℝ E) : TensorRSModel r s ℝ E →+ ℝ where
   toFun := fun T => tensorInnerPointwise (I := I) (M := M) g r s x S T
   map_zero' := tensorInnerPointwise_zero_right (I := I) (M := M) g r s x S
   map_add' := tensorInnerPointwise_add_right (I := I) (M := M) g r s x S
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
-private theorem l2_sub_left_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private theorem l2_sub_left_cc [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ T : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s (S₁.toFun - S₂.toFun) T.toFun =
       tensorL2Inner (I := I) (M := M) g r s S₁.toFun T.toFun -
@@ -64,9 +64,9 @@ private theorem l2_sub_left_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
   exact map_sub (pointInnerLeft (I := I) (M := M) g r s x (T.toFun x))
     (S₁.toFun x) (S₂.toFun x)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
-private theorem l2_sub_right_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private theorem l2_sub_right_cc [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T₁ T₂ : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s S.toFun (T₁.toFun - T₂.toFun) =
       tensorL2Inner (I := I) (M := M) g r s S.toFun T₁.toFun -
@@ -126,8 +126,8 @@ theorem oneMinusConnLapSmooth_l2Inner_eq_add_covGrad
   ring
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm
+omit [I.Boundaryless] in
+theorem oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ) (v : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s k
         (oneMinusConnLapSmooth (I := I) g r s v) =
@@ -156,8 +156,8 @@ theorem oneMinusConnLapSmoothIter_l2Inner_selfAdjoint
       oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm]
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem oneMinusConnLapSmoothIter_add
+omit [I.Boundaryless] in
+theorem oneMinusConnLapSmoothIter_add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a b : ℕ)
     (T : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s (a + b) T =
@@ -206,8 +206,8 @@ theorem oneMinusConnLapSmoothIter_l2Inner_eq_add_sum_covGrad
     ring
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+theorem rawConnLap_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (A + B) =
       rawTensorConnLapSmooth (I := I) g r s A +
@@ -222,8 +222,8 @@ theorem rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   abel
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem oneMinusConn_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+theorem oneMinusConn_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmooth (I := I) g r s (A + B) =
       oneMinusConnLapSmooth (I := I) g r s A +
@@ -233,8 +233,8 @@ theorem oneMinusConn_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   abel
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem connLapIter_map_add (g : SmoothRiemannianMetric I M) (r s j : ℕ)
+omit [I.Boundaryless] in
+theorem connLapIter_map_add [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (A B : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s j (A + B) =
       oneMinusConnLapSmoothIter (I := I) g r s j A +
@@ -262,8 +262,8 @@ theorem covGrad_oneMinus (g : SmoothRiemannianMetric I M) (s : ℕ)
   abel
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem connLapIter_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+theorem connLapIter_one [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 1 S =
       oneMinusConnLapSmooth (I := I) g r s S := by

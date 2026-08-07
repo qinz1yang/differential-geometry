@@ -209,9 +209,9 @@ theorem metric_inner_trivSymm_trivSymm_continuousOn
 section HeadlineNormComparison
 
 variable [NeZero (Module.finrank ℝ E)]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M]
     [I.Boundaryless] in
 lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -316,7 +316,7 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
       rw [div_eq_inv_mul]]
     exact (le_div_iff₀ hε).mpr (by linarith [h_mul])
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [T2Space M] [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -352,7 +352,7 @@ theorem chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_
     (pouTsupport_isCompact (I := I) (M := M) α)
     (pouTsupport_subset_baseSet (I := I) (M := M) α)
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [T2Space M] [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartTrivializationNorm_le_const_mul_tensorInnerPointwise_chartRSTwist_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

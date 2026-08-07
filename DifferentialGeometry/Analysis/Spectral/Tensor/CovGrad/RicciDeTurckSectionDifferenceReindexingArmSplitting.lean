@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -81,14 +81,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCc_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
@@ -171,7 +171,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -187,7 +187,7 @@ noncomputable def reindexCoeffFibGen (r s : ℕ) (σ' : Equiv.Perm (Fin r)) (x :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem reindexCoeffFibGen_apply (r s : ℕ) (σ' : Equiv.Perm (Fin r)) (x : M)
     (A : Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x)
     (D : Tensor0SBundle.Tensor0SSpace r I x) :
@@ -202,7 +202,7 @@ theorem reindexCoeffFibGen_apply (r s : ℕ) (σ' : Equiv.Perm (Fin r)) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem reindexCoeffFibGen_contMDiff (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g₀ r s) (σ' : Equiv.Perm (Fin r)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
@@ -268,7 +268,7 @@ noncomputable def reindexCoeffGen (g₀ : SmoothRiemannianMetric I M) (r s : ℕ
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] theorem reindexCoeffGen_toSection (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g₀ r s) (σ' : Equiv.Perm (Fin r)) (x : M) :
     (reindexCoeffGen (I := I) (M := M) g₀ r s R σ').toSection x =
@@ -280,7 +280,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem reindexCoeffGen_appCc_eq (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (R : SmoothCcTensor g₀ r 2) (σ' : Equiv.Perm (Fin r))
     (W W' : SmoothCcTensor g₀ 0 r)
@@ -322,12 +322,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem connDiff_endpoint_cocycle (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (w v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v
@@ -345,7 +345,7 @@ theorem connDiff_endpoint_cocycle (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCc_smul_left_normed (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
@@ -439,13 +439,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem inverseMetricSharpFib_sub_inner_g1
     (g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (α : Tensor0SSpace 1 I x) (w : TangentSpace I x) :
@@ -459,7 +459,7 @@ theorem inverseMetricSharpFib_sub_inner_g1
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem inverseMetricSharpFib_sub_inner_g1_realize
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hg₁ : ∀ (b : M) (u w : TangentSpace I b),
@@ -494,7 +494,7 @@ theorem inverseMetricSharpFib_sub_inner_g1_realize
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem cotangentCov_leviCivita_diff_endpoint
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     {θ : Π b : M, TangentSpace I b →L[ℝ] ℝ} {x : M}
@@ -521,9 +521,9 @@ theorem cotangentCov_leviCivita_diff_endpoint
   linarith [h1, h1']
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem oArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (dir : TangentSpace I x) :
     inverseMetricSharpFib (I := I) g₁ x
@@ -559,9 +559,8 @@ theorem oArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
   abel
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem oArm_leg_eq_connDiff (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (dir : TangentSpace I x) :
     dualToCotangent (I := I)
@@ -587,7 +586,7 @@ theorem oArm_leg_eq_connDiff (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem connDiff_bilinear_diff_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (a a' dir : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) g₁ g₀ x a dir
@@ -600,7 +599,7 @@ theorem connDiff_bilinear_diff_split (g₀ g₁ g₁' : SmoothRiemannianMetric I
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem quadArm_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (q q' dir : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) g₁ g₀ x q dir
@@ -1171,7 +1170,7 @@ def lowerFlatCLM (g₁' : SmoothRiemannianMetric I M) (x : M) :
         rw [h, dualToCotangent_smulC]; rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma lowerFlatCLM_apply (g₁' : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     lowerFlatCLM (I := I) g₁' x v =
       dualToCotangent (I := I) (x := x) (g₁'.inner x v).toLinearMap := by
@@ -1179,7 +1178,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma cotangentToDual_lowerFlatCLM (g₁' : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     cotangentToDual (I := I) (x := x) (lowerFlatCLM (I := I) g₁' x v) w = g₁'.inner x v w := by
@@ -1187,7 +1186,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma inverseMetricSharpFib_lowerFlatCLM (g₁' : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     inverseMetricSharpFib (I := I) g₁' x (lowerFlatCLM (I := I) g₁' x v) = v := by
@@ -1215,7 +1214,7 @@ lemma inverseMetricSharpFib_lowerFlatCLM (g₁' : SmoothRiemannianMetric I M) (x
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma inverseMetricSharpFib_lowerFlatCLM_eq_metricSharp
     (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     inverseMetricSharpFib (I := I) g₁ x (lowerFlatCLM (I := I) g₁' x v) =
@@ -1233,7 +1232,7 @@ def combinedLowerRaisedEndo0 (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
     - ContinuousLinearMap.id ℝ (TangentSpace I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma combinedLowerRaisedEndo0_apply (g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     combinedLowerRaisedEndo0 (I := I) g₁ g₁' x v =
@@ -1243,7 +1242,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma combinedLowerRaisedEndo0_self (g₁' : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     combinedLowerRaisedEndo0 (I := I) g₁' g₁' x v = 0 := by
@@ -1251,7 +1250,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma combinedLowerRaisedEndo0_eq_metricSharp_flatDiff
     (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     combinedLowerRaisedEndo0 (I := I) g₁ g₁' x v =
@@ -1275,7 +1274,7 @@ lemma combinedLowerRaisedEndo0_eq_metricSharp_flatDiff
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem metricFlat_chartComponent_contMDiffOn_local (g : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (γ : M) (j : Fin (Module.finrank ℝ E)) :
@@ -1302,7 +1301,7 @@ theorem metricFlat_chartComponent_contMDiffOn_local (g : SmoothRiemannianMetric 
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem metricFlatDiff_chartComponent_contMDiffOn_local (g₁ g₁' : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (γ : M) (j : Fin (Module.finrank ℝ E)) :
@@ -1319,7 +1318,7 @@ theorem metricFlatDiff_chartComponent_contMDiffOn_local (g₁ g₁' : SmoothRiem
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem combinedLowerRaisedEndo0_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
@@ -1365,7 +1364,7 @@ def lowerSlotInsert0Fib (x : M) (Λ : TangentSpace I x →L[ℝ] TangentSpace I 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma lowerSlotInsert0Fib_apply_eval (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace 2 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel (lowerSlotInsert0Fib (I := I) (M := M) x Λ A) m =
@@ -1388,7 +1387,7 @@ lemma lowerSlotInsert0Fib_apply_eval (x : M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma lowerSlotInsert0Fib_curry (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace 2 I x) :
     lowerSlotInsert0Fib (I := I) (M := M) x Λ A =
@@ -1416,7 +1415,7 @@ def combinedLowerCoeff0Fib (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma combinedLowerCoeff0Fib_apply_eval (g₁ g₁' : SmoothRiemannianMetric I M) (x : M)
     (A : Tensor0SSpace 2 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel (combinedLowerCoeff0Fib (I := I) g₁ g₁' x A) m =
@@ -1427,7 +1426,7 @@ lemma combinedLowerCoeff0Fib_apply_eval (g₁ g₁' : SmoothRiemannianMetric I M
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem combinedLowerCoeff0Fib_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
@@ -1497,14 +1496,14 @@ noncomputable def combinedLowerCoeff0 (g₀ g₁ g₁' : SmoothRiemannianMetric 
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 @[simp] theorem combinedLowerCoeff0_toSection (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
     (combinedLowerCoeff0 (I := I) (M := M) g₀ g₁ g₁').toSection x =
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from combinedLowerCoeff0Fib (I := I) g₁ g₁' x) :=
         rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem combinedLowerCoeff0_appCc_eq
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -1527,9 +1526,8 @@ theorem combinedLowerCoeff0_appCc_eq
   rfl
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 theorem connDiff_g1g1'_order_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     PDE.DeTurck.connDiff (I := I) g₁ g₁' x (Y x) (X x) =
@@ -1731,7 +1729,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -1747,7 +1745,6 @@ noncomputable def ricciArmOrder0CurvCoeffFib (g₁ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0CurvCoeffFibSlot_toModel (g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 2 I x) (v : Fin 2 → E) :
@@ -1761,7 +1758,6 @@ omit [SigmaCompactSpace M] in
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem ricciArmOrder0CurvCoeffFib_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel (ricciArmOrder0CurvCoeffFib (I := I) g₁ x D) v =

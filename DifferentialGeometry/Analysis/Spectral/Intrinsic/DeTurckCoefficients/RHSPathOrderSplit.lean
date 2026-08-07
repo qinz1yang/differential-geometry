@@ -44,13 +44,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+  [CompactSpace M] [T2Space M]
   [I.Boundaryless]
 
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] in
 private theorem unitModel_add_app
     [BoundarylessManifold I M]
@@ -67,7 +67,7 @@ private theorem unitModel_add_app
       ContinuousLinearMap.add_apply, Tensor0SBundle.Tensor0SSpace.toModel_add]
   rw [hfun, ContinuousMultilinearMap.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] in
 private theorem unitModel_sub_app
     [BoundarylessManifold I M]
@@ -85,7 +85,7 @@ private theorem unitModel_sub_app
   rw [hfun, ContinuousMultilinearMap.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] in
+omit [T2Space M] in
 private theorem ccBilin_sub
     [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -99,7 +99,7 @@ private theorem ccBilin_sub
   exact unitModel_sub_app (I := I) (M := M) g₀ T T' x ![v, w]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] in
+omit [T2Space M] in
 private theorem symmS_eq_self
     [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
@@ -136,7 +136,7 @@ private theorem symmS_eq_self
 
 
 
-def rhsPathSlope
+def rhsPathSlope [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -154,8 +154,7 @@ def rhsPathSlope
 
 
 
-omit [CompactSpace M] in
-theorem hasDerivAt_rhsPath
+theorem hasDerivAt_rhsPath [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -187,8 +186,7 @@ theorem hasDerivAt_rhsPath
 
 
 
-omit [CompactSpace M] in
-theorem deriv_rhsPath
+theorem deriv_rhsPath [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -206,8 +204,7 @@ theorem deriv_rhsPath
     g_bg α i k hy (Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨hs.1.le, hs.2.le⟩)).deriv
 
 
-omit [CompactSpace M] in
-theorem realizedFam_zero
+theorem realizedFam_zero [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -221,8 +218,7 @@ theorem realizedFam_zero
     tensorSectionRealizeMetric_inner, convexPerturbation_zero]
 
 
-omit [CompactSpace M] in
-theorem realizedFam_one
+theorem realizedFam_one [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -237,7 +233,7 @@ theorem realizedFam_one
 
 
 
-def rhsChartSum
+def rhsChartSum [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -251,7 +247,7 @@ def rhsChartSum
         (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i k (extChartAt I x x)
 
 
-def rhsSumSlope
+def rhsSumSlope [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -265,7 +261,7 @@ def rhsSumSlope
         g_bg x i k s (extChartAt I x x)
 
 
-def lieSumSlope
+def lieSumSlope [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -279,7 +275,7 @@ def lieSumSlope
         g_bg x i k s (extChartAt I x x)
 
 
-def lieTopSum
+def lieTopSum [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -296,7 +292,7 @@ def lieTopSum
 
 
 
-def lieTopCovSum
+def lieTopCovSum [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -316,7 +312,7 @@ def lieTopCovSum
 
 
 
-def lieTopTailSum
+def lieTopTailSum [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -332,7 +328,7 @@ def lieTopTailSum
 
 
 
-def lieTopTailSwap
+def lieTopTailSwap [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -345,7 +341,7 @@ def lieTopTailSwap
       lieTopTail (I := I) g₀ T T'
         (realizedFam (I := I) g₀ T T' hδ hδ' s) x k i
 
-omit [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [CompactSpace M] [T2Space M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieTopRaw_symm
     (g g_bg : SmoothRiemannianMetric I M) (x : M)
@@ -454,7 +450,7 @@ theorem lieTop_add_swap
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x ![v, w]
 
 
-def lieOneSum
+def lieOneSum [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -470,7 +466,7 @@ def lieOneSum
         i k (extChartAt I x x)
 
 
-def lieZeroSum
+def lieZeroSum [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -487,8 +483,7 @@ def lieZeroSum
 
 
 
-omit [CompactSpace M] in
-theorem lieSum_eq_split [BoundarylessManifold I M]
+theorem lieSum_eq_split [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -509,8 +504,7 @@ theorem lieSum_eq_split [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem ricciSum_eq_lin [BoundarylessManifold I M]
+theorem ricciSum_eq_lin [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -534,8 +528,7 @@ theorem ricciSum_eq_lin [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem rhsSlope_eq_lin [BoundarylessManifold I M]
+theorem rhsSlope_eq_lin [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -628,7 +621,7 @@ theorem rhsSlope_eq_raw [BoundarylessManifold I M]
 
 
 
-def rhsTopTerm
+def rhsTopTerm [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -644,7 +637,7 @@ def rhsTopTerm
 
 
 
-def rhsLowTerm
+def rhsLowTerm [SigmaCompactSpace M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -735,8 +728,7 @@ theorem rhsSlope_eq_split [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem rhsSum_contDiffAt [BoundarylessManifold I M]
+theorem rhsSum_contDiffAt [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -765,8 +757,7 @@ theorem rhsSum_contDiffAt [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem hasDerivAt_rhsSum [BoundarylessManifold I M]
+theorem hasDerivAt_rhsSum [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -786,8 +777,7 @@ theorem hasDerivAt_rhsSum [BoundarylessManifold I M]
     g_bg x i k hy hs).const_mul _
 
 
-omit [CompactSpace M] in
-theorem deriv_rhsSum [BoundarylessManifold I M]
+theorem deriv_rhsSum [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -801,8 +791,7 @@ theorem deriv_rhsSum [BoundarylessManifold I M]
     x v w (Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨hs.1.le, hs.2.le⟩)).deriv
 
 
-omit [CompactSpace M] in
-theorem rhsSum_continuous [BoundarylessManifold I M]
+theorem rhsSum_continuous [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -817,8 +806,7 @@ theorem rhsSum_continuous [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem rhsSlope_integrable [BoundarylessManifold I M]
+theorem rhsSlope_integrable [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -861,8 +849,7 @@ theorem rhsSlope_integrable [BoundarylessManifold I M]
 
 
 
-omit [CompactSpace M] in
-theorem rhsSum_sub_eq_int [BoundarylessManifold I M]
+theorem rhsSum_sub_eq_int [SigmaCompactSpace M] [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

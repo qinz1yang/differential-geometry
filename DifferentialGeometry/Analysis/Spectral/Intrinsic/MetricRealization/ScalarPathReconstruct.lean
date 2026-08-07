@@ -42,7 +42,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
@@ -59,7 +59,7 @@ noncomputable def scalarMode
 
 
 
-noncomputable def scalarSpecSum
+noncomputable def scalarSpecSum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (c : TensorEigenIdx (I := I) (M := M) g 0 0 → ℝ → ℝ) :
     ℝ → M → ℝ :=
@@ -228,9 +228,8 @@ lemma scalarMode_smooth
   exact ht.mul hx
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma weight_two_sq
+private lemma weight_two_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g 0 0) (p : ℝ) :
     tensorSobolevWeight (I := I) (M := M) i (2 * p) =
@@ -242,9 +241,8 @@ private lemma weight_two_sq
     Real.rpow_two]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma abs_le_sqrt_wt
+private lemma abs_le_sqrt_wt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g 0 0) (p : ℝ) {v C : ℝ}
     (h : tensorSobolevWeight (I := I) (M := M) i (2 * p) * v ^ 2 ≤ C) :
@@ -268,9 +266,8 @@ private lemma abs_le_sqrt_wt
   rwa [← hW_def]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma sqrt_mul_tail
+private lemma sqrt_mul_tail [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ)
     (C : TensorEigenIdx (I := I) (M := M) g 0 0 → ℝ)
     (hC : Summable C) (hC_nn : ∀ i, 0 ≤ C i)
@@ -404,9 +401,8 @@ private lemma jet_snd_le
   simpa only [L, Function.comp_apply] using hbound
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem prodMode_majorant
+theorem prodMode_majorant [SigmaCompactSpace M]
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (g : SmoothRiemannianMetric I M)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 0)

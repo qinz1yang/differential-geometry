@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance tangentEndomorphismNormedAddCommGroup (x : M) :
@@ -53,7 +53,7 @@ private local instance tensor0STotalSpaceTopology (s : ℕ) :
   Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private theorem armSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
     (s : ℕ)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
@@ -69,7 +69,7 @@ private theorem armSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
   exact curry_armSlotFib_eq_slotInsert (I := I) (M := M) s x (Arm x) A u
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma slotInsertEndoFib_sub_left (s : ℕ) (k : Fin s) (x : M)
     (Λ₁ Λ₂ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     slotInsertEndoFib (I := I) (M := M) s k x (Λ₁ - Λ₂) =
@@ -87,8 +87,8 @@ private theorem add_sub_sub_cancel_right {A : Type*} [AddCommGroup A]
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem tensorCovDerivAt_apply_section (g : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem tensorCovDerivAt_apply_section [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (r q : ℕ) (S : SmoothCcTensor g r q)
     (W : ∀ y : M, Tensor0SSpace r I y)
     (hW : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
@@ -113,8 +113,8 @@ private theorem tensorCovDerivAt_apply_section (g : SmoothRiemannianMetric I M)
     (LeviCivita (I := I) g) S.toSection w x v
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem tensorCovDerivAt_section_apply_add
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem tensorCovDerivAt_section_apply_add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r q : ℕ) (S : SmoothCcTensor g r q)
     (W : ∀ y : M, Tensor0SSpace r I y)
     (hW : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
@@ -135,8 +135,8 @@ private theorem tensorCovDerivAt_section_apply_add
   exact h.symm
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem tensorCovDerivAt_curried_apply_section
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem tensorCovDerivAt_curried_apply_section [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r q : ℕ)
     (S : SmoothCcTensor g r (q + 1))
     (W : ∀ y : M, Tensor0SSpace r I y)
@@ -183,7 +183,7 @@ private theorem tensorCovDerivAt_curried_apply_section
   rw [hT, map_sub, ContinuousLinearMap.sub_apply]
   rw [eq_sub_of_add_eq hCL.symm]
 
-private def bilinEndoAppliedSection
+private def bilinEndoAppliedSection [SigmaCompactSpace M]
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (Y : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) :
@@ -194,7 +194,7 @@ private def bilinEndoAppliedSection
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem armSlotEndoCc_curriedSection_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞

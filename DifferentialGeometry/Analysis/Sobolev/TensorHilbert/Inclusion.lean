@@ -30,10 +30,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
-noncomputable def smoothInclusionHsSuccLin
+noncomputable def smoothInclusionHsSuccLin [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     SmoothCcTensorHs g r s (k + 1) →ₗ[ℝ] SmoothCcTensorHs g r s k where
   toFun S := ⟨S.toCcTensor⟩
@@ -345,8 +345,8 @@ theorem tensorPouSobolevNorm_ne_top
     (I := I) (M := M) g r s T α IJ.1 IJ.2 j
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorChartComponentRaw_euclidPull_contDiffOn
+    in
+private lemma tensorChartComponentRaw_euclidPull_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -747,14 +747,14 @@ lemma smoothInclusionHsSuccLin_norm_le
     (tensorPouSobolevHsNorm_le_succ (I := I) (M := M) g k T)
 
 
-noncomputable def smoothInclusionHsSucc
+noncomputable def smoothInclusionHsSucc [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     SmoothCcTensorHs g r s (k + 1) →L[ℝ] SmoothCcTensorHs g r s k :=
   (smoothInclusionHsSuccLin (I := I) (M := M) g r s k).mkContinuous 1
     (fun S => smoothInclusionHsSuccLin_norm_le (I := I) (M := M) g r s k S)
 
 
-noncomputable def smoothInclusionHsSuccToHkCompl
+noncomputable def smoothInclusionHsSuccToHkCompl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     SmoothCcTensorHs g r s (k + 1) →L[ℝ]
       TensorPouSobolevHilbert g r s k :=
@@ -763,7 +763,7 @@ noncomputable def smoothInclusionHsSuccToHkCompl
     (smoothInclusionHsSucc (I := I) (M := M) g r s k)
 
 
-noncomputable def inclusionHk_succ
+noncomputable def inclusionHk_succ [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     TensorPouSobolevHilbert g r s (k + 1) →L[ℝ]
       TensorPouSobolevHilbert g r s k :=

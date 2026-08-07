@@ -28,21 +28,19 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-noncomputable def tensorH1ComplBilin (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+noncomputable def tensorH1ComplBilin [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorH1Compl g r s →L[ℝ] TensorH1Compl g r s →L[ℝ] ℝ :=
   innerSL ℝ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma tensorH1ComplBilin_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
+@[simp] lemma tensorH1ComplBilin_apply [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u v : TensorH1Compl g r s) :
     tensorH1ComplBilin (I := I) (M := M) g r s u v = ⟪u, v⟫_ℝ := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorH1ComplBilin_isCoercive (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+lemma tensorH1ComplBilin_isCoercive [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsCoercive (tensorH1ComplBilin (I := I) (M := M) g r s) := by
   refine ⟨1, zero_lt_one, ?_⟩
   intro u
@@ -52,7 +50,7 @@ lemma tensorH1ComplBilin_isCoercive (g : SmoothRiemannianMetric I M) (r s : ℕ)
   ring_nf
   exact le_refl _
 
-noncomputable def tensorLpFunctionalCLM (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+noncomputable def tensorLpFunctionalCLM [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorL2 r s g →L[ℝ] (TensorH1Compl g r s →L[ℝ] ℝ) :=
   let applyL :
       (TensorL2 r s g →L[ℝ] ℝ) →L[ℝ]
@@ -62,9 +60,8 @@ noncomputable def tensorLpFunctionalCLM (g : SmoothRiemannianMetric I M) (r s : 
   ((applyL.flip) (TensorH1ComplToTensorL2 (I := I) (M := M) g r s)).comp
     (innerSL ℝ : TensorL2 r s g →L[ℝ] TensorL2 r s g →L[ℝ] ℝ)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma tensorLpFunctionalCLM_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
+@[simp] lemma tensorLpFunctionalCLM_apply [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : TensorL2 r s g) (v : TensorH1Compl g r s) :
     tensorLpFunctionalCLM (I := I) (M := M) g r s f v =
       ⟪TensorH1ComplToTensorL2 (I := I) (M := M) g r s v, f⟫_ℝ := by
@@ -73,21 +70,20 @@ omit [NeZero (Module.finrank ℝ E)] in
   rw [innerSL_apply_apply]
   exact real_inner_comm (TensorH1ComplToTensorL2 (I := I) (M := M) g r s v) f
 
-noncomputable def tensorH1ComplLaxMilgramEquiv
+noncomputable def tensorH1ComplLaxMilgramEquiv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorH1Compl g r s ≃L[ℝ] TensorH1Compl g r s :=
   IsCoercive.continuousLinearEquivOfBilin
     (tensorH1ComplBilin_isCoercive (I := I) (M := M) g r s)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma tensorH1ComplLaxMilgramEquiv_apply
+@[simp] lemma tensorH1ComplLaxMilgramEquiv_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u w : TensorH1Compl g r s) :
     ⟪tensorH1ComplLaxMilgramEquiv (I := I) (M := M) g r s u, w⟫_ℝ = ⟪u, w⟫_ℝ :=
   IsCoercive.continuousLinearEquivOfBilin_apply _ u w
 
-noncomputable def tensorH1ComplRieszRepr
+noncomputable def tensorH1ComplRieszRepr [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     (TensorH1Compl g r s →L[ℝ] ℝ) →L[ℝ] TensorH1Compl g r s :=
   LinearMap.mkContinuous
@@ -106,23 +102,21 @@ noncomputable def tensorH1ComplRieszRepr
       exact le_of_eq
         ((InnerProductSpace.toDual ℝ (TensorH1Compl g r s)).symm.norm_map φ))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorH1ComplRieszRepr_inner (g : SmoothRiemannianMetric I M) (r s : ℕ)
+lemma tensorH1ComplRieszRepr_inner [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (φ : TensorH1Compl g r s →L[ℝ] ℝ) (w : TensorH1Compl g r s) :
     ⟪tensorH1ComplRieszRepr (I := I) (M := M) g r s φ, w⟫_ℝ = φ w := by
   change ⟪(InnerProductSpace.toDual ℝ (TensorH1Compl g r s)).symm φ, w⟫_ℝ = φ w
   exact InnerProductSpace.toDual_symm_apply
     (𝕜 := ℝ) (E := TensorH1Compl g r s) (x := w) (y := φ)
 
-noncomputable def tensorResolvent (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+noncomputable def tensorResolvent [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorL2 r s g →L[ℝ] TensorH1Compl g r s :=
   (tensorH1ComplRieszRepr (I := I) (M := M) g r s).comp
     (tensorLpFunctionalCLM (I := I) (M := M) g r s)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolvent_inner_eq_lpFunctional
+theorem tensorResolvent_inner_eq_lpFunctional [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : TensorL2 r s g) (v : TensorH1Compl g r s) :
     ⟪tensorResolvent (I := I) (M := M) g r s f, v⟫_ℝ =
@@ -131,9 +125,8 @@ theorem tensorResolvent_inner_eq_lpFunctional
   rw [ContinuousLinearMap.comp_apply, tensorH1ComplRieszRepr_inner,
     tensorLpFunctionalCLM_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorResolvent_bilin_eq_lpFunctional
+theorem tensorResolvent_bilin_eq_lpFunctional [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : TensorL2 r s g) (v : TensorH1Compl g r s) :
     tensorH1ComplBilin (I := I) (M := M) g r s

@@ -272,7 +272,7 @@ private lemma tsupport_pou_mul_subset_chart_source
   exact h1.trans (hρ α)
 
 private lemma contDiff_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     {u : M → ℝ} (hu : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u)
@@ -289,7 +289,7 @@ private lemma contDiff_chartSmoothExt_pou_mul
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
 private lemma hasCompactSupport_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     (u : M → ℝ) :
@@ -300,9 +300,9 @@ private lemma hasCompactSupport_chartSmoothExt_pou_mul
     tsupport_pou_mul_subset_chart_source (n := n) (M := M) ρ hρ α u
   exact hasCompactSupport_chartSmoothExt (n := n) (M := M) α hf_supp
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-private def chartCarrier (α : M) : Set EuN :=
+private def chartCarrier [SigmaCompactSpace M] (α : M) : Set EuN :=
   (extChartAt I_hs α) ''
     (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
       : C^∞⟮I_hs, M; ℝ⟯) : M → ℝ))
@@ -325,8 +325,7 @@ private lemma chartCarrier_isCompact (α : M) :
     (continuousOn_extChartAt α).mono hTα_ext_src
   exact hTα_compact.image_of_continuousOn hcont_ext
 
-omit [CompactSpace M] in
-private lemma chartCarrier_subset_chartTarget (α : M) :
+private lemma chartCarrier_subset_chartTarget [SigmaCompactSpace M] (α : M) :
     chartCarrier (n := n) (M := M) α ⊆ (extChartAt I_hs α).target := by
   unfold chartCarrier
   set Tα : Set M := tsupport
@@ -383,7 +382,7 @@ private lemma chartCarrier_subset_full_ball (α : M) :
   have h := chartRadius_pos (n := n) (M := M) α
   linarith
 
-def AllChartsInteriorSupport (u : M → ℝ) : Prop :=
+def AllChartsInteriorSupport [SigmaCompactSpace M] (u : M → ℝ) : Prop :=
   ∀ α : M,
     chartSmoothExtInteriorSupport (n := n) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -501,7 +500,7 @@ private lemma chartSmoothExt_morrey_sup_uniform
       linarith
     exact h_RHS_nn
 
-omit [IsManifold (𝓡∂ n) ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [IsManifold (𝓡∂ n) ∞ M] [T2Space M] [CompactSpace M] in
 private lemma chartSmoothExt_eq_zero_off_target
     (α : M) (f : M → ℝ) {y : EuN}
     (hy : y ∉ (extChartAt I_hs α).target) :
@@ -596,8 +595,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball
         (eLpNorm_indicator_eq_eLpNorm_restrict hBR_meas).symm
     _ = eLpNorm fnNorm q volume := by rw [← h_eq_BR]
 
-omit [CompactSpace M] in
-private lemma chartSmoothExt_ae_eq_chartPushed_interior
+private lemma chartSmoothExt_ae_eq_chartPushed_interior [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) :
     chartSmoothExt (n := n) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -615,8 +613,7 @@ private lemma chartSmoothExt_ae_eq_chartPushed_interior
   exact chartSmoothExt_eq_chartPushed_on_target
     (n := n) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α u hy.1
 
-omit [CompactSpace M] in
-private lemma eLpNorm_chartSmoothExt_interior_eq_eLpNorm_chartPushed_interior
+private lemma eLpNorm_chartSmoothExt_interior_eq_eLpNorm_chartPushed_interior [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) (q : ℝ≥0∞) :
     eLpNorm (chartSmoothExt (n := n) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -1100,8 +1097,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_interior_le_wkpNormHalf
     exact h1.trans hint_image
   exact eLpNorm_norm_fderiv_le_n_mul_wkpNorm hq_one hΩ_open hf_smooth_top hf_compact hf_supp
 
-omit [CompactSpace M] in
-private lemma wkpNorm_chartSmoothExt_interior_eq_wkpNorm_chartPushed_interior
+private lemma wkpNorm_chartSmoothExt_interior_eq_wkpNorm_chartPushed_interior [SigmaCompactSpace M]
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) (α : M) (u : M → ℝ) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := n) 1 q
@@ -1121,8 +1117,7 @@ private lemma wkpNorm_chartSmoothExt_interior_eq_wkpNorm_chartPushed_interior
     (interiorHalfSpace_chartTargetEuclid_isOpen (n := n) (M := M) α)
     (chartSmoothExt_ae_eq_chartPushed_interior (n := n) (M := M) α u)
 
-omit [CompactSpace M] in
-private lemma wkpNormHalfSpace_chartPushed_target_le_wkpNormChart
+private lemma wkpNormHalfSpace_chartPushed_target_le_wkpNormChart [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {q : ℝ≥0∞} (α : M) (u : M → ℝ) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
@@ -1306,8 +1301,7 @@ private lemma per_chart_smooth_sup_bound
     rw [hf_def] at h_final
     exact le_trans hbound_y h_final
 
-omit [CompactSpace M] in
-private lemma chartSmoothExt_pou_mul_apply_at_chart_image
+private lemma chartSmoothExt_pou_mul_apply_at_chart_image [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {x : M} (hx : x ∈ (chartAt (EuclideanHalfSpace n) α).source) :
     chartSmoothExt (n := n) (M := M) α
         (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -1327,8 +1321,7 @@ private lemma chartSmoothExt_pou_mul_apply_at_chart_image
       (I := I_hs) (M := M)]
     exact hx)]
 
-omit [CompactSpace M] in
-private lemma norm_pou_mul_le_norm_chartSmoothExt_at_some_point
+private lemma norm_pou_mul_le_norm_chartSmoothExt_at_some_point [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) (x : M) {Cmod : ℝ}
     (hbound : ∀ y : EuN, ‖chartSmoothExt (n := n) (M := M) α
       (fun z : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
@@ -1676,9 +1669,9 @@ theorem norm_sub_le_sum_pou_diff_withBoundary
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) x * u x -
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) y * u y)
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary_unconditional
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p) :
     ∃ C : ℝ, 0 ≤ C ∧

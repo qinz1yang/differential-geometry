@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -43,7 +43,7 @@ private noncomputable def chooseCcThrough (g : SmoothRiemannianMetric I M) (r a 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chooseCcThrough_eq (g : SmoothRiemannianMetric I M) (r a : ℕ) (x : M)
     (T : TensorRSSpace r a I x) :
     (chooseCcThrough (I := I) (M := M) g r a x T).toSection x = T :=
@@ -65,7 +65,7 @@ noncomputable def curryLastTwoTensorSlots (r t : ℕ) (x : M) (T : TensorRSSpace
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma twoSlotPeel_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
     (u w : TangentSpace I x) (D : Tensor0SSpace r I x) (m : Fin t → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -87,7 +87,7 @@ lemma twoSlotPeel_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma twoSlotPeel_add (r t : ℕ) (x : M) (T T' : TensorRSSpace r (t + 2) I x) :
     curryLastTwoTensorSlots (I := I) (M := M) r t x (T + T') =
       curryLastTwoTensorSlots (I := I) (M := M) r t x T + curryLastTwoTensorSlots (I := I) (M := M)
@@ -99,7 +99,7 @@ lemma twoSlotPeel_add (r t : ℕ) (x : M) (T T' : TensorRSSpace r (t + 2) I x) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma twoSlotPeel_smul (r t : ℕ) (x : M) (c : ℝ) (T : TensorRSSpace r (t + 2) I x) :
     curryLastTwoTensorSlots (I := I) (M := M) r t x (c • T) =
       c • curryLastTwoTensorSlots (I := I) (M := M) r t x T := by
@@ -110,27 +110,27 @@ lemma twoSlotPeel_smul (r t : ℕ) (x : M) (c : ℝ) (T : TensorRSSpace r (t + 2
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[reducible] def tangentSpaceFiniteDimensional {x : M} :
     FiniteDimensional ℝ (TangentSpace I x) := by
   unfold TangentSpace
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[reducible] def tangentSpaceT2 {x : M} : T2Space (TangentSpace I x) := by
   unfold TangentSpace
   infer_instance
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[reducible] def tensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
     FiniteDimensional ℝ (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[reducible] def tensorRSSpaceT2 {r t : ℕ} {x : M} : T2Space (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
   infer_instance
@@ -163,7 +163,7 @@ noncomputable def tangentBilinFlip {r t : ℕ} {x : M}
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma tangentBilinFlip_apply {r t : ℕ} {x : M}
     (P : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TensorRSSpace r t I x)
     (a b : TangentSpace I x) :
@@ -172,7 +172,7 @@ lemma tangentBilinFlip_apply {r t : ℕ} {x : M}
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma tangentBilinFlip_add {r t : ℕ} {x : M}
     (P P' : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TensorRSSpace r t I x) :
     tangentBilinFlip (I := I) (M := M) (P + P') =
@@ -189,7 +189,7 @@ private lemma tangentBilinFlip_add {r t : ℕ} {x : M}
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma tangentBilinFlip_smul {r t : ℕ} {x : M} (c : ℝ)
     (P : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TensorRSSpace r t I x) :
     tangentBilinFlip (I := I) (M := M) (c • P) =
@@ -217,7 +217,7 @@ noncomputable def swapTwoCurryFib (r t : ℕ) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma swapTwoCurryFib_apply (r t : ℕ) (x : M)
     (T : TensorRSSpace r (t + 2) I x) (v : TangentSpace I x) :
     swapTwoCurryFib (I := I) (M := M) r t x T v =
@@ -249,7 +249,7 @@ noncomputable def swapTwoFib (r t : ℕ) (x : M) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma swapTwoFib_apply (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x) :
     swapTwoFib (I := I) (M := M) r t x T =
       covGradBundleEquiv (I := I) (M := M) r (t + 1) x
@@ -258,7 +258,7 @@ lemma swapTwoFib_apply (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x) :
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma swapTwoFib_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
     (a b : TangentSpace I x) (D : Tensor0SSpace r I x) (m : Fin t → TangentSpace I x) :
     Tensor0SSpace.toModel

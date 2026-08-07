@@ -45,7 +45,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 /-- Smooth field associated with the two insertion terms in
 `lieCorr0TotalFib`. -/
@@ -94,7 +94,7 @@ def lc0Riem (g₀ g₁ : SmoothRiemannianMetric I M) :
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 /-- At the frozen base background, the insertion endomorphism is exactly the
 negative of the DeTurck `W` endomorphism. -/
 theorem nEndo_base (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
@@ -105,7 +105,7 @@ theorem nEndo_base (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 /-- After the base cancellation, the insertion endomorphism is a product of
 the moving-to-frozen connection difference with the difference of the two
 DeTurck vector fields.  In particular its first covariant derivative uses at

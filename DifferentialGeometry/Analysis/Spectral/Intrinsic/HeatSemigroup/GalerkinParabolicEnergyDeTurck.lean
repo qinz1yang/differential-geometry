@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma oneThird_lt_one : (1 : ℝ) / 3 < 1 := by norm_num
 
@@ -111,9 +111,8 @@ noncomputable def galerkinCoordEmbed
 
 open scoped Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma galerkinCoordEmbed_coeff
+@[simp] lemma galerkinCoordEmbed_coeff [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (w : EuclideanSpace ℝ {i // i ∈ S})
@@ -137,15 +136,14 @@ noncomputable def galerkinCoordRestrict
         (I := I) (M := M) (a := (a : ℝ)) j.1))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma galerkinCoordRestrict_apply
+@[simp] lemma galerkinCoordRestrict_apply [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (v : tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) (j : {i // i ∈ S}) :
     (galerkinCoordRestrict (I := I) (M := M) g₀ a S v) j = v.coeff j.1 := rfl
 
-private noncomputable def galerkinCoordDiagLM
+private noncomputable def galerkinCoordDiagLM [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) :
     EuclideanSpace ℝ {i // i ∈ S} →ₗ[ℝ] EuclideanSpace ℝ {i // i ∈ S} where
@@ -169,9 +167,8 @@ noncomputable def galerkinCoordDiag
   (galerkinCoordDiagLM (I := I) (M := M) g₀ S).toContinuousLinearMap
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma galerkinCoordDiag_apply
+@[simp] lemma galerkinCoordDiag_apply [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (w : EuclideanSpace ℝ {i // i ∈ S}) (j : {i // i ∈ S}) :

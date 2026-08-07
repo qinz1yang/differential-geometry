@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -78,7 +78,7 @@ omit [BoundarylessManifold I M] in
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma toModel_ccTensorUnitValueSection_domDomCongrSection_swap
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
     (p q' : TangentSpace I x) :
@@ -97,7 +97,7 @@ lemma toModel_ccTensorUnitValueSection_domDomCongrSection_swap
   fin_cases i <;> rfl
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem curvatureRefoldMonomialCoeffField_unitValue_trans_swap
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (σ : Equiv.Perm (Fin 4)) :
@@ -149,7 +149,7 @@ theorem curvatureRefoldMonomialCoeffField_unitValue_trans_swap
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma ccTensorUnitValueSection_add (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (y : M) :
     ccTensorUnitValueSection (I := I) (M := M) g₀ (S + S') y =
@@ -163,7 +163,7 @@ lemma ccTensorUnitValueSection_add (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma ccTensorUnitValueSection_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ)
     (S : SmoothCcTensor g₀ 0 2) (y : M) :
     ccTensorUnitValueSection (I := I) (M := M) g₀ (c • S) y =
@@ -175,7 +175,7 @@ lemma ccTensorUnitValueSection_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ
   rfl
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem curvatureRefoldMonomialCoeffField_unitValue_add
     (g₀ g₁ : SmoothRiemannianMetric I M) (S S' : SmoothCcTensor g₀ 0 2)
     (σ : Equiv.Perm (Fin 4)) :
@@ -221,7 +221,7 @@ theorem curvatureRefoldMonomialCoeffField_unitValue_add
   rw [add_mul]
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem curvatureRefoldMonomialCoeffField_unitValue_smul
     (g₀ g₁ : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor g₀ 0 2)
     (σ : Equiv.Perm (Fin 4)) :
@@ -258,7 +258,7 @@ theorem curvatureRefoldMonomialCoeffField_unitValue_smul
   ring
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem curvatureRefoldMonomialCoeffField_unitValue_pair_eq_symmS
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (σ : Equiv.Perm (Fin 4)) :

@@ -26,10 +26,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem hasChartJetLip_chartDeTurckRicciRHS
     (g₁ g₂ g_bg : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
@@ -49,9 +49,7 @@ theorem hasChartJetLip_chartDeTurckRicciRHS
   rw [chartDeTurckRicciRHS_def]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE
-    (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
+theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

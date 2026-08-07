@@ -108,7 +108,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma six_twelve_mul_le {A B C D S : ℝ}
     (hA : A ≤ C * S) (hB : B ≤ D * S) :
@@ -1273,7 +1273,7 @@ private theorem pje_icg_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma riemannianFiberNormSq_toSection_smul (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (V : SmoothCcTensor g r s) (x : M) :

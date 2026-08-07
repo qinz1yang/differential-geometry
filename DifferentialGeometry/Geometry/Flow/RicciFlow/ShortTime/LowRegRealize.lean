@@ -26,7 +26,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
 /-- In dimension three, a positive spectral `H2` radius directly supplies
 the fibre-smallness needed to realize every smooth perturbation in the state

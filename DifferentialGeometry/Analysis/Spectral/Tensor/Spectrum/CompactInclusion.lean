@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -32,7 +32,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_TensorH1ComplToTensorL2_apply_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -62,7 +61,6 @@ lemma norm_TensorH1ComplToTensorL2_apply_le
     exact SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) a
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma denseRange_smoothToTensorH1Compl
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -77,7 +75,6 @@ lemma denseRange_smoothToTensorH1Compl
   exact UniformSpace.Completion.denseRange_coe
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_smooth_close_to_TensorH1
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

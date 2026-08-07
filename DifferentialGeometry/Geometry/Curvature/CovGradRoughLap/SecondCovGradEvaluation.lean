@@ -29,14 +29,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 lemma tensorRS_eq_of_toModel_eval_eq {r a : ℕ} {x : M}
     {T T' : TensorRSSpace r a I x}
     (h : ∀ (D : Tensor0SSpace r I x) (v : Fin a → TangentSpace I x),
@@ -60,8 +60,8 @@ private lemma eq_add_of_eq_sub {A : Type*} [AddCommGroup A] {a b c : A}
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor0S_curry_apply_eval_tangent {n : ℕ} {x : M}
     (T : Tensor0SSpace (n + 1) I x) (v₀ : TangentSpace I x)
     (v : Fin n → TangentSpace I x) :
@@ -72,8 +72,8 @@ private lemma tensor0S_curry_apply_eval_tangent {n : ℕ} {x : M}
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 lemma toModel_sum_eval {a : ℕ} {x : M} {ι : Type*} (t : Finset ι)
     (f : ι → Tensor0SSpace a I x) (v : Fin a → TangentSpace I x) :
     Tensor0SSpace.toModel (∑ i ∈ t, f i) v = ∑ i ∈ t, Tensor0SSpace.toModel (f i) v := by
@@ -118,7 +118,7 @@ private lemma curried_covGrad_apply_eq_tensorCovDerivAt_apply (r t : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma covApply_covDeriv_apply_eq_add (r t : ℕ) (W : SmoothCcTensor g r t)
     {X Y : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))

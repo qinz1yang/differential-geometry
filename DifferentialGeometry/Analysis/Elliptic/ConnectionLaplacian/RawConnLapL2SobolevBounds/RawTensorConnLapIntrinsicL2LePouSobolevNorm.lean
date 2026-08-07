@@ -45,8 +45,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-private noncomputable def tensorPouSobolevNormSqSum_one
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+private noncomputable def tensorPouSobolevNormSqSum_one [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
   ∑' α : M,
@@ -65,7 +65,7 @@ private noncomputable def tensorPouSobolevNormSqSum_one
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorPouSobolevNorm_one_sq_eq
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     (tensorPouSobolevNorm (I := I) (M := M) g 1 T) ^ 2 =
@@ -95,8 +95,8 @@ private lemma tensorPouSobolevNorm_one_sq_eq
   rw [h_pow, hBigSum_eq]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     tensorPouSobolevNormSqSum_one (I := I) (M := M) g T =
@@ -144,7 +144,7 @@ private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
 
 variable (I M) in
 private noncomputable def perChartDensityCeil
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) : ℝ :=
   open Classical in
   if h : (tsupport
@@ -154,7 +154,7 @@ private noncomputable def perChartDensityCeil
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma perChartDensityCeil_nonneg
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     0 ≤ perChartDensityCeil (I := I) (M := M) g α := by
   classical
@@ -168,7 +168,7 @@ private lemma perChartDensityCeil_nonneg
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma perChartDensityCeil_bound
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (h_supp_ne :
       (tsupport
@@ -185,7 +185,7 @@ private lemma perChartDensityCeil_bound
   exact (exists_sup_chartDensity_on_pou_tsupport_image
     (I := I) (M := M) g α h_supp_ne).choose_spec.2 y hy_image
 
-private noncomputable def compNormSqOnM
+private noncomputable def compNormSqOnM [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -196,8 +196,8 @@ private noncomputable def compNormSqOnM
     (extChartAtExt (I := I) α b)‖ ^ 2
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma compNormSqOnM_measurable
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+private lemma compNormSqOnM_measurable [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -206,7 +206,7 @@ private lemma compNormSqOnM_measurable
   measurable_tensorChartComponentRaw_iteratedFDeriv_normSq (I := I) (M := M) g r s T₀ α Idx Jdx j
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma compNormSqOnM_nonneg
+private lemma compNormSqOnM_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -215,7 +215,7 @@ private lemma compNormSqOnM_nonneg
   sq_nonneg _
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma compNormSqOnM_eq_of_mem_chartSrc
+private lemma compNormSqOnM_eq_of_mem_chartSrc [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -229,8 +229,8 @@ private lemma compNormSqOnM_eq_of_mem_chartSrc
   rw [extChartAtExt_apply_of_mem (I := I) (α := α) hb]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma per_alpha_measurable_lintegral_le
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+private lemma per_alpha_measurable_lintegral_le [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (CB : ℝ) (hCB_nn : 0 ≤ CB) (T₀ : SmoothCcTensor g r s) :
     ∫⁻ b, ENNReal.ofReal
@@ -631,7 +631,7 @@ private lemma per_alpha_measurable_lintegral_le
   exact le_refl _
 
 theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ≥0∞, C ≠ ⊤ ∧
       ∀ (T₀ : SmoothCcTensor g r s),

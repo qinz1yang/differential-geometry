@@ -38,7 +38,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_bilinear_identity_h1_0_smooth_seq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
@@ -154,7 +154,7 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem variational_identity_at_v_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
@@ -229,7 +229,7 @@ theorem variational_identity_at_v_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem variational_identity_v_h_expanded
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
@@ -347,7 +347,7 @@ theorem variational_identity_v_h_expanded
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem variational_identity_after_ibp
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)
@@ -569,7 +569,7 @@ theorem variational_identity_after_ibp
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem variational_identity_after_product_rule
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (_hK_0_compact : IsCompact K_0)

@@ -55,7 +55,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private abbrev K_α (α : M) : Set EuclN :=
   chartImagePOUTsupport (I := I) (M := M) α
@@ -68,7 +68,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma K_α_meas (α : M) : MeasurableSet (K_α (I := I) (M := M) α) :=
   (K_α_compact (I := I) (M := M) α).isClosed.measurableSet
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma K_α_subset_target (α : M) :
     K_α (I := I) (M := M) α ⊆ chartTargetEuclid (I := I) (M := M) α :=
   chartImagePOUTsupport_subset_target (I := I) (M := M) α
@@ -79,7 +79,7 @@ private lemma chartTarget_diff_K_α_isOpen (α : M) :
   (chartTargetEuclid_isOpen (I := I) (M := M) α).sdiff
     (K_α_compact (I := I) (M := M) α).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartTarget_diff_K_α_subset_target (α : M) :
     chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α := fun _ hy => hy.1
@@ -379,7 +379,7 @@ private lemma chosenThird_ae_zero_off_K_α
     hΩ_open hU_open hU_sub (i := j) h_isWeak hw_li ?_
   exact hf_ae
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma vol_restrict_chart_target_absCont_weighted (α : M)
     (g : SmoothRiemannianMetric I M) :
     (volume : Measure EuclN).restrict
@@ -495,8 +495,8 @@ private lemma base_f_chart_locally_memLp_helper
   base_f_chart_locally_memLp (I := I) (M := M) g α hu_h hK_compact
     hK_compact.isClosed.measurableSet hK_in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma memLp_top_of_continuousOn_on_compact_chart
     (_g : SmoothRiemannianMetric I M) (α : M)
     {h : EuclN → ℝ}

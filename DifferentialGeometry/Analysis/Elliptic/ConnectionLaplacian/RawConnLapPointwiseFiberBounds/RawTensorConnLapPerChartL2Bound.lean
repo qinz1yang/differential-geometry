@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -84,22 +84,22 @@ lemma sum_sq_le_card_mul_sum_sq {ι : Type*} [Fintype ι] (f : ι → ℝ) :
   rw [h_double_sum] at h_nn
   nlinarith
 
-noncomputable def rawChartFrameDataSq
+noncomputable def rawChartFrameDataSq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : Π b : M, TensorRSSpace r s I b) (b : M) : ℝ :=
   ‖rawTensorConnLap (I := I) g r s T₀ b‖ ^ 2
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma rawChartFrameDataSq_nonneg
+lemma rawChartFrameDataSq_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : Π b : M, TensorRSSpace r s I b) (b : M) :
     0 ≤ rawChartFrameDataSq (I := I) g r s T₀ b := by
   unfold rawChartFrameDataSq
   exact sq_nonneg _
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rawTensorConnLap_norm_sq_le_chart_data_on_pou_tsupport
+theorem rawTensorConnLap_norm_sq_le_chart_data_on_pou_tsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T :
       letI _h_top : TopologicalSpace

@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M]
+
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 variable {δ δ' : ℝ}
 
@@ -65,17 +65,17 @@ open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_frame0_eq_unitTensor (x b : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma lieArm_frame0_eq_unitTensor [SigmaCompactSpace M] (x b : M) :
     chartFrameBasisModel (I := I) (M := M) x b 0 ![] = unitTensor (I := I) (M := M) b := by
   apply ContinuousMultilinearMap.ext
   intro v
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_rawComponent_eq_unitModel_frame
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma lieArm_rawComponent_eq_unitModel_frame [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (W : SmoothCcTensor g 0 s) (x : M)
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -86,7 +86,7 @@ private lemma lieArm_rawComponent_eq_unitModel_frame
   rw [lieArm_frame0_eq_unitTensor (I := I) (M := M) x b]
   rfl
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma lieArm_symmS_rawComponent
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
@@ -275,7 +275,7 @@ theorem lieArm1_center (hδ_lt : δ < 1)
     rw [lieCorr0_raw_readout (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b r]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma lieCorr0_euclid_christoffel_bridge (g : SmoothRiemannianMetric I M) (x : M)
     (m a b r : Fin (Module.finrank ℝ E)) :
     euclidPartial (E := E) m

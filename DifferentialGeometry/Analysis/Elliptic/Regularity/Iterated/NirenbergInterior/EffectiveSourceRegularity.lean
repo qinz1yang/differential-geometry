@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private def dirsOf (dirs_seq : ℕ → Fin (Module.finrank ℝ E)) (m : ℕ) :
     Fin m → Fin (Module.finrank ℝ E) :=

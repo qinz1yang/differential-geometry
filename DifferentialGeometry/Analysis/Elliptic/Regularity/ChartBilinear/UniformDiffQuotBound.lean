@@ -134,7 +134,7 @@ private lemma eLpNorm_two_le_ofReal_sqrt
   exact h_pow
 
 theorem chartBilinearH1Compl_uniform_diffQuot_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (_D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (B : SmoothEllipticBilinearForm
@@ -363,7 +363,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
     exact h_concl
 
 theorem chartBilinearH1Compl_uniform_diffQuot_bound_quantitative
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (_D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (B : SmoothEllipticBilinearForm

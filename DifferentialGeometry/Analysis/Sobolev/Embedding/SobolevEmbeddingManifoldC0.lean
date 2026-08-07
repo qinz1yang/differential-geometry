@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M ↦ Tensor0SBundle.TensorRSSpace r s I b)]
@@ -51,8 +51,8 @@ private theorem hsNorm_sq_toReal_eq
       ((tensorPouSobolevHsNorm (I := I) (M := M) g k T) ^ 2).toReal := by
   rw [tensorPouSobolevHilbert_norm_eq, ← ENNReal.toReal_pow]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem hsBlock_le_hsNorm_sq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem hsBlock_le_hsNorm_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) (α₀ : M)
     (IJ₀ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -239,8 +239,8 @@ private theorem continuousMultilinearMap_norm_sq_le_finrank_pow_mul_sum_basisFun
   exact hcs
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private theorem rawPull_contDiffOn
+    [T2Space M] in
+private theorem rawPull_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -285,8 +285,8 @@ private theorem rawPull_contDiffOn
   exact h_raw_pull_contDiffOn.comp h_toEucl_symm_smooth.contDiffOn h_maps
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem exists_global_smooth_eqOn_ball_of_rawPull
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem exists_global_smooth_eqOn_ball_of_rawPull [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -336,8 +336,8 @@ theorem exists_global_smooth_eqOn_ball_of_rawPull
     simp only [hη_y, one_mul, hrp_def]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem hsIntegrandReal_continuousOn
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem hsIntegrandReal_continuousOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)))
@@ -400,8 +400,8 @@ private theorem hsIntegrandReal_continuousOn
   exact hPOU_pull_cont.mul ((h_eval_contOn.abs).pow 2)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
+omit [NeZero (Module.finrank ℝ E)] in
+theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)))

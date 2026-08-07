@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -47,7 +47,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -62,7 +62,7 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_smul_value (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (x : M) (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -848,7 +848,7 @@ theorem
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appCcRS_smul_left_local (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (k : ℝ) (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b) :
     ccOperatorFieldComp (I := I) (M := M) g a b c (k • Φ) W =
@@ -867,7 +867,7 @@ private theorem appCcRS_smul_left_local (g : SmoothRiemannianMetric I M) (a b c 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] private theorem appCcRS_ccSlotSwapField_involutive (g : SmoothRiemannianMetric I M)
     (C : SmoothCcTensor g 2 2) :
     ccOperatorFieldComp (I := I) (M := M) g 2 2 2
@@ -1165,7 +1165,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -1174,7 +1174,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma toModel_vec3_slot1_sum_smul (_x : M)
     (Zm : Tensor0SModel 3 ℝ E) (d : ℕ) (t : Fin d → ℝ) (u : Fin d → E) (a b : E) :
     Zm ![a, ∑ c, t c • u c, b] = ∑ c, t c * Zm ![a, u c, b] := by
@@ -1670,7 +1670,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -1838,7 +1838,7 @@ set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem refoldKernelContractionMonomialField_eq_mvPairTraceRefold
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ : Equiv.Perm (Fin 4)) :

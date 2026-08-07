@@ -30,14 +30,14 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def SmoothScalar.oneSubLapClassical {g : SmoothRiemannianMetric I M}
     (u : SmoothScalar g) : SmoothScalar g where
   toFun := u.toFun - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩
   smooth := u.smooth.sub (Δ_g_contMDiff (I := I) g ⟨u.toFun, u.smooth⟩)
 
-omit [SigmaCompactSpace M] [CompactSpace M] in
+omit [CompactSpace M] in
 @[simp] lemma SmoothScalar.oneSubLapClassical_toFun
     {g : SmoothRiemannianMetric I M} (u : SmoothScalar g) :
     (u.oneSubLapClassical).toFun =

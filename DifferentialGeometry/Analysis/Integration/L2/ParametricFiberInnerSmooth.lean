@@ -349,7 +349,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [T2Space M]
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩

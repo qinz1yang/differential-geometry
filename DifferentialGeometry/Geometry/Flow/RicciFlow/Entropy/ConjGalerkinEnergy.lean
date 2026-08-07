@@ -35,14 +35,13 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem galVec_norm_sq
+theorem galVec_norm_sq [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real) (sigma : Real) :
@@ -58,9 +57,8 @@ theorem galVec_norm_sq
 
 omit [BoundarylessManifold I M] in
 open scoped Classical in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem gal_crit_nf
+private theorem gal_crit_nf [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c f R : TensorEigenIdx (I := I) (M := M) q 0 0 → Real)

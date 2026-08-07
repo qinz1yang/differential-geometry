@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -65,8 +65,8 @@ private lemma memWkp_finsetSum
       rw [h_eq]
       exact h_add
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 private lemma memWkp_smoothCoef_mul_aeZeroFactor
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
@@ -349,8 +349,8 @@ lemma cutoffPartialLpLimit_ae_zero_off_cutoffChartKernelEuclid
   filter_upwards [h_smul, h_partial_zero] with y hy hy_zero hyK
   rw [hy, smul_eq_mul, hy_zero hyK, mul_zero]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 private lemma memWkp_indicatorSmoothCoef_mul_aeZeroFactor
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
@@ -388,8 +388,8 @@ private lemma memWkp_indicatorSmoothCoef_mul_aeZeroFactor
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae).mpr h_bare
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    in
 private lemma memWkp_offKernelSmoothCoef_mul
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
@@ -435,8 +435,8 @@ private lemma memWkp_offKernelSmoothCoef_mul
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hcoef_smooth
     (fun j _hj y _hy => hC_bd y j _hj) hfactor_memWkp
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma recipDensityOnEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) :
     ContDiffOn ℝ (⊤ : ℕ∞)

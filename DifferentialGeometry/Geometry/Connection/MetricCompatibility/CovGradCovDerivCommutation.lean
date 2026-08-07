@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -44,16 +44,16 @@ noncomputable def unitEvalSection
     (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from S.toSection y)
       (unitZeroSec (I := I) (M := M) y)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 @[simp] lemma unitEvalSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (y : M) :
     unitEvalSection (I := I) (M := M) g s S y =
       (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace s I y from S.toSection y)
         (unitZeroSec (I := I) (M := M) y) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma tensor0S_curry_covGradBundleEquiv_unit_genVal
     (s : ℕ) (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
@@ -97,7 +97,7 @@ lemma curriedSection_unitGradFieldGen_eq_covApply_abstract
   funext y
   rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S y (Z y), covApply_apply]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSecondCovDeriv_unit_eval_genVal
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
@@ -133,8 +133,8 @@ lemma tensorSecondCovDeriv_unit_eval_genVal
       ((LeviCivita (I := I) g).toFun B x (B x))]
     rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma contMDiff_unitEvalSection (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
@@ -191,7 +191,7 @@ lemma covGrad_covDeriv_leadingSlot_eq_abstractHess
   rw [curriedSection_unitGradFieldGen_apply (I := I) (M := M) g s S x
     ((LeviCivita (I := I) g).toFun Z x (Y x))]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)

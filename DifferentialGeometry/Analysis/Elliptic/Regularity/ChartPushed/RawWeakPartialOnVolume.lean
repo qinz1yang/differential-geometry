@@ -37,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def chartPushedRawPartial
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -46,7 +46,7 @@ noncomputable def chartPushedRawPartial
     (fderiv ℝ (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α v.toFun) y)
       (EuclideanSpace.single j 1)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 @[simp] lemma chartPushedRawPartial_def
     (g : SmoothRiemannianMetric I M) (α : M)

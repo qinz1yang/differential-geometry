@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -74,7 +74,7 @@ noncomputable def pureRFrozenDirCLM
     TangentSpace I x →L[ℝ] TensorRSSpace 0 m I x :=
   ∑ i : Fin (Module.finrank ℝ E), pureRFrozenDirCLMSummand (I := I) (M := M) g m B W x i
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma pureRFrozenDirCLM_apply
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -98,8 +98,8 @@ noncomputable def pureRFrozenEndoFib
   covGradBundleEquiv (I := I) (M := M) 0 m x
     (pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private theorem pureRFrozenSlot0Sec_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -123,7 +123,7 @@ private theorem pureRFrozenSlot0Sec_contMDiff
     (ϕ := fun x => (covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x))
     (v := fun x => B i x) hHom (hB i)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem pureRFrozenDirCLM_homSection_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -160,7 +160,7 @@ private theorem pureRFrozenDirCLM_homSection_contMDiff
     (Z := fun y : M => (covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y))
     (x := x) (hB i) hY (pureRFrozenSlot0Sec_contMDiff (I := I) (M := M) g m hB W i)).symm ▸ rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem pureRFrozenEndoFib_contMDiff
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -227,8 +227,8 @@ noncomputable def pureRFrozenDiffOp
         castCcTensorRank g 0 (by omega : (r + 1) + p = r + (p + 1))
           (pureRFrozenDiffOp g B hB p (r + 1) (covGrad (I := I) (M := M) g 0 r W))
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : TensorRSSpace 0 s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -392,7 +392,7 @@ private lemma exists_uniform_riemannOp_tensorCov_proportional
     _ = max C₀ 0 * g.inner x v v * g.inner x w w *
             riemannianFiberNormSq (I := I) (M := M) g 0 m x T := by ring
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRFrozenEndoFib_slot0Curry_rfns_eq
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -455,8 +455,8 @@ private lemma pureRFrozenEndoFib_slot0Curry_rfns_eq
   rw [Fin.cons_zero]
   congr 1
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma covGradBundleEquiv_symm_reading_rfns_le
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M)
     (T : TensorRSSpace 0 (m + 1) I x)
@@ -522,8 +522,8 @@ private lemma covGradBundleEquiv_symm_reading_rfns_le
   exact riemannianFiberNormSq_slot0Curry_le_of_frame (I := I) (M := M) g m x e K₀
     hreprS hreprSucc T a
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma covGradBundleEquiv_symm_reading_rfns_le_centreFrame
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x₀ : M)
     (T : TensorRSSpace 0 (m + 1) I x₀)

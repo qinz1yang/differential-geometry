@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -41,7 +41,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Componentwise a.e. equality is preserved by addition on the genuine
 tensor Sobolev carrier. -/
 theorem qadd_rel
@@ -54,7 +54,7 @@ theorem qadd_rel
   change TensorAEEq (I := I) (M := M) g (S₁.1 + T₁.1) (S₂.1 + T₂.1)
   exact hS.add hT
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Componentwise a.e. equality is preserved by negation. -/
 theorem qneg_rel
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
@@ -65,7 +65,7 @@ theorem qneg_rel
   change TensorAEEq (I := I) (M := M) g (-S.1) (-T.1)
   exact h.neg
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Componentwise a.e. equality is preserved by real scalar multiplication. -/
 theorem qsmul_rel
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
@@ -76,7 +76,7 @@ theorem qsmul_rel
   change TensorAEEq (I := I) (M := M) g (c • S.1) (c • T.1)
   exact h.smul c
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Componentwise a.e. equality is preserved by subtraction. -/
 theorem qsub_rel
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
@@ -158,7 +158,7 @@ noncomputable def qrep
     WkpTensor (I := I) (M := M) g r s k p hp :=
   Quotient.out a
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The chosen representative maps back to its original quotient class. -/
 theorem qmk_qrep
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -168,7 +168,7 @@ theorem qmk_qrep
         (qrep (I := I) (M := M) g r s k p hp a) = a :=
   Quotient.out_eq a
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem qadd_mk
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p)
@@ -178,7 +178,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
         (Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) T) =
       Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (S + T) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem qneg_mk
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p)
@@ -187,7 +187,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
         (Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S) =
       Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (-S) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem qsmul_mk
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) (c : ℝ)
@@ -196,7 +196,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
         (Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S) =
       Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (c • S) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem qsub_mk
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p)
@@ -206,7 +206,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
         (Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) T) =
       Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (S - T) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Right zero law for explicit quotient addition. -/
 theorem qadd_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -221,7 +221,7 @@ theorem qadd_zero
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
   rw [add_zero]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Left zero law for explicit quotient addition. -/
 theorem qzero_add
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -236,7 +236,7 @@ theorem qzero_add
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
   rw [zero_add]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Associativity of explicit quotient addition. -/
 theorem qadd_assoc
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -254,7 +254,7 @@ theorem qadd_assoc
       (S + (T + U))
   rw [add_assoc]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Commutativity of explicit quotient addition. -/
 theorem qadd_comm
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -269,7 +269,7 @@ theorem qadd_comm
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (T + S)
   rw [add_comm]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Negation preserves the explicit zero class. -/
 theorem qneg_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -283,7 +283,7 @@ theorem qneg_zero
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
   rw [neg_zero]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Double explicit quotient negation is the identity. -/
 theorem qneg_neg
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -298,7 +298,7 @@ theorem qneg_neg
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
   rw [neg_neg]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- A class plus its explicit negation is the zero class. -/
 theorem qadd_neg_self
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -314,7 +314,7 @@ theorem qadd_neg_self
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
   rw [add_neg_cancel]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Explicit negation plus the original class is the zero class. -/
 theorem qneg_add_self
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -326,7 +326,7 @@ theorem qneg_add_self
   rw [qadd_comm (I := I) (M := M) g r s k hp]
   exact qadd_neg_self (I := I) (M := M) g r s k hp a
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Explicit negation is scalar multiplication by `-1`. -/
 theorem qneg_eq_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -341,7 +341,7 @@ theorem qneg_eq_smul
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) ((-1) • S)
   rw [neg_one_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Explicit subtraction is addition with explicit negation. -/
 theorem qsub_eq_add_neg
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -357,7 +357,7 @@ theorem qsub_eq_add_neg
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (S + -T)
   rw [sub_eq_add_neg]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Subtracting a class from itself gives the explicit zero class. -/
 theorem qsub_self
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -372,7 +372,7 @@ theorem qsub_self
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
   rw [sub_self]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Subtracting the explicit zero class is the identity. -/
 theorem qsub_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -387,7 +387,7 @@ theorem qsub_zero
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) S
   rw [sub_zero]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The explicit zero class minus a class is its explicit negation. -/
 theorem qzero_sub
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -403,7 +403,7 @@ theorem qzero_sub
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (-S)
   rw [zero_sub]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Reversing an explicit difference negates it. -/
 theorem qsub_rev
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -419,7 +419,7 @@ theorem qsub_rev
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) (-(S - T))
   rw [neg_sub]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- A long explicit difference is the sum of two consecutive differences. -/
 theorem qsub_chain
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -438,7 +438,7 @@ theorem qsub_chain
   have h : S - U = (S - T) + (T - U) := by abel
   rw [h]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- An explicit difference is zero exactly when its endpoints agree. -/
 theorem qsub_eq_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -484,7 +484,7 @@ theorem qsub_eq_zero
       Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
     exact Quotient.sound hdiff
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The quotient norm vanishes on the explicit zero class. -/
 theorem qnorm_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -495,7 +495,7 @@ theorem qnorm_zero
     (0 : RSTensorSection I M r s) = 0
   exact wkpTensorNorm_zero (I := I) (M := M) g r s k hp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Triangle inequality for explicit quotient addition. -/
 theorem qnorm_add_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -512,7 +512,7 @@ theorem qnorm_add_le
       wkpTensorNorm (I := I) (M := M) g k p T.1
   exact wkpTensorNorm_add_le (I := I) (M := M) g hp S.2 T.2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Homogeneity of the quotient norm for explicit scalar multiplication. -/
 theorem qnorm_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -539,7 +539,7 @@ theorem qnorm_lt_top
   change wkpTensorNorm (I := I) (M := M) g k p S.1 < ⊤
   exact wkpTensorNorm_lt_top (I := I) (M := M) g hp S.2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Zero quotient norm separates precisely the explicit zero class. -/
 theorem qnorm_eq_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -591,7 +591,7 @@ theorem qnorm_eq_zero
     rw [heq]
     exact qnorm_zero (I := I) (M := M) g r s k hp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Explicit quotient negation preserves the quotient norm. -/
 theorem qnorm_neg
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -604,7 +604,7 @@ theorem qnorm_neg
     qnorm_smul (I := I) (M := M) g r s k hp]
   norm_num
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The norm of an explicit difference is symmetric in its endpoints. -/
 theorem qnorm_sub_symm
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -617,7 +617,7 @@ theorem qnorm_sub_symm
   rw [qsub_rev (I := I) (M := M) g r s k hp a b,
     qnorm_neg (I := I) (M := M) g r s k hp]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Triangle inequality for norms of consecutive explicit differences. -/
 theorem qnorm_sub_triangle
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -632,7 +632,7 @@ theorem qnorm_sub_triangle
   rw [qsub_chain (I := I) (M := M) g r s k hp a b c]
   exact qnorm_add_le (I := I) (M := M) g r s k hp _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The norm of an explicit difference is zero exactly when its endpoints
 agree. -/
 theorem qnorm_sub_sep
@@ -654,7 +654,7 @@ def qdist
   (wkpTensorQNorm (I := I) (M := M) g r s k p hp
     (qsub (I := I) (M := M) g r s k p hp a b)).toReal
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The explicit real-valued quotient distance is nonnegative. -/
 theorem qdist_nonneg
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -663,7 +663,7 @@ theorem qdist_nonneg
     0 ≤ qdist (I := I) (M := M) g r s k p hp a b :=
   ENNReal.toReal_nonneg
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The explicit real-valued quotient distance is symmetric. -/
 theorem qdist_symm
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)

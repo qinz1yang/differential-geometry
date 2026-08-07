@@ -32,7 +32,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompleteSpace E] in
 theorem eigenvector_chartComponent_h2_quantitative
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ι : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)

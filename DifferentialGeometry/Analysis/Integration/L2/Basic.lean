@@ -69,7 +69,7 @@ theorem integrable_of_contMDiff_of_hasCompactSupport
   integrable_of_continuous_of_hasCompactSupport hfc.continuous hfsup
 
 theorem integrable_of_continuous_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {F : Type*} [NormedAddCommGroup F]
     (g : SmoothRiemannianMetric I M)
     {f : M → F} (hf : Continuous f) :

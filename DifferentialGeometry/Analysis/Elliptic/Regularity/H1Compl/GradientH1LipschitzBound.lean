@@ -47,10 +47,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma chartPushedPartial_eq_fderiv_chartSmoothExt
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma chartPushedPartial_eq_fderiv_chartSmoothExt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -90,8 +90,8 @@ private lemma chartPushedPartial_eq_fderiv_chartSmoothExt
     rw [if_pos h_eq_z]
   rw [h_chartSmoothExt]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
     chartPushedPartial (I := I) (M := M) g α j v =ᵐ[
@@ -105,8 +105,8 @@ private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt
   refine Filter.Eventually.of_forall (fun y hy => ?_)
   exact chartPushedPartial_eq_fderiv_chartSmoothExt (I := I) (M := M) g α j v hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt_volume
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt_volume [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
     chartPushedPartial (I := I) (M := M) g α j v =ᵐ[
@@ -151,7 +151,7 @@ private lemma chartPulledWeightedMeasure_le_smul_volume_on_kPouCompact
     _ = ENNReal.ofReal M_d • (volume : Measure EuclN)
           (A ∩ kPouCompact (I := I) (M := M) α) := by rw [smul_eq_mul]
 
-private noncomputable def chartPulledWeightedConst
+private noncomputable def chartPulledWeightedConst [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) : ℝ :=
   Real.sqrt (chartPulledWeightedMeasure_le_smul_volume_on_kPouCompact (I := I) (M := M) g α).choose
 
@@ -515,7 +515,7 @@ theorem chartPushedPartial_h1_lipschitz
           rw [ENNReal.ofReal, Real.toNNReal_of_nonneg h_norm_nn]
           rfl]
 
-noncomputable def chartPushedPartialLipschitz_canonical
+noncomputable def chartPushedPartialLipschitz_canonical [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
     ChartPushedPartialLipschitz (I := I) (M := M) g α j :=

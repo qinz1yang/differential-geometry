@@ -51,14 +51,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_add3_le (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (x : M) (u v w : TensorRSSpace r s I x) :
@@ -82,7 +82,7 @@ lemma riemannianFiberNormSq_add3_le (g : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma toModel_unitValue_symmS_abs_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -149,7 +149,7 @@ private lemma curvatureRefoldSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k : Fin 
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotExtendIterFour_toModel (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (G : Tensor0SSpace 4 I x)
     (u : Fin 6 → TangentSpace I x) :
@@ -248,7 +248,7 @@ private lemma slotExtendIterFour_toModel (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private theorem curvatureRefoldMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (σ : Equiv.Perm (Fin 4)) :
     curvatureActionMonomialCoeffField (I := I) (M := M) g₀ g₁

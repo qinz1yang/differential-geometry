@@ -64,7 +64,7 @@ private lemma sphere_isCompact_forward :
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -240,7 +240,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ c : ℝ, 0 < c ∧
       ∀ b : M, b ∈ tsupport
@@ -294,7 +294,7 @@ private lemma riemannianFiberNormSq_eq_sum_witness_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_sq_repr_le_inv_c
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : ℝ} (hc_pos : 0 < c)
     (hG_lower :
@@ -661,7 +661,7 @@ private lemma finrank_tangentSpace_eq (b : M) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s),

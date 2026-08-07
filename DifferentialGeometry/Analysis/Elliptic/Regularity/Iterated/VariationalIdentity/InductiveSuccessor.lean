@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_fderiv_apply_single
@@ -255,7 +255,7 @@ private lemma chosenMthMixedPartialChartPushedU_ae_zero_off_chartImagePOUTsuppor
       rw [chosenMthMixedPartialChartPushedU_succ]
       exact h_step
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private theorem ibp_density_fChartEffPrev
     (g : SmoothRiemannianMetric I M) (α : M)
     {fChartEffPrev : EuclN → ℝ}
@@ -578,7 +578,7 @@ private theorem ibp_inner_j
   exact h_ibp
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma integrable_triple_helper
     {α : M} {K : Set EuclN}
     (hK_compact : IsCompact K)

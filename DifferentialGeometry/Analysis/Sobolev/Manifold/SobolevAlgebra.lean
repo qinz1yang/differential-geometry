@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b u v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1)
@@ -69,7 +69,7 @@ private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
     rw [hb_x]; ring
 
 private lemma per_chart_mul_smooth_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) (α : M)
@@ -148,7 +148,7 @@ theorem mul_smooth_chart_bound_C1
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) :
@@ -287,7 +287,7 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
   · exact ENNReal.rpow_le_rpow h_meas_le (by positivity)
 
 private lemma eLpNorm_Eu_dR_Ev_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b u v : M → ℝ}
     (hb_le_one : ∀ x : M, 0 ≤ b x ∧ b x ≤ 1)
     {uMax vMax : ℝ}
@@ -363,7 +363,7 @@ private lemma eLpNorm_Eu_dR_Ev_bound
   exact eLpNorm_restrict_le_ofReal_mul_volume_pow hK_meas hC_nn h_supp h_bound
 
 private lemma per_chart_bilinear_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ (⊤ : ℝ≥0∞)) (α : M) :
     ∃ Bα : ℝ, 0 ≤ Bα ∧
@@ -778,7 +778,7 @@ private lemma per_chart_bilinear_bound
         exact le_add_self
 
 private lemma mul_smooth_chart_bound_explicit_form
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) :
@@ -911,7 +911,7 @@ theorem mul_smooth_chart_bound
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p) :

@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -46,9 +46,9 @@ noncomputable def chartFrameData
           (LeviCivita (I := I) g))
           (smoothOrthoFrame (I := I) g y i) T₀ y‖)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartFrameData_nonneg
+lemma chartFrameData_nonneg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : Π b : M, TensorRSSpace r s I b)
     (y : M) (i : Fin (Module.finrank ℝ E)) :
@@ -99,7 +99,7 @@ noncomputable def secondAppChartData
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 lemma secondAppChartData_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : Π b : M, TensorRSSpace r s I b)

@@ -13,10 +13,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem chart_pullback_to_manifold_eq_via_chart_coord_inv
     (α : M) (cflow : ℝ → E) (t : ℝ) (x q : M)
     (hx_source : x ∈ (chartAt H α).source)
@@ -27,7 +27,7 @@ private theorem chart_pullback_to_manifold_eq_via_chart_coord_inv
   exact (chartAt H α).left_inv hx_source
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem chart_cover_flow_bijective_single_chart_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hperNeg : ChartLocalPicardData (fun t x => -(X t x)) α)
@@ -45,7 +45,7 @@ private theorem chart_cover_flow_bijective_single_chart_short_time
     hx_source hΨ_repr_at_Φt hChartCoord_inv
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_cover_flow_bijective_on_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
@@ -76,7 +76,7 @@ theorem chart_cover_flow_bijective_on_short_time
     (hΨ_repr_at_Φ s hs) (hChartCoord_inv s hs)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_cover_flow_bijective_on_short_time_symm
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
@@ -107,7 +107,7 @@ theorem chart_cover_flow_bijective_on_short_time_symm
     hx_source (hΦ_repr_at_Ψ s hs) (hChartCoord_inv s hs)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_cover_flow_bijective_two_sided_on_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)

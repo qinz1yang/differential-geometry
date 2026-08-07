@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -42,20 +42,17 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 def val (μ : TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) : ℝ :=
   μ.1
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma eigenspace_ne_bot
     (μ : TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) :
     tensorResolventEigenspace (I := I) (M := M) g r s μ.val ≠ ⊥ :=
   μ.2.1
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma val_ne_zero
     (μ : TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) :
     μ.val ≠ 0 := μ.2.2
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma hasEigenvalue
     (μ : TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) :
@@ -66,7 +63,6 @@ lemma hasEigenvalue
   unfold tensorResolventEigenspace at h
   exact h
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[ext] lemma ext
     (μ ν : TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s)
@@ -74,7 +70,6 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 end TensorNonzeroResolventEigenvalue
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma nonzero_tensor_resolvent_eigenvalues_set_eq_iUnion
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -107,7 +102,6 @@ private lemma nonzero_tensor_resolvent_eigenvalues_set_eq_iUnion
       exact hμ_eig
     exact ⟨hμ_eig_ne, hμ_ne⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonzero_tensor_resolvent_eigenvalues_set_countable
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -124,7 +118,6 @@ theorem nonzero_tensor_resolvent_eigenvalues_set_countable
   exact (tensorResolvent_eigenvalues_finite_above
     (I := I) (M := M) g r s h_compact h_pos).countable
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem TensorNonzeroResolventEigenvalue.countable_ofCompact
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -161,7 +154,6 @@ noncomputable def tensorResolventEigenspaceONB
   stdOrthonormalBasis ℝ
     (tensorResolventEigenspace (I := I) (M := M) g r s μ.val)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenspace_orthogonalFamily_nonzero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
@@ -205,7 +197,6 @@ noncomputable def tensorResolventEigenbasisVec
       tensorResolventEigenspace (I := I) (M := M) g r s i.1.val) :
     TensorL2 r s g)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenbasisVec_mem
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -222,7 +213,6 @@ theorem tensorResolventEigenbasisVec_mem
   exact (tensorResolventEigenspaceONB
     (I := I) (M := M) h_compact i.1 i.2).property
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenbasisVec_orthonormal
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -245,7 +235,6 @@ theorem tensorResolventEigenbasisVec_orthonormal
   have h_sig := h_fam.orthonormal_sigma_orthonormal h_each
   convert h_sig using 1
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma span_tensorResolventEigenbasisVec_le_iSup_eigenspace
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -264,7 +253,6 @@ private lemma span_tensorResolventEigenbasisVec_le_iSup_eigenspace
   exact tensorResolventEigenbasisVec_mem
     (I := I) (M := M) h_compact i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorResolventEigenspace_le_span_tensorResolventEigenbasisVec
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -355,7 +343,6 @@ private lemma tensorResolventEigenspace_le_span_tensorResolventEigenbasisVec
   rw [h_subtype_apply] at h_after_map
   exact Submodule.span_mono h_subtype_subset h_after_map
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem span_tensorResolventEigenbasisVec_eq_iSup_eigenspace
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -374,7 +361,6 @@ theorem span_tensorResolventEigenbasisVec_eq_iSup_eigenspace
     (tensorResolventEigenspace_le_span_tensorResolventEigenbasisVec
       (I := I) (M := M) h_compact)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonzero_iSup_tensorResolventEigenspace_orthogonal_eq_bot
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -425,7 +411,6 @@ theorem nonzero_iSup_tensorResolventEigenspace_orthogonal_eq_bot
                   tensorResolventEigenspace
                     (I := I) (M := M) g r s μ.val) hν_in_subtype
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventEigenbasisVec_span_orthogonal_eq_bot
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -456,7 +441,6 @@ noncomputable def tensorResolventHilbertEigenbasisSigma
     (tensorResolventEigenbasisVec_span_orthogonal_eq_bot
       (I := I) (M := M) h_compact)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorResolventHilbertEigenbasisSigma_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -480,7 +464,6 @@ omit [NeZero (Module.finrank ℝ E)] in
         (I := I) (M := M) h_compact))
     i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolventHilbertEigenbasisSigma_ofCompact_isEigenvector
     {g : SmoothRiemannianMetric I M} {r s : ℕ}

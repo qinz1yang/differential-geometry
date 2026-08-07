@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
@@ -44,7 +44,7 @@ theorem covGrad_finset_sum {ι : Type*} (g : SmoothRiemannianMetric I M) (r s : 
     rw [Finset.sum_insert ha, Finset.sum_insert ha, covGrad_add, ih]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 theorem castRankCc_db_finset_sum {ι : Type*} {a b : ℕ} (g : SmoothRiemannianMetric I M)
     (r : ℕ) (h : a = b) (t : Finset ι) (F : ι → SmoothCcTensor g r a) :
     castCcTensorRank (g := g) r h (∑ i ∈ t, F i) =
@@ -52,7 +52,7 @@ theorem castRankCc_db_finset_sum {ι : Type*} {a b : ℕ} (g : SmoothRiemannianM
   subst h; rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 theorem castRankCc_db_heq {a b : ℕ} (g : SmoothRiemannianMetric I M) (r : ℕ)
     (h : a = b) (W : SmoothCcTensor g r a) : HEq (castCcTensorRank (g := g) r h W) W := by
   subst h; exact HEq.rfl
@@ -61,7 +61,7 @@ def castCcTensorSourceRank {a a' : ℕ} (g : SmoothRiemannianMetric I M) (b : �
     (W : SmoothCcTensor g a b) : SmoothCcTensor g a' b :=
   h ▸ W
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 theorem appCc_castRankCc_db {a a' b b' : ℕ} (g : SmoothRiemannianMetric I M)
     (ha : a = a') (hb : b = b')

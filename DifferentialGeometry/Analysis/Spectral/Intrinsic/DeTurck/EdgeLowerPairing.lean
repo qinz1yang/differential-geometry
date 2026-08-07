@@ -45,7 +45,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 /-- The sum of an order-zero and an order-one coefficient arm acting on a
 covariant two-tensor. -/
@@ -59,7 +59,7 @@ def edgeLowerArm (g : SmoothRiemannianMetric I M)
 /-! ## Exact carrier/residual split at the closed initial edge -/
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- The zero perturbation has fibre operator bound zero.  This local
 analysis-layer lemma avoids importing the later geometric solution package
 merely to instantiate the second endpoint of `realizedFam`. -/
@@ -73,7 +73,7 @@ theorem edgeZeroBound (g : SmoothRiemannianMetric I M) :
   simp only [zero_mul, abs_zero, le_refl]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- The zero endpoint satisfies the unsymmetrized tensor symmetry premise
 used by the exact Ricci--DeTurck slope theorem. -/
 theorem edgeZeroSymm (g : SmoothRiemannianMetric I M) :

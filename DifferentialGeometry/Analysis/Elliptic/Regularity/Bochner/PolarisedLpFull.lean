@@ -42,7 +42,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem H1ComplToLp_injOn_laplacianDomain
@@ -152,14 +152,12 @@ theorem gradInnerLapU_smoothCase
   rw [gradInnerCLM_smoothToH1Compl_eq_smoothToLp]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem v_sub_oneSubLap_eq_lap
     (g : SmoothRiemannianMetric I M) (v : SmoothScalar g) (x : M) :
     v.toFun x - v.oneSubLapClassical.toFun x = Δ_g (I := I) g ⟨v.toFun, v.smooth⟩ x := by
   rw [SmoothScalar.oneSubLapClassical_toFun, Pi.sub_apply]
   ring
 
-omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerSmoothBundle_sub_oneSubLap_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
@@ -208,19 +206,18 @@ noncomputable def smoothLaplacianAsScalar
   smooth := Δ_g_contMDiff (I := I) g φ
 
 set_option linter.unusedSectionVars false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma smoothLaplacianAsScalar_toFun
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :
     (smoothLaplacianAsScalar (I := I) (M := M) g φ).toFun =
       Δ_g (I := I) g φ := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma smoothLaplacianBundle_toFun_eq_smoothLaplacianAsScalar
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :
     ((smoothLaplacianBundle (I := I) (M := M) g φ) : M → ℝ) =
       (smoothLaplacianAsScalar (I := I) (M := M) g φ).toFun := rfl
 
-omit [CompactSpace M] in
 theorem oneSubLapClassical_gradInner_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (x : M) :

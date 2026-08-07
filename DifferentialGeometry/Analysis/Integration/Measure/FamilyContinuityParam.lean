@@ -63,7 +63,7 @@ private lemma density_cont_param
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
 private lemma density_extChart_cont_param
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M} {K : Set P}
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
@@ -90,7 +90,7 @@ private lemma density_extChart_cont_param
   simpa only [Function.comp_apply] using hcomp
 
 private lemma chart_integrand_cont_param
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M}
     {f : P → M → ℝ} {K : Set P}
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -130,7 +130,7 @@ private lemma chart_integrand_cont_param
 -- The compact chart estimate expands a parametric density through a finite atlas.
 private theorem chart_int_cont_param
     [FirstCountableTopology P]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M}
     {f : P → M → ℝ} {K : Set P}
     (hK : IsCompact K)
@@ -241,7 +241,7 @@ private theorem chart_int_cont_param
 -- The global statement unfolds the finite atlas decomposition at each parameter.
 theorem integral_family_cont_param
     [FirstCountableTopology P]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M}
     {f : P → M → ℝ} {K : Set P}
     (hK : IsCompact K)

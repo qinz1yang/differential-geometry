@@ -43,7 +43,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -66,7 +66,7 @@ def gInvDiffQuadResidualFieldRealizedFam (g₀ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 private lemma fiberNormSqComponent_connDiffBiContrFib_self
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
@@ -368,7 +368,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -381,7 +381,6 @@ def backgroundRiemannKernelBilin (g₀ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem backgroundRiemannKernelBilin_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
     (p : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v0 v1 : TangentSpace I x) :
     backgroundRiemannKernelBilin (I := I) g₀ x p D v0 v1 =
@@ -394,7 +393,6 @@ omit [SigmaCompactSpace M] in
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem backgroundRiemannKernelBilin_add_right (g₀ : SmoothRiemannianMetric I M) (x : M)
     (p : TangentSpace I x) (D D' : Tensor0SSpace 2 I x) :
     backgroundRiemannKernelBilin (I := I) g₀ x p (D + D') =
@@ -410,7 +408,6 @@ theorem backgroundRiemannKernelBilin_add_right (g₀ : SmoothRiemannianMetric I 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem backgroundRiemannKernelBilin_smul_right (g₀ : SmoothRiemannianMetric I M) (x : M)
     (p : TangentSpace I x) (c : ℝ) (D : Tensor0SSpace 2 I x) :
     backgroundRiemannKernelBilin (I := I) g₀ x p (c • D) = c • backgroundRiemannKernelBilin (I := I)
@@ -451,7 +448,6 @@ def backgroundRiemannSummandFib (g₀ : SmoothRiemannianMetric I M) (x : M) (p :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem backgroundRiemannSummandFib_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (p : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (backgroundRiemannSummandFib (I := I) g₀ x p D) v =
@@ -469,7 +465,6 @@ def backgroundRiemannBiContrFibFixedFrame (g₀ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem backgroundRiemannBiContrFibFixedFrame_toModel (g₀ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
@@ -486,7 +481,7 @@ theorem backgroundRiemannBiContrFibFixedFrame_toModel (g₀ : SmoothRiemannianMe
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem backgroundRiemannKernelBilin_homSection_contMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem backgroundRiemannKernelBilin_homSection_contMDiff [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     {p : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
     (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯) :
@@ -534,7 +529,7 @@ theorem backgroundRiemannKernelBilin_homSection_contMDiff (g₀ : SmoothRiemanni
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem backgroundRiemannBiContrFibFixedFrame_apply_section_contMDiff
+theorem backgroundRiemannBiContrFibFixedFrame_apply_section_contMDiff [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
@@ -585,7 +580,7 @@ theorem backgroundRiemannBiContrFibFixedFrame_apply_section_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem backgroundRiemannBiContrFibFixedFrame_contMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem backgroundRiemannBiContrFibFixedFrame_contMDiff [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -624,7 +619,6 @@ def backgroundRiemannTraceKernel (g₀ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem backgroundRiemannTraceKernel_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (v0 v1 p q : TangentSpace I x) :
     backgroundRiemannTraceKernel (I := I) g₀ x D v0 v1 p q =
@@ -640,7 +634,6 @@ def backgroundRiemannBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   backgroundRiemannBiContrFibFixedFrame (I := I) g₀ (smoothOrthoFrame (I := I) g₁ x) x
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianMetric I M)
     (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
@@ -675,7 +668,7 @@ theorem backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRie
       (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)]
 
 omit [CompactSpace M] [I.Boundaryless] in
-theorem backgroundRiemannBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem backgroundRiemannBiContrFib_contMDiff [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x
@@ -718,7 +711,6 @@ end NormedBackgroundRiemannCoefficientField
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma fiberNormSqComponent_bgRBiContrFib
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)

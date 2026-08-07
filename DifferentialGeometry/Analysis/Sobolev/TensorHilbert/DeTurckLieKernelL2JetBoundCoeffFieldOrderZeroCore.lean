@@ -34,12 +34,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem abs_g1_inner_le_two_sqrt (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -58,7 +58,7 @@ theorem abs_g1_inner_le_two_sqrt (g₀ g₁ : SmoothRiemannianMetric I M)
   nlinarith [h1, h2, hnn]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem coframeS_one_eq_g0FlatCLM_local
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin 1 → Fin n) :
@@ -75,7 +75,7 @@ private theorem coframeS_one_eq_g0FlatCLM_local
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem toModel_coframeS_two (g₀ : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin 2 → Fin n)
     (p q : TangentSpace I x) :
@@ -87,7 +87,7 @@ theorem toModel_coframeS_two (g₀ : SmoothRiemannianMetric I M) (x : M)
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 1 2 I x) (d a b : TangentSpace I x) :

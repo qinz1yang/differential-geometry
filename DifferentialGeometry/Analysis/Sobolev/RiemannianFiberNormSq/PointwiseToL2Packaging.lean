@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -34,8 +34,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Norm (I := I) (M := M) g 0 s S.toFun ^ 2 =
       ∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 s x (S.toSection x)
@@ -46,8 +46,8 @@ theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq
   exact tensorL2Norm_sq_eq_integral_riemannianFiberNormSq (I := I) (M := M) g 0 s _
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem integrable_riemannianFiberNormSq_toSection
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem integrable_riemannianFiberNormSq_toSection [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     MeasureTheory.Integrable
       (fun x => riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x))
@@ -63,8 +63,8 @@ theorem integrable_riemannianFiberNormSq_toSection
     (S.toSection x)).symm
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_three
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_three [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {a b c d : ℕ}
     (A : SmoothCcTensor g 0 a) (B : SmoothCcTensor g 0 b) (D : SmoothCcTensor g 0 d)
     (Curv : SmoothCcTensor g 0 c) (C : ℝ) (hC : 0 ≤ C)
@@ -170,8 +170,8 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_three
   nlinarith [hfinal_sq, hnCurv_nn, hy_nn, sq_nonneg (nCurv - C * (nA + nB + nD))]
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_two
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_two [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {a b c : ℕ}
     (A : SmoothCcTensor g 0 a) (B : SmoothCcTensor g 0 b)
     (Curv : SmoothCcTensor g 0 c) (C : ℝ) (hC : 0 ≤ C)
@@ -192,8 +192,8 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_two
     rw [hz, add_zero]; exact hpt x
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_sum
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {c : ℕ} (N : ℕ) (v : ℕ → ℕ)
     (T : ∀ i, SmoothCcTensor g 0 (v i)) (Curv : SmoothCcTensor g 0 c) (C : ℝ) (hC : 0 ≤ C)
     (hpt : ∀ x : M,

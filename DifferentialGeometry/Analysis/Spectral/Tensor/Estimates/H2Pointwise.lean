@@ -33,7 +33,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -118,7 +118,7 @@ theorem hsC0_fiber_sq
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem scalar0_fiber_sq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 0) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 0 x (T.toSection x) =

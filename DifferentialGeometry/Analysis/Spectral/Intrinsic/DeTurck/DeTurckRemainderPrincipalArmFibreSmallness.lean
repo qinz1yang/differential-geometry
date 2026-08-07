@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 open DifferentialGeometry.Integral.Measure in
 omit [BoundarylessManifold I M] in
@@ -1084,7 +1084,7 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le
       exact hb
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma gFibreOpBound_delta_nonneg [Nonempty M] (g₀ : SmoothRiemannianMetric I M)
     {δ : ℝ}
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
@@ -1107,7 +1107,7 @@ private lemma gFibreOpBound_delta_nonneg [Nonempty M] (g₀ : SmoothRiemannianMe
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) {δ : ℝ}
     (T₀ : SmoothCcTensor g₀ 0 2)

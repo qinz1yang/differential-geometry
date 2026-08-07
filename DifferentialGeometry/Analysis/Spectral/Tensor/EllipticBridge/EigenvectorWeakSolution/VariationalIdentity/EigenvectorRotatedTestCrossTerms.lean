@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -70,7 +70,7 @@ def eigenvectorRotatedTestSection
     (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
     (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
 
-omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorComponentEuclid_eigenvectorRotatedTestSection_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -93,7 +93,7 @@ private lemma tensorComponentEuclid_eigenvectorRotatedTestSection_eqOn
       P hy,
     chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M) α ψ hy]
 
-omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenvectorRotatedTestSection_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

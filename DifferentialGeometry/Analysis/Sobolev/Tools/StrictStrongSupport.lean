@@ -24,7 +24,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 lemma exists_compact_neighborhood_of_tsupport_pou
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     ∃ K : Set M, IsCompact K ∧ K ⊆ (chartAt H α).source ∧
       tsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -43,7 +43,7 @@ lemma exists_compact_neighborhood_of_tsupport_pou
   exact ⟨L, hL_compact, hL_sub_chart, h_tsupp_in_int_L⟩
 
 lemma exists_manifold_cutoff_one_on_tsupport_pou
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M)
+    [CompactSpace M] [T2Space M] (α : M)
     {K : Set M} (hK_compact : IsCompact K)
     (h_tsupp_in_int_K : tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ interior K) :
@@ -378,7 +378,7 @@ lemma exists_grad_bound_etaEuclid [I.Boundaryless] [T2Space M]
 
 theorem exists_strict_strong_support_approx
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (α : M) :

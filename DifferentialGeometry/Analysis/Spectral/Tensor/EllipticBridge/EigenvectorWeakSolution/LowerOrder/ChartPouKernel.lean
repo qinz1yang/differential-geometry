@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -55,7 +55,7 @@ lemma chartPouKernel_measurableSet (α : M) :
     MeasurableSet (chartPouKernel (I := I) (M := M) α) :=
   (chartPouKernel_isCompact (I := I) (M := M) α).isClosed.measurableSet
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartPouKernel_subset_chartTargetEuclid (α : M) :
     chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α := by
@@ -65,7 +65,7 @@ lemma chartPouKernel_subset_chartTargetEuclid (α : M) :
   exact DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartImage_pouTsupport_subset_target
     (I := I) (M := M) α
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma notMem_pouTsupport_of_notMem_chartPouKernel
     (α : M) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
@@ -82,7 +82,7 @@ private lemma notMem_pouTsupport_of_notMem_chartPouKernel
     exact (extChartAt I α).right_inv hmem
   · exact toEuclidean.apply_symm_apply y
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorChartComponent_eq_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)

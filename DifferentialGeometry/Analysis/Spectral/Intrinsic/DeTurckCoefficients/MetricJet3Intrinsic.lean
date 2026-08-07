@@ -42,13 +42,13 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem metricComp_sub
     (gBase g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (chartAt H α).source)
@@ -74,7 +74,7 @@ theorem metricComp_sub
 
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem gramDiff_eqOn
     (gBase g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (a b : Fin (Module.finrank ℝ E)) :
@@ -119,7 +119,7 @@ private lemma basisJet_apply_le {m : ℕ}
   exact hop.trans (mul_le_mul_of_nonneg_left hprod (norm_nonneg F))
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gramIter_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
@@ -137,7 +137,7 @@ private lemma gramIter_le
       (interior (extChartAt I α).target) y a b)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gram0_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ) {y : E}
@@ -153,7 +153,7 @@ private lemma gram0_le
   exact h
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gram1_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ)
@@ -207,7 +207,7 @@ private lemma gram1_le
             (interior (extChartAt I α).target) y := by ring
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gram2_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ)
@@ -271,7 +271,7 @@ private lemma gram2_le
             (interior (extChartAt I α).target) y := by ring
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gram3_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ)
@@ -344,7 +344,7 @@ private lemma gram3_le
             (interior (extChartAt I α).target) y := by ring
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem metricJet2_le_gram (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {y : E},
@@ -442,7 +442,7 @@ theorem metricJet2_le_gram (α : M) :
           (interior (extChartAt I α).target) y := by rw [hJ_def]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem metricJet3_le_gram (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {y : E},
@@ -575,7 +575,7 @@ theorem metricJet3_le_gram (α : M) :
 
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem gramJet_le_bare
     (gBase g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (N : ℕ)
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :

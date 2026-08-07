@@ -40,7 +40,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 omit [NeZero (Module.finrank Real E)] in
 private lemma pair_cons_sum {n : Nat}
@@ -113,7 +113,7 @@ private lemma pair_cons2_sum {n : Nat}
   rw [← h1 (u c)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma pair_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank Real E),
@@ -170,7 +170,7 @@ private lemma pair_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hrepr v i, hbB_coe i]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 /-- A moving-metric double trace is a fixed-background trace after inserting
 the relative inverse-metric endomorphism in the first contracted slot. -/
@@ -343,7 +343,7 @@ def pairProd4 (g : SmoothRiemannianMetric I M)
     (slotExtendIter (I := I) (M := M) g 0 2 2 B) A
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 /-- Evaluation of `pairSlot2`: the chosen covariant slot is read through the
 given endomorphism. -/
@@ -373,7 +373,7 @@ theorem pairSlot2_eval (g : SmoothRiemannianMetric I M)
   fin_cases j <;> fin_cases k <;> simp [Equiv.swap_apply_def]
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private lemma pair_extend_cons
     (g : SmoothRiemannianMetric I M) (r s : Nat)
     (Φ : SmoothCcTensor g r s) (x : M)
@@ -400,7 +400,7 @@ private lemma pair_extend_cons
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma pair_rank0_decomp (x : M) (t : Tensor0SSpace 0 I x) :
     t = (Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0)) •
       unitTensor (I := I) (M := M) x := by
@@ -418,7 +418,7 @@ private lemma pair_rank0_decomp (x : M) (t : Tensor0SSpace 0 I x) :
   exact i.elim0
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
     (B : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 2 I x)
@@ -474,7 +474,7 @@ private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 /-- The rank-four product carrier evaluates as the product of its first and
 last pair of covariant components. -/
 theorem pairProd4_eval (g : SmoothRiemannianMetric I M)

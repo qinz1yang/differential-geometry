@@ -23,12 +23,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma rawPullR_eq_rawCompOnE_comp (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
@@ -39,10 +39,9 @@ lemma rawPullR_eq_rawCompOnE_comp (g : SmoothRiemannianMetric I M) (S : SmoothCc
   rw [tensorComponentEuclideanChart, Function.comp_apply, Function.comp_apply, Function.comp_apply,
     tensorChartComponentOnModel]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma norm_iteratedFDeriv_rawPullR_le_iteratedFDerivWithin_rawCompOnE
-    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma norm_iteratedFDeriv_rawPullR_le_iteratedFDerivWithin_rawCompOnE (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (m : ℕ) {y : EuclN}
     (hy : (toEuclidean (E := E)).symm y ∈ interior (extChartAt I α).target) :
     ‖iteratedFDeriv ℝ m (tensorComponentEuclideanChart (I := I) (M := M) g 0 2 S α
@@ -77,10 +76,9 @@ lemma norm_iteratedFDeriv_rawPullR_le_iteratedFDerivWithin_rawCompOnE
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma rawCompJet_le
-    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma rawCompJet_le (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (m : ℕ) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
     ‖iteratedFDerivWithin ℝ m (tensorChartComponentOnModel (I := I) (M := M) g S α Jdx)
@@ -121,10 +119,9 @@ lemma rawCompJet_le
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem bareOnE_le_bare
-    (g : SmoothRiemannianMetric I M) (α : M) (N : ℕ) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+theorem bareOnE_le_bare (g : SmoothRiemannianMetric I M) (α : M) (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 2) {y : E},
       y ∈ interior (extChartAt I α).target →
       chartComponentJetSeminormSum (I := I) (M := M) g S α N y ≤

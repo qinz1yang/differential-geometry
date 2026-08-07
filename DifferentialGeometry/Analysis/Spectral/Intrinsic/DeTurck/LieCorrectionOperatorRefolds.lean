@@ -33,7 +33,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -54,7 +54,6 @@ theorem lc0Insert_eq_lc0InsertField
   intro m
   exact (lc0b_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m).symm
 
-omit [SigmaCompactSpace M] in
 /-- The fibre-defined vector--bilinear correction is its canonical nested
 operator-field composition. -/
 theorem lc0VB_eq_lc0VBField (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -68,7 +67,7 @@ theorem lc0VB_eq_lc0VBField (g₀ g₁ : SmoothRiemannianMetric I M) :
   change lieCorr0VBFib (I := I) g₀ g₁ x D = _
   exact (lc0b_vb_fiber (I := I) (M := M) g₀ g₁ x D).symm
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The fibre-defined mixed connection correction is its canonical
 operator-field composition. -/
 theorem lc0AMix_eq_lc0AMixField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
@@ -82,7 +81,7 @@ theorem lc0AMix_eq_lc0AMixField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   change lieCorr0AMixFib (I := I) g₀ g₁ g_bg x D = _
   exact (lc0b_amix_fiber (I := I) (M := M) g₀ g₁ g_bg x D).symm
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The fibre-defined curvature correction is its canonical fixed-passenger
 operator-field composition. -/
 theorem lc0Riem_eq_lc0RiemField (g₀ g₁ : SmoothRiemannianMetric I M) :

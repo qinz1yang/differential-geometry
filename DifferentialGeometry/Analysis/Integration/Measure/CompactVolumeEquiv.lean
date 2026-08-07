@@ -28,14 +28,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 /-- Joint continuity of chart density follows from joint continuity of every
 chart Gram-matrix entry.  This is the `C^0` core of
 `continuousOn_chartDensity_family`, separated from its stronger time-derivative
@@ -194,7 +194,7 @@ theorem volume_density_bdd
 omit [CompactSpace M] in
 /-- Comparison of one POU-weighted chart-local lower integral from a pointwise
 chart-density bound on the POU `tsupport`. -/
-lemma chart_lintegral_le
+lemma chart_lintegral_le [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (alpha : M) (C : ℝ) (hC : 0 ≤ C)
     (hdensity : ∀ x ∈ tsupport
       (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),

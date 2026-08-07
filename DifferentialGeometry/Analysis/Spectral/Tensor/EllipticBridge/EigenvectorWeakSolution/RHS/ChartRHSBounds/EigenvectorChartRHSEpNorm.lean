@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -43,7 +43,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 section Aggregation
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private lemma eLpNorm_sum_le_const_mul_aggregate
     {ι : Type*} [Fintype ι] {μ : Measure EuclN} (F : ι → EuclN → ℝ)
     (A : ℝ≥0∞)
@@ -96,8 +96,8 @@ section TermMemLp
 
 variable (g : SmoothRiemannianMetric I M) (α : M)
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M]
+  in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma one_div_densityOnEuclid_contDiffOn :
     ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
@@ -143,7 +143,6 @@ end Aggregate
 section MainBound
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenIdx_val_pos
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

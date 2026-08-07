@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -54,7 +54,7 @@ private lemma le_of_two_sq_le_two_mul {p K : ℝ} (hK : 0 ≤ K)
   nlinarith only [hK, h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma frame03_data
     (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
@@ -105,7 +105,7 @@ private lemma frame03_data
     rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor03_component_eq_toModel
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 3 I x) {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -126,7 +126,7 @@ private lemma tensor03_component_eq_toModel
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 3 I x) (a b c : TangentSpace I x) :
@@ -243,7 +243,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
     ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma frame04_data
     (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
@@ -294,7 +294,7 @@ private lemma frame04_data
     rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor04_component_eq_toModel
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 4 I x) {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -315,7 +315,7 @@ private lemma tensor04_component_eq_toModel
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 4 I x) (a b c d : TangentSpace I x) :
@@ -429,7 +429,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
       Real.sqrt_mul (mul_nonneg haa_nn hbb_nn), Real.sqrt_mul haa_nn]
     ring
 
-private def covGrad3Eval
+private def covGrad3Eval [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (P Q R : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) : ℝ :=
   Tensor0SSpace.toModel
@@ -895,10 +895,10 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
       (1 / (1 - δ₀)) * (3 / 2) * Gt * Nv * Nw := by ring
   rw [hfinal]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberNormSqComponent_connDiffFib
+omit [T2Space M] in
+private lemma fiberNormSqComponent_connDiffFib [SigmaCompactSpace M]
     (g₁ g₀ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
     (K : Fin 1 → Fin n) (J : Fin 2 → Fin n) :

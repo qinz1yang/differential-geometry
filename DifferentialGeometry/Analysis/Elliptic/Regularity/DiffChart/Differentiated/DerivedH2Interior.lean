@@ -55,7 +55,7 @@ private lemma self_subset_thickening_of_pos
 
 
 theorem derivedChartBilinear_memWkp_two_two_interior
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl (I := I) (M := M) g}

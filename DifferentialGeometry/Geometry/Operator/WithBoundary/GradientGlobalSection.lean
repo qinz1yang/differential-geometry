@@ -186,7 +186,7 @@ variable {M : Type*} [TopologicalSpace M]
 open DifferentialGeometry.Integral.Measure
 
 theorem grad_g_smooth_section_full
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff (modelWithCornersEuclideanHalfSpace n)
@@ -197,7 +197,7 @@ theorem grad_g_smooth_section_full
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf
 
 def grad_g_full_section
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
@@ -207,7 +207,7 @@ def grad_g_full_section
     grad_g_smooth_section_full (M := M) (n := n) g hf⟩
 
 @[simp] lemma grad_g_full_section_apply
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
@@ -218,7 +218,7 @@ def grad_g_full_section
       gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
 
 @[simp] lemma grad_g_full_section_coe
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :

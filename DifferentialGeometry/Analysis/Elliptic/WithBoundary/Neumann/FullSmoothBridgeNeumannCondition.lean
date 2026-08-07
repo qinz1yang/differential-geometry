@@ -38,10 +38,10 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
 omit [CompactSpace M] in
-private lemma localDivergenceWithin_mul_pou_continuous
+private lemma localDivergenceWithin_mul_pou_continuous [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (I_half n) M) (α : M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) :
@@ -83,7 +83,7 @@ private lemma localDivergenceWithin_mul_pou_continuous
       rw [hρy, mul_zero]
     exact (continuousAt_const (y := (0 : ℝ))).congr hev.symm
 
-noncomputable def divergence_g_with_boundary_pou
+noncomputable def divergence_g_with_boundary_pou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (I_half n) M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) : M → ℝ :=
@@ -102,7 +102,7 @@ lemma divergence_g_with_boundary_pou_continuous
     localDivergenceWithin_mul_pou_continuous (n := n) (M := M) g α X)
 
 omit [CompactSpace M] in
-private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
+private lemma divergence_g_with_boundary_mul_pou_chart_local_ae [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric (I_half n) M) (α : M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) :
@@ -262,7 +262,7 @@ lemma divergence_g_with_boundary_ae_pou
     rw [hρ_zero]
     simp
 
-noncomputable def FullSmoothScalar.oneSubLapClassicalRep
+noncomputable def FullSmoothScalar.oneSubLapClassicalRep [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) : M → ℝ :=
   fun x => u.toFun x -
     divergence_g_with_boundary_pou (n := n) (M := M) g
@@ -286,7 +286,7 @@ lemma FullSmoothScalar.oneSubLapClassicalRep_memLp
   exact u.oneSubLapClassicalRep_continuous.memLp_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
-noncomputable def FullSmoothScalar.oneSubLapClassicalLp
+noncomputable def FullSmoothScalar.oneSubLapClassicalLp [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   u.oneSubLapClassicalRep_memLp.toLp _

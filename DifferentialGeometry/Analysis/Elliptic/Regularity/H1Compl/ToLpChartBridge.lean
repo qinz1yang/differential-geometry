@@ -38,20 +38,20 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma chartAtlasPOU_continuous (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartAtlasPOU_continuous [SigmaCompactSpace M] (α : M) :
     Continuous fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
   (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff.continuous
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma chartAtlasPOU_measurable (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartAtlasPOU_measurable [SigmaCompactSpace M] (α : M) :
     Measurable fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
   (chartAtlasPOU_continuous (I := I) (M := M) α).measurable
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma enorm_pou_mul_le (α : M) (u : M → ℝ) (x : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma enorm_pou_mul_le [SigmaCompactSpace M] (α : M) (u : M → ℝ) (x : M) :
     ‖(chartAtlasPOU I M α : M → ℝ) x * u x‖ₑ ≤ ‖u x‖ₑ := by
   have h_nn : (0 : ℝ) ≤ (chartAtlasPOU I M α : M → ℝ) x :=
     (chartAtlasPOU I M).nonneg α x
@@ -68,8 +68,8 @@ private lemma enorm_pou_mul_le (α : M) (u : M → ℝ) (x : M) :
   rw [Real.enorm_eq_ofReal_abs, Real.enorm_eq_ofReal_abs]
   exact ENNReal.ofReal_le_ofReal habsmul
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma tsupport_pou_mul_subset_chartSource (α : M) (u : M → ℝ) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tsupport_pou_mul_subset_chartSource [SigmaCompactSpace M] (α : M) (u : M → ℝ) :
     tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
       (chartAt H α).source := by
   classical
@@ -88,8 +88,8 @@ private lemma tsupport_pou_mul_subset_chartSource (α : M) (u : M → ℝ) :
   exact h_tsupp_sub.trans
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma tsupport_pou_mul_subset_tsupport_pou (α : M) (u : M → ℝ) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tsupport_pou_mul_subset_tsupport_pou [SigmaCompactSpace M] (α : M) (u : M → ℝ) :
     tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
       tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
   classical
@@ -104,8 +104,8 @@ private lemma tsupport_pou_mul_subset_tsupport_pou (α : M) (u : M → ℝ) :
     rw [hρ_zero]; ring
   exact closure_mono h_supp_sub
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma chartPushed_eq_chartPushedRaw_on_chartTarget
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartPushed_eq_chartPushedRaw_on_chartTarget [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {y : EuclN}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
@@ -118,7 +118,7 @@ private lemma chartPushed_eq_chartPushedRaw_on_chartTarget
   rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_mem
     (I := I) (M := M) α (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) hy]
 
-private def kαCompact (α : M) : Set EuclN :=
+private def kαCompact [SigmaCompactSpace M] (α : M) : Set EuclN :=
   (toEuclidean : E ≃L[ℝ] EuclN) ''
     ((extChartAt I α) '' (tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x))
 
@@ -145,8 +145,8 @@ private lemma kαCompact_isCompact (α : M) :
     h_tsupp_compact.image_of_continuousOn h_ext_cont
   exact h_ext_image_compact.image (toEuclidean (E := E)).continuous
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma kαCompact_subset_chartTargetEuclid (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma kαCompact_subset_chartTargetEuclid [SigmaCompactSpace M] (α : M) :
     kαCompact (I := I) (M := M) α ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
   classical
@@ -164,8 +164,8 @@ private lemma kαCompact_subset_chartTargetEuclid (α : M) :
     rw [← hxz]; exact (extChartAt I α).map_source hxsrc
   refine ⟨z, hz_target, hzy⟩
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma chartPushedRaw_pou_mul_support_subset_kα
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartPushedRaw_pou_mul_support_subset_kα [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) :
     Function.support (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
         fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
@@ -242,8 +242,8 @@ private lemma exists_density_sup_on_kα
     rw [hKne] at hy
     exact absurd hy (Set.notMem_empty y)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma eLpNorm_chartPulledWeighted_le_density_volume_on_kα
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma eLpNorm_chartPulledWeighted_le_density_volume_on_kα [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (M_sup : ℝ) (hM_sup_pos : 0 < M_sup)
     (hM_sup_bd : ∀ y ∈ kαCompact (I := I) (M := M) α,
@@ -482,7 +482,7 @@ private noncomputable def extChartAtSymmExt (α : M) : E → M := by
     (fun _ : E => α)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+    [T2Space M] [CompactSpace M] in
 private lemma extChartAtSymmExt_eq_on_target (α : M) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
     extChartAtSymmExt (I := I) (M := M) α y = (extChartAt I α).symm y := by
@@ -493,7 +493,7 @@ private lemma extChartAtSymmExt_eq_on_target (α : M) {y : E}
   rw [Set.piecewise_eq_of_mem _ _ _ hy]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+    [T2Space M] [CompactSpace M] in
 private lemma extChartAtSymmExt_measurable (α : M) :
     Measurable (extChartAtSymmExt (I := I) (M := M) α) := by
   classical

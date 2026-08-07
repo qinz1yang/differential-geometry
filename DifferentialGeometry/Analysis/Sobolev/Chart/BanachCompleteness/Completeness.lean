@@ -25,7 +25,7 @@ variable [NeZero (Module.finrank ℝ E)]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem wkpNormChart_cauchy_of_seminormCauchySeq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -61,7 +61,7 @@ private theorem wkpNormChart_cauchy_of_seminormCauchySeq
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartPushed_cauchy_of_wkpNormChart_cauchy
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -117,7 +117,7 @@ private theorem chartPushed_cauchy_of_wkpNormChart_cauchy
   exact le_trans h_summand_le_tsum h_le
 
 private theorem exists_chart_limit
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -156,7 +156,7 @@ private theorem exists_chart_limit
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartPushed_tendstoInMeasure
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -221,7 +221,7 @@ private theorem chartPushed_tendstoInMeasure
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_subseq_chartPushed_ae_tendsto
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}

@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -57,7 +57,7 @@ def slotOutputConjCLM (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     ContinuousLinearMap.id ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma slotInputConjCLM_self (g : SmoothRiemannianMetric I M) (r : ℕ)
     (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M) :
     slotInputConjCLM (I := I) g r α B k b k =
@@ -68,7 +68,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma slotInputConjCLM_other (g : SmoothRiemannianMetric I M) (r : ℕ)
     (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M)
     {i : Fin r} (h : i ≠ k) :
@@ -77,7 +77,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
   simp [h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma slotOutputConjCLM_self (g : SmoothRiemannianMetric I M) (s : ℕ)
     (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M) :
     slotOutputConjCLM (I := I) g s α B l b l =
@@ -88,7 +88,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma slotOutputConjCLM_other (g : SmoothRiemannianMetric I M) (s : ℕ)
     (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M)
     {j : Fin s} (h : j ≠ l) :
@@ -127,7 +127,7 @@ def outputSlotChartKernel (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (outputSlotPostcompCLM (I := I) g s α B l b)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma inputSlotChartKernel_apply (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M)
     (S : Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel s ℝ E) :
@@ -135,7 +135,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
       S.comp (inputSlotPrecompCLM (I := I) g r α B k b) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma outputSlotChartKernel_apply (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M)
     (S : Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel s ℝ E) :
@@ -143,7 +143,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
       (outputSlotPostcompCLM (I := I) g s α B l b).comp S := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInputConjCLM_compCLM_compCLM_chartJ
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (B : Π b' : M, TangentSpace I b') {b : M}
@@ -211,7 +211,7 @@ private lemma slotInputConjCLM_compCLM_compCLM_chartJ
   exact (ContinuousMultilinearMap.compContinuousLinearMap_apply _ _ _).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotOutputConjCLM_compose_chartJinv
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     (B : Π b' : M, TangentSpace I b') {b : M}
@@ -237,7 +237,7 @@ private lemma slotOutputConjCLM_compose_chartJinv
     rw [ContinuousLinearMap.id_apply, ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartTensorRSInputSlotCorrection_chart_kernel_factorization
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : Π b' : M, TensorRSSpace r s I b')
@@ -336,7 +336,7 @@ theorem chartTensorRSInputSlotCorrection_chart_kernel_factorization
   exact hLHS_eval.trans hRHS_eval.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartTensorRSOutputSlotCorrection_chart_kernel_factorization
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : Π b' : M, TensorRSSpace r s I b')
@@ -408,7 +408,7 @@ theorem chartTensorRSOutputSlotCorrection_chart_kernel_factorization
   exact hLHS_eval.trans hRHS_eval.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLCConj_eq_christoffelCorrectionCLM
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Π b' : M, TangentSpace I b') {b : M}
@@ -435,7 +435,7 @@ private lemma chartLCConj_eq_christoffelCorrectionCLM
   rw [trivToE_trivFromE (I := I) α hb_base]
   exact christoffelCorrection_eq_christoffelCorrectionCLM (I := I) g α X hb_base w
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartLCConj_contMDiffOn_chartSource
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -469,14 +469,14 @@ private lemma chartLCConj_contMDiffOn_chartSource
   intro b hb
   exact chartLCConj_eq_christoffelCorrectionCLM (I := I) (M := M) g α B.toFun hb
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma goodSet_image_isOpen (α : M) :
     IsOpen ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
   chartLeviCivitaGoodSet_image_isOpen (I := I) α
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma goodSet_subset_chartSource (α : M) :
     chartLeviCivitaGoodSet (I := I) α ⊆ (chartAt H α).source := by
   intro b hb
@@ -486,13 +486,13 @@ private lemma goodSet_subset_chartSource (α : M) :
   exact hb
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma extChartAt_mem_goodSet_image (α : M) {b : M}
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     extChartAt I α b ∈ (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
   ⟨b, hb, rfl⟩
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartLCConj_chart_pulled_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -540,7 +540,7 @@ private lemma chartLCConj_chart_pulled_contDiffOn
   exact interior_subset
     (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx'_good)
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartLCConj_chart_pulled_contDiffAt
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -561,7 +561,7 @@ private lemma chartLCConj_chart_pulled_contDiffAt
   exact (chartLCConj_chart_pulled_contDiffOn (I := I) (M := M) g α B).contDiffAt
     (hOpen.mem_nhds hmem)
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma slotInputConjCLM_chart_pulled_contDiffAt
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
@@ -594,7 +594,7 @@ private lemma slotInputConjCLM_chart_pulled_contDiffAt
     rw [heq]
     exact contDiffAt_const
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma slotOutputConjCLM_chart_pulled_contDiffAt
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
@@ -627,7 +627,7 @@ private lemma slotOutputConjCLM_chart_pulled_contDiffAt
     rw [heq]
     exact contDiffAt_const
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inputSlotPrecompCLM_chart_pulled_contDiffAt
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
@@ -673,7 +673,7 @@ private lemma inputSlotPrecompCLM_chart_pulled_contDiffAt
   intro y
   exact h_eval y
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma outputSlotPostcompCLM_chart_pulled_contDiffAt
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
@@ -719,7 +719,7 @@ private lemma outputSlotPostcompCLM_chart_pulled_contDiffAt
   intro y
   exact h_eval y
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inputSlotChartKernel_contDiffAt_chart_pulled
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -744,7 +744,7 @@ theorem inputSlotChartKernel_contDiffAt_chart_pulled
   intro y
   rfl
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem outputSlotChartKernel_contDiffAt_chart_pulled
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -770,7 +770,7 @@ theorem outputSlotChartKernel_contDiffAt_chart_pulled
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLCConj_opNorm_le (g : SmoothRiemannianMetric I M) (α b : M)
     (X : Π b' : M, TangentSpace I b') :
     ‖(chartTrivializationLinearMap (I := I) (M := M) α b).comp
@@ -784,7 +784,7 @@ private lemma chartLCConj_opNorm_le (g : SmoothRiemannianMetric I M) (α b : M)
   exact ContinuousLinearMap.opNorm_comp_le _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInputConjCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     (r : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M)
     (i : Fin r) :
@@ -804,7 +804,7 @@ private lemma slotInputConjCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     exact le_max_left _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotOutputConjCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     (s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M)
     (j : Fin s) :
@@ -824,7 +824,7 @@ private lemma slotOutputConjCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     exact le_max_left _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
     (r : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M) :
     (∏ i : Fin r, ‖slotInputConjCLM (I := I) g r α B k b i‖) ≤
@@ -845,7 +845,7 @@ private lemma slotInputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
   · intro i _; exact slotInputConjCLM_opNorm_le (I := I) (M := M) g r α B k b i
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotOutputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
     (s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M) :
     (∏ j : Fin s, ‖slotOutputConjCLM (I := I) g s α B l b j‖) ≤
@@ -866,7 +866,7 @@ private lemma slotOutputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
   · intro j _; exact slotOutputConjCLM_opNorm_le (I := I) (M := M) g s α B l b j
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma inputSlotPrecompCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     (r : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M) :
     ‖inputSlotPrecompCLM (I := I) g r α B k b‖ ≤
@@ -882,7 +882,7 @@ private lemma inputSlotPrecompCLM_opNorm_le (g : SmoothRiemannianMetric I M)
   exact slotInputConjCLM_prod_opNorm_le (I := I) (M := M) g r α B k b
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma outputSlotPostcompCLM_opNorm_le (g : SmoothRiemannianMetric I M)
     (s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M) :
     ‖outputSlotPostcompCLM (I := I) g s α B l b‖ ≤
@@ -898,7 +898,7 @@ private lemma outputSlotPostcompCLM_opNorm_le (g : SmoothRiemannianMetric I M)
   exact slotOutputConjCLM_prod_opNorm_le (I := I) (M := M) g s α B l b
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma inputSlotChartKernel_opNorm_le (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (k : Fin r) (b : M) :
     ‖inputSlotChartKernel (I := I) g r s α B k b‖ ≤
@@ -916,7 +916,7 @@ private lemma inputSlotChartKernel_opNorm_le (g : SmoothRiemannianMetric I M)
   rw [one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma outputSlotChartKernel_opNorm_le (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α : M) (B : Π b' : M, TangentSpace I b') (l : Fin s) (b : M) :
     ‖outputSlotChartKernel (I := I) g r s α B l b‖ ≤
@@ -932,7 +932,7 @@ private lemma outputSlotChartKernel_opNorm_le (g : SmoothRiemannianMetric I M)
   refine le_trans (mul_le_mul_of_nonneg_right h_le h_nn) ?_
   rw [one_mul]
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inputSlotChartKernel_chart_pulled_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -964,7 +964,7 @@ theorem inputSlotChartKernel_chart_pulled_contDiffOn
     rfl
   exact h_at.contDiffWithinAt
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem outputSlotChartKernel_chart_pulled_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -996,7 +996,7 @@ theorem outputSlotChartKernel_chart_pulled_contDiffOn
     rfl
   exact h_at.contDiffWithinAt
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma inputSlotChartKernel_fderiv_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -1018,7 +1018,7 @@ private lemma inputSlotChartKernel_fderiv_continuousOn
     exact hcd.fderiv_of_isOpen hOpen h_le
   exact continuous_norm.comp_continuousOn hfd_cd.continuousOn
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma outputSlotChartKernel_fderiv_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

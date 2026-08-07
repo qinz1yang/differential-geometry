@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -195,7 +195,7 @@ lemma sharp_wkpNorm_coef_mul_factor_le_uniform
   rw [h_norm_eq]
   exact hKc_bd hfactor_memWkp
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private lemma sharp_memWkp_finset_sum
     {α : M} {K : ℕ} {ι : Type*} (s : Finset ι)
@@ -249,7 +249,7 @@ private lemma sharp_wkpNorm_sub_le
     simp
   rw [h_neg_eq]
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sharp_layerA_coeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) (m : ℕ)

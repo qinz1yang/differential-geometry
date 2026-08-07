@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -198,7 +198,7 @@ private noncomputable def tensorPouSobolevNormSqAgg
                   ((toEuclidean (E := E)).symm y)‖ ^ 2)
           ∂(volume : Measure EuclN)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma tensorPouSobolevNorm_one_sq_eq_agg
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :

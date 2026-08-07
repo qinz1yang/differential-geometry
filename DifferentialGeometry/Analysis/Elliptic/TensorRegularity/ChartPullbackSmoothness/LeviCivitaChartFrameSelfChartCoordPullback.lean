@@ -49,7 +49,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   simp [Module.Basis.equivFun]
 
 private lemma leviCivita_chartFrame_hom_contMDiff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -75,7 +75,7 @@ private lemma leviCivita_chartFrame_hom_contMDiff
   exact contMDiffOn_univ.mp h_hom_on
 
 private lemma leviCivita_chartFrame_self_section_contMDiff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -92,7 +92,7 @@ private lemma leviCivita_chartFrame_self_section_contMDiff
     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun x) hB
 
 private lemma leviCivita_chartFrame_self_trivialized_contMDiffOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, E) ∞
@@ -166,7 +166,7 @@ private lemma leviCivita_chartFrame_self_trivialized_contMDiffOn
   exact (h_eq_baseSet hb).symm
 
 private lemma leviCivita_chartFrame_self_coordProj_contMDiffOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i m : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
@@ -185,7 +185,7 @@ private lemma leviCivita_chartFrame_self_coordProj_contMDiffOn
   exact h_proj.contMDiffOn.comp (t := Set.univ) h_triv (Set.subset_preimage_univ)
 
 theorem leviCivita_chartFrame_self_chartCoord_pullback_contDiffOn_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i m : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞

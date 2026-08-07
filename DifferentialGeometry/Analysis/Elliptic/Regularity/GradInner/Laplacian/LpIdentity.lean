@@ -31,7 +31,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma sub_rearrange_three {α : Type*} [AddCommGroup α] {a b c d : α}
     (h : a = b - c - d) : c = b - a - d := by
@@ -293,7 +293,7 @@ noncomputable def gradInnerSmoothBundle
         g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v.toFun x)
     simp [grad_g_apply]
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma gradInnerSmoothBundle_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)

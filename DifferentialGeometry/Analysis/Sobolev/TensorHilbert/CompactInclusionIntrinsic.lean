@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -36,7 +36,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_smooth_close_to_TensorH1_intrinsic
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

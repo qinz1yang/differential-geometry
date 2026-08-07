@@ -9,9 +9,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem compact_uniform_horizon_extraction
     (U : M → Set M) (S : M → ℝ) (P : ℝ → M → Prop)
     (hU_open : ∀ α : M, IsOpen (U α))
@@ -49,7 +49,7 @@ theorem compact_uniform_horizon_extraction
     exact hP α x hxU s hs_α
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chart_cover_flow_bijective_two_sided_uniform_horizon
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)

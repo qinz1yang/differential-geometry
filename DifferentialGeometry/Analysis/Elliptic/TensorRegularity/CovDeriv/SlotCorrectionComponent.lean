@@ -33,17 +33,17 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-noncomputable def chartFrameBasisModel (α b : M) (r : ℕ)
+noncomputable def chartFrameBasisModel [SigmaCompactSpace M] (α b : M) (r : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E)) :
     Tensor0SSpace r I b :=
   (dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
     (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma chartFrameBasisModel_apply (α b : M) (r : ℕ)
+    in
+lemma chartFrameBasisModel_apply [SigmaCompactSpace M] (α b : M) (r : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (v : Fin r → TangentSpace I b) :
     chartFrameBasisModel (I := I) (M := M) α b r Idx v =
@@ -61,8 +61,8 @@ lemma chartFrameBasisModel_apply (α b : M) (r : ℕ)
   exact h
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
+    in
+lemma chartFrameBasisModel_apply_chartFrameTuple [SigmaCompactSpace M] (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (r : ℕ)
     (Idx Jdx : Fin r → Fin (Module.finrank ℝ E)) :
     chartFrameBasisModel (I := I) (M := M) α b r Idx
@@ -101,7 +101,7 @@ lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
     exact if_neg hk₀.symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma sum_chartFrame_coord_eq (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (w : E) :
     ∑ p : Fin (Module.finrank ℝ E),
@@ -146,8 +146,8 @@ lemma sum_chartFrame_coord_eq (α : M) {b : M}
     _ = w := chartJinv_chartJ_self (I := I) (M := M) α hb w
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensor0S_eq_sum_chartFrameBasis (α : M) {b : M}
+    in
+theorem tensor0S_eq_sum_chartFrameBasis [SigmaCompactSpace M] (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (r : ℕ)
     (f : Tensor0SSpace r I b) :
     f = ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -212,7 +212,7 @@ theorem tensor0S_eq_sum_chartFrameBasis (α : M) {b : M}
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 lemma tensorSlotSubstCLM_eval (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b))
     (τ : Tensor0SSpace n I b) (m : Fin n → TangentSpace I b) :
@@ -227,7 +227,7 @@ noncomputable def chartFrameMatrixEntry (α b : M)
     (chartTrivializationLinearMap (I := I) (M := M) α b (Ψ (chartBasisVecFiber (I := I) α q b)))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma chartFrameMatrixEntry_def (α b : M)
     (Ψ : TangentSpace I b →L[ℝ] TangentSpace I b)
     (p q : Fin (Module.finrank ℝ E)) :
@@ -237,7 +237,7 @@ lemma chartFrameMatrixEntry_def (α b : M)
           (Ψ (chartBasisVecFiber (I := I) α q b))) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma slotCLM_chartFrameVec_eq (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (Ψ : TangentSpace I b →L[ℝ] TangentSpace I b)
@@ -254,7 +254,7 @@ lemma slotCLM_chartFrameVec_eq (α : M) {b : M}
   rw [chartFrameMatrixEntry_def]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem tensor0S_apply_slotTransform_chartFrameBasis_eq_sum (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (s : ℕ)
     (σ : Tensor0SSpace s I b)
@@ -301,7 +301,7 @@ theorem tensor0S_apply_slotTransform_chartFrameBasis_eq_sum (α : M) {b : M}
   rw [hpull', smul_eq_mul]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem tensorSlotSubstCLM_proj_eq (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (r : ℕ)
     (Φ : Fin r → (TangentSpace I b →L[ℝ] TangentSpace I b))
@@ -320,7 +320,7 @@ theorem tensorSlotSubstCLM_proj_eq (α : M) {b : M}
   exact tensor0S_apply_slotTransform_chartFrameBasis_eq_sum (I := I) (M := M) α hb r τ Φ Idx
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma coord_christoffelCorrection_eq
     (g : SmoothRiemannianMetric I M) (α b : M) (Y : E)
     (v : TangentSpace I b) (p : Fin (Module.finrank ℝ E)) :
@@ -350,7 +350,7 @@ lemma coord_christoffelCorrection_eq
     exact absurd (Finset.mem_univ p) h
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma chartJ_chartLeviCivitaParallelCLM
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -368,7 +368,7 @@ lemma chartJ_chartLeviCivitaParallelCLM
   exact chartJ_chartJinv (I := I) (M := M) α hb _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartLeviCivitaParallelCLM_coordEntry_eq_chartChristoffel
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -426,7 +426,7 @@ theorem chartLeviCivitaParallelCLM_coordEntry_eq_chartChristoffel
   · intro h
     exact absurd (Finset.mem_univ q) h
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartLeviCivitaParallelCLM_coordEntry_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -464,7 +464,7 @@ theorem chartLeviCivitaParallelCLM_coordEntry_contDiffOn
   rw [hphi_b, chartChristoffelEuclid_def]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma chartFrameMatrixEntry_id (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (p q : Fin (Module.finrank ℝ E)) :
@@ -489,8 +489,8 @@ lemma chartFrameMatrixEntry_id (α : M) {b : M}
     Finsupp.single_apply]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_eq_chartFrame
+    in
+theorem tensorChartComponentRaw_eq_chartFrame [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb : b ∈ (chartAt H α).source)
@@ -525,7 +525,7 @@ noncomputable def inputSlotCoeff
         (Idx i) (Idx' i)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma inputSlotCoeff_eq_entry_mul_const
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (m : Fin (Module.finrank ℝ E)) (k : Fin r)
@@ -557,7 +557,7 @@ lemma inputSlotCoeff_eq_entry_mul_const
     rw [tangentSlotCLM_other (I := I) r k _ hi_ne,
       chartFrameMatrixEntry_id (I := I) (M := M) α hb_base]
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inputSlotCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
@@ -578,8 +578,8 @@ theorem inputSlotCoeff_contDiffOn
   rw [inputSlotCoeff_eq_entry_mul_const (I := I) (M := M) g r α m k Idx Idx' hy]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma inputSlotCoeff_eq_chartFrameProj
+    in
+lemma inputSlotCoeff_eq_chartFrameProj [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r : ℕ) (α : M)
     (m : Fin (Module.finrank ℝ E)) (k : Fin r)
     (Idx Idx' : Fin r → Fin (Module.finrank ℝ E))
@@ -610,8 +610,8 @@ lemma inputSlotCoeff_eq_chartFrameProj
   rw [chartFrameMatrixEntry_def]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem chartTensorRSInputSlotCorrection_component_eq
+    in
+theorem chartTensorRSInputSlotCorrection_component_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (m : Fin (Module.finrank ℝ E)) (k : Fin r)
@@ -697,7 +697,7 @@ noncomputable def outputSlotCoeff
         (Jdx' j) (Jdx j)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma outputSlotCoeff_eq_entry_mul_const
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     (m : Fin (Module.finrank ℝ E)) (l : Fin s)
@@ -729,7 +729,7 @@ lemma outputSlotCoeff_eq_entry_mul_const
     rw [tangentSlotCLM_other (I := I) s l _ hj_ne,
       chartFrameMatrixEntry_id (I := I) (M := M) α hb_base]
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem outputSlotCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
@@ -750,7 +750,7 @@ theorem outputSlotCoeff_contDiffOn
   rw [outputSlotCoeff_eq_entry_mul_const (I := I) (M := M) g s α m l Jdx Jdx' hy]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma outputSlotCoeff_eq_chartFrameProj
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     (m : Fin (Module.finrank ℝ E)) (l : Fin s)
@@ -771,8 +771,8 @@ lemma outputSlotCoeff_eq_chartFrameProj
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem chartTensorRSOutputSlotCorrection_component_eq
+    in
+theorem chartTensorRSOutputSlotCorrection_component_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (m : Fin (Module.finrank ℝ E)) (l : Fin s)

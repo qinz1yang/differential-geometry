@@ -125,7 +125,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian'
   rw [← hLHS_int, h_ibp, hRHS_int]
 
 theorem green_second_integral_smul_laplacian_sub_eq_zero
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
     ∫ x, (f x * Δ_g (I := I) g ⟨_, hh⟩ x - h x * Δ_g (I := I) g ⟨_, hf⟩ x)
@@ -176,7 +176,7 @@ theorem green_second_integral_smul_laplacian_sub_eq_zero
 
 
 theorem expNegWeightedGreen
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f q : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -302,7 +302,7 @@ theorem expNegLap
 
 
 theorem expNegGreen
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f q : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -337,7 +337,7 @@ theorem expNegGreen
 
 
 theorem expNegLap_eq_gradSq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ∫ x, Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hf⟩ x
@@ -412,7 +412,7 @@ theorem expNegLap_eq_gradSq
 
 
 theorem expNegIBP
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hlap :

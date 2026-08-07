@@ -28,15 +28,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma abs_pou_mul_le_abs_local
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma abs_pou_mul_le_abs_local [SigmaCompactSpace M]
     (β : M) (u : M → ℝ) (x : M) :
     |((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * u x| ≤ |u x| := by
@@ -117,8 +117,8 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
     ← ofReal_norm_eq_enorm x]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma ofReal_tensorL2Norm_toFun_eq_nnnorm_toCcTensor
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma ofReal_tensorL2Norm_toFun_eq_nnnorm_toCcTensor [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     ENNReal.ofReal (tensorL2Norm (I := I) (M := M) g r s S.toCcTensor.toFun) =
@@ -128,9 +128,8 @@ private lemma ofReal_tensorL2Norm_toFun_eq_nnnorm_toCcTensor
     SmoothCcTensor.norm_def (I := I) (M := M) S.toCcTensor
   rw [← h_norm_eq, ← coe_nnnorm_eq_ofReal_norm]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma nnnorm_toCcTensor_le_nnnorm
+private lemma nnnorm_toCcTensor_le_nnnorm [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     (‖S.toCcTensor‖₊ : ℝ≥0∞) ≤ (‖S‖₊ : ℝ≥0∞) := by

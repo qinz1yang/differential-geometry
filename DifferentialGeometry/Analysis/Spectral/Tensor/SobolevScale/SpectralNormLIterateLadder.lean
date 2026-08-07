@@ -27,12 +27,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma ladder_weight_natCast (g₀ : SmoothRiemannianMetric I M)
+private lemma ladder_weight_natCast [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g₀ 0 2) (n : ℕ) :
     tensorSobolevWeight (I := I) (M := M) i ((n : ℕ) : ℝ) =
@@ -40,8 +39,8 @@ private lemma ladder_weight_natCast (g₀ : SmoothRiemannianMetric I M)
   unfold tensorSobolevWeight
   rw [Real.rpow_natCast]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma tensorL2Inner_self_eq_norm_toL2_sq (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma tensorL2Inner_self_eq_norm_toL2_sq [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (r s : ℕ) (X : SmoothCcTensor g₀ r s) :
     tensorL2Inner (I := I) (M := M) g₀ r s X.toFun X.toFun =
       ‖SmoothCcTensor.toL2 X‖ ^ 2 := by

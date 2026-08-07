@@ -47,12 +47,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckLieArm1Coeff_eq_lieArm1Piece_sum (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ g₁ lieArm1SigmaC lieArm1RhoSlot0
@@ -946,7 +945,7 @@ theorem deTurckLieArm1Coeff_realizedFam_jetL2_perOrder_ballUniform
   linarith [htri1, htri2, htri3, hblock1, hblock2]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieArm1_rfns_sub_le (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (a b : TensorRSSpace r s I x) :
@@ -959,7 +958,7 @@ private theorem lieArm1_rfns_sub_le (g : SmoothRiemannianMetric I M) (r s : ℕ)
   exact h
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieArm1_rfns_block6_le (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (b1 b2 b3 b4 b5 b6 : TensorRSSpace r s I x) :
@@ -980,7 +979,7 @@ private theorem lieArm1_rfns_block6_le (g : SmoothRiemannianMetric I M) (r s : �
   linarith
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieArm1_rfns_block6_le' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (b1 b2 b3 b4 b5 b6 : TensorRSSpace r s I x) :

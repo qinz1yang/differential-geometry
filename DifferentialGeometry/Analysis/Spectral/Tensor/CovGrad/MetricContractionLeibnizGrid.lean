@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 section RankCast
@@ -52,8 +52,8 @@ private theorem iteratedCovGrad_covGrad_comm_heq_db (g : SmoothRiemannianMetric 
       exact covGrad_heq_congr_db g r (by omega : (s + 1) + k = s + (k + 1)) ih
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [CompleteSpace E] in
 private theorem riemannianFiberNormSq_toSection_heq_congr (g : SmoothRiemannianMetric I M)
     (r : ℕ) {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b}
     (hYZ : HEq Y Z) (x : M) :
@@ -477,7 +477,7 @@ theorem exists_rfns_iteratedCovGrad_singleSum_le_at
   intro r W j
   have hgrid := rfns_iteratedCovGrad_grid_at op hcovGrad_op kappa kappa_nonneg x₀ hrfns_at j 0 r W
   simpa only [Nat.add_zero, Nat.zero_add] using hgrid
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in
 @[simp] theorem norm_castCcTensorRank (g : SmoothRiemannianMetric I M) (r : ℕ)
     {a b : ℕ} (h : a = b) (W : SmoothCcTensor g r a) :

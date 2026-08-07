@@ -36,7 +36,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_uniform
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (T₀ : SmoothCcTensor g r s),

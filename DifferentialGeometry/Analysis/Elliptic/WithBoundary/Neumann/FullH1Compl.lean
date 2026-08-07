@@ -43,7 +43,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
 abbrev H1ComplFullNeumann (g : SmoothRiemannianMetric (I_half n) M) : Type _ :=
   UniformSpace.Completion (FullSmoothScalar g)

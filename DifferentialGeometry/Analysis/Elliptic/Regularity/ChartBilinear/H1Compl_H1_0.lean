@@ -214,7 +214,7 @@ private lemma tendsto_setIntegral_mul_of_eLpNorm_tendsto_zero_l2
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma uChart_memLp_volume_restrict_compact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K : Set EuclN} (hK_compact : IsCompact K)
@@ -226,7 +226,7 @@ private lemma uChart_memLp_volume_restrict_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma fChart_memLp_volume_restrict_compact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K : Set EuclN} (hK_compact : IsCompact K)
@@ -238,7 +238,7 @@ private lemma fChart_memLp_volume_restrict_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_bilinear_identity_h1_0
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)

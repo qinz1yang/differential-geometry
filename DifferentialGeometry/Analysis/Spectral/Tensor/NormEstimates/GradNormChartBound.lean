@@ -84,7 +84,7 @@ section VanishOutsidePou
 
 variable [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 private lemma tensorChartComponentScalar_eventuallyEq_zero_of_notMem_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -115,7 +115,7 @@ private lemma tensorChartComponentScalar_eventuallyEq_zero_of_notMem_pouTsupport
   unfold tensorChartComponentScalar tensorChartComponentPou
   rw [h_rho_zero, zero_mul]
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 private lemma gradFun_tensorChartComponentScalar_eq_zero_of_notMem_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -130,7 +130,7 @@ private lemma gradFun_tensorChartComponentScalar_eq_zero_of_notMem_pouTsupport
     (tensorChartComponentScalar_eventuallyEq_zero_of_notMem_pouTsupport
       (I := I) (M := M) g r s S α Idx Jdx hb)
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem sqrt_g_inner_gradFun_tensorChartComponentScalar_eq_zero_outside_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -166,7 +166,7 @@ variable [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-omit [Module.Finite ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 private lemma scalarOnE_mul_pointwise (α : M) (f g : M → ℝ) :
     scalarOnE (I := I) α (fun x : M => f x * g x) =
@@ -175,9 +175,9 @@ private lemma scalarOnE_mul_pointwise (α : M) (f g : M → ℝ) :
   unfold scalarOnE
   rfl
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+omit [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)] in
-private lemma scalarOnE_tensorChartComponentRaw_contDiffOn
+private lemma scalarOnE_tensorChartComponentRaw_contDiffOn [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -215,8 +215,8 @@ private lemma scalarOnE_tensorChartComponentRaw_contDiffOn
     hraw_on'.comp hsymm hsymm_maps
   exact hcomp.contDiffOn
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
-private lemma differentiableAt_scalarOnE_tensorChartComponentRaw
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
+private lemma differentiableAt_scalarOnE_tensorChartComponentRaw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -243,7 +243,7 @@ private lemma differentiableAt_scalarOnE_tensorChartComponentRaw
     h_within.contDiffAt (h_open.mem_nhds hz)
   exact h_at.differentiableAt (by simp)
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma differentiableAt_scalarOnE_chartAtlasPOU
     (α : M) {z : E} (hz : z ∈ (extChartAt I α).target) :
     DifferentiableAt ℝ
@@ -273,7 +273,7 @@ private lemma differentiableAt_scalarOnE_chartAtlasPOU
     h_within.contDiffAt (h_open.mem_nhds hz)
   exact h_at.differentiableAt (by simp)
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -352,7 +352,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 open DifferentialGeometry.Tensor0SBundle
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 private lemma scalarOnE_chartAtlasPOU_abs_le_one (α : M) (y : E) :
     |scalarOnE (I := I) α
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y| ≤ 1 := by
@@ -369,7 +369,7 @@ private lemma scalarOnE_chartAtlasPOU_abs_le_one (α : M) (y : E) :
   rw [h_val, abs_of_nonneg h_nn]
   exact h_le
 
-omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_continuousOn
     (α : M) :
     ContinuousOn (fun y : E =>
@@ -455,7 +455,7 @@ theorem exists_sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_sup
     have hb_in_K' : extChartAt I α b ∈ K' := ⟨b, hb, rfl⟩
     exact (hK'_ne ⟨_, hb_in_K'⟩).elim
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+omit [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)] in
 private lemma chartBasisVecFiber_eq_trivFromE_chartModelBasis
     (α : M) (k : Fin (Module.finrank ℝ E)) (b : M) :

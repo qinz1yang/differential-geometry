@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -36,7 +36,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorSecondCovDeriv_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -99,7 +99,7 @@ theorem tensorSecondCovDeriv_add
   simp only [ContinuousLinearMap.add_apply]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem metricTrace2_secondCovDeriv_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {T T' : Π b : M, TensorRSSpace r s I b} (x : M)

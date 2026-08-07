@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 noncomputable local instance : NormedAddCommGroup (E →L[ℝ] E) :=
   ContinuousLinearMap.toNormedAddCommGroup
@@ -66,7 +66,7 @@ private theorem exists_iteratedFDeriv_norm_bound_on_compact
     intro y hy
     exact (hKne ⟨y, hy⟩).elim
 
-omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (k : ℕ) (α : M)

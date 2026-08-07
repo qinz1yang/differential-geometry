@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 /-- The generic top-order tensor state whose order-`a+1` view has norm at
 most `R`. -/
@@ -40,9 +40,9 @@ def lowerStateRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ) (R : ℝ) :
   lowerBall (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
     (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)) R
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Zero belongs to every generic nonnegative lower-order state ball. -/
-theorem zero_mem_lowerRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
+theorem zero_mem_lowerRS [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
     {R : ℝ} (hR : 0 ≤ R) :
     (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) ∈
       lowerStateRS (I := I) (M := M) g₀ r s a R := by

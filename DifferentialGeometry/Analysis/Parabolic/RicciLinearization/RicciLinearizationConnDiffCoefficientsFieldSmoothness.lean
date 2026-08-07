@@ -39,14 +39,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -80,7 +80,7 @@ private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -98,7 +98,7 @@ theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
     (P : ∀ x : M, Tensor0SBundle.Tensor0SSpace m I x)
     (Q : ∀ x : M, Tensor0SBundle.Tensor0SSpace k I x)
@@ -149,8 +149,8 @@ private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] in
 theorem connContrCLM_field_contMDiff (m k : ℕ)
     (Bf : ∀ x : M, Tensor0SBundle.TensorRSSpace 1 (k + 1) I x)
     (hBf : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 1 (k + 1) ℝ E)) ∞
@@ -212,7 +212,6 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnDiffOrder1CLM_field_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 3 I x)
@@ -334,8 +333,8 @@ theorem linearizedRicciConnDiffOrder0CLM_field_contMDiff
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] in
 theorem ricciCometricFourTraceCLM_field_contMDiff (g₁ : SmoothRiemannianMetric I M)
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 4 I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 4 ℝ E)) ∞
@@ -382,7 +381,6 @@ noncomputable def linearizedRicciConnDiffOrder0CometricTracedCLM
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnDiffOrder1CometricTracedCLM_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 2 ℝ E)) ∞
@@ -453,7 +451,6 @@ noncomputable def linearizedRicciConnDiffOrder0CoeffField
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnDiffOrder1CoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnDiffOrder1CoeffField (I := I) (M := M) g₀ g₁).toSection x =

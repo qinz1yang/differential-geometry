@@ -50,7 +50,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -65,7 +65,7 @@ lemma bdICG_succ_cometricDT_zero (g₀ : SmoothRiemannianMetric I M) (s m : ℕ)
       rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma bdRfns_zero_toSection (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ r s x
       ((0 : SmoothCcTensor g₀ r s).toSection x) = 0 := by
@@ -234,7 +234,6 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
   nlinarith [hA', hB, hW_nn, hcfix_nn 0]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma bdConnDiffSection_eq_cometricRaise (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -778,7 +777,7 @@ private theorem bdDLb_eq_slotInsert_sum
   rw [harg]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma bdSlotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -795,7 +794,7 @@ private lemma bdSlotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : �
   rw [slotInsertEndoFib_sub_left]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     (X Y : SmoothCcTensor g₀ 2 2) :
     reindexCoeffGen (I := I) (M := M) g₀ 2 2

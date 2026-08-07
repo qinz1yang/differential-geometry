@@ -824,7 +824,7 @@ theorem metricUnitOn_compact
 
 /-- Compactness of the unit tangent bundle over a compact manifold. -/
 theorem metricUnit_compact
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     IsCompact (Set.univ : Set (MetricUnitTangent (I := I) (M := M) g)) := by
   simpa using metricUnitOn_compact (I := I) (M := M) g isCompact_univ

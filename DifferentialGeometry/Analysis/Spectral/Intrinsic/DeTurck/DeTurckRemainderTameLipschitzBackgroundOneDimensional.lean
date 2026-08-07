@@ -94,7 +94,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -139,7 +139,7 @@ lemma rfns_tl_toSection_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M
     (by rw [← h, add_zero])).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma rfns_tl_add_le_sq_sqrt (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (a b : TensorRSSpace r s I x) :
@@ -256,7 +256,7 @@ lemma rfns_tl_budgetDualCap (n : ℕ) (hn : 2 ≤ n) {δ₀ : ℝ}
   nlinarith [hcore, hf0, mul_nonneg hc0 hf0, hfge, hs2lb, hs2]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 lemma b1_rfns_smul_value (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (a : TensorRSSpace r s I x) :
@@ -314,7 +314,7 @@ lemma b1_rfns_icg_symmS_le (g₀ : SmoothRiemannianMetric I M)
   nlinarith [Real.sqrt_nonneg A]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma b1_unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) (x : M) :
@@ -330,7 +330,7 @@ private lemma b1_unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem b1_appCc_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (Φ₁ - Φ₂) W =
@@ -352,7 +352,7 @@ private theorem b1_appCc_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem b1_symmS_eq_self (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -386,7 +386,7 @@ private theorem b1_symmS_eq_self (g₀ : SmoothRiemannianMetric I M)
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma b1_metricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 2 → E) :
@@ -419,7 +419,7 @@ private lemma b1_metricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private theorem b1_perturbation_eq_metricDifference (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -466,7 +466,7 @@ private theorem b1_perturbation_eq_metricDifference (g₀ g₁ : SmoothRiemannia
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem b1_ccTensor22_ext_of_appCc (g₀ : SmoothRiemannianMetric I M)
     (C D : SmoothCcTensor g₀ 2 2)
     (h : ∀ W : SmoothCcTensor g₀ 0 2,
@@ -604,7 +604,7 @@ private lemma b1_sqrt_add_le (x y : ℝ) (hx : 0 ≤ x) (hy : 0 ≤ y) :
         Real.sqrt_sq (add_nonneg (Real.sqrt_nonneg x) (Real.sqrt_nonneg y))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 lemma b1_toSection_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) (x : M) :
@@ -613,7 +613,7 @@ lemma b1_toSection_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 lemma b1_toSection_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) (x : M) :
@@ -622,7 +622,7 @@ lemma b1_toSection_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 lemma b1_toSection_smul (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (A : SmoothCcTensor g r s) (x : M) :
@@ -826,7 +826,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffRefoldRemainderField_bounde
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma b1_sqrt_rfns_add_le (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (a b : TensorRSSpace r s I x) :
     Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x (a + b)) ≤

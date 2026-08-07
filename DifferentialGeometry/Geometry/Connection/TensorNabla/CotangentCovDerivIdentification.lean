@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -38,7 +38,7 @@ def ccTensorOneForm (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1)
   fun b => cotangentToCLM (I := I)
     (unitEvalSection (I := I) (M := M) g 1 σ b)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorCovDerivAt_unitEval
     (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1)
@@ -60,7 +60,7 @@ lemma tensorCovDerivAt_unitEval
   exact tensor0SCovariantDerivative_unitZero_eq_zero (I := I) (M := M)
     (LeviCivita (I := I) g) x v
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensor0SCovariantDerivative_one_cotangentToCLM
     (g : SmoothRiemannianMetric I M)
@@ -108,7 +108,6 @@ lemma tensor0SCovariantDerivative_one_cotangentToCLM
     congr 1
     exact hconsEq ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cotangentCov_eq_tensorCovDerivAt_ccTensor01
     (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1) {x : M}

@@ -36,9 +36,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-noncomputable def smoothChartExt (g : SmoothRiemannianMetric I M) (α : M)
+noncomputable def smoothChartExt [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (α : M)
     (v : SmoothScalar g) : EuclN → ℝ := by
   classical
   exact fun y =>
@@ -48,8 +48,8 @@ noncomputable def smoothChartExt (g : SmoothRiemannianMetric I M) (α : M)
         v.toFun ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-lemma smoothChartExt_apply_of_mem_target
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma smoothChartExt_apply_of_mem_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target) :
     smoothChartExt (I := I) (M := M) g α v y =
@@ -64,8 +64,8 @@ lemma smoothChartExt_apply_of_mem_target
     else 0) = _
   rw [if_pos hy]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-lemma smoothChartExt_apply_of_notMem_target
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma smoothChartExt_apply_of_notMem_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : (toEuclidean (E := E)).symm y ∉ (extChartAt I α).target) :
     smoothChartExt (I := I) (M := M) g α v y = 0 := by
@@ -77,8 +77,8 @@ lemma smoothChartExt_apply_of_notMem_target
     else 0) = 0
   rw [if_neg hy]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_eq_chartPushed_on_target
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_eq_chartPushed_on_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α) :
     smoothChartExt (I := I) (M := M) g α v y =
@@ -94,15 +94,15 @@ private lemma smoothChartExt_eq_chartPushed_on_target
   unfold DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_smooth_aux
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_smooth_aux [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x :=
   ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff).mul v.smooth
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_supp_in_chartSrc
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_supp_in_chartSrc [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     tsupport (fun x : M =>
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x) ⊆
@@ -114,8 +114,8 @@ private lemma smoothChartExt_supp_in_chartSrc
   exact h1.trans
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma contDiffOn_extFormula
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma contDiffOn_extFormula [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     ContDiffOn ℝ ∞
         (fun y : EuclN =>
@@ -143,8 +143,8 @@ private lemma contDiffOn_extFormula
     rw [h_eq]; exact hz_target
   exact hscalar.comp htoEuc_symm_smooth.contDiffOn hmaps
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma smoothChartExt_contDiffAt_of_mem_target
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma smoothChartExt_contDiffAt_of_mem_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α) :
     ContDiffAt ℝ ∞ (smoothChartExt (I := I) (M := M) g α v) y := by
@@ -196,8 +196,8 @@ private lemma image_toE_chart_supp_isCompact
     hf_compact.image_of_continuousOn hcont
   exact h1.image (toEuclidean (E := E)).continuous
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma image_toE_chart_supp_subset_chartTarget
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma image_toE_chart_supp_subset_chartTarget [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport
@@ -325,8 +325,8 @@ theorem smoothChartExt_hasCompactSupport
       simp
     exact smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α v h_notMem
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_zero_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_zero_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (y : EuclN) :
     smoothChartExt (I := I) (M := M) g α (0 : SmoothScalar g) y = 0 := by
   classical
@@ -336,8 +336,8 @@ private lemma smoothChartExt_zero_apply
     ring
   · exact smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α 0 hy
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_add_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_add_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v w : SmoothScalar g) (y : EuclN) :
     smoothChartExt (I := I) (M := M) g α (v + w) y =
       smoothChartExt (I := I) (M := M) g α v y +
@@ -354,8 +354,8 @@ private lemma smoothChartExt_add_apply
     rw [smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α w hy]
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_smul_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_smul_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (c : ℝ) (v : SmoothScalar g) (y : EuclN) :
     smoothChartExt (I := I) (M := M) g α (c • v) y =
       c * smoothChartExt (I := I) (M := M) g α v y := by
@@ -369,8 +369,8 @@ private lemma smoothChartExt_smul_apply
     rw [smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α v hy]
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_sub_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_sub_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v w : SmoothScalar g) (y : EuclN) :
     smoothChartExt (I := I) (M := M) g α (v - w) y =
       smoothChartExt (I := I) (M := M) g α v y -
@@ -387,16 +387,16 @@ private lemma smoothChartExt_sub_apply
     rw [smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α w hy]
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_add
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v w : SmoothScalar g) :
     smoothChartExt (I := I) (M := M) g α (v + w) =
       smoothChartExt (I := I) (M := M) g α v + smoothChartExt (I := I) (M := M) g α w := by
   funext y
   exact smoothChartExt_add_apply (I := I) (M := M) g α v w y
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_smul
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (c : ℝ) (v : SmoothScalar g) :
     smoothChartExt (I := I) (M := M) g α (c • v) =
       c • smoothChartExt (I := I) (M := M) g α v := by
@@ -404,15 +404,15 @@ private lemma smoothChartExt_smul
   rw [Pi.smul_apply, smul_eq_mul]
   exact smoothChartExt_smul_apply (I := I) (M := M) g α c v y
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
-private lemma smoothChartExt_sub
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma smoothChartExt_sub [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v w : SmoothScalar g) :
     smoothChartExt (I := I) (M := M) g α (v - w) =
       smoothChartExt (I := I) (M := M) g α v - smoothChartExt (I := I) (M := M) g α w := by
   funext y
   exact smoothChartExt_sub_apply (I := I) (M := M) g α v w y
 
-noncomputable def smoothChartExtPartial
+noncomputable def smoothChartExtPartial [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) : EuclN → ℝ := fun y =>
   (fderiv ℝ (smoothChartExt (I := I) (M := M) g α v) y) (EuclideanSpace.single j 1)
@@ -502,8 +502,8 @@ theorem smoothChartExtPartial_sub
     exact fderiv_fun_sub h1 h2
   rw [h_fderiv_eq, ContinuousLinearMap.sub_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private lemma chartPushed_eventuallyEq_smoothChartExt
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma chartPushed_eventuallyEq_smoothChartExt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) :
@@ -517,8 +517,8 @@ private lemma chartPushed_eventuallyEq_smoothChartExt
   filter_upwards [hOpen.mem_nhds hy] with z hz
   exact (smoothChartExt_eq_chartPushed_on_target (I := I) (M := M) g α v hz).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem chartPushedPartial_eq_smoothChartExtPartial_on_target
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartPushedPartial_eq_smoothChartExtPartial_on_target [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -532,8 +532,8 @@ theorem chartPushedPartial_eq_smoothChartExtPartial_on_target
   exact Filter.EventuallyEq.fderiv_eq
     (chartPushed_eventuallyEq_smoothChartExt (I := I) (M := M) g α v hy)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem chartPushedPartial_aeEq_smoothChartExtPartial
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartPushedPartial_aeEq_smoothChartExtPartial [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
     DifferentialGeometry.Analysis.Laplacian.H1ComplGradientChartBridge.chartPushedPartial

@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 open DifferentialGeometry.Integral.Measure
@@ -38,7 +38,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s) (K : ℕ)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private lemma wkpNorm_doubleSum_le_const_mul_aggregateSum
     {ι κ : Type*} [Fintype κ]
     (S : Finset ι) (W : ι → κ → ℝ≥0∞) (aggr : ι → ℝ≥0∞)
@@ -100,7 +100,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (K : ℕ)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private lemma wkpNorm_doubleSum_le_const_mul_aggregateSum_uniform
     {δ ι κ : Type*} [Fintype κ]
     (S : Finset ι) (W : δ → ι → κ → ℝ≥0∞) (aggr : δ → ι → ℝ≥0∞)

@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -35,7 +35,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem metricTrace2_covDeriv_comm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) (w : TangentSpace I x) :
@@ -59,7 +59,7 @@ theorem metricTrace2_covDeriv_comm
       (fun z : M => T.toSection z) y).symm]
   exact covDeriv_rawConnLap_eq_frozenFrameTrace_sum (I := I) g r s hT x w
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem metricTrace2_covDeriv_comm_map
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) :

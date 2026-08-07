@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -56,8 +56,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [CompactSpace M] in
-private lemma scalarOnE_raw_eq_raw_on_pouTsupport
+private lemma scalarOnE_raw_eq_raw_on_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -352,8 +351,8 @@ private theorem indicator_eLpNorm_raw_le_const_mul_tensorL2Norm
     ENNReal.ofReal_mul (Real.sqrt_nonneg _)] at h_eLpNorm_le
   exact h_eLpNorm_le
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorL2Norm_eq_norm_toCcTensor
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorL2Norm_eq_norm_toCcTensor [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     tensorL2Norm (I := I) (M := M) g r s S.toCcTensor.toFun =
@@ -386,9 +385,8 @@ private lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
     ← ofReal_norm_eq_enorm x]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma ofReal_tensorL2Norm_le_norm_ennreal
+private lemma ofReal_tensorL2Norm_le_norm_ennreal [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     ENNReal.ofReal
@@ -457,7 +455,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

@@ -79,7 +79,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -88,9 +88,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma resolvent_pow_eq_weight
+private lemma resolvent_pow_eq_weight [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :
     (i.fst.val)⁻¹ ^ (2 * k + 1) =
@@ -108,9 +107,8 @@ private lemma resolvent_pow_eq_weight
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma garding_l1_sum_le
+private lemma garding_l1_sum_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     {p : ℝ}
     (h_tail_summable :

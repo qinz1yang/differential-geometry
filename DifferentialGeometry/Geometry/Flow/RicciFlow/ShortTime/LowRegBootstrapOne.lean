@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
 
@@ -54,11 +54,11 @@ def duhamelCross (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) u₀ f
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
+
   [BoundarylessManifold I M] in
 /-- The intermediate representative realizes the continuous lower carrier at
 every time of the original interval. -/
-theorem crossRepr_toFun
+theorem crossRepr_toFun [SigmaCompactSpace M]
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -69,11 +69,11 @@ theorem crossRepr_toFun
   rfl
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
+
   [BoundarylessManifold I M] in
 /-- The intermediate representative is the intermediate inclusion of the top
 companion field almost everywhere on the original interval. -/
-theorem crossRepr_hi_ae
+theorem crossRepr_hi_ae [SigmaCompactSpace M]
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) :
     (fun t => u.repr t) =ᵐ[timeMeasure T]
@@ -121,13 +121,13 @@ theorem duhRepr_field_ae
       (duhamelCross (I := I) (M := M) g r s a hT hT1 u₀ f) hT
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
+
   [BoundarylessManifold I M] in
 /-- An almost-everywhere intermediate-order ball bound for the top companion
 holds for the cross-scale representative at every time.  The proof uses the
 already established continuity of its squared norm, so it does not require a
 later time shrink. -/
-theorem crossRepr_ball
+theorem crossRepr_ball [SigmaCompactSpace M]
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) {R : ℝ} (hR : 0 ≤ R)
     (hball : ∀ᵐ t ∂(timeMeasure T),

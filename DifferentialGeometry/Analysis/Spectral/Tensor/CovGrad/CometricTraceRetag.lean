@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance traceRetagTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
@@ -55,8 +55,8 @@ private local instance traceRetagTensorRSFiberBundle (r s : ℕ) :
   Tensor0SBundle.tensorRSBundle_fiber r s
 
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
     cometricDoubleTraceFib (I := I) h 0 x D =

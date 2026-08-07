@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private noncomputable def smoothScalarSub
     {g : SmoothRiemannianMetric I M}
@@ -49,7 +49,7 @@ private noncomputable def smoothScalarSub
     smooth := v₁.smooth.sub v₂.smooth }
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma smoothScalarSub_toFun
     {g : SmoothRiemannianMetric I M}
     (v₁ v₂ : SmoothScalar g) :

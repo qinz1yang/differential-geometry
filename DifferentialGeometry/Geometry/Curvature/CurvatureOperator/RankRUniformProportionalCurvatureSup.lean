@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensor0SModelNormedSpace_local2 {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
@@ -42,16 +42,16 @@ private local instance tensor0SModelFiniteDimensional_local2 {s : ℕ} :
     FiniteDimensional ℝ (Tensor0SModel s ℝ E) :=
   continuousMultilinearMap_finiteDimensional s
 
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_self_nonneg2 (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) : 0 ≤ g.inner x v v := by
   rcases eq_or_ne v 0 with hv0 | hv0
   · rw [hv0]; simp
   · exact (g.pos x v hv0).le
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] in
 private lemma exists_smooth_tensorRS_section_eq (r s : ℕ) (x : M) (T₀ : TensorRSSpace r s I x) :
     ∃ A : Π b : M, TensorRSSpace r s I b, A x = T₀ ∧
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -72,8 +72,8 @@ private lemma exists_smooth_tensorRS_section_eq (r s : ℕ) (x : M) (T₀ : Tens
     smoothExtensionFiber_contMDiff (I := I) (F := TensorRSModel r s ℝ E)
       (V := fun b => TensorRSSpace r s I b) x T₀⟩
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] in
 private lemma exists_smooth_tensor0S_section_eq2 (r : ℕ) (x : M) (Y₀ : Tensor0SSpace r I x) :
     ∃ A : Π b : M, Tensor0SSpace r I b, A x = Y₀ ∧
       ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E)) ∞
@@ -94,7 +94,7 @@ private lemma exists_smooth_tensor0S_section_eq2 (r : ℕ) (x : M) (Y₀ : Tenso
     smoothExtensionFiber_contMDiff (I := I) (F := Tensor0SModel r ℝ E)
       (V := fun b => Tensor0SSpace r I b) x Y₀⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannOp_tensorCovRS_apply_eval
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (v w : TangentSpace I x)

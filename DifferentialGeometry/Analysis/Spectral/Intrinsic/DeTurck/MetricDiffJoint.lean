@@ -37,12 +37,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
     (x : M) (c : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -60,7 +60,7 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
   rw [Tensor0SSpace.evalScalar_apply, MixedSection.eval₀_apply]
   rw [← smul_sub]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 theorem metricDiff_raw (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) q
@@ -69,7 +69,7 @@ theorem metricDiff_raw (q h : SmoothRiemannianMetric I M)
   unfold metricDifferenceCcTensor
   rw [ccTensorBilin_sub, metricCcTensor_apply, metricCcTensor_apply]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 theorem metricDiff_unit (q h : SmoothRiemannianMetric I M)
     (x : M) (slots : Fin 2 → E) :
     unitModel (I := I) (M := M) q 2
@@ -81,7 +81,7 @@ theorem metricDiff_unit (q h : SmoothRiemannianMetric I M)
   rw [hslots, unitModel_eq_ccTensorBilin_local, metricDiff_raw]
   simp
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 theorem metricDiff_symm (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) q
@@ -91,7 +91,7 @@ theorem metricDiff_symm (q h : SmoothRiemannianMetric I M)
   rw [metricDiff_raw, metricDiff_raw, h.symm x v w, q.symm x v w]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 /-- The symmetrized fixed-background metric difference is exactly the
 pointwise metric bilinear-form difference. -/
 theorem metricDiff_symVal (q h : SmoothRiemannianMetric I M)
@@ -104,7 +104,7 @@ theorem metricDiff_symVal (q h : SmoothRiemannianMetric I M)
   ring
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem metric_ext_inner
     {g h : SmoothRiemannianMetric I M}
     (heq : ∀ (x : M) (v w : TangentSpace I x),
@@ -137,7 +137,7 @@ theorem realize_metricDiff (q h : SmoothRiemannianMetric I M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem metricDiff_eval
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -173,7 +173,7 @@ private theorem metricDiff_eval
   · rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 /-- A `MetricFamilySmoothOn` family gives a jointly smooth path of fixed-base
 metric-difference tensors on its regular time set. -/
 theorem metricDiff_joint
@@ -255,7 +255,7 @@ theorem metricDiff_joint
   exact congrArg (Y p.1) (Subsingleton.elim _ _)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 /-- Joint smoothness is stable under translating a regular-time window.  The
 explicit image hypothesis records that this is an interior restart and makes
 no assertion at a merely continuous endpoint of the original family. -/

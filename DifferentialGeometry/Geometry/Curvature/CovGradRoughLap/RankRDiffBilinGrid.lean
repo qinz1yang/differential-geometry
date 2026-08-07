@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 section RankCastRS
@@ -53,7 +53,7 @@ private theorem iteratedCovGrad_covGrad_comm_heq_dbRS (g : SmoothRiemannianMetri
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 private theorem rfns_toSection_heq_congr_dbRS (g : SmoothRiemannianMetric I M)
     (c : ℕ) {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g c a} {Z : SmoothCcTensor g c b}
     (hYZ : HEq Y Z) (x : M) :

@@ -19,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 open DifferentialGeometry.Integral.Measure
@@ -89,7 +89,7 @@ private lemma eLpNorm_indicatorFactor_mul_atom_le
   exact hC_bd
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private lemma eLpNorm_finsetSum_le
     {ι : Type*} (g : SmoothRiemannianMetric I M) (α : M)
     (s : Finset ι) (F : ι → EuclN → ℝ)
@@ -110,7 +110,7 @@ private lemma eLpNorm_finsetSum_le
   exact eLpNorm_sum_le (fun j hj => (hF j hj).1) (by norm_num)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private lemma eLpNorm_finsetSum_le_const_mul_atomSum
     {ι κ : Type*} (g : SmoothRiemannianMetric I M) (α : M)
     (s : Finset ι) (t : Finset κ) (F : ι → EuclN → ℝ) (atom : κ → EuclN → ℝ)

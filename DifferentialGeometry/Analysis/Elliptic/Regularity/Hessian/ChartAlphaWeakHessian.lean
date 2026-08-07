@@ -47,7 +47,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 private noncomputable def chartPushedPouFun
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -238,7 +238,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
           chosenChartFirstWeakPartial (I := I) (M := M) g α hu_h m y := rfl
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartChristoffel_toE_symm_continuousOn_chartTargetEuclid
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -260,7 +260,7 @@ private lemma chartChristoffel_toE_symm_continuousOn_chartTargetEuclid
     toEuclidean_symm_mem_target (I := I) hy
   exact h_chris_cont.comp h_toE_cont.continuousOn h_maps
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartChristoffel_toE_symm_bounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)

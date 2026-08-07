@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance fiberNormBridgeTensorRSRiemannianNormedAddCommGroup
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b)] (b : M) :
@@ -34,7 +34,7 @@ private local instance fiberNormBridgeTensorRSRiemannianNormedAddCommGroup
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem triv_eq_toModel_at_chartCenter
     (r s : ℕ) (b₀ : M) (T : TensorRSSpace r s I b₀) :
     (trivializationAt (TensorRSModel r s ℝ E)
@@ -51,7 +51,7 @@ theorem triv_eq_toModel_at_chartCenter
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem symmL_toModel_eq_self_at_chartCenter
     (r s : ℕ) (b₀ : M) (T : TensorRSSpace r s I b₀) :
     (trivializationAt (TensorRSModel r s ℝ E)
@@ -70,7 +70,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [CompactSpace M] [I.Boundaryless] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem modelNorm_le_gNorm_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x₀ : M) :
@@ -94,7 +94,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gNorm_le_modelNorm_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x₀ : M) :

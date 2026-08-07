@@ -20,12 +20,12 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 private lemma sqrt_g0_inner_add_le
     (g₀ : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
@@ -67,7 +67,7 @@ private lemma sqrt_g0_inner_add_le
     _ = na + nb := by rw [Real.sqrt_sq hsum_pos_nn]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem norm_inverseMetricSharpFib_g0Flat_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (h : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)

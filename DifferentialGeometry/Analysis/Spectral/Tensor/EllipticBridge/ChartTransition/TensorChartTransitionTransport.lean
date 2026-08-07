@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -32,8 +32,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma coeFn_finsetSum_chartL2
     (α : M) {ι : Type*} (s : Finset ι)
     (G : ι → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
@@ -214,8 +214,8 @@ private lemma cutoffComponentScalar_eq_pou_transport_sum
       sum_chartAtlasPOU_transportChartCenters_eq_one (I := I) (M := M) α hχα,
       one_mul]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma chartPushedRaw_finsetSum
     (α : M) {ι : Type*} (s : Finset ι) (F : ι → M → ℝ) (y : EuclN) :
     chartPushedRaw I α (fun x : M => ∑ a ∈ s, F a x) y =
@@ -267,8 +267,8 @@ private lemma cutoffComponentEuclid_eq_pou_transport_sum
     (fun Q x => transportCoeffManifold (I := I) (M := M) g r s β α P₀ Q x *
       tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x) y
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma finsetSum_ae_eq
     (α : M) {ι : Type*} (s : Finset ι) {f h : ι → EuclN → ℝ}
     (hfh : ∀ a ∈ s,

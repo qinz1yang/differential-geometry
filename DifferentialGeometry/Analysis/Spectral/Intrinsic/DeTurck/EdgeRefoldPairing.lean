@@ -56,7 +56,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -81,7 +81,7 @@ private local instance edgeTensorRSFiberBundle (r s : ℕ) :
 Riemann coefficient.  It is the low-order Palatini residual; the complementary
 Riemann coefficient is the one combined with the DeTurck covariant-derivative
 arm below. -/
-def edgeRicciHalf (g g₁ : SmoothRiemannianMetric I M) :
+def edgeRicciHalf [SigmaCompactSpace M] (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   linearizedRicciConnDiffOrder0CoeffField (I := I) (M := M) g g₁ +
     (1 / 2 : Real) •
@@ -90,7 +90,7 @@ def edgeRicciHalf (g g₁ : SmoothRiemannianMetric I M) :
 /-- The explicit zeroth-order remainder after the covariant-derivative part of
 the DeTurck coefficient has been refolded.  It contains no derivative of the
 connection difference hidden inside `deTurckLieCoeffField`. -/
-def edgeFold0 (g g₁ g_bg : SmoothRiemannianMetric I M) :
+def edgeFold0 [SigmaCompactSpace M] (g g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ((deTurckLieEndoArmField (I := I) (M := M) g g₁ g_bg +
       lieCorr0Field (I := I) (M := M) g g₁ g_bg) +
@@ -98,7 +98,7 @@ def edgeFold0 (g g₁ g_bg : SmoothRiemannianMetric I M) :
       edgeCarry0 (I := I) (M := M) g g_bg
 
 /-- The complete nonlinear refold arm at one slope parameter. -/
-def edgeRefoldArm (g g₁ g_bg : SmoothRiemannianMetric I M)
+def edgeRefoldArm [SigmaCompactSpace M] (g g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (C₀ : SmoothCcTensor g 2 2)
     (C₂ : SmoothCcTensor g 4 2) : SmoothCcTensor g 0 2 :=
   (-2 : Real) • operatorFieldApply (I := I) (M := M) g 2 2
@@ -113,7 +113,7 @@ def edgeRefoldArm (g g₁ g_bg : SmoothRiemannianMetric I M)
       (iteratedCovGrad (I := I) g 0 2 2 W)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- The zero endpoint obeys any nonnegative fibre-operator bound. -/
 theorem edgeZeroBoundAt (g : SmoothRiemannianMetric I M) {delta : Real}
     (hdelta : 0 ≤ delta) :
@@ -126,12 +126,12 @@ theorem edgeZeroBoundAt (g : SmoothRiemannianMetric I M) {delta : Real}
   simp only [zero_mul, abs_zero]
   exact mul_nonneg (mul_nonneg hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] in
 /-- On the genuine segment, the path using the sharp zero bound and the path
 using the same radius at both endpoints are the same metric.  This bridge lets
 the equal-radius public refold packages feed the exact closed-edge slope split.
 -/
-theorem edgeMetric_bal
+theorem edgeMetric_bal [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -157,7 +157,7 @@ theorem edgeMetric_bal
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_rank0_decomp (x : M) (t : Tensor0SSpace 0 I x) :
     t = (Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0)) •
       unitTensor (I := I) (M := M) x := by
@@ -175,7 +175,7 @@ private lemma edge_rank0_decomp (x : M) (t : Tensor0SSpace 0 I x) :
   rw [smul_eq_mul, mul_one]
 
 omit [NeZero (Module.finrank Real E)] [TopologicalSpace M] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_cons_sum (_x : M) {n : Nat}
     (Zm : Tensor0SModel (n + 1) Real E) (d : Nat) (t : Fin d → Real)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -209,7 +209,7 @@ private lemma edge_cons_sum (_x : M) {n : Nat}
   rw [← h1 (u c)]
 
 omit [NeZero (Module.finrank Real E)] [TopologicalSpace M] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_cons2_sum (_x : M) {n : Nat}
     (Zm : Tensor0SModel (n + 2) Real E) (aa : E) (d : Nat)
     (t : Fin d → Real) (u : Fin d → E) (rest : Fin n → E) :
@@ -247,7 +247,7 @@ private lemma edge_cons2_sum (_x : M) {n : Nat}
   rw [← h1 (u c)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank Real E),
@@ -304,7 +304,7 @@ private lemma edge_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hrepr v i, hbB_coe i]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 /-- A moving-metric double trace is a fixed-background trace after inserting
 the relative inverse-metric endomorphism in the first contracted slot. -/
@@ -331,7 +331,7 @@ private lemma edge_sum4_comm
           simp only [Fintype.sum_prod_type]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_bitrace_move
     (g gm : SmoothRiemannianMetric I M) (x : M)
     (S Z : TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real)
@@ -429,7 +429,7 @@ private lemma edge_bitrace_move
 
 /-- Insert a smooth tangent endomorphism into one of the two covariant slots
 of a rank-two tensor. -/
-def edgeSlot2 (g : SmoothRiemannianMetric I M)
+def edgeSlot2 [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (Lambda : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
     (j : Fin 2) (S : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 2 :=
@@ -439,7 +439,7 @@ def edgeSlot2 (g : SmoothRiemannianMetric I M)
       (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) j) S))
 
 /-- Apply the relative inverse-metric endomorphism in both slots. -/
-def edgeRaise2 (g gm : SmoothRiemannianMetric I M)
+def edgeRaise2 [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 2 :=
   edgeSlot2 (I := I) (M := M) g
     (fullRaisedEndoField (I := I) (M := M) g gm) 1
@@ -447,13 +447,13 @@ def edgeRaise2 (g gm : SmoothRiemannianMetric I M)
       (fullRaisedEndoField (I := I) (M := M) g gm) 0 S)
 
 /-- Covariant tensor product with the first factor occupying slots `0,1`. -/
-def edgeProd4 (g : SmoothRiemannianMetric I M)
+def edgeProd4 [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   operatorFieldApply (I := I) (M := M) g 2 4
     (slotExtendIter (I := I) (M := M) g 0 2 2 B) A
 
 /-- Formal rank-four partner of one moving Palatini pair-trace monomial. -/
-def edgePairPartner (g gm : SmoothRiemannianMetric I M)
+def edgePairPartner [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (sigma : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 0 4 :=
   domDomCongrSection (I := I) g sigma.symm
@@ -464,7 +464,7 @@ def edgePairPartner (g gm : SmoothRiemannianMetric I M)
 rank-two tensor reproduces one Palatini refold monomial.  Keeping this field
 explicit is what later allows the second derivative to be moved by Green's
 identity before any pointwise estimate is taken. -/
-def edgePairMono (g gm : SmoothRiemannianMetric I M)
+def edgePairMono [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 6 2
@@ -474,7 +474,7 @@ def edgePairMono (g gm : SmoothRiemannianMetric I M)
         (domDomCongrSection (I := I) g
           (σ.trans (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) G)))
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 /-- One moving pair-trace action is exactly one Palatini refold monomial.
 
@@ -541,7 +541,7 @@ theorem edgeMonoRefold (g gm : SmoothRiemannianMetric I M)
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 /-- Evaluation of `edgeSlot2`: the chosen covariant slot is read through the
 given endomorphism. -/
@@ -571,7 +571,7 @@ theorem edgeSlot2_eval (g : SmoothRiemannianMetric I M)
   fin_cases j <;> fin_cases k <;> simp [Equiv.swap_apply_def]
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Both relative inverse-metric insertions in `edgeRaise2` are visible on
 the two covariant arguments. -/
 theorem edgeRaise2_eval (g gm : SmoothRiemannianMetric I M)
@@ -587,7 +587,7 @@ theorem edgeRaise2_eval (g gm : SmoothRiemannianMetric I M)
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 private lemma edge_extend_cons
     (g : SmoothRiemannianMetric I M) (r s : Nat)
     (Φ : SmoothCcTensor g r s) (x : M)
@@ -613,7 +613,7 @@ private lemma edge_extend_cons
       Φ.toSection x) D (show E from v0) vs
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
     (B : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 2 I x)
@@ -669,7 +669,7 @@ private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [BoundarylessManifold I M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] in
 /-- The rank-four product carrier evaluates as the product of its first and
 last pair of covariant components. -/
 theorem edgeProd4_eval (g : SmoothRiemannianMetric I M)
@@ -683,7 +683,7 @@ theorem edgeProd4_eval (g : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Component formula for the formal rank-four partner of one monomial. -/
 theorem edgePartner_eval (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4))
@@ -700,7 +700,7 @@ theorem edgePartner_eval (g gm : SmoothRiemannianMetric I M)
     edgeRaise2_eval]
   congr 2 ; funext k ; fin_cases k <;> rfl
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 /-- Pointwise component formula for one public pair-trace monomial. -/
 theorem edgeMono_eval (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
@@ -728,7 +728,7 @@ theorem edgeMono_eval (g gm : SmoothRiemannianMetric I M)
     curvatureRefoldMonomialFibFixedFrame_toModel]
   rfl
 
-private def edgeEvalCLM (s : Nat) (x : M) (v : Fin s → E) :
+private def edgeEvalCLM [SigmaCompactSpace M] (s : Nat) (x : M) (v : Fin s → E) :
     Tensor0SSpace s I x →L[Real] Real :=
   haveI : FiniteDimensional Real (Tensor0SSpace s I x) := inferInstance
   LinearMap.toContinuousLinearMap
@@ -739,14 +739,14 @@ private def edgeEvalCLM (s : Nat) (x : M) (v : Fin s → E) :
         rw [Tensor0SSpace.toModel_smul]
         rfl }
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma edgeEvalCLM_apply (s : Nat) (x : M) (v : Fin s → E)
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] in
+private lemma edgeEvalCLM_apply [SigmaCompactSpace M] (s : Nat) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     edgeEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel D v := rfl
 
 /-- A curried scalar reading of the first two slots of a covariant tensor. -/
-private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
+private def edgeFeedCLM [SigmaCompactSpace M] (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
   let split : Fin (s + 2) ≃ Fin 2 ⊕ Fin s :=
@@ -761,9 +761,9 @@ private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
   (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).toContinuousLinearMap.comp
     onTangent.curryLeft
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma edgeFeedCLM_apply (s : Nat) (x : M)
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] in
+private lemma edgeFeedCLM_apply [SigmaCompactSpace M] (s : Nat) (x : M)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E)
     (p q : TangentSpace I x) :
     edgeFeedCLM (I := I) (M := M) s x G v p q =
@@ -852,7 +852,7 @@ private lemma edge_sum4 {A : Type*} [Fintype A] (F : (Fin 4 → A) → Real) :
     exact absurd (Finset.mem_univ _) h
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 set_option backward.isDefEq.respectTransparency false in
 private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
@@ -897,7 +897,7 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
   refine Finset.sum_congr rfl fun J _ => ?_
   rw [hcomp A Fin.elim0 J, hcomp B Fin.elim0 J]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
@@ -1129,7 +1129,7 @@ theorem edgePair_inner (g gm : SmoothRiemannianMetric I M)
   exact edgePair_l2 (I := I) (M := M) g gm S G σ
 
 /-- Pair-trace form of the DeTurck part of the second-order refold family. -/
-def edgeLiePairFam (g : SmoothRiemannianMetric I M)
+def edgeLiePairFam [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -1147,7 +1147,7 @@ def edgeLiePairFam (g : SmoothRiemannianMetric I M)
         ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
 /-- Rank-four formal partner of the DeTurck second-order pair family. -/
-def edgeLiePartner (g : SmoothRiemannianMetric I M)
+def edgeLiePartner [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -1206,7 +1206,7 @@ theorem edgeLiePair_apply
       ((q 2).trans (Equiv.swap (0 : Fin 4) 1))]
 
 /-- Pair-trace form of one four-monomial Palatini kernel. -/
-def edgeKernelPair (g gm : SmoothRiemannianMetric I M)
+def edgeKernelPair [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g 0 4) (q : Fin 4 → Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 2 2 :=
   (1 / 2 : Real) •
@@ -1216,7 +1216,7 @@ def edgeKernelPair (g gm : SmoothRiemannianMetric I M)
       edgePairMono (I := I) (M := M) g gm G (q 3))
 
 /-- Rank-four formal partner of one four-monomial Palatini kernel. -/
-def edgeKernelPartner (g gm : SmoothRiemannianMetric I M)
+def edgeKernelPartner [SigmaCompactSpace M] (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (q : Fin 4 → Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 0 4 :=
   (1 / 2 : Real) •
@@ -1246,7 +1246,7 @@ theorem edgeKernel_apply (g gm : SmoothRiemannianMetric I M)
     edgeMonoRefold (I := I) (M := M) g gm S G (q 3)]
 
 /-- Pair-trace form of the Riemann--Palatini second-order refold family. -/
-def edgeRiemPairFam (g : SmoothRiemannianMetric I M)
+def edgeRiemPairFam [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -1263,7 +1263,7 @@ def edgeRiemPairFam (g : SmoothRiemannianMetric I M)
         (iteratedCovGrad (I := I) g 0 2 2 T) qB))
 
 /-- Rank-four formal partner of the Riemann--Palatini pair family. -/
-def edgeRiemPartner (g : SmoothRiemannianMetric I M)
+def edgeRiemPartner [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -1305,7 +1305,7 @@ theorem edgeRiemPair_apply
 
 /-- The pair-trace field for the complete top coefficient returned by the
 closed-edge refold package. -/
-def edgeTopPair (g : SmoothRiemannianMetric I M)
+def edgeTopPair [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)
@@ -1318,7 +1318,7 @@ def edgeTopPair (g : SmoothRiemannianMetric I M)
     edgeLiePairFam (I := I) (M := M) g T hdelta hdeltaZ q epsilon s
 
 /-- Rank-four formal partner of the complete top refold coefficient. -/
-def edgeTopPartner (g : SmoothRiemannianMetric I M)
+def edgeTopPartner [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) delta)

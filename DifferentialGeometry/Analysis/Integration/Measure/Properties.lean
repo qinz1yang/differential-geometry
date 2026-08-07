@@ -334,7 +334,7 @@ theorem riemannianVolumeMeasure_sigmaFinite
     (chartAtlasPOU I M) (chartAtlasPOU_isSubordinate I M)
 
 theorem riemannianMeasure_isFiniteMeasure_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
@@ -344,7 +344,7 @@ theorem riemannianMeasure_isFiniteMeasure_of_compactSpace
   infer_instance
 
 theorem riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) := by
   rw [riemannianVolumeMeasure_def]

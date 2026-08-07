@@ -739,7 +739,7 @@ end GenericEuclidean
 
 section TensorAPriori
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 local notation "dimE" => Module.finrank ℝ E
 

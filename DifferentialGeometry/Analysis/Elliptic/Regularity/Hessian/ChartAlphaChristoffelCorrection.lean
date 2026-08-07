@@ -41,7 +41,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 def christoffelDischargeSmoothCase
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -62,7 +62,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
               smoothPairingChristoffelDiff (I := I) (M := M) g α φ v
                 ((toEuclidean (E := E)) (extChartAt I α x)) = 0 := Iff.rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem smoothEuclidHessianPairingChart_at_chartAt_eq_tensor_plus_diff
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) (α : M) (x : M) :

@@ -200,7 +200,7 @@ private lemma nirenberg_product_rule_square_bound
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_v_test_sq_discharge
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)

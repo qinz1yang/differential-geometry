@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -47,7 +47,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 section SmoothCoefBound
 
 
-omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [IsManifold I ∞ M] [T2Space M] in
 lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
@@ -197,8 +197,8 @@ lemma memWkpFinsetSum
 end SmoothCoefBound
 
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 lemma one_div_densityOnEuclid_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) :
     ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
@@ -337,7 +337,7 @@ end BracketBound
 section UniformBounds
 
 
-omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [IsManifold I ∞ M] [T2Space M] in
 lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
     (α : M) (K : ℕ)
     {coef : EuclN → ℝ}

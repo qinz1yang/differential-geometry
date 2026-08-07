@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def chosenSecondPartialChartPushedU
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -938,7 +938,7 @@ private lemma base_f_chart_ae_eq_piecePreimage_add_residual_chartPulled
   filter_upwards [h_chartPushedRaw_add_ae, h_piece1] with y hy_add hy_piece1
   rw [hy_add, hy_piece1]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma vol_abs_chartPulledWeighted_on_chartTarget
     (g : SmoothRiemannianMetric I M) (α : M) :
     (volume : Measure EuclN).restrict

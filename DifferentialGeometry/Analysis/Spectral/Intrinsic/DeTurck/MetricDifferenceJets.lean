@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 attribute [local instance]
   rhsPointwiseModelDualNormedAddCommGroup
@@ -84,7 +84,7 @@ def metricDiff02 (g₁ g₂ : SmoothRiemannianMetric I M) :
   fun b => metricTensor02 (I := I) g₁ b - metricTensor02 (I := I) g₂ b
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] theorem metricDiff02_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (b : M) (v w : TangentSpace I b) :
     metricDiff02 (I := I) g₁ g₂ b v w =
@@ -110,7 +110,7 @@ def metricDiff02Cov (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem metricDiff02Cov_eq_sub
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
     metricDiff02Cov (I := I) g₀ g₁ g₂ b =
@@ -163,7 +163,6 @@ theorem metricDiff02Cov_eq_sub
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricTensor02Cov_mdiffAtTensor03
     (g₀ g : SmoothRiemannianMetric I M) (x : M) :
@@ -205,7 +204,6 @@ def metricDiff02CovIterate (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricDiff02CovIterate_eq_sub
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :

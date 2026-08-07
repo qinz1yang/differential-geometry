@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -64,9 +64,8 @@ noncomputable def scalarScaleLap (g : SmoothRiemannianMetric I M) :
         (by norm_num : (2 : ℝ) = 0 + 2)).toContinuousLinearEquiv.toContinuousLinearMap
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarScaleLap_coeff
+@[simp] theorem scalarScaleLap_coeff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
@@ -101,8 +100,7 @@ theorem scalarLapHs_core
 
 
 
-omit [CompactSpace M] in
-theorem rawLap_cc_scalar
+theorem rawLap_cc_scalar [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
         (rawTensorConnLapSmooth (I := I) g 0 0 S).toSection x =
@@ -140,9 +138,8 @@ theorem rawLap_cc_scalar
       (I := I) g hf x]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem norm_scalarLap_le
+theorem norm_scalarLap_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2) :
     ‖scalarScaleLap (I := I) (M := M) g v‖ ≤ ‖v‖ := by
@@ -158,7 +155,7 @@ theorem norm_scalarLap_le
 
 
 
-noncomputable def reprScalar0
+noncomputable def reprScalar0 [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M}
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) : M → ℝ :=

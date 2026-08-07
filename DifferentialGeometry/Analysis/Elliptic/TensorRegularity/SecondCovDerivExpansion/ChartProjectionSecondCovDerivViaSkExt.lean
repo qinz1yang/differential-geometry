@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 open DifferentialGeometry.Integral.Measure
@@ -41,7 +41,7 @@ private def packageAsCc
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma packageAsCc_toSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E,

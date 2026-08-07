@@ -52,7 +52,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace r s I y)]
@@ -65,7 +65,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem lrJoint0S_add_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -101,7 +101,7 @@ private theorem lrJoint0S_add_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem lrJoint0S_smulFun_local {d : ℕ} {S : Set ℝ}
     {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f)
     (A : ∀ p : M × ℝ, Tensor0SSpace d I p.1)

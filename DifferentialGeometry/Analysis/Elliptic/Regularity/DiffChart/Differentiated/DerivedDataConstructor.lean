@@ -53,7 +53,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private abbrev K_α (α : M) : Set EuclN :=
   chartImagePOUTsupport (I := I) (M := M) α
@@ -66,7 +66,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma K_α_meas (α : M) : MeasurableSet (K_α (I := I) (M := M) α) :=
   (K_α_compact (I := I) (M := M) α).isClosed.measurableSet
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma K_α_subset_target (α : M) :
     K_α (I := I) (M := M) α ⊆ chartTargetEuclid (I := I) (M := M) α :=
   chartImagePOUTsupport_subset_target (I := I) (M := M) α
@@ -77,7 +77,7 @@ private lemma chartTarget_diff_K_α_isOpen (α : M) :
   (chartTargetEuclid_isOpen (I := I) (M := M) α).sdiff
     (K_α_compact (I := I) (M := M) α).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartTarget_diff_K_α_subset_target (α : M) :
     chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α := fun _ hy => hy.1
@@ -137,7 +137,7 @@ private lemma weakPartial_ae_zero_on_open_of_ae_zero_on_open
   filter_upwards [h_target] with y hy hy_U
   exact hy hy_U
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma vol_restrict_complement_absCont_chartTarget (α : M) :
     (volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α) ≪
@@ -296,8 +296,8 @@ private lemma locallyIntegrableOn_of_locally_memLp_two
   exact Metric.ball_subset_closedBall
 
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma memLp_top_of_continuousOn_on_compact
     (α : M) {f : EuclN → ℝ}
     (hf_contOn : ContinuousOn f (chartTargetEuclid (I := I) (M := M) α))

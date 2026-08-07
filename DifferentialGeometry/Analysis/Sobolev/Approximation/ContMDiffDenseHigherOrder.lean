@@ -25,7 +25,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma chartCutoff_smul_chartPushed_memWkp_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M)
@@ -46,7 +46,7 @@ private lemma chartCutoff_smul_chartPushed_memWkp_k
     hη_smooth (C := C) hη_bound hu_α
 
 private theorem exists_smooth_strong_support_approx_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -133,7 +133,7 @@ private theorem exists_smooth_strong_support_approx_k
   exact hχ_close
 
 private lemma tightenedChartPushed_memWkp_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M)
@@ -160,7 +160,7 @@ private lemma tightenedChartPushed_memWkp_k
     hηE_smooth hC_target
 
 private lemma wkpNorm_tightenedChartPushed_sub_eq_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
@@ -193,7 +193,7 @@ private lemma wkpNorm_tightenedChartPushed_sub_eq_k
     (chartTargetEuclid_isOpen (I := I) (M := M) α) h_diff_eq
 
 private theorem MemWkp_of_cross_chart_pushforward_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source)
@@ -544,7 +544,7 @@ private theorem MemWkp_of_cross_chart_pushforward_k
     (chartTargetEuclid_isOpen (I := I) (M := M) γ) h_ae_eq).mpr hψ_mem_target
 
 theorem contMDiff_dense_in_WkpChart_k
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

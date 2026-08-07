@@ -162,12 +162,12 @@ private lemma g_norm_const_smul
   rw [show c * (c * g.inner x v v) = c ^ 2 * g.inner x v v from by ring]
   rw [Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
 
-abbrev H1Bundle [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+abbrev H1Bundle [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) : Type _ :=
   WithLp 2 ((Lp ℝ 2 (riemannianVolumeMeasure I M g)) ×
     (Lp E 2 (riemannianVolumeMeasure I M g)))
 
-def IsH1Pair [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+def IsH1Pair [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (u : Lp ℝ 2 (riemannianVolumeMeasure I M g))
     (G : Lp E 2 (riemannianVolumeMeasure I M g)) : Prop :=
@@ -179,7 +179,7 @@ def IsH1Pair [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 
 namespace IsH1Pair
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
 theorem zero (g : SmoothRiemannianMetric I M) :
     IsH1Pair (I := I) (M := M) g
@@ -402,7 +402,7 @@ theorem const_smul (g : SmoothRiemannianMetric I M) (c : ℝ)
 end IsH1Pair
 
 def H1IntrinsicSubmodule
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
     Submodule ℝ (H1Bundle (I := I) (M := M) g) where
   carrier := { p : H1Bundle (I := I) (M := M) g |
@@ -436,13 +436,13 @@ def H1IntrinsicSubmodule
     rw [h1, h2]
     exact IsH1Pair.const_smul (I := I) (M := M) g c hp
 
-abbrev H1Intrinsic [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+abbrev H1Intrinsic [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) : Type _ :=
   H1IntrinsicSubmodule (I := I) (M := M) g
 
 namespace H1Intrinsic
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
 def toLp (g : SmoothRiemannianMetric I M) :
     H1Intrinsic (I := I) (M := M) g →ₗ[ℝ] Lp ℝ 2 (riemannianVolumeMeasure I M g) where

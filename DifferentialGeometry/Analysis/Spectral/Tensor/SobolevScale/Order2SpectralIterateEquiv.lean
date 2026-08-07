@@ -29,14 +29,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 def order2ConnLapIterateL2Sum (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) : ℝ :=
   ∑ j ∈ Finset.range (2 + 1),
     ‖SmoothCcTensor.toL2 (rawTensorConnLapIter (I := I) g 0 2 j T)‖
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem order2IterateNspec_nonneg (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     0 ≤ order2ConnLapIterateL2Sum (I := I) (M := M) g T :=

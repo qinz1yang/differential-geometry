@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian
@@ -296,7 +296,7 @@ lemma toL2Fun_add {σ : ℝ} (hσ : 0 ≤ σ)
   calc toL2Fun (I := I) (M := M) hσ (S + T)
       = b.repr.symm (toL2Seq (I := I) (M := M) hσ (S + T)) := rfl
     _ = b.repr.symm (toL2Seq (I := I) (M := M) hσ S +
-          toL2Seq (I := I) (M := M) hσ T) := by rw [h_seq]
+          toL2Seq (I := I) (M := M) hσ T) := congrArg b.repr.symm h_seq
     _ = b.repr.symm (toL2Seq (I := I) (M := M) hσ S) +
           b.repr.symm (toL2Seq (I := I) (M := M) hσ T) := h_map
     _ = toL2Fun (I := I) (M := M) hσ S +
@@ -316,7 +316,7 @@ lemma toL2Fun_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
     b.repr.symm.map_smul _ _
   calc toL2Fun (I := I) (M := M) hσ (c • T)
       = b.repr.symm (toL2Seq (I := I) (M := M) hσ (c • T)) := rfl
-    _ = b.repr.symm (c • toL2Seq (I := I) (M := M) hσ T) := by rw [h_seq]
+    _ = b.repr.symm (c • toL2Seq (I := I) (M := M) hσ T) := congrArg b.repr.symm h_seq
     _ = c • b.repr.symm (toL2Seq (I := I) (M := M) hσ T) := h_map
     _ = c • toL2Fun (I := I) (M := M) hσ T := rfl
 

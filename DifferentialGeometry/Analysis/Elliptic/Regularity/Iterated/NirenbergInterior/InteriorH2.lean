@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma fin_init_cons {α : Type*} {m : ℕ}
     (x : α) (p : Fin (m + 1) → α) :
@@ -215,7 +215,7 @@ private lemma chartTarget_diff_chartImagePOUTsupport_isOpen_aux (α : M) :
   (chartTargetEuclid_isOpen (I := I) (M := M) α).sdiff
     (chartImagePOUTsupport_isCompact (I := I) (M := M) α).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartTarget_diff_chartImagePOUTsupport_subset_aux (α : M) :
     (chartTargetEuclid (I := I) (M := M) α) \
         chartImagePOUTsupport (I := I) (M := M) α ⊆
@@ -413,8 +413,8 @@ lemma chosenMthMixedPartialChartPushedU_ae_zero_off_chartImagePOUTsupport
       exact weakPartial_ae_zero_off_inline_aux hΩ_open hU_open hU_sub
         (i := dirs (Fin.last m)) h_isWeak hw_li h_ih_zero
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartPulledWeighted_le_volume_on_compact_aux
     {g : SmoothRiemannianMetric I M} (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K)

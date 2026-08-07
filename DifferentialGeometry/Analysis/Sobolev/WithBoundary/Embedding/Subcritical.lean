@@ -233,7 +233,7 @@ theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
     (n := n) (M := M) hp_one hp_dim α (hu α) hf_compact hf_supp
 
 theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ))

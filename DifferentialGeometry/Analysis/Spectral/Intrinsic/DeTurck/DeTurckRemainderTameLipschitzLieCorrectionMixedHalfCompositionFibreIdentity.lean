@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -69,7 +69,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma lc0AMixHalfField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (x : M) :
     (lc0AMixHalfField (I := I) (M := M) g₀ g₁ g_bg σlast).toSection x =

@@ -23,12 +23,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma tensorRepr_chart_pulled_component_contDiffAt_order
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma tensorRepr_chart_pulled_component_contDiffAt_order [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -89,8 +89,8 @@ private lemma iteratedFDeriv_smul_const_norm_le
             ContinuousLinearMap.norm_id, one_mul]
     _ = ‖iteratedFDeriv ℝ N f y‖ * ‖v‖ := by rw [mul_comm]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma iteratedFDeriv_tensorRepr_opNorm_le_sum_iteratedFDeriv_components
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma iteratedFDeriv_tensorRepr_opNorm_le_sum_iteratedFDeriv_components [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (N : ℕ) {b : M}
     (hb_chart : b ∈ (chartAt H α).source) :
@@ -170,8 +170,8 @@ lemma iteratedFDeriv_tensorRepr_opNorm_le_sum_iteratedFDeriv_components
   intro Jdx _
   exact iteratedFDeriv_smul_const_norm_le N _ _ (hcd_each Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem iteratedFDeriv_tensorRSChartE_section_repr_opNorm_le_sum
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem iteratedFDeriv_tensorRSChartE_section_repr_opNorm_le_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) (N : ℕ) :
     ∃ K : ℝ, 0 ≤ K ∧
@@ -204,8 +204,8 @@ theorem iteratedFDeriv_tensorRSChartE_section_repr_opNorm_le_sum
   refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
   exact tensorChartBasisElement_norm_le (E := E) r s Idx Jdx
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem iteratedFDeriv_three_tensorRSChartE_section_repr_opNorm_le_sum
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem iteratedFDeriv_three_tensorRSChartE_section_repr_opNorm_le_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ∃ K : ℝ, 0 ≤ K ∧
@@ -222,8 +222,8 @@ theorem iteratedFDeriv_three_tensorRSChartE_section_repr_opNorm_le_sum
   iteratedFDeriv_tensorRSChartE_section_repr_opNorm_le_sum
     (I := I) (M := M) g r s α T 3
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem iteratedFDeriv_four_tensorRSChartE_section_repr_opNorm_le_sum
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+theorem iteratedFDeriv_four_tensorRSChartE_section_repr_opNorm_le_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ∃ K : ℝ, 0 ≤ K ∧

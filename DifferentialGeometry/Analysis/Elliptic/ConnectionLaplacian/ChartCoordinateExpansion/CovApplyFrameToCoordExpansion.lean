@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -219,7 +219,7 @@ private lemma covApply_frameVec_eq_coord_sum_on_goodSet
   rw [L.map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma chartBasisVecFiber_mdiffAt
     (α : M) (k : Fin (Module.finrank ℝ E))
     {b : M}
@@ -236,9 +236,9 @@ private lemma chartBasisVecFiber_mdiffAt
     (h_contMDiffOn b hb).contMDiffAt (h_open.mem_nhds hb)
   exact h_contMDiffAt.mdifferentiableAt (by simp)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma covApply_chartBasisVecFiber_T₀_mdiffAt
+private lemma covApply_chartBasisVecFiber_T₀_mdiffAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
     (k : Fin (Module.finrank ℝ E))
@@ -283,7 +283,7 @@ private lemma covApply_chartBasisVecFiber_T₀_mdiffAt
   exact MDifferentiableAt.clm_bundle_apply (b := id) hHomSec_at hX_at
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma finsum_smul_section_mdiffAt
     {ι : Type*} (s_finset : Finset ι)
     (r s : ℕ) (f : ι → M → ℝ)
@@ -343,9 +343,9 @@ private lemma finsum_smul_section_mdiffAt
       exact this
     exact mdifferentiableAt_add_section hf_k₀_σ hrest
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma cov_RS_finsum_smul_section_leibniz_apply
+private lemma cov_RS_finsum_smul_section_leibniz_apply [SigmaCompactSpace M]
     {ι : Type*} (s_finset : Finset ι)
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : ι → M → ℝ) (σ : ι → Π z : M, TensorRSSpace r s I z)

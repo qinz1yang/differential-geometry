@@ -34,7 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedFDeriv_tensorChartComponentRaw_comp_symm_continuousOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -89,7 +89,7 @@ lemma iteratedFDeriv_tensorChartComponentRaw_comp_symm_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma comp_extChartAt_continuousOn_chart_source
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -121,7 +121,7 @@ private lemma comp_extChartAt_continuousOn_chart_source
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma comp_extChartAtExt_continuousOn_chart_source
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -145,7 +145,7 @@ private lemma comp_extChartAtExt_continuousOn_chart_source
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem measurable_tensorChartComponentRaw_iteratedFDeriv_normSq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₀ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

@@ -54,7 +54,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -156,7 +156,7 @@ private lemma bdKoszulCc_unitModel_eq_g1_inner (g₀ g₁ : SmoothRiemannianMetr
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma bdSlotExtendIter_three_toModel (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x)
     (u : Fin 6 → TangentSpace I x) :
@@ -847,7 +847,7 @@ private lemma bdSGKWeights_pair_smul (g₀ g₁ : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma bdXiChain_toModel (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 6 → E) :
     Tensor0SSpace.toModel
@@ -949,7 +949,7 @@ lemma bdSGKXi_smul (g₀ g₁ : SmoothRiemannianMetric I M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma bdTensorProd_toModel (x : M) (D : Tensor0SSpace 2 I x)
     (W : Tensor0SSpace 4 I x) (u : Fin 6 → E) :
     Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 x D W) u =
@@ -967,7 +967,7 @@ private lemma bdTensorProd_toModel (x : M) (D : Tensor0SSpace 2 I x)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma bdSGKProd_toSection (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
@@ -1000,7 +1000,7 @@ private lemma bdSGKProd_toSection (g₀ : SmoothRiemannianMetric I M)
     fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem bdJointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -1036,7 +1036,7 @@ private theorem bdJointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem bdJointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -1072,7 +1072,7 @@ private theorem bdJointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem bdTensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
     (P : ∀ p : M × ℝ, Tensor0SSpace m I p.1)
     (Q : ∀ p : M × ℝ, Tensor0SSpace k I p.1)

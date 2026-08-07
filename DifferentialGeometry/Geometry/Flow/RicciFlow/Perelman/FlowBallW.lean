@@ -37,7 +37,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [IsManifold I 1 M]
-  [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+  [T2Space M] [CompactSpace M] [I.Boundaryless]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 private local instance : MeasurableSpace M := borel M

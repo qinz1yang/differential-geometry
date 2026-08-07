@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -33,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComponent_eq_chartPushedRaw_pou_mul_chartPushedRaw_raw_on_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M)
@@ -54,7 +54,7 @@ theorem tensorChartComponent_eq_chartPushedRaw_pou_mul_chartPushedRaw_raw_on_tar
       (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx) hy]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M)
@@ -74,7 +74,7 @@ theorem tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_
   exact tensorChartComponent_eq_chartPushedRaw_pou_mul_chartPushedRaw_raw_on_target
     (I := I) (M := M) g r s S α Idx Jdx hz
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartPushedRaw_chartAtlasPOU_contDiffOn (α : M) :
     ContDiffOn ℝ ∞
       (chartPushedRaw I α ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))
@@ -89,7 +89,7 @@ theorem chartPushedRaw_chartAtlasPOU_contDiffOn (α : M) :
     hPOU_global.contMDiffOn
   exact chartPushedRaw_bump_contDiffOn (I := I) (M := M) α hPOU_src
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem differentiableAt_chartPushedRaw_chartAtlasPOU
     (α : M) {y : EuclN E} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     DifferentiableAt ℝ
@@ -102,7 +102,7 @@ theorem differentiableAt_chartPushedRaw_chartAtlasPOU
       (hopen.mem_nhds hy)
   exact hcontDiffAt.differentiableAt (by decide)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 theorem differentiableAt_chartPushedRaw_tensorChartComponentRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M)
@@ -121,7 +121,7 @@ theorem differentiableAt_chartPushedRaw_tensorChartComponentRaw
       g r s S α Idx Jdx y hy).contDiffAt (hopen.mem_nhds hy)
   exact hcontDiffAt.differentiableAt (by decide)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushedRaw_pou_mul_euclidPartial_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))

@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
     (r s : ℕ)
@@ -60,9 +60,9 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (eigenvectorSmooth tensorChartComponentRaw) in
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma ccTensorBilinSymm_eq_half_rawComponent
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
+lemma ccTensorBilinSymm_eq_half_rawComponent [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (α : M) (a b : Fin (Module.finrank ℝ E)) {p : M}
     (hp : p ∈ (chartAt H α).source) :
@@ -109,9 +109,9 @@ lemma ccTensorBilinSymm_eq_half_rawComponent
     rfl
   rw [hrawAB, hrawBA, hbilin a b, hbilin b a]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma norm_iteratedFDerivWithin_rawCompOnE_le_rawPullR
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma norm_iteratedFDerivWithin_rawCompOnE_le_rawPullR [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (m : ℕ) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :

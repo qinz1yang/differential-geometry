@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def etaTimesV (α : M) (v : M → ℝ) : M → ℝ :=
   fun x => chartStrictCutoff (I := I) (M := M) α x * v x
@@ -99,7 +99,7 @@ noncomputable def smoothRep
       (gradFun (I := I) g v.toFun x)) -
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma smoothRep_apply (g : SmoothRiemannianMetric I M) (α : M)
     (v : SmoothScalar g) (x : M) :
     smoothRep (I := I) (M := M) g α v x =
@@ -108,7 +108,7 @@ private lemma smoothRep_apply (g : SmoothRiemannianMetric I M) (α : M)
         (gradFun (I := I) g v.toFun x)) -
       (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma smoothRep_eq_zero_off_tsupport_chartAtlasPOU
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {x : M}
     (hx : x ∉ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :

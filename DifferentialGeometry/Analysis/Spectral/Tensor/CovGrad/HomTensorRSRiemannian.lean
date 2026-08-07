@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
@@ -199,7 +199,7 @@ variable (g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [CompleteSpace E] in
 lemma homTensorRS_riemannianFiberNormSq_clm_apply_le
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x)
@@ -229,7 +229,7 @@ variable (g : SmoothRiemannianMetric I M) (r a c : ℕ)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem continuous_homTensorRS_opNorm
@@ -253,7 +253,7 @@ theorem continuous_homTensorRS_opNorm
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_uniform_homTensorRS_opNorm_sq
@@ -279,7 +279,7 @@ theorem exists_uniform_homTensorRS_opNorm_sq
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_continuous_homTensorRS_opNorm_sq
@@ -303,7 +303,7 @@ section Payoff
 variable (g : SmoothRiemannianMetric I M) (r a c : ℕ)
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_continuous_riemannianFiberNormSq_homTensorRS_section_clm_le
@@ -328,7 +328,7 @@ theorem exists_continuous_riemannianFiberNormSq_homTensorRS_section_clm_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g r a x v)
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_uniform_riemannianFiberNormSq_homTensorRS_section_clm_le

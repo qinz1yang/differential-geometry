@@ -91,7 +91,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -202,7 +202,7 @@ theorem lc0b_normSq_icg_add_le (g : SmoothRiemannianMetric I M) (r s q : ℕ)
     sq_nonneg (‖iteratedCovGrad (I := I) g r s q A‖ - ‖iteratedCovGrad (I := I) g r s q B‖)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lc0b_rfns_toSection_add_le (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) (x : M) :
@@ -213,8 +213,8 @@ theorem lc0b_rfns_toSection_add_le (g : SmoothRiemannianMetric I M) (r s : ℕ)
     rw [SmoothCcTensor.toSection_add]; rfl]
   exact riemannianFiberNormSq_add_le (I := I) (M := M) g r s x _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem lc0b_normSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem lc0b_normSq_eq_integral [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g r s) :
     ‖W‖ ^ 2 = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (W.toSection x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -222,7 +222,7 @@ theorem lc0b_normSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
   exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g r s W
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem lc0b_rfns_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -306,7 +306,7 @@ theorem lc0b_normSq_icg_raise_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
   exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g s W i x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma lc0b_rfns_symmS_zero_le (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T) δ)

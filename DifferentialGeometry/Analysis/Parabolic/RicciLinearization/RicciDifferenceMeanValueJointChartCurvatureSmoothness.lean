@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_partialDeriv
@@ -70,7 +70,7 @@ def ChartGramFamilyJointSmoothNondegenerate (S : Set ℝ) : Prop :=
       ∀ {x : M}, x ∈ (trivializationAt E (TangentSpace I) α).baseSet →
       0 < (chartGramMatrix (I := I) (gfam s₀) α x).det)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartInvGramOnE_contDiffAt_joint {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -154,7 +154,7 @@ lemma chartInvGramOnE_contDiffAt_joint {S : Set ℝ}
   exact ((contDiffAt_inv _ hdet_ne).comp (s₀, y₀) hdet).mul (hadj k l)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma gen_joint_gramBracket {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
     (i j l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
@@ -175,7 +175,7 @@ lemma gen_joint_gramBracket {S : Set ℝ}
     (gen_joint_partialDeriv (fun s y => chartGramOnE (I := I) (gfam s) α i j y) l
       (hG.1 i j hs hy))
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_christoffel {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -193,7 +193,7 @@ lemma gen_joint_christoffel {S : Set ℝ}
   exact (chartInvGramOnE_contDiffAt_joint (I := I) gfam α hG k l hs hy).mul
     (gen_joint_gramBracket (I := I) gfam α hG i j l hs hy)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_partial_christoffel {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -206,7 +206,7 @@ lemma gen_joint_partial_christoffel {S : Set ℝ}
   gen_joint_partialDeriv (fun s y => chartChristoffel (I := I) (gfam s) α i j k y) m
     (gen_joint_christoffel (I := I) gfam α hG i j k hs hy)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_riemann {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
     (i j k l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
@@ -232,7 +232,7 @@ lemma gen_joint_riemann {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegener
     ((gen_joint_christoffel (I := I) gfam α hG k m l hs hy).mul
       (gen_joint_christoffel (I := I) gfam α hG i j m hs hy))
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_ricci {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
     (i k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
@@ -246,7 +246,7 @@ lemma gen_joint_ricci {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegenerat
   rw [heq]
   exact ContDiffAt.sum (fun j _ => gen_joint_riemann (I := I) gfam α hG i j k j hs hy)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_chartDeTurckVFComp {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -277,7 +277,7 @@ lemma gen_joint_chartDeTurckVFComp {S : Set ℝ}
   exact (chartInvGramOnE_contDiffAt_joint (I := I) gfam α hG a b hs hy).mul
     ((gen_joint_christoffel (I := I) gfam α hG a b k hs hy).sub (hbg a b))
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_partial_chartDeTurckVFComp {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -291,7 +291,7 @@ lemma gen_joint_partial_chartDeTurckVFComp {S : Set ℝ}
   gen_joint_partialDeriv (fun s y => chartDeTurckVFComp (I := I) (gfam s) g_bg α k y) m
     (gen_joint_chartDeTurckVFComp (I := I) gfam α hG g_bg k hs hy)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_chartLieDeTurckComp {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
@@ -325,7 +325,7 @@ lemma gen_joint_chartLieDeTurckComp {S : Set ℝ}
   · exact (hG.1 i k hs hy).mul
       (gen_joint_partial_chartDeTurckVFComp (I := I) gfam α hG g_bg j k hs hy)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gen_joint_chartDeTurckRicciRHS {S : Set ℝ}
     (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)

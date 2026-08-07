@@ -296,7 +296,7 @@ private lemma sq_fderiv_chartSmoothExt_apply_le_g_inner_mul
     (chartTargetUnitFiber (I := I) α i x)
 
 private lemma eLpNorm_chartPushed_le_const_mul_eLpNorm_u
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -350,7 +350,7 @@ private lemma eLpNorm_chartPushed_le_const_mul_eLpNorm_u
     _ = |u x| := one_mul _
 
 private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -736,7 +736,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
             (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z))) hy_in]
 
 private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -841,7 +841,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
     exact h_full
 
 theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1033,7 +1033,7 @@ private lemma sum_Fin1_eq_sum_Fin (d : ℕ)
   exact Fintype.sum_equiv e _ _ (fun _ => rfl)
 
 private lemma wkpNorm_chartPushed_le_const_mul_per_α
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1255,7 +1255,7 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :

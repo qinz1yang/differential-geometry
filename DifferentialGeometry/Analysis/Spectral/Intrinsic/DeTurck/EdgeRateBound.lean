@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -243,7 +243,7 @@ theorem exists_edgePairRef
 
 /-! ## Principal absorption on the genuine slope segment -/
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank Real E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem edge_unit_smul
     (g : SmoothRiemannianMetric I M) (c : Real)
@@ -285,7 +285,7 @@ private theorem edge_core_smul
   module
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma edge_bound_mono
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {a b : Real} (hab : a ≤ b)

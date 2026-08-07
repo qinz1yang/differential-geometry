@@ -17,7 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -40,7 +40,6 @@ variable {L : ℝ≥0}
   {N : tensorHs (I := I) (M := M) g r s (a + 2) →
     tensorHs (I := I) (M := M) g r s a}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memLp_comp_nemytskii (hN : LipschitzWith L N)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T) :
@@ -67,14 +66,12 @@ def nemytskii (hN : LipschitzWith L N) :
       timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
   fun f => (memLp_comp_nemytskii (I := I) (M := M) hN f).toLp (fun t => N (f t))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskii_coeFn (hN : LipschitzWith L N)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T) :
     nemytskii (I := I) (M := M) hN f =ᵐ[timeMeasure T] fun t => N (f t) :=
   (memLp_comp_nemytskii (I := I) (M := M) hN f).coeFn_toLp
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskii_dist_sq_le (hN : LipschitzWith L N)
     (f f' : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T) :
@@ -117,7 +114,6 @@ theorem nemytskii_dist_sq_le (hN : LipschitzWith L N)
         ≤ ((L : ℝ) * ‖f t - f' t‖) ^ 2 := hsq
       _ = (L : ℝ) ^ 2 * ‖(f - f') t‖ ^ 2 := by rw [htf, mul_pow]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskii_lipschitzWith (hN : LipschitzWith L N) :
     LipschitzWith L (nemytskii (I := I) (M := M) (T := T) hN) := by
@@ -133,7 +129,6 @@ theorem nemytskii_lipschitzWith (hN : LipschitzWith L N) :
 
 end Nemytskii
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolField_add (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -154,7 +149,6 @@ theorem maximalRegularitySolField_add (hT : 0 ≤ T)
   rw [solModeCoeff, solModeCoeff, solModeCoeff,
     timeModeCoeff_add (I := I) (M := M), map_add]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolField_sub (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -168,7 +162,6 @@ theorem maximalRegularitySolField_sub (hT : 0 ≤ T)
   rw [sub_add_cancel] at hadd
   rw [hadd, add_sub_cancel_right]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolField_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -184,7 +177,6 @@ theorem maxRegDuhamelSolField_sub (hT : 0 < T) (hT1 : T ≤ 1)
   rw [maxRegDuhamelSolField, maxRegDuhamelSolField]
   abel
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolField_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -212,7 +204,6 @@ def quasilinearDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
   fun gforce => nemytskii (I := I) (M := M) hN
     (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem quasilinearDuhamelMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -226,7 +217,6 @@ omit [NeZero (Module.finrank ℝ E)] in
         (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) :=
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinearDuhamelMap_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -273,7 +263,6 @@ theorem quasilinear_contraction_const_lt_one {L : ℝ≥0} {T : ℝ} (hT1 : T �
     _ = 2 * (L : ℝ) := by ring
     _ < 1 := hL
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinearDuhamelMap_contracting (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -298,7 +287,6 @@ theorem quasilinearDuhamelMap_contracting (hT : 0 < T) (hT1 : T ≤ 1)
 
 end FixedPoint
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_existence {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →
@@ -345,7 +333,6 @@ theorem quasilinear_strong_existence {L : ℝ≥0}
       (h_compact := h_compact) (a := a) (T := T) hT hT1 u₀ gStar]
     exact congrArg₂ (· + ·) rfl hgStar_eq
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_unique {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →

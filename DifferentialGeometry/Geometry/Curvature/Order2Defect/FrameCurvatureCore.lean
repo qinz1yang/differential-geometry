@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -112,9 +112,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem frozenFrameTrace_eq_rawTensorConnLap_fixedFrame
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -125,7 +125,7 @@ theorem frozenFrameTrace_eq_rawTensorConnLap_fixedFrame
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [tensorSecondCovDeriv_def]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem frozenFrameTrace_eq_rawTensorConnLap_of_mem_nbhd
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
@@ -140,7 +140,7 @@ theorem frozenFrameTrace_eq_rawTensorConnLap_of_mem_nbhd
     (fun i => smoothOrthoFrame_smooth (I := I) g x i) y
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g x hy i j)).symm
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem rawTensorConnLap_eventuallyEq_frozenFrameTrace
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)

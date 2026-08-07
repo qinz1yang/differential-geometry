@@ -53,7 +53,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma base_weak_partial_ae_eq_chartPushedChosenFirstPartial
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -145,7 +145,7 @@ private lemma chosenWeakPartial'_base_weak_partial_ae_eq_chosenSecond
   exact h_congr
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma exists_smooth_global_extension_chart
     {φ : EuclN → ℝ} {α : M}
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))

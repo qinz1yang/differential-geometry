@@ -30,7 +30,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def hessPairingChart
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (b : M) : ℝ :=
@@ -39,8 +39,8 @@ noncomputable def hessPairingChart
       chartHessFrobeniusSq (I := I) g
         (fun x : M => φ x - v x) b) / 4
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 @[simp] lemma hessPairingChart_def
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (b : M) :
     hessPairingChart (I := I) g φ v b =
@@ -49,21 +49,20 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
           chartHessFrobeniusSq (I := I) g
             (fun x : M => φ x - v x) b) / 4 := rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma smoothAddOfTwoSmooth
     (φ v : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => φ x + v x) :=
   φ.contMDiff.add v.contMDiff
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma smoothSubOfTwoSmooth
     (φ v : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => φ x - v x) :=
   φ.contMDiff.sub v.contMDiff
 
-omit [CompactSpace M] in
 theorem hessPairingChart_continuous
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) :
     Continuous (hessPairingChart (I := I) g φ v) := by

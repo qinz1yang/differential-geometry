@@ -59,13 +59,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma slotInsertEndoCc_add_endo_c (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -88,7 +88,7 @@ private lemma slotInsertEndoCc_add_endo_c (g₀ : SmoothRiemannianMetric I M) (s
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma fullRaisedEndoField_diff_split_c (g₀ g₁ : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
       gInvDiffRaisedEndoField (I := I) g₀ g₁ +
@@ -111,7 +111,7 @@ private lemma fullRaisedEndoField_diff_split_c (g₀ g₁ : SmoothRiemannianMetr
     rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma g1_inner_gInvRaisedEndo_left_c (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     g₁.inner x (metricComparisonEndo (I := I) g₀ g₁ x v) w = g₀.inner x v w := by
@@ -123,7 +123,7 @@ private lemma g1_inner_gInvRaisedEndo_left_c (g₀ g₁ : SmoothRiemannianMetric
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma appCcRS_sub_left_local (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g₀ b c) (W : SmoothCcTensor g₀ a b) :
     ccOperatorFieldComp (I := I) (M := M) g₀ a b c (Φ₁ - Φ₂) W =
@@ -161,7 +161,7 @@ lemma appCcRS_sub_left_local (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma appCcRS_sub_right_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) (W₁ W₂ : SmoothCcTensor g₀ a b) :
     ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (W₁ - W₂) =
@@ -216,7 +216,7 @@ private def pureDoubleTraceField (g₀ g₁ : SmoothRiemannianMetric I M) (s : �
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma appCcRS_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I M) (s c : ℕ)
     (Φ : SmoothCcTensor g₀ (s + 1) c) :
     ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
@@ -244,7 +244,7 @@ lemma appCcRS_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I M) (s c : ℕ)
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -278,7 +278,7 @@ private lemma toModel_cons_sum_smul (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -314,7 +314,7 @@ private lemma toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma orthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank ℝ E),
@@ -369,7 +369,7 @@ private lemma orthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
   rw [hrepr v i, hbB_coe i]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
@@ -518,7 +518,7 @@ lemma appCcRS_add_left_local (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma slotExtend_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (X Y : SmoothCcTensor g₀ r s) :
     slotExtend (I := I) (M := M) g₀ r s (X - Y) =
@@ -563,7 +563,7 @@ lemma slotExtend_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma rsDomDomCongrSection_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : Equiv.Perm (Fin s)) (X Y : SmoothCcTensor g₀ r s) :
     rsDomDomCongrSection (I := I) (M := M) g₀ r s σ (X - Y) =
@@ -617,7 +617,7 @@ def pairTraceOp (g₀ gm : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 6 2
     (pureDoubleTraceField (I := I) (M := M) g₀ gm 4)
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
@@ -844,7 +844,7 @@ lemma iteratedCovGrad_zero_of_covGrad_zero (g₀ : SmoothRiemannianMetric I M)
       rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma pureDoubleTraceField_self_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₀ s = cometricDoubleTraceField (I := I) g₀ s := by
   apply SmoothCcTensor.ext
@@ -853,13 +853,13 @@ private lemma pureDoubleTraceField_self_eq (g₀ : SmoothRiemannianMetric I M) (
   rw [cometricDoubleTraceField_toSection]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma pairTraceOp_self_eq (g₀ : SmoothRiemannianMetric I M) :
     pairTraceOp (I := I) (M := M) g₀ g₀ = pairTraceKernel (I := I) (M := M) g₀ := by
   rw [pairTraceOp, pairTraceKernel, pureDoubleTraceField_self_eq (I := I) (M := M) g₀ 2,
     pureDoubleTraceField_self_eq (I := I) (M := M) g₀ 4]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma pureDoubleTraceField_cross_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -881,7 +881,7 @@ noncomputable def pureTrace (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
   pureDoubleTraceField (I := I) (M := M) g₀ g₁ s
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 /-- Fibre readout of the moving cometric double trace. -/
 @[simp] theorem pureTrace_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
@@ -889,7 +889,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
       (show TensorRSSpace (s + 2) s I x from
         cometricDoubleTraceFib (I := I) g₁ s x) := rfl
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 /-- The moving double trace is the fixed parallel trace plus its exact
 inverse-metric-difference correction. -/
 theorem pureTrace_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :

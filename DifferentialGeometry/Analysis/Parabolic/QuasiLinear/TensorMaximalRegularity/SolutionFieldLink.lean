@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -51,7 +51,6 @@ variable {a : ℝ} {T : ℝ}
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem homModeCoeff_eq_init_add_integral
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -104,7 +103,6 @@ theorem homModeCoeff_eq_init_add_integral
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -131,7 +129,6 @@ theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -174,7 +171,6 @@ theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -247,7 +243,6 @@ theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -306,7 +301,6 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solField_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -359,7 +353,6 @@ theorem solField_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))

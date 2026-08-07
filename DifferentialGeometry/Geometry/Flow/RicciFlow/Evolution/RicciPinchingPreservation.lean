@@ -318,7 +318,7 @@ theorem pinchLip_tangentBundle_cont
 
 theorem pinchLip_bound_Icc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {t0 t1 : Real}
@@ -456,7 +456,7 @@ theorem pinchEval_contOn
 
 theorem pinchMetricGain
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -548,7 +548,7 @@ theorem pinchMetricGain
 
 theorem pinchSmallLip
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
@@ -641,7 +641,7 @@ theorem pinchSmallLip
 
 theorem pinchBarrierReg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T delta : Real}
     (hdelta : delta < (1 : Real) / 3)
@@ -701,7 +701,7 @@ theorem pinchBarrierReg
 
 theorem pinchSecCore
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T delta : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -875,7 +875,7 @@ namespace PinchFlowWMPData
 
 def ofBarrier
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -909,7 +909,7 @@ def ofBarrier
 
 def ofSymmNull
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -942,7 +942,7 @@ def ofSymmNull
 
 def ofShiftN
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
     (hdelta0 : 0 < delta) (hdelta13 : delta < (1 : Real) / 3)
@@ -975,7 +975,7 @@ def ofShiftN
 
 def ofShiftNLt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn (I := I) S)
     {T delta : Real}
     (hdelta13 : delta < (1 : Real) / 3)
@@ -1008,7 +1008,7 @@ def ofShiftNLt
 def ofShiftNReact
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -1041,7 +1041,7 @@ def ofShiftNReact
 def ofShiftNDirect
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -1064,7 +1064,7 @@ def ofShiftNDirect
 def ofShiftNClosed
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -1290,7 +1290,7 @@ theorem pinch_sol_closed
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -1318,7 +1318,7 @@ theorem pinch_sol_closed_nonneg
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T delta : Real}
@@ -1347,7 +1347,7 @@ theorem ricci_nonneg_sol_closed
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}
@@ -1429,7 +1429,7 @@ theorem pinch_init_sol_lt
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}
@@ -1567,7 +1567,7 @@ theorem strict_pinch_metric
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -1596,7 +1596,7 @@ theorem strict_pinch_metric_lt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -1625,7 +1625,7 @@ theorem strict_pinch_pos
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -1652,7 +1652,7 @@ theorem strict_pinch_pos_lt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -1681,7 +1681,7 @@ theorem strict_pinch_sol_lt
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     [Nonempty M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)

@@ -129,7 +129,7 @@ theorem chartRiemannEuclid_contDiffOn [I.Boundaryless]
   exact hcomp
 
 theorem exists_chartRiemannData_uniform_bound_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {b : M},
@@ -184,7 +184,7 @@ theorem exists_chartRiemannData_uniform_bound_pouTsupport
     _ ≤ C := hq_le
 
 theorem exists_chartRiemannData_uniform_bound_compact
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C_g : ℝ, 0 ≤ C_g ∧
       ∀ {α : M}, α ∈ chartAtlasPOU_finset (I := I) (M := M) →

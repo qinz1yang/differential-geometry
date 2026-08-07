@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -56,7 +56,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma pureDTdla_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ s =
@@ -197,7 +197,7 @@ def pairTraceOpDla (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g�
     (cometricDoubleTraceSmoothCcTensor (I := I) (M := M) g₀ g₁ 4)
 
 set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma pairTraceOpDla_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel

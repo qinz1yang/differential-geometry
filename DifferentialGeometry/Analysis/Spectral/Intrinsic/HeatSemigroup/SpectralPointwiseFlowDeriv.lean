@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 theorem hasDerivWithinAt_tsum {α : Type*} {f : α → ℝ → ℝ} {f' : α → ℝ → ℝ}
     {u : α → ℝ} {s : Set ℝ}
@@ -96,7 +96,7 @@ theorem allHs_of_weighted_summable_pub
   rw [hlhs, hrhs, tensorHsToL2_tensorL2Coeff]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem ccTensorBilinSymm_toSection_congr
     {g₁ g₂ : SmoothRiemannianMetric I M}
     (S₁ : SmoothCcTensor g₁ 0 2) (S₂ : SmoothCcTensor g₂ 0 2)

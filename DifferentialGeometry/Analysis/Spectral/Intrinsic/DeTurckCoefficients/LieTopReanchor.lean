@@ -43,12 +43,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 set_option backward.isDefEq.respectTransparency false
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma lieArm2_appCc_value_invGram
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (D : SmoothCcTensor g₀ 0 4)
     (x : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -186,17 +186,17 @@ open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_frame0_eq_unitTensor (x b : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma lieArm_frame0_eq_unitTensor [SigmaCompactSpace M] (x b : M) :
     chartFrameBasisModel (I := I) (M := M) x b 0 ![] = unitTensor (I := I) (M := M) b := by
   apply ContinuousMultilinearMap.ext
   intro v
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_rawComponent_eq_unitModel_frame
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+private lemma lieArm_rawComponent_eq_unitModel_frame [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (W : SmoothCcTensor g 0 s) (x : M)
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -219,8 +219,8 @@ private lemma lieArm_euclidPartial_add_local
     ContinuousLinearMap.add_apply]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_covDerivLowerOrderTerm_differentiableAt_center
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+private lemma lieArm_covDerivLowerOrderTerm_differentiableAt_center [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g₀ r s) (x : M)
     (m : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -242,8 +242,8 @@ private lemma lieArm_covDerivLowerOrderTerm_differentiableAt_center
       (I := I) (M := M) x).mem_nhds hmem)).differentiableAt (by simp)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lieArm_euclidPartial_chartPushedRaw_differentiableAt_center
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+private lemma lieArm_euclidPartial_chartPushedRaw_differentiableAt_center [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g₀ r s) (x : M)
     (k : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -354,7 +354,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
   simp only [arm1ReadoutCovDeriv, hJ0, hJtail]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma lieArm_symmS_rawComponent
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
@@ -518,7 +518,7 @@ private lemma lieArm_U3_readout
   rw [hev1.fderiv_eq]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I) g x a b
@@ -530,7 +530,7 @@ private lemma lieArm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x 
   rw [(extChartAt I x).left_inv hx_src]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g x a b
@@ -542,7 +542,7 @@ private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M
   rw [(extChartAt I x).left_inv hx_src]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     chartInvGramMatrix (I := I) g x x a b = chartInvGramMatrix (I := I) g x x b a := by
@@ -554,7 +554,7 @@ private lemma lieArm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x
   exact h.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x : M)
     (l j : Fin (Module.finrank ℝ E)) :
     (∑ k : Fin (Module.finrank ℝ E),
@@ -580,8 +580,7 @@ private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x :
   rw [h]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
+private lemma lieArm_partialDeriv2_realizedGramDeriv_swap [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -608,8 +607,8 @@ open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
-private lemma lieArm_P2_halfCollapse
+omit [BoundarylessManifold I M] in
+private lemma lieArm_P2_halfCollapse [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -756,7 +755,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 
 
-def lieTopTail
+def lieTopTail [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (g₁ : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) : ℝ :=

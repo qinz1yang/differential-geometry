@@ -165,7 +165,7 @@ private lemma g_norm_triangle
   exact h_sqrt_le
 
 theorem hasWeakRiemannianGradLp_congr_ae
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : SmoothRiemannianMetric I M} {u u' : M → ℝ} {G G' : M → E}
     (hu : u =ᵐ[riemannianVolumeMeasure I M g] u')
     (hG : G =ᵐ[riemannianVolumeMeasure I M g] G')
@@ -197,7 +197,7 @@ theorem hasWeakRiemannianGradLp_congr_ae
     exact h.2 X hX
 
 theorem memLp_g_norm_congr_ae
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : SmoothRiemannianMetric I M} {G G' : M → E} {p : ℝ≥0∞}
     (hG : G =ᵐ[riemannianVolumeMeasure I M g] G')
     (h : MemLp (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
@@ -208,7 +208,7 @@ theorem memLp_g_norm_congr_ae
   filter_upwards [hG] with x hx
   rw [hx]
 
-def PairAEMeasurable
+def PairAEMeasurable [SigmaCompactSpace M]
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (G : M → E) : Prop :=
   ∀ V : M → E, AEStronglyMeasurable V (riemannianVolumeMeasure I M g) →
@@ -217,10 +217,9 @@ def PairAEMeasurable
 
 namespace PairAEMeasurable
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
-omit [CompactSpace M] in
-theorem zero (g : SmoothRiemannianMetric I M) :
+theorem zero [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) :
     PairAEMeasurable (I := I) (M := M) g (fun _ : M => (0 : E)) := by
   intro V _
   have hcongr : (fun x : M =>
@@ -232,8 +231,7 @@ theorem zero (g : SmoothRiemannianMetric I M) :
   rw [hcongr]
   exact aestronglyMeasurable_const
 
-omit [CompactSpace M] in
-theorem add {g : SmoothRiemannianMetric I M} {G G' : M → E}
+theorem add [SigmaCompactSpace M] {g : SmoothRiemannianMetric I M} {G G' : M → E}
     (hG : PairAEMeasurable (I := I) (M := M) g G)
     (hG' : PairAEMeasurable (I := I) (M := M) g G') :
     PairAEMeasurable (I := I) (M := M) g (fun x => G x + G' x) := by
@@ -246,8 +244,7 @@ theorem add {g : SmoothRiemannianMetric I M} {G G' : M → E}
   rw [hcongr]
   exact (hG V hV).add (hG' V hV)
 
-omit [CompactSpace M] in
-theorem const_smul {g : SmoothRiemannianMetric I M} {G : M → E} (c : ℝ)
+theorem const_smul [SigmaCompactSpace M] {g : SmoothRiemannianMetric I M} {G : M → E} (c : ℝ)
     (hG : PairAEMeasurable (I := I) (M := M) g G) :
     PairAEMeasurable (I := I) (M := M) g (fun x => c • G x) := by
   intro V hV
@@ -259,8 +256,7 @@ theorem const_smul {g : SmoothRiemannianMetric I M} {G : M → E} (c : ℝ)
   rw [hcongr]
   exact (hG V hV).const_mul c
 
-omit [CompactSpace M] in
-theorem neg {g : SmoothRiemannianMetric I M} {G : M → E}
+theorem neg [SigmaCompactSpace M] {g : SmoothRiemannianMetric I M} {G : M → E}
     (hG : PairAEMeasurable (I := I) (M := M) g G) :
     PairAEMeasurable (I := I) (M := M) g (fun x => -G x) := by
   have h := const_smul (I := I) (M := M) (-1 : ℝ) hG
@@ -269,8 +265,7 @@ theorem neg {g : SmoothRiemannianMetric I M} {G : M → E}
   rw [heq] at h
   exact h
 
-omit [CompactSpace M] in
-theorem congr_ae {g : SmoothRiemannianMetric I M} {G G' : M → E}
+theorem congr_ae [SigmaCompactSpace M] {g : SmoothRiemannianMetric I M} {G G' : M → E}
     (hG : G =ᵐ[riemannianVolumeMeasure I M g] G')
     (h : PairAEMeasurable (I := I) (M := M) g G) :
     PairAEMeasurable (I := I) (M := M) g G' := by
@@ -284,7 +279,7 @@ theorem congr_ae {g : SmoothRiemannianMetric I M} {G G' : M → E}
 
 end PairAEMeasurable
 
-def MemH1Lp [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+def MemH1Lp [SigmaCompactSpace M] [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (u : Lp ℝ 2 (riemannianVolumeMeasure I M g)) :
     Prop :=
   ∃ G : Lp E 2 (riemannianVolumeMeasure I M g),
@@ -296,7 +291,7 @@ def MemH1Lp [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 
 namespace MemH1Lp
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
 theorem zero (g : SmoothRiemannianMetric I M) :
     MemH1Lp (I := I) (M := M) g (0 : Lp ℝ 2 (riemannianVolumeMeasure I M g)) := by
@@ -401,7 +396,7 @@ end MemH1Lp
 
 namespace MemH1Lp
 
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 
 theorem add (g : SmoothRiemannianMetric I M)
     {u v : Lp ℝ 2 (riemannianVolumeMeasure I M g)}

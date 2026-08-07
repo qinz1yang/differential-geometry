@@ -30,10 +30,9 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem conjugating_flow_jointContMDiffOn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -147,7 +146,7 @@ theorem conjugating_flow_jointContMDiffOn
   exact hcongr_W.mono_of_mem_nhdsWithin hW_nhds
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem spatial_pushforward_chartCoord_contMDiffAt
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
@@ -231,7 +230,7 @@ private theorem spatial_pushforward_chartCoord_contMDiffAt
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem flow_chartGram_contMDiffAt
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -284,7 +283,7 @@ private theorem flow_chartGram_contMDiffAt
     (by simpa [hα] using hgramAt) hpair
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [NeZero (Module.finrank ℝ E)] in
 /-- **Joint Fréchet differentiability of the two-variable evaluation form.**
 
@@ -414,7 +413,6 @@ theorem evalForm_joint
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 /-- **Moving-geometry slot of the evaluation form, via the covariant variational equation.**
 
@@ -526,11 +524,10 @@ theorem flow_slot_deriv
     rw [← hsumval]; exact hmc
   exact hmc'.hasDerivWithinAt
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The positive-generator form of `flow_slot_deriv`: if `Φ_fam` is generated
 by `Y`, then the moving pullback slots contribute `𝓛_Y g`. -/
-theorem flow_slot_pos
+theorem flow_slot_pos [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (Y : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -637,7 +634,6 @@ theorem conjugating_flow_flat_data
   exact deTurck_pullback_eval_value_hasDerivWithinAt (I := I) g_bg g_DT Φ_fam t x v w h_total
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem conjugating_flow_orbit_pushforward_continuity_data
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (_hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -719,8 +715,7 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
       ⟨hs₀.1, hs₀.2⟩ (horbit y |>.continuousWithinAt hs₀) hchartRepDiff
 
 
-omit [CompactSpace M] in
-theorem conjugating_flow_t0_continuity_data
+theorem conjugating_flow_t0_continuity_data [SigmaCompactSpace M]
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (_hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
@@ -773,7 +768,7 @@ theorem conjugating_flow_t0_continuity_data
   exact hcwa_Ioi.const_mul (-2 : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem flow_pushforward_chartBasisVec_section_cmwa
     (J : Set ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
@@ -865,7 +860,7 @@ private theorem flow_pushforward_chartBasisVec_section_cmwa
     exact hϕ
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem flow_pushforward_chartCoord_cmwa
     (J : Set ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
@@ -919,7 +914,7 @@ private theorem flow_pushforward_chartCoord_cmwa
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hb0]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private theorem chartModelBasis_repr_cmwa {n : ℕ}
     {S : Set (ℝ × M)} {p₀ : ℝ × M} {f : (ℝ × M) → E}
     (hf : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, E) (n : ℕ) f S p₀)
@@ -935,7 +930,7 @@ private theorem chartModelBasis_repr_cmwa {n : ℕ}
   exact hlin.contMDiffAt.comp_contMDiffWithinAt p₀ hf
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem flow_chartGramMatrix_alpha_cmwa
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (J J_g : Set ℝ) (hJJ : J ⊆ J_g) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -995,7 +990,7 @@ private theorem flow_chartGramMatrix_alpha_cmwa
   exact hcompS'.mono_of_mem_nhdsWithin hS'_mem
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem flow_pushforward_chartCoord_continuousWithinAt
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (x₀ : M) (i : Fin (Module.finrank ℝ E))
     (hΦsection_joint : ContinuousOn (fun p : ℝ × M =>
@@ -1055,7 +1050,7 @@ private theorem flow_pushforward_chartCoord_continuousWithinAt
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hαbase]
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [I.Boundaryless] [T2Space M] in
 private theorem chartModelBasis_repr_continuousWithinAt
     {S : Set (ℝ × M)} {p₀ : ℝ × M} {f : (ℝ × M) → E}
     (hf : ContinuousWithinAt f S p₀) (p : Fin (Module.finrank ℝ E)) :
@@ -1067,7 +1062,7 @@ private theorem chartModelBasis_repr_continuousWithinAt
   exact hlin.continuousWithinAt.comp hf (Set.mapsTo_univ _ _)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem cwa_finset_sum {ι : Type*} {N : Type*} [AddCommMonoid N] [TopologicalSpace N]
     [ContinuousAdd N] {f : ι → (ℝ × M) → N} (s : Finset ι) {t : Set (ℝ × M)} {x : ℝ × M}
     (h : ∀ i ∈ s, ContinuousWithinAt (f i) t x) :
@@ -1081,7 +1076,7 @@ private theorem cwa_finset_sum {ι : Type*} {N : Type*} [AddCommMonoid N] [Topol
         (ih (fun j hj => h j (Finset.mem_insert_of_mem hj)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem flow_chartGramMatrix_alpha_continuousWithinAt
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -1374,9 +1369,9 @@ theorem conjugating_flow_pullback_jointGram_data
         rw [(extChartAt I α).left_inv hsr0]
       rw [hgramEq]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem conjugating_flow_pullback_jointGram_onesided
+theorem conjugating_flow_pullback_jointGram_onesided [SigmaCompactSpace M]
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞

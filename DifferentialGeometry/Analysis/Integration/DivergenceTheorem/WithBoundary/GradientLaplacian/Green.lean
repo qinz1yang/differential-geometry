@@ -124,7 +124,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
 
 omit [InnerProductSpace ℝ E] in
 theorem integral_smul_laplacian_sub_eq_zero_with_boundary
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M) (hh_int : tsupport h ⊆ I.interior M) :

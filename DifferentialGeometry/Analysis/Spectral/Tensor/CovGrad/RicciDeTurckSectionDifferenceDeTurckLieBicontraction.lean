@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -66,7 +66,7 @@ noncomputable def deTurckVFCovDeriv (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiffOp_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M) :
+theorem connDiffOp_homSection_contMDiff [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z →L[ℝ] TangentSpace I z) b
@@ -84,7 +84,7 @@ theorem connDiffOp_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiffOp_mdiffAt (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
+theorem connDiffOp_mdiffAt [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     MDifferentiableAt I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E))
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z →L[ℝ] TangentSpace I z) b
@@ -93,7 +93,7 @@ theorem connDiffOp_mdiffAt (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiff_pairing_mdiffAt (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem connDiff_pairing_mdiffAt [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     {Y Z : Π b : M, TangentSpace I b} {x : M}
     (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Y b)) x)
@@ -121,7 +121,7 @@ theorem connDiff_pairing_mdiffAt (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deTurckLieCovDerivA_tensorialAt_Y (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem deTurckLieCovDerivA_tensorialAt_Y [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     (X Z : Π b : M, TangentSpace I b) (x : M)
     (hZ : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Z b)) x) :
@@ -195,7 +195,7 @@ theorem deTurckLieCovDerivA_tensorialAt_Y (g₁ g_bg : SmoothRiemannianMetric I 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deTurckLieCovDerivA_tensorialAt_Z (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem deTurckLieCovDerivA_tensorialAt_Z [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     (X Y : Π b : M, TangentSpace I b) (x : M)
     (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b => TotalSpace.mk' E (E := TangentSpace I) b (Y b)) x) :
@@ -280,7 +280,7 @@ noncomputable def connDiffCovDerivOp (g₁ g_bg : SmoothRiemannianMetric I M) (x
     (fun Y hY => deTurckLieCovDerivA_tensorialAt_Z (I := I) g₁ g_bg
       (smoothExtensionTangent (I := I) x v0) Y x hY)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaCovKernel_apply_extend (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
@@ -304,7 +304,7 @@ theorem dLaCovKernel_apply_extend (g₁ g_bg : SmoothRiemannianMetric I M) (x : 
   rw [smoothExtensionTangent_eq, smoothExtensionTangent_eq] at h
   exact h
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaCovKernel_apply_field (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 : TangentSpace I x) (V_field W_field : Π b : M, TangentSpace I b)
@@ -327,7 +327,7 @@ theorem dLaCovKernel_apply_field (g₁ g_bg : SmoothRiemannianMetric I M) (x : M
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem deTurckLieCovDerivA_X_congr (g₁ g_bg : SmoothRiemannianMetric I M)
     (X X' Y Z : Π b : M, TangentSpace I b) (x : M) (hXX : X x = X' x) :
     deTurckConnDiffCovDeriv (I := I) g₁ g_bg X Y Z x =
@@ -336,7 +336,7 @@ theorem deTurckLieCovDerivA_X_congr (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem deTurckLieCovDerivA_X_add (g₁ g_bg : SmoothRiemannianMetric I M)
     (X X' Y Z : Π b : M, TangentSpace I b) (x : M) :
     deTurckConnDiffCovDeriv (I := I) g₁ g_bg (X + X') Y Z x =
@@ -350,7 +350,7 @@ theorem deTurckLieCovDerivA_X_add (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem deTurckLieCovDerivA_X_smul (g₁ g_bg : SmoothRiemannianMetric I M)
     (X Y Z cX : Π b : M, TangentSpace I b) (c : ℝ) (x : M) (hcX : cX x = c • X x) :
     deTurckConnDiffCovDeriv (I := I) g₁ g_bg cX Y Z x =
@@ -360,7 +360,7 @@ theorem deTurckLieCovDerivA_X_smul (g₁ g_bg : SmoothRiemannianMetric I M)
   simp only [map_smul, ContinuousLinearMap.smul_apply]
   rw [smul_sub, smul_sub]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaCovKernel_add_left (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 v0' p q : TangentSpace I x) :
@@ -377,7 +377,7 @@ theorem dLaCovKernel_add_left (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
         rw [smoothExtensionTangent_eq, smoothExtensionTangent_eq, smoothExtensionTangent_eq])]
   rw [deTurckLieCovDerivA_X_add]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaCovKernel_smul_left (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (c : ℝ) (v0 p q : TangentSpace I x) :
@@ -400,7 +400,7 @@ def connDiffCovDerivKernelBilin (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
       map_smul' := fun c v0 => by
         rw [dLaCovKernel_smul_left, map_smul, RingHom.id_apply] }
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem dLaKernelBilin_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (p q v0 v1 : TangentSpace I x) :
@@ -415,7 +415,7 @@ def connDiffCovDerivKernelBilinSym (g₁ g_bg : SmoothRiemannianMetric I M) (x :
   connDiffCovDerivKernelBilin (I := I) g₁ g_bg x p q +
     ContinuousLinearMap.flip (connDiffCovDerivKernelBilin (I := I) g₁ g_bg x p q)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem dLaKernelBilinSym_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (p q v0 v1 : TangentSpace I x) :
@@ -439,7 +439,7 @@ def dLaSummandFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) (p q : Tangen
         rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem dLaSummandFib_toModel (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (p q : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
@@ -459,7 +459,7 @@ def connDiffCovDerivBiContrFibFixedFrame (g₁ g_bg : SmoothRiemannianMetric I M
   (-1 : ℝ) • ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
     dLaSummandFib (I := I) g₁ g_bg x (B a x) (B b x)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaBiContrFibFixedFrame_toModel (g₁ g_bg : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
@@ -485,7 +485,6 @@ theorem dLaBiContrFibFixedFrame_toModel (g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckLieCovDerivA_section_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
     (V0 p q : Π b : M, TangentSpace I b)
     (hV0 : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V0))
@@ -517,7 +516,7 @@ theorem deTurckLieCovDerivA_section_contMDiff (g₁ g_bg : SmoothRiemannianMetri
   refine ((hterm1.sub_section hterm2).sub_section hterm3).congr (fun b => ?_)
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaCovKernel_apply_field3 (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (V0 V_field W_field : Π b : M, TangentSpace I b)
@@ -534,7 +533,7 @@ theorem dLaCovKernel_apply_field3 (g₁ g_bg : SmoothRiemannianMetric I M) (x : 
     (smoothExtensionTangent (I := I) x (V0 x)) V0 V_field W_field x
     (smoothExtensionTangent_eq (I := I) x (V0 x))
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dLaKernelScalar_global (g₁ g_bg : SmoothRiemannianMetric I M)
     {V0 W p q : Π b : M, TangentSpace I b}
@@ -559,9 +558,9 @@ theorem dLaKernelScalar_global (g₁ g_bg : SmoothRiemannianMetric I M)
   exact contMDiff_g_inner_of_smooth_sections (I := I) g₁
     ⟨fun b => deTurckConnDiffCovDeriv (I := I) g₁ g_bg V0 p q b, hAsec⟩ ⟨fun b => W b, hW⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem dLaKernelBilinSym_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem dLaKernelBilinSym_homSection_contMDiff [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     {p q : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
     (hq : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% q)) :
@@ -590,9 +589,9 @@ theorem dLaKernelBilinSym_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetr
   rw [dLaKernelBilinSym_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem dLaBiContrFibFixedFrame_apply_section_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem dLaBiContrFibFixedFrame_apply_section_contMDiff [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
     (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯) :
@@ -678,9 +677,9 @@ theorem dLaBiContrFibFixedFrame_apply_section_contMDiff (g₁ g_bg : SmoothRiema
   rw [ContinuousLinearMap.sum_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem dLaBiContrFibFixedFrame_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
+theorem dLaBiContrFibFixedFrame_contMDiff [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -719,7 +718,7 @@ def frameConnDiffCovDerivKernel (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
           ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
         ring }
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem frameDLaKernel_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 v1 p q : TangentSpace I x) :
@@ -735,7 +734,7 @@ def connDiffCovDerivBiContrFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) 
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   connDiffCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x) x
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem connDiffCovDerivBiContrFibFixedFrame_eq_of_orthonormal
     (g₁ g_bg : SmoothRiemannianMetric I M) (y : M)
@@ -772,7 +771,7 @@ private theorem connDiffCovDerivBiContrFibFixedFrame_eq_of_orthonormal
     ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
     (fun a => B a y) (fun a => C a y) hB hC
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem dLaBiContrFib_eq_fixedFrame_on_nbhd (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     connDiffCovDerivBiContrFib (I := I) g₁ g_bg y =
@@ -784,7 +783,7 @@ theorem dLaBiContrFib_eq_fixedFrame_on_nbhd (g₁ g_bg : SmoothRiemannianMetric 
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem dLaBiContrFib_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
@@ -813,7 +812,6 @@ def deTurckLieWEndo (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckLieWEndo_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     deTurckLieWEndo (I := I) g₁ g_bg x v =
@@ -822,7 +820,7 @@ theorem deTurckLieWEndo_apply (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deTurckLieWEndo_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M) :
+theorem deTurckLieWEndo_homSection_contMDiff [SigmaCompactSpace M] (g₁ g_bg : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) x
@@ -850,7 +848,6 @@ def deTurckLieDLbFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckLieDLbFib_toModel (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (deTurckLieDLbFib (I := I) g₁ g_bg x D) v =

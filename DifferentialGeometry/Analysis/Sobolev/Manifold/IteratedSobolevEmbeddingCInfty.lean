@@ -45,7 +45,7 @@ theorem memWkpChart_forall_implies_continuous_representative
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -86,7 +86,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -101,12 +101,12 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative
   refine ⟨ũ, ?_, hũ_ae⟩
   exact contMDiff_zero_iff.mpr hũ_cont
 
-def ChartSobolevSuperCriticalWitness
+def ChartSobolevSuperCriticalWitness [SigmaCompactSpace M]
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ) (u : M → ℝ) : Prop :=
@@ -117,7 +117,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
@@ -142,7 +142,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -170,12 +170,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompactSpace M] [SigmaCompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 lemma chartPullback_contMDiff_of_contDiff_finite
     (α : M) (m : ℕ)
     {ψ : EuclN → ℝ}
@@ -317,7 +317,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 private theorem chain_to_supercritical
@@ -396,7 +396,7 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
@@ -448,13 +448,13 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+variable [CompactSpace M] [T2Space M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-private lemma chartPushed_apply_toE_extChartAt
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+private lemma chartPushed_apply_toE_extChartAt [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {x : M} (hx : x ∈ (chartAt H α).source) :
     chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u
@@ -472,8 +472,8 @@ private lemma chartPushed_apply_toE_extChartAt
     exact (extChartAt I α).left_inv h_x_src
   rw [h_inv]
 
-omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-private lemma continuousOn_chartPushed_of_continuous
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+private lemma continuousOn_chartPushed_of_continuous [SigmaCompactSpace M]
     (α : M) {ũ : M → ℝ} (hũ_cont : Continuous ũ) :
     ContinuousOn (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α ũ)
@@ -491,7 +491,7 @@ private lemma continuousOn_chartPushed_of_continuous
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α).contMDiff.continuous
   exact (hρ_cont.comp_continuousOn h_inv_cont).mul (hũ_cont.comp_continuousOn h_inv_cont)
 
-omit [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+omit [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [NeZero (Module.finrank ℝ E)] in
 private lemma exists_ball_subset_chartTargetEuclid
     (α : M) {y₀ : EuclN} (hy₀ : y₀ ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -799,7 +799,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
@@ -820,7 +820,7 @@ theorem sobolev_smooth_representative_of_memWkpChart_forall
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)

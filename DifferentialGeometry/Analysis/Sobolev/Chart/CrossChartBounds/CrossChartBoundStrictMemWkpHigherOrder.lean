@@ -32,7 +32,7 @@ sits inside the chart-α Euclidean image of `K_α`, the chart-γ pushed
 cross-pullback remains in `MemWkp k p` and satisfies the `W^{k,p}` bound. -/
 theorem crossChartJointK
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
@@ -593,7 +593,7 @@ theorem crossChartJointK
 /-- Compatibility wrapper retaining the original norm-only cross-chart API. -/
 theorem cross_chart_bound_strict_strong_memWkp_k
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)

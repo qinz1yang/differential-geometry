@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -69,7 +69,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma lc0b_amix_slot_fiber (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
@@ -81,7 +81,7 @@ private lemma lc0b_amix_slot_fiber (g₀ g₁ : SmoothRiemannianMetric I M)
     (lc0Kappa (I := I) (M := M) g₀ g₁ g₀) x D]
   rw [lc0b_kappa_fiber (I := I) (M := M) g₀ g₁ g₀ x]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma lc0b_amix_inner_fiber (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from

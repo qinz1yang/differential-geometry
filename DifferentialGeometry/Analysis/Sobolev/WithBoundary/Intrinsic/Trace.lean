@@ -90,7 +90,7 @@ instance instCompactSpaceBoundaryManifold [CompactSpace M] :
   exact isCompact_iff_compactSpace.mp h_compact
 
 instance instIsFiniteMeasureSurfaceMeasure
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M) :
     IsFiniteMeasure
@@ -110,14 +110,14 @@ def boundaryTotalMeasure
     Set.univ
 
 theorem boundaryTotalMeasure_lt_top
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M) :
     boundaryTotalMeasure (n := n) (M := M) g < ⊤ :=
   measure_lt_top _ _
 
 theorem boundaryTotalMeasure_ne_top
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M) :
     boundaryTotalMeasure (n := n) (M := M) g ≠ ⊤ :=
@@ -136,7 +136,7 @@ private theorem exists_continuous_bound_of_compact
   exact (hC₀ hxR).trans (le_max_right _ _)
 
 theorem boundaryRestrict_memLp_of_continuous
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -156,7 +156,7 @@ theorem boundaryRestrict_memLp_of_continuous
     (boundaryRestrict_aestronglyMeasurable (n := n) (M := M) g hu) C h_ae
 
 theorem boundaryRestrict_eLpNorm_le_of_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -175,7 +175,7 @@ theorem boundaryRestrict_eLpNorm_le_of_bound
   exact eLpNorm_le_of_ae_bound h_ae
 
 theorem boundaryRestrict_eLpNorm_le_of_continuous
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -228,7 +228,7 @@ omit [IsManifold (𝓡∂ n) ∞ M] in
       fun _ => (0 : ℝ) := rfl
 
 theorem boundaryTrace_memLp_of_continuous
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -238,7 +238,7 @@ theorem boundaryTrace_memLp_of_continuous
   boundaryRestrict_memLp_of_continuous (n := n) (M := M) g p hu
 
 theorem boundaryTrace_eLpNorm_le_of_continuous
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -251,7 +251,7 @@ theorem boundaryTrace_eLpNorm_le_of_continuous
   boundaryRestrict_eLpNorm_le_of_continuous (n := n) (M := M) g p hu
 
 theorem boundaryTrace_eLpNorm_le_of_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -274,7 +274,7 @@ theorem boundaryTrace_eq_restrict_of_contMDiff
   boundaryTrace_eq_restrict_of_continuous (n := n) (M := M) hu.continuous
 
 theorem boundaryTrace_memLp_of_contMDiff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
@@ -286,7 +286,7 @@ theorem boundaryTrace_memLp_of_contMDiff
   boundaryTrace_memLp_of_continuous (n := n) (M := M) g p hu.continuous
 
 theorem boundaryTrace_eLpNorm_le_of_contMDiff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)

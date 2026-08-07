@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 theorem chosenSecondPartialChartPushedU_isWeakPartial_of_chartPushedWeakPartialLp
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -57,7 +57,7 @@ theorem chosenSecondPartialChartPushedU_isWeakPartial_of_chartPushedWeakPartialL
     (I := I) (M := M) g α hu_h i l
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma exists_smooth_global_extension
     {φ : EuclN → ℝ} (α : M)
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
@@ -101,7 +101,7 @@ lemma exists_smooth_global_extension
     rw [hη_one y hy]
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma weightedInvGramDerivOnEuclid_contDiffOn_chart
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j l : Fin (Module.finrank ℝ E)) :

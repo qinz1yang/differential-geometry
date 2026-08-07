@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -53,7 +53,7 @@ private lemma a3_pouTsupport_isCompact (α : M) :
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
   (isClosed_tsupport _).isCompact
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma a3_pouTsupport_subset_chartSource (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
@@ -64,7 +64,6 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
@@ -200,8 +199,8 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartTensorRSSlotCorrection_norm_sq_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensorH1 g r s) (k : Fin (Module.finrank ℝ E)) (b : M) :

@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def gradRhoSqSmooth
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯) :
@@ -46,14 +46,14 @@ noncomputable def gradRhoSqSmooth
   ⟨normGradSqFun (I := I) g (ρα : M → ℝ),
     normGradSqFun_contMDiff (I := I) g ρα.contMDiff⟩
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma gradRhoSqSmooth_apply
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯) (x : M) :
     (gradRhoSqSmooth (I := I) (M := M) g ρα : M → ℝ) x =
       g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g ρα x) := rfl
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradInner_leibniz_pointwise
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯)

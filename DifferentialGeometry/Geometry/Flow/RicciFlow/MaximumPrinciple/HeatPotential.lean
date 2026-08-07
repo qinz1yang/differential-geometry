@@ -37,7 +37,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
 private theorem heat_pot_nonneg_on_strict_subinterval
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -148,7 +148,7 @@ private theorem heat_pot_nonneg_on_strict_subinterval
   exact (mul_nonneg_iff_of_pos_left (Real.exp_pos (-C * t))).mp hprod
 
 theorem heat_pot_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -219,7 +219,7 @@ theorem heat_pot_nonneg
 
 omit [CompleteSpace E] in
 private theorem heat_pot_exp_rescale_barrier_operator_nonneg
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -313,7 +313,7 @@ private theorem heat_pot_exp_rescale_barrier_operator_nonneg
     _ = Real.exp (C * t) * (V t x * u t x + C * u t x) - 0 := by ring
 
 private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)
@@ -392,7 +392,7 @@ private theorem heat_pot_exp_rescale_lower_bound_on_strict_subinterval
   exact sub_nonneg.mp (by simpa only [w, z] using hw_nonneg t ht x)
 
 theorem heat_pot_pos
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : RealizedMetricFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 <= T) (V u : Real -> M -> Real)

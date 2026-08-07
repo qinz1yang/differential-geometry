@@ -32,7 +32,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 section HeadlineGradientNormComparison
 
 variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -66,7 +66,7 @@ theorem
   chartTrivializationNorm_le_const_mul_tensorInnerPointwise_chartRSTwist_on_pouTsupport
     (I := I) (M := M) g r (s + 1) α
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [CompactSpace M] [I.Boundaryless] in
 lemma tensorInnerPointwise_chartRSTwist_succ_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
@@ -87,7 +87,7 @@ end HeadlineGradientNormComparison
 section CombinedGradient
 
 variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -10,7 +10,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 def ChartCoordPicardRegular (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
   ContinuousOn (Function.uncurry (fun t x => X t x)) (Set.univ : Set (ℝ × M)) ∧

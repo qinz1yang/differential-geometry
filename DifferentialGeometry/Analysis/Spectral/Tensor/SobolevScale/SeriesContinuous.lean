@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -105,9 +105,8 @@ theorem tensorHs_continuousOn_of_coeff_of_higher_mass
     intro i
     rw [hf, hcoeff t ht i]
   exact (hsum'.tsum_eq).symm
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem mass_le_of_compact
+theorem mass_le_of_compact [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {σ σ' : ℝ}
     (hneg_sum : Summable (fun i : TensorEigenIdx
       (I := I) (M := M) g r s =>

@@ -114,7 +114,7 @@ private lemma leftSmoothFactor_norm_le
     exact mul_nonneg hCb_nn hCu_nn
 
 lemma exists_chart_cutoff_with_data
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     ∃ b : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ b ∧
       (∀ x : M, 0 ≤ b x ∧ b x ≤ 1) ∧
       (∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
@@ -127,7 +127,7 @@ lemma exists_chart_cutoff_with_data
   exact hb_range ⟨x, rfl⟩
 
 private lemma smoothExtension_eq_chartPushed_uv
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) (u v : M → ℝ) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     smoothExtension (I := I) (M := M) α
@@ -221,7 +221,7 @@ noncomputable def chartCarrierLocal
         : C^∞⟮I, M; ℝ⟯) : M → ℝ)))
 
 lemma chartCarrierLocal_isCompact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     IsCompact (chartCarrierLocal (I := I) (M := M) α) := by
   classical
   unfold chartCarrierLocal
@@ -241,7 +241,7 @@ private lemma chartCarrierLocal_subset_chartTarget
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
 lemma tsupport_liftedPou_subset_chartCarrierLocal
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     tsupport (liftedPou (I := I) (M := M) α) ⊆
       chartCarrierLocal (I := I) (M := M) α := by
   classical
@@ -250,7 +250,7 @@ lemma tsupport_liftedPou_subset_chartCarrierLocal
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
 lemma liftedPou_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) : ContDiff ℝ ∞ (liftedPou (I := I) (M := M) α) := by
   classical
   unfold liftedPou
@@ -260,7 +260,7 @@ lemma liftedPou_smooth
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
 
 private lemma liftedPou_hasCompactSupport
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) : HasCompactSupport (liftedPou (I := I) (M := M) α) := by
   classical
   unfold liftedPou
@@ -268,7 +268,7 @@ private lemma liftedPou_hasCompactSupport
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
 
 lemma smoothPushed_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ContDiff ℝ ∞ (smoothPushed (I := I) (M := M) α u) := by
   classical
@@ -286,7 +286,7 @@ lemma smoothPushed_smooth
   exact contDiff_smoothExtension (I := I) (M := M) α hpou_u_smooth hpou_u_supp
 
 lemma smoothPushed_hasCompactSupport
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) (u : M → ℝ) :
     HasCompactSupport (smoothPushed (I := I) (M := M) α u) := by
   classical
@@ -299,7 +299,7 @@ lemma smoothPushed_hasCompactSupport
   exact hasCompactSupport_smoothExtension (I := I) (M := M) α hpou_u_supp
 
 lemma leftSmoothFactor_smooth
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hb_supp : tsupport b ⊆ (chartAt H α).source) :
@@ -315,7 +315,7 @@ lemma leftSmoothFactor_smooth
 
 omit [IsManifold I ∞ M] in
 private lemma leftSmoothFactor_hasCompactSupport
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) {b u : M → ℝ}
     (hb_supp : tsupport b ⊆ (chartAt H α).source) :
     HasCompactSupport (leftSmoothFactor (I := I) (M := M) α b u) := by
@@ -342,7 +342,7 @@ private lemma tsupport_leftSmoothFactor_subset_chartTarget
   exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hbu_supp
 
 lemma tsupport_smoothPushed_subset_chartTarget
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) (u : M → ℝ) :
     tsupport (smoothPushed (I := I) (M := M) α u) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
@@ -356,7 +356,7 @@ lemma tsupport_smoothPushed_subset_chartTarget
   exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hpou_u_supp
 
 lemma leftSmoothFactor_memW1p
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -379,7 +379,7 @@ lemma leftSmoothFactor_memW1p
     (d := Module.finrank ℝ E) hΩ_open hSmooth hCompact h_tsupp hp_one 1).memW1p
 
 lemma smoothPushed_memW1p
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
@@ -429,7 +429,7 @@ lemma liftedPou_norm_le_one
   exact h_le
 
 lemma exists_liftedPou_grad_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) : ∃ Cα : ℝ, 0 ≤ Cα ∧
       ∀ y : EuclN, ‖fderiv ℝ (liftedPou (I := I) (M := M) α) y‖ ≤ Cα := by
   classical
@@ -519,7 +519,7 @@ lemma leftSmoothFactor_norm_le_of_bound
     exact huMax_nn
 
 lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1) :
@@ -544,7 +544,7 @@ lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed
     rw [hb_x]; ring
 
 lemma smoothPushed_mul_leftSmoothFactor_eq_smoothExtension_uv
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {b u v : M → ℝ}
     (hb_one : ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
       I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1) :

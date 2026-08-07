@@ -39,13 +39,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+  [CompactSpace M] [T2Space M]
   [I.Boundaryless] [BoundarylessManifold I M]
 
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_add_app
     (g₀ : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g₀ 0 2)
@@ -61,7 +61,7 @@ private theorem unitModel_add_app
       ContinuousLinearMap.add_apply, Tensor0SBundle.Tensor0SSpace.toModel_add]
   rw [hfun, ContinuousMultilinearMap.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_sub_app
     (g₀ : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g₀ 0 2)

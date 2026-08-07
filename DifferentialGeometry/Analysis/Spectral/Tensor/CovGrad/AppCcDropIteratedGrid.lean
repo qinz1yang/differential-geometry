@@ -26,12 +26,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+    [T2Space M] [CompleteSpace E] in
 private theorem riemannianFiberNormSq_toSection_heq_congr_leibnizTower
     (g : SmoothRiemannianMetric I M)
     {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g 0 a} {Z : SmoothCcTensor g 0 b}
@@ -75,7 +75,7 @@ def slotExtendIter (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ) :
       slotExtend (I := I) (M := M) g (b₀ + w) (s₀ + w) (slotExtendIter g b₀ s₀ w C)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] [CompleteSpace E] in
+    [CompleteSpace E] in
 /-- Iterated slot extension is linear with respect to subtraction in its passenger. -/
 theorem slotExtendIter_sub (g : SmoothRiemannianMetric I M) (b₀ s₀ w : ℕ)
     (A B : SmoothCcTensor g b₀ s₀) :

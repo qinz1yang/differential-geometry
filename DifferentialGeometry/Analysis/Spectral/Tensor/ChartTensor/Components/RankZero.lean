@@ -31,13 +31,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem scalar0_raw_eq
+    in
+theorem scalar0_raw_eq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 0)
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source) :
     tensorChartComponentRaw (I := I) (M := M) g 0 0 S α

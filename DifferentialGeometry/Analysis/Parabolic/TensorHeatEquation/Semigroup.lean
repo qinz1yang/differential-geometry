@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -39,7 +39,6 @@ noncomputable abbrev TensorEigenIdx.lambda
     (i : TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
   tensorLaplacianEigenvalueOf i.fst.val
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor_lambda_nonneg
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -53,7 +52,6 @@ theorem tensor_lambda_nonneg
       (I := I) (M := M) g r s hu_in hu_ne
   exact tensorLaplacianEigenvalueOf_nonneg_of_resolventEigenvalue h_mem_unit
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor_heat_coeff_mem_unit_interval
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -66,7 +64,6 @@ theorem tensor_heat_coeff_mem_unit_interval
     tensor_lambda_nonneg (I := I) (M := M) i
   nlinarith
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensor_heat_coeff_sq_le_one
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -79,7 +76,6 @@ lemma tensor_heat_coeff_sq_le_one
   nlinarith [sq_nonneg
     (Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) - 1)]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSummable_basis_coeff_sq
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -119,7 +115,6 @@ lemma tensorSummable_basis_coeff_sq
   rw [h_map_eq] at h_iff
   exact h_iff.mp h_summable_smul
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorParseval_norm_sq
     {g : SmoothRiemannianMetric I M} {r s : ℕ}

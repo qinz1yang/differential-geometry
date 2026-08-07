@@ -84,7 +84,7 @@ private lemma g_inner_chartTargetUnit_continuousOn
   exact (hpx.2.continuousWithinAt)
 
 noncomputable def chartTargetUnitSqSumSupOnPouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ := by
   classical
@@ -111,7 +111,7 @@ noncomputable def chartTargetUnitSqSumSupOnPouTsupport
   · exact 0
 
 lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     0 ≤ chartTargetUnitSqSumSupOnPouTsupport (I := I) (M := M) g α := by
@@ -169,7 +169,7 @@ lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
   · rw [dif_neg hKα_ne]
 
 lemma chartTargetUnitSqSum_le_sup
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {x : M}
     (hx : x ∈ tsupport

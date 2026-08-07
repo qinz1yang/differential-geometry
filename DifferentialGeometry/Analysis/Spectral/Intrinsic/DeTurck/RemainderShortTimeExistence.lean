@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -65,7 +65,6 @@ def DuhamelMildSolutionData (g : SmoothRiemannianMetric I M) (a : ℝ) (T : ℝ)
     ((gforce : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} {T T' : ℝ}
     {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
@@ -80,7 +79,6 @@ theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} 
     fun s hs => hid s ⟨hs.1, le_trans hs.2 hTT'⟩, hforce, hball, ?_⟩
   exact ae_restrict_of_ae_restrict_of_subset (Set.Icc_subset_Icc le_rfl hTT') htraj
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.congr_gtraj {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}

@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -98,7 +98,6 @@ private theorem perModeConv_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     _ ≤ T * ∫ s in (0 : ℝ)..T, f s ^ 2 := by
         apply mul_le_mul hmass_le hintegral_le hintegral_t_nn hT
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)

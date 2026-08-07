@@ -28,11 +28,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartInvGramOnE_symm
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -50,7 +50,7 @@ lemma chartInvGramOnE_symm
   rw [star_trivial] at h_apply
   exact h_apply.symm
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma sum_chartChristoffel_diag_eq_half_trace
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -133,7 +133,7 @@ lemma sum_chartChristoffel_diag_eq_half_trace
     exact chartGramOnE_symm (I := I) g α k i z
   rw [hGUsym, hdGsym]
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_chartDensityOnE_eq_sum_chartChristoffel_diag
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -176,7 +176,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   simp [Module.Basis.equivFun]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma trivToE_chartBasisVecFiber
     (α : M) (m : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -190,7 +190,6 @@ private lemma trivToE_chartBasisVecFiber
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma chartCoord_leviCivita_chartBasis
     (g : SmoothRiemannianMetric I M) (α : M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -314,7 +313,7 @@ lemma chartCoord_leviCivita_chartBasis
       exact absurd (Finset.mem_univ m) hm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tangent_eq_coordSum
     (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -343,7 +342,6 @@ private lemma tangent_eq_coordSum
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma inner_leviCivita_chartBasis_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -440,7 +438,6 @@ lemma frameTrace_eq_metricTrace
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma metricTrace_eq_coord_covariant_divergence
     (g : SmoothRiemannianMetric I M) (α : M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) {b : M}
@@ -537,7 +534,7 @@ lemma metricTrace_eq_coord_covariant_divergence
   · intro hm
     exact absurd (Finset.mem_univ m) hm
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma localDivergence_eq_coord_covariant_divergence
     (g : SmoothRiemannianMetric I M) (α : M)

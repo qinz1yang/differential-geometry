@@ -49,7 +49,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_fderiv_apply_single_aux
@@ -578,8 +578,8 @@ theorem chosenWeakPartial_chosenSecondPartialChartPushedU_eq_chosenThirdMixedPar
           (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁) Ω :=
         h_congr
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartPulledWeighted_le_volume_on_compact
     {g : SmoothRiemannianMetric I M} (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K)
@@ -622,7 +622,7 @@ private lemma chartTarget_diff_chartImagePOUTsupport_isOpen (α : M) :
   (chartTargetEuclid_isOpen (I := I) (M := M) α).sdiff
     (chartImagePOUTsupport_isCompact (I := I) (M := M) α).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartTarget_diff_chartImagePOUTsupport_subset
     (α : M) :
     (chartTargetEuclid (I := I) (M := M) α) \

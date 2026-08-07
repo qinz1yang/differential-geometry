@@ -34,7 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartGramMatrix_pou_uniform_entry_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {b : M}, b ∈ tsupport (fun x : M =>
@@ -201,7 +201,7 @@ private lemma omega_eIdx_eq_sum_gram_compCLM
   rw [← Finset.prod_mul_distrib]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma section_compCLM_eval_eq_tensorChartComponentRaw
+private lemma section_compCLM_eval_eq_tensorChartComponentRaw [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -300,7 +300,7 @@ private lemma section_compCLM_eval_eq_tensorChartComponentRaw
   rw [hForward]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma section_omega_eIdx_apply_eq_sum_gram_components
+private lemma section_omega_eIdx_apply_eq_sum_gram_components [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -397,8 +397,8 @@ private lemma sum_prod_gram_sq_le_uniform_const
         rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fiberNormSqSummand_chartAlpha_le_raw_components_sq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+theorem fiberNormSqSummand_chartAlpha_le_raw_components_sq [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s),

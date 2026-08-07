@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -67,7 +67,7 @@ private lemma cons_cons_comp_decomposeFin_double {α : Type*} {s : ℕ}
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_add (s : ℕ) (S S' : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (S + S') x =
       unitModel (I := I) (M := M) g s S x + unitModel (I := I) (M := M) g s S' x := by
@@ -77,7 +77,7 @@ private lemma unitModel_add (s : ℕ) (S S' : SmoothCcTensor g 0 s) (x : M) :
     ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma domDomCongrSection_add {s : ℕ} (σ : Equiv.Perm (Fin s))
     (A B : SmoothCcTensor g 0 s) :
     domDomCongrSection (I := I) g σ (A + B) =
@@ -95,7 +95,7 @@ private lemma domDomCongrSection_add {s : ℕ} (σ : Equiv.Perm (Fin s))
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma domDomCongrSection_swap_swap (T : SmoothCcTensor g 0 2) :
     domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) T) = T := by
@@ -213,9 +213,8 @@ theorem rawTensorConnLapSmooth_domDomCongrSection {s : ℕ}
   exact h2x
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lambda_eq_of_fst_eq
+private lemma lambda_eq_of_fst_eq [SigmaCompactSpace M]
     {i j : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2}
     (h : i.1 = j.1) :
     TensorEigenIdx.lambda (I := I) (M := M) i =
@@ -224,9 +223,8 @@ private lemma lambda_eq_of_fst_eq
     tensorLaplacianEigenvalueOf μ.val) h
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fst_eq_of_lambda_eq
+private lemma fst_eq_of_lambda_eq [SigmaCompactSpace M]
     {i j : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2}
     (h : TensorEigenIdx.lambda (I := I) (M := M) i =
       TensorEigenIdx.lambda (I := I) (M := M) j) :
@@ -239,9 +237,8 @@ private lemma fst_eq_of_lambda_eq
   linear_combination -h'
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma tensorSobolevWeight_eq_of_fst_eq
+private lemma tensorSobolevWeight_eq_of_fst_eq [SigmaCompactSpace M]
     {i j : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2}
     (h : i.1 = j.1) (σ : ℝ) :
     tensorSobolevWeight (I := I) (M := M) i σ =

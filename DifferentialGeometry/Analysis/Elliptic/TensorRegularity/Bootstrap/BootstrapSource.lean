@@ -169,7 +169,7 @@ end UniformMultiplier
 
 section Headline
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 local notation "dimE" => Module.finrank ℝ E
 
@@ -202,7 +202,7 @@ private structure ChartCutoff (α : M) {K : Set EuclN}
 
   hasCompactSupport : HasCompactSupport toFun
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 private lemma exists_chartCutoff (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Nonempty (ChartCutoff (I := I) (M := M) α hK hK_target) := by
@@ -229,7 +229,7 @@ private lemma exists_chartCutoff (α : M) {K : Set EuclN}
            hasCompactSupport := HasCompactSupport.of_support_subset_isCompact
              hL_compact ((subset_tsupport _).trans hζ_supp) }⟩
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 private lemma cutoff_mul_coeff_contDiff (α : M) {K : Set EuclN}
     {hK : IsCompact K} {hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α}
     (ζ : ChartCutoff (I := I) (M := M) α hK hK_target)
@@ -244,7 +244,7 @@ private lemma cutoff_mul_coeff_contDiff (α : M) {K : Set EuclN}
   intro y hy
   rw [image_eq_zero_of_notMem_tsupport hy, zero_mul]
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 private lemma exists_wkpNorm_chartCoeff_mul_le (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (m : ℕ) {c : EuclN → ℝ}
@@ -342,7 +342,7 @@ lemma memWkp_euclidPartial {m : ℕ} {Ω'' : Set EuclN}
   classicalPartial_memWkp_of_memWkp_succ (d := dimE) hΩ''
     (by simpa using hv_smooth) hv l
 
-omit [NeZero dimE] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [I.Boundaryless] [T2Space M] in
 lemma covDerivLowerOrderTerm_eq_sum_componentEuclid
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (k : Fin dimE)
@@ -357,7 +357,7 @@ lemma covDerivLowerOrderTerm_eq_sum_componentEuclid
   refine Finset.sum_congr rfl (fun p _ => ?_)
   rw [tensorComponentEuclid_apply_of_mem (I := I) (M := M) g r s T α p hy]
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 private lemma chartCoeff_mul_contDiff (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {c : EuclN → ℝ}
@@ -377,7 +377,7 @@ private lemma chartCoeff_mul_contDiff (α : M) {K : Set EuclN}
   rw [h_eq]
   exact hζc_smooth.mul hv
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 lemma chartCoeffSum_contDiff (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {ι : Type*} (S : Finset ι) (c v : ι → EuclN → ℝ)
@@ -406,7 +406,7 @@ lemma chartCoeffSum_hasCompactSupport {K : Set EuclN}
     rw [image_eq_zero_of_notMem_tsupport (fun hy' => hyK (hv_K a ha hy')),
       mul_zero]))
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 private lemma exists_wkpNorm_chartCoeffSum_le (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (m : ℕ) {ι : Type*} (S : Finset ι) (c : ι → EuclN → ℝ)
@@ -452,7 +452,7 @@ private lemma exists_wkpNorm_chartCoeffSum_le (α : M) {K : Set EuclN}
     Ka (fun a ha => hKa_nn a ha) D h_term_le).trans ?_
   rw [hD_def]
 
-omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] in
 lemma exists_wkpNorm_chartCoeffSum_bddBy (α : M) {K : Set EuclN}
     (hK : IsCompact K) (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (m : ℕ) {ι : Type*} (S : Finset ι) (c : ι → EuclN → ℝ)

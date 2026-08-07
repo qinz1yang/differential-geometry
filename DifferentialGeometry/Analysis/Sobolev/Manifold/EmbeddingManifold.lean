@@ -78,7 +78,7 @@ private lemma measurable_pou_mul
   exact hcont.measurable.mul hu
 
 private theorem chartAtlasPOU_pou_decomp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (u : M → ℝ) (x : M) :
     u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
       (I := I) (M := M),
@@ -92,7 +92,7 @@ private theorem chartAtlasPOU_pou_decomp
   rw [← Finset.sum_mul, hsum, one_mul]
 
 private theorem perChart_eLpNorm_le
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p)
@@ -206,7 +206,7 @@ private theorem perChart_eLpNorm_le
         ring
 
 private noncomputable def perChartConst
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) : M → ℝ≥0∞ :=
@@ -215,7 +215,7 @@ private noncomputable def perChartConst
       hp_one hp_top hq_one hq_top hqp α)
 
 private lemma perChartConst_ne_top
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) (α : M) :
@@ -224,7 +224,7 @@ private lemma perChartConst_ne_top
     hp_one hp_top hq_one hq_top hqp α)).1
 
 private lemma perChartConst_bound
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p) (α : M)
@@ -243,7 +243,7 @@ private lemma perChartConst_bound
     hp_one hp_top hq_one hq_top hqp α)).2 hu_meas hu
 
 private theorem perChart_memLp_riemannianMeasure
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞)) (hqp : q ≤ p)
@@ -280,7 +280,7 @@ private theorem perChart_memLp_riemannianMeasure
     exact lt_of_le_of_lt h_bound hRHS_lt_top
 
 theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (hq_one : 1 ≤ q) (hq_top : q ≠ ⊤)
@@ -313,7 +313,7 @@ theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
     hq_one hq_top hqp hu_meas hu α
 
 theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p q : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (hq_one : 1 ≤ q) (hq_top : q ≠ (⊤ : ℝ≥0∞))

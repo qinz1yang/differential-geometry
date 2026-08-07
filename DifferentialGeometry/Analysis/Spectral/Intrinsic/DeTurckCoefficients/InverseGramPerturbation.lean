@@ -234,7 +234,7 @@ theorem exists_chartInvGramMatrix_lipschitz_on_compact
 
 
 theorem chartInvGram_pou_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)

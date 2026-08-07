@@ -32,10 +32,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorPointwiseNorm_add_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (S T : TensorRSModel r s ℝ E) :
@@ -72,7 +72,7 @@ theorem tensorPointwiseNorm_add_le
   nlinarith [hqST_le]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorPointwiseNorm_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (a : ℝ) (S : TensorRSModel r s ℝ E) :
@@ -87,7 +87,7 @@ theorem tensorPointwiseNorm_smul
   rw [Real.sqrt_mul (sq_nonneg a), Real.sqrt_sq_eq_abs]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorPointwiseNorm_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (S : TensorRSModel r s ℝ E) :
@@ -103,7 +103,7 @@ def tensorPointwiseSeminorm
       rw [tensorPointwiseNorm_smul (I := I) (M := M) g r s x a S, Real.norm_eq_abs])
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] theorem tensorPointwiseSeminorm_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (S : TensorRSModel r s ℝ E) :
@@ -111,7 +111,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
       tensorPointwiseNorm (I := I) (M := M) g r s x S := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorPointwiseNorm_continuous
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     Continuous (tensorPointwiseNorm (I := I) (M := M) g r s x) := by
@@ -144,7 +144,7 @@ theorem tensorPointwiseNorm_continuous
   exact Real.continuous_sqrt.comp hdiag
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorPointwiseNorm_intervalIntegral_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (f : ℝ → TensorRSModel r s ℝ E)
@@ -176,7 +176,7 @@ theorem tensorPointwiseNorm_intervalIntegral_le
   rw [intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1)]
   exact hjensen
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 theorem riemannianFiberNormSq_pathIntegralCoeffField_le_sq
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)
@@ -252,7 +252,7 @@ private theorem sq_intervalIntegral_le_intervalIntegral_sq
     intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1)]
   exact hjensen
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 theorem riemannianFiberNormSq_pathIntegralCoeffField_le_intervalIntegral
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ) (hS : IsOpen S)

@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup

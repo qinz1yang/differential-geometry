@@ -252,7 +252,7 @@ variable {n : ℕ} [NeZero n]
 variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+  [T2Space M] [CompactSpace M]
 
 theorem green_first_eq_boundary_surface_integral
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)

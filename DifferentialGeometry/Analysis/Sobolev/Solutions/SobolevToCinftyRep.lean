@@ -23,7 +23,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 open DifferentialGeometry.Integral.Measure
 
 theorem exists_continuous_representative_of_memWkpChart_isRegular
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
@@ -44,7 +44,7 @@ theorem exists_continuous_representative_of_memWkpChart_isRegular
   exact hũ_ae
 
 theorem exists_continuous_representative_of_memWkpChart
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M)
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)

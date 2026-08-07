@@ -58,7 +58,7 @@ lemma chartPullback_finset_sum (α : M)
       rw [Finset.sum_insert hiS]
 
 lemma fun_eq_finset_sum_chartPullback_chartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (u : M → ℝ) :
     (fun x : M => u x) =
       fun x =>
@@ -112,7 +112,7 @@ lemma fun_eq_finset_sum_chartPullback_chartPushed
   rw [chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x, one_mul]
 
 private lemma exists_strict_strong_support_approx_with_compact_neighborhood
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -139,7 +139,7 @@ private lemma exists_strict_strong_support_approx_with_compact_neighborhood
   exact hχ hu ε_per hε_per
 
 def tightenedChartPushed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) (η_M : M → ℝ) (u : M → ℝ) : EuclN → ℝ :=
   fun y =>
     chartCutoffEuclidean (I := I) (M := M) α η_M y *
@@ -147,7 +147,7 @@ def tightenedChartPushed
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u y
 
 lemma chartPullback_tightenedChartPushed_eq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
       ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -217,7 +217,7 @@ lemma chartPullback_tightenedChartPushed_eq
     rw [chartPullback_apply_of_notMem (I := I) (M := M) α _ hxα]
 
 lemma tsupport_tightenedChartPushed_subset
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {η_M : M → ℝ}
     (hη_cpt : HasCompactSupport η_M)
     (hη_tsupp_chart : tsupport η_M ⊆ (chartAt H α).source)
@@ -251,7 +251,7 @@ lemma tsupport_tightenedChartPushed_subset
   exact h_supp_in_etaEuclid.trans (h_etaEuclid_supp.trans h_image_mono)
 
 lemma tightenedChartPushed_eq_chartPushed_on_target
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
       ∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -286,7 +286,7 @@ lemma tightenedChartPushed_eq_chartPushed_on_target
     rw [hηE_y]; ring
 
 private lemma tightenedChartPushed_memWkp
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
@@ -345,7 +345,7 @@ private lemma tightenedChartPushed_memWkp
     hηE_smooth hC_norm_target hC_grad_target
 
 private lemma wkpNorm_tightenedChartPushed_sub_eq
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (α : M) {η_M : M → ℝ}
     (hη_one_on_tsupport :
@@ -378,7 +378,7 @@ private lemma wkpNorm_tightenedChartPushed_sub_eq
     (chartTargetEuclid_isOpen (I := I) (M := M) α) h_diff_eq
 
 private theorem MemWkp_of_cross_chart_pushforward
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source)
@@ -791,7 +791,7 @@ private theorem MemWkp_of_cross_chart_pushforward
       hψ_mem_target
 
 theorem contMDiff_dense_in_WkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

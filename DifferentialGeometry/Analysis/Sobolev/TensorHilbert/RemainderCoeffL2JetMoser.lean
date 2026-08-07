@@ -41,7 +41,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -329,7 +329,7 @@ theorem ricciArmPrincipalCoeff_realizedFam_jetL2_perOrder_ballUniform
     mul_le_mul htri htri hA_nn (add_nonneg hp_nn hq_nn)]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ - traceHessianCoeff (I := I) (M := M) g₀ g₀ =
@@ -738,7 +738,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma tsmRfns_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -785,8 +785,8 @@ private lemma tsmAppCcRS_coeffCorner_split (g₀ : SmoothRiemannianMetric I M) (
   rw [hf0]
   exact add_comm _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma tsmNormSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma tsmNormSq_eq_integral [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) :
     ‖C‖ ^ 2 = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (C.toSection x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by

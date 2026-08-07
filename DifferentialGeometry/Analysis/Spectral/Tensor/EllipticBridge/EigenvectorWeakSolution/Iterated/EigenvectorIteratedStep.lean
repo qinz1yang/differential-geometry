@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
@@ -36,7 +36,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_fderiv_apply_single
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
@@ -51,7 +51,7 @@ private lemma contDiff_fderiv_apply_single
   exact h_eval.comp h_fderiv
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma hasCompactSupport_fderiv_apply_single
     {ψ : EuclN → ℝ} (hψ_cs : HasCompactSupport ψ)
@@ -61,7 +61,7 @@ private lemma hasCompactSupport_fderiv_apply_single
   hψ_cs.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma tsupport_fderiv_apply_single_subset
     (ψ : EuclN → ℝ) (l : Fin (Module.finrank ℝ E)) :
@@ -70,7 +70,7 @@ private lemma tsupport_fderiv_apply_single_subset
   tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single l 1)
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma fderiv_apply_single_swap
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (y : EuclN)
@@ -114,7 +114,7 @@ private lemma fderiv_apply_single_swap
   exact h_symm (EuclideanSpace.single j 1) (EuclideanSpace.single l 1)
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private lemma snoc_cons_eq_cons_snoc {β : Type*} {m : ℕ}
     (i : β) (dirs : Fin m → β) (l : β) :
     @Fin.snoc m.succ (fun _ => β) (Fin.cons i dirs) l =
@@ -122,7 +122,7 @@ private lemma snoc_cons_eq_cons_snoc {β : Type*} {m : ℕ}
   (Fin.cons_snoc_eq_snoc_cons (β := β) i dirs l).symm
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [I.Boundaryless] [T2Space M] in
 private lemma chosenWeakPartial'_memLp_volume_uncond
     {Ω : Set EuclN} (k : Fin (Module.finrank ℝ E)) (w : EuclN → ℝ) :
     MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k w Ω) 2
@@ -158,7 +158,7 @@ private lemma density_mul_eigenvectorChartIteratedStep_eq_indicator_numerator
   · rw [Set.indicator_of_notMem hy_K, Set.indicator_of_notMem hy_K, mul_zero]
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private theorem ibp_density_fChartEffPrev
     (g : SmoothRiemannianMetric I M) (α : M)
     {fChartEffPrev : EuclN → ℝ}
@@ -367,7 +367,7 @@ private theorem ibp_inner_j_unconditional
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma integrable_triple_helper
     {α : M} {K : Set EuclN}
     (hK_compact : IsCompact K)

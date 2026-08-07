@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -72,7 +72,6 @@ def nonautMap (a : Real) {T : Real} (hT : 0 < T) (hT1 : T ≤ 1)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u0 force)
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonautMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
     (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -95,7 +94,6 @@ theorem nonautMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonautMap_dist_le
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -214,7 +212,6 @@ theorem nonautMap_dist_le
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonautMap_contract
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -250,7 +247,6 @@ theorem nonautMap_contract
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonaut_strong_exists
     (h_compact : IsCompactOperator (tensorResolventL2

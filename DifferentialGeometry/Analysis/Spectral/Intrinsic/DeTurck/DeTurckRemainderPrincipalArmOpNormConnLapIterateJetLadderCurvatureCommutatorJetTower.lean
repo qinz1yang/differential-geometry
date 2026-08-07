@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 section BalLadder
 
@@ -552,8 +552,8 @@ lemma exists_iteratedCovGrad_rawTensorConnLapSmooth_window_le (g : SmoothRiemann
       ≤ (1 + 2 * cG b) * Sb + KT b 0 * Sb := add_le_add hpiece1 hpiece2
     _ = (1 + 2 * cG b + KT b 0) * Sb := by ring
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma bal_iter_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [I.Boundaryless] in
+private lemma bal_iter_one [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 1 S =
       S - rawTensorConnLapSmooth (I := I) g r s S := by
@@ -561,8 +561,8 @@ private lemma bal_iter_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
     oneMinusConnLapSmoothIter_zero]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma bal_iter_succ_inner (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
+omit [I.Boundaryless] in
+private lemma bal_iter_succ_inner [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s (q + 1) S =
       oneMinusConnLapSmoothIter (I := I) g r s q S -

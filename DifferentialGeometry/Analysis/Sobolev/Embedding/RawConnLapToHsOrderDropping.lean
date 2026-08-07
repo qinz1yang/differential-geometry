@@ -46,7 +46,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 section RawConnLapOrderDrop
 
@@ -73,8 +73,8 @@ private noncomputable def rawConnLapPull (g : SmoothRiemannianMetric I M) (r s :
     ∘ (extChartAt I α).symm
     ∘ (toEuclidean (E := E)).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
+    [T2Space M] in
 private lemma rawConnLapPull_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -85,8 +85,8 @@ private lemma rawConnLapPull_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
       rawConnLapPull (I := I) (M := M) g r s T α Idx Jdx := rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma rawConnLapPull_contDiffOn (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -99,7 +99,7 @@ private lemma rawConnLapPull_contDiffOn (g : SmoothRiemannianMetric I M) (r s : 
   rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma rawConnLapPull_contDiffAt (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -119,16 +119,16 @@ private noncomputable def rawConnLapRhsHsContent (g : SmoothRiemannianMetric I M
             (fun i => EuclideanSpace.basisFun
               (Fin (Module.finrank ℝ E)) ℝ (bIdx i))| ^ 2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
+    [T2Space M] in
 private lemma rawConnLapRhsHsContent_nonneg (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (T : Integral.L2.SmoothCcTensor g r s) (α : M) (y : EuclN) :
     0 ≤ rawConnLapRhsHsContent (I := I) (M := M) g r s k T α y :=
   Finset.sum_nonneg (fun _ _ => Finset.sum_nonneg
     (fun _ _ => Finset.sum_nonneg (fun _ _ => sq_nonneg _)))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
+    [T2Space M] in
 private lemma rawConnLapPull_iteratedFDeriv_norm_sq_le_rhsContent
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -206,16 +206,16 @@ private lemma euclidPartial_iteratedFDeriv_norm_le
           ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ u z) y‖ := h_clm
     _ = ‖iteratedFDeriv ℝ (m + 1) u y‖ := by rw [h_single_norm, one_mul, h_fderiv_iter]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma contDiffAt_of_contDiffOn_chartTarget (α : M)
     {C : EuclN → ℝ} (hC : ContDiffOn ℝ ∞ C (chartTargetEuclid (I := I) (M := M) α))
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     ContDiffAt ℝ ∞ C y :=
   hC.contDiffAt ((chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hy)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma rawConnLapProductSummand_iteratedFDeriv_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (C : EuclN → ℝ) (hC : ContDiffOn ℝ ∞ C (chartTargetEuclid (I := I) (M := M) α))
@@ -258,8 +258,8 @@ private lemma rawConnLapProductSummand_iteratedFDeriv_norm_le
             (rawConnLapPull (I := I) (M := M) g r s T α q.1 q.2) y‖ :=
         mul_le_mul_of_nonneg_left hFa_le h_coeff_nn
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma chartPushedRaw_eventuallyEq_rawConnLapPull
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -275,7 +275,7 @@ private lemma chartPushedRaw_eventuallyEq_rawConnLapPull
   rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma rawConnLapPull_contDiffAt'
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -284,8 +284,8 @@ private lemma rawConnLapPull_contDiffAt'
     ContDiffAt ℝ ∞ (rawConnLapPull (I := I) (M := M) g r s T α q.1 q.2) y :=
   rawConnLapPull_contDiffAt (I := I) (M := M) g r s T α q.1 q.2 hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma euclidPartialIter_chartPushedRaw_norm_le_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -301,7 +301,7 @@ private lemma euclidPartialIter_chartPushedRaw_norm_le_zero
       ℝ m |>.self_of_nhds]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma euclidPartialIter_chartPushedRaw_norm_le_one
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -335,7 +335,7 @@ private lemma euclidPartialIter_chartPushedRaw_norm_le_one
     (rawConnLapPull_contDiffAt' (I := I) (M := M) g r s T α q hz) m
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma euclidPartialIter_chartPushedRaw_norm_le_two
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -393,7 +393,7 @@ private lemma euclidPartialIter_chartPushedRaw_norm_le_two
     _ = ‖iteratedFDeriv ℝ (m + 2) u z‖ := by ring_nf
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma chartPushedRaw_raw_contDiffAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -406,7 +406,7 @@ private lemma chartPushedRaw_raw_contDiffAt
     ((chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hz)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma euclidPartialIter1_chartPushedRaw_contDiffAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -420,7 +420,7 @@ private lemma euclidPartialIter1_chartPushedRaw_contDiffAt
     (chartPushedRaw_raw_contDiffAt (I := I) (M := M) g r s T α q hz)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma euclidPartialIter2_chartPushedRaw_contDiffAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -448,8 +448,8 @@ private lemma invGramCoeffPull_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α) :=
   chartInvGramMatrix_pullback_contDiffOn_chartTarget (I := I) (M := M) g α k l
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
+    [T2Space M] in
 private lemma invGramCoeffPull_at_b
     (g : SmoothRiemannianMetric I M) (α : M)
     (k l : Fin (Module.finrank ℝ E))
@@ -876,8 +876,8 @@ private lemma exists_iteratedFDeriv_norm_bound_on_compact
     exact (hCl l y hy).trans
       (Finset.le_sup' Cl (Finset.mem_range.mpr (by omega)))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma chartTargetEuclid_preimage_mem_goodSet
     (α : M) {y : EuclN} (hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ chartLeviCivitaGoodSet (I := I) α ∧
@@ -895,8 +895,8 @@ private lemma chartTargetEuclid_preimage_mem_goodSet
     (extChartAt I α).right_inv hy_pre
   rw [h_round]; simp
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma block_iteratedFDeriv_norm_le
     {ι : Type*} [Fintype ι] (α : M) (Cf Faf : ι → EuclN → ℝ) {y : EuclN}
     (hCf_cd : ∀ i : ι, ContDiffOn ℝ ∞ (Cf i) (chartTargetEuclid (I := I) (M := M) α))
@@ -1357,7 +1357,7 @@ theorem exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent
     rw [h_tsupp_empty] at hx_supp
     exact hx_supp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma rawConnLapPouPull_eq_zero_off_kernel (α : M) (y : EuclN)
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hy_off : y ∉ chartImagePOUTsupport (I := I) (M := M) α) :
@@ -1377,7 +1377,7 @@ private lemma rawConnLapPouPull_eq_zero_off_kernel (α : M) (y : EuclN)
   refine ⟨(extChartAt I α) b, ⟨b, hb_supp, rfl⟩, ?_⟩
   rw [h_round]; simp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma rawConnLapPouPullCont (α : M) :
     ContinuousOn
       (fun y : EuclN =>
@@ -1398,7 +1398,7 @@ private lemma rawConnLapPouPullCont (α : M) :
   exact hPOU_cont.comp_continuousOn h_inner
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma rawConnLapPullIntegrand_aemeasurable
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -1439,7 +1439,7 @@ private lemma rawConnLapPullIntegrand_aemeasurable
     (h_real.aestronglyMeasurable h_open.measurableSet).aemeasurable
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma rawConnLapSumIntegrals_eq_integral_sum
     (g : SmoothRiemannianMetric I M) (r' s' : ℕ) (S : Integral.L2.SmoothCcTensor g r' s')
     (α : M) (K : ℕ) :
@@ -1636,7 +1636,7 @@ private lemma rawConnLapSumIntegrals_eq_integral_sum
         rw [Finset.mul_sum,
           ENNReal.ofReal_sum_of_nonneg (fun bIdx _ => mul_nonneg hρ_nn (sq_nonneg _))]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma rawConnLap_pointwise_integrand_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (B : ℝ) (hB_nn : 0 ≤ B)
@@ -1774,7 +1774,6 @@ private lemma rawConnLap_pointwise_integrand_le
       rawConnLapPouPull_eq_zero_off_kernel (I := I) (M := M) α y hy hyK
     rw [hρ0]; simp
 
-omit [CompactSpace M] in
 private lemma rawConnLap_per_alpha_inner_bound
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : Integral.L2.SmoothCcTensor g r s)
     (α : M) (B : ℝ) (hB_nn : 0 ≤ B)
@@ -2090,7 +2089,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 
@@ -2098,7 +2097,7 @@ set_option backward.isDefEq.respectTransparency false
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma rawConnLap_smooth_witness (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : Integral.L2.SmoothCcTensor g r s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -2108,7 +2107,7 @@ private lemma rawConnLap_smooth_witness (g : SmoothRiemannianMetric I M) {r s : 
   rawTensorConnLap_contMDiff (I := I) g r s
     (fun z : M => T.toSection z) T.toSection.contMDiff_toFun
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T T' : Integral.L2.SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (T - T')
@@ -2162,7 +2161,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 

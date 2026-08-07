@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -100,8 +100,8 @@ lemma euclidPartial_zero_off_tsupport
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
     fderiv_const_apply, ContinuousLinearMap.zero_apply]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 lemma densityOnEuclid_mul_test_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
@@ -117,8 +117,8 @@ lemma densityOnEuclid_mul_test_memLp
   rw [chartL2Measure]
   exact (h_cd.continuous.memLp_of_hasCompactSupport h_cs).restrict _
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma test_memLp
     (α : M) {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ) :
     MemLp ψ 2 (chartL2Measure (I := I) (M := M) α) := by
@@ -132,7 +132,7 @@ private def principalSymbolTest
     weightedInvGramOnEuclid (I := I) g α i' j y *
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma principalSymbolTest_memLp
@@ -195,8 +195,8 @@ private lemma principalSymbolTest_memLp
     exact hcd.continuous.memLp_of_hasCompactSupport hcs
   exact hsum_memLp.restrict _
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 lemma density_coeff_test_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : EuclN → ℝ}
@@ -227,8 +227,8 @@ lemma pouSmul_eq_scalarSmul
     pouSmul (I := I) (M := M) g r s α S =
       scalarSmul (I := I) (M := M) g r s (chartAtlasPOU I M α) S := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 lemma density_memLp2_test_integrable
     (g : SmoothRiemannianMetric I M) (α : M) {w : EuclN → ℝ}
     (hw : MemLp w 2
@@ -256,8 +256,8 @@ lemma density_memLp2_test_integrable
   simp only []
   ring
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 lemma density_coeff_memLp2_test_integrable
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : EuclN → ℝ}

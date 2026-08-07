@@ -19,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -144,7 +144,6 @@ namespace tensorHs
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weight_mul_coeff_sq_le_normSq {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -157,7 +156,6 @@ lemma weight_mul_coeff_sq_le_normSq {σ : ℝ}
   positivity
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeff_tendsto_zero_of_norm_tendsto_zero {σ : ℝ}
     (d : ℕ → tensorHs (I := I) (M := M) g r s σ)
@@ -449,7 +447,6 @@ theorem tensorHs_norm_tendsto_zero_of_low_tendsto_of_uniform
   exact tendsto_of_coeff (I := I) (M := M) hσ'σ'' d hC hCbd hcoeff0
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_le_sqrt_of_weightedMass_le
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ'' : ℝ}

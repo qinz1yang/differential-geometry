@@ -72,7 +72,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [BoundarylessManifold I M]
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
@@ -93,7 +93,7 @@ noncomputable def connAddTarget
     (g : SmoothRiemannianMetric I M) (p : M) : E × E → E :=
   fun z => (connAddChart (I := I) g p z).2
 
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] in
 /-- At the zero section, the derivative of the target coordinate of the local addition is
 `(a, b) |-> a + b`.  This is the target projection of the unipotent derivative of
 `connDiagExp`. -/
@@ -106,7 +106,7 @@ theorem connAddTarget_fd
   simpa only [connAddTarget, connAddZeroCoord] using
     (connAdd_fderiv (I := I) g p n hn).snd
 
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] in
 /-- The local-addition target has identity derivative in a purely vertical direction at the
 zero section.  This is the precise first-order fact that keeps the highest spatial derivative
 of the section unknown unchanged. -/
@@ -127,15 +127,15 @@ abbrev hmfState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
   lowerStateRS (I := I) (M := M) g₀ 0 1 a R
 
 /-- The vector field represented by a smooth mixed `(0, 1)` tensor state. -/
-noncomputable def hmfUnknown
+noncomputable def hmfUnknown [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
   inverseMetricSharpFib (I := I) g₀ x
     (unitEvalSection (I := I) (M := M) g₀ 1 S x)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem hmfUnknown_add
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [T2Space M] [BoundarylessManifold I M] in
+theorem hmfUnknown_add [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S T : SmoothCcTensor g₀ 0 1)
     (x : M) :
   hmfUnknown (I := I) g₀ (S + T) x =
@@ -148,9 +148,9 @@ theorem hmfUnknown_add
     _
   rw [map_add]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem hmfUnknown_smul
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [T2Space M] [BoundarylessManifold I M] in
+theorem hmfUnknown_smul [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor g₀ 0 1)
     (x : M) :
   hmfUnknown (I := I) g₀ (c • S) x =
@@ -163,16 +163,16 @@ theorem hmfUnknown_smul
 
 /-- At each point, realization of a lowered HMF tensor as a tangent vector is
 linear in the tensor argument. -/
-noncomputable def hmfUnknownLM
+noncomputable def hmfUnknownLM [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (x : M) :
     SmoothCcTensor g₀ 0 1 →ₗ[ℝ] TangentSpace I x where
   toFun S := hmfUnknown (I := I) g₀ S x
   map_add' S T := hmfUnknown_add (I := I) g₀ S T x
   map_smul' c S := hmfUnknown_smul (I := I) g₀ c S x
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-@[simp] theorem hmfUnknownLM_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [T2Space M] [BoundarylessManifold I M] in
+@[simp] theorem hmfUnknownLM_apply [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (x : M) (S : SmoothCcTensor g₀ 0 1) :
     hmfUnknownLM (I := I) g₀ x S = hmfUnknown (I := I) g₀ S x := rfl
 
@@ -180,7 +180,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
 smooth tangent section.  This is the bundle-valued regularity producer used
 when finite spectral coefficients are inserted into the exponential local
 addition. -/
-noncomputable def hmfUnknownSec
+noncomputable def hmfUnknownSec [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
   toFun := hmfUnknown (I := I) g₀ S
@@ -193,15 +193,15 @@ noncomputable def hmfUnknownSec
       (inverseMetricSharpField_contMDiff (I := I) g₀)
       (contMDiff_unitEvalSection (I := I) (M := M) g₀ 1 S)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] in
-@[simp] theorem hmfUnknownSec_apply
+omit [NeZero (Module.finrank ℝ E)]
+  [BoundarylessManifold I M] in
+@[simp] theorem hmfUnknownSec_apply [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfUnknownSec (I := I) g₀ S x = hmfUnknown (I := I) g₀ S x := rfl
 
 /-- The fixed-background principal HMF operator in the mixed-tensor carrier consumed by
 maximal regularity, realized as a vector field by the metric sharp. -/
-noncomputable def hmfPrincipal
+noncomputable def hmfPrincipal [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
   inverseMetricSharpFib (I := I) g₀ x
@@ -209,10 +209,9 @@ noncomputable def hmfPrincipal
       connLaplacianMixed (I := I) (M := M) g₀ 0 1 S.toSection x)
       (unitZeroSec (I := I) (M := M) x))
 
-omit [CompactSpace M] in
 /-- The mixed-tensor principal operator is exactly the vector connection Laplacian of the
 represented HMF unknown. -/
-theorem hmfPrincipal_eq
+theorem hmfPrincipal_eq [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfPrincipal (I := I) g₀ S x =
       connLaplacian_vector (I := I) g₀ (hmfUnknown (I := I) g₀ S) x := by
@@ -234,7 +233,7 @@ moving Christoffel symbols as strong coefficients. -/
 
 /-- The inverse-cometric-difference part of the moving HMF flux.  It inserts
 `h♯ ∘ q♭ - id` only in the domain-derivative slot of `covGrad q S`. -/
-noncomputable def hmfDiff
+noncomputable def hmfDiff [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
   operatorFieldApply (I := I) (M := M) q 2 2
@@ -246,7 +245,7 @@ noncomputable def hmfDiff
 the fixed `q⁻¹` contraction; the second is `hmfDiff`.  Together they represent contraction
 of the domain-derivative slot by `h⁻¹`, while the target covector slot and connection remain
 fixed at `q`. -/
-noncomputable def hmfFlux
+noncomputable def hmfFlux [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
   covGrad (I := I) (M := M) q 0 1 S + hmfDiff (I := I) (M := M) q h S
@@ -295,7 +294,7 @@ theorem hmfFlux_apply
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] in
 private theorem hmfRaised_split
     (q h : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) q h =
@@ -321,7 +320,7 @@ private theorem hmfRaised_split
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] in
 private theorem hmfSlot_add
     (q : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -348,7 +347,7 @@ private theorem hmfSlot_add
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
 private theorem hmfSlot_self_app
     (q : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) :
@@ -436,7 +435,7 @@ theorem hmfFlux_smul
 
 /-- The moving mass pairing for the lowered HMF unknown.  The target fibre pairing is
 fixed at `q`, and only the integration measure moves with the domain metric `h`. -/
-noncomputable def hmfMass
+noncomputable def hmfMass [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 1 x (S.toFun x) (T.toFun x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
@@ -445,7 +444,7 @@ noncomputable def hmfMass
 `h` and fixed target metric `q`.  The moving domain enters only through the inverse-metric
 flux `hmfFlux q h S` and `dμ_h`; in particular the definition contains no `covGrad h` and
 no connection-difference coefficient. -/
-noncomputable def hmfWeakForm
+noncomputable def hmfWeakForm [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
       ((hmfFlux (I := I) (M := M) q h S).toFun x)
@@ -472,7 +471,7 @@ theorem hmfMass_time_cont
     (SmoothCcTensor.continuous_inner_cross (I := I) (M := M) S T).continuousOn.comp
       continuousOn_snd (fun _ _ => Set.mem_univ _)
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 private theorem functionRegularAt_const_time
     (f : M → ℝ) (hf : Continuous f) (t₀ : ℝ) :
     FunctionRegularAt (fun _ : ℝ => f) t₀ := by
@@ -519,9 +518,9 @@ theorem hmfMass_hasDerivAt
     (hasDerivAt_const (x := t₀) (c := f x)).deriv
   simpa only [hmfMass, f, riemannianMeasureFamily_def, hderiv, zero_add] using hvar
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private lemma hmf_inner_int
+private lemma hmf_inner_int [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) {r s : ℕ}
     (S T : SmoothCcTensor q r s) :
     MeasureTheory.Integrable
@@ -534,9 +533,9 @@ private lemma hmf_inner_int
   exact (SmoothCcTensor.continuous_inner_cross (I := I) (M := M) S T).integrable_of_hasCompactSupport
     (SmoothCcTensor.hasCompactSupport_inner_cross (I := I) (M := M) S T)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_add_left
+theorem hmfMass_add_left [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S₁ S₂ T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q h (S₁ + S₂) T =
       hmfMass (I := I) (M := M) q h S₁ T +
@@ -548,9 +547,9 @@ theorem hmfMass_add_left
     (hmf_inner_int (I := I) (M := M) q h S₁ T)
     (hmf_inner_int (I := I) (M := M) q h S₂ T)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_smul_left
+theorem hmfMass_smul_left [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q h (c • S) T =
       c * hmfMass (I := I) (M := M) q h S T := by
@@ -559,9 +558,9 @@ theorem hmfMass_smul_left
   simp only [Pi.smul_apply, tensorInnerPointwise_smul_left,
     MeasureTheory.integral_const_mul]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_symm
+theorem hmfMass_symm [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q h S T =
       hmfMass (I := I) (M := M) q h T S := by
@@ -571,9 +570,9 @@ theorem hmfMass_symm
   exact tensorInnerPointwise_symm (I := I) (M := M) q 0 1 x
     (S.toFun x) (T.toFun x)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_add_right
+theorem hmfMass_add_right [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S T₁ T₂ : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q h S (T₁ + T₂) =
       hmfMass (I := I) (M := M) q h S T₁ +
@@ -581,9 +580,9 @@ theorem hmfMass_add_right
   rw [hmfMass_symm, hmfMass_add_left, hmfMass_symm q h T₁ S,
     hmfMass_symm q h T₂ S]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_smul_right
+theorem hmfMass_smul_right [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q h S (c • T) =
       c * hmfMass (I := I) (M := M) q h S T := by
@@ -720,11 +719,11 @@ theorem hmfWeakForm_self
   rw [hmfWeakForm, hmfFlux_self]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 /-- At the frozen metric, the moving mass pairing is exactly the established tensor
 `L²(q)` pairing. -/
-theorem hmfMass_self
+theorem hmfMass_self [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q q S T =
       tensorL2Inner (I := I) (M := M) q 0 1 S.toFun T.toFun := rfl
@@ -743,7 +742,7 @@ theorem hmfH1_self
 
 /-! ## Pointwise ellipticity and fixed-measure comparison -/
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 private lemma hmf_integral_le
     {μ ν : MeasureTheory.Measure M} {C : ℝ≥0∞}
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤) (hμν : μ ≤ C • ν)
@@ -866,9 +865,9 @@ theorem hmfFlux_diag_ge
   linarith [hmfNegDiff_self_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ S x]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_nonneg
+theorem hmfMass_nonneg [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     0 ≤ hmfMass (I := I) (M := M) q h S S := by
   unfold hmfMass
@@ -898,11 +897,11 @@ theorem hmfWeak_nonneg
     (hmfFlux_diag_ge (I := I) (M := M)
       q h k htie hδ_lt hδ_nn hδ S x)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 /-- The moving mass diagonal is controlled by the frozen mass diagonal under
 one direction of volume-measure domination. -/
-theorem hmfMass_self_le
+theorem hmfMass_self_le [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -914,10 +913,10 @@ theorem hmfMass_self_le
     (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x))
     (hmf_inner_int (I := I) (M := M) q q S S)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 /-- The reverse measure domination controls the frozen mass by the moving mass. -/
-theorem hmfMass_self_rev
+theorem hmfMass_self_rev [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -1084,20 +1083,20 @@ theorem hmfVolumeEquiv
 /-! ## Bounded smooth forms on the fixed `H¹(q)` core -/
 
 /-- Moving mass pairing on the existing smooth `H¹(q)` carrier. -/
-noncomputable def hmfMassH1
+noncomputable def hmfMassH1 [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
   hmfMass (I := I) (M := M) q h S.toCcTensor T.toCcTensor
 
 /-- Moving principal pairing on the existing smooth `H¹(q)` carrier. -/
-noncomputable def hmfFormH1
+noncomputable def hmfFormH1 [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
   hmfWeakForm (I := I) (M := M) q h S.toCcTensor T.toCcTensor
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_add_left
+private theorem hmfMassH1_add_left [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (S₁ S₂ T : SmoothCcTensorH1 q 0 1) :
     hmfMassH1 (I := I) (M := M) q h (S₁ + S₂) T =
@@ -1106,9 +1105,9 @@ private theorem hmfMassH1_add_left
   simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_add]
   exact hmfMass_add_left (I := I) (M := M) q h _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_smul_left
+private theorem hmfMassH1_smul_left [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
     hmfMassH1 (I := I) (M := M) q h (c • S) T =
@@ -1116,17 +1115,17 @@ private theorem hmfMassH1_smul_left
   simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_smul]
   exact hmfMass_smul_left (I := I) (M := M) q h c _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_symm
+private theorem hmfMassH1_symm [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensorH1 q 0 1) :
     hmfMassH1 (I := I) (M := M) q h S T =
       hmfMassH1 (I := I) (M := M) q h T S :=
   hmfMass_symm (I := I) (M := M) q h _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_add_right
+private theorem hmfMassH1_add_right [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M)
     (S T₁ T₂ : SmoothCcTensorH1 q 0 1) :
     hmfMassH1 (I := I) (M := M) q h S (T₁ + T₂) =
@@ -1135,9 +1134,9 @@ private theorem hmfMassH1_add_right
   simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_add]
   exact hmfMass_add_right (I := I) (M := M) q h _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_smul_right
+private theorem hmfMassH1_smul_right [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
     hmfMassH1 (I := I) (M := M) q h S (c • T) =
@@ -1190,9 +1189,9 @@ private theorem hmfFormH1_smul_right
   simp only [hmfFormH1, SmoothCcTensorH1.toCcTensor_smul]
   exact hmfWeak_smul_right (I := I) (M := M) q h c _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMassH1_nonneg
+theorem hmfMassH1_nonneg [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensorH1 q 0 1) :
     0 ≤ hmfMassH1 (I := I) (M := M) q h S S :=
   hmfMass_nonneg (I := I) (M := M) q h S.toCcTensor
@@ -1210,9 +1209,9 @@ theorem hmfFormH1_nonneg
   hmfWeak_nonneg (I := I) (M := M)
     q h k htie hδ_half hδ_nn hδ S.toCcTensor
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-theorem hmfMassH1_diag_le
+theorem hmfMassH1_diag_le [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1410,7 +1409,7 @@ private theorem bilin_abs_le
 
 /-- The moving mass pairing packaged as a continuous bilinear form on the
 smooth `H¹(q)` core. -/
-noncomputable def hmfMassSmooth
+noncomputable def hmfMassSmooth [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1433,9 +1432,9 @@ noncomputable def hmfMassSmooth
     ENNReal.toReal_nonneg
     (hmfMassH1_diag_le (I := I) (M := M) q h C hC0 hCtop hvol) S T
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-@[simp] theorem hmfMassSm_apply
+@[simp] theorem hmfMassSm_apply [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1446,7 +1445,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 
 /-- The moving HMF principal pairing packaged as a continuous bilinear form
 on the smooth `H¹(q)` core. -/
-noncomputable def hmfFormSmooth
+noncomputable def hmfFormSmooth [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1496,16 +1495,16 @@ omit [BoundarylessManifold I M] in
         k htie hδ_half hδ_nn hδ S T =
       hmfFormH1 (I := I) (M := M) q h S T := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-private lemma hmf_dense
+private lemma hmf_dense [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) :
     DenseRange (smoothToTensorH1Compl (I := I) (M := M) q 0 1) :=
   denseRange_smoothToTensorH1Compl (I := I) (M := M) q 0 1
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-private lemma hmf_inducing
+private lemma hmf_inducing [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) :
     IsUniformInducing
       (smoothToTensorH1Compl (I := I) (M := M) q 0 1) := by
@@ -1536,7 +1535,7 @@ private local instance smoothCcTensorH1DualComplete
 
 /-- Extend a continuous bilinear form from the smooth `H¹(q)` core in both
 variables.  The final flip preserves the original argument order. -/
-private noncomputable def hmfExtend
+private noncomputable def hmfExtend [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : SmoothCcTensorH1 q 0 1 →L[ℝ]
       SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ) :
@@ -1548,9 +1547,9 @@ private noncomputable def hmfExtend
           (smoothToTensorH1Compl (I := I) (M := M) q 0 1)))
       (smoothToTensorH1Compl (I := I) (M := M) q 0 1))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-private theorem hmfExtend_coe
+private theorem hmfExtend_coe [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : SmoothCcTensorH1 q 0 1 →L[ℝ]
       SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ)
@@ -1573,7 +1572,7 @@ private theorem hmfExtend_coe
 
 /-- Moving mass pairing extended continuously to `TensorH1Compl q 0 1` in
 both variables. -/
-noncomputable def hmfMassCompl
+noncomputable def hmfMassCompl [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1582,9 +1581,9 @@ noncomputable def hmfMassCompl
   hmfExtend (I := I) (M := M) q
     (hmfMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-@[simp] theorem hmfMassCompl_coe
+@[simp] theorem hmfMassCompl_coe [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1598,7 +1597,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 
 /-- Moving HMF principal pairing extended continuously to
 `TensorH1Compl q 0 1` in both variables. -/
-noncomputable def hmfFormCompl
+noncomputable def hmfFormCompl [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤

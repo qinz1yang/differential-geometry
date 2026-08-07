@@ -43,10 +43,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
-omit [CompactSpace M] [I.Boundaryless] in
-private theorem oneMinusConnLapSmoothIter_succ'
+omit [I.Boundaryless] in
+private theorem oneMinusConnLapSmoothIter_succ' [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (k : ℕ) (S : SmoothCcTensor g₀ 0 2) :
     oneMinusConnLapSmoothIter (I := I) g₀ 0 2 (k + 1) S =
       oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k (oneMinusConnLapSmooth (I := I) g₀ 0 2 S) := by

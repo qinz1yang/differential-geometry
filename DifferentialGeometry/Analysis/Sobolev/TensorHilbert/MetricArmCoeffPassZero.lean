@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 section NormedDomReindexing
@@ -43,13 +43,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem rsDomDomCongrFib_contMDiff (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : Equiv.Perm (Fin s)) (R : SmoothCcTensor g r s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -114,7 +114,7 @@ def rsDomDomCongrSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma rsDomDomCongrSection_toSection (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : Equiv.Perm (Fin s)) (R : SmoothCcTensor g r s) (x : M) :
     (rsDomDomCongrSection (I := I) (M := M) g r s σ R).toSection x =
@@ -130,7 +130,7 @@ def armSlotEndoPassZeroCc (g : SmoothRiemannianMetric I M)
     (armSlotEndoCc (I := I) (M := M) g 1 Arm)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma armSlotEndoPassZeroCc_toSection (g : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
@@ -140,7 +140,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
         ((armSlotEndoCc (I := I) (M := M) g 1 Arm).toSection x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem toModel_appCcRS_armSlotEndoPassZeroCc_eval (g : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
@@ -256,7 +256,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq
   exact riemannianFiberNormSq_domDomCongr_covariant (I := I) (M := M) g 2 (3 + j) x τ _
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma metricCovDeriv_symm_right
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -269,7 +269,7 @@ private lemma metricCovDeriv_symm_right
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma metricDiffCovDeriv_symm_right
     (g₁ g₀ : SmoothRiemannianMetric I M)
     (X Y Z : Π b : M, TangentSpace I b) (x : M) :
@@ -281,7 +281,6 @@ private lemma metricDiffCovDeriv_symm_right
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem endoCovariantDerivative_gInvDiffRaisedEndoField_resolvent
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (V W Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :

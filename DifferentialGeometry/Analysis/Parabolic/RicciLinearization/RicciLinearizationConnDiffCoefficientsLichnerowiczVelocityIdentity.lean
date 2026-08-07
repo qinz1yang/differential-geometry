@@ -41,7 +41,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -52,7 +52,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -71,7 +71,7 @@ def velocitySecondCovGradCc (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_smul_two (g₀ : SmoothRiemannianMetric I M)
     (c : ℝ) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     unitModel (I := I) (M := M) g₀ 2 (c • T) x =
@@ -82,7 +82,7 @@ private lemma unitModel_smul_two (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_add_two (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (x : M) :
     unitModel (I := I) (M := M) g₀ 2 (S + S') x =
@@ -93,7 +93,7 @@ private lemma unitModel_add_two (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma unitModel_add_two_apply (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
@@ -102,7 +102,7 @@ lemma unitModel_add_two_apply (g₀ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma ccTensorBilin_sub_two (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (b : M) (p q : TangentSpace I b) :
     smoothCcTensorBilinForm (I := I) g₀ (T - T') b p q =
@@ -132,7 +132,7 @@ private lemma zero_mem_realizedSmallSet' {δ δ' : ℝ} (hδ'_lt : δ' < 1) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma dualToCotangent_smul_c {x : M} (c : ℝ) (α : Module.Dual ℝ (TangentSpace I x)) :
     dualToCotangent (I := I) (x := x) (c • α)
       = c • dualToCotangent (I := I) (x := x) α := by
@@ -142,7 +142,7 @@ private lemma dualToCotangent_smul_c {x : M} (c : ℝ) (α : Module.Dual ℝ (Ta
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma ccTensorBilin_smul_c (g : SmoothRiemannianMetric I M) (c : ℝ)
     (S : SmoothCcTensor g 0 2) (b : M) (p q : TangentSpace I b) :
     smoothCcTensorBilinForm (I := I) g (c • S) b p q = c * smoothCcTensorBilinForm (I := I) g S b p
@@ -170,7 +170,7 @@ private lemma iteratedCovGrad_smul_c (g : SmoothRiemannianMetric I M) (r s j : �
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_smul_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
     (c : ℝ) (W : SmoothCcTensor g 0 n) (x : M) :
     unitModel (I := I) (M := M) g n (c • W) x =
@@ -221,7 +221,7 @@ private lemma koszulPair_eq_smul_dual_linearizedKoszul
   rw [hlm, dualToCotangent_smul_c]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma unitEval_bilin_eq (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (y : M) (m : Fin 2 → TangentSpace I y) :
     (show ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I y) ℝ from
@@ -289,12 +289,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 lemma unitEval_tensorSectionMDiffAt (g : SmoothRiemannianMetric I M) (n : ℕ)
     (W : SmoothCcTensor g 0 n) (x : M) :
     TensorSectionMDiffAt (I := I) n
@@ -334,7 +334,7 @@ lemma unitModel_covGrad_eval (g : SmoothRiemannianMetric I M) (n : ℕ)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma inverseMetricSharpFib_dualToCotangent (g : SmoothRiemannianMetric I M)
     (x : M) (φ : Module.Dual ℝ (TangentSpace I x)) :
     inverseMetricSharpFib (I := I) g x (dualToCotangent (I := I) φ) =
@@ -343,7 +343,7 @@ private lemma inverseMetricSharpFib_dualToCotangent (g : SmoothRiemannianMetric 
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma cotangentToCLM_smul_c {x : M} (c : ℝ) (β : Tensor0SBundle.Tensor0SSpace 1 I x) :
     cotangentToCLM (I := I) (c • β) = c • cotangentToCLM (I := I) β := by
   apply ContinuousLinearMap.ext
@@ -906,7 +906,7 @@ private def sharpCovCLM (g₁ : SmoothRiemannianMetric I M) (x : M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma sharpCovCLM_apply (g₁ : SmoothRiemannianMetric I M) (x : M) (φ : E →L[ℝ] ℝ) :
     sharpCovCLM (I := I) (M := M) g₁ x φ =
       cometricLmodel (I := I) g₁ x
@@ -914,7 +914,7 @@ private lemma sharpCovCLM_apply (g₁ : SmoothRiemannianMetric I M) (x : M) (φ 
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma inner_sharpCovCLM (g₁ : SmoothRiemannianMetric I M) (x : M)
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I x) :
     g₁.inner x (sharpCovCLM (I := I) (M := M) g₁ x φ) u = φ (u : E) := by
@@ -938,7 +938,7 @@ end NormedContinuousDualBasis
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma sharp_dual_coeff_symm (g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) (k l : Fin (Module.finrank ℝ E)) :
     B.cDualBasis l (sharpCovCLM (I := I) (M := M) g₁ x (B.cDualBasis k)) =
@@ -951,7 +951,7 @@ private lemma sharp_dual_coeff_symm (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma sharpCov_basis_expand (g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) (k : Fin (Module.finrank ℝ E)) :
     sharpCovCLM (I := I) (M := M) g₁ x (B.cDualBasis k) =
@@ -972,7 +972,7 @@ private lemma sharpCov_basis_expand (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma bilinCLM_diag_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) (Λ : E →L[ℝ] E →L[ℝ] ℝ) :
     (∑ k : Fin (Module.finrank ℝ E),
@@ -1012,7 +1012,7 @@ private lemma bilinCLM_diag_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma slotPair_trace_basis_indep (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) :
     (∑ i : Fin (Module.finrank ℝ E),
@@ -1043,7 +1043,7 @@ private lemma slotPair_trace_basis_indep (g₁ : SmoothRiemannianMetric I M) (x 
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma slotPair_trace_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) :
     (∑ i : Fin (Module.finrank ℝ E),
@@ -1076,7 +1076,7 @@ private lemma slotPair_trace_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma appCc_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ Ψ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (Φ - Ψ) W =
@@ -1098,7 +1098,7 @@ private lemma appCc_sub_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma appCc_smul_left' (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (c • Φ) W =
@@ -1115,7 +1115,7 @@ private lemma appCc_smul_left' (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_sub_gen (g : SmoothRiemannianMetric I M) {n : ℕ}
     (S S' : SmoothCcTensor g 0 n) (x : M) :
     unitModel (I := I) (M := M) g n (S - S') x =

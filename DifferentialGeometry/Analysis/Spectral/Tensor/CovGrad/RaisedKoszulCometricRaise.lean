@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -69,7 +69,7 @@ def cometricRaiseSlot0Field (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 @[simp] lemma cometricRaiseSlot0Field_toSection (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g₀ 0 (s + 2)) (x : M) :
     (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection x =
@@ -78,7 +78,7 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
           (unitTensor (I := I) (M := M) x)) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma cometricRaiseSlot0Fib_clm_apply (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 2) I x) (om : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from

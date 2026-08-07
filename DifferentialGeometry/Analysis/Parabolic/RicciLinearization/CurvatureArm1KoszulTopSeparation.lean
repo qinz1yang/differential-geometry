@@ -27,12 +27,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma arm1NormSq_eq_integral (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+private lemma arm1NormSq_eq_integral [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) :
     ‖C‖ ^ 2 = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (C.toSection x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by

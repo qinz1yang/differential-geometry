@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -56,7 +56,7 @@ lemma ae_eq_zero_off_of_tendsto_Lp
   exact tendsto_nhds_unique h_lim h_const
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartPulledWeightedMeasure_restrict_le_volume_of_compact
     {g : SmoothRiemannianMetric I M} (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K) (hK_meas : MeasurableSet K)
@@ -89,7 +89,7 @@ private lemma chartPulledWeightedMeasure_restrict_le_volume_of_compact
   exact h_pointwise_bd.trans (le_of_eq h_const_eval)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem memLp_chartPulledWeightedMeasure_of_memLp_volume_of_ae_zero_off_compact
     (g : SmoothRiemannianMetric I M) (α : M) {w : EuclN → ℝ}
     {K : Set EuclN} (hK_compact : IsCompact K) (hK_meas : MeasurableSet K)
@@ -472,7 +472,7 @@ theorem weightedGradCoeffDivLimit_memLp_weighted_unconditional
     h_plain
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem memLp_weighted_contDiffOn_mul
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : EuclN → ℝ}
@@ -533,7 +533,7 @@ theorem memLp_weighted_contDiffOn_mul
   exact MemLp.ae_eq h_prod_eq.symm h_bdd_mul
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma chartPulledWeightedMeasure_restrict_absolutelyContinuous
     (g : SmoothRiemannianMetric I M) (α : M) :
     (chartPulledWeightedMeasure (I := I) g α).restrict

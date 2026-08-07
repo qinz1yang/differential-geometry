@@ -34,7 +34,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_loc_of_iterated_diff_data_and_uniform_bound
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₂ : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {Ω'' : Set EuclN} (hΩ''_open : IsOpen Ω'')
@@ -67,7 +67,7 @@ theorem chart_loc_of_iterated_diff_data_and_uniform_bound
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_weak_second_partial_of_iterated_diff_data_explicit
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₀ : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (D₀_l : DiffChartBilinearH1ComplData (I := I) (M := M) g α)

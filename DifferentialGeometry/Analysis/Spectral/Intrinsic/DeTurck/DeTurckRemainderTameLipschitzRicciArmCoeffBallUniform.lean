@@ -87,7 +87,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance tensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
@@ -98,7 +98,7 @@ private local instance tensorRSModelNormedSpace (r s : ℕ) :
   Tensor0SBundle.tensorRSModel_normedSpace r s
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma unitModel_sub_local (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S S' : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (S - S') x =
@@ -116,7 +116,7 @@ lemma unitModel_sub_local (g : SmoothRiemannianMetric I M) (s : ℕ)
   rw [Tensor0SSpace.toModel_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma unitModel_add_local (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S S' : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (S + S') x =
@@ -134,7 +134,7 @@ lemma unitModel_add_local (g : SmoothRiemannianMetric I M) (s : ℕ)
   rw [Tensor0SSpace.toModel_add]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma threeArmCoeffSum_rfns_le (g₀ : SmoothRiemannianMetric I M) {r s : ℕ}
     (R L : SmoothCcTensor g₀ r s) (ΛR ΛL : ℝ) (x : M)
@@ -159,7 +159,7 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma riemannianFiberNormSq_smul_value_tame
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (c : ℝ)
     (v : TensorRSSpace r s I x) :
@@ -172,7 +172,7 @@ lemma riemannianFiberNormSq_smul_value_tame
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma unitModel_smul_tame (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (c : ℝ) (T : SmoothCcTensor g₀ 0 s) (x : M) :
     unitModel (I := I) (M := M) g₀ s (c • T) x =
@@ -189,7 +189,7 @@ private lemma unitModel_smul_tame (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma appCc_smul_left_tame (g : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (Φ : SmoothCcTensor g r 2) (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r 2 (c • Φ) W =
@@ -206,7 +206,7 @@ private lemma appCc_smul_left_tame (g : SmoothRiemannianMetric I M) (r : ℕ)
   rw [ContinuousLinearMap.smul_comp]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma unitModel_appCc_smul_left_apply_tame (g : SmoothRiemannianMetric I M) (r : ℕ)
     (c : ℝ) (Φ : SmoothCcTensor g r 2) (W : SmoothCcTensor g 0 r)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -215,7 +215,7 @@ lemma unitModel_appCc_smul_left_apply_tame (g : SmoothRiemannianMetric I M) (r :
   rw [appCc_smul_left_tame, unitModel_smul_tame, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma unitModel_add2_apply_tame (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
@@ -223,7 +223,7 @@ lemma unitModel_add2_apply_tame (g₀ : SmoothRiemannianMetric I M)
   rw [unitModel_add_local, ContinuousMultilinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma threeArm_unitModel_appCc_intervalIntegrable_tame
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r 2) (W : SmoothCcTensor g₀ 0 r)

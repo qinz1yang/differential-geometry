@@ -35,16 +35,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 
-omit [CompactSpace M] in
 /-- The inverse of a harmonic-map heat-flow gauge pulls a Ricci flow back to
 a Ricci--DeTurck solution relative to the fixed target metric.
 
 The sign is fixed by `hmf_neg_gauge`; `symm_gauge_vel` differentiates the
 inverse family; and `push_deTurckVF` identifies the pushed-forward source
 DeTurck field with the target DeTurck field of the inverse-pulled metric. -/
-theorem hmf_inverse_DT
+theorem hmf_inverse_DT [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

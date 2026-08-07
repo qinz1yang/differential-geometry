@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -217,7 +217,7 @@ noncomputable def tensor3rdCurvBracket
             (VectorField.mlieBracket I (smoothOrthoFrame (I := I) g x i) W) T) x
           (smoothOrthoFrame (I := I) g x i x))
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem Tensor3rdCurv_eq_genuine_add_bracket
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -231,7 +231,7 @@ theorem Tensor3rdCurv_eq_genuine_add_bracket
   refine Finset.sum_congr rfl (fun i _ => ?_)
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem frame_trace_thirdCovDeriv_defect_eq_genuine_add_bracket
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {W : Π b : M, TangentSpace I b} {T : Π b : M, TensorRSSpace r s I b} {x : M}
@@ -255,7 +255,7 @@ theorem frame_trace_thirdCovDeriv_defect_eq_genuine_add_bracket
     Tensor3rdCurv_eq_genuine_add_bracket (I := I) g r s W T x]
   abel
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_tensor3rdCurvGenuine_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -327,7 +327,7 @@ theorem riemannianFiberNormSq_tensor3rdCurvGenuine_le
         mul_le_mul_of_nonneg_left hsum_le hn_nn
     _ = (2 * (n : ℝ)) * (n : ℝ) * (cR + cdR) := by ring
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem tensor3rdCurv_pure_R_eq_riemannOp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {W : Π b : M, TangentSpace I b} {T : Π b : M, TensorRSSpace r s I b} {x : M}

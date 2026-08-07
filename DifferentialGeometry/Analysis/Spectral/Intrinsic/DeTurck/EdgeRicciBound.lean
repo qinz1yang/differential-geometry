@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -62,7 +62,7 @@ private local instance ricTensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private lemma ric_symm_eq (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -95,7 +95,7 @@ private lemma ric_symm_eq (g : SmoothRiemannianMetric I M)
     show (1 / 2 : Real) * 2 = 1 by norm_num, one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private lemma ric_app_le (g : SmoothRiemannianMetric I M)
     (r s : Nat) (Phi : SmoothCcTensor g r s)
     (W : SmoothCcTensor g 0 r) (x : M) :
@@ -505,7 +505,7 @@ theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
       exact congrArg (fun z : Real => C ^ 2 * z) hn.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma ric_bound_mono
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {a b : Real} (hab : a ≤ b)

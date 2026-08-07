@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [T2Space M]
 
 local instance tangentSpaceNormedAddCommGroup (y : M) :
     NormedAddCommGroup (TangentSpace I y) :=
@@ -56,7 +56,7 @@ lemma iSup_iSup_normalized_le_opNorm
   intro b
   exact normalized_bilinear_le_opNorm Δ a b
 
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] in
 theorem bddAbove_iSup_normalized_of_locally_bounded_opNorm
     (Δ : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (h_local_bound : ∀ y₀ : M, ∃ W : Set M, IsOpen W ∧ y₀ ∈ W ∧
@@ -109,7 +109,7 @@ theorem bddAbove_iSup_normalized_of_locally_bounded_opNorm
     exact Finset.le_sup' Cₐ hy₀
   linarith
 
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] in
 theorem bddAbove_iSup_normalized_of_continuous_opNorm
     (Δ : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (h_cont : Continuous (fun b : M => ‖Δ b‖)) :
@@ -128,7 +128,7 @@ theorem bddAbove_iSup_normalized_of_continuous_opNorm
   refine ⟨W, hW_open, hy₀_mem, ‖Δ y₀‖ + 1, by positivity, fun b hb => ?_⟩
   exact hW_sub hb
 
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] in
 theorem bddAbove_opNorm_range_of_locally_bounded
     (Δ : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (h_local_bound : ∀ y₀ : M, ∃ W : Set M, IsOpen W ∧ y₀ ∈ W ∧
@@ -161,7 +161,7 @@ theorem bddAbove_opNorm_range_of_locally_bounded
   obtain ⟨y₀, hy₀, hy_W⟩ := Set.mem_iUnion₂.mp (hS_sub (Set.mem_univ y))
   exact (hΔ_bound y₀ y hy_W).trans (Finset.le_sup' Cₐ hy₀)
 
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] in
 theorem bddAbove_opNorm_range_of_continuous_opNorm
     (Δ : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (h_cont : Continuous (fun b : M => ‖Δ b‖)) :

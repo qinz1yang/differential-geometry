@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -124,7 +124,7 @@ lemma curry_covGrad_unit_eval_general
   simp only [Fin.cons_zero, Matrix.vecTail]
   rw [show (Fin.cons w m ∘ Fin.succ) = m from funext (fun j => by simp [Fin.cons_succ])]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covDeriv_unit_eval_eq
     (g : SmoothRiemannianMetric I M)
@@ -148,7 +148,7 @@ lemma covDeriv_unit_eval_eq
       (LeviCivita (I := I) g) x v]
   rw [map_zero, sub_zero]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covDeriv_unit_eval_eq_genVal
     (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -172,7 +172,7 @@ lemma covDeriv_unit_eval_eq_genVal
       (LeviCivita (I := I) g) x v]
   rw [map_zero, sub_zero]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covApply_unit_eval_eq
     (g : SmoothRiemannianMetric I M)
@@ -261,7 +261,7 @@ lemma tensorSecondCovDeriv_covGrad_unit_eval
   · exact covDeriv_unit_eval_eq (I := I) (M := M) g
       (covGrad (I := I) (M := M) g 0 2 T₀).toSection x ((LeviCivita (I := I) g).toFun B x (B x))
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection
     (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -412,7 +412,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       covApply (tensorCov (I := I) g 0 (s + 1)) X
         (fun z : M => (covGrad (I := I) (M := M) g 0 s S).toSection z) y := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covApply_unit_eval_eq_genVal
     (g : SmoothRiemannianMetric I M) (t : ℕ)

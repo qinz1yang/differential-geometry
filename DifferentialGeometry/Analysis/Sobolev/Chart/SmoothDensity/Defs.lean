@@ -124,7 +124,7 @@ lemma tsupport_chartAtlasPOU_mul_subset_chartAt_source
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
 lemma hasCompactSupport_chartAtlasPOU_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (α : M) (u : M → ℝ) :
     HasCompactSupport (fun x : M =>
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x *

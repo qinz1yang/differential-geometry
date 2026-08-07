@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -42,7 +42,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-noncomputable def chartSobolevRawNormPou
+noncomputable def chartSobolevRawNormPou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     ℝ≥0∞ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -77,12 +77,12 @@ omit [NeZero (Module.finrank ℝ E)] in
           ∂(volume : Measure EuclN) := rfl
 
 variable (I M) in
-private noncomputable def chartAtlasPOU_tsupp_nonempty
+private noncomputable def chartAtlasPOU_tsupp_nonempty [SigmaCompactSpace M]
     (α : M) : Prop :=
   (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty
 
 variable (I M) in
-noncomputable def chartDensitySupPou
+noncomputable def chartDensitySupPou [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) : ℝ :=
   open Classical in
   if h : chartAtlasPOU_tsupp_nonempty (I := I) (M := M) α then
@@ -124,7 +124,7 @@ lemma chartDensitySupPou_le
   convert h using 2
 
 variable (I M) in
-noncomputable def chartSobolevRawNormPouBridgeConstant
+noncomputable def chartSobolevRawNormPouBridgeConstant [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) : ℝ :=
   ((chartAtlasPOU_finset (I := I) (M := M)).card : ℝ) *
     ((euclideanHaarFactor E : ℝ) *
@@ -285,9 +285,9 @@ private lemma manifold_lintegral_pou_sq_normSq_eq_chartTarget
   rw [chartLocalMeasure_lintegral_via_chartTargetEuclid
       (I := I) (M := M) g α hF_meas]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma normSq_apply_eq_pushedNormSq
+private lemma normSq_apply_eq_pushedNormSq [SigmaCompactSpace M]
     {r s : ℕ} (g : SmoothRiemannianMetric I M)
     (T₀ : Π b : M, TensorRSSpace r s I b)
     (α : M) {y : EuclN}
@@ -345,9 +345,9 @@ private lemma density_pou_sq_le
       linarith
     exact mul_le_mul_of_nonneg_right hbound hρ_sq_nn
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma manifold_lintegral_pou_sq_normSq_eq_zero_of_empty
+private lemma manifold_lintegral_pou_sq_normSq_eq_zero_of_empty [SigmaCompactSpace M]
     {r s : ℕ} (g : SmoothRiemannianMetric I M)
     (T₀ : Π b : M, TensorRSSpace r s I b)
     (α : M)

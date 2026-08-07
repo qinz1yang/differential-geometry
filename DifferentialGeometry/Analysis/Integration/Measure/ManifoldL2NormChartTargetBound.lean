@@ -30,20 +30,20 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable (I M) in
 noncomputable def chartL2BridgeMα
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) : ℝ :=
   (exists_pou_chartDensity_bound_on_chartTarget
     (I := I) (M := M) g α).choose
 
 lemma chartL2BridgeMα_nonneg
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     0 ≤ chartL2BridgeMα (I := I) (M := M) g α :=
   (exists_pou_chartDensity_bound_on_chartTarget
     (I := I) (M := M) g α).choose_spec.1
 
 lemma chartL2BridgeMα_le
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {y : E} (hy : y ∈ (extChartAt I α).target) :
     (chartAtlasPOU I M α : M → ℝ) ((extChartAt I α).symm y) *
@@ -54,14 +54,14 @@ lemma chartL2BridgeMα_le
 
 variable (I M) in
 noncomputable def chartTargetL2BridgeConstant
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) : ℝ :=
   (euclideanHaarFactor E : ℝ) *
     ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
       (chartL2BridgeMα (I := I) (M := M) g α + 1)
 
 lemma chartTargetL2BridgeConstant_nonneg
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     0 ≤ chartTargetL2BridgeConstant (I := I) (M := M) g := by
   refine mul_nonneg ?_ ?_
@@ -100,7 +100,7 @@ private lemma enorm_sq_apply_eq_ofReal_pushedNormSq
 
 
 theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Π b : M, TensorRSSpace r s I b)
     (hS_meas : Measurable (fun x : M => ‖S x‖ ^ 2)) :
@@ -401,7 +401,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
 
 
 theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Π b : M, TensorRSSpace r s I b)
     (hS_meas : Measurable (fun x : M => ‖S x‖ ^ 2)) :

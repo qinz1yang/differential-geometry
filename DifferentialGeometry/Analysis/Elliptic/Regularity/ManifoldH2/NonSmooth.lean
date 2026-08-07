@@ -134,7 +134,7 @@ theorem wkpNormChart_two_eq_tsum
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChart_two_lt_top_of_chartPOUWitnesses
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ}
     (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
@@ -196,7 +196,7 @@ structure ChartH2NonSmoothBridgeData
 
 namespace ChartH2NonSmoothBridgeData
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem loc_chart_of_chartH2NonSmoothBridgeData
@@ -244,7 +244,7 @@ theorem wkpNormChart_two_lt_top_of_chartH2NonSmoothBridgeData
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_two_of_laplacianDomain
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (_hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (u : M → ℝ)
@@ -259,7 +259,7 @@ theorem memWkpChart_two_of_laplacianDomain
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_two_of_laplacianDomain_with_norm
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (u : M → ℝ)
@@ -281,7 +281,7 @@ theorem memWkpChart_two_of_laplacianDomain_with_norm
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_two_of_laplacianDomain_bridgeData
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (_hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (u : M → ℝ)
@@ -295,20 +295,20 @@ theorem memWkpChart_two_of_laplacianDomain_bridgeData
   · exact wkpNormChart_two_lt_top_of_chartH2NonSmoothBridgeData (I := I) (M := M) g h_bridge
 
 def laplacianDomain.lpRep
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u_h : H1Compl g) : M → ℝ :=
   ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianDomain.lpRep_aeEq_coeFn
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u_h : H1Compl g) :
     laplacianDomain.lpRep (I := I) (M := M) g u_h =
       ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkpChart_two_of_laplacianDomain_canonical
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g
@@ -324,7 +324,7 @@ theorem memWkpChart_two_of_laplacianDomain_canonical
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_memWkpChart_two_of_laplacianDomain
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (u : M → ℝ)
@@ -339,7 +339,7 @@ theorem exists_memWkpChart_two_of_laplacianDomain
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_memWkpChart_two_of_laplacianDomain_canonical
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g

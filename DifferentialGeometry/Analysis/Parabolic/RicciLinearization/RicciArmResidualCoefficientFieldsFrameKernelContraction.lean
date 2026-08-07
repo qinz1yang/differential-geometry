@@ -49,7 +49,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -60,7 +60,7 @@ def ccTensorRank4EvalAtUnitZeroSec (g : SmoothRiemannianMetric I M)
       (unitZeroSec (I := I) (M := M) y)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem ccTensorFourUnitValueSection_contMDiff (g : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g 0 4) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
@@ -89,7 +89,7 @@ private def refoldKernelArgumentPairEvalCLM (x : M) (v : Fin 2 → E) :
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma refoldKernelArgumentPairEvalCLM_apply (x : M) (v : Fin 2 → E)
     (D : Tensor0SSpace 2 I x) :
     refoldKernelArgumentPairEvalCLM (I := I) (M := M) x v D =
@@ -107,7 +107,7 @@ def curvatureRefoldMonomialFrameContraction (Gs : Π b : M, Tensor0SSpace 4 I b)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma refoldKernelContractionMonomialFibFixedFrame_apply
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
@@ -125,7 +125,7 @@ lemma refoldKernelContractionMonomialFibFixedFrame_apply
     curvatureRefoldMonomialFib_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma refoldKernelContractionMonomialFibFixedFrame_toModel
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
@@ -146,7 +146,7 @@ lemma refoldKernelContractionMonomialFibFixedFrame_toModel
   rw [Tensor0SSpace.toModelL_apply, curvatureRefoldMonomialFib_toModel]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contMDiff
     (Gs : Π b : M, Tensor0SSpace 4 I b)
     (hGs : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
@@ -279,7 +279,7 @@ private def kcInnerPairBilin (x : M)
       map_smul' := fun c Y => by rw [map_smul, smul_eq_mul, RingHom.id_apply, mul_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma kcInnerPairBilin_apply (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (X Y Y' : TangentSpace I x) :
@@ -317,7 +317,7 @@ private def kcOuterPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         ring }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma kcOuterPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) (X X' : TangentSpace I x) :
     kcOuterPairBilin (I := I) g x K L X X' =
@@ -332,7 +332,7 @@ private lemma kcOuterPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem kc_double_frame_bilin_trace_eq_fixed
     (g : SmoothRiemannianMetric I M) (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
@@ -361,7 +361,7 @@ private theorem kc_double_frame_bilin_trace_eq_fixed
   rw [kcOuterPairBilin_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem kc_double_frame_bilin_trace_indep
     (g : SmoothRiemannianMetric I M) (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
@@ -385,7 +385,7 @@ private def kcToModelEvalCLM (s : ℕ) (x : M) (v : Fin s → E) :
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma kcToModelEvalCLM_apply (s : ℕ) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     kcToModelEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel (𝕜 := ℝ) D v := rfl
@@ -406,7 +406,7 @@ private def kcPairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma kcPairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
     kcPairFeedScalarCLM (I := I) (M := M) s x G v p q =
@@ -425,7 +425,7 @@ def curvatureRefoldMonomialOrthonormalFrameBiContraction (g₁ : SmoothRiemannia
     (smoothOrthoFrame (I := I) g₁ x) x
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
     (g₁ : SmoothRiemannianMetric I M) (Gs : Π b : M, Tensor0SSpace 4 I b)
     (σ : Equiv.Perm (Fin 4)) (x₀ : M) {y : M}
@@ -469,7 +469,7 @@ theorem refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem refoldKernelContractionMonomialBiContrFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
     (Gs : Π b : M, Tensor0SSpace 4 I b)
     (hGs : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
@@ -524,7 +524,7 @@ def refoldKernelContractionMonomialField (g₀ g₁ : SmoothRiemannianMetric I M
         (ccTensorFourUnitValueSection_contMDiff (I := I) (M := M) g₀ G) σ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 @[simp] theorem refoldKernelContractionMonomialField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
@@ -543,7 +543,7 @@ def refoldKernelContractionField (g₀ g₁ : SmoothRiemannianMetric I M)
       - refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄)
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem refoldKernelContractionField_toSection_eq_kernelFib_sum
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) (x : M) (D : Tensor0SSpace 2 I x) :
@@ -748,7 +748,7 @@ theorem refoldKernelContractionField_self (g₀ : SmoothRiemannianMetric I M)
   rw [metricDifferenceCcTensor_self, refoldKernelContractionField_zero_weight]
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 theorem appCc_refoldKernelContractionField
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g₀ 0 2) :

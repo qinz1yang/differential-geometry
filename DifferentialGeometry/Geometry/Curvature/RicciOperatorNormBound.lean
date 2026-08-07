@@ -304,7 +304,7 @@ theorem tensor02_quadForm_abs_le_normSq0S
 
 
 
-theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+theorem exists_rm04_bound [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     ∃ K : Real, 0 ≤ K ∧ ∀ x : M,
       normSq0S (I := I) g x 4 (metricRm04 (I := I) (M := M) g x) ≤ K := by
@@ -323,7 +323,7 @@ theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
 
 theorem exists_ricci_bound
     [NeZero (Module.finrank Real E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧ ∀ (x : M) (v : TangentSpace I x),

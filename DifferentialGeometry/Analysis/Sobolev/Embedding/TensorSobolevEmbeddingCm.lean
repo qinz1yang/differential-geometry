@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private noncomputable local instance tensorSobolevEmbeddingRiemannianNormedAddCommGroup
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b)] (b : M) :
@@ -60,7 +60,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [BoundarylessManifold I M] [I.Boundaryless] in
 theorem tensorChartComponentScalar_embedding_C0
@@ -108,8 +108,8 @@ theorem tensorChartComponentScalar_embedding_C0
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorFiberNorm_sq_le_chartCenterComponents
+    in
+theorem tensorFiberNorm_sq_le_chartCenterComponents [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (T : SmoothCcTensor g r s) (x : M) :
     ‖T.toSection x‖ ^ 2 ≤

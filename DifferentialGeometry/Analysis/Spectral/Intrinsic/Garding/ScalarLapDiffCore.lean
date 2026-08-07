@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -45,7 +45,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem clm0_ext {x : M}
     {φ ψ : Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 0 I x}
     (h : Tensor0SSpace.toModel
@@ -66,8 +66,8 @@ private theorem clm0_ext {x : M}
   rw [zeroTensor_eq_smul_unit (I := I) (M := M) x D,
     map_smul, map_smul, hunit]
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem traceFib_diag
     (g : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
@@ -91,7 +91,7 @@ private theorem traceFib_diag
   fin_cases a <;> rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem lapTrace_diag
     (g : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) :
@@ -151,8 +151,8 @@ private theorem lapTrace_diag
   · intro hi
     exact absurd (Finset.mem_univ i) hi
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private theorem trace_eq_lap
     (a : SmoothRiemannianMetric I M) (x : M)
     (D Hs : Tensor0SSpace 2 I x)
@@ -175,7 +175,7 @@ private theorem trace_eq_lap
   exact hdiag i
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem lift_unit {x : M} (c : ℝ) :
     Tensor0SSpace.toModel
         ((Tensor0SSpace.toRS0
@@ -195,7 +195,7 @@ private theorem lift_unit {x : M} (c : ℝ) :
   rw [ContinuousLinearEquiv.apply_symm_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private theorem one0_eq_unit (x : M) :
     Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
         (I := I) (M := M) (∞ : WithTop ℕ∞) x =

@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 section ReversePeeling
 
@@ -171,8 +171,8 @@ def tensorComponentEuclideanChart (g : SmoothRiemannianMetric I M) (r s : ℕ)
     ∘ (extChartAt I α).symm
     ∘ (toEuclidean (E := E)).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma rawPullR_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -183,8 +183,8 @@ lemma rawPullR_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
       tensorComponentEuclideanChart (I := I) (M := M) g r s S α Idx Jdx := rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 lemma rawPullR_contDiffOn (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -196,7 +196,7 @@ lemma rawPullR_contDiffOn (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]; rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma rawPullR_contDiffAt (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -206,8 +206,8 @@ lemma rawPullR_contDiffAt (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (rawPullR_contDiffOn (I := I) (M := M) g r s S α Idx Jdx).contDiffAt
     ((chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hy)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma chartPushedRaw_eventuallyEq_rawPullR (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -225,15 +225,15 @@ def tensorComponentAbsSum (g : SmoothRiemannianMetric I M) (r s : ℕ)
         (Fin s → Fin (Module.finrank ℝ E)),
     |tensorComponentEuclideanChart (I := I) (M := M) g r s S α q.1 q.2 y|
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma zeroContentR_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) (y : EuclN) :
     0 ≤ tensorComponentAbsSum (I := I) (M := M) g r s S α y :=
   Finset.sum_nonneg (fun _ _ => abs_nonneg _)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma abs_rawPullR_le_zeroContentR (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -464,7 +464,7 @@ lemma iteratedFDeriv_succ_norm_le_sum_euclidPartial
         exact le_refl _
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 lemma lowerOrderTerm_iteratedFDeriv_norm_leR
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M) (m : Fin (Module.finrank ℝ E))
@@ -902,15 +902,15 @@ private def tensorComponentSqSum (g : SmoothRiemannianMetric I M) (r s : ℕ)
         (Fin s → Fin (Module.finrank ℝ E)),
     |tensorComponentEuclideanChart (I := I) (M := M) g r s S α q.1 q.2 y| ^ 2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma hsZeroContentR_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) (y : EuclN) :
     0 ≤ tensorComponentSqSum (I := I) (M := M) g r s S α y :=
   Finset.sum_nonneg (fun _ _ => sq_nonneg _)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma zeroContentR_sq_le_card_mul_hsZeroContentR
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) (y : EuclN) :
@@ -935,7 +935,7 @@ private lemma zeroContentR_sq_le_card_mul_hsZeroContentR
   rw [Finset.card_univ] at hcs
   exact hcs
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma pouPull_eq_zero_off_kernelR (α : M) (y : EuclN)
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hy_off : y ∉ chartImagePOUTsupport (I := I) (M := M) α) :
@@ -1180,7 +1180,7 @@ private lemma reverse_pointwise_integrand_le
     rw [hρ0]; simp
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma rawPullRIntegrand_aemeasurable
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
     (α : M) (q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -1241,7 +1241,7 @@ private lemma rawPullRIntegrand_aemeasurable
     (h_real.aestronglyMeasurable h_open.measurableSet).aemeasurable
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sumIntegrals_eq_integral_sumR
     (g : SmoothRiemannianMetric I M) (r' s' : ℕ) (S : SmoothCcTensor g r' s')
     (α : M) (K : ℕ) :

@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -86,7 +86,7 @@ noncomputable def massDuh
     (massForce B hB C hC f u)
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 theorem massForce_sub
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
@@ -102,7 +102,7 @@ theorem massForce_sub
   abel
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- The moving-mass forcing arm has exactly the small pointwise operator
 bound; no time or spatial derivative of the coefficient occurs. -/
 theorem massForce_bound
@@ -133,7 +133,7 @@ theorem massForce_bound
         (timeH1.norm_deriv_le (u - v)) C.coe_nonneg
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Difference estimate for the moving-mass Duhamel map. -/
 theorem massDuh_diff
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -161,7 +161,7 @@ theorem massDuh_diff
     _ = (2 * (C : ℝ)) * ‖u - v‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- The moving-mass Duhamel map is a contraction when the essential mass
 perturbation is smaller than the explicit maximal-regularity threshold. -/
 theorem massDuh_contract
@@ -186,7 +186,7 @@ theorem massDuh_contract
       massDuh_diff h_compact hT hT1 B hB C hC u₀ f u v
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Existence and uniqueness for the small moving-mass perturbation of the
 frozen tensor heat equation. -/
 theorem massDuh_exists
@@ -211,7 +211,7 @@ theorem massDuh_exists
   exact ContractingWith.fixedPoint_unique hcontr hv
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+  in
 /-- Every moving-mass fixed point has the prescribed initial trace. -/
 theorem massDuh_trace
     (hT : 0 < T) (hT1 : T ≤ 1)

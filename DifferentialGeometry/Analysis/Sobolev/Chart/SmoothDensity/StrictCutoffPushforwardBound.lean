@@ -44,17 +44,17 @@ private lemma pou_tsupport_subset
   DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ
 
 private lemma pou_hasCompactSupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] (γ : M) :
+    [T2Space M] [CompactSpace M] (γ : M) :
     HasCompactSupport (pou (I := I) (M := M) γ) :=
   (isClosed_tsupport _).isCompact
 
 private lemma hasCompactSupport_chartStrictCutoff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] (α : M) :
+    [T2Space M] [CompactSpace M] [I.Boundaryless] (α : M) :
     HasCompactSupport (chartStrictCutoff (I := I) (M := M) α) :=
   (isClosed_tsupport _).isCompact
 
 private lemma prod_pou_strictCutoff_v_eq_zero_off
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (γ α : M) (v : M → ℝ) {x : M}
     (hx : x ∉ tsupport (pou (I := I) (M := M) γ) ∩
       tsupport (chartStrictCutoff (I := I) (M := M) α)) :
@@ -71,7 +71,7 @@ private lemma prod_pou_strictCutoff_v_eq_zero_off
     rw [h0]; ring
 
 private lemma strictCutoff_mul_v_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (α : M) (v : M → ℝ) (x : M) :
     chartStrictCutoff (I := I) (M := M) α x * v x =
       ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -99,7 +99,7 @@ private lemma strictCutoff_mul_v_eq_finset_sum
       rw [Finset.sum_mul]
 
 private lemma chartPushedRaw_strictCutoff_eq_finset_sum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (α : M) (v : M → ℝ) (y : EuclN) :
     chartPushedRaw (I := I) (M := M) α
         (fun x => chartStrictCutoff (I := I) (M := M) α x * v x) y =
@@ -132,7 +132,7 @@ private lemma chartPushedRaw_strictCutoff_eq_finset_sum
     rw [Finset.sum_eq_zero (fun γ _ => h_zero γ)]
 
 private lemma chartPushedRaw_pou_strictCutoff_v_zero_of_disjoint
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (γ α : M) (v : M → ℝ)
     (hKM_empty : tsupport (pou (I := I) (M := M) γ) ∩
       tsupport (chartStrictCutoff (I := I) (M := M) α) = ∅) :
@@ -155,7 +155,7 @@ private lemma chartPushedRaw_pou_strictCutoff_v_zero_of_disjoint
 
 private theorem cross_chart_strictCutoff_pushedRaw_joint
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) :
@@ -772,7 +772,7 @@ theorem memWkp_finset_sum
 omit [IsManifold I ∞ M] in
 theorem wkpNorm_finset_sum_le_chartTarget
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (α : M) (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {S : Finset M} {f : M → EuclN → ℝ}
     (hf_mem : ∀ γ ∈ S,
@@ -835,7 +835,7 @@ theorem wkpNorm_finset_sum_le_chartTarget
 
 theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 < C ∧ ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) g k p v →

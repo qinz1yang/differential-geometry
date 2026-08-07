@@ -28,12 +28,12 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (T : TensorRSSpace r (s + 1) I x)
@@ -57,7 +57,7 @@ private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
   exact (Fin.comp_cons e a J).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_basis
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : TensorRSSpace r s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -73,7 +73,7 @@ private lemma riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_basis
   rw [pow_two]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (T : TensorRSSpace r (s + 1) I x)

@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -48,18 +48,18 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-def ccTensorRetagMetric (g' : SmoothRiemannianMetric I M) {g : SmoothRiemannianMetric I M}
+def ccTensorRetagMetric [SigmaCompactSpace M] (g' : SmoothRiemannianMetric I M) {g : SmoothRiemannianMetric I M}
     (S : SmoothCcTensor g 0 2) : SmoothCcTensor g' 0 2 :=
   { toSection := S.toSection
     hasCompactSupport := S.hasCompactSupport }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma ccTensorBilin_ccTensorRetagMetric (g' : SmoothRiemannianMetric I M)
+    [T2Space M] in
+lemma ccTensorBilin_ccTensorRetagMetric [SigmaCompactSpace M] (g' : SmoothRiemannianMetric I M)
     {g : SmoothRiemannianMetric I M} (S : SmoothCcTensor g 0 2) (b : M)
     (u w : TangentSpace I b) :
     smoothCcTensorBilinForm (I := I) g' (ccTensorRetagMetric (I := I) g' S) b u w =
@@ -152,7 +152,7 @@ private lemma continuous_linearizedKoszulCovec_fst (g' : SmoothRiemannianMetric 
       (G.toContinuousLinearMap ![ζ, ζ, z] 0).continuous).sub
       (G.toContinuousLinearMap ![z, ζ, ζ] 2).continuous)
 
-def linearizedConnSharp (g' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g' 0 2)
+def linearizedConnSharp [SigmaCompactSpace M] (g' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g' 0 2)
     (x : M) (u ζ : TangentSpace I x) : TangentSpace I x :=
   DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g' x
     (linearizedKoszulCovec (I := I) g' S x u ζ)
@@ -182,13 +182,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 
-def realizedVelocityCc
+def realizedVelocityCc [SigmaCompactSpace M]
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -245,8 +245,7 @@ lemma one_mem_realizedSmallSet {δ δ' : ℝ} (hδ_lt : δ < 1) :
   exact hδ_lt
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-lemma realizedFam_inner_affine
+lemma realizedFam_inner_affine [SigmaCompactSpace M]
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
@@ -266,8 +265,7 @@ lemma realizedFam_inner_affine
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma metricDiffCovDeriv_realizedFam_affine
+private lemma metricDiffCovDeriv_realizedFam_affine [SigmaCompactSpace M]
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
@@ -588,7 +586,6 @@ private lemma sharpPsiField_jointContMDiffOn
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma continuousAt_leviCivita_toFun_slice
     (g' : SmoothRiemannianMetric I M) {S : Set ℝ} (hSopen : IsOpen S) {s₀ : ℝ} (hs₀S : s₀ ∈ S)
     (Φ : ∀ p : M × ℝ, TangentSpace I p.1)
@@ -723,8 +720,7 @@ private lemma continuousAt_leviCivita_toFun_slice
   exact hRHS.congr (Filter.EventuallyEq.symm hkey)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma continuousOn_realizedFam_invGram_slice
+private lemma continuousOn_realizedFam_invGram_slice [SigmaCompactSpace M]
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -741,8 +737,7 @@ private lemma continuousOn_realizedFam_invGram_slice
   exact hcomp.continuousOn
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma metricSharp_realizedFam_eq_invGram_sum
+private lemma metricSharp_realizedFam_eq_invGram_sum [SigmaCompactSpace M]
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -762,8 +757,7 @@ private lemma metricSharp_realizedFam_eq_invGram_sum
   rfl
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma tendsto_metricSharp_realizedFam_fixed
+private lemma tendsto_metricSharp_realizedFam_fixed [SigmaCompactSpace M]
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -797,8 +791,7 @@ private lemma tendsto_metricSharp_realizedFam_fixed
   exact hinv.mul tendsto_const_nhds
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-private lemma tendsto_metricSharp_realizedFam_varying
+private lemma tendsto_metricSharp_realizedFam_varying [SigmaCompactSpace M]
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -889,8 +882,7 @@ private def slopeCore
                   (smoothExtensionTangent (I := I) x w) x)
                 (smoothExtensionTangent (I := I) x v x))) i
 
-omit [CompactSpace M] in
-private lemma realizedRicciPathValue_eq_ricciTensor_realizedFam
+private lemma realizedRicciPathValue_eq_ricciTensor_realizedFam [SigmaCompactSpace M]
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)

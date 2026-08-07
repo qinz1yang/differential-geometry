@@ -51,7 +51,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem formula510_of_connTraceField
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -148,7 +148,7 @@ theorem formula510_of_connTraceField
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem formula510_of_trace
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -243,7 +243,7 @@ theorem formula510_of_trace
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem formula510_of_components
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -421,7 +421,7 @@ theorem formula510_of_components
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem formula510_producer
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily
       (I := I) (M := M) Real)
     {s0 : Real}

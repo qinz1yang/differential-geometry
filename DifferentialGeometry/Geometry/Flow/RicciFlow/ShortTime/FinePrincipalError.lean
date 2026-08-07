@@ -37,7 +37,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
 /-- A fixed fine radius determined only by a chart-buffer radius, a
 family-uniform first-derivative bound for inverse Gram entries, and the
@@ -110,7 +110,7 @@ theorem fineOsc_mul_lt {r₀ L K₂ : ℝ}
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- On the fixed fine ball every inverse-Gram coefficient differs from its
 frozen value by at most `L` times the fixed fine radius, uniformly over the
 metric family.  Retaining this constant is what later yields a strict
@@ -152,7 +152,7 @@ theorem invGramOscBound
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- On the fixed fine ball every inverse-Gram coefficient differs from its
 frozen value by strictly less than one quarter, uniformly over the metric
 family. -/
@@ -234,7 +234,7 @@ theorem principalOscQuarter
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- The actual inverse-Gram freezing arm retains the strict uniform constant
 `L * fineOscRadius r₀ L K₂`. -/
 theorem invGramB2Bound
@@ -267,7 +267,7 @@ theorem invGramB2Bound
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 /-- The actual inverse-Gram freezing arm has the uniform one-quarter bound on
 the fixed fine ball.  This is the pointwise `B₂` estimate used by the
 retraction--coretraction parametrix. -/

@@ -27,14 +27,14 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : NormedSpace ℝ E := InnerProductSpace.toNormedSpace
 private local instance : Module.Finite ℝ E := inferInstance
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
     (g : SmoothRiemannianMetric I M) {N : ℕ}
     (V : Fin N → Π b : M, TangentSpace I b)
@@ -88,15 +88,15 @@ theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
         rw [hBval (V a x) (V a x), hψa a]
 
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor0S_eq_of_toModel_eq {s : ℕ} {x : M} {T T' : Tensor0SSpace s I x}
     (h : ∀ v : Fin s → E, Tensor0SSpace.toModel T v = Tensor0SSpace.toModel T' v) : T = T' :=
   Tensor0SSpace.toModel_injective (ContinuousMultilinearMap.ext h)
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma tensor0SAsRS_add (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     tensor0SToTensorRS (I := I) (M := M) x (C + D) =
       tensor0SToTensorRS (I := I) (M := M) x C + tensor0SToTensorRS (I := I) (M := M) x D := by
@@ -120,8 +120,8 @@ private lemma tensor0SAsRS_add (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
   exact h
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma tensor0SAsRS_smul (t : ℕ) (x : M) (c : ℝ) (C : Tensor0SSpace t I x) :
     tensor0SToTensorRS (I := I) (M := M) x (c • C) =
       c • tensor0SToTensorRS (I := I) (M := M) x C := by
@@ -137,8 +137,8 @@ private lemma tensor0SAsRS_smul (t : ℕ) (x : M) (c : ℝ) (C : Tensor0SSpace t
   exact h
 
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
     (g : SmoothRiemannianMetric I M) {N : ℕ}
     (V : Fin N → Π b : M, TangentSpace I b)

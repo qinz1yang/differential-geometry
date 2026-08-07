@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -39,7 +39,6 @@ def dirichletForm (g : SmoothRiemannianMetric I M) (r s : ℕ) :
       (SmoothCcTensor.toL2 (g := g) (r := r) (s := s) S))
 
 
-omit [CompactSpace M] in
 theorem dirichletForm_eq_neg_inner_laplacian
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T S : SmoothCcTensor g r s)

@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -53,7 +53,7 @@ private lemma chosenWeakPartial'_memLp_volume_unconditional
     exact MemLp.zero
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma one_div_densityOnEuclid_contDiffOn'
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -63,7 +63,7 @@ private lemma one_div_densityOnEuclid_contDiffOn'
     (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [I.Boundaryless] [T2Space M] in
 lemma memLp_volume_compact_contDiffOn_mul
     (α : M)
     {c : EuclN → ℝ}

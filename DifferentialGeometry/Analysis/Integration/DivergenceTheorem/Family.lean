@@ -30,7 +30,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem integral_divergence_eq_zero_of_compact_family
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (t : ℝ) :
     ∫ x, divergence_g (I := I) (g_fam t) X x
@@ -95,7 +95,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_family
     (I := I) (g_fam t) hf hh hh_supp
 
 theorem integral_smul_laplacian_sub_eq_zero_family
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (t : ℝ) :
@@ -106,7 +106,7 @@ theorem integral_smul_laplacian_sub_eq_zero_family
   exact green_second_integral_smul_laplacian_sub_eq_zero (I := I) (g_fam t) hf hh
 
 theorem volumeVariation_hasDerivAt
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}
     {f : ℝ → M → ℝ} {t₀ : ℝ}
     (hg : MetricFamilyRegularAt (I := I) g_fam t₀)

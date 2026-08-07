@@ -46,7 +46,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 theorem exists_cutoff_around_tsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {α : M} {η : EuclN → ℝ} (hη_supp : HasCompactSupport η)
     (h_cthick_1_in_chart : Metric.cthickening 1 (tsupport η) ⊆
       chartTargetEuclid (I := I) (M := M) α) :
@@ -89,7 +89,7 @@ theorem exists_cutoff_around_tsupport
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoff_fChart_memLp_two_univ
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)

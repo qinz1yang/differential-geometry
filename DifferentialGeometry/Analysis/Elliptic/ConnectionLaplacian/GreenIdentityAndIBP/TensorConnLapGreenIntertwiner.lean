@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -37,7 +37,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 lemma tensor0SCovariantDerivative_natCast_transport
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞]
@@ -50,8 +50,8 @@ lemma tensor0SCovariantDerivative_natCast_transport
   subst h
   rfl
 
-omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 lemma toModel_natCast_transport
     {a b : ℕ} (h : a = b) {x : M} (T : Tensor0SSpace b I x) :
     Tensor0SSpace.toModel
@@ -62,8 +62,8 @@ lemma toModel_natCast_transport
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 lemma liftedTensorSection_zero_eq_natCast_unit
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯)
@@ -89,7 +89,7 @@ lemma liftedTensorSection_zero_eq_natCast_unit
   congr 1
   exact (Fin.ext (by simp)).symm
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -156,7 +156,7 @@ theorem loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen
   rw [toModel_natCast_transport (Nat.zero_add s)]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma loweringIntertwiner_gen (g : SmoothRiemannianMetric I M) (s : ℕ) :
     LoweringIntertwiner (I := I) (M := M) g s :=

@@ -105,7 +105,7 @@ theorem traceTimeDerivMetricOn_eq
       traceTimeDerivMetric (I := I) (metricFamilyForMeasureOn (I := I) (M := M) G) t x := rfl
 
 theorem volume_variation_formula_clean
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}
     {f : ℝ → M → ℝ} {t₀ : ℝ}
     (hg : MetricFamilyRegularAt (I := I) g_fam t₀)
@@ -147,7 +147,7 @@ theorem volume_variation_formula_clean
 
 
 theorem volume_variation_formula_clean_at
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily (I := I) (M := M) Real)
     {f : Real → M → Real} {t₀ : Real}
     (hg : MetricFamilyRegularAt (I := I) (metricFamilyForMeasure (I := I) (M := M) G) t₀)
@@ -164,7 +164,7 @@ theorem volume_variation_formula_clean_at
       (f := f) (t₀ := t₀) hg hf)
 
 theorem volume_variation_formula_clean_on
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamilyOn (I := I) (M := M) D)
     {f : Real → M → Real} {t₀ : Real}

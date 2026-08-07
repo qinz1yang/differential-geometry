@@ -80,7 +80,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -90,8 +90,8 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem smoothCcTensor_normSq_eq_integral
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem smoothCcTensor_normSq_eq_integral [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     ‖S‖ ^ 2 =
       ∫ x, tensorInnerPointwise (I := I) (M := M) g r s x (S.toFun x) (S.toFun x)
@@ -141,7 +141,7 @@ theorem eigenvectorSmooth_integral_normSq_eq_one
 
 
 
-def diagonalKernel (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def diagonalKernel [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)) (x : M) : ℝ :=
   ∑ i ∈ F,
     tensorInnerPointwise (I := I) (M := M) g r s x

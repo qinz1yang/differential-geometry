@@ -55,7 +55,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -67,7 +67,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 lemma appCc_zero_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s (0 : SmoothCcTensor g r s) W =
@@ -84,9 +84,9 @@ lemma appCc_zero_left_local (g : SmoothRiemannianMetric I M) (r s : ℕ)
     =
       (0 : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) from rfl]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
+lemma linearizedRicciThreeArmHjoint_zero [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     {δ δ' : ℝ} :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
       (fun _ : ℝ => (0 : SmoothCcTensor g₀ 3 2)) (δ := δ) (δ' := δ') := by
@@ -182,7 +182,6 @@ theorem exists_Csob_sub_pointwise_jet3_le
     _ = (Cc * Ch * ((4 * k + 1 : ℕ) : ℝ) * 2) * R := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem ricciArmOrder1KoszulCoeff_appCc_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 3)
     (x : M) (v : Fin 2 → TangentSpace I x) :
@@ -237,7 +236,7 @@ theorem ricciArmOrder1KoszulCoeff_appCc_eq
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
+def corrFieldDataSpec [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -519,7 +518,7 @@ theorem exists_arm0_arm1_corrField_data (g₀ : SmoothRiemannianMetric I M)
       corrFieldDataSpec (I := I) (M := M) g₀ T T' hδ hδ' C0 C1 :=
   exists_corrFieldChristoffelConst (I := I) (M := M) g₀ T T' hδ hδ'
 
-noncomputable def linearizedRicciArm0CorrField (g₀ : SmoothRiemannianMetric I M)
+noncomputable def linearizedRicciArm0CorrField [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -527,7 +526,7 @@ noncomputable def linearizedRicciArm0CorrField (g₀ : SmoothRiemannianMetric I 
     ℝ → SmoothCcTensor g₀ 2 2 :=
   (exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose
 
-noncomputable def linearizedRicciArm1CorrField (g₀ : SmoothRiemannianMetric I M)
+noncomputable def linearizedRicciArm1CorrField [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -535,7 +534,7 @@ noncomputable def linearizedRicciArm1CorrField (g₀ : SmoothRiemannianMetric I 
     ℝ → SmoothCcTensor g₀ 3 2 :=
   (exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
 
-def linearizedRicciArm0Field (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+def linearizedRicciArm0Field [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
@@ -543,7 +542,7 @@ def linearizedRicciArm0Field (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothC
   linearizedRicciArm0BaseCoeff (I := I) g₀ T T' hδ hδ' s
     + linearizedRicciArm0CorrField (I := I) g₀ T T' hδ hδ' s
 
-def linearizedRicciArm1Field (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+def linearizedRicciArm1Field [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')

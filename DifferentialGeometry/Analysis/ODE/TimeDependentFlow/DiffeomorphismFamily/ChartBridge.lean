@@ -14,10 +14,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem time_dependent_vf_diffeomorph_slice_of_smooth_bijective
     (Φ Ψ : M → M)
     (hΦ_smooth : ContMDiff I I ∞ Φ) (hΨ_smooth : ContMDiff I I ∞ Ψ)
@@ -31,7 +31,7 @@ theorem time_dependent_vf_diffeomorph_slice_of_smooth_bijective
   exact ⟨⟨e, hΦ_smooth, hΨ_smooth⟩, fun _ => rfl, fun _ => rfl⟩
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem time_dependent_vf_hdiffeo_of_smooth_bijective
     (Φ Ψ : ℝ → M → M) (T : ℝ)
     (hΦ_smooth : ∀ t, 0 < t → t < T → ContMDiff I I ∞ (Φ t))
@@ -47,7 +47,7 @@ theorem time_dependent_vf_hdiffeo_of_smooth_bijective
       (fun x => hΨΦ t hmem x) (fun x => hΦΨ t hmem x)
   exact ⟨d, hd_fwd⟩
 
-omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 theorem time_dependent_vf_hflow_transported_of_chartLocal
     (X : ℝ → ∀ x : M, TangentSpace I x) (α x : M)
     (hper : ChartLocalPicardData X α)
@@ -76,7 +76,7 @@ theorem time_dependent_vf_hflow_transported_of_chartLocal
     htgt_t
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem time_dependent_vf_diffeomorph_family_of_smooth_bijective
     (Φ Ψ : ℝ → M → M) (T : ℝ) (_hT : 0 < T)
     (_hΦ_init : ∀ x : M, Φ 0 x = x)
@@ -102,7 +102,7 @@ theorem time_dependent_vf_diffeomorph_family_of_smooth_bijective
     exact (hdiffeo t ht htT).choose_spec x
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem time_dependent_vf_diffeomorph_family_of_hdiffeo
     (Φ : ℝ → M → M) (T : ℝ)
     (hdiffeo : ∀ t, 0 < t → t < T → ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x) :

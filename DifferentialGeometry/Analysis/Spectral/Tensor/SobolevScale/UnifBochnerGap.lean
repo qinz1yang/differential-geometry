@@ -59,7 +59,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -699,12 +699,12 @@ theorem bochner_step_hcurv
   exact ⟨Cbase + Fc 0, add_nonneg hCbase_nn (hFc 0),
     bochner_step_unif (I := I) (M := M) g₀ s k Fc hFc hcurv Cbase hbase⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 /-- **Reindex of the iterated rough Laplacian under one extra `Δ_∇`:**
 `Δ_∇^i(Δ_∇ S) = Δ_∇^{i+1} S`.  Local inline of the `private`
 `AllOrderGardingConstant.rawTensorConnLapIter_rawTensorConnLapSmooth` (that declaration is not
 importable, being `private`). -/
-private theorem rawIter_lap_reindex
+private theorem rawIter_lap_reindex [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (s i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     rawTensorConnLapIter (I := I) g₀ 0 s i (rawTensorConnLapSmooth (I := I) g₀ 0 s S) =
       rawTensorConnLapIter (I := I) g₀ 0 s (i + 1) S := by
@@ -715,11 +715,11 @@ private theorem rawIter_lap_reindex
         (rawTensorConnLapSmooth (I := I) g₀ 0 s S), ih,
       rawTensorConnLapIter_succ (I := I) g₀ 0 s (n + 1) S]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 /-- The shifted rough-Laplacian jet sum `∑_{i < m} ‖Δ_∇^{i+1} S‖` is dominated by the full jet
 sum `∑_{i < n} ‖Δ_∇^i S‖` whenever `m + 1 ≤ n`.  A curvature-free monotonicity used to fold the
 induction-hypothesis Laplacian budget of `Δ_∇ S` into the target budget of `S`. -/
-private theorem lap_shift_le
+private theorem lap_shift_le [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (s m n : ℕ) (hmn : m + 1 ≤ n)
     (S : SmoothCcTensor g₀ 0 s) :
     ∑ i ∈ Finset.range m, ‖rawTensorConnLapIter (I := I) g₀ 0 s (i + 1) S‖ ≤

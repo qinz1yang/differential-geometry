@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -273,7 +273,6 @@ private lemma chart_α_proj_lcFrameSelfTraceSummand_eq_coord_sum
   simp only [hL_def, hLcov_def, ContinuousLinearMap.comp_apply] at hApply
   exact hApply
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chart_α_proj_covRS_T₀_at_chartBasisVec_eq_euclidPartial_plus_lower
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

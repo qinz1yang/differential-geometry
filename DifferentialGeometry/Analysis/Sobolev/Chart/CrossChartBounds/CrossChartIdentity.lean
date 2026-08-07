@@ -24,7 +24,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem chartPushed_chartPullback_pointwise_identity
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :
     ∃ (Ω_γα Ω_αγ : Set EuclN) (_hΩ_γα_open : IsOpen Ω_γα)

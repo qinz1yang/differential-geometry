@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -73,12 +73,12 @@ private lemma euclidPartial_contDiff_of_contDiff
 private def pouKernelM (α : M) : Set M :=
   tsupport (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouKernelM_isClosed (α : M) :
     IsClosed (pouKernelM (I := I) (M := M) α) :=
   isClosed_tsupport _
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouKernelM_subset_chart_source (α : M) :
     pouKernelM (I := I) (M := M) α ⊆ (chartAt H α).source :=
   DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
@@ -88,7 +88,7 @@ private lemma pouKernelM_isCompact (α : M) :
     IsCompact (pouKernelM (I := I) (M := M) α) :=
   (pouKernelM_isClosed (I := I) (M := M) α).isCompact
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartAtlasPOU_contMDiff (α : M) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) :=
@@ -197,7 +197,7 @@ private lemma chosenWeakPartial'_tensorChartComponent_ae_eq_euclidPartial
   funext y
   rw [euclidPartial_def]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorChartComponent_eq_pou_mul_rawPushed
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -279,8 +279,8 @@ private lemma euclidPartial_tensorChartComponent_eq_leibniz
     euclidPartial_def, euclidPartial_def]
   ring
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 private lemma euclidPartial_rawPushed_eq_covDerivComponent_sub
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -388,8 +388,8 @@ private lemma euclidPartial_chartPushedRaw_pou_continuousOn
   (euclidPartial_contDiff_of_contDiff (E := E)
     (chartPushedRaw_pou_contDiff (I := I) (M := M) α) k).continuous.continuousOn
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartPushedRaw_rawComponent_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -403,7 +403,7 @@ private lemma chartPushedRaw_rawComponent_continuousOn
     (I := I) (M := M) g r s S α Idx Jdx).continuousOn
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma euclidPartial_chartPushedRaw_rawComponent_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -591,7 +591,7 @@ private def rawComponentCutoff
   (pouKernelM (I := I) (M := M) α).indicator
     (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma rawComponentCutoff_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -606,7 +606,7 @@ private lemma rawComponentCutoff_tsupport_subset
   by_contra hx_off
   exact hx (by rw [rawComponentCutoff, Set.indicator_of_notMem hx_off])
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma rawComponentCutoff_measurable
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)

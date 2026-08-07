@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -52,7 +52,7 @@ private noncomputable def principalSecondDerivSum
               (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx))) y
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma principalSecondDerivSum_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -151,7 +151,7 @@ private noncomputable def chartPushed_rawConnLapComponent
     (tensorChartComponentRaw (I := I) (M := M) g r s
       (rawTensorConnLapSmooth (I := I) g r s T₀) α Idx Jdx)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartPushed_rawConnLapComponent_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -173,7 +173,6 @@ private noncomputable def lowerOrderCorrection
     chartPushed_rawConnLapComponent (I := I) (M := M) g r s α T₀ Idx Jdx y -
       principalSecondDerivSum (I := I) (M := M) g r s α T₀ Idx Jdx y
 
-omit [CompactSpace M] in
 private lemma lowerOrderCorrection_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -186,7 +185,7 @@ private lemma lowerOrderCorrection_contDiffOn
     Idx Jdx).sub
     (principalSecondDerivSum_contDiffOn (I := I) (M := M) g r s α T₀ Idx Jdx)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartPushed_rawConnLapComponent_eq_principal_add_LO
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -199,7 +198,7 @@ private lemma chartPushed_rawConnLapComponent_eq_principal_add_LO
   unfold lowerOrderCorrection
   ring
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartPushed_rawConnLapComponent_apply_of_good
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -229,7 +228,6 @@ private lemma chartPushed_rawConnLapComponent_apply_of_good
     (extChartAt I α).left_inv hb_src
   rw [hsymm_te, hleft_inv]
 
-omit [CompactSpace M] in
 theorem tensorChartComponentRaw_rawTensorConnLap_eq_chart_α_coord_formula
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)

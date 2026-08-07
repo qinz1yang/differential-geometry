@@ -62,7 +62,7 @@ private lemma density_cont
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
 private theorem chart_int_cont
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {K : Set Real}
     (hK : IsCompact K)
@@ -201,7 +201,7 @@ private theorem chart_int_cont
 
 
 theorem integral_family_cont
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {K : Set Real}
     (hK : IsCompact K)

@@ -16,11 +16,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M]
+
 
 omit [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-theorem pou_weighted_norm_equals_chart_component_norm_up_to_constant
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+theorem pou_weighted_norm_equals_chart_component_norm_up_to_constant [SigmaCompactSpace M]
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧

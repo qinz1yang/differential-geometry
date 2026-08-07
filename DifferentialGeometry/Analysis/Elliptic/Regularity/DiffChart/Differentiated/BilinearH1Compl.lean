@@ -157,7 +157,7 @@ lemma densityDerivOnEuclid_bounded_on_compact
   exact h_max hy
 
 structure DiffChartBilinearH1ComplData
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
 
   base : ChartBilinearH1ComplData (I := I) (M := M) g α
@@ -235,7 +235,7 @@ structure DiffChartBilinearH1ComplData
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem differentiated_chart_bilinear_identity
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
@@ -272,20 +272,20 @@ theorem differentiated_chart_bilinear_identity
   D.differentiated_variational_identity ψ hψ hψ_cs hψ_supp
 
 abbrev base
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α) :
     ChartBilinearH1ComplData (I := I) (M := M) g α := D.base
 
 abbrev direction
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α) :
     Fin (Module.finrank ℝ E) := D.direction
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem base_chart_bilinear_identity
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)

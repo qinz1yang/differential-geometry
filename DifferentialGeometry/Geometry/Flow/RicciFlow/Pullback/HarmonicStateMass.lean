@@ -84,7 +84,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 private local instance : MeasurableSpace M := borel M
 
@@ -93,7 +93,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 /-! ## Coefficient derivative of the local addition -/
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem mfderiv_affine_line_apply
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -130,7 +130,7 @@ private theorem mfderiv_affine_line_apply
   exact hcomp.trans hgoal
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem mfderiv_euclidean_affine_line_apply
     {J : Type*} [Fintype J]

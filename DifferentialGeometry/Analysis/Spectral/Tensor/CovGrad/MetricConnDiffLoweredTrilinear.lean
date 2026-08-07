@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -48,7 +48,7 @@ noncomputable def domDomCongrFibRank (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem domDomCongrFibRank_apply (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace d I x) :
     domDomCongrFibRank (I := I) d σ x D =
@@ -131,7 +131,7 @@ noncomputable def tensor0SProdKappaFib {p q : ℕ} (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensor0SProdKappaFib_apply {p q : ℕ} (x : M)
     (κ : Tensor0SBundle.Tensor0SSpace q I x) (D : Tensor0SBundle.Tensor0SSpace p I x) :
     tensor0SProdKappaFib (I := I) x κ D =
@@ -179,7 +179,7 @@ noncomputable def metricConnDiffLoweredTrilin (gm gA gB : SmoothRiemannianMetric
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem metricConnDiffLoweredTrilin_apply (gm gA gB : SmoothRiemannianMetric I M) (x : M)
     (a b c : TangentSpace I x) :
     metricConnDiffLoweredTrilin (I := I) gm gA gB x a b c =
@@ -195,7 +195,7 @@ noncomputable def metricConnDiffLoweredFib (gm gA gB : SmoothRiemannianMetric I 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem metricConnDiffLoweredFib_toModel (gm gA gB : SmoothRiemannianMetric I M) (x : M)
     (v : Fin 3 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.toModel (metricConnDiffLoweredFib (I := I) gm gA gB x) v =
@@ -215,7 +215,7 @@ noncomputable def ccBilinConnDiffLoweredTrilin (g₀ : SmoothRiemannianMetric I 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem ccBilinConnDiffLoweredTrilin_apply (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M)
     (a b c : TangentSpace I x) :
@@ -233,7 +233,7 @@ noncomputable def ccBilinConnDiffLoweredFib (g₀ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem ccBilinConnDiffLoweredFib_toModel (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) (x : M)
     (v : Fin 3 → TangentSpace I x) :
@@ -249,7 +249,7 @@ theorem ccBilinConnDiffLoweredFib_toModel (g₀ : SmoothRiemannianMetric I M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem trilinKernel_section_contMDiff
     (K : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hK : ∀ (Y0 Y1 Y2 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x₀ : M),
@@ -291,7 +291,6 @@ private theorem trilinKernel_section_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem metricConnDiffLoweredFib_contMDiff (gm gA gB : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
@@ -313,9 +312,9 @@ theorem metricConnDiffLoweredFib_contMDiff (gm gA gB : SmoothRiemannianMetric I 
   filter_upwards with x
   rw [metricConnDiffLoweredTrilin_apply]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ccBilinConnDiffLoweredFib_contMDiff (g₀ : SmoothRiemannianMetric I M)
+theorem ccBilinConnDiffLoweredFib_contMDiff [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (gA gB : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)

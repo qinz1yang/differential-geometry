@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [I.Boundaryless] [T2Space M] in
 lemma eLpNorm_volume_restrict_contDiffOn_mul_le
     (α : M)
     {c : EuclN → ℝ}
@@ -89,7 +89,7 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 lemma eLpNorm_sum_le_const_mul_aggregate
     {ι : Type*} [Fintype ι] {μ : Measure EuclN} (F : ι → EuclN → ℝ)
     (A : ℝ≥0∞)
@@ -135,7 +135,7 @@ lemma eLpNorm_sum_le_const_mul_aggregate
 section MainBoundUniform
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-omit [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
     (α : M)
     {c : EuclN → ℝ}
@@ -180,7 +180,7 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
     _ = ENNReal.ofReal C * eLpNorm w 2 μ := h_smul
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [CompactSpace M] [I.Boundaryless] [T2Space M] in
 lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     {ι : Type*} [Fintype ι] {ν : Type*} {μ : Measure EuclN}
     (F : ι → ν → EuclN → ℝ) (A : ν → ℝ≥0∞)

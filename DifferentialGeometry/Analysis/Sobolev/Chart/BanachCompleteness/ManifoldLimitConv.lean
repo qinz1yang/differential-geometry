@@ -39,7 +39,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 /-- The source-chart error between an iterate and its chosen Euclidean limit. -/
 noncomputable def chartErr
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -58,7 +58,7 @@ noncomputable def chartErr
 /-- Every source-chart error remains in the Euclidean Sobolev class. -/
 lemma chartErr_mem
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -83,7 +83,7 @@ lemma chartErr_mem
 POU kernel. -/
 lemma chartErr_ae_zero
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -159,7 +159,7 @@ lemma pullback_sub (β : M) (v w : EuclN → ℝ) :
 /-- The manifold error is the finite sum of pulled-back source-chart errors. -/
 lemma limitFun_decomp
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -204,7 +204,7 @@ lemma limitFun_decomp
 assembly of its chosen Euclidean chart limits. -/
 theorem limitFun_tendsto
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -362,7 +362,7 @@ theorem limitFun_tendsto
 global typeclass instance. -/
 theorem wkpChart_complete
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     CompleteSpace (WkpChart (I := I) (M := M) g k p hp_one) := by
@@ -404,7 +404,7 @@ theorem wkpChart_complete
 theorem value rather than installed globally. -/
 theorem wkpQuot_complete
     [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     CompleteSpace (WkpChartQuot (I := I) (M := M) g k p hp_one) :=

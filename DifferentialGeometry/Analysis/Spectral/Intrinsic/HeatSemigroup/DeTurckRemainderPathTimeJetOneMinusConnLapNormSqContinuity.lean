@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 section OneMinusConnLapNormSqContinuity
 
@@ -48,7 +48,7 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Integral.Measure
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointTotalSpaceRS_sub {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
@@ -131,7 +131,7 @@ private theorem oneMinusConnLapSmoothIter_section_jointContMDiffOn
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)

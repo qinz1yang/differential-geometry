@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -97,7 +97,7 @@ noncomputable def slotPermCLM {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem slotPermCLM_apply {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace d I x) :
     slotPermCLM (I := I) ρ x D =
@@ -120,7 +120,7 @@ noncomputable def tensorProdWithCLM (m k : ℕ) (x : M)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem tensorProdWithCLM_apply (m k : ℕ) (x : M)
     (P : Tensor0SBundle.Tensor0SSpace m I x) (Q : Tensor0SBundle.Tensor0SSpace k I x) :
     tensorProdWithCLM (I := I) m k x P Q =
@@ -179,7 +179,7 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] theorem tensorProdPairCLM_apply (m k : ℕ) (x : M)
     (P : Tensor0SBundle.Tensor0SSpace m I x) :
     tensorProdPairCLM (I := I) m k x P = tensorProdWithCLM (I := I) m k x P := rfl

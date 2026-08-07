@@ -17,7 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -32,7 +32,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_tensorHsBasisVec {σ : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -64,7 +63,6 @@ def singleModeCLM {σ : ℝ}
       rw [norm_smul, norm_tensorHsBasisVec (I := I) (M := M) i, Real.norm_eq_abs]
       exact le_of_eq (mul_comm _ _))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem singleModeCLM_apply {σ : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s) (c : ℝ) :
@@ -72,7 +70,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       c • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i := rfl
 
 open scoped Classical in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem singleModeCLM_coeff {σ : ℝ}
     (i j : TensorEigenIdx (I := I) (M := M) g r s) (c : ℝ) :
@@ -92,7 +89,6 @@ def singleModeTimeL2 {σ : ℝ}
     timeL2 ℝ T →L[ℝ] timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
   (singleModeCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i).compLpL 2 (timeMeasure T)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem singleModeTimeL2_coeFn (i : TensorEigenIdx (I := I) (M := M) g r s)
     (gf : timeL2 ℝ T) :
@@ -103,7 +99,6 @@ theorem singleModeTimeL2_coeFn (i : TensorEigenIdx (I := I) (M := M) g r s)
   exact h.trans (Eventually.of_forall fun t => singleModeCLM_apply (I := I) (M := M) i (gf t))
 
 open scoped Classical in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_singleModeTimeL2
     (i j : TensorEigenIdx (I := I) (M := M) g r s) (gf : timeL2 ℝ T) :
@@ -132,7 +127,6 @@ theorem timeModeCoeff_singleModeTimeL2
     rw [ht, hsmt, hcoord t, if_neg hj, if_neg hj, hzt]
     rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_singleModeTimeL2_sq (i : TensorEigenIdx (I := I) (M := M) g r s)
     (gf : timeL2 ℝ T) :
@@ -147,7 +141,6 @@ theorem norm_singleModeTimeL2_sq (i : TensorEigenIdx (I := I) (M := M) g r s)
     Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i σ),
     Real.norm_eq_abs, sq_abs, mul_comm]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_singleModeTimeL2 (i : TensorEigenIdx (I := I) (M := M) g r s)
     (gf : timeL2 ℝ T) :
@@ -165,7 +158,6 @@ theorem norm_singleModeTimeL2 (i : TensorEigenIdx (I := I) (M := M) g r s)
   rw [hsqrt, Real.sqrt_mul (tensorSobolevWeight_nonneg (I := I) (M := M) i σ),
     Real.sqrt_sq (norm_nonneg _)]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inner_tensorHsBasisVec_eq_zero {i j : TensorEigenIdx (I := I) (M := M) g r s}
     (hij : i ≠ j) :
@@ -184,7 +176,6 @@ theorem inner_tensorHsBasisVec_eq_zero {i j : TensorEigenIdx (I := I) (M := M) g
     · rw [if_neg hki, zero_mul, mul_zero]
   rw [hterm, tsum_zero]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inner_singleModeTimeL2_eq_zero
     {i j : TensorEigenIdx (I := I) (M := M) g r s} (hij : i ≠ j)
@@ -211,7 +202,6 @@ def singleModeScaledCLM {σ : ℝ}
   (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹ •
     singleModeTimeL2 (I := I) (M := M) (σ := σ) (T := T) i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem singleModeScaledCLM_apply
     (i : TensorEigenIdx (I := I) (M := M) g r s) (gf : timeL2 ℝ T) :
@@ -237,7 +227,6 @@ def singleModeIsometry {σ : ℝ}
         abs_of_pos (inv_pos.mpr hsqrt_pos), ← mul_assoc,
         inv_mul_cancel₀ (ne_of_gt hsqrt_pos), one_mul] }
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem singleModeIsometry_apply
     (i : TensorEigenIdx (I := I) (M := M) g r s) (gf : timeL2 ℝ T) :
@@ -246,7 +235,6 @@ omit [NeZero (Module.finrank ℝ E)] in
         singleModeTimeL2 (I := I) (M := M) (σ := σ) i gf :=
   singleModeScaledCLM_apply (I := I) (M := M) i gf
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem orthogonalFamily_singleModeIsometry {σ : ℝ} {T : ℝ} :
     OrthogonalFamily ℝ (fun _ : TensorEigenIdx (I := I) (M := M) g r s => timeL2 ℝ T)
@@ -257,7 +245,6 @@ theorem orthogonalFamily_singleModeIsometry {σ : ℝ} {T : ℝ} :
     inner_smul_right, inner_singleModeTimeL2_eq_zero (I := I) (M := M) hij,
     mul_zero, mul_zero]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem singleModeTimeL2_eq_isometry (i : TensorEigenIdx (I := I) (M := M) g r s)
     (gf : timeL2 ℝ T) :
@@ -269,7 +256,6 @@ theorem singleModeTimeL2_eq_isometry (i : TensorEigenIdx (I := I) (M := M) g r s
   rw [singleModeIsometry_apply, map_smul, smul_smul,
     inv_mul_cancel₀ (ne_of_gt hsqrt_pos), one_smul]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_singleModeTimeL2
     (gFam : TensorEigenIdx (I := I) (M := M) g r s → timeL2 ℝ T)
@@ -296,7 +282,6 @@ def timeL2OfModes
     timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
   ∑' i, singleModeTimeL2 (I := I) (M := M) (σ := σ) i (gFam i)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeL2OfModes_timeModeCoeff
     (gFam : TensorEigenIdx (I := I) (M := M) g r s → timeL2 ℝ T)

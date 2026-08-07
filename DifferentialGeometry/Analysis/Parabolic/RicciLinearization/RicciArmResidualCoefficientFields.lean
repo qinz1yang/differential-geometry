@@ -46,12 +46,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma foldMetricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 2 → E) :
@@ -75,7 +75,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private theorem foldPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -111,7 +111,7 @@ private theorem foldPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiemanni
   rw [hmd, hsymm]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem foldCcTensor22_ext_of_appCc (g₀ : SmoothRiemannianMetric I M)
     (C D : SmoothCcTensor g₀ 2 2)
     (h : ∀ W : SmoothCcTensor g₀ 0 2,
@@ -239,7 +239,7 @@ theorem linearizedRicciConnDiffOrder0RiemannHalfBgDiffCombInputSymm_eq_residualF
   abel
 
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCcTensor_apply (g₀ g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :

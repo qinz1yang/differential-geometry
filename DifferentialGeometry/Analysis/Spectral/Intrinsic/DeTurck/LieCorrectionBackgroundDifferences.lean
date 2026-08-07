@@ -35,12 +35,12 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma endoSlotZeroCcTensor_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -66,7 +66,7 @@ private lemma endoSlotZeroCcTensor_sub (g₀ : SmoothRiemannianMetric I M) (s : 
   rw [slotInsertEndoFib_sub_left, ContinuousLinearMap.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 2)) (X Y : SmoothCcTensor g₀ 2 2) :
     rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 σ (X - Y) =
@@ -118,7 +118,7 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g₀ 2 2) (ρ : Equiv.Perm (Fin 2)) :
     reindexCoeffGen (I := I) (M := M) g₀ 2 2 (A - B) ρ =

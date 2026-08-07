@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -94,7 +94,7 @@ theorem rawTensorConnLap_covGrad_unit_eval_eq_abstract_roughLap
     smoothOrthoFrame_smooth (I := I) g x i
   exact tensorSecondCovDeriv_covGrad_unit_eval (I := I) (M := M) g T₀ hB x
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem abstract_succ_covDeriv_unfold_at
     (g : SmoothRiemannianMetric I M)

@@ -37,7 +37,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -45,7 +45,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma trivFromE_apply_eq_zero_of_notMem_baseSet
     (α : M) {b : M} (hb : b ∉ (trivializationAt E (TangentSpace I) α).baseSet)
     (w : E) :
@@ -57,7 +57,7 @@ private lemma trivFromE_apply_eq_zero_of_notMem_baseSet
     (trivializationAt E (TangentSpace I) α) hb w
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLeviCivitaParallelCLM_apply_eq_zero_of_notMem_baseSet
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∉ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -68,7 +68,7 @@ private lemma chartLeviCivitaParallelCLM_apply_eq_zero_of_notMem_baseSet
   exact trivFromE_apply_eq_zero_of_notMem_baseSet (I := I) α hb _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma trivToE_chartBasisVecFiber_eq_chartModelBasis
     (α : M) (m : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -80,7 +80,7 @@ private lemma trivToE_chartBasisVecFiber_eq_chartModelBasis
   exact trivToE_trivFromE (I := I) α hb _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_sum
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -199,7 +199,7 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
   intro p _
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma g_inner_sum_smul_chartBasisVec_self_eq_double_sum
     (g : SmoothRiemannianMetric I M) (α : M) (b : M)
@@ -231,7 +231,7 @@ private lemma g_inner_sum_smul_chartBasisVec_self_eq_double_sum
   rw [g_inner_eq_chartGramMatrix_basis (I := I) g α b p q]
   ring
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma g_inner_Phi_eq_double_sum
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}

@@ -59,7 +59,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -506,7 +506,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -530,7 +530,6 @@ def riemannMixedKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem riemannMixedKernelBilin_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (p q v0 v1 : TangentSpace I x) :
     riemannMixedKernelBilin (I := I) g₀ g₁ x p q v0 v1 =
@@ -555,7 +554,6 @@ def riemannMixedSummandFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem riemannMixedSummandFib_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (p q : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (riemannMixedSummandFib (I := I) g₀ g₁ x p q D) v =
@@ -574,7 +572,6 @@ def riemannMixedBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem riemannMixedBiContrFibFixedFrame_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
@@ -597,7 +594,6 @@ theorem riemannMixedBiContrFibFixedFrame_toModel (g₀ g₁ : SmoothRiemannianMe
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem mixedKernelScalar_global (g₀ g₁ : SmoothRiemannianMetric I M)
     {Y W p q : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
@@ -622,7 +618,7 @@ theorem mixedKernelScalar_global (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannMixedKernelBilin_homSection_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem riemannMixedKernelBilin_homSection_contMDiff [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M)
     {p q : Π b : M, TangentSpace I b}
     (hp : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% p))
     (hq : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% q)) :
@@ -651,7 +647,7 @@ theorem riemannMixedKernelBilin_homSection_contMDiff (g₀ g₁ : SmoothRiemanni
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
+theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff [SigmaCompactSpace M]
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
@@ -741,7 +737,7 @@ theorem riemannMixedBiContrFibFixedFrame_apply_section_contMDiff
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannMixedBiContrFibFixedFrame_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem riemannMixedBiContrFibFixedFrame_contMDiff [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
@@ -774,7 +770,6 @@ def frameRiemannMixedKernel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem frameRiemannMixedKernel_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v0 v1 p q : TangentSpace I x) :
     frameRiemannMixedKernel (I := I) g₀ g₁ x v0 v1 p q =
@@ -788,7 +783,6 @@ def riemannMixedBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private theorem riemannMixedBiContrFibFixedFrame_eq_of_orthonormal
     (g₀ g₁ : SmoothRiemannianMetric I M) (y : M)
     (B C : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
@@ -824,7 +818,6 @@ private theorem riemannMixedBiContrFibFixedFrame_eq_of_orthonormal
     (fun a => B a y) (fun a => C a y) hB hC
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianMetric I M)
     (x₀ : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ y =
@@ -836,7 +829,7 @@ theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemanni
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₀ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] in
-theorem riemannMixedBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem riemannMixedBiContrFib_contMDiff [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x

@@ -116,10 +116,10 @@ theorem time_dependent_vf_local_integral_flow_bare [CompleteSpace E]
   rw [htime t ht] at hsnd
   exact hsnd.hasMFDerivWithinAt
 
-variable [CompactSpace M] [SigmaCompactSpace M]
+variable [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
-    [CompactSpace M] [SigmaCompactSpace M] in
+    [CompactSpace M] in
 theorem time_dependent_vf_manifold_integral_flow_family
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (_hT : 0 < T) (Φ : ℝ → M → M)

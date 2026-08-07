@@ -50,7 +50,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -74,7 +74,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricRaiseSlot0Fib)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma lc0b_interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -101,7 +101,6 @@ def lc0Kappa (g₀ g₁ gB : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 lemma lc0Kappa_unitModel_apply (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (lc0Kappa (I := I) (M := M) g₀ g₁ gB) x m =
@@ -131,7 +130,6 @@ def lc0LowFix (g₀ gB : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 3 w
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 private lemma lc0LowFix_unitModel_apply (g₀ gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (lc0LowFix (I := I) (M := M) g₀ gB) x m =
@@ -182,7 +180,6 @@ private lemma lc0PbLow_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lc0b_connDiffLowered_unitModel_apply (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (connDiffLoweredCc (I := I) g₀ g₁) x m =
@@ -198,7 +195,7 @@ private lemma lc0b_connDiffLowered_unitModel_apply (g₀ g₁ : SmoothRiemannian
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lc0b_unitModel_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ s (A + B) x m =
@@ -288,7 +285,7 @@ theorem lc0Kappa_self_eq_koszulCovecCc (g₀ g₁ : SmoothRiemannianMetric I M)
     (I := I) (M := M) g₀ g₁ P htie x (m 0) (m 1) (m 2)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma lc0b_unitModel_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ s (A - B) x m =
@@ -359,7 +356,6 @@ def lc0FixCd (g₀ gB : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 1 2 wh
   hasCompactSupport := (connDiffSection (I := I) g₀ gB).hasCompactSupport
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lc0b_connDiffSection_eq_raise_lowered (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1

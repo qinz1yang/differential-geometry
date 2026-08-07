@@ -44,7 +44,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 theorem differentiableOn_and_deriv_eq_of_hasDerivWithinAt_Ici
     (f : ℝ → ℝ) {T : ℝ} (e : ℝ → ℝ)
@@ -61,7 +61,6 @@ theorem differentiableOn_and_deriv_eq_of_hasDerivWithinAt_Ici
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem ricci_flow_pde_at_zero
     (g_fam : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (x : M)
     (v w : TangentSpace I x)

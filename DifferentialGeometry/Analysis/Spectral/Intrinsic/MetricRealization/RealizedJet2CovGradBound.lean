@@ -90,7 +90,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
@@ -100,7 +100,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma chartGramOnE_diffAt_interior
     (g : SmoothRiemannianMetric I M) (α : M) (l b : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior ((extChartAt I α).target : Set E)) :
@@ -113,7 +113,7 @@ private lemma chartGramOnE_diffAt_interior
 
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma partialDeriv_contDiffOn_interior
     (α : M) {f : E → ℝ}
     (hf : ContDiffOn ℝ ∞ f (interior ((extChartAt I α).target : Set E)))
@@ -131,7 +131,7 @@ private lemma partialDeriv_contDiffOn_interior
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma partialDeriv_chartGramOnE_diffAt_interior
     (g : SmoothRiemannianMetric I M) (α : M) (a l b : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior ((extChartAt I α).target : Set E)) :

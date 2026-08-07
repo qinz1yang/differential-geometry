@@ -44,7 +44,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def chartHessianPhiOnEuclid
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -53,7 +53,7 @@ noncomputable def chartHessianPhiOnEuclid
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] lemma chartHessianPhiOnEuclid_def
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
@@ -104,7 +104,7 @@ omit [NeZero (Module.finrank ℝ E)] in
                 chartHessianPhiOnEuclid (I := I) (M := M) g α φ i j y *
                 laplacianDomainHessianChart (I := I) (M := M) g α hu_h k l y := rfl
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartHessianPhiOnEuclid_continuousOn
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -526,7 +526,7 @@ theorem hessPairingChartLocal_memLp_two
     exact cutoffSummand_memLp_two (I := I) (M := M) g α φ hu_h i j k l
   exact MemLp.ae_eq h_ae.symm h_cutoff_memLp
 
-noncomputable def hessPairingChartLocalLp
+noncomputable def hessPairingChartLocalLp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -562,7 +562,7 @@ lemma hessPairingChartLocalMExt_def
       hessPairingChartLocal (I := I) (M := M) g α φ hu_h
         ((toEuclidean (E := E)) (extChartAt I α x)) := rfl
 
-noncomputable def hessPairingMChartContribution
+noncomputable def hessPairingMChartContribution [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
@@ -590,7 +590,7 @@ lemma hessPairingMChartContribution_zero_off_tsupport
     image_eq_zero_of_notMem_tsupport hx
   rw [hρ_zero, zero_mul]
 
-noncomputable def hessPairingMOnLapDom
+noncomputable def hessPairingMOnLapDom [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
@@ -606,7 +606,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α hu_h x := rfl
 
-private noncomputable def hessPairingChartLocalRep
+private noncomputable def hessPairingChartLocalRep [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) : EuclN → ℝ :=
@@ -648,7 +648,7 @@ private lemma hessPairingChartLocalRep_memLp_two
         (chartTargetEuclid (I := I) (M := M) α)) :=
   Lp.memLp _
 
-private noncomputable def chartContribSurrogate
+private noncomputable def chartContribSurrogate [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) (x : M) : ℝ :=
@@ -665,13 +665,13 @@ private lemma chartContribSurrogate_def
         DifferentialGeometry.Analysis.Sobolev.Chart.pullbackToManifold (I := I) α
           (hessPairingChartLocalRep (I := I) (M := M) g α φ hu_h) x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma chartAtlasPOU_continuous (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartAtlasPOU_continuous [SigmaCompactSpace M] (α : M) :
     Continuous fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
   (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff.continuous
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma chartAtlasPOU_measurable (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma chartAtlasPOU_measurable [SigmaCompactSpace M] (α : M) :
     Measurable fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
   (chartAtlasPOU_continuous (I := I) (M := M) α).measurable
 
@@ -1138,7 +1138,7 @@ theorem hessPairingMOnLapDom_memLp_two
   exact hessPairingMChartContribution_memLp_two
     (I := I) (M := M) g φ α hu_h
 
-noncomputable def hessPairingLpOnLapDom
+noncomputable def hessPairingLpOnLapDom [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :

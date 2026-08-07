@@ -26,14 +26,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-def tensorInnerScalar
+def tensorInnerScalar [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯) :
     M → ℝ :=
@@ -41,9 +41,9 @@ def tensorInnerScalar
     (TensorRSSpace.toModel (W y)) (TensorRSSpace.toModel (S y))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp]
-lemma tensorInnerScalar_apply
+lemma tensorInnerScalar_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (y : M) :
@@ -51,9 +51,8 @@ lemma tensorInnerScalar_apply
       tensorInnerPointwise (I := I) (M := M) g r s y
         (TensorRSSpace.toModel (W y)) (TensorRSSpace.toModel (S y)) := rfl
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
-lemma tangentSectionAction_tensorInnerScalar
+lemma tangentSectionAction_tensorInnerScalar [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :

@@ -32,12 +32,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] in
 private lemma tensorSectionMDiffAt_curriedSection_apply_loc
     (s : ℕ) (W : Π x : M, Tensor0SSpace (s + 1) I x) {x : M}
     (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
@@ -58,19 +58,19 @@ private lemma tensorSectionMDiffAt_curriedSection_apply_loc
     (b := id) (ϕ := fun y : M => Tensor0SNabla.curriedSection I M W y)
     (v := fun y : M => Y y) hCurried hY
 
-private def bilinEvalFn (V : Π b : M, Tensor0SSpace 2 I b)
+private def bilinEvalFn [SigmaCompactSpace M] (V : Π b : M, Tensor0SSpace 2 I b)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun b => Tensor0SSpace.toModel (V b) (Fin.cons (Y b) ![Z b])
 
-private def bilinCurriedSec (V : Π b : M, Tensor0SSpace 2 I b)
+private def bilinCurriedSec [SigmaCompactSpace M] (V : Π b : M, Tensor0SSpace 2 I b)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Π b : M, Tensor0SSpace 0 I b :=
   fun b => Tensor0SNabla.curriedSection I M
     (fun y : M => Tensor0SNabla.curriedSection I M V y (Y y)) b (Z b)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma scalarFn_bilinCurriedSec
+    [BoundarylessManifold I M] [T2Space M] in
+private lemma scalarFn_bilinCurriedSec [SigmaCompactSpace M]
     (V : Π b : M, Tensor0SSpace 2 I b)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Tensor0SNabla.scalarFn I M (bilinCurriedSec (I := I) (M := M) V Y Z) =
@@ -89,7 +89,7 @@ private lemma scalarFn_bilinCurriedSec
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect
+private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (V : Π b : M, Tensor0SSpace 2 I b) {x : M}
     (hV : TensorSectionMDiffAt (I := I) 2 V x)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x) :
@@ -177,7 +177,7 @@ theorem covGrad02_unitModel_eval_eq_leibnizDefect
     (unitEvalSection (I := I) (M := M) g₀ 2 S) hV Y Z v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma unitEvalSection_toModel_eq_ccTensorBilin
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (b : M)
     (Y Z : TangentSpace I b) :
@@ -272,8 +272,8 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
         (Y := fun b => Y b) (Z := fun b => Z b) Y.mdifferentiableAt Z.mdifferentiableAt]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bilinEvalFn_unitEvalSection_eq_unitModel
+omit [BoundarylessManifold I M] [T2Space M] in
+private lemma bilinEvalFn_unitEvalSection_eq_unitModel [SigmaCompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (b : M)
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     bilinEvalFn (I := I) (M := M) (unitEvalSection (I := I) (M := M) g₀ 2 S) Y Z b =

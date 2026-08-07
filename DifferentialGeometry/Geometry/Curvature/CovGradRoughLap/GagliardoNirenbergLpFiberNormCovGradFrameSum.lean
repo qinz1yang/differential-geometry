@@ -33,7 +33,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -46,7 +46,7 @@ section GeneralValenceRS
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla DifferentialGeometry.TensorMultilinear
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (T : Tensor0SBundle.TensorRSSpace r (s + 1) I x)
@@ -73,7 +73,7 @@ private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
 
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : Tensor0SBundle.TensorRSSpace r s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x) (hn : n = Module.finrank ℝ E)
@@ -111,7 +111,7 @@ theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
 
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] Tensor0SBundle.TensorRSSpace r s I x)
@@ -181,7 +181,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs
   exact (Finset.sum_congr rfl (fun K _ => hperK K)).symm
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem riemannianFiberNormSq_covGradBundleEquiv_le_card_mul_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] Tensor0SBundle.TensorRSSpace r s I x) (b : ℝ)

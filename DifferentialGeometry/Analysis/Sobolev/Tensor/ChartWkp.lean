@@ -45,7 +45,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 /-- A genuine, not necessarily continuous, fiberwise `(r,s)`-tensor section. -/
 abbrev RSTensorSection
@@ -63,7 +63,7 @@ noncomputable def secTriv (r s : ℕ) (S : RSTensorSection I M r s)
 
 /-- The scalar `(Idx,Jdx)` chart-frame component before multiplication by the
 canonical partition of unity. -/
-noncomputable def secCompRaw (r s : ℕ) (S : RSTensorSection I M r s)
+noncomputable def secCompRaw [SigmaCompactSpace M] (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
@@ -71,7 +71,7 @@ noncomputable def secCompRaw (r s : ℕ) (S : RSTensorSection I M r s)
     (secTriv (I := I) (M := M) r s S α x)
 
 /-- The partition-of-unity-weighted scalar chart component on `M`. -/
-noncomputable def secCompPou (r s : ℕ) (S : RSTensorSection I M r s)
+noncomputable def secCompPou [SigmaCompactSpace M] (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
@@ -88,9 +88,9 @@ noncomputable def secChartComp (r s : ℕ) (S : RSTensorSection I M r s)
   chartPushedRaw (I := I) (M := M) α
     (secCompPou (I := I) (M := M) r s S α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- Evaluation of a tensor chart component on the chart target. -/
-theorem secComp_apply_mem (r s : ℕ) (S : RSTensorSection I M r s)
+theorem secComp_apply_mem [SigmaCompactSpace M] (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -102,9 +102,9 @@ theorem secComp_apply_mem (r s : ℕ) (S : RSTensorSection I M r s)
   unfold secChartComp
   exact chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- A tensor chart component vanishes outside the chart target. -/
-theorem secComp_apply_off (r s : ℕ) (S : RSTensorSection I M r s)
+theorem secComp_apply_off [SigmaCompactSpace M] (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -114,8 +114,8 @@ theorem secComp_apply_off (r s : ℕ) (S : RSTensorSection I M r s)
   unfold secChartComp
   exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 lemma secTriv_zero (r s : ℕ) (α x : M) :
     secTriv (I := I) (M := M) r s (0 : RSTensorSection I M r s) α x = 0 := by
   unfold secTriv
@@ -124,8 +124,8 @@ lemma secTriv_zero (r s : ℕ) (α x : M) :
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ x
   change L (0 : TensorRSSpace r s I x) = 0
   exact L.map_zero
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 lemma secTriv_add (r s : ℕ) (S T : RSTensorSection I M r s) (α x : M) :
     secTriv (I := I) (M := M) r s (S + T) α x =
       secTriv (I := I) (M := M) r s S α x +
@@ -136,8 +136,8 @@ lemma secTriv_add (r s : ℕ) (S T : RSTensorSection I M r s) (α x : M) :
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ x
   change L (S x + T x) = L (S x) + L (T x)
   exact L.map_add (S x) (T x)
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 lemma secTriv_smul (r s : ℕ) (c : ℝ) (S : RSTensorSection I M r s)
     (α x : M) :
     secTriv (I := I) (M := M) r s (c • S) α x =
@@ -148,9 +148,9 @@ lemma secTriv_smul (r s : ℕ) (c : ℝ) (S : RSTensorSection I M r s)
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ x
   change L (c • S x) = c • L (S x)
   exact L.map_smul c (S x)
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma secCompRaw_zero (r s : ℕ) (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
+lemma secCompRaw_zero [SigmaCompactSpace M] (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (x : M) :
     secCompRaw (I := I) (M := M) r s
@@ -159,9 +159,9 @@ lemma secCompRaw_zero (r s : ℕ) (α : M)
   rw [secTriv_zero (I := I) (M := M)]
   exact map_zero _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma secCompRaw_add (r s : ℕ) (S T : RSTensorSection I M r s)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
+lemma secCompRaw_add [SigmaCompactSpace M] (r s : ℕ) (S T : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (x : M) :
@@ -172,9 +172,9 @@ lemma secCompRaw_add (r s : ℕ) (S T : RSTensorSection I M r s)
   rw [secTriv_add (I := I) (M := M)]
   exact map_add _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
-lemma secCompRaw_smul (r s : ℕ) (c : ℝ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
+lemma secCompRaw_smul [SigmaCompactSpace M] (r s : ℕ) (c : ℝ)
     (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (x : M) :
@@ -184,8 +184,8 @@ lemma secCompRaw_smul (r s : ℕ) (c : ℝ)
   rw [secTriv_smul (I := I) (M := M)]
   exact map_smul _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma secCompPou_zero (r s : ℕ) (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma secCompPou_zero [SigmaCompactSpace M] (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     secCompPou (I := I) (M := M) r s
@@ -196,8 +196,8 @@ private lemma secCompPou_zero (r s : ℕ) (α : M)
   rw [secCompRaw_zero (I := I) (M := M)]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma secCompPou_add (r s : ℕ) (S T : RSTensorSection I M r s)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma secCompPou_add [SigmaCompactSpace M] (r s : ℕ) (S T : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -209,8 +209,8 @@ private lemma secCompPou_add (r s : ℕ) (S T : RSTensorSection I M r s)
   rw [secCompRaw_add (I := I) (M := M), Pi.add_apply]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma secCompPou_smul (r s : ℕ) (c : ℝ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma secCompPou_smul [SigmaCompactSpace M] (r s : ℕ) (c : ℝ)
     (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -222,8 +222,8 @@ private lemma secCompPou_smul (r s : ℕ) (c : ℝ)
   change _ * (c * _) = c * (_ * _)
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma chartRaw_zero (α : M) :
     chartPushedRaw (I := I) (M := M) α (0 : M → ℝ) = 0 := by
   funext y
@@ -233,8 +233,8 @@ private lemma chartRaw_zero (α : M) :
   · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
     rfl
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma chartRaw_add (α : M) (u v : M → ℝ) :
     chartPushedRaw (I := I) (M := M) α (u + v) =
       chartPushedRaw (I := I) (M := M) α u +
@@ -251,8 +251,8 @@ private lemma chartRaw_add (α : M) (u v : M → ℝ) :
       chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 private lemma chartRaw_smul (α : M) (c : ℝ) (u : M → ℝ) :
     chartPushedRaw (I := I) (M := M) α (c • u) =
       c • chartPushedRaw (I := I) (M := M) α u := by
@@ -267,8 +267,8 @@ private lemma chartRaw_smul (α : M) (c : ℝ) (u : M → ℝ) :
     change (0 : ℝ) = c * 0
     ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem secChartComp_zero (r s : ℕ) (α : M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem secChartComp_zero [SigmaCompactSpace M] (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     secChartComp (I := I) (M := M) r s
@@ -276,8 +276,8 @@ theorem secChartComp_zero (r s : ℕ) (α : M)
   unfold secChartComp
   rw [secCompPou_zero (I := I) (M := M), chartRaw_zero (I := I) (M := M)]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem secChartComp_add (r s : ℕ) (S T : RSTensorSection I M r s)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem secChartComp_add [SigmaCompactSpace M] (r s : ℕ) (S T : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -287,8 +287,8 @@ theorem secChartComp_add (r s : ℕ) (S T : RSTensorSection I M r s)
   unfold secChartComp
   rw [secCompPou_add (I := I) (M := M), chartRaw_add (I := I) (M := M)]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem secChartComp_smul (r s : ℕ) (c : ℝ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem secChartComp_smul [SigmaCompactSpace M] (r s : ℕ) (c : ℝ)
     (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -297,8 +297,8 @@ theorem secChartComp_smul (r s : ℕ) (c : ℝ)
   unfold secChartComp
   rw [secCompPou_smul (I := I) (M := M), chartRaw_smul (I := I) (M := M)]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem secChartComp_neg (r s : ℕ) (S : RSTensorSection I M r s)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem secChartComp_neg [SigmaCompactSpace M] (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -307,8 +307,8 @@ theorem secChartComp_neg (r s : ℕ) (S : RSTensorSection I M r s)
   have h := secChartComp_smul (I := I) (M := M) r s (-1 : ℝ) S α Idx Jdx
   simpa only [neg_one_smul] using h
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem secChartComp_sub (r s : ℕ) (S T : RSTensorSection I M r s)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem secChartComp_sub [SigmaCompactSpace M] (r s : ℕ) (S T : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -340,8 +340,8 @@ def MemWkpTensor
       (secChartComp (I := I) (M := M) r s S α Idx Jdx)
       (chartTargetEuclid (I := I) (M := M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem MemWkpTensor_def
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem MemWkpTensor_def [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) :
     MemWkpTensor (I := I) (M := M) g k p S ↔
@@ -352,8 +352,8 @@ theorem MemWkpTensor_def
           (secChartComp (I := I) (M := M) r s S α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α) := Iff.rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem MemWkpTensor.zero
+omit [NeZero (Module.finrank ℝ E)] in
+theorem MemWkpTensor.zero [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) :
     MemWkpTensor (I := I) (M := M) g k p
@@ -363,8 +363,8 @@ theorem MemWkpTensor.zero
   exact MemWkp_zero_fun (d := Module.finrank ℝ E) hp
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem MemWkpTensor.add
+omit [NeZero (Module.finrank ℝ E)] in
+theorem MemWkpTensor.add [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S)
@@ -376,8 +376,8 @@ theorem MemWkpTensor.add
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hS α Idx Jdx) (hT α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem MemWkpTensor.smul
+omit [NeZero (Module.finrank ℝ E)] in
+theorem MemWkpTensor.smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) {S : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S) :
@@ -393,8 +393,8 @@ theorem MemWkpTensor.smul
   exact MemWkp.const_smul (d := Module.finrank ℝ E) hp
     (chartTargetEuclid_isOpen (I := I) (M := M) α) (hS α Idx Jdx) c
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem MemWkpTensor.neg
+omit [NeZero (Module.finrank ℝ E)] in
+theorem MemWkpTensor.neg [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S) :
@@ -402,8 +402,8 @@ theorem MemWkpTensor.neg
   have h := MemWkpTensor.smul (I := I) (M := M) g hp (-1 : ℝ) hS
   simpa only [neg_one_smul] using h
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem MemWkpTensor.sub
+omit [NeZero (Module.finrank ℝ E)] in
+theorem MemWkpTensor.sub [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S)
@@ -441,8 +441,8 @@ def wkpTensorNorm
           (secChartComp (I := I) (M := M) r s S α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem wkpTensorNorm_zero
+omit [NeZero (Module.finrank ℝ E)] in
+theorem wkpTensorNorm_zero [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) :
     wkpTensorNorm (I := I) (M := M) g k p
@@ -466,8 +466,8 @@ theorem wkpTensorNorm_zero
   rw [tsum_congr hzero]
   exact tsum_zero
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem wkpTensorNorm_add_le
+omit [NeZero (Module.finrank ℝ E)] in
+theorem wkpTensorNorm_add_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S)
@@ -490,8 +490,8 @@ theorem wkpTensorNorm_add_le
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (hS α Idx Jdx) (hT α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem wkpTensorNorm_smul
+omit [NeZero (Module.finrank ℝ E)] in
+theorem wkpTensorNorm_smul [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) (c : ℝ) {S : RSTensorSection I M r s}
     (hS : MemWkpTensor (I := I) (M := M) g k p S) :
@@ -590,16 +590,16 @@ def TensorAEEq
       =ᵐ[volume.restrict (chartTargetEuclid (I := I) (M := M) α)]
     secChartComp (I := I) (M := M) r s T α Idx Jdx
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.rfl
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.rfl [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S : RSTensorSection I M r s) :
     TensorAEEq (I := I) (M := M) g S S := by
   intro α Idx Jdx
   exact Filter.EventuallyEq.rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.symm
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.symm [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S T : RSTensorSection I M r s}
     (h : TensorAEEq (I := I) (M := M) g S T) :
@@ -607,8 +607,8 @@ theorem TensorAEEq.symm
   intro α Idx Jdx
   exact (h α Idx Jdx).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.trans
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.trans [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S T U : RSTensorSection I M r s}
     (hST : TensorAEEq (I := I) (M := M) g S T)
@@ -617,8 +617,8 @@ theorem TensorAEEq.trans
   intro α Idx Jdx
   exact (hST α Idx Jdx).trans (hTU α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.add
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.add [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S₁ S₂ T₁ T₂ : RSTensorSection I M r s}
     (hS : TensorAEEq (I := I) (M := M) g S₁ S₂)
@@ -631,8 +631,8 @@ theorem TensorAEEq.add
   simp only [Pi.add_apply]
   rw [hyS, hyT]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.smul
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.smul [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S T : RSTensorSection I M r s}
     (h : TensorAEEq (I := I) (M := M) g S T) (c : ℝ) :
@@ -644,16 +644,16 @@ theorem TensorAEEq.smul
   simp only [Pi.smul_apply]
   rw [hy]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.neg
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.neg [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S T : RSTensorSection I M r s}
     (h : TensorAEEq (I := I) (M := M) g S T) :
     TensorAEEq (I := I) (M := M) g (-S) (-T) := by
   simpa only [neg_one_smul] using h.smul (-1 : ℝ)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem TensorAEEq.sub
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TensorAEEq.sub [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {S₁ S₂ T₁ T₂ : RSTensorSection I M r s}
     (hS : TensorAEEq (I := I) (M := M) g S₁ S₂)
@@ -662,9 +662,9 @@ theorem TensorAEEq.sub
   rw [sub_eq_add_neg, sub_eq_add_neg]
   exact hS.add hT.neg
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- The finite component norm is invariant under componentwise a.e. equality. -/
-theorem wkpTensorNorm_congr
+theorem wkpTensorNorm_congr [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
     (hST : TensorAEEq (I := I) (M := M) g S T) :
@@ -711,8 +711,8 @@ noncomputable def wkpTensorQNorm
       wkpTensorNorm_congr (I := I) (M := M) g hp
         (show TensorAEEq (I := I) (M := M) g S.1 T.1 from hST))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-@[simp] theorem wkpTensorQNorm_mk
+omit [NeZero (Module.finrank ℝ E)] in
+@[simp] theorem wkpTensorQNorm_mk [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p)
     (S : WkpTensor (I := I) (M := M) g r s k p hp) :

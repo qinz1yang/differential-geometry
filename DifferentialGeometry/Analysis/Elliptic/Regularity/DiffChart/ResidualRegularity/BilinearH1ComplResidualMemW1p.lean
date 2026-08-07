@@ -43,7 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private def smoothExt (α : M) (f : M → ℝ) : EuclN → ℝ := by
   classical
@@ -52,8 +52,8 @@ private def smoothExt (α : M) (f : M → ℝ) : EuclN → ℝ := by
       f ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma smoothExt_apply_of_mem
     (α : M) (f : M → ℝ) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -62,8 +62,8 @@ private lemma smoothExt_apply_of_mem
   classical
   unfold smoothExt; simp [hy]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma smoothExt_apply_of_notMem
     (α : M) (f : M → ℝ) {y : EuclN}
     (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
@@ -71,8 +71,8 @@ private lemma smoothExt_apply_of_notMem
   classical
   unfold smoothExt; simp [hy]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma smoothExt_eq_chartPushedRaw (α : M) (f : M → ℝ) :
     smoothExt (I := I) (M := M) α f =
       chartPushedRaw (I := I) (M := M) α f := by
@@ -84,8 +84,8 @@ private lemma smoothExt_eq_chartPushedRaw (α : M) (f : M → ℝ) :
   · rw [smoothExt_apply_of_notMem (I := I) (M := M) α f hy]
     rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α f hy]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartPushedRaw_smooth_eq_zero_off_image_tsupport
     {α : M} {f : M → ℝ}
     {y : EuclN}
@@ -98,7 +98,7 @@ private lemma chartPushedRaw_smooth_eq_zero_off_image_tsupport
   · exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α f hy_target
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartPushedRaw_smooth_hasCompactSupport
     {α : M} {f : M → ℝ}
     (hf_supp : tsupport f ⊆ (chartAt H α).source) :
@@ -125,7 +125,7 @@ private lemma chartPushedRaw_smooth_hasCompactSupport
   exact chartPushedRaw_smooth_eq_zero_off_image_tsupport
     (I := I) (M := M) (f := f) (α := α) hyK
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma chartPushedRaw_smooth_continuous
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -203,7 +203,7 @@ private lemma chartPushedRaw_smooth_continuous
     · exact continuousAt_const
     · filter_upwards [hKc_nhds] with z hz using (h_eq_zero_on_Kc z hz).symm
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 private lemma chartPushedRaw_smooth_memLp
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -223,7 +223,7 @@ private lemma chartPushedRaw_smooth_memLp
     hcont.memLp_of_hasCompactSupport (μ := volume) hcompact
   exact hmemLp_full.restrict _
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
 theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -326,7 +326,6 @@ noncomputable def fHLeibnizResidualSmoothRep
       (gradFun (I := I) g v.toFun x)) -
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fHLeibnizResidualSmoothRep_contMDiff
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
@@ -361,7 +360,7 @@ lemma fHLeibnizResidualSmoothRep_contMDiff
     (laplacianOfChartPOU (I := I) (M := M) g α).contMDiff.mul v.smooth
   exact h_piece1.sub h_piece2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma fHLeibnizResidualSmoothRep_tsupport_subset
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     tsupport (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) ⊆

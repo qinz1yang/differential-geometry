@@ -148,7 +148,7 @@ lemma pouCoeffPushed_contDiffOn
 
 theorem crossChart_transfer_bound
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
     {K_M : Set M} (hK_compact : IsCompact K_M)
     (hK_β : K_M ⊆ (chartAt H β).source)
@@ -463,7 +463,7 @@ theorem crossChart_transfer_bound
 
 theorem crossChart_transfer_bound_const
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (β α : M) (k : ℕ)
     {K_M : Set M} (hK_compact : IsCompact K_M)
     (hK_β : K_M ⊆ (chartAt H β).source)

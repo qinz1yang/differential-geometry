@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -71,8 +71,8 @@ noncomputable def cutoffCovNormSumFun
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (chartBasisVecFiber (I := I) α i b)))‖ ^ 2)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma tensorRS_baseSet_eq_chart_source' (α : M) (r s : ℕ) :
     (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).baseSet =
@@ -88,7 +88,6 @@ private lemma tensorRS_baseSet_eq_chart_source' (α : M) (r s : ℕ) :
   rfl
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -122,7 +121,6 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
   rw [Bundle.Trivialization.linearMapAt_apply, if_pos hb_base]
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma cutoffCovNormSqSum_continuousOn_chart_source
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -192,8 +190,8 @@ lemma cutoffCovNormSumFun_measurable
     Measurable (cutoffCovNormSumFun (I := I) (M := M) g r s S α) :=
   (cutoffCovNormSumFun_continuous (I := I) (M := M) g r s S α).measurable
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 private lemma chartBasePoint_mem_goodSet'
     (α : M) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :

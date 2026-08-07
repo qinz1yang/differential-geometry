@@ -38,7 +38,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private theorem rawTensorConnLapSmooth_symmS
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
@@ -73,7 +73,6 @@ private theorem rawTensorConnLapSmooth_symmS
     rw [ccTensor02Symm, ← hLV]
   rw [hgoal, smul_add, hhalf]
 
-omit [SigmaCompactSpace M] in
 theorem deTurckRicci_solution_with_jointReg
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
@@ -148,7 +147,6 @@ theorem deTurckRicci_solution_with_jointReg
     (deTurckRicci_forcingBootstrap_symm (I := I) (M := M) g₀ g_bg
       (4 * Module.finrank ℝ E + 10) (by omega))
 
-omit [SigmaCompactSpace M] in
 theorem deturck_ricci_flow_parabolic_short_time_existence
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,

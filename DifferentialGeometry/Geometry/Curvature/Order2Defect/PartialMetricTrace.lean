@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -45,8 +45,8 @@ noncomputable def metricTrace2
   ∑ i : Fin (Module.finrank ℝ E),
     H (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) T x
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] in
 lemma metricTrace2_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (H : (Π b : M, TangentSpace I b) → (Π b : M, TangentSpace I b) →
@@ -56,7 +56,7 @@ lemma metricTrace2_def
       ∑ i : Fin (Module.finrank ℝ E),
         H (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) T x := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricTrace2_secondCovDeriv_eq_metricTraceHessian
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -65,7 +65,7 @@ theorem metricTrace2_secondCovDeriv_eq_metricTraceHessian
       metricTraceHessian (I := I) g r s T x := by
   rw [metricTrace2_def, metricTraceHessian_def]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rawTensorConnLap_eq_metricTrace2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -75,7 +75,7 @@ theorem rawTensorConnLap_eq_metricTrace2
   rw [metricTrace2_secondCovDeriv_eq_metricTraceHessian]
   exact rawTensorConnLap_eq_metricTraceHessian (I := I) g r s T x
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 theorem metricTrace2_eq_gWeighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b) (x : M) :
@@ -88,8 +88,8 @@ theorem metricTrace2_eq_gWeighted
   rw [metricTrace2_secondCovDeriv_eq_metricTraceHessian]
   exact metricTraceHessian_eq_gWeighted_firstSlot (I := I) g r s T x
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem frame_pairing_locally_const
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -100,8 +100,7 @@ theorem frame_pairing_locally_const
   filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
   exact smoothOrthoFrame_orthonormal (I := I) g x hy i j
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometric_skew_core
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) (w : TangentSpace I x) :
@@ -132,8 +131,7 @@ theorem cometric_skew_core
   rw [hmfderiv0] at hmc
   exact hmc.symm
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem cometric_diagonal_skew
     (g : SmoothRiemannianMetric I M) (x : M)
     (i : Fin (Module.finrank ℝ E)) (w : TangentSpace I x) :

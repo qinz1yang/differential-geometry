@@ -43,7 +43,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -54,7 +54,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -82,12 +82,12 @@ def metricCcTensorFib (g : SmoothRiemannianMetric I M) (x : M) : Tensor0SSpace 2
     : Tensor0SSpace 2 I x)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 @[simp] lemma metricCcTensorFib_apply (g : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 2 → TangentSpace I x) :
     metricCcTensorFib (I := I) g x m = g.inner x (m 0) (m 1) := rfl
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCcTensorFib_section_contMDiff (g : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -146,7 +146,7 @@ def ccTensorUnitValueSection (g : SmoothRiemannianMetric I M) (T : SmoothCcTenso
       (unitZeroSec (I := I) (M := M) y)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 theorem ccTensorUnitValueSection_contMDiff (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -163,7 +163,7 @@ theorem ccTensorUnitValueSection_contMDiff (g : SmoothRiemannianMetric I M)
     (v := fun y : M => unitZeroSec (I := I) (M := M) y)
     T.toSection.contMDiff (unitZeroSec (I := I) (M := M)).contMDiff
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem metricCcTensor_ccTensorBilin (g₀ g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :

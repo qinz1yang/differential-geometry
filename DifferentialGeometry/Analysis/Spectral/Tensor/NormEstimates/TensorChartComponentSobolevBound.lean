@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -41,7 +41,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 noncomputable def chartAtlasPOU_activeFinset
     (I : ModelWithCorners ℝ E H)
     (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] : Finset M :=
+    [CompactSpace M] [T2Space M] : Finset M :=
   ((chartAtlasPOU I M).locallyFinite.finite_nonempty_of_compact).toFinset
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -68,7 +68,7 @@ lemma chartAtlasPOU_eq_zero_of_notMem_activeFinset
   have := congrFun h_empty x
   simpa using this
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorChartComponentScalar_eq_zero_of_pou_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (h_zero : ∀ x : M, ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0)
@@ -213,7 +213,7 @@ private theorem tensorChartComponentScalar_eLpNorm_le_smoothCcTensor
       (I := I) (M := M) g r s hα S Idx Jdx]
     exact zero_le _
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorL2Norm_eq_norm_toCcTensor
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
@@ -247,7 +247,6 @@ private lemma coe_nnnorm_eq_ofReal_norm_scalar {X : Type*} [SeminormedAddCommGro
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
     ← ofReal_norm_eq_enorm x]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma ofReal_tensorL2Norm_le_norm_ennreal
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -320,15 +319,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma sqrt_g_inner_gradFun_eq_zero_of_scalar_zero
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (h_u_zero : u = 0) :
@@ -394,7 +393,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

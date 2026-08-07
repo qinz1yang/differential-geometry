@@ -35,10 +35,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+  [CompactSpace M] [T2Space M] [I.Boundaryless]
   [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_add_local
     (g : SmoothRiemannianMetric I M) (s : ℕ)

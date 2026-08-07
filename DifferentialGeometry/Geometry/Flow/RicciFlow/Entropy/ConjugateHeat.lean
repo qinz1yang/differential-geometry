@@ -264,7 +264,7 @@ theorem heat_pot_to_conj
 
 
 theorem conj_heat_mass_deriv
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily
       (I := I) (M := M) Real)
     (scalar u : Real → M → Real) {t : Real}
@@ -310,7 +310,7 @@ theorem conj_heat_mass_deriv
 
 
 theorem conj_heat_mass_eq
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily
       (I := I) (M := M) Real)
     (scalar u : Real → M → Real) {a b : Real} (hab : a ≤ b)
@@ -350,7 +350,7 @@ theorem conj_heat_mass_eq
 
 
 theorem conj_heat_mass_one
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily
       (I := I) (M := M) Real)
     (scalar u : Real → M → Real) {a b : Real}

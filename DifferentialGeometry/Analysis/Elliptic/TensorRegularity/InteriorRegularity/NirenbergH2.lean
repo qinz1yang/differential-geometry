@@ -44,7 +44,7 @@ private lemma memLp_two_contDiff_hasCompactSupport_restrict
     hf_cs).restrict _
 
 theorem tensor_h2_loc_chartComp
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
@@ -120,7 +120,7 @@ theorem tensor_h2_loc_chartComp
     hΩ'_compact, C, hC_nn, hbound⟩
 
 theorem tensor_h2_loc_chartComp_all
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
     {K : Set EuclN} (hK : IsCompact K)

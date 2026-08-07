@@ -35,7 +35,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
-variable [T3Space M] [SigmaCompactSpace M] [ConnectedSpace M] [CompactSpace M]
+variable [T3Space M] [ConnectedSpace M] [CompactSpace M]
 variable [I.Boundaryless] [BoundarylessManifold I M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E

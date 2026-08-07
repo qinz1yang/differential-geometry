@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -462,8 +462,8 @@ theorem armJet_iteratedCovGrad_iterL_le (g₀ : SmoothRiemannianMetric I M) (s a
             add_le_add h1 h2
         _ = (Cf p + C5 p * ∑ b ∈ Finset.range (p + 3), Cf b) * SFULL := by ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem armJet_abs_pairing_le (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem armJet_abs_pairing_le [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g₀ 0 s) :
     |tensorL2Inner (I := I) (M := M) g₀ 0 s A.toFun B.toFun| ≤ ‖A‖ * ‖B‖ := by
   have h := SmoothCcTensor.inner_def (I := I) (M := M) A B

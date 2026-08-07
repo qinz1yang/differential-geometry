@@ -37,7 +37,7 @@ def chartPulledWeightedMeasure (g : SmoothRiemannianMetric I M) (α : M) :
     (fun y => ENNReal.ofReal (densityOnEuclid (I := I) g α y))
 
 structure ChartBilinearH1ComplData
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
 
   u_chart : EuclN → ℝ
@@ -84,7 +84,7 @@ structure ChartBilinearH1ComplData
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chart_bilinear_identity_h1Compl
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)

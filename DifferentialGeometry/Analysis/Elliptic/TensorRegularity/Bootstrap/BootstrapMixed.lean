@@ -522,7 +522,7 @@ end IteratedSource
 
 section TensorMixed
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 theorem tensorComponent_iterated_partial_isSmoothWeakSolution
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

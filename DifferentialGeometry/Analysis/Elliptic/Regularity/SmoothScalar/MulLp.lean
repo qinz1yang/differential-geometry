@@ -23,9 +23,9 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [T2Space M] in
 private lemma exists_phiSupBound
     (_g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : M, |((φ : M → ℝ) x)| ≤ C := by
@@ -42,14 +42,14 @@ noncomputable def phiSupBound
     (_g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) : ℝ :=
   Classical.choose (exists_phiSupBound (I := I) (M := M) _g φ)
 
-omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [T2Space M] in
 lemma phiSupBound_nonneg
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :
     0 ≤ phiSupBound (I := I) (M := M) g φ :=
   (Classical.choose_spec
     (exists_phiSupBound (I := I) (M := M) g φ)).1
 
-omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [Module.Finite ℝ E] [T2Space M] in
 lemma abs_phi_le_phiSupBound
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (x : M) :
     |((φ : M → ℝ) x)| ≤ phiSupBound (I := I) (M := M) g φ :=

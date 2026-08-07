@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -52,8 +52,8 @@ private local instance tensorCovDivergenceModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModel_normedSpace r s
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 theorem tensorInnerPointwise_0s_succ_eq_sum_curryLeft_orthoFrame
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x))
@@ -92,8 +92,8 @@ theorem tensorInnerPointwise_0s_succ_eq_sum_curryLeft_orthoFrame
       · intro j; simp
     rw [hcons]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma contract_covariant_smul_left (s : ℕ) (x : M) (c : ℝ) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
     contract_covariant 0 s x (c • v) A =
@@ -106,8 +106,8 @@ lemma contract_covariant_smul_left (s : ℕ) (x : M) (c : ℝ) (v : TangentSpace
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
   rw [hmodel, hmodel, map_smul, map_smul, ContinuousLinearMap.smul_apply, map_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma contract_covariant_add_left (s : ℕ) (x : M) (v w : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
     contract_covariant 0 s x (v + w) A =
@@ -182,7 +182,7 @@ noncomputable def covDivergenceBilinear
         rw [hadd]
         exact contract_covariant_add_left s y (Y y) (Y' y) _)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem codiffPsi_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (y : M)
@@ -214,7 +214,6 @@ def covDivergenceFixedFrame
     contract_covariant 0 s b (B i b)
       (tensorCovDerivAt (I := I) (M := M) g 0 (s + 1) V b (B i b))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covDivergenceFixedFrame_eq_sum_section
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1))
@@ -225,7 +224,6 @@ lemma covDivergenceFixedFrame_eq_sum_section
           (covDerivAlongVFSectionRS (I := I) (M := M) g 0 (s + 1) V.toSection (B i)) (B i)) b :=
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covDivergenceFixedFrame_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1))
@@ -264,13 +262,13 @@ def smoothOrthoFrameSection
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
   ⟨fun b : M => smoothOrthoFrame (I := I) g x₀ i b, smoothOrthoFrame_smooth (I := I) g x₀ i⟩
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 @[simp] lemma smoothOrthoFrameSection_apply
     (g : SmoothRiemannianMetric I M) (x₀ : M) (i : Fin (Module.finrank ℝ E)) (b : M) :
     smoothOrthoFrameSection (I := I) (M := M) g x₀ i b =
       smoothOrthoFrame (I := I) g x₀ i b := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 lemma covDivergenceRaw_eq_codiffPsi_smoothOrthoFrame_trace
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M)
     (B : Fin (Module.finrank ℝ E) → TangentSpace I b)
@@ -294,7 +292,6 @@ lemma covDivergenceRaw_eq_codiffPsi_smoothOrthoFrame_trace
       hB_orth
   rw [covDivergenceRaw, hcentral_trace, ← hB_trace]
 
-omit [CompactSpace M] in
 lemma covDivergenceRaw_eq_fixedFrame_on_nbhd
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (x₀ : M)
     {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
@@ -316,7 +313,6 @@ lemma covDivergenceRaw_eq_fixedFrame_on_nbhd
   rw [codiffPsi_apply (I := I) (M := M) g s V b hSmooth_at hSmooth_at]
   rfl
 
-omit [CompactSpace M] in
 theorem covDivergenceRaw_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
@@ -347,7 +343,6 @@ theorem covDivergenceRaw_contMDiff
       (covDivergenceRaw_eq_fixedFrame_on_nbhd (I := I) (M := M) g s V x₀ hb)
   exact h_fixed_at.congr_of_eventuallyEq h_eventuallyEq
 
-omit [CompactSpace M] in
 lemma covDivergenceRaw_eq_zero_off_tsupport
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1))
     {b : M} (hb : b ∉ tsupport V.toFun) :
@@ -414,8 +409,8 @@ def oneSidedDirichletForm
       TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_right]
     rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 @[simp] lemma oneSidedDirichletForm_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) (b : M) (X : TangentSpace I b) :
@@ -430,8 +425,8 @@ def oneSidedDirichletVF
     TangentSpace I b :=
   metricSharp (I := I) g b (oneSidedDirichletForm (I := I) (M := M) g s T V b)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma inner_oneSidedDirichletVF
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) (b : M) (X : TangentSpace I b) :
@@ -440,8 +435,8 @@ lemma inner_oneSidedDirichletVF
   rw [oneSidedDirichletVF]
   exact inner_metricSharp (I := I) g b (oneSidedDirichletForm (I := I) (M := M) g s T V b) X
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem modelContractCovariantBilinear_contMDiffAt
     (s : ℕ) (x : M) (X : M → E) (A : M → TensorRSModel 0 (s + 1) ℝ E)
     (hX : ContMDiffAt I 𝓘(ℝ, E) ∞ X x)
@@ -451,8 +446,8 @@ private theorem modelContractCovariantBilinear_contMDiffAt
   ((contMDiffAt_const
     (c := model_contract_covariant_bilinear (𝕜 := ℝ) (E := E) 0 s)).clm_apply hX).clm_apply hA
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma contract_chartBasis_contMDiffOn
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
@@ -563,8 +558,8 @@ lemma contract_chartBasis_contMDiffOn
   · intro jj
     rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) (α : M) (j : Fin (Module.finrank ℝ E)) :
@@ -608,8 +603,8 @@ lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
   intro b _
   rw [oneSidedDirichletForm_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 lemma oneSidedDirichletVF_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) :
@@ -628,16 +623,16 @@ def oneSidedDirichletVFSection
     (fun b : M => oneSidedDirichletVF (I := I) (M := M) g s T V b)
     (oneSidedDirichletVF_contMDiff (I := I) (M := M) g s T V)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 @[simp] lemma oneSidedDirichletVFSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) (b : M) :
     oneSidedDirichletVFSection (I := I) (M := M) g s T V b =
       oneSidedDirichletVF (I := I) (M := M) g s T V b := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x) (m : Fin s → E) :
     Tensor0SSpace.toModel
@@ -647,8 +642,8 @@ private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A) D)
         (Fin.cons (v : E) m) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma contract_bare_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x) (m : Fin s → E) :
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
@@ -656,8 +651,8 @@ private lemma contract_bare_eval (s : ℕ) (x : M) (v : TangentSpace I x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A) D)
         (Fin.cons (v : E) m) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma D_eq_scalar_smul_unit (x : M) (D : Tensor0SSpace 0 I x) :
     D = (tensor00Scalar (I := I) (M := M) x D) • (unitZeroSec (I := I) (M := M) x) := by
   apply Tensor0SSpace.toModel_injective
@@ -673,8 +668,8 @@ private lemma D_eq_scalar_smul_unit (x : M) (D : Tensor0SSpace 0 I x) :
   rw [tensor00Scalar_apply (I := I) (M := M) x D m, smul_eq_mul, mul_one]
   congr 1
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma contract_eq_tensor0SAsRS_curry (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
     contract_covariant 0 s x v A =
@@ -713,8 +708,8 @@ private lemma contract_eq_tensor0SAsRS_curry (s : ℕ) (x : M) (v : TangentSpace
           (unitZeroSec (I := I) (M := M) x))) (Fin.cons (v : E) m) = _
   rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma rs_zero_recover (s : ℕ) (x : M) (Φ : TensorRSSpace 0 s I x) :
     Φ = tensor0SToTensorRS (I := I) (M := M) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ)
@@ -731,8 +726,8 @@ private lemma rs_zero_recover (s : ℕ) (x : M) (Φ : TensorRSSpace 0 s I x) :
     tensor0SAsRS_apply (I := I) (M := M) x _ D]
   conv_lhs => rw [D_eq_scalar_smul_unit (I := I) (M := M) x D, ContinuousLinearMap.map_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma tensor0SAsRS_add (s : ℕ) (x : M) (C D : Tensor0SSpace s I x) :
     tensor0SToTensorRS (I := I) (M := M) x (C + D) =
       tensor0SToTensorRS (I := I) (M := M) x C + tensor0SToTensorRS (I := I) (M := M) x D := by
@@ -745,7 +740,7 @@ private lemma tensor0SAsRS_add (s : ℕ) (x : M) (C D : Tensor0SSpace s I x) :
       D) u
   rw [tensor0SAsRS_apply, tensor0SAsRS_apply, smul_add]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma contract_covariant_leibniz
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1))
@@ -804,8 +799,8 @@ private lemma contract_covGrad_eq_covDeriv
   rw [Fin.cons_zero, Matrix.vecTail, show (Fin.cons (v : E) m ∘ Fin.succ) = m from by funext i;
                                                                                         simp]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma fiberNormSqComponent_contract (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (n : ℕ) (e : Fin n → TangentSpace I x) (i : Fin n)
     (A : TensorRSSpace 0 (s + 1) I x) (J : Fin s → Fin n) :
@@ -821,8 +816,8 @@ private lemma fiberNormSqComponent_contract (g : SmoothRiemannianMetric I M) (s 
   · simp
   · intro j; simp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma tensorInnerPointwise_succ_eq_sum_contract_orthoFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -879,14 +874,13 @@ private def contractFrameSection
   contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
     V.toSection (smoothOrthoFrameSection (I := I) (M := M) g b i)
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma contractFrameSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M)
     (i : Fin (Module.finrank ℝ E)) (y : M) :
     contractFrameSection (I := I) (M := M) g s V b i y =
       contract_covariant 0 s y (smoothOrthoFrame (I := I) g b i y) (V.toSection y) := rfl
 
-omit [CompactSpace M] in
 private lemma divergence_oneSidedVF_summand_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : SmoothCcTensor g 0 s) (V : SmoothCcTensor g 0 (s + 1)) (b : M)
@@ -1003,8 +997,8 @@ private lemma divergence_oneSidedVF_summand_eq
         (fun y : M => smoothOrthoFrame (I := I) g b i y) from rfl]
   ring
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma centeredFrame_basis_exists
     (g : SmoothRiemannianMetric I M) (b : M) :
     ∃ (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I b)),
@@ -1062,8 +1056,8 @@ private lemma centeredFrame_basis_exists
                                                       [coe_basisOfLinearIndependentOfCardEqFinrank]]
     exact hB_orth i j
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma tip_sum_right
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M)
     (S : TensorRSModel 0 s ℝ E) {ι : Type*} (fs : Finset ι)

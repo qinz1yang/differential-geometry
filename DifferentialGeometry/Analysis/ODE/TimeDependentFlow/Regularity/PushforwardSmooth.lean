@@ -118,10 +118,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [BoundarylessManifold I M] [T2Space M] [CompactSpace M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M] [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
-    [CompactSpace M] [SigmaCompactSpace M] in
+    [CompactSpace M] in
 theorem flowFamily_hasMFDerivWithinAt_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -134,7 +134,7 @@ theorem flowFamily_hasMFDerivWithinAt_time
   hbare s hs hsT x
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
-    [CompactSpace M] [SigmaCompactSpace M] in
+    [CompactSpace M] in
 theorem flowFamily_continuousWithinAt_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -153,10 +153,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [CompactSpace M]
+  [T2Space M] [BoundarylessManifold I M] [CompactSpace M]
 
 
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [CompactSpace M] in
+omit [T2Space M] [BoundarylessManifold I M] [CompactSpace M] in
 theorem flowFamily_regularity_package
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

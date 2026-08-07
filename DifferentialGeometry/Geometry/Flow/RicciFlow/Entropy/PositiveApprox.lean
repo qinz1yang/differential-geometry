@@ -147,7 +147,7 @@ private theorem energy_mix_le
     (metric_inner_self_nonneg (I := I) (M := M) g x _) <|
       hcoef.trans ha1
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 variable [Nonempty M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup

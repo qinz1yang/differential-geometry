@@ -28,15 +28,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-lemma tensorChartComponentScalar_sub
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+lemma tensorChartComponentScalar_sub [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -56,8 +56,8 @@ lemma tensorChartComponentScalar_sub
     g r s (-1 : ℝ) S₂ α Idx Jdx]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_aestronglyMeasurable
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_aestronglyMeasurable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -68,8 +68,8 @@ private lemma tensorChartComponentScalar_aestronglyMeasurable
   (tensorChartComponentScalar_contMDiff (I := I) (M := M)
     g r s S α Idx Jdx).continuous.aestronglyMeasurable
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma eLpNorm_diff_le_via_common_limit
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma eLpNorm_diff_le_via_common_limit [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -112,8 +112,8 @@ private lemma eLpNorm_diff_le_via_common_limit
   have hp : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   exact eLpNorm_sub_le (hf₁.sub h_u) (hf₂.sub h_u) hp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma eLpNorm_diff_tendsto_zero_of_tendsto_zero
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma eLpNorm_diff_tendsto_zero_of_tendsto_zero [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {S : ℕ → SmoothCcTensorH1 g r s}
     (α : M)

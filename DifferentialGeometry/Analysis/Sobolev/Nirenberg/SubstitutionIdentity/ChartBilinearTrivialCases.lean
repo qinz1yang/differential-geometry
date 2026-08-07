@@ -40,7 +40,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma principalTerm_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -71,7 +71,7 @@ private lemma principalTerm_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma cross_1_term_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -101,7 +101,7 @@ private lemma cross_1_term_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma cross_2_term_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -130,7 +130,7 @@ private lemma cross_2_term_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma cross_3_term_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -159,7 +159,7 @@ private lemma cross_3_term_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma c_term_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -182,7 +182,7 @@ private lemma c_term_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma f_term_chartBilinear_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -205,7 +205,7 @@ private lemma f_term_chartBilinear_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartBilinear_substitution_identity_zero_h
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -220,7 +220,7 @@ private lemma chartBilinear_substitution_identity_zero_h
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartBilinear_substitution_identity_K_0_empty
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_empty : K_0 = ∅)
@@ -260,7 +260,7 @@ private lemma chartBilinear_substitution_identity_K_0_empty
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_substitution_identity_holds_composite
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
@@ -286,7 +286,7 @@ theorem chartBilinear_substitution_identity_holds_composite
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_substitution_identity_zero_h_unconditional
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
@@ -297,7 +297,7 @@ theorem chartBilinear_substitution_identity_zero_h_unconditional
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_substitution_identity_K_0_empty_unconditional
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_empty : K_0 = ∅)
@@ -310,7 +310,7 @@ theorem chartBilinear_substitution_identity_K_0_empty_unconditional
     D hK_0_empty η hη_supp_in_K_0 k h
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_substitution_identity_with_hypothesis
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)

@@ -39,13 +39,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance instCompleteSpaceE_keystone : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem jointContMDiff_toModel_continuous_slice
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : ℝ → SmoothCcTensor g₀ r s) (S : Set ℝ)
@@ -99,7 +99,7 @@ theorem jointContMDiff_toModel_continuous_slice
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem interiorProductField_jointContMDiffOn_vecJoint (s : ℕ) {S : Set ℝ}
     (X : ∀ p : M × ℝ, TangentSpace I p.1)
     (hX : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
@@ -190,7 +190,7 @@ theorem interiorProductField_jointContMDiffOn_vecJoint (s : ℕ) {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M)
     (Tz : Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I z)
     (hx : z ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
@@ -322,7 +322,7 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem contractTraceField_jointContMDiffOn (r s : ℕ) {S : Set ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I p.1)
     (hT : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -375,7 +375,7 @@ theorem contractTraceField_jointContMDiffOn (r s : ℕ) {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem domDomCongrField_joint_pointwise {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x₀ : M) (z : M)
     (Zz : Tensor0SBundle.Tensor0SSpace d I z)
     (hx : z ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
@@ -436,7 +436,7 @@ private theorem domDomCongrField_joint_pointwise {d : ℕ} (ρ : Equiv.Perm (Fin
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem domDomCongrField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d)) {S : Set ℝ}
     (Z : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hZ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -482,7 +482,7 @@ theorem domDomCongrField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d)) {S
     exact (domDomCongrField_joint_pointwise (I := I) ρ x₀ p₀.1 (Z p₀) hx0).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem jointTotalSpace_add {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -517,7 +517,7 @@ theorem jointTotalSpace_add {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem jointTotalSpace_sub {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -552,7 +552,7 @@ theorem jointTotalSpace_sub {d : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem jointTotalSpace_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -582,7 +582,7 @@ theorem jointTotalSpace_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
       a (A p₀)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
@@ -622,7 +622,7 @@ theorem jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem curriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (A : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (d + 1) I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)) ∞
@@ -679,7 +679,7 @@ private theorem curriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem uncurriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (G : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace d I p.1)
     (hG : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -754,7 +754,7 @@ private theorem uncurriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
     (hΛ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -804,7 +804,7 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (g : SmoothRiemannianMetric I M)
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)

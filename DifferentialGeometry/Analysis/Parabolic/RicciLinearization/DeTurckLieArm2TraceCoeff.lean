@@ -36,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -65,7 +65,7 @@ noncomputable def domDomCongrFibPerm (σ : Equiv.Perm (Fin 4)) (x : M) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem domDomCongrFibPerm_apply (σ : Equiv.Perm (Fin 4)) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 4 I x) :
     domDomCongrFibPerm (I := I) σ x D =
@@ -85,7 +85,7 @@ noncomputable def deTurckLieTraceFib (g₁ : SmoothRiemannianMetric I M)
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem domDomCongr_section_contMDiff_local {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace d I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
@@ -119,9 +119,9 @@ theorem domDomCongr_section_contMDiff_local {d : ℕ} (ρ : Equiv.Perm (Fin d))
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem deTurckLieTraceFib_contMDiff (g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4)) :
+omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] in
+theorem deTurckLieTraceFib_contMDiff [SigmaCompactSpace M] (g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) x
@@ -153,7 +153,7 @@ noncomputable def deTurckLieTraceCoeff (g₀ g₁ : SmoothRiemannianMetric I M)
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 @[simp] theorem deTurckLieTraceCoeff_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ).toSection x =
@@ -199,7 +199,7 @@ theorem deTurckLieTraceCoeff_realizedFam_jointContMDiff (g₀ : SmoothRiemannian
   rw [deTurckLieTraceFib, ContinuousLinearMap.comp_apply, domDomCongrFibPerm_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
@@ -235,7 +235,7 @@ private theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
       (A p₀) (B p₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SBundle.TensorRSSpace r s I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞

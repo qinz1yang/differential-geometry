@@ -22,9 +22,9 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
-private noncomputable def chartCompactM (α : M) :
+private noncomputable def chartCompactM [SigmaCompactSpace M] (α : M) :
     Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
   toEuclidean ''
     ((extChartAt I α) ''
@@ -111,8 +111,8 @@ private lemma chartCompactM_subset_chartNbhdM (α : M) :
     (chartThickeningRadiusM_pos (I := I) (M := M) α)
     (chartCompactM (I := I) (M := M) α)
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma chartPushedRaw_pou_mul_eq_zero_off_chartCompactM
+omit [I.Boundaryless] in
+private lemma chartPushedRaw_pou_mul_eq_zero_off_chartCompactM [SigmaCompactSpace M]
     (α : M) (u : M → ℝ)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∉ chartCompactM (I := I) (M := M) α) :
@@ -615,25 +615,25 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma chartAtlasPOU_measurable_aux (α : M) :
+omit [I.Boundaryless] in
+private lemma chartAtlasPOU_measurable_aux [SigmaCompactSpace M] (α : M) :
     Measurable
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
   ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
     : C^∞⟮I, M; ℝ⟯).contMDiff.continuous).measurable
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma pou_mul_measurable_aux (α : M) {u : M → ℝ} (hu : Measurable u) :
+omit [I.Boundaryless] in
+private lemma pou_mul_measurable_aux [SigmaCompactSpace M] (α : M) {u : M → ℝ} (hu : Measurable u) :
     Measurable (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x) :=
   (chartAtlasPOU_measurable_aux (I := I) (M := M) α).mul hu
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma pou_mul_sub_measurable_aux (α : M) {u v : M → ℝ}
+omit [I.Boundaryless] in
+private lemma pou_mul_sub_measurable_aux [SigmaCompactSpace M] (α : M) {u v : M → ℝ}
     (hu : Measurable u) (hv : Measurable v) :
     Measurable (fun x : M =>
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -643,8 +643,8 @@ private lemma pou_mul_sub_measurable_aux (α : M) {u v : M → ℝ}
   ((chartAtlasPOU_measurable_aux (I := I) (M := M) α).mul hu).sub
     ((chartAtlasPOU_measurable_aux (I := I) (M := M) α).mul hv)
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma tsupport_pou_mul_subset_tsupport_pou_aux
+omit [I.Boundaryless] in
+private lemma tsupport_pou_mul_subset_tsupport_pou_aux [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) :
     tsupport (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -661,8 +661,8 @@ private lemma tsupport_pou_mul_subset_tsupport_pou_aux
   rw [h_eq]
   exact tsupport_smul_subset_left _ _
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma tsupport_pou_mul_sub_subset_tsupport_pou_aux
+omit [I.Boundaryless] in
+private lemma tsupport_pou_mul_sub_subset_tsupport_pou_aux [SigmaCompactSpace M]
     (α : M) (u v : M → ℝ) :
     tsupport (fun x : M =>
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α

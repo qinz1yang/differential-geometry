@@ -37,10 +37,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem pullbackMetric_hasDerivWithinAt_ricciFlow_interior
+omit [I.Boundaryless] in
+theorem pullbackMetric_hasDerivWithinAt_ricciFlow_interior [SigmaCompactSpace M]
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))

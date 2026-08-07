@@ -25,12 +25,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
-lemma gradArmFib_moving_section_contMDiff
+omit [I.Boundaryless] in
+lemma gradArmFib_moving_section_contMDiff [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     {Y : Π b : M, TensorRSSpace 0 (s + 1) I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
@@ -60,7 +60,7 @@ lemma gradArmFib_moving_section_contMDiff
       (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g y i j)
       (fun i j => smoothOrthoFrame_orthonormal (I := I) g x₀ hy i j) (Y y)]
 
-noncomputable def curvatureGradContractionSection
+noncomputable def curvatureGradContractionSection [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (W : SmoothCcTensor g 0 (s + 1)) :
     SmoothCcTensor g 0 (s + 1) where
   toSection :=
@@ -78,7 +78,7 @@ omit [I.Boundaryless] in
       curvatureGradContractionFib (I := I) (M := M) g s (smoothOrthoFrame (I := I) g x) x
         (W.toSection x) := rfl
 
-noncomputable def curvatureCommutatorRemainderSection
+noncomputable def curvatureCommutatorRemainderSection [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     SmoothCcTensor g 0 (s + 1) :=
   pointwiseTensorCurv (I := I) (M := M) g s S -

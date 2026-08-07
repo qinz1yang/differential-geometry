@@ -56,13 +56,13 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem rev_gram_smooth
+private theorem rev_gram_smooth [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn (I := I) S) (T : Real) {U : Set Real}
@@ -106,9 +106,9 @@ private theorem rev_gram_smooth
     e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
   rfl
 
-omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-private theorem rev_trace_eq
+private theorem rev_trace_eq [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn (I := I) S) (T s : Real)

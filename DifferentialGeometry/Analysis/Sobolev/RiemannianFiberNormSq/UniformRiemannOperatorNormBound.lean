@@ -29,11 +29,11 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_self_nonneg
     (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     0 ≤ g.inner x v v := by
@@ -42,7 +42,7 @@ private lemma metric_inner_self_nonneg
   · exact (g.pos x v hv0).le
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma pouTsupport_subset_goodSet (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
@@ -234,8 +234,8 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
     exact absurd ⟨(b, ξ₀), hb, hξ₀⟩ hK_ne
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma gInner_self_eq_chartGram_quadForm
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v : TangentSpace I x) :
@@ -271,9 +271,7 @@ private lemma gInner_self_eq_chartGram_quadForm
     _ = _ := hgi
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma riemannOp_LeviCivita_chartAlpha_frame_expand
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -367,9 +365,7 @@ private lemma riemannOp_LeviCivita_chartAlpha_frame_expand
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Finset.sum_comm]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma riemannOp_normSq_le_chartConstants
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)

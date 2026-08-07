@@ -38,10 +38,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
   [IsManifold I ∞ M] [ChartedSpace H M] in
 private lemma lipschitzOnWith_of_tendsto_aux
     {β : Type*} [PseudoMetricSpace β] (g : ℝ → E → β) (g0 : E → β) (K : ℝ≥0)
@@ -60,7 +60,7 @@ private lemma lipschitzOnWith_of_tendsto_aux
   exact ht x hx y hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [FiniteDimensional ℝ E] in
 private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (t : ℝ)
@@ -92,7 +92,7 @@ private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
   exact hdw.differentiableAt hSnhds
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma continuousOn_fderiv_chartTrivRepr
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hgrad : ContinuousOn (fun q : ℝ × M =>
@@ -114,7 +114,7 @@ private lemma continuousOn_fderiv_chartTrivRepr
   rw [(extChartAt I α).right_inv hp.2]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma pointwise_tendsto_chartTrivRepr
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (L : ℝ)
     (hcont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))
@@ -137,7 +137,7 @@ private lemma pointwise_tendsto_chartTrivRepr
     ((trivToE (I := I) α x₀).continuous.tendsto _).comp hXc.continuousAt
   exact hclm.mono_left nhdsWithin_le_nhds
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 theorem corrected_chart_field_lipschitz_of_data
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (T : ℝ) (hT : 0 < T)
     (hcont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))

@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -100,12 +100,11 @@ theorem exists_pathBall
     exact h.le
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
   [BoundarylessManifold I M] in
 /-- A continuous high-Sobolev path with a continuous strong derivative and a
 pointwise semilinear parabolic equation determines the exact zero-trace strong
 pair consumed by reverse Duhamel uniqueness. -/
-theorem smoothPath_strong
+theorem smoothPath_strong [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
       tensorHs (I := I) (M := M) g 0 2 a}
@@ -224,7 +223,7 @@ theorem smoothPath_strong
 /-- The Ricci--DeTurck right-hand side, recast into the fixed-background
 `SmoothCcTensor` carrier.  Only the carrier metric changes; the underlying
 mixed tensor section is unchanged. -/
-def deTurckRHSBase (g₀ g_bg : SmoothRiemannianMetric I M)
+def deTurckRHSBase [SigmaCompactSpace M] (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ) : SmoothCcTensor g₀ 0 2 where
@@ -497,11 +496,10 @@ theorem smoothGeom_strong
     hhi hD hincl hderiv hzero hpde
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
   [BoundarylessManifold I M] in
 /-- A continuous high-Sobolev path has a finite uniform bound for its
 Lipschitz nonlinearity on a nonempty closed time window. -/
-theorem exists_pathNBound
+theorem exists_pathNBound [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
       tensorHs (I := I) (M := M) g 0 2 a}

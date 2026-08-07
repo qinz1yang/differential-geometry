@@ -42,7 +42,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -185,7 +185,7 @@ theorem scalarPotCore_norm
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [IsManifold I ∞ M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem exists_pot_bound
     (ζ : C^∞⟮I, M; Real⟯) :
     ∃ C : Real, 0 ≤ C ∧ ∀ x : M, |(ζ : M → Real) x| ≤ C := by

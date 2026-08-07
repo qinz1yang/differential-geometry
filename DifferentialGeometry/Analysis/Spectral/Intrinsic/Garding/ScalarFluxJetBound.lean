@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -70,7 +70,7 @@ private local instance scalarFluxTensorRSFiberBundle (r s : ℕ) :
   Tensor0SBundle.tensorRSBundle_fiber r s
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem metricDiff_bilin (q h : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) q
@@ -89,7 +89,7 @@ private lemma grid_mono {a b : ℕ → ℝ}
   exact Finset.prod_le_prod (fun m _ => ha (e m)) (fun m _ => hab (e m))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem joint0S_sub {d : ℕ} {S : Set ℝ}
     (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -168,7 +168,7 @@ theorem metricDiff_small
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarTrace_joint
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -216,7 +216,6 @@ theorem scalarTrace_joint
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connTrace_joint
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -253,7 +252,7 @@ theorem connTrace_joint
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarTrace_rev
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -278,7 +277,6 @@ theorem scalarTrace_rev
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connTrace_rev
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -302,7 +300,7 @@ theorem connTrace_rev
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarTrace_rev_on
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -322,7 +320,6 @@ theorem scalarTrace_rev_on
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connTrace_rev_on
     {D : RealTimeInterval}
     (G : RealizedMetricFamilyOn (I := I) (M := M) D)
@@ -368,9 +365,9 @@ theorem scalarTrace_small
     joint_jet_small (I := I) (M := M) q 2 0 p P
       (D.regular_isOpen.mem_nhds T.2) hPzero hPjoint hε
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem connFib_self (q : SmoothRiemannianMetric I M) (x : M) :
+omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+private theorem connFib_self [SigmaCompactSpace M] (q : SmoothRiemannianMetric I M) (x : M) :
     connDiffFib (I := I) q q x = 0 := by
   apply ContinuousLinearMap.ext
   intro om
@@ -420,7 +417,7 @@ theorem connTrace_small
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarFlux_eq_slot (q h : SmoothRiemannianMetric I M) :
     scalarFluxCoeff (I := I) (M := M) q h =
       endoSlotZeroCcTensor (I := I) (M := M) q 0

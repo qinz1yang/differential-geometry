@@ -73,7 +73,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 Lipschitz for an explicit Riemannian distance is globally Lipschitz in the
 Euclidean chart model. -/
 theorem chart_pou_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} {L B : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
@@ -265,7 +265,7 @@ theorem chart_pou_lip
       hv_local hv_compact hv_amp)
 
 private lemma pou_ae_diff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} {L B : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
@@ -284,7 +284,7 @@ private lemma pou_ae_diff
     (measurableSet_of_differentiableAt ℝ _) hC.ae_differentiableAt
 
 private lemma pou_ae_mdiff
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} {L B : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
@@ -304,7 +304,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 /-- A bounded function that is Lipschitz for an explicit Riemannian distance
 is manifold-differentiable almost everywhere for the Riemannian volume. -/
 theorem ae_mdiff_of_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} {L B : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
@@ -353,7 +353,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 /-- A bounded function that is Lipschitz for the extended distance of a
 smooth Riemannian metric belongs to every first-order chart Sobolev space. -/
 theorem mem_chart_one_of_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p) {u : M → ℝ} {L B : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *

@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -198,8 +198,8 @@ private theorem exists_ricciDefect_homField (g : SmoothRiemannianMetric I M) (r 
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) (D : Tensor0SSpace r I x)
     (v0 : TangentSpace I x) (m : Fin s → TangentSpace I x) :
@@ -236,8 +236,8 @@ private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x 
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) (D : Tensor0SSpace r I x)
     (v0 : TangentSpace I x) (m : Fin s → TangentSpace I x) :
@@ -286,8 +286,8 @@ private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma slotExtTrace_eq_traceConj (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) :
     (show TensorRSSpace r (s + 1 + 2) I x →L[ℝ] TensorRSSpace r (s + 1) I x from
@@ -309,7 +309,7 @@ private lemma slotExtTrace_eq_traceConj (g : SmoothRiemannianMetric I M) (r s : 
 
 set_option backward.isDefEq.respectTransparency false in
 
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem appFullSec_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (V : SmoothCcTensor g r (s + 1 + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g r (s + 2 + 1) (s + 1)
@@ -332,7 +332,7 @@ private theorem appFullSec_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r b c I)
     (Q' : HomTensorRSField (E := E) (M := M) r a b I) :
@@ -364,7 +364,7 @@ private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ - W₂) =
@@ -382,7 +382,7 @@ private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : �
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appFullSec_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ + W₂) =

@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -44,7 +44,7 @@ noncomputable def oneMinusConnLapSmooth
     SmoothCcTensor g r s :=
   T - rawTensorConnLapSmooth (I := I) g r s T
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] lemma oneMinusConnLapSmooth_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (x : M) :
@@ -62,12 +62,12 @@ noncomputable def oneMinusConnLapSmoothIter
   | k + 1, T => oneMinusConnLapSmooth (I := I) g r s
                   (oneMinusConnLapSmoothIter g r s k T)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] theorem oneMinusConnLapSmoothIter_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 0 T = T := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 @[simp] theorem oneMinusConnLapSmoothIter_succ
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s (k + 1) T =
@@ -156,7 +156,6 @@ theorem oneMinusConnLapSmooth_toL2_inner_eq_h1
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorParseval_l2Coeff_ofCompact_sq
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -172,7 +171,6 @@ theorem tensorParseval_l2Coeff_ofCompact_sq
     Real.norm_eq_abs, sq_abs]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorL2Coeff_ofCompact_summable_sq'
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -185,7 +183,6 @@ theorem tensorL2Coeff_ofCompact_summable_sq'
   tensorL2Coeff_summable_sq (I := I) (M := M) h_compact u
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_tensorSobolevWeight_of_even
     {g : SmoothRiemannianMetric I M} {r s : ℕ}

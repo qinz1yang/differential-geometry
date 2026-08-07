@@ -27,11 +27,11 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 lemma R_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
@@ -120,7 +120,7 @@ lemma R_contDiffOn_goodSet
   exact interior_subset
     (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx'_good)
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma input_slot_pulled_eq_kernel_eventually
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -174,7 +174,7 @@ private lemma input_slot_pulled_eq_kernel_eventually
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
   exact h_factor
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma output_slot_pulled_eq_kernel_eventually
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

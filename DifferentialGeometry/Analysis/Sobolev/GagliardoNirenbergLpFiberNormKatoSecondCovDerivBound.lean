@@ -34,7 +34,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -295,7 +295,7 @@ theorem rawConnLap_innerWith_sqrt_finrank_bound_rs
     _ = Real.sqrt (Module.finrank ℝ E : ℝ) * Real.sqrt aw * Real.sqrt cw := by ring
 
 omit [CompactSpace M] in
-private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
+private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r p : ℕ)
     (Q : Integral.L2.SmoothCcTensor g r p) (x : M) (v : TangentSpace I x) :
     extDerivFun (I := I)

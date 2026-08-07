@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -92,8 +92,8 @@ theorem lc0b_fixedField_rfns_jet (g₀ : SmoothRiemannianMetric I M)
   choose c hc0 hc using h
   exact ⟨c, hc0, fun j x => hc j x⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem lc0b_normSq_le_scaled_of_pointwise (g₀ : SmoothRiemannianMetric I M)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem lc0b_normSq_le_scaled_of_pointwise [SigmaCompactSpace M] (g₀ : SmoothRiemannianMetric I M)
     (r₁ s₁ r₂ s₂ : ℕ) (X : SmoothCcTensor g₀ r₁ s₁) (Y : SmoothCcTensor g₀ r₂ s₂)
     (c : ℝ) (_hc : 0 ≤ c)
     (hpt : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ r₁ s₁ x (X.toSection x) ≤
@@ -116,7 +116,7 @@ private lemma lc0b_icg_succ_cometricDT_zero (g₀ : SmoothRiemannianMetric I M) 
       rw [iteratedCovGrad_succ, ih, lc0b_covGrad_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_toModel_cons_sum_smul (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -150,7 +150,7 @@ lemma lc0b_toModel_cons_sum_smul (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma lc0b_toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
@@ -186,7 +186,7 @@ private lemma lc0b_toModel_cons_cons_sum_smul (_x : M) {n : ℕ}
   rw [← h1 (u c)]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma lc0b_orthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank ℝ E),
@@ -241,7 +241,7 @@ lemma lc0b_orthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
   rw [hrepr v i, hbB_coe i]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lc0b_g1_inner_gInvRaisedEndo_left (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     g₁.inner x (metricComparisonEndo (I := I) g₀ g₁ x v) w = g₀.inner x v w := by
@@ -250,7 +250,7 @@ private lemma lc0b_g1_inner_gInvRaisedEndo_left (g₀ g₁ : SmoothRiemannianMet
   rw [cotangentToDualLinear_apply]
   exact cotangentToDual_g0FlatCLM (I := I) g₀ x v w
 
-def lc0PureDT (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
+def lc0PureDT [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     SmoothCcTensor g₀ (s + 2) s where
   toSection :=
     { toFun := fun x : M =>
@@ -258,7 +258,7 @@ def lc0PureDT (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
       contMDiff_toFun := cometricDoubleTraceFib_contMDiff (I := I) g₁ s }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 lemma lc0PureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     lc0PureDT (I := I) (M := M) g₀ g₁ s =

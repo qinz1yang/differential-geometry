@@ -48,7 +48,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -76,7 +76,7 @@ private local instance aaTensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma aa_symm_eq (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -197,7 +197,7 @@ private def aaQuad5 (g gm : SmoothRiemannianMetric I M) :
     innerContractionSwapPerm
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
-  [SigmaCompactSpace M] in
+  in
 private theorem aaKer_split (g gm : SmoothRiemannianMetric I M) :
     ricciAAKer (I := I) (M := M) g gm =
       aaQuad0 (I := I) (M := M) g gm +
@@ -662,7 +662,7 @@ private theorem aa_pair_point
       (TensorRSSpace.toModel S) (TensorRSSpace.toModel U))]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma aa_bound_mono
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {a b : Real} (hab : a ≤ b)

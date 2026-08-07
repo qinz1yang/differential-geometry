@@ -51,7 +51,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -79,7 +79,7 @@ private local instance oneTensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private lemma one_symm_eq (g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2)
     (hsymm : ∀ (x : M) (u w : TangentSpace I x),
@@ -168,7 +168,7 @@ private def oneArm4 (g gm : SmoothRiemannianMetric I M) :
       (permCoeff (I := I) (M := M) g oneOut1203)
       (connDiffContrInsertionField (I := I) g gm)) oneIn120
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem oneKer_split
     (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder1KernelField (I := I) g gm =
@@ -229,7 +229,7 @@ private theorem oneFull_rfns
   exact oneArm_rfns (I := I) (M := M) g gm sigma q x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem one_rfns_neg
     (g : SmoothRiemannianMetric I M) (r s : Nat)
     (x : M) (v : TensorRSSpace r s I x) :
@@ -525,7 +525,7 @@ private theorem onePair_point
       (TensorRSSpace.toModel S) (TensorRSSpace.toModel U))]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private lemma one_bound_mono
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {a b : Real} (hab : a ≤ b)

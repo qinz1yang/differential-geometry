@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private theorem continuousOn_prod_slice
     {α β γ : Type*} [TopologicalSpace α] [TopologicalSpace β] [TopologicalSpace γ]
@@ -42,7 +42,7 @@ private theorem continuousOn_prod_slice
     (fun _y hy => ⟨hy, hx⟩)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- Two smooth Riemannian metrics are equal if their Gram matrices agree in
 the chart basis centred at every base point. -/
 theorem metric_eq_chartGram
@@ -81,7 +81,7 @@ theorem metric_eq_chartGram
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 /-- Equality on a left half-window passes to its right endpoint from the
 existing joint chart-Gram `C⁰` regularity.  This is the closedness input for
 forward Ricci--DeTurck continuation. -/

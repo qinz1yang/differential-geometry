@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -54,7 +54,7 @@ private noncomputable def pureRDirCLMTensor
           rw [map_smul (riemannOp (tensorCov (I := I) g 0 m) x (B i x)) c v]; rfl })
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRDirCLMTensor_apply
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -70,7 +70,7 @@ private lemma pureRDirCLMTensor_apply
   rw [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRFrozenDirCLM_eq_pureRDirCLMTensor
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -82,7 +82,6 @@ private lemma pureRFrozenDirCLM_eq_pureRDirCLMTensor
   rw [pureRFrozenDirCLM_apply, pureRDirCLMTensor_apply]
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannOp_tensorCov_homNatural
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M) (v w : TangentSpace I x)
@@ -157,8 +156,8 @@ private theorem riemannOp_tensorCov_homNatural
       hΞd_smooth]
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] in
 private lemma covGradBundleEquiv_symm_apply_eq_curry
     (m : ℕ) (x : M)
     (τ : TensorRSSpace 0 (m + 1) I x) (w : TangentSpace I x) (d : Tensor0SSpace 0 I x) :
@@ -183,7 +182,6 @@ private lemma covGradBundleEquiv_symm_apply_eq_curry
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w v']
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRDirCLMTensor_covGradEquiv_eval
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -219,7 +217,6 @@ private lemma pureRDirCLMTensor_covGradEquiv_eval
   rw [covGradBundleEquiv_symm_apply_eq_curry (I := I) (M := M) m x τ (B i x) d]
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureREndoOpFibVal_eval
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -242,7 +239,6 @@ private lemma pureREndoOpFibVal_eval
   rw [unitScalarRSLift_apply_unit (I := I) (M := M) x S]
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private noncomputable def pureREndoOpFibFun
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M)
@@ -253,7 +249,6 @@ private noncomputable def pureREndoOpFibFun
         (unitScalarRSLift (I := I) (M := M) x S)))
     (unitZeroSec (I := I) (M := M) x)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem pureREndoOpFibFun_add
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M)
@@ -288,7 +283,6 @@ private theorem pureREndoOpFibFun_add
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
     Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem pureREndoOpFibFun_smul
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M) (c : ℝ)
@@ -316,7 +310,6 @@ private theorem pureREndoOpFibFun_smul
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
     Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private noncomputable def pureREndoOpFib
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M) :
@@ -328,7 +321,6 @@ private noncomputable def pureREndoOpFib
       map_smul' := pureREndoOpFibFun_smul (I := I) (M := M) g m x }
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureREndoOpFib_apply
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M) (S : Tensor0SSpace (m + 1) I x) :
@@ -342,7 +334,6 @@ private lemma pureREndoOpFib_apply
     pureREndoOpFibFun]
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pureRGenuineEndoFib_eq_comp
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) (x : M) :

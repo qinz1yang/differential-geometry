@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 
 open DifferentialGeometry.Integral.Measure
@@ -32,7 +32,6 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
@@ -145,7 +144,7 @@ private def packageAsCcExp
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma packageAsCcExp_toSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -153,7 +152,7 @@ private lemma packageAsCcExp_toSection
     (packageAsCcExp (I := I) (M := M) g r s S).toSection = S := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tensorChartComponentRaw_packageAsCcExp_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S_k_ext : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -171,7 +170,7 @@ private lemma tensorChartComponentRaw_packageAsCcExp_eq
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartPushedRaw_tensorChartComponentRaw_S_k_packed_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s) (k : Fin (Module.finrank ℝ E))
@@ -218,8 +217,8 @@ private lemma euclidPartial_eqOn_of_eqOn_open
     Filter.EventuallyEq.fderiv_eq hVeq
   rw [euclidPartial_def, euclidPartial_def, hfderiv]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 private lemma euclidPartial_covDerivComponentEuclid_T₀_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -266,8 +265,8 @@ private lemma euclidPartial_covDerivComponentEuclid_T₀_contDiffOn
   refine hcomp.congr (fun z _ => ?_)
   rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    in
 private lemma covDerivComponentEuclid_T₀_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s) (k : Fin (Module.finrank ℝ E))

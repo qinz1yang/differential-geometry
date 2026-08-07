@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -49,8 +49,8 @@ noncomputable def sourcePairingCoeff
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s F α P y
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 lemma sourcePairingCoeff_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : SmoothCcTensor g r s) (α : M)
@@ -62,7 +62,7 @@ lemma sourcePairingCoeff_def
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s F α P y := rfl
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sourcePairingCoeff_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -96,7 +96,7 @@ private noncomputable def rotatedSummand
     (gramInvWeight_mul_bump_tsupport (I := I) (M := M) g r s α P₀ Q hχt)
     Q
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rotatedTestSection_eq_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -107,8 +107,8 @@ private lemma rotatedTestSection_eq_sum
       ∑ Q : CompIdx E r s,
         rotatedSummand (I := I) (M := M) g r s α P₀ hχs hχt Q := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma smoothCcTensor_finsetSum_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {ι : Type*} (t : Finset ι) (S : ι → SmoothCcTensor g r s) (x : M) :
@@ -122,7 +122,7 @@ private lemma smoothCcTensor_finsetSum_toFun_apply
       rw [Finset.sum_insert hi, Finset.sum_insert hi,
         SmoothCcTensor.toFun_add, Pi.add_apply, ih]
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rotatedTestSection_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -136,7 +136,7 @@ private lemma rotatedTestSection_toFun_apply
   exact smoothCcTensor_finsetSum_toFun_apply (I := I) (M := M) g r s
     Finset.univ _ x
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rotatedSummand_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -154,7 +154,7 @@ private lemma rotatedSummand_toFun_apply
       (gramInvWeight_mul_bump_contMDiffOn (I := I) (M := M) g r s α P₀ Q hχs)
       (gramInvWeight_mul_bump_tsupport (I := I) (M := M) g r s α P₀ Q hχt) Q x]
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rotatedSummand_toFun_eq_zero_of_bump_eq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -169,7 +169,7 @@ private lemma rotatedSummand_toFun_eq_zero_of_bump_eq_zero
     rw [hx, mul_zero]
   rw [hbump, zero_smul, TensorRSSpace.toModel_zero]
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rotatedTestSection_toFun_eq_zero_of_bump_eq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -184,7 +184,7 @@ private lemma rotatedTestSection_toFun_eq_zero_of_bump_eq_zero
   exact rotatedSummand_toFun_eq_zero_of_bump_eq_zero (I := I) (M := M)
     g r s α P₀ hχs hχt Q hx
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sourcePairingIntegrand_eq_zero_of_bump_eq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -200,7 +200,7 @@ private lemma sourcePairingIntegrand_eq_zero_of_bump_eq_zero
     g r s α P₀ hχs hχt hx]
   exact tensorInnerPointwise_zero_right (I := I) (M := M) g r s x (F.toFun x)
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sourcePairingIntegrand_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -222,7 +222,7 @@ private lemma sourcePairingIntegrand_tsupport_subset
     g r s F α P₀ hχs hχt
     (image_eq_zero_of_notMem_tsupport hx_notsupp))
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sourcePairingIntegrand_continuous
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -239,8 +239,8 @@ private lemma sourcePairingIntegrand_continuous
     (I := I) (M := M)
     F (rotatedTestSection (I := I) (M := M) g r s α P₀ χ hχs hχt)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma wrappedComponentProj_F_section_eq_tensorChartComponentRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (F : SmoothCcTensor g r s) (α : M) (b : M)
@@ -251,7 +251,7 @@ private lemma wrappedComponentProj_F_section_eq_tensorChartComponentRaw
   rw [wrappedComponentProj_apply, tensorChartComponentRaw_def]
   rfl
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wrappedComponentProj_rotatedSummand_section
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -284,8 +284,8 @@ private lemma wrappedComponentProj_rotatedSummand_section
     (gramInvWeight_mul_bump_tsupport (I := I) (M := M) g r s α P₀ Q hχt)
     Q Idx Jdx hy
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    in
 private lemma chartPushedRaw_rotatedSummandBump_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ Q : CompIdx E r s) {χ : M → ℝ}
@@ -307,7 +307,7 @@ private lemma chartPushedRaw_rotatedSummandBump_eq
     unfold gramInvWeight; rw [hb_eq]]
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α χ hy]
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorInnerPointwise_F_rotatedSummand_chart
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -396,7 +396,7 @@ private lemma tensorInnerPointwise_F_rotatedSummand_chart
   refine Finset.sum_congr rfl (fun P _ => ?_)
   ring
 
-omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorInnerPointwise_F_rotatedTestSection_chart
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

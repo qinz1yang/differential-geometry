@@ -31,10 +31,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private lemma frozenGram_quad
     (g : SmoothRiemannianMetric I M) (alpha b : M)
     (x : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :

@@ -37,9 +37,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 theorem gradFun_smul_smooth_eq_pointwise
     (g : SmoothRiemannianMetric I M)
@@ -105,7 +105,7 @@ theorem gradFun_smul_smooth_eq_pointwise
     rw [hd_φ_def]
     exact inner_gradFun (I := I) g φ x w]
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma grad_g_smul_smooth_section_eq
     (g : SmoothRiemannianMetric I M)
     {φ v : M → ℝ}
@@ -130,7 +130,7 @@ private lemma grad_g_smul_smooth_section_eq
   simp only [grad_g_apply, ContMDiffMap.coeFn_mk]
   exact gradFun_smul_smooth_eq_pointwise (I := I) (M := M) g hφ hv x
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma tangentSectionAction_grad_g_eq_inner_grad
     (g : SmoothRiemannianMetric I M)
     {φ v : M → ℝ}
@@ -146,7 +146,7 @@ private lemma tangentSectionAction_grad_g_eq_inner_grad
         gradFun (I := I) g v x from grad_g_apply (I := I) g ⟨_, hv⟩ x]
   exact (inner_gradFun (I := I) g φ x _).symm
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem Δ_g_smul_eq
     (g : SmoothRiemannianMetric I M)
     {φ v : M → ℝ}
@@ -174,8 +174,8 @@ theorem Δ_g_smul_eq
   rw [h_symm]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem pouScalar_oneSubLapClassical_pointwise_leibniz
+omit [NeZero (Module.finrank ℝ E)] in
+theorem pouScalar_oneSubLapClassical_pointwise_leibniz [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) (x : M) :
     (pouScalar (I := I) (M := M) α v).oneSubLapClassical.toFun x =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *

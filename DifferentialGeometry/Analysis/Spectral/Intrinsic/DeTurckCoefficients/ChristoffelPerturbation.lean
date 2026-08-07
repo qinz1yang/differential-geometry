@@ -1112,7 +1112,7 @@ theorem christoffelD_abs_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem invGramD_pou_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -1193,7 +1193,7 @@ theorem invGramD_pou_lip
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_pou_bnd
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -1250,7 +1250,7 @@ theorem christoffel_pou_bnd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffelD_pou_bnd
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -1335,7 +1335,7 @@ theorem christoffelD_pou_bnd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_pou_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -1407,7 +1407,7 @@ theorem christoffel_pou_lip
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffelD_pou_lip
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)

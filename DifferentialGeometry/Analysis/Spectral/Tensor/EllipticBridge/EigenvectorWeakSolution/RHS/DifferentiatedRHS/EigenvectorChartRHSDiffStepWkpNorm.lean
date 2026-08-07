@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -294,7 +294,7 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
   exact hKc_bd hfactor_memWkp
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma memWkp_finset_sum
     {α : M} {K : ℕ} {ι : Type*} (s : Finset ι)
     {f : ι → EuclN → ℝ}
@@ -323,7 +323,7 @@ private lemma memWkp_finset_sum
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open hi hsum
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma one_div_densityOnEuclid_contDiffOn_chartTargetEuclid
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -332,7 +332,7 @@ lemma one_div_densityOnEuclid_contDiffOn_chartTargetEuclid
   contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
     (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
 
-omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma layerA_coeff_contDiffOn_chartTargetEuclid
     (g : SmoothRiemannianMetric I M) (α : M)

@@ -30,7 +30,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -42,7 +42,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 section OffKernelCoefBound
 
 
-omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] in
 private lemma wkpNorm_offKernelSmoothCoef_mul_le
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
@@ -155,7 +155,7 @@ end UniformConstant
 section OffKernelCoefBoundUniform
 
 
-omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] in
 private lemma wkpNorm_offKernelSmoothCoef_mul_le_uniform
     (α : M) (K : ℕ)
     {coef : EuclN → ℝ}

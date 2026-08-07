@@ -28,11 +28,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma smoothCcTensor_toSection_add_apply
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S T : SmoothCcTensor g r s) (x : M) :
@@ -41,7 +41,7 @@ lemma smoothCcTensor_toSection_add_apply
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma smoothCcTensor_toSection_smul_apply
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (c : ℝ) (T : SmoothCcTensor g r s) (x : M) :
@@ -50,7 +50,7 @@ lemma smoothCcTensor_toSection_smul_apply
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma smoothCcTensor_toSection_neg_apply
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) (x : M) :
@@ -59,7 +59,7 @@ lemma smoothCcTensor_toSection_neg_apply
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma smoothCcTensor_toSection_zero_apply
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (x : M) :
     (0 : SmoothCcTensor g r s).toSection x = 0 := by
@@ -74,7 +74,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSRiemannianNormedAddCommGroup_local
     (r s : ℕ) [h : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b)] (b : M) :
@@ -109,7 +109,7 @@ lemma bddAbove_section_norm_range
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma gSupVal_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) : 0 ≤ gSupVal (I := I) (M := M) g r s T := by
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
@@ -121,7 +121,7 @@ lemma gSupVal_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma gSupVal_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     gSupVal (I := I) (M := M) g r s 0 = 0 := by
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
@@ -138,7 +138,7 @@ lemma gSupVal_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma gSupVal_neg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) :
     gSupVal (I := I) (M := M) g r s (-T) = gSupVal (I := I) (M := M) g r s T := by
@@ -220,13 +220,13 @@ namespace CSupTensor
 variable {g : SmoothRiemannianMetric I M} {r s k : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[ext] theorem ext {S T : CSupTensor g r s k}
     (h : S.toHsTensor = T.toHsTensor) : S = T := by
   cases S; cases T; congr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 lemma toHsTensor_injective :
     Function.Injective
       (fun S : CSupTensor g r s k => S.toHsTensor) := by
@@ -242,23 +242,23 @@ instance : SMul ℝ (CSupTensor g r s k) :=
   ⟨fun c S => ⟨c • S.toHsTensor⟩⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toHsTensor_zero :
     (0 : CSupTensor g r s k).toHsTensor = 0 := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toHsTensor_add (S T : CSupTensor g r s k) :
     (S + T).toHsTensor = S.toHsTensor + T.toHsTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toHsTensor_neg (S : CSupTensor g r s k) :
     (-S).toHsTensor = -S.toHsTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toHsTensor_sub (S T : CSupTensor g r s k) :
     (S - T).toHsTensor = S.toHsTensor - T.toHsTensor := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toHsTensor_smul (c : ℝ) (S : CSupTensor g r s k) :
     (c • S).toHsTensor = c • S.toHsTensor := rfl
 
@@ -324,17 +324,17 @@ def toCc (S : CSupTensor g r s k) : SmoothCcTensor g r s :=
   S.toHsTensor.toCcTensor
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toCc_zero : (0 : CSupTensor g r s k).toCc = 0 := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toCc_add (S T : CSupTensor g r s k) :
     (S + T).toCc = S.toCc + T.toCc := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toCc_neg (S : CSupTensor g r s k) : (-S).toCc = -S.toCc := rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 @[simp] lemma toCc_smul (c : ℝ) (S : CSupTensor g r s k) :
     (c • S).toCc = c • S.toCc := rfl
 

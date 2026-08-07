@@ -76,7 +76,7 @@ lemma chartSmoothExt_eq_chartPushed_pou_ae
   exact chartSmoothExt_eq_chartPushed_pou_on_target (I := I) (M := M) α u hy
 
 lemma contDiff_chartSmoothExt_pou_mul_local_reverse
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ContDiff ℝ ∞
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
@@ -202,7 +202,7 @@ lemma contDiff_chartSmoothExt_pou_mul_local_reverse
       rw [if_neg hz_target]
 
 lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (i : Fin (Module.finrank ℝ E)) :

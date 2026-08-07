@@ -211,9 +211,9 @@ end Compactness
 section LowerBound
 
 variable [NeZero (Module.finrank ℝ E)]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

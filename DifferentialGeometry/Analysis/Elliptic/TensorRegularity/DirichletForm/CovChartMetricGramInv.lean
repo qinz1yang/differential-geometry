@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 abbrev CompIdx (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] (r s : ℕ) : Type _ :=
@@ -40,7 +40,7 @@ noncomputable def covChartMetricGramMatrix
   Matrix.of (fun P Q => covChartMetricGram (I := I) (M := M) g r s α P Q y)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma covChartMetricGramMatrix_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
@@ -49,7 +49,7 @@ lemma covChartMetricGramMatrix_apply
       covChartMetricGram (I := I) (M := M) g r s α P Q y := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem covChartMetricGramMatrix_isSymm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -59,7 +59,7 @@ theorem covChartMetricGramMatrix_isSymm
   exact covChartMetricGram_symm (I := I) (M := M) g r s α Q P y
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartInner_eq_gramMatrix_quadratic
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -187,7 +187,7 @@ private lemma gramCoeffTensor_ne_zero (r s : ℕ) {v : CompIdx E r s → ℝ}
   exact hproj.symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma gramMatrix_star_dotProduct_mulVec
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
@@ -211,7 +211,7 @@ private lemma gramMatrix_star_dotProduct_mulVec
   refine Finset.sum_congr rfl (fun Q _ => ?_)
   ring
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covChartMetricGramMatrix_posDef
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -261,7 +261,7 @@ noncomputable def covChartMetricGramInv
     Matrix (CompIdx E r s) (CompIdx E r s) ℝ :=
   (covChartMetricGramMatrix (I := I) (M := M) g r s α y)⁻¹
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covChartMetricGramMatrix_det_pos
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -270,7 +270,7 @@ private lemma covChartMetricGramMatrix_det_pos
     0 < (covChartMetricGramMatrix (I := I) (M := M) g r s α y).det :=
   (covChartMetricGramMatrix_posDef (I := I) (M := M) g r s α hy).det_pos
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covChartMetricGramInv_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -283,7 +283,7 @@ theorem covChartMetricGramInv_mul
     (isUnit_iff_ne_zero.mpr
       (ne_of_gt (covChartMetricGramMatrix_det_pos (I := I) (M := M) g r s α hy)))
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mul_covChartMetricGramInv
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -296,7 +296,7 @@ theorem mul_covChartMetricGramInv
     (isUnit_iff_ne_zero.mpr
       (ne_of_gt (covChartMetricGramMatrix_det_pos (I := I) (M := M) g r s α hy)))
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covChartMetricGramMatrix_entry_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -307,7 +307,7 @@ private lemma covChartMetricGramMatrix_entry_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α) :=
   covChartMetricGram_contDiffOn (I := I) (M := M) g r s α P Q
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covChartMetricGramMatrix_det_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
@@ -334,7 +334,7 @@ private lemma covChartMetricGramMatrix_det_contDiffOn
   exact covChartMetricGramMatrix_entry_contDiffOn (I := I) (M := M) g r s α
     (σ P) P
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covChartMetricGramMatrix_adjugate_entry_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -383,7 +383,7 @@ private lemma covChartMetricGramMatrix_adjugate_entry_contDiffOn
     exact covChartMetricGramMatrix_entry_contDiffOn (I := I) (M := M) g r s α
       (σ K) K
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covChartMetricGramInv_entry_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -419,7 +419,7 @@ theorem covChartMetricGramInv_entry_contDiffOn
   exact hsmooth_inv.comp_contDiffWithinAt y h_at
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem covChartMetricGramInv_symm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))

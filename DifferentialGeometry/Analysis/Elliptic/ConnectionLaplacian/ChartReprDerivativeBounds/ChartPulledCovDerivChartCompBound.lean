@@ -29,13 +29,13 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma reprNorm_le_sum_components
+    in
+lemma reprNorm_le_sum_components [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (b : M) :
     ‖tensorRSChartE_section_repr (I := I) r s α
@@ -73,8 +73,8 @@ lemma reprNorm_le_sum_components
     (tensorChartBasisElement_norm_le (E := E) r s Idx Jdx)
     (abs_nonneg _)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma chart_pulled_component_differentiableAt
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma chart_pulled_component_differentiableAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -120,8 +120,8 @@ lemma chart_pulled_component_differentiableAt
     hcdAt.differentiableWithinAt (by norm_num)
   exact hwithin.differentiableAt (h_open_target.mem_nhds hb_target)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma fderiv_repr_opNorm_le_sum_fderiv_components
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] in
+lemma fderiv_repr_opNorm_le_sum_fderiv_components [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source) :

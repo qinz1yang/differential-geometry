@@ -61,7 +61,7 @@ private lemma self_subset_thickening_of_pos
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushed_pou_zero_off_KApha
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) (u : M → ℝ) :
     ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       y ∉ chartImagePOUTsupport (I := I) (M := M) α →
@@ -72,7 +72,7 @@ private lemma chartPushed_pou_zero_off_KApha
 
 
 theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (α : M) :
@@ -392,7 +392,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
     h_v_eq_f_ae).mp hv_memWkp_two_chart
 
 theorem laplacianDomain_memWkpChart_two_unconditional
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart

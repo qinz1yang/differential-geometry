@@ -12,10 +12,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
     (α : M) (u : ℝ → E) (s : Set ℝ) (t : ℝ) (vel : E)
     (htgt_t : u t ∈ (extChartAt I α).target)
@@ -189,7 +189,7 @@ theorem manifoldFlowFamily_exists_chartRepr
       exact (hdiffeo t ht htT).choose_spec x
     rw [hfam_eq, hαrepr t]
 
-omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 theorem manifoldFlow_hasMFDerivWithinAt_of_chartLocal
     (X : ℝ → ∀ x : M, TangentSpace I x) (α x : M)
     (hper : ChartLocalPicardData X α)

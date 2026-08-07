@@ -257,7 +257,7 @@ private lemma exists_bound_continuous_compactSpace
 
 omit [InnerProductSpace ℝ E] in
 private lemma continuous_memLp_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
@@ -272,7 +272,7 @@ private lemma continuous_memLp_of_compactSpace
 
 omit [InnerProductSpace ℝ E] in
 private lemma continuous_integrable_of_compactSpace
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : Continuous f) :
     Integrable f (riemannianVolumeMeasure I M g) := by
@@ -367,7 +367,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.zero
 
 omit [InnerProductSpace ℝ E] in
 theorem MemW1pIntrinsicLp_withBoundary.zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
     MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
       (fun _ : M => (0 : ℝ)) := by
@@ -427,7 +427,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.const
 
 omit [InnerProductSpace ℝ E] in
 theorem MemW1pIntrinsicLp_withBoundary_const
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (c : ℝ) :
     MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
       (fun _ : M => c) := by
@@ -449,7 +449,7 @@ theorem MemW1pIntrinsicLp_withBoundary_const
 
 omit [InnerProductSpace ℝ E] in
 theorem HasWeakRiemannianGradLp_withBoundary.add
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ} {G G' : M → E}
     (h₁ : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
@@ -602,7 +602,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
 
 omit [InnerProductSpace ℝ E] in
 theorem HasWeakRiemannianGradLp_withBoundary.const_smul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ} {G : M → E}
     (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
@@ -677,7 +677,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.const_smul
 
 omit [InnerProductSpace ℝ E] in
 theorem MemW1pIntrinsicLp_withBoundary.const_smul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
     (hu : MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p u) :
@@ -698,7 +698,7 @@ theorem MemW1pIntrinsicLp_withBoundary.const_smul
 
 omit [InnerProductSpace ℝ E] in
 theorem HasWeakRiemannianGradLp_withBoundary.neg
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} {G : M → E}
     (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
@@ -718,7 +718,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.neg
 
 omit [InnerProductSpace ℝ E] in
 theorem MemW1pIntrinsicLp_withBoundary.neg
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ}
     (hu : MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p u) :

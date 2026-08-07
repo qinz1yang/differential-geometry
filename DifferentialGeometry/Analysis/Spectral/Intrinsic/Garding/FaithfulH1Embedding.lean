@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -243,7 +243,6 @@ theorem smoothToTensorH1Compl_eigenvectorSmooth_eq
   exact smoothEigen_h1_eq (I := I) (M := M) g 2 i
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorEigenIdx_val_pos
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -257,7 +256,6 @@ theorem tensorEigenIdx_val_pos
     (I := I) (M := M) g r s hu_in hu_ne).1
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem one_add_lambda_eq_inv_val
     {g : SmoothRiemannianMetric I M} {r s : ℕ}

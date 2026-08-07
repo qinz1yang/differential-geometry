@@ -86,7 +86,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -98,7 +98,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem resolvent_eigenvalue_inv_eq_one_add_lambda
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -113,7 +112,7 @@ theorem resolvent_eigenvalue_inv_eq_one_add_lambda
 
 
 
-private def eigenbasisVec (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private def eigenbasisVec [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :
     TensorL2 r s g :=
   tensorResolventEigenbasisVec (I := I) (M := M)
@@ -129,7 +128,7 @@ private lemma eigenbasisVec_norm_eq_one (g : SmoothRiemannianMetric I M) (r s : 
 
 
 
-private def eigenvectorComp (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private def eigenvectorComp [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   fun y =>
@@ -210,7 +209,6 @@ private def eigenFinsetSeq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (fun m => (Encodable.decode₂
       (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) m).toFinset)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenFinsetSeq_monotone (g : SmoothRiemannianMetric I M) (r s : ℕ)
     [Encodable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)] :
@@ -220,7 +218,6 @@ private lemma eigenFinsetSeq_monotone (g : SmoothRiemannianMetric I M) (r s : �
   exact Finset.biUnion_subset_biUnion_of_subset_left _
     (Finset.range_subset_range.mpr hab)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenFinsetSeq_mem (g : SmoothRiemannianMetric I M) (r s : ℕ)
     [Encodable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)]
@@ -233,7 +230,6 @@ private lemma eigenFinsetSeq_mem (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [Option.mem_toFinset]
   exact Encodable.decode₂_encode i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenFinsetSeq_tendsto (g : SmoothRiemannianMetric I M) (r s : ℕ)
     [Encodable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)] :
@@ -246,7 +242,7 @@ private lemma eigenFinsetSeq_tendsto (g : SmoothRiemannianMetric I M) (r s : ℕ
 
 
 
-private def ellOneCoeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private def ellOneCoeff [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (C : ℝ) (k : ℕ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
   |spectralCoeff (I := I) (M := M) g r s u i| *
@@ -284,7 +280,7 @@ private lemma ellOneCoeff_summable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 
 
-private def partialSumFun (g : SmoothRiemannianMetric I M) (r s' : ℕ)
+private def partialSumFun [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s' : ℕ)
     (u : TensorL2 r s' g) (α : M) (P₀ : TensorCompIdx (E := E) r s')
     (s : Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s')) :
     EuclN → ℝ :=
@@ -413,7 +409,7 @@ private lemma partialSumFun_wkpNorm_sub_le (g : SmoothRiemannianMetric I M)
 
 
 
-private def partialSumLp (g : SmoothRiemannianMetric I M) (r s' : ℕ)
+private def partialSumLp [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s' : ℕ)
     (u : TensorL2 r s' g) (α : M) (P₀ : TensorCompIdx (E := E) r s')
     (s : Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s')) :
     Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=

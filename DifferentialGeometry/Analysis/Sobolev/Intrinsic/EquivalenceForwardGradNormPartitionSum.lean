@@ -138,7 +138,7 @@ private lemma gradFun_finset_sum
     rw [Finset.sum_insert hα₀_notMem]
 
 private lemma gradFun_eq_sum_gradFun_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x =
@@ -181,7 +181,7 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
   exact gradFun_finset_sum (I := I) (M := M) g S h hh_diff x
 
 lemma gNormGrad_le_finset_sum_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g u x ≤

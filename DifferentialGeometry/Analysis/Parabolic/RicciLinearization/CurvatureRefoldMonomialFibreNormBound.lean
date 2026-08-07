@@ -33,7 +33,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -66,7 +66,7 @@ private lemma sum_fun_fin_four_eval_zero_one {n : ℕ} (F : Fin n → Fin n → 
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_right_sum (g : SmoothRiemannianMetric I M) (x : M)
     (u : TangentSpace I x) {d : ℕ} (c : Fin d → ℝ) (v : Fin d → TangentSpace I x) :
     g.inner x u (∑ b, c b • v b) = ∑ b, c b * g.inner x u (v b) := by
@@ -75,7 +75,7 @@ private lemma metric_inner_right_sum (g : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_left_sum (g : SmoothRiemannianMetric I M) (x : M)
     {d : ℕ} (c : Fin d → ℝ) (v : Fin d → TangentSpace I x) (u : TangentSpace I x) :
     g.inner x (∑ a, c a • v a) u = ∑ a, c a * g.inner x (v a) u := by
@@ -88,7 +88,7 @@ private lemma metric_inner_left_sum (g : SmoothRiemannianMetric I M) (x : M)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_orthonormal_pair (g₁ : SmoothRiemannianMetric I M) (x : M)
     {d : ℕ} (B : Fin d → TangentSpace I x)
     (hB : ∀ a b, g₁.inner x (B a) (B b) = if a = b then (1 : ℝ) else 0)
@@ -104,7 +104,7 @@ private lemma metric_inner_orthonormal_pair (g₁ : SmoothRiemannianMetric I M) 
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma sum_sq_component_le_of_orthonormal
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {δ : ℝ} (h1mδ : (0 : ℝ) < 1 - δ)
     (hcomp : ∀ u : TangentSpace I x,
@@ -144,7 +144,7 @@ private lemma one_div_mul_pow_arith {t : ℝ} (ht : t ≠ 0) (D u : ℝ) :
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma weight_row_g0norm_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) {δ δW : ℝ}
     (h1mδ : (0 : ℝ) < 1 - δ) (hδW0 : 0 ≤ δW)
@@ -246,7 +246,7 @@ private lemma weight_row_g0norm_le
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem riemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -265,7 +265,7 @@ theorem riemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem riemannianFiberNormSq_curvatureRefoldMonomialBiContrFib_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

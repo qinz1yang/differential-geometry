@@ -148,7 +148,7 @@ theorem wkpNormChart_finset_sum_le
       exact ih hS_mem
 
 theorem chartPushed_eq_zero_off_compact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (α : M) (u : M → ℝ) {y : EuclN}
     (hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hy_off : y ∉ toEuclidean '' ((extChartAt I α) ''
@@ -160,7 +160,7 @@ theorem chartPushed_eq_zero_off_compact
     (I := I) (M := M) α u y hy_target hy_off
 
 theorem wkpNormChart_eq_finset_sum
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) g k p u =

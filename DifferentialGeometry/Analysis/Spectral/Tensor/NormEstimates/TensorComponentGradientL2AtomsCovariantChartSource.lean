@@ -45,21 +45,21 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_measurableSet (α : M) :
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_measurableSet [SigmaCompactSpace M] (α : M) :
     MeasurableSet (tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
   (isClosed_tsupport _).measurableSet
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [T2Space M] [SigmaCompactSpace M] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [T2Space M] in
 private lemma chartTensorRSCovariantDerivative_eq_of_eq_at
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : Π b' : M, TensorRSSpace r s I b')
@@ -90,10 +90,9 @@ private lemma chartTensorRSCovariantDerivative_eq_of_eq_at
   rw [Finset.sum_congr rfl (fun k _ => hInput k)]
   rw [Finset.sum_congr rfl (fun l _ => hOutput l)]
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartTensorRSCovariantDerivative_eq_tensorCovDerivAt_at
+lemma chartTensorRSCovariantDerivative_eq_tensorCovDerivAt_at [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) (X : Π b' : M, TangentSpace I b')
     {b : M} (hb : b ∈ (chartAt H α).source) :
@@ -133,10 +132,9 @@ lemma chartTensorRSCovariantDerivative_eq_tensorCovDerivAt_at
   have hYb' : Y.toFun b = X b := hYb
   rw [hYb']
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma triv_continuousLinearMapAt_chartTensorRSCovariantDerivative_eq_triv_snd
+private lemma triv_continuousLinearMapAt_chartTensorRSCovariantDerivative_eq_triv_snd [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (chartAt H α).source)
@@ -173,7 +171,6 @@ private lemma triv_continuousLinearMapAt_chartTensorRSCovariantDerivative_eq_tri
         (chartBasisVecFiber (I := I) α k b)) = _
   exact congrFun hcoe _
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma triv_chartTensorRSCovariantDerivative_continuousOn_chart_source
@@ -207,7 +204,6 @@ private lemma triv_chartTensorRSCovariantDerivative_continuousOn_chart_source
   exact triv_continuousLinearMapAt_chartTensorRSCovariantDerivative_eq_triv_snd
     (I := I) (M := M) g r s α S hb_chart k
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_sq_sum_triv_chartTensorRSCovariantDerivative_continuousOn_chart_source
@@ -235,10 +231,9 @@ private lemma norm_sq_sum_triv_chartTensorRSCovariantDerivative_continuousOn_cha
       ((chartAt H α).source) := h_proj.norm
   exact h_norm.pow 2
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma pou_mul_sqrt_sum_continuousOn_chart_source
+private lemma pou_mul_sqrt_sum_continuousOn_chart_source [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ContinuousOn
@@ -277,10 +272,9 @@ private lemma pou_mul_sqrt_sum_continuousOn_chart_source
     Real.continuous_sqrt.comp_continuousOn h_sumsq
   exact h_pou_on.mul h_sqrt
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma pou_mul_sqrt_sum_continuousOn_pouTsupport
+private lemma pou_mul_sqrt_sum_continuousOn_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     ContinuousOn
@@ -304,8 +298,8 @@ private lemma pou_mul_sqrt_sum_continuousOn_pouTsupport
     pouTsupport_subset_baseSet (I := I) (M := M) α hb
   exact hb_base
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pou_mul_sqrt_sum_zero_outside_pouTsupport
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pou_mul_sqrt_sum_zero_outside_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∉ tsupport (fun x : M =>
@@ -325,8 +319,8 @@ private lemma pou_mul_sqrt_sum_zero_outside_pouTsupport
     exact hb (subset_tsupport _ hne)
   rw [hρ_zero, zero_mul]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pou_mul_sqrt_sum_eq_indicator
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pou_mul_sqrt_sum_eq_indicator [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
     (fun b : M =>
@@ -410,10 +404,9 @@ theorem aestronglyMeasurable_pou_mul_sqrt_sum_triv_chart_cov
   exact pou_mul_sqrt_sum_aestronglyMeasurable_restrict_pouTsupport
     (I := I) (M := M) g r s α S.toCcTensor
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma triv_continuousLinearMapAt_chart_cov_eq_chartRSTwistInv
+private lemma triv_continuousLinearMapAt_chart_cov_eq_chartRSTwistInv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M} (hb : b ∈ (chartAt H α).source)
     (k : Fin (Module.finrank ℝ E)) :
@@ -435,10 +428,9 @@ private lemma triv_continuousLinearMapAt_chart_cov_eq_chartRSTwistInv
     (tensorCovDerivAt (I := I) (M := M) g r s S b
       (chartBasisVecFiber (I := I) α k b))
 
-omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma pou_mul_sqrt_sum_triv_chart_cov_eq_pou_mul_sqrt_sum_chartRSTwistInv
+private lemma pou_mul_sqrt_sum_triv_chart_cov_eq_pou_mul_sqrt_sum_chartRSTwistInv [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) (b : M) :
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *

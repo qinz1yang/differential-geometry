@@ -36,10 +36,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma smoothScalar_eq_sub_of_toFun_eq
     {g : SmoothRiemannianMetric I M}
     (v₁ v₂ v_diff : SmoothScalar g)
@@ -98,7 +98,7 @@ private lemma fHLeibnizResidualLp_sub
   rw [smul_sub, neg_sub]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] in
 private lemma volume_restrict_absolutelyContinuous_chartPulledWeighted_restrict
     (g : SmoothRiemannianMetric I M) (α : M) :
     (volume : Measure EuclN).restrict

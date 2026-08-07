@@ -149,7 +149,7 @@ theorem exists_time_retract {U : Set Real} (hU : IsOpen U) {t : Real}
 
 
 theorem first_var_local
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {U : Set Real} {t : Real}
     (hg : MetricFamilyRegularAt (I := I) g_fam t)
@@ -220,7 +220,7 @@ theorem first_var_local
 
 
 theorem first_var_joint
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {U : Set Real} {t : Real}
     (hU : IsOpen U) (ht : t ∈ U)

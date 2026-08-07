@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 attribute [local instance]
   rhsPointwiseModelDualNormedAddCommGroup
@@ -87,7 +87,6 @@ private local instance rhsPointwiseTensorRSNormedAddCommGroup
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckRHS_diff_frame_component_apply
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -106,7 +105,6 @@ theorem deTurckRHS_diff_frame_component_apply
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem deTurckRHS_diff_frame_component_contMDiffOn
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -135,7 +133,7 @@ attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem deTurckRHS_diff_gNorm_le_modelNorm_pointwise
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
@@ -159,7 +157,7 @@ def chartDeTurckRHSComp (g_bg g : SmoothRiemannianMetric I M) (α : M)
     + chartLieDeTurckComp (I := I) g g_bg α i j y
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 @[simp] theorem chartDeTurckRHSComp_def (g_bg g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckRHSComp (I := I) g_bg g α i j y =
@@ -193,7 +191,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 
 
 omit [CompactSpace M] in
-omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] in
 theorem exists_chartDeTurckRHSComp_lipschitz_on_compact
     (g_bg g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)

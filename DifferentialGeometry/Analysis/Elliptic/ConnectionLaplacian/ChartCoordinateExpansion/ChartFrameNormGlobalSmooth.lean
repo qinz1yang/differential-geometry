@@ -26,12 +26,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [ChartedSpace H M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma locallyCompactSpace_M (I : ModelWithCorners ℝ E H)
     [ChartedSpace H M] : LocallyCompactSpace M := by
   haveI : LocallyCompactSpace H := I.locallyCompactSpace
@@ -45,8 +45,8 @@ private lemma regularSpace_M (I : ModelWithCorners ℝ E H)
   haveI : R1Space M := T2Space.r1Space
   infer_instance
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_subset_chartAt_source (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_subset_chartAt_source [SigmaCompactSpace M] (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       (chartAt H α).source :=
@@ -131,11 +131,11 @@ private lemma exists_globalBump_data (α : M) :
 private noncomputable def globalBumpV₁ (α : M) : Set M :=
   Classical.choose (exists_globalBump_data (I := I) (M := M) α)
 
-private noncomputable def globalBumpV₂ (α : M) : Set M :=
+private noncomputable def globalBumpV₂ [SigmaCompactSpace M] (α : M) : Set M :=
   Classical.choose (Classical.choose_spec
     (exists_globalBump_data (I := I) (M := M) α))
 
-private noncomputable def globalBumpψ (α : M) : M → ℝ :=
+private noncomputable def globalBumpψ [SigmaCompactSpace M] (α : M) : M → ℝ :=
   Classical.choose (Classical.choose_spec
     (Classical.choose_spec (exists_globalBump_data (I := I) (M := M) α)))
 
@@ -209,7 +209,7 @@ private lemma globalBumpψ_eq_zero_off_V₂ (α : M) {b : M}
     globalBumpψ (I := I) (M := M) α b = 0 :=
   ((globalBumpData_spec (I := I) (M := M) α).2.2.2.2.2.2.2.2 b).mp hb
 
-noncomputable def chartFrameNormGlobalSmooth
+noncomputable def chartFrameNormGlobalSmooth [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := by

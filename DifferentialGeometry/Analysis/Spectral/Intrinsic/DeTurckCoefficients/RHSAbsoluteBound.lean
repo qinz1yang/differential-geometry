@@ -24,9 +24,9 @@ variable
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-      [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRicci_abs_le
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -150,7 +150,7 @@ theorem chartRicci_abs_le
             nsmul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chartLie_abs_le
     (g gBase : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E)
@@ -241,7 +241,7 @@ theorem chartLie_abs_le
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem chartRHS_abs_le
     (gBase g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E)

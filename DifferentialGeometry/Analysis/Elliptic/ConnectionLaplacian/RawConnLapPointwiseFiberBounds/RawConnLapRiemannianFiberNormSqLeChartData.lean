@@ -137,7 +137,7 @@ private lemma add_le_product_growth
     _ = c * (n + 1) * (q + 1) := by ring
 
 theorem rawTensorConnLap_riemannianFiberNormSq_le_chart_α_data_on_pouTsupport_goodSet
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s) :
     ∃ C : ℝ, 0 ≤ C ∧

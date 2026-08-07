@@ -43,12 +43,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem connTraceUTrace
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     (g : SmoothRiemannianMetric I M)
@@ -187,7 +187,7 @@ theorem connTraceUTrace
                   (fun q : Fin 2 => if q = 0 then i else a))) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem connTraceATrace
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
@@ -293,7 +293,7 @@ theorem connTraceATrace
   simpa [Acomp, Gamma] using h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem gInvFun_mdifferentiableAt
     (g : SmoothRiemannianMetric I M)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) :
@@ -301,7 +301,7 @@ private theorem gInvFun_mdifferentiableAt
   (gInvComp_contMDiffAt (I := I) g x i j).mdifferentiableAt (by norm_num)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem compFun_mdifferentiableAt
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -315,7 +315,7 @@ private theorem compFun_mdifferentiableAt
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem compFun_center
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -347,7 +347,7 @@ private theorem compFun_center
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem gInvFun_center
     (g : SmoothRiemannianMetric I M)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) :
@@ -357,7 +357,7 @@ private theorem gInvFun_center
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem connTraceCoeff_one_center
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
@@ -385,7 +385,6 @@ private theorem symmetric_trace_sum_mul
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private theorem connTraceRawDiv_eq_productSum
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     (g : SmoothRiemannianMetric I M)
@@ -520,7 +519,6 @@ private theorem connTraceRawDiv_eq_productSum
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connTraceRaw_eq_gamma
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     (g : SmoothRiemannianMetric I M)
@@ -664,7 +662,6 @@ theorem connTraceRaw_eq_gamma
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connTraceRaw_of_components
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     (g : SmoothRiemannianMetric I M)

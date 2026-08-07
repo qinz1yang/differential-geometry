@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 attribute [local instance]
   rhsPointwiseModelDualNormedAddCommGroup
@@ -79,8 +79,8 @@ attribute [local instance]
   rhsPointwiseTensorRSTotalSpaceTopology
   rhsPointwiseTensorRSFiberBundle
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 private theorem tensor02_pairing_contMDiff
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -112,8 +112,8 @@ private theorem tensor02_pairing_contMDiff
 
 
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 private theorem tensor04_pairing_contMDiff
     {S : Π x : M, TangentSpace I x →L[ℝ]
       (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))}
@@ -146,7 +146,7 @@ private theorem tensor04_pairing_contMDiff
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem chartFrame_component_contMDiffOn_aux
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -183,8 +183,8 @@ private theorem chartFrame_component_contMDiffOn_aux
 
 
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 private theorem metricDiff02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
@@ -208,8 +208,8 @@ private def metricDiff02ModelFun (g₁ g₂ : SmoothRiemannianMetric I M) (x : M
   Tensor0SSpace.ofModel (I := I)
     (biForm₂ToModel (TangentSpace I x) (metricDiff02 (I := I) g₁ g₂ x))
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] in
 private theorem metricDiff02ModelFun_toModel_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
     Tensor0SSpace.toModel (metricDiff02ModelFun (I := I) g₁ g₂ x) v =
@@ -254,7 +254,7 @@ def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
     rw [metricDiff02ModelFun_toModel_apply]
     rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem metricDiff02Field_toModel_apply
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
     Tensor0SSpace.toModel (metricDiff02Field (I := I) g₁ g₂ x) v =
@@ -264,7 +264,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCom
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem metricDiff02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -290,7 +289,7 @@ private theorem metricDiff02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetr
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem chartFrame_component3_contMDiffOn_aux
     {S : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ}
     (hS : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -335,8 +334,8 @@ private def metricDiff02CovModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M
   Tensor0SSpace.ofModel (I := I)
     (triFormToModel (TangentSpace I x) (metricDiff02Cov (I := I) g₀ g₁ g₂ x))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [T2Space M] in
 private theorem metricDiff02CovModelFun_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → TangentSpace I x) :
     Tensor0SSpace.toModel (metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x) v =
@@ -382,7 +381,6 @@ def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     rw [metricDiff02CovModelFun_toModel_apply]
     rfl⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem metricDiff02CovField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 3 → TangentSpace I x) :
@@ -393,7 +391,6 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem metricDiff02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] (E →L[ℝ] (E →L[ℝ] (E →L[ℝ] ℝ))))) ∞
@@ -420,7 +417,7 @@ private theorem metricDiff02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemann
 
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem chartFrame_component4_contMDiffOn_aux
     {S : Π x : M, TangentSpace I x →L[ℝ]
       (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))}
@@ -466,8 +463,8 @@ private def metricDiff02CovIterateModelFun (g₀ g₁ g₂ : SmoothRiemannianMet
   Tensor0SSpace.ofModel (I := I)
     (quadFormToModel (TangentSpace I x) (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [T2Space M] in
 private theorem metricDiff02CovIterateModelFun_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel (metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x) v =
@@ -513,7 +510,6 @@ def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     rw [metricDiff02CovIterateModelFun_toModel_apply]
     rfl⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem metricDiff02CovIterateField_toModel_apply
     (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :

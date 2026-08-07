@@ -28,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -137,8 +137,6 @@ theorem eigenSpan_pouHs_le_spectral_of_elliptic
     _ = (C * (k + 1)) * Nspec := by ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
 theorem finiteEigenComboHs_norm_eq_sqrt_spectral
     (F : Finset (Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) (k : ℕ) :

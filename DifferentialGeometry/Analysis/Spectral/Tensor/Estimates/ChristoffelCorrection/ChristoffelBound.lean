@@ -28,7 +28,7 @@ open DifferentialGeometry.Integral.Measure
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartImage_pouTsupport_isCompact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
+    [CompactSpace M] [T2Space M] (α : M) :
     IsCompact ((extChartAt I α) ''
       (tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x))) := by
@@ -87,7 +87,7 @@ theorem chartImage_pouTsupport_subset_interior_target
   exact chartImage_pouTsupport_subset_target (I := I) (M := M) α
 
 theorem chartChristoffel_bdd_on_compact
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK_compact : IsCompact K)
     (hK_sub_interior : K ⊆ interior ((extChartAt I α).target : Set E)) :
@@ -155,7 +155,7 @@ theorem chartChristoffel_bdd_on_compact
     exact Finset.le_sup' (fun p => Cijk p.1 p.2.1 p.2.2) hp_mem
 
 theorem chartChristoffel_bdd_on_pou_tsupport
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : E,
       y ∈ (extChartAt I α) ''

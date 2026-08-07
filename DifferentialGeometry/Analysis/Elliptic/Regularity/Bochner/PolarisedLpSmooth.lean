@@ -34,23 +34,23 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma contMDiff_phi_add_v
     (φ v : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y) :=
   φ.contMDiff.add v.contMDiff
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [T2Space M] in
 lemma contMDiff_phi_sub_v
     (φ v : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y) :=
   φ.contMDiff.sub v.contMDiff
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma contMDiff_g_inner_grad_phi_grad_v
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) :
@@ -63,7 +63,6 @@ lemma contMDiff_g_inner_grad_phi_grad_v
   intro b
   simp only [grad_g_apply]
 
-omit [CompactSpace M] in
 theorem bochner_polarised_pointwise_smoothCase
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
@@ -82,7 +81,6 @@ theorem bochner_polarised_pointwise_smoothCase
     (contMDiff_phi_sub_v (I := I) (M := M) φ v)
     (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v) x
 
-omit [CompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap_smoothCase
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     g.inner x
@@ -107,7 +105,7 @@ theorem bochner_polarised_pointwise_oneSubLap_smoothCase
     (contMDiff_phi_sub_v (I := I) (M := M) φ v)
     (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v) x
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradInnerSmoothBundle_toFun
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (b : M) :
@@ -117,7 +115,7 @@ lemma gradInnerSmoothBundle_toFun
         (gradFun (I := I) g v.toFun b) :=
   rfl
 
-omit [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma Δ_g_gradInnerSmoothBundle_eq_contMDiff_g_inner
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (x : M) :

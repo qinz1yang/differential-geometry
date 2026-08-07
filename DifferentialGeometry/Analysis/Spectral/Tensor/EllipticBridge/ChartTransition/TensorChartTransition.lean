@@ -27,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
     (fun y : M => TensorRSSpace r s I y) α
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma rsTriv_baseSet (r s : ℕ) (α : M) :
     (rsTriv (E := E) (I := I) (M := M) r s α).baseSet = (chartAt H α).source := by
   classical
@@ -57,8 +57,8 @@ private lemma rsTriv_baseSet (r s : ℕ) (α : M) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorTrivProj_eq_clmAt
+    in
+private lemma tensorTrivProj_eq_clmAt [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) (x : M) :
     tensorTrivProj (I := I) (M := M) g r s S α x =
@@ -66,7 +66,7 @@ private lemma tensorTrivProj_eq_clmAt
         (S.toSection x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma coordChangeL_apply_eq_clmAt_symmL
     (r s : ℕ) (γ α : M) {x : M}
     (hxγ : x ∈ (chartAt H γ).source) (hxα : x ∈ (chartAt H α).source)
@@ -98,8 +98,8 @@ private lemma coordChangeL_apply_eq_clmAt_symmL
     Bundle.Trivialization.symmL_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma tensorTrivProj_chartTransition
+    in
+private lemma tensorTrivProj_chartTransition [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (γ α : M) {x : M}
     (hxγ : x ∈ (chartAt H γ).source) (hxα : x ∈ (chartAt H α).source) :
@@ -150,7 +150,7 @@ def transitionCoeff
       (tensorChartBasisElement (E := E) r s Q.1 Q.2))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma contMDiffOn_rsCoordChangeL (r s : ℕ) (γ α : M) :
     ContMDiffOn I (modelWithCornersSelf ℝ
         (TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)) ∞
@@ -183,7 +183,7 @@ private lemma contMDiffOn_rsCoordChangeL (r s : ℕ) (γ α : M) :
   rwa [rsTriv_baseSet, rsTriv_baseSet] at h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma contMDiffOn_transitionCoeff
     (r s : ℕ) (γ α : M) (P₀ Q : TensorCompIdx (E := E) r s) :
     ContMDiffOn I (modelWithCornersSelf ℝ ℝ) ∞
@@ -211,8 +211,8 @@ lemma contMDiffOn_transitionCoeff
   exact hproj.comp_contMDiffOn hcoord_app
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_eq_transitionCoeff_sum
+    in
+theorem tensorChartComponentRaw_eq_transitionCoeff_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (γ α : M)
     (P₀ : TensorCompIdx (E := E) r s)
@@ -265,8 +265,8 @@ theorem tensorChartComponentRaw_eq_transitionCoeff_sum
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorChartComponentRaw_chartTransition_decomp
+    in
+theorem tensorChartComponentRaw_chartTransition_decomp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (γ α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -298,15 +298,15 @@ private lemma pouTsupport_inter_isCompact (γ α : M) :
   (pouTsupport_isCompact (I := I) (M := M) γ).inter_right
     (isClosed_tsupport _)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_subset_chartSource (γ : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_subset_chartSource [SigmaCompactSpace M] (γ : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
       (chartAt H γ).source :=
   DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_inter_subset_chartSource_inter (γ α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_inter_subset_chartSource_inter [SigmaCompactSpace M] (γ α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
       tsupport (fun x : M =>
@@ -519,7 +519,7 @@ theorem transitionCoeff_le_uniform_on_pouTsupport
     (E := E) (I := I) (M := M) r s
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma isOpen_extCoordChange_source (γ α : M) :
     IsOpen (((extChartAt I γ).symm ≫ extChartAt I α).source) := by
   classical
@@ -553,7 +553,7 @@ private lemma pouTsupport_inter_image_extChartAt_isCompact (γ α : M) :
   exact hK_compact.image_of_continuousOn (h_cont.mono hK_sub)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [T2Space M] in
 private lemma extChartAt_mem_extCoordChange_source
     {γ α : M} {b : M}
     (hbγ : b ∈ (chartAt H γ).source) (hbα : b ∈ (chartAt H α).source) :
@@ -565,8 +565,8 @@ private lemma extChartAt_mem_extCoordChange_source
   rw [← h_img]
   exact ⟨b, ⟨hbγ, hbα⟩, rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouTsupport_inter_image_subset_extCoordChange_source
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouTsupport_inter_image_subset_extCoordChange_source [SigmaCompactSpace M]
     (γ α : M) :
     (extChartAt I γ) '' (tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩

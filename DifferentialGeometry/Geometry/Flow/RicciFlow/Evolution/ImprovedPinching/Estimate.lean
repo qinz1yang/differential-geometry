@@ -454,7 +454,7 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuotient_initial_bound
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -812,7 +812,7 @@ omit [Module.Finite ℝ E] in
 theorem pinchQuot_slab_bound
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     [I.Boundaryless]
     [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1051,7 +1051,7 @@ omit [Module.Finite ℝ E] in
 theorem pinchEstimate_sol
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     [I.Boundaryless]
     [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1144,7 +1144,7 @@ omit [Module.Finite ℝ E] in
 theorem pinchEstimate_display_sol
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [CompactSpace M] [T2Space M]
     [I.Boundaryless]
     [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]

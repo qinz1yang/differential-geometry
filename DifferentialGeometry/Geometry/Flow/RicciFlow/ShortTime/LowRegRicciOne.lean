@@ -40,7 +40,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -56,7 +56,7 @@ private theorem iteratedCovGrad_smul_real
       rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih,
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem pure_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₁ =
@@ -210,7 +210,7 @@ private def ki120 : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private theorem slotPerm_smooth
     (_g₀ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 4 ℝ E)) ∞
@@ -242,7 +242,7 @@ private def slotPerm1
       contMDiff_toFun := slotPerm_smooth (I := I) (M := M) g₀ ρ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem kernel_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder1KernelField (I := I) g₀ g₁ =

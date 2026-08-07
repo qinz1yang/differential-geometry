@@ -32,12 +32,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem rankZero_one (x : M) (A : Tensor0SSpace 0 I x) :
     tensor0SSpace_evalScalar x A •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
@@ -60,7 +60,7 @@ private noncomputable def oneCc (g : SmoothRiemannianMetric I M) :
     ⟨(fun _ : M => (1 : ℝ)), contMDiff_const⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-  [SigmaCompactSpace M] in
+  in
 private theorem oneCc_apply (g : SmoothRiemannianMetric I M)
     (x : M) (A : Tensor0SSpace 0 I x) :
     (oneCc (I := I) (M := M) g).toSection x A = A := by
@@ -72,7 +72,7 @@ private theorem oneCc_apply (g : SmoothRiemannianMetric I M)
   rw [one_smul]
   rw [Tensor0SField.toRS0_apply, rankZero_one (I := I) (M := M)]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem appCc_one (g : SmoothRiemannianMetric I M) (c : ℕ)
     (Phi : SmoothCcTensor g 0 c) :
     operatorFieldApply (I := I) (M := M) g 0 c Phi (oneCc (I := I) (M := M) g) = Phi := by

@@ -47,7 +47,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
@@ -77,7 +77,6 @@ noncomputable def lc0VFlat (g₀ g₁ gB : SmoothRiemannianMetric I M) :
   ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 1 (lc0PureDT (I := I) (M := M) g₀ g₁ 1)
     (lc0Kappa (I := I) (M := M) g₀ g₁ gB)
 
-omit [SigmaCompactSpace M] in
 lemma lc0b_vflat_value (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M)
     (u : E) :
     Tensor0SSpace.toModel

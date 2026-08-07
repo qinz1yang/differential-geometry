@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
@@ -83,7 +83,7 @@ private lemma sqrt_geometricEnergy_le
         rw [hC₂_def, Real.sqrt_sq (by linarith [hA, hB])]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma eLpNorm_volume_restrict_compact_le_weighted
     (g : SmoothRiemannianMetric I M) (α : M) (f : EuclN → ℝ)
     {K : Set EuclN} (hK_compact : IsCompact K) (hK_meas : MeasurableSet K)
@@ -131,7 +131,7 @@ private lemma eLpNorm_volume_restrict_compact_le_weighted
   exact h_mono
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma eLpNorm_volume_restrict_compact_le_weighted_uniform
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K) (hK_meas : MeasurableSet K)

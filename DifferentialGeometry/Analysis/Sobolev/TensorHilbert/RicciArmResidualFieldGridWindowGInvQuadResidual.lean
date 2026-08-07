@@ -34,7 +34,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -49,7 +49,7 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma riemannianFiberNormSq_smul_value (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (x : M) (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -81,14 +81,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 lemma tensor0S_rank0_eq_smul_unit (x : M) (c : Tensor0SSpace 0 I x) :
     c = Tensor0SSpace.toModel c (fun i : Fin 0 => i.elim0) •
       unitTensor (I := I) (M := M) x := by
@@ -104,7 +104,7 @@ lemma tensor0S_rank0_eq_smul_unit (x : M) (c : Tensor0SSpace 0 I x) :
   exact i.elim0
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem orthoFrame_basis_at_center (x : M) :
     ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x),
       ∀ i, bse i = smoothOrthoFrame (I := I) g₀ x i x := by
@@ -137,7 +137,7 @@ private theorem orthoFrame_basis_at_center (x : M) :
     fun i => congrFun (coe_basisOfLinearIndependentOfCardEqFinrank he_li hcard) i⟩
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem orthoFrame_expansion_at_center (x : M) (u : TangentSpace I x) :
     u = ∑ i : Fin (Module.finrank ℝ E),
       g₀.inner x u (smoothOrthoFrame (I := I) g₀ x i x) •
@@ -177,7 +177,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -185,7 +185,6 @@ variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma connDiffLowered_unitModel_value (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (connDiffLoweredCc (I := I) g₀ g₁) x m =
       g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (m 0) (m 1)) (m 2) := by
@@ -205,7 +204,7 @@ lemma connDiffLowered_unitModel_value (x : M) (m : Fin 3 → TangentSpace I x) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -220,7 +219,6 @@ private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma connDiffSection_eq_raise_lowered :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
@@ -310,8 +308,8 @@ lemma rfns_icg_connDiffLowered_eq_connDiffSection (n : ℕ) (x : M) :
 
 end NormedConnectionDifferenceRiemannianNorm
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    in
 private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
     (D : Tensor0SSpace (p + 2) I x) (m : Fin p → E) :
     Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₀ p x D) m =
@@ -332,7 +330,6 @@ private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma slotExtend_connDiffLowered_toModel (x : M)
     (om : Tensor0SSpace 1 I x) (v0 : E) (vs : Fin 3 → E) :
     Tensor0SSpace.toModel
@@ -368,7 +365,6 @@ private lemma slotExtend_connDiffLowered_toModel (x : M)
   exact hu
 
 set_option backward.isDefEq.respectTransparency false in
-omit [SigmaCompactSpace M] in
 private lemma gInvQuadRefoldArm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -398,7 +394,6 @@ private lemma gInvQuadRefoldArm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : 
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-omit [SigmaCompactSpace M] in
 private lemma gInvQuadRefoldWeight_toModel (x : M) (D : Tensor0SSpace 2 I x) (m : Fin 1 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from

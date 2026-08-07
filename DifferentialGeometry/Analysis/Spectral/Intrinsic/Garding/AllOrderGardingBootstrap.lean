@@ -116,7 +116,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -221,7 +221,7 @@ private lemma iteratedCovGrad_norm_eq_tensorL2Norm
 
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma rawTensorConnLapIter_norm_eq_toL2
     (g : SmoothRiemannianMetric I M) (i : ℕ) (U : SmoothCcTensor g 0 2) :
     ‖rawTensorConnLapIter (I := I) g 0 2 i U‖ =

@@ -34,7 +34,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace E := borel E
@@ -42,7 +42,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private noncomputable def lpFiberJetLadder
+private noncomputable def lpFiberJetLadder [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s k : ℕ) (u : Integral.L2.SmoothCcTensor g 0 s)
     (Λ₀ : ℝ) (i : ℕ) : ℝ :=
   if i = 0 then
@@ -361,8 +361,7 @@ private theorem prependCovGradSlot_fiberNormSq_frame_sum
   rw [he_def]
   ring
 
-omit [CompactSpace M] in
-private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner
+private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℕ)
     (Q : Integral.L2.SmoothCcTensor g 0 p) (x : M) (v : TangentSpace I x) :
     extDerivFun (I := I)

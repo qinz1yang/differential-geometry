@@ -277,7 +277,7 @@ theorem MemWkpChartGen.le_of_le
   exact (h α).le_of_le hk
 
 theorem wkpNormChartGen_lt_top_of_memWkpChartGen
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
@@ -418,7 +418,7 @@ theorem chartPushed_pointwise_bound
     _ = |u ((extChartAt I α).symm (toEuclidean.symm y))| := one_mul _
 
 def wkpNormChartFin
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
@@ -431,7 +431,7 @@ def wkpNormChartFin
       (chartTargetEuclid (I := I) (M := M) α)
 
 theorem wkpNormChartGen_eq_wkpNormChartFin
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
@@ -486,13 +486,13 @@ theorem wkpNormChartGen_eq_wkpNormChartFin
   exact hf_zero_off α hempty
 
 def chartTransitionFinset
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) : Finset M :=
   (support_set_finite_of_compactSpace (I := I) (M := M) ρ).toFinset
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mem_chartTransitionFinset_iff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (α : M) :
     α ∈ chartTransitionFinset (I := I) (M := M) ρ ↔
       (Function.support (ρ α : M → ℝ)).Nonempty := by

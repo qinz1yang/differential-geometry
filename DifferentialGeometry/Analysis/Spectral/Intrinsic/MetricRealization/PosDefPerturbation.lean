@@ -283,7 +283,7 @@ noncomputable def perturbedMetric
   rfl
 
 theorem exists_posDef_perturbation_radius
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) :
     ∃ δ : ℝ, 0 < δ ∧

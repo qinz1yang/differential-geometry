@@ -19,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -55,8 +55,8 @@ private lemma eigenvalue_pos
       rw [h_zero, norm_zero] at h_norm
       exact one_ne_zero h_norm.symm)).1
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+  [I.Boundaryless] [T2Space M] in
 private lemma eLpNorm_lpClass_eq_ofReal_norm
     (α : M) (w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
     eLpNorm ((w : EuclN → ℝ)) 2

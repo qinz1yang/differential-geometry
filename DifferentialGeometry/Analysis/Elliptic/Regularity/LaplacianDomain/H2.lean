@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 theorem chartH2_localBound_of_laplacianDomain
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -90,7 +90,7 @@ theorem chartH2_localBound_of_laplacianDomain
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianDomain_memWkpChart_two_chartBilinearRoute
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g

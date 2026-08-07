@@ -102,7 +102,7 @@ lemma ennreal_one_mul_eq (x : ℝ≥0∞) : ENNReal.ofReal 1 * x = x := by
 theorem wkpNormChartGen_equiv_of_pou
     [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ (⊤ : ℝ≥0∞))
     (ρ₁ ρ₂ : SmoothPartitionOfUnity M I M Set.univ)

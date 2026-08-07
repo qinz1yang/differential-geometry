@@ -49,7 +49,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV_aux
     (g : SmoothRiemannianMetric I M) (α : M) :

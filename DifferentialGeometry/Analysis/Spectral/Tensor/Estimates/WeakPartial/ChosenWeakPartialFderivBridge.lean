@@ -25,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -55,8 +55,8 @@ theorem chosenWeakPartial'_chartPushed_ae_eq_fderiv_chartSmoothExt
     Analysis.Sobolev.EquivalenceReverse.chosenWeakPartial_chartPushed_ae_eq_fderiv
     (I := I) (M := M) α hp_one hu k
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem chartPushed_eq_chartSmoothExt_on_target
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem chartPushed_eq_chartSmoothExt_on_target [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {y : EuclN E}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u y =
@@ -66,8 +66,8 @@ theorem chartPushed_eq_chartSmoothExt_on_target
   (Analysis.Sobolev.EquivalenceReverse.chartSmoothExt_eq_chartPushed_pou_on_target
     (I := I) (M := M) α u hy).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem fderiv_chartPushed_eq_fderiv_chartSmoothExt_on_target
+omit [NeZero (Module.finrank ℝ E)] in
+theorem fderiv_chartPushed_eq_fderiv_chartSmoothExt_on_target [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {y : EuclN E}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     fderiv ℝ (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u) y =

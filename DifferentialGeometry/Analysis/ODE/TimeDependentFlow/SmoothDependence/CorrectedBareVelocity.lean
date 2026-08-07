@@ -21,10 +21,10 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma chartTrivRepr_eq_tangentCoordChange_of_target
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (s : ℝ) {c : E}
     (hc : c ∈ (extChartAt I α).target) :
@@ -43,7 +43,7 @@ private lemma chartTrivRepr_eq_tangentCoordChange_of_target
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 theorem corrected_chartflow_eq_bareflow
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (flow : E → ℝ → E) (y : E) {a b : ℝ}
     (hconf : ∀ t ∈ Set.Ioo a b, flow y t ∈ (extChartAt I α).target)

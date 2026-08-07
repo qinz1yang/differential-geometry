@@ -11,10 +11,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_alpha_coord_gronwall_uniqueness
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ : M)
     (T r r' : ℝ) (K : NNReal) (_hT_pos : 0 < T) (hr_lt_r' : r < r')
@@ -70,7 +70,7 @@ theorem chart_alpha_coord_gronwall_uniqueness
     hv_lip hu_cont hf_u hus hv_cont hf_v hvs heq0
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_cover_flow_unique_on_overlap_chart_alpha_coord
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ α₂ : M)
     (hper₁ : ChartLocalPicardData X α₁) (hper₂ : ChartLocalPicardData X α₂)
@@ -189,7 +189,7 @@ theorem chart_cover_flow_unique_on_overlap_chart_alpha_coord
   exact (chartAt H α₁).left_inv hmem
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_overlap_alpha_in_alpha_source_short_time
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ α₂ : M)
     (hper₂ : ChartLocalPicardData X α₂)
@@ -280,7 +280,7 @@ theorem chart_overlap_alpha_in_alpha_source_short_time
   exact this
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 theorem chart_overlap_chart_alpha_coord_ode
     (X : ℝ → ∀ x : M, TangentSpace I x) (α₁ α₂ : M)
     (hper₂ : ChartLocalPicardData X α₂)

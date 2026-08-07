@@ -37,7 +37,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 noncomputable def ricciPairingSmooth
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -66,7 +66,6 @@ lemma ricciPairingSmooth_coeFn
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma ricciPairingSmooth_pt_add
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v w : SmoothScalar g) (b : M) :
@@ -87,7 +86,6 @@ lemma ricciPairingSmooth_pt_add
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma ricciPairingSmooth_pt_smul
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (c : ℝ) (v : SmoothScalar g) (b : M) :
@@ -230,7 +228,7 @@ lemma ricciPairingSmooth_norm_nonneg
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma smoothRicciPairing_continuous
+lemma smoothRicciPairing_continuous [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) :
     Continuous (fun b : M => ricciTensor (I := I) g b
@@ -274,7 +272,6 @@ lemma ricciPairingSmooth_norm_sq
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma ricciPairing_sq_le_C_mul_grad
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {C : ℝ} (hC_bound : ∀ b : M,

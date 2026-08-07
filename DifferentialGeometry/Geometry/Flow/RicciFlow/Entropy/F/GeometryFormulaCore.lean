@@ -328,7 +328,7 @@ theorem bracketClosed_eventually
 
 
 theorem closedCompare
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily (I := I) (M := M) Real)
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
       potentialPath : Real -> M -> Real}
@@ -461,7 +461,7 @@ theorem closedCompare
 
 
 theorem firstVar_pre510_weighted
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily (I := I) (M := M) Real)
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
       potentialPath : Real -> M -> Real}
@@ -557,7 +557,7 @@ theorem firstVar_pre510_weighted
 
 
 theorem firstVar_pre510_ibp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily (I := I) (M := M) Real)
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
       potentialPath : Real -> M -> Real}
@@ -677,7 +677,7 @@ theorem firstVar_pre510_ibp
 
 
 theorem formula510_of_connTrace
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {firstVariation : Real}
     {scalarCurvature lapPotential gradPotentialNormSq potential

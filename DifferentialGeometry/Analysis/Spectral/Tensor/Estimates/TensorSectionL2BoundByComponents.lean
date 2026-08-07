@@ -31,7 +31,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -49,15 +49,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma midxPairCard_nonneg (r s : ℕ) :
     0 ≤ midxPairCard (E := E) r s := Nat.cast_nonneg _
 
-private noncomputable def sumScalarSq
+private noncomputable def sumScalarSq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) (b : M) : ℝ :=
   ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
     (tensorChartComponentScalar (I := I) (M := M)
         g r s S α Idx Jdx b) ^ 2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma sumScalarSq_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma sumScalarSq_nonneg [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α b : M) :
     0 ≤ sumScalarSq g r s S α b :=
   Finset.sum_nonneg (fun _ _ => Finset.sum_nonneg (fun _ _ => sq_nonneg _))
@@ -118,7 +118,7 @@ lemma tensorRSModel_norm_sq_le_sum_projection_sq (r s : ℕ)
   exact h_sq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma pou_sq_tensorInner_le_sum_scalar_sq
+private lemma pou_sq_tensorInner_le_sum_scalar_sq [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),

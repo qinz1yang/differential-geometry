@@ -38,7 +38,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private theorem exists_smoothCcTensor_of_allOrder_spectralMass
     (g₀ : SmoothRiemannianMetric I M)
@@ -161,7 +161,7 @@ private theorem deTurckRemainder_pathCoeff_timeContDiff
     exact contDiffOn_const.mul (hφ_smooth i).contDiffOn
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem iteratedPartialSnd_contMDiffOn_Icc
     (f : M → ℝ → ℝ) {T : ℝ}
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)
@@ -477,7 +477,7 @@ private theorem reconSec_jointContMDiffOn
     ⟨contMDiffWithinAt_fst, hfib⟩)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem vec_iteratedPartialSnd_contMDiffOn_Icc
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     (Vf : M → ℝ → V) {T : ℝ} (hT : 0 < T)
@@ -546,7 +546,7 @@ private theorem vec_iteratedPartialSnd_contMDiffOn_Icc
   exact (A.symm_apply_apply _).symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private theorem fiber_contDiffOn_Icc_recon
     (f : M → ℝ → ℝ) {T : ℝ}
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)
@@ -562,7 +562,7 @@ private theorem fiber_contDiffOn_Icc_recon
   exact hcomp
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private theorem hasDerivWithinAt_integral_param_Icc_recon
     [MeasurableSpace M] [OpensMeasurableSpace M]
     (μ : Measure M) [IsFiniteMeasure μ] (f : M → ℝ → ℝ) {T : ℝ} (hT : 0 < T)
@@ -655,7 +655,7 @@ private theorem hasDerivWithinAt_integral_param_Icc_recon
     simpa [hG'] using this
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private theorem iteratedDerivWithin_integral_param_Icc
     [MeasurableSpace M] [OpensMeasurableSpace M]
     (μ : Measure M) [IsFiniteMeasure μ] {T : ℝ} (hT : 0 < T) :
@@ -688,7 +688,7 @@ private theorem iteratedDerivWithin_integral_param_Icc
       exact (iteratedDerivWithin_succ').symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem partialSnd_set_contMDiffOn_Icc
     (f : M → ℝ → ℝ) {T : ℝ} (U : Set M)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)
@@ -753,7 +753,7 @@ private theorem partialSnd_set_contMDiffOn_Icc
   simpa [inTangentCoordinates_model_space] using h_apply
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem iteratedPartialSnd_set_contMDiffOn_Icc
     (f : M → ℝ → ℝ) {T : ℝ} (U : Set M)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)
@@ -778,7 +778,7 @@ private theorem iteratedPartialSnd_set_contMDiffOn_Icc
       rw [iteratedDerivWithin_succ']
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     {T : ℝ} (U : Set M)

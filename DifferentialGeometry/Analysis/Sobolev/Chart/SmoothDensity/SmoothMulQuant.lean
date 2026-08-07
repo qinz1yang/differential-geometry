@@ -24,7 +24,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 theorem MemWkpChart_smooth_mul_per_chart_quant
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (φ : C^∞⟮I, M; ℝ⟯) (α : M) :
@@ -108,7 +108,7 @@ theorem MemWkpChart_smooth_mul_per_chart_quant
 
 theorem wkpNormChart_smooth_mul_le
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞}
     (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)

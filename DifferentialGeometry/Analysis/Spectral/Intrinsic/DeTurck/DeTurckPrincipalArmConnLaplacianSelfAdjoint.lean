@@ -49,7 +49,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensorRSModelAdd_local (r s : ℕ) :
     Add (Tensor0SBundle.TensorRSModel r s ℝ E) :=
@@ -86,8 +86,8 @@ theorem rawConnLap_selfAdjoint (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (rawTensorConnLapSmooth (I := I) g r s v).toFun T.toFun
   rw [hsymm1, hvT] at hTv; rw [← hsymm2]; linarith [hTv]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Inner_sub_left_smoothCc (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Inner_sub_left_smoothCc [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ T : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s (S₁.toFun - S₂.toFun) T.toFun =
       tensorL2Inner (I := I) (M := M) g r s S₁.toFun T.toFun -
@@ -116,8 +116,8 @@ theorem tensorL2Inner_sub_left_smoothCc (g : SmoothRiemannianMetric I M) (r s : 
     tensorL2Inner_smul_left]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem tensorL2Inner_sub_right_smoothCc (g : SmoothRiemannianMetric I M) (r s : ℕ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+theorem tensorL2Inner_sub_right_smoothCc [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T₁ T₂ : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s S.toFun (T₁.toFun - T₂.toFun) =
       tensorL2Inner (I := I) (M := M) g r s S.toFun T₁.toFun -

@@ -602,7 +602,7 @@ private lemma measurable_pou_mul_subcrit
   exact hcont.measurable.mul hu
 
 private lemma toEuclidean_extChartAt_tsupport_pou_compact_subset
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] (α : M) :
+    [T2Space M] [CompactSpace M] (α : M) :
     IsCompact (toEuclidean ''
         ((extChartAt I α) ''
           (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -634,7 +634,7 @@ private lemma toEuclidean_extChartAt_tsupport_pou_compact_subset
   exact (extChartAt I α).map_source (hTα_ext_src hx_supp)
 
 private lemma tsupport_chartPushedRaw_pou_mul_subset
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (α : M) (u : M → ℝ) :
     tsupport (chartPushedRaw (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -683,7 +683,7 @@ private lemma tsupport_chartPushedRaw_pou_mul_subset
   exact hK_closed.closure_subset_iff.mpr h_supp_sub
 
 private lemma hasCompactSupport_chartPushedRaw_pou_mul
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] (α : M) (u : M → ℝ) :
+    [T2Space M] [CompactSpace M] (α : M) (u : M → ℝ) :
     HasCompactSupport (chartPushedRaw (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x)) := by
@@ -695,7 +695,7 @@ private lemma hasCompactSupport_chartPushedRaw_pou_mul
     (tsupport_chartPushedRaw_pou_mul_subset (I := I) (M := M) α u)
 
 private lemma tsupport_chartPushedRaw_pou_mul_subset_target
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] (α : M) (u : M → ℝ) :
+    [T2Space M] [CompactSpace M] (α : M) (u : M → ℝ) :
     tsupport (chartPushedRaw (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x)) ⊆
@@ -754,7 +754,7 @@ private lemma wkpNorm_chartPushedRaw_pou_mul_eq_chartPushed
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u).symm
 
 private theorem perChart_eLpNorm_pStar_le
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M) :
@@ -882,7 +882,7 @@ private theorem perChart_eLpNorm_pStar_le
     _ = K_α * wkpNormChart (I := I) (M := M) g 1 p_enn u := by rw [hK_α_def]; ring
 
 private theorem chartAtlasPOU_pou_decomp_subcritical
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (u : M → ℝ) (x : M) :
     u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
       (I := I) (M := M),
@@ -896,14 +896,14 @@ private theorem chartAtlasPOU_pou_decomp_subcritical
   rw [← Finset.sum_mul, hsum, one_mul]
 
 private noncomputable def perChartConst_pStar
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) : M → ℝ≥0∞ :=
   fun α => Classical.choose (perChart_eLpNorm_pStar_le (I := I) (M := M) g hp_one hp_dim α)
 
 private lemma perChartConst_pStar_ne_top
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M) :
@@ -911,7 +911,7 @@ private lemma perChartConst_pStar_ne_top
   (Classical.choose_spec (perChart_eLpNorm_pStar_le (I := I) (M := M) g hp_one hp_dim α)).1
 
 private lemma perChartConst_pStar_bound
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M)
@@ -931,7 +931,7 @@ private lemma perChartConst_pStar_bound
     (I := I) (M := M) g hp_one hp_dim α)).2 hu_meas hu
 
 private theorem sobolev_embedding_chart_subcritical_measurable
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
@@ -1054,7 +1054,7 @@ private theorem sobolev_embedding_chart_subcritical_measurable
   exact h_max_le
 
 theorem sobolev_closed
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
@@ -1190,7 +1190,7 @@ theorem sobolev_embedding_subcritical_of_closed
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ))

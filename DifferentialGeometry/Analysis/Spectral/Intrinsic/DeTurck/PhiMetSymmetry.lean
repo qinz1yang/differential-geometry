@@ -80,7 +80,7 @@ private lemma unitModel_zero (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) 
     _ = 0 := sub_self _
 
 variable [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 set_option backward.isDefEq.respectTransparency false in
 

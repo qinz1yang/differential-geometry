@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private lemma cons_cons_comp_swap01 {α : Type*} {t : ℕ} (a b : α) (m : Fin t → α) :
     (fun k : Fin (t + 2) =>
@@ -81,7 +81,7 @@ private lemma cons_cons_comp_decomposeFin_double {α : Type*} {t : ℕ}
       simp only [Equiv.refl_apply, Fin.cons_succ]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem unitModel_appFullSec_swap_eq_domDomCongr
     (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
@@ -110,7 +110,7 @@ theorem unitModel_appFullSec_swap_eq_domDomCongr
     (Matrix.vecTail (Matrix.vecTail w))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma appFullSec_add_right_cc (g : SmoothRiemannianMetric I M) (a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) 0 a c I) (A B : SmoothCcTensor g 0 a) :
     homTensorRSFieldApply (I := I) (M := M) g 0 a c Q (A + B) =
@@ -165,7 +165,7 @@ theorem appFullSec_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
   rw [← Real.sqrt_sq h1, ← Real.sqrt_sq h2, hsq]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 theorem appFullSec_swap_involutive (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
@@ -323,7 +323,7 @@ theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : �
   exact h2x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem unitModel_appCc_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -358,7 +358,7 @@ theorem unitModel_appCc_slotInsertEndoCc_cons
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -406,7 +406,7 @@ theorem unitModel_appCc_slotExtend_slotInsertEndoCc_cons
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 theorem appCc_slotExtend_slotInsert_appFullSec_swap_conj
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞

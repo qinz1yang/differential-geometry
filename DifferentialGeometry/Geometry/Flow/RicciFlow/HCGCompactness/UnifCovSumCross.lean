@@ -1087,7 +1087,7 @@ section VolumeMeasure
 open MeasureTheory
 open scoped ENNReal
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

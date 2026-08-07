@@ -37,10 +37,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] in
 private theorem contMDiffWithinAt_neg_tangentBundleSection
     (X : ℝ → ∀ x : M, TangentSpace I x)
     {u : Set (ℝ × M)} {q₀ : ℝ × M}

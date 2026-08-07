@@ -40,7 +40,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace E := borel E
@@ -63,9 +63,8 @@ def scalarGalVec
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarGalVec_coeff
+@[simp] theorem scalarGalVec_coeff [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real) (σ : Real)
@@ -76,9 +75,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarGalVec_supp
+theorem scalarGalVec_supp [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real) (σ : Real) :
@@ -95,9 +93,8 @@ theorem scalarGalVec_supp
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarGalVec_finite
+theorem scalarGalVec_finite [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real) (σ : Real) :
@@ -107,9 +104,8 @@ theorem scalarGalVec_finite
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarGalVec_inc
+theorem scalarGalVec_inc [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real)
@@ -138,7 +134,7 @@ theorem scalarGalRepr_eq
   rfl
 
 open Classical in
-private noncomputable def scalarGalEmbedLM
+private noncomputable def scalarGalEmbedLM [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0)) :
     EuclideanSpace Real {i // i ∈ F} →ₗ[Real]
@@ -162,7 +158,7 @@ private noncomputable def scalarGalEmbedLM
     · simp only [if_neg hi, mul_zero]
 
 
-noncomputable def scalarGalEmbed
+noncomputable def scalarGalEmbed [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0)) :
     EuclideanSpace Real {i // i ∈ F} →L[Real]
@@ -171,9 +167,8 @@ noncomputable def scalarGalEmbed
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarGalEmbed_apply
+@[simp] theorem scalarGalEmbed_apply [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (w : EuclideanSpace Real {i // i ∈ F}) :
@@ -184,9 +179,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 open Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarGalVec_cont
+theorem scalarGalVec_cont [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real)
@@ -230,16 +224,15 @@ noncomputable def scalarGalRestrict
         (I := I) (M := M) (a := (0 : Real)) j.1))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarGalRest_apply
+@[simp] theorem scalarGalRest_apply [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (v : tensorHs (I := I) (M := M) q 0 0 0) (j : {i // i ∈ F}) :
     scalarGalRestrict (I := I) (M := M) q F v j = v.coeff j.1 :=
   rfl
 
-private noncomputable def scalarGalDiagLM
+private noncomputable def scalarGalDiagLM [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0)) :
     EuclideanSpace Real {i // i ∈ F} →ₗ[Real]
@@ -266,9 +259,8 @@ noncomputable def scalarGalDiag
   (scalarGalDiagLM (I := I) (M := M) q F).toContinuousLinearMap
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem scalarGalDiag_apply
+@[simp] theorem scalarGalDiag_apply [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (w : EuclideanSpace Real {i // i ∈ F}) (j : {i // i ∈ F}) :
@@ -278,7 +270,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 
 
-noncomputable def scalarGalPert
+noncomputable def scalarGalPert [SigmaCompactSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (t : Real) :
     tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 2 →L[Real]
@@ -456,15 +448,15 @@ noncomputable def scalarGalRhs
     (A t (scalarGalVec (I := I) (M := M) q F (V t) 2)).coeff i
 
 open Classical in
-noncomputable def scalarGalCoefficients
+noncomputable def scalarGalCoefficients [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (γ : Real → EuclideanSpace Real {i // i ∈ F}) :
     Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real :=
   fun t i => if h : i ∈ F then (γ t).ofLp ⟨i, h⟩ else 0
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-theorem scalarGalCoefficients_of_mem
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+theorem scalarGalCoefficients_of_mem [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (γ : Real → EuclideanSpace Real {i // i ∈ F})
@@ -473,8 +465,8 @@ theorem scalarGalCoefficients_of_mem
   classical
   simp only [scalarGalCoefficients, dif_pos hi]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-theorem scalarGalCoefficients_of_not_mem
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+theorem scalarGalCoefficients_of_not_mem [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (γ : Real → EuclideanSpace Real {i // i ∈ F})

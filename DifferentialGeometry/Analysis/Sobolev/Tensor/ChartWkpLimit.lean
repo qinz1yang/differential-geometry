@@ -43,11 +43,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 /-- A fixed scalar chart component is bounded by the total tensor chart norm. -/
-theorem wkpNorm_secComp_le
+theorem wkpNorm_secComp_le [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ) (p : ℝ≥0∞)
     (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -91,10 +91,10 @@ theorem wkpNorm_secComp_le
       (Finset.mem_univ Idx)
   exact hJ.trans (hI.trans (ENNReal.le_tsum α))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 /-- Total-norm Cauchy convergence implies scalar `wkpNorm` Cauchy convergence
 in every fixed chart component. -/
-theorem secComp_cauchy
+theorem secComp_cauchy [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
@@ -122,10 +122,9 @@ theorem secComp_cauchy
   rw [secChartComp_sub (I := I) (M := M)] at hle
   exact hle
 
-omit [CompactSpace M] in
 /-- Euclidean completeness gives an actual scalar Sobolev limit for each
 chart and tensor component. -/
-theorem exists_secComp_lim
+theorem exists_secComp_lim [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
@@ -167,9 +166,8 @@ noncomputable def secCompLimit
   (exists_secComp_lim (I := I) (M := M) g r s k hp hp_top u
     h_cauchy α Idx Jdx).choose
 
-omit [CompactSpace M] in
 /-- The chosen scalar component limit belongs to Euclidean `W^{k,p}`. -/
-theorem secCompLimit_mem
+theorem secCompLimit_mem [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
@@ -187,10 +185,9 @@ theorem secCompLimit_mem
   (exists_secComp_lim (I := I) (M := M) g r s k hp hp_top u
     h_cauchy α Idx Jdx).choose_spec.1
 
-omit [CompactSpace M] in
 /-- The original component sequence converges in `wkpNorm` to its chosen
 scalar Sobolev limit. -/
-theorem secCompLimit_tendsto
+theorem secCompLimit_tendsto [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
@@ -249,10 +246,9 @@ noncomputable def secModelLimit
           h_cauchy α Idx Jdx y •
         tensorChartBasisElement (E := E) r s Idx Jdx
 
-omit [CompactSpace M] in
 /-- Projecting the reconstructed model tensor recovers the chosen component
 limit. -/
-theorem secModelLimit_proj
+theorem secModelLimit_proj [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)
@@ -307,7 +303,7 @@ noncomputable def secModelPull (r s : ℕ) (α : M)
 
 /-- The genuine dependent tensor-section candidate obtained by taking the
 finite atlas-POU sum of the reconstructed chartwise model limits. -/
-noncomputable def tensorLimitSec
+noncomputable def tensorLimitSec [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (u : ℕ → WkpTensor (I := I) (M := M) g r s k p hp)

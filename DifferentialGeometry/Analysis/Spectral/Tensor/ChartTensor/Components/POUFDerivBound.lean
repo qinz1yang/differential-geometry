@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -32,8 +32,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompactSpace M] [I.Boundaryless] in
-private lemma chartAtlasPOU_mul_one_eq (α : M) :
+omit [I.Boundaryless] in
+private lemma chartAtlasPOU_mul_one_eq [SigmaCompactSpace M] (α : M) :
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         (1 : ℝ)) =
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) := by
@@ -61,8 +61,8 @@ theorem hasCompactSupport_chartSmoothExt_chartAtlasPOU (α : M) :
   rw [chartAtlasPOU_mul_one_eq (I := I) (M := M)] at hsupp
   exact hsupp
 
-omit [CompactSpace M] [I.Boundaryless] in
-theorem chartPushed_pou_eq_smoothExt_mul_smoothExt_on_target
+omit [I.Boundaryless] in
+theorem chartPushed_pou_eq_smoothExt_mul_smoothExt_on_target [SigmaCompactSpace M]
     (α : M) (u : M → ℝ) {y : EuclN E}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u y =
@@ -97,8 +97,7 @@ theorem chartPushed_pou_eq_smoothExt_mul_smoothExt_on_target
     rw [if_pos h_symm_target]
   rw [hPOU, hU]
 
-omit [CompactSpace M] in
-theorem chartPushed_eventuallyEq_smoothExt_mul (α : M) (u : M → ℝ)
+theorem chartPushed_eventuallyEq_smoothExt_mul [SigmaCompactSpace M] (α : M) (u : M → ℝ)
     {y : EuclN E}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u =ᶠ[nhds y]
@@ -112,7 +111,7 @@ theorem chartPushed_eventuallyEq_smoothExt_mul (α : M) (u : M → ℝ)
   exact chartPushed_pou_eq_smoothExt_mul_smoothExt_on_target
     (I := I) (M := M) α u hz
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 theorem contDiffAt_chartSmoothExt_of_chartTarget
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {y : EuclN E} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -149,7 +148,7 @@ theorem contDiffAt_chartSmoothExt_of_chartTarget
     else (0 : ℝ)) = _
   rw [if_pos h_symm_target]
 
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
+omit [CompactSpace M] [T2Space M] in
 theorem differentiableAt_chartSmoothExt_of_chartTarget
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {y : EuclN E} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -205,8 +204,7 @@ theorem hasCompactSupport_chartSmoothExt_chartAtlasPOU_sq (α : M) :
     (chartAtlasPOU I M) (chartAtlasPOU_isSubordinate I M)
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
 
-omit [CompactSpace M] in
-theorem fderiv_chartPushed_pou_self_eq_fderiv_chartSmoothExt_sq
+theorem fderiv_chartPushed_pou_self_eq_fderiv_chartSmoothExt_sq [SigmaCompactSpace M]
     (α : M) {y : EuclN E}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     fderiv ℝ (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α

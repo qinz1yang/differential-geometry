@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 
 /-- Transport a smooth scalar from the source of a diffeomorphism to its
 target.  Thus `transportScalar r Φ = r ∘ Φ⁻¹`. -/
@@ -46,7 +46,7 @@ omit [FiniteDimensional ℝ E]
   [IsManifold I ∞ M]
   [CompactSpace M]
   [I.Boundaryless]
-  [SigmaCompactSpace M]
+
   [T2Space M]
   [BoundarylessManifold I M] in
 @[simp] theorem trScalar_apply
@@ -59,7 +59,7 @@ omit [FiniteDimensional ℝ E]
   [IsManifold I ∞ M]
   [CompactSpace M]
   [I.Boundaryless]
-  [SigmaCompactSpace M]
+
   [T2Space M]
   [BoundarylessManifold I M] in
 @[simp] theorem trScalar_image
@@ -67,14 +67,13 @@ omit [FiniteDimensional ℝ E]
     transportScalar (I := I) r Φ (Φ x) = r x := by
   simp only [trScalar_apply, Diffeomorph.symm_apply_apply]
 
-omit [CompactSpace M] in
 /-- A Ricci flow pulled back by a family whose velocity is the pushforward of
 an arbitrary smooth drift `Z` solves Ricci flow plus `ℒ_Z g`.
 
 This is the drift-valued form of `ricci_pullback_DT`.  Keeping the drift
 arbitrary is essential for density-scaled gauges, where the transported
 scalar multiplying the DeTurck field is spatially varying. -/
-theorem ricci_pullback_drift
+theorem ricci_pullback_drift [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (Z : ℝ → VectorField (I := I) (M := M))
@@ -174,10 +173,9 @@ theorem ricci_pullback_drift
     exact pullback_metric_evaluation_formula (I := I) (g_RF s) (Φ_fam s) x v w
   rwa [hcurve]
 
-omit [CompactSpace M] in
 /-- Pulling a fixed metric back by a family whose velocity is the pushforward
 of `Z` differentiates to `ℒ_Z` of the pulled-back metric. -/
-theorem fixed_pullback_drift
+theorem fixed_pullback_drift [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (Z : ℝ → VectorField (I := I) (M := M))
@@ -241,11 +239,11 @@ theorem fixed_pullback_drift
     exact pullback_metric_evaluation_formula (I := I) q (Φ_fam s) x v w
   rwa [hcurve]
 
-omit [CompactSpace M]
+omit
   [I.Boundaryless] in
 /-- Multiplying the source tension by `r` produces the negative DeTurck field
 multiplied by the transported target scalar `r ∘ Φ⁻¹`. -/
-theorem scaled_hmf_target
+theorem scaled_hmf_target [SigmaCompactSpace M]
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (r : ScalarField (I := I) (M := M)) (x : M) :
     r x • diffeoTension (I := I) g h Φ (Φ x) =
@@ -261,12 +259,12 @@ theorem scaled_hmf_target
         VectorField (I := I) (M := M)) (Φ x))
   rw [trScalar_image, smul_neg]
 
-omit [CompactSpace M]
+omit
   [I.Boundaryless] in
 /-- The inverse of a source-scaled harmonic-map gauge has velocity
 `DΨ⁻¹ ((r ∘ Ψ⁻¹) • W)`.  This is the first-order gauge variable in the
 closed `(G, Ψ⁻¹)` formulation. -/
-theorem scaled_inv_vel
+theorem scaled_inv_vel [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (r : ℝ → ScalarField (I := I) (M := M))
@@ -312,7 +310,6 @@ theorem scaled_inv_vel
   simpa only [W, a] using
     (symm_gauge_vel (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x)
 
-omit [CompactSpace M] in
 /-- The inverse of a density-scaled harmonic-map gauge pulls a Ricci flow
 back to Ricci flow with drift
 `(r ∘ Ψ⁻¹) • W(Ψ⁻¹* g, g_bg)`.
@@ -321,7 +318,7 @@ In particular, the coefficient is the transported *source* scalar.  The
 statement deliberately does not replace it by a density ratio formed only
 from the pulled-back metric, since that replacement is not natural under a
 general diffeomorphism. -/
-theorem scaled_hmf_inverse
+theorem scaled_hmf_inverse [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (r : ℝ → ScalarField (I := I) (M := M))
@@ -385,13 +382,12 @@ theorem scaled_hmf_inverse
   · exact hsymm_joint
   · exact hgram_RF
 
-omit [CompactSpace M] in
 /-- The inverse density-scaled gauge transports the fixed background metric
 by the same drift that appears in `scaled_hmf_inverse`.
 
 For `H = Ψ⁻¹* g_bg`, its exact equation is
 `∂ₜH = ℒ_((r ∘ Ψ⁻¹) • W(G,g_bg)) H`. -/
-theorem scaled_bg_inverse
+theorem scaled_bg_inverse [SigmaCompactSpace M]
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (r : ℝ → ScalarField (I := I) (M := M))

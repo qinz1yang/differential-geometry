@@ -32,7 +32,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 
 def deTurckPhiMetTotal (g₀ g_bg g : SmoothRiemannianMetric I M) :
@@ -47,7 +47,7 @@ private theorem trace_perm_comp (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
   rw [Equiv.Perm.mul_apply, Equiv.Perm.inv_def, Equiv.apply_symm_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ ρ : Equiv.Perm (Fin 4))
     (hcomp : ∀ j : Fin 4, traceHessianSlotPerm (ρ j) = σ j) :

@@ -44,7 +44,7 @@ private lemma abs_pou_mul_le_abs
     _ = |u x| := one_mul _
 
 theorem eLpNorm_chartPushed_le_const_mul_eLpNorm_riemannianVolumeMeasure
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     (u : M → ℝ) (hu_meas : Measurable u) :

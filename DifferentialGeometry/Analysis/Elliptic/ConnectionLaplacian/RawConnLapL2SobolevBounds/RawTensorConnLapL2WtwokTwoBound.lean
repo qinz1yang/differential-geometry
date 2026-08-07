@@ -43,7 +43,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -222,8 +222,8 @@ private lemma scalar_iteratedFDeriv_two_mul_norm_le
     mul_nonneg (norm_nonneg (fderiv ℝ f x)) (norm_nonneg (fderiv ℝ g x)),
     mul_nonneg (norm_nonneg (fderiv ℝ g x)) (norm_nonneg (fderiv ℝ f x))]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    in
 lemma iteratedFDeriv_two_repr_opNormSq_le_sum_iteratedFDeriv_components_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) {e : E}
@@ -484,7 +484,7 @@ private lemma exists_pou_symm_iteratedFDeriv_two_uniform_bound (α : M) :
         mul_le_mul_of_nonneg_right hK_eval (sq_nonneg _)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma pou_sq_iteratedFDeriv_two_repr_sq_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
@@ -1434,15 +1434,15 @@ theorem chartTargetPouWeightedL2NormSq_iteratedFDeriv_two_repr_le_sum_chartComp_
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   rIntegrand Idx Jdx y ∂(volume : Measure EuclN))) := by rfl
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private lemma extChartAt_eq_of_chartAt_eq
     {α β : M} (h_eq : chartAt H α = chartAt H β) :
     extChartAt I α = extChartAt I β := by
   simp only [extChartAt, h_eq]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma chartTargetEuclid_eq_of_chartAt_eq
     {α β : M} (h_eq : chartAt H α = chartAt H β) :
     chartTargetEuclid (I := I) (M := M) α =
@@ -1487,7 +1487,7 @@ private lemma tsum_sq_le_sq_tsum_ennreal
     _ = S * S := by rw [← hS_def]
     _ = S ^ 2 := (sq S).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma wkpNorm_zero_sq_le_wtwokTwoNorm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -1622,7 +1622,7 @@ private lemma finset_sum_wkpNorm_zero_sq_le_wtwokTwoNorm_sq
           ((Finset.univ : Finset (Fin s → Fin (Module.finrank ℝ E))).card : ℝ≥0∞) *
             W from by ring]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma wkpNorm_one_sq_le_wtwokTwoNorm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -1682,7 +1682,7 @@ private lemma wkpNorm_one_sq_le_wtwokTwoNorm_sq
     exact ENNReal.le_tsum α
   exact pow_le_pow_left' (h12.trans h_α) 2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma wkpNorm_two_sq_le_wtwokTwoNorm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -1736,8 +1736,8 @@ private lemma wkpNorm_two_sq_le_wtwokTwoNorm_sq
     exact ENNReal.le_tsum α
   exact pow_le_pow_left' h_α 2
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma tangent_continuousLinearMapAt_eq_of_chartAt_eq
     {α β : M} (h_chart : chartAt H α = chartAt H β) (b : M)
     (hb_α : b ∈ (chartAt H α).source) :
@@ -1761,7 +1761,7 @@ private lemma finset_sum_sq_le_card_mul_sum_sq
   rw [h_sum_one] at hbase
   exact hbase
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma tensorChartComponentRaw_chartTransition_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α β b : M)
@@ -1790,7 +1790,7 @@ private lemma tensorChartComponentRaw_chartTransition_eq
     (E := E) (I := I) (M := M) g r s T β α ⟨Idx, Jdx⟩ ⟨hb_β_src, hb_α_src⟩
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorChartComponentRaw_sq_chartTransition_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (K : ℝ)
@@ -1956,7 +1956,7 @@ private lemma iteratedFDeriv_two_pou_raw_symm_sq_le_iteratedFDeriv_two_chartComp
   refine h_sq_le.trans (le_of_eq ?_)
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma symm_mem_pou_inter_goodSet
     (α : M) {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (h_pou_pos :
@@ -1983,7 +1983,7 @@ private lemma symm_mem_pou_inter_goodSet
     rw [h_goodSet_eq]; exact hb_extSrc
   exact ⟨hb_tsupp, hb_good⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma mem_pouImage_of_pou_pos
     (α : M) {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (h_pou_pos :

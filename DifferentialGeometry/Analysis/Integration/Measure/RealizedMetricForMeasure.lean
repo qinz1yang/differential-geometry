@@ -103,7 +103,7 @@ theorem volumeMeasureAt_sigmaFinite [T2Space M] [SigmaCompactSpace M]
     (G.metric t)
 
 theorem volumeMeasureAt_isFiniteMeasure_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamily (I := I) (M := M) Time)
       (t : Time) :
     IsFiniteMeasure (volumeMeasureAt (I := I) (M := M) G t) := by
@@ -127,7 +127,7 @@ theorem volumeMeasureOn_sigmaFinite [T2Space M] [SigmaCompactSpace M]
     (G.metricAt t)
 
 theorem volumeMeasureOn_isFiniteMeasure_of_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (G : DifferentialGeometry.Geometry.Curvature.RealizedMetricFamilyOn (I := I) (M := M) D)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D) :

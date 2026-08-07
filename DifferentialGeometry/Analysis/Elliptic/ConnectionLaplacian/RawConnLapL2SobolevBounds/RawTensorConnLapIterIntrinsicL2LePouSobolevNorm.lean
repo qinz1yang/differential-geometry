@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 theorem rawTensorConnLapIter_intrinsicL2_le_tensorPouSobolevNorm_sq_one
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ≥0∞, C ≠ ⊤ ∧
       ∀ (T : SmoothCcTensor g r s),

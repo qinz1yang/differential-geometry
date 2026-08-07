@@ -23,7 +23,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-def H1Submodule [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+def H1Submodule [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
     Submodule ℝ (Lp ℝ 2 (riemannianVolumeMeasure I M g)) where
   carrier := { u | MemH1Lp (I := I) (M := M) g u }
@@ -33,7 +33,7 @@ def H1Submodule [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryle
 
 @[simp]
 lemma mem_H1Submodule_iff
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (u : Lp ℝ 2 (riemannianVolumeMeasure I M g)) :
     u ∈ H1Submodule (I := I) (M := M) g ↔ MemH1Lp (I := I) (M := M) g u := Iff.rfl

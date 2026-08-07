@@ -35,7 +35,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -44,10 +44,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-def chartL2Measure (α : M) : Measure EuclN :=
+def chartL2Measure [SigmaCompactSpace M] (α : M) : Measure EuclN :=
   (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)
 
-private def pouTsupportSet (α : M) : Set M :=
+private def pouTsupportSet [SigmaCompactSpace M] (α : M) : Set M :=
   tsupport (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
 private def pouChartKernel (α : M) : Set E :=
@@ -58,13 +58,13 @@ private lemma pouChartKernel_isCompact (α : M) :
     IsCompact (pouChartKernel (I := I) (M := M) α) :=
   chartImage_pouTsupport_isCompact (I := I) (M := M) α
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma pouChartKernel_subset_target (α : M) :
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma pouChartKernel_subset_target [SigmaCompactSpace M] (α : M) :
     pouChartKernel (I := I) (M := M) α ⊆ (extChartAt I α).target :=
   chartImage_pouTsupport_subset_target (I := I) (M := M) α
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_tsupport_subset_pouTsupport
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_tsupport_subset_pouTsupport [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -86,8 +86,8 @@ private lemma tensorChartComponentScalar_tsupport_subset_pouTsupport
     (f := fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
     (g := tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_tsupport_subset_chart_source
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_tsupport_subset_chart_source [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -99,8 +99,8 @@ private lemma tensorChartComponentScalar_tsupport_subset_chart_source
     (I := I) (M := M) g r s S α Idx Jdx).trans
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_chartImage_tsupport_subset_kernel
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_chartImage_tsupport_subset_kernel [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -132,8 +132,8 @@ private lemma tensorChartComponent_measurable
     Measurable (tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx) :=
   (tensorChartComponent_continuous (I := I) (M := M) g r s S α Idx Jdx).measurable
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_continuous
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_continuous [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -143,8 +143,8 @@ private lemma tensorChartComponentScalar_continuous
   (tensorChartComponentScalar_contMDiff
     (I := I) (M := M) g r s S α Idx Jdx).continuous
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_measurable
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponentScalar_measurable [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -154,8 +154,8 @@ private lemma tensorChartComponentScalar_measurable
   (tensorChartComponentScalar_continuous
     (I := I) (M := M) g r s S α Idx Jdx).measurable
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponent_eq_chartPushedRaw_scalar
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma tensorChartComponent_eq_chartPushedRaw_scalar [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -258,7 +258,7 @@ theorem tensorChartComponent_memLp
   · refine lt_of_le_of_lt (h_bound S Idx Jdx) ?_
     exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
 
-private def smoothChartComponentLp
+private def smoothChartComponentLp [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -328,7 +328,7 @@ private lemma smoothChartComponentLp_smul
   refine ((smoothChartComponentLp_coeFn (I := I) (M := M)
     g r s S α Idx Jdx).const_smul c).symm.trans h_smul.symm
 
-private def smoothChartComponentLpLin
+private def smoothChartComponentLpLin [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     SmoothCcTensor g r s →ₗ[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) where
@@ -379,7 +379,7 @@ private lemma smoothChartComponentLpLin_norm_le
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hC_nn,
     ENNReal.toReal_ofReal (norm_nonneg _)]
 
-private def smoothChartComponentLpCLM
+private def smoothChartComponentLpCLM [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     SmoothCcTensor g r s →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
@@ -395,18 +395,18 @@ omit [NeZero (Module.finrank ℝ E)] in
     smoothChartComponentLpCLM (I := I) (M := M) g r s α P₀ S =
       smoothChartComponentLp (I := I) (M := M) g r s S α P₀.1 P₀.2 := rfl
 
-def smoothToTensorL2 (g : SmoothRiemannianMetric I M) (r s : ℕ) :
+def smoothToTensorL2 [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensor g r s →L[ℝ] TensorL2 r s g :=
   UniformSpace.Completion.toComplL
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] lemma smoothToTensorL2_apply
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+@[simp] lemma smoothToTensorL2_apply [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     smoothToTensorL2 (I := I) (M := M) g r s S = (S : TensorL2 r s g) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma denseRange_smoothToTensorL2
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma denseRange_smoothToTensorL2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     DenseRange (smoothToTensorL2 (I := I) (M := M) g r s) := by
   rw [show (smoothToTensorL2 (I := I) (M := M) g r s :
@@ -416,8 +416,8 @@ private lemma denseRange_smoothToTensorL2
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.denseRange_coe
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma isUniformInducing_smoothToTensorL2
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma isUniformInducing_smoothToTensorL2 [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsUniformInducing (smoothToTensorL2 (I := I) (M := M) g r s) := by
   rw [show (smoothToTensorL2 (I := I) (M := M) g r s :
@@ -427,7 +427,7 @@ private lemma isUniformInducing_smoothToTensorL2
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.isUniformInducing_coe (SmoothCcTensor g r s)
 
-def tensorL2ChartComponent
+def tensorL2ChartComponent [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -436,7 +436,7 @@ def tensorL2ChartComponent
     (smoothChartComponentLpCLM (I := I) (M := M) g r s α P₀)
     (smoothToTensorL2 (I := I) (M := M) g r s) u
 
-def tensorL2ChartComponentCLM
+def tensorL2ChartComponentCLM [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     TensorL2 r s g →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=

@@ -111,7 +111,7 @@ private lemma sphere_isCompact :
 
 
 theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -291,7 +291,7 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
 
 
 theorem chartInvGram_quad_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -571,7 +571,7 @@ theorem chartInvGram_ent_le
 
 
 theorem chartInvGram_unif_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -610,7 +610,7 @@ theorem chartInvGram_unif_ub
 
 
 theorem chartInvGram_unif_lb
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -706,7 +706,7 @@ theorem chartInvGram_unif_lb
 
 
 theorem chartInvGram_pou_lb
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -777,7 +777,7 @@ theorem chartInvGram_pou_lb
 
 
 theorem chartInvGram_pou_ub
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -829,7 +829,7 @@ theorem chartInvGram_pou_ub
 
 
 theorem chartInvGram_pou_bnd
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -853,7 +853,7 @@ theorem chartInvGram_pou_bnd
 
 
 theorem chartInvGram_pou_eqv
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)
@@ -895,7 +895,7 @@ theorem chartInvGram_pou_eqv
 
 
 theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_pouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ c : ℝ, 0 < c ∧
       ∀ b : M, b ∈ tsupport

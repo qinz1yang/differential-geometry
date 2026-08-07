@@ -44,7 +44,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -104,7 +104,7 @@ private lemma trace_invariance_under_change_of_basis
   rw [hreassoc, Matrix.trace_mul_comm T⁻¹ (G⁻¹ * Bᵀ * T)]
   rw [mul_assoc (G⁻¹ * Bᵀ) T T⁻¹, hT_T_inv, mul_one]
 
-noncomputable def chartTensorCovDerivPointwiseInner
+noncomputable def chartTensorCovDerivPointwiseInner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -123,7 +123,7 @@ private noncomputable def chartBasisTransitionMatrix (α : M) (b : M) :
     ((chartModelBasis E).repr (chartBasisVecFiber (I := I) α i b)) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartBasisVecFiber_eq_sum_chartModelBasis
     (α : M) (b : M) (i : Fin (Module.finrank ℝ E)) :
     chartBasisVecFiber (I := I) α i b =
@@ -136,7 +136,7 @@ private lemma chartBasisVecFiber_eq_sum_chartModelBasis
     (chartBasisVecFiber (I := I) α i b))).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartBasisTransitionMatrix_eq_toMatrix
     (α : M) (b : M) :
     chartBasisTransitionMatrix (I := I) α b =
@@ -149,7 +149,7 @@ private lemma chartBasisTransitionMatrix_eq_toMatrix
   rw [Module.Basis.toMatrix_apply, Matrix.of_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartBasisTransitionMatrix_isUnit
     (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -170,7 +170,7 @@ private lemma chartBasisTransitionMatrix_isUnit
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma g_inner_bilinear_expand
     (g : SmoothRiemannianMetric I M) (b : M) {n : ℕ}
     (a c : Fin n → ℝ) (u : Fin n → E) :
@@ -195,7 +195,7 @@ private lemma g_inner_bilinear_expand
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma chartGramMatrix_eq_transition
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
     chartGramMatrix (I := I) g α b =
@@ -223,7 +223,7 @@ private lemma chartGramMatrix_eq_transition
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma tensorInnerPointwise_sum_left
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     {ι : Type*} (s' : Finset ι) (A : ι → TensorRSModel r s ℝ E)
@@ -240,7 +240,7 @@ lemma tensorInnerPointwise_sum_left
           tensorInnerPointwise_smul_left, ih, Finset.sum_insert hi₀]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 lemma tensorInnerPointwise_sum_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     {ι : Type*} (s' : Finset ι) (A : TensorRSModel r s ℝ E)
@@ -256,9 +256,8 @@ lemma tensorInnerPointwise_sum_right
       rw [Finset.sum_insert hj₀, tensorInnerPointwise_add_right,
           tensorInnerPointwise_smul_right, ih, Finset.sum_insert hj₀]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartTensorCovDeriv_innerMatrix_eq_transition
+private lemma chartTensorCovDeriv_innerMatrix_eq_transition [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -340,9 +339,8 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
   rw [Matrix.transpose_apply, Matrix.of_apply]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
+lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -496,7 +494,7 @@ private lemma frameTransitionMatrix_isUnit
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma frameGram_eq_transition
     (g : SmoothRiemannianMetric I M) (b : M)
     (frame : Fin (Module.finrank ℝ E) → E) :
@@ -523,9 +521,8 @@ private lemma frameGram_eq_transition
   rw [Matrix.transpose_apply, gramMatrixAt_apply]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma frameInnerMatrix_eq_transition
+private lemma frameInnerMatrix_eq_transition [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M)
     (frame : Fin (Module.finrank ℝ E) → E)
@@ -601,9 +598,8 @@ private lemma frameInnerMatrix_eq_transition
   rw [Matrix.transpose_apply, Matrix.of_apply]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
+lemma tensorCovDerivPointwiseInner_eq_frameGram_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M)
     (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) :
@@ -709,9 +705,8 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
     exact ne_of_gt hposdef.det_pos
   exact trace_invariance_under_change_of_basis Tmat hT_unit Gmat hG_unit Bmat
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum
+lemma tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M)
     (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)

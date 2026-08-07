@@ -218,7 +218,7 @@ private lemma crossChartK_subset_chartγ_source
 
 theorem chartTransition_smoothDiffeoBoundedAtOrder_strict
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (γ α : M)
     {K : Set M} (hK_compact : IsCompact K)
     (hK_γ : K ⊆ (chartAt H γ).source)
@@ -791,7 +791,7 @@ lemma chartPushed_chartPullback_zero_of_K_M_empty
 
 theorem cross_chart_bound_strict_strong
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)

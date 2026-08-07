@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 variable [CompleteSpace E]
 
 private local instance tensorRSRiemannianNormedAddCommGroup
@@ -119,7 +119,7 @@ theorem contractCcTensor_smul (g : SmoothRiemannianMetric I M) (r s : ℕ)
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [CompleteSpace E] in
 private lemma riemannianFiberNormSq_eq_bundle_norm_sq_gen
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (z : TensorRSSpace r s I x) :
@@ -142,7 +142,7 @@ private lemma riemannianFiberNormSq_eq_bundle_norm_sq_gen
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [CompleteSpace E] in
 theorem riemannianFiberNormSq_tensorRS_clm_apply_le
     (g : SmoothRiemannianMetric I M) (r₁ s₁ r₂ s₂ : ℕ) (x : M)
@@ -168,7 +168,7 @@ theorem riemannianFiberNormSq_tensorRS_clm_apply_le
     _ = ‖φg‖ ^ 2 * ‖v‖ ^ 2 := by rw [mul_pow]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 omit [CompleteSpace E] in
 theorem riemannianFiberNormSq_contract_trace_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :

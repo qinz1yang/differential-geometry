@@ -34,14 +34,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem ricciCometricFourTraceCastG0Fib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
+omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] in
+theorem ricciCometricFourTraceCastG0Fib_contMDiff [SigmaCompactSpace M] (g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) x
@@ -62,7 +62,6 @@ theorem ricciCometricFourTraceCastG0Fib_contMDiff (g₁ : SmoothRiemannianMetric
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnDiffOrder1KernelFib_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 4 ℝ E)) ∞
@@ -105,7 +104,7 @@ def linearizedRicciConnDiffOrder1KernelField (g₀ g₁ : SmoothRiemannianMetric
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 @[simp] theorem ricciCometricFourTraceCastG0_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (ricciCometricFourTraceCastG0 (I := I) g₀ g₁).toSection x =
@@ -114,7 +113,6 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnDiffOrder1KernelField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnDiffOrder1KernelField (I := I) g₀ g₁).toSection x =
@@ -124,7 +122,6 @@ omit [SigmaCompactSpace M] in
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnDiffOrder1CoeffField_eq_appCcRS
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder1CoeffField (I := I) (M := M) g₀ g₁ =
@@ -146,7 +143,7 @@ def fourTraceDoubleTranspositionPerm : Equiv.Perm (Fin 4) :=
   ⟨![2, 3, 0, 1], ![2, 3, 0, 1], by decide, by decide⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem ricciCometricFourTraceCastG0_eq_reindex_combination
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciCometricFourTraceCastG0 (I := I) g₀ g₁ =
@@ -168,7 +165,7 @@ theorem ricciCometricFourTraceCastG0_eq_reindex_combination
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma ricciArmPrincipalCoeffPure_sub_doubleTrace_clm
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -226,7 +223,7 @@ private lemma fourTrace_iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma fourTrace_rfns_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -696,7 +693,7 @@ private def kernelInnerSlotCyclePerm : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem slotPermCcFib_contMDiff (_g₀ : SmoothRiemannianMetric I M) {d : ℕ}
     (ρ : Equiv.Perm (Fin d)) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel d d ℝ E)) ∞
@@ -725,7 +722,6 @@ private def slotPermCc (g₀ : SmoothRiemannianMetric I M) {d : ℕ} (ρ : Equiv
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private theorem connDiffContrInsertionFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 3 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 4 ℝ E)
@@ -759,7 +755,6 @@ def connDiffContrInsertionField (g₀ g₁ : SmoothRiemannianMetric I M) :
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 @[simp] theorem connDiffContrInsertionField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (connDiffContrInsertionField (I := I) g₀ g₁).toSection x =
@@ -768,7 +763,6 @@ omit [SigmaCompactSpace M] in
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private theorem kernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder1KernelField (I := I) g₀ g₁ =
       -(reindexCoeffGen (I := I) (M := M) g₀ 3 4
@@ -925,7 +919,6 @@ def connDiffContrInsertionReindexPerm : Equiv.Perm (Fin 3) :=
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem connDiffContrInsertionField_eq_reindex_slotExtend_two
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffContrInsertionField (I := I) g₀ g₁ =

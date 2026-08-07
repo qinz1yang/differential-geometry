@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -78,7 +78,6 @@ private def lieArm1PbLow (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 lemma lieArm1_kappa_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (lieArm1LoweredBgKappa (I := I) (M := M) g₀ g₁ g_bg) x m =
@@ -96,7 +95,6 @@ lemma lieArm1_kappa_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lieArm1_connDiffLowered_unitModel_apply (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (connDiffLoweredCc (I := I) g₀ g₁) x m =
@@ -113,7 +111,6 @@ private lemma lieArm1_connDiffLowered_unitModel_apply (g₀ g₁ : SmoothRiemann
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lieArm1_LowFix_unitModel_apply (g₀ g_bg : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3 (lieArm1LowFix (I := I) (M := M) g₀ g_bg) x m =
@@ -149,7 +146,7 @@ private lemma lieArm1_PbLow_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
   exact ccBilinConnDiffLoweredFib_toModel (I := I) g₀ P gA gB x m
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm1_unitModel_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ s (A + B) x m =
@@ -166,7 +163,7 @@ private lemma lieArm1_unitModel_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ
   rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm1_unitModel_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g₀ 0 s) (x : M) (m : Fin s → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ s (A - B) x m =
@@ -184,7 +181,6 @@ private lemma lieArm1_unitModel_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 private lemma lieArm1_connDiff_self_zero (gA : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) gA gA x u v = 0 := by
@@ -198,7 +194,6 @@ private lemma lieArm1_connDiff_self_zero (gA : SmoothRiemannianMetric I M) (x : 
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [SigmaCompactSpace M] in
 lemma lieArm1_connDiff_antisymm (gA gB : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) gA gB x u v =
@@ -270,7 +265,7 @@ private theorem lieArm1_kappa_add_decomp (g₀ g₁ g_bg : SmoothRiemannianMetri
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma lieArm1_interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -284,7 +279,6 @@ private lemma lieArm1_interior_product_toModel_eval (s : ℕ) (x : M) (v : Tange
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma lieArm1_connDiffSection_eq_raise_lowered (g₀ g₁ : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1

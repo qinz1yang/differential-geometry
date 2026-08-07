@@ -53,7 +53,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 /-! ## The global intrinsic local addition on a connected component -/
 
@@ -88,7 +88,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [CompactSpace M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
   [ConnectedSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -139,16 +139,16 @@ theorem hmfDiagExp_cd_zero
     q (hmfEnorm (I := I) q) x n hn
 
 /-- Exponential-section realization of a lowered tangent field. -/
-noncomputable def hmfAdd
+noncomputable def hmfAdd [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) : M → M :=
   fun x =>
     (hmfDiagExp (I := I) (M := M) q
       (⟨x, hmfUnknown (I := I) q S x⟩ : TangentBundle I M)).2
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem hmfUnknown_zero
+@[simp] theorem hmfUnknown_zero [SigmaCompactSpace M]
     (q : SmoothRiemannianMetric I M) (x : M) :
     hmfUnknown (I := I) q (0 : SmoothCcTensor q 0 1) x = 0 := by
   change hmfUnknownLM (I := I) q x 0 = 0
@@ -378,7 +378,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
 
 /-- Dirichlet energy of the exponential-section map represented by `S`, with
 moving domain metric `h` and fixed target metric `q`. -/
-noncomputable def hmfDirEnergy
+noncomputable def hmfDirEnergy [SigmaCompactSpace M]
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, hmfDirDensity (I := I) (M := M) q h
       (hmfAdd (I := I) (M := M) q S) x

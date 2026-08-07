@@ -53,7 +53,7 @@ lemma wkpNormChartReal_zero
   simp
 
 lemma wkpNormChartReal_add_le
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
@@ -79,7 +79,7 @@ lemma wkpNormChartReal_add_le
   exact hToReal
 
 lemma wkpNormChartReal_const_smul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
@@ -150,7 +150,7 @@ lemma norm_wkpChart_def
     ‖u‖ = (wkpNormChart (n := n) (M := M) g k p (wkpChartFun u)).toReal := rfl
 
 lemma wkpChart_seminormedSpace_core
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -185,7 +185,7 @@ lemma wkpChart_seminormedSpace_core
     exact hToReal
 
 instance instSeminormedAddCommGroupWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -193,7 +193,7 @@ instance instSeminormedAddCommGroupWkpChart
   SeminormedAddCommGroup.ofCore (wkpChart_seminormedSpace_core (n := n) (M := M) g k p hp)
 
 instance instNormedSpaceRealWkpChart
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -207,14 +207,14 @@ instance instNormedSpaceRealWkpChart
     rw [ENNReal.toReal_mul, toReal_enorm]
 
 def WkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
   SeparationQuotient (WkpChart (n := n) (M := M) g k p hp)
 
 instance instAddCommGroupWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -223,7 +223,7 @@ instance instAddCommGroupWkpChartQuot
     (SeparationQuotient (WkpChart (n := n) (M := M) g k p hp)))
 
 instance instNormedAddCommGroupWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -232,7 +232,7 @@ instance instNormedAddCommGroupWkpChartQuot
     (SeparationQuotient (WkpChart (n := n) (M := M) g k p hp)))
 
 instance instModuleWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -241,7 +241,7 @@ instance instModuleWkpChartQuot
     (SeparationQuotient (WkpChart (n := n) (M := M) g k p hp)))
 
 instance instNormedSpaceRealWkpChartQuot
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M] [T2Space M]
     (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :

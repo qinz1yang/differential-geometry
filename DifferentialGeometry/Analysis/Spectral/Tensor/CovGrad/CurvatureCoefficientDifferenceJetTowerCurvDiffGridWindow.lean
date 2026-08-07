@@ -54,7 +54,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -72,9 +72,8 @@ def ricEndoBackgroundDifferenceField (g₀ g₁ : SmoothRiemannianMetric I M) :
   ricciEndomorphismField (I := I) (M := M) g₁ - ricciEndomorphismField (I := I) (M := M) g₀
 
 set_option backward.isDefEq.respectTransparency false in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma ricEndoBackgroundDifferenceField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+lemma ricEndoBackgroundDifferenceField_apply [SigmaCompactSpace M] (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x =
       ricEndoRaisedFib (I := I) g₁ x - ricEndoRaisedFib (I := I) g₀ x := by
   rw [ricEndoBackgroundDifferenceField]
@@ -923,7 +922,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 

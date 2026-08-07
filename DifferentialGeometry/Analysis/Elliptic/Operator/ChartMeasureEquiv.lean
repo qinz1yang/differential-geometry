@@ -36,7 +36,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 theorem integral_riemannianVolumeMeasure_eq_modelHaar_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source) :
@@ -53,7 +53,7 @@ theorem integral_riemannianVolumeMeasure_eq_modelHaar_chartTarget
   exact integral_chartLocalMeasure (I := I) (M := M) g α f hf_cont.measurable
 
 theorem integral_riemannianVolumeMeasure_eq_modelHaar_chartTarget_indicator
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source) :
@@ -117,7 +117,7 @@ private lemma chartTargetEuclid_measurableSet (α : M) :
     htarget_meas
 
 theorem integral_riemannianVolumeMeasure_eq_euclidean_chartTarget
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source) :
@@ -212,7 +212,7 @@ theorem integral_riemannianVolumeMeasure_eq_euclidean_chartTarget
               f ((extChartAt I α).symm ((toEuclidean (E := E)).symm y'''))) y'')
 
 theorem integral_riemannianVolumeMeasure_eq_euclidean_chartTarget_indicator
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source) :

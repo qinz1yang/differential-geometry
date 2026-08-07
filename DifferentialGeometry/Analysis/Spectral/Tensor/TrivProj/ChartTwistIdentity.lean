@@ -32,10 +32,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tensor0S_trivialization_continuousLinearMapAt_apply
     (α : M) {b : M} (r : ℕ)
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -60,7 +60,7 @@ private lemma tensor0S_trivialization_continuousLinearMapAt_apply
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma tensor0S_trivialization_symmL_apply
     (α : M) {b : M} (r : ℕ)
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -87,8 +87,8 @@ private lemma tensor0S_trivialization_symmL_apply
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem tensorTrivProj_eq_chartRSTwistInv_toFun
+    in
+theorem tensorTrivProj_eq_chartRSTwistInv_toFun [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -148,8 +148,8 @@ theorem tensorTrivProj_eq_chartRSTwistInv_toFun
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem chartRSTwist_tensorTrivProj_eq_toFun
+    in
+theorem chartRSTwist_tensorTrivProj_eq_toFun [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -183,7 +183,7 @@ theorem chartRSTwist_tensorTrivProj_eq_toFun
   exact chartJinv_chartJ_self (I := I) (M := M) α hb (w k)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 theorem triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel
     (r s : ℕ) (α : M) {b : M} (hb : b ∈ (chartAt H α).source)
     (T : TensorRSSpace r s I b) :
